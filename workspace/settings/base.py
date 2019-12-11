@@ -14,8 +14,14 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import dj_database_url
 
+from django.urls import reverse_lazy
+
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
+
+AUTHBROKER_URL = os.environ['AUTHBROKER_URL']
+AUTHBROKER_CLIENT_ID = os.environ['AUTHBROKER_CLIENT_ID']
+AUTHBROKER_CLIENT_SECRET = os.environ['AUTHBROKER_CLIENT_SECRET']
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,6 +33,8 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 INSTALLED_APPS = [
     'home',
     'search',
+
+    'authbroker_client',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -62,6 +70,8 @@ MIDDLEWARE = [
 
     'wagtail.core.middleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+
+    'authbroker_client.middleware.ProtectAllViewsMiddleware'
 ]
 
 ROOT_URLCONF = 'workspace.urls'
@@ -94,23 +104,13 @@ DATABASES = {
     'default': dj_database_url.config(conn_max_age=600)
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+# Use Staff SSO for authentication
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'authbroker_client.backends.AuthbrokerBackend',
 ]
+LOGIN_URL = reverse_lazy('authbroker_client:login')
+LOGIN_REDIRECT_URL = '/'
 
 
 # Internationalization
