@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'search',
 
     'authbroker_client',
+    'webpack_loader',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -137,6 +138,7 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, 'static'),
+    os.path.join(BASE_DIR, 'assets')
 ]
 
 # ManifestStaticFilesStorage is recommended in production, to prevent outdated

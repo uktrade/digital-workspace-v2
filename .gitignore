@@ -11,3 +11,10 @@
 common/CACHE
 __pycache__
 !.gitignore
+
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+webpack-stats.json
+/assets/webpack_bundles

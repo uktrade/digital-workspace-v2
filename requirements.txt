@@ -8,6 +8,7 @@ django-modelcluster==5.0
 django-staff-sso-client==1.0.0
 django-taggit==1.2.0
 django-treebeard==4.3
+django-webpack-loader==0.6.0
 djangorestframework==3.10.3
 draftjs-exporter==2.1.7
 html5lib==1.0.1
