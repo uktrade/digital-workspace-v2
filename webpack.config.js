@@ -8,6 +8,7 @@ module.exports = {
   entry: ['./assets/js/application.js', './assets/stylesheets/application.scss'],
   output: {
       path: path.resolve('./assets/webpack_bundles/'),
+      publicPath: '/static/webpack_bundles/',
       filename: "[name]-[hash].js"
   },
 
@@ -28,7 +29,7 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: '[name]-[hash].[ext]',
+              name: '[name].[ext]',
             }
           }
         ]
