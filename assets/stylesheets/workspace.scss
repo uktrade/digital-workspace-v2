@@ -1,0 +1,10 @@
+$brand-color-primary: #cd1632;
+
+// Components
+@import "components/header";
+
+// Grid
+
+.ws-width-container {
+  @include govuk-width-container(1100px);
+}
