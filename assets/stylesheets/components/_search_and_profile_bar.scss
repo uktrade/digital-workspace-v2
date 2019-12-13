@@ -1,0 +1,55 @@
+.ws-search-and-profile-bar {
+  background-color: $brand-color-grey90;
+  background-image: url('../images/search-and-profile-bar-pattern.png');
+}
+
+.ws-search-and-profile-bar__search {
+  padding: govuk-spacing(2) 0;
+}
+
+.ws-search-and-profile-bar__profile {
+  padding: 0 0 0 govuk-spacing(3);
+
+  @include govuk-media-query ($until: desktop) {
+    display: none;
+  }
+}
+
+.ws-search-and-profile-bar__profile-link {
+  &:link,
+  &:hover,
+  &:visited {
+    color: govuk-colour("white");
+  }
+
+  &:focus {
+    @include govuk-focused-text;
+
+    .ws-search-and-profile-bar__profile-details {
+      @include govuk-focused-text;
+    }
+  }
+}
+
+.ws-search-and-profile-bar__profile-details {
+  @include govuk-font($size: 16, $weight: bold);
+
+  background-color: darken($brand-color-grey90, 5%);
+  height: 40px;
+  max-width: 250px;
+  padding: govuk-spacing(2) govuk-spacing(3) govuk-spacing(2) govuk-spacing(6);
+  float: right;
+  text-align: right;
+}
+
+.ws-search-and-profile-bar__profile-image {
+  display: block;
+  float: right;
+  height: 60px;
+}
+
+.ws-search-and-profile-bar__profile-prompt {
+  @include govuk-font($size: 14);
+  display: block;
+  text-decoration: underline;
+}

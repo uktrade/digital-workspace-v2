@@ -72,7 +72,8 @@ MIDDLEWARE = [
     'wagtail.core.middleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 
-    'authbroker_client.middleware.ProtectAllViewsMiddleware'
+    'authbroker_client.middleware.ProtectAllViewsMiddleware',
+    'workspace.peoplefinder.GetPeoplefinderProfileMiddleware'
 ]
 
 ROOT_URLCONF = 'workspace.urls'

@@ -1,0 +1,64 @@
+.govuk-header--ws {
+  background-color: govuk-colour("white");
+  border-bottom: none;
+}
+
+.govuk-header__link--ws {
+  &:link,
+  &:visited {
+    color: govuk-colour("black");
+  }
+}
+
+.govuk-header__container--ws {
+  border-bottom: govuk-spacing(2) solid $brand-color-primary;
+}
+
+.govuk-header__navigation-item--active--ws {
+  a {
+    &:link,
+    &:hover,
+    &:visited {
+      color: $brand-color-primary;
+    }
+  }
+}
+
+.govuk-header__logo--ws {
+  @include govuk-media-query ($from: desktop) {
+    width: 20%;
+  }
+}
+
+.govuk-header__logotype--ws {
+  @include govuk-media-query ($from: desktop) {
+    img {
+      margin: govuk-spacing(1) 0;
+    }
+  }
+}
+
+.govuk-header__content--ws {
+  @include govuk-media-query ($from: desktop) {
+    width: 80%;
+    margin-top: govuk-spacing(1);
+  }
+}
+
+.govuk-header__link--service-name--ws {
+  @include govuk-font($size: 27, $weight: bold);
+
+  @include govuk-media-query ($from: desktop) {
+    margin: govuk-spacing(1) 0;
+  }
+}
+
+.govuk-header__menu-button--ws {
+  color: govuk-colour("black");
+}
+
+.govuk-header__navigation-item--mobile-only {
+  @include govuk-media-query ($from: desktop) {
+    display: none;
+  }
+}

@@ -39,51 +39,17 @@
 
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
 
-    <header class="ws-header" role="banner" data-module="ws-header">
-      <div class="ws-header__container ws-header__container--ws ws-width-container">
-        <div class="ws-header__logo">
-          <a href="/" class="ws-header__link ws-header__link--homepage">
-            <img src="{% webpack_static 'dit-logo.png' %}" srcset="{% webpack_static 'dit-logo@2x.png' %} 2x" alt="Department for International Trade logo" />
-          </a>
-        </div>
+    {% include "includes/header.html" %}
+    {% include "includes/search_and_profile_bar.html" %}
 
-        <div class="ws-header__content">
-          <a href="#" class="ws-header__link ws-header__link--service-name">
-            Digital Workspace
-          </a>
-          <button type="button" class="ws-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
-          <nav>
-            <ul id="navigation" class="ws-header__navigation" aria-label="Top Level Navigation">
-              <li class="ws-header__navigation-item ws-header__navigation-item--active">
-                <a class="ws-header__link" href="#1">
-                  Navigation item 1
-                </a>
-              </li>
-              <li class="ws-header__navigation-item">
-                <a class="ws-header__link" href="#2">
-                  Navigation item 2
-                </a>
-              </li>
-              <li class="ws-header__navigation-item">
-                <a class="ws-header__link" href="#3">
-                  Navigation item 3
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-    </header>
-
-
-    <div class="ws-width-container ">
+    <div class="ws-width-container">
       <div class="govuk-phase-banner">
         <p class="govuk-phase-banner__content">
           <strong class="govuk-tag govuk-phase-banner__content__tag">
             alpha
           </strong>
           <span class="govuk-phase-banner__text">
-            This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+            We are improving your Digital Workspace – we'd love your <a class="govuk-link" href="#">feedback</a>!
           </span>
         </p>
       </div>
@@ -93,46 +59,8 @@
       </main>
     </div>
 
+    {% include "includes/footer.html" %}
 
-  <footer class="govuk-footer " role="contentinfo">
-    <div class="ws-width-container ">
-      <div class="govuk-footer__meta">
-        <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-          <h2 class="govuk-visually-hidden">Support links</h2>
-          <ul class="govuk-footer__inline-list">
-            <li class="govuk-footer__inline-list-item">
-              <a class="govuk-footer__link" href="#1">
-                Footer Link
-              </a>
-            </li>
-            <li class="govuk-footer__inline-list-item">
-              <a class="govuk-footer__link" href="#2">
-                Footer Link
-              </a>
-            </li>
-            <li class="govuk-footer__inline-list-item">
-              <a class="govuk-footer__link" href="#3">
-                Footer Link
-              </a>
-            </li>
-            <li class="govuk-footer__inline-list-item">
-              <a class="govuk-footer__link" href="#4">
-                Footer Link
-              </a>
-            </li>
-          </ul>
-
-          <span class="govuk-footer__licence-description">
-            Built by the DIT Digital, Data and Technology team
-          </span>
-        </div>
-        <div class="govuk-footer__meta-item">
-          <a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">© Crown copyright</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  {% render_bundle 'main' 'js' %}
+    {% render_bundle 'main' 'js' %}
   </body>
 </html>

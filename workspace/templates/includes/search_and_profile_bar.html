@@ -1,0 +1,33 @@
+<div class="ws-search-and-profile-bar">
+  <div class="ws-search-and-profile-bar__container ws-width-container govuk-grid-row">
+    <div class="ws-search-and-profile-bar__search ws-search-field govuk-grid-column-one-half-from-desktop">
+      <label for="search-main" class="govuk-visually-hidden">
+       Search Digital Workspace
+      </label>
+      <div class="ws-search-field__item-wrapper">
+        <input type="search" value="" id="search-main" name="query" title="Search" aria-controls="" class="ws-search-field__item ws-search-field__input" placeholder="Search Digital Workspace">
+        <div class="ws-search-field__item ws-search-field__submit-wrapper">
+          <button type="submit" class="ws-search-field__submit">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ws-search-and-profile-bar__profile govuk-grid-column-one-half-from-desktop">
+      {% if peoplefinder_profile %}
+        <a class="ws-search-and-profile-bar__profile-link" href="{{ peoplefinder_profile.view_profile_url }}">
+          <img src="{{ peoplefinder_profile.profile_image_url }}" alt="Profile image of {{ peoplefinder_profile.name }}" class="ws-search-and-profile-bar__profile-image">
+          <div class="ws-search-and-profile-bar__profile-details">
+            Hi, {{ peoplefinder_profile.first_name|truncatechars:25 }}
+            <span class="ws-search-and-profile-bar__profile-prompt">
+              {% if peoplefinder_profile.is_complete %}
+                View your profile
+              {% else %}
+                Set up your profile ({{ peoplefinder_profile.completion_percentage }}% complete)
+              {% endif %}
+            </span>
+          </div>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
