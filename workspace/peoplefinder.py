@@ -9,6 +9,7 @@ LOGGER = getLogger(__name__)
 @dataclass
 class PeoplefinderProfile:
     """A user profile from People Finder"""
+
     name: str
     first_name: str
     last_name: str
@@ -17,8 +18,21 @@ class PeoplefinderProfile:
     edit_profile_url: str
     completion_percentage: int
 
+    def is_blank(self):
+        return False
+
     def is_complete(self):
         return self.completion_percentage == 100
+
+
+@dataclass
+class MissingPeoplefinderProfile:
+    """Represents a missing profile (e.g. when the user does not have one set up)"""
+
+    setup_profile_url: str
+
+    def is_blank(self):
+        return True
 
 
 class GetPeoplefinderProfileMiddleware:
@@ -41,8 +55,9 @@ class GetPeoplefinderProfileMiddleware:
 
     def process_template_response(self, request, response):
         # TODO: Cache details in Redis
-        profile = self.__get_user_profile(request.user.username)
-        response.context_data["peoplefinder_profile"] = profile
+        if response.context_data:
+            profile = self.__get_user_profile(request.user.username)
+            response.context_data["peoplefinder_profile"] = profile
 
         return response
 
@@ -54,16 +69,24 @@ class GetPeoplefinderProfileMiddleware:
 
         try:
             response = requests.get(url, headers=headers)
-            result = response.json()["data"]
 
-            return PeoplefinderProfile(
-                name=result["attributes"]["name"],
-                first_name=result["attributes"]["given-name"],
-                last_name=result["attributes"]["surname"],
-                profile_image_url=result["links"]["profile-image-url"],
-                view_profile_url=result["links"]["profile"],
-                edit_profile_url=result["links"]["edit-profile"],
-                completion_percentage=result["attributes"]["completion-score"]
-            )
+            if response.ok:
+                result = response.json()["data"]
+
+                return PeoplefinderProfile(
+                    name=result["attributes"]["name"],
+                    first_name=result["attributes"]["given-name"],
+                    last_name=result["attributes"]["surname"],
+                    profile_image_url=result["links"].get("profile-image-url"),
+                    view_profile_url=result["links"]["profile"],
+                    edit_profile_url=result["links"]["edit-profile"],
+                    completion_percentage=result["attributes"]["completion-score"]
+                )
+            elif response.status_code == 404:
+                return MissingPeoplefinderProfile(setup_profile_url=self.__people_finder_url)
+            else:
+                return None
         except (requests.exceptions.RequestException, KeyError):
             LOGGER.warning("Could not get user profile for user %s", user_id, exc_info=True)
+
+            return None

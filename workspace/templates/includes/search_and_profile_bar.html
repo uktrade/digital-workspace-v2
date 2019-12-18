@@ -13,9 +13,20 @@
     </div>
 
     <div class="ws-search-and-profile-bar__profile govuk-grid-column-one-half-from-desktop">
-      {% if peoplefinder_profile %}
+      {% if peoplefinder_profile.is_blank %}
+        <a class="ws-search-and-profile-bar__profile-link" href="{{ peoplefinder_profile.setup_profile_url }}">
+          <div class="ws-search-and-profile-bar__profile-details">
+            Please set up your profile
+            <span class="ws-search-and-profile-bar__profile-prompt">
+              Set up your profile now
+            </span>
+          </div>
+        </a>
+      {% elif peoplefinder_profile %}
         <a class="ws-search-and-profile-bar__profile-link" href="{{ peoplefinder_profile.view_profile_url }}">
-          <img src="{{ peoplefinder_profile.profile_image_url }}" alt="Profile image of {{ peoplefinder_profile.name }}" class="ws-search-and-profile-bar__profile-image">
+          {% if peoplefinder_profile.profile_image_url %}
+            <img src="{{ peoplefinder_profile.profile_image_url }}" alt="Profile image of {{ peoplefinder_profile.name }}" class="ws-search-and-profile-bar__profile-image">
+          {% endif %}
           <div class="ws-search-and-profile-bar__profile-details">
             Hi, {{ peoplefinder_profile.first_name|truncatechars:25 }}
             <span class="ws-search-and-profile-bar__profile-prompt">
