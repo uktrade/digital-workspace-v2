@@ -1,4 +1,4 @@
-{% load static wagtailuserbar %}
+{% load workspace_navigation static wagtailuserbar %}
 {% load render_bundle webpack_static from webpack_loader %}
 
 <!DOCTYPE html>
@@ -51,6 +51,10 @@
           </span>
         </p>
       </div>
+
+      {% block breadcrumbs %}
+        {% breadcrumbs %}
+      {% endblock %}
 
       <main class="govuk-main-wrapper " id="main-content" role="main">
         {% block content %}{% endblock %}

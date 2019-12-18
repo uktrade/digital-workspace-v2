@@ -92,6 +92,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'workspace_navigation': 'workspace.templatetags.workspace_navigation'
+            }
         },
     },
 ]
