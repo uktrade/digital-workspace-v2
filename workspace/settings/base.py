@@ -32,6 +32,7 @@ AUTHBROKER_CLIENT_SECRET = os.environ['AUTHBROKER_CLIENT_SECRET']
 
 INSTALLED_APPS = [
     'home',
+    'content',
     'search',
 
     'authbroker_client',
@@ -127,10 +128,14 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
+# GDS style date/time format
+DATE_FORMAT = 'j F Y'
+TIME_FORMAT = 'P'
+DATETIME_FORMAT = r'j F Y \a\t P'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

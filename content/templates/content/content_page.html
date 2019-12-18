@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+
+{% block content %}
+  <div class="ws-content-page">
+    <h1 class="govuk-heading-l">{{ page.title }}</h1>
+
+    <div class="ws-content-page__metadata">
+      <time class="ws-content-page__metadata-item" datetime="{{ page.first_published_at|date:"c" }}">
+        First published {{ page.first_published_at }}
+      </time>
+      <time class="ws-content-page__metadata-item ws-content-page__metadata-item--highlighted" datetime="{{ page.last_published_at|date:"c" }}">
+        Last updated {{ page.last_published_at }}
+      </time>
+    </div>
+
+    <div class="body">
+      {{ page.body|richtext }}
+    </div>
+  </div>
+{% endblock %}
