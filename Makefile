@@ -1,4 +1,4 @@
-PACKAGES=home search workspace
+PACKAGES=content home search workspace
 
 .DEFAULT: help
 
@@ -6,12 +6,24 @@ help:
 	@echo "Workspace Makefile"
 	@echo "------------------"
 	@echo
-	@echo "make lint"
-	@echo "    Runs pylint"
-	@echo "make webpack"
+	@echo "make assets_clean"
+	@echo "    Cleans up compiled assets folder"
+	@echo "make assets_compile"
+	@echo "    Runs webpack to compile assets"
+	@echo "make assets_watch"
 	@echo "    Runs webpack to watch and compile assets"
+	@echo
+	@echo "make lint"
+	@echo "    Runs linters"
+	@echo
 
-webpack:
+assets_clean:
+	rm -f ./assets/webpack_bundles/*
+
+assets_compile:
+	./node_modules/.bin/webpack --config webpack.config.js
+
+assets_watch:
 	./node_modules/.bin/webpack --config webpack.config.js --watch
 
 lint:

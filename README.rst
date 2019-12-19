@@ -26,5 +26,10 @@ and the admin interface on `localhost:8000/admin <http://localhost:8000/admin>`_
 Assets
 ------
 
-Assets are handled via ``django-webpack-loader``. To run compilation in development,
-use ``make webpack``.
+Assets are handled via Webpack and ``django-webpack-loader``. A number of make
+tasks are provided for convenience:
+
+- ``make assets_compile_watch`` watches the asset folder and recompiles on
+  changes (useful for development)
+- ``make assets_compile`` compiles assets once (useful for deployment)
+- ``make assets_clean`` cleans the compiled asset folder (``assets/webpack_bundles``)
