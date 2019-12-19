@@ -173,6 +173,6 @@ BASE_URL = 'http://example.com'
 
 WAGTAILSEARCH_BACKENDS = {
     'default': {
-        'BACKEND': 'wagtail.contrib.postgres_search.backend' 
+        'BACKEND': 'wagtail.contrib.postgres_search.backend'
     }
 }

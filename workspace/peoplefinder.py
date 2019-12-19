@@ -18,7 +18,8 @@ class PeoplefinderProfile:
     edit_profile_url: str
     completion_percentage: int
 
-    def is_blank(self):
+    @staticmethod
+    def is_blank():
         return False
 
     def is_complete(self):
@@ -31,7 +32,8 @@ class MissingPeoplefinderProfile:
 
     setup_profile_url: str
 
-    def is_blank(self):
+    @staticmethod
+    def is_blank():
         return True
 
 
@@ -54,7 +56,6 @@ class GetPeoplefinderProfileMiddleware:
         return response
 
     def process_template_response(self, request, response):
-        # TODO: Cache details in Redis
         if response.context_data:
             profile = self.__get_user_profile(request.user.username)
             response.context_data["peoplefinder_profile"] = profile
@@ -82,10 +83,11 @@ class GetPeoplefinderProfileMiddleware:
                     edit_profile_url=result["links"]["edit-profile"],
                     completion_percentage=result["attributes"]["completion-score"]
                 )
-            elif response.status_code == 404:
+
+            if response.status_code == 404:
                 return MissingPeoplefinderProfile(setup_profile_url=self.__people_finder_url)
-            else:
-                return None
+
+            return None
         except (requests.exceptions.RequestException, KeyError):
             LOGGER.warning("Could not get user profile for user %s", user_id, exc_info=True)
 
