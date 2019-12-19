@@ -16,7 +16,7 @@
     </div>
 
     <div class="body">
-      {{ page.body|richtext }}
+      {% include_block page.body %}
     </div>
   </div>
 {% endblock %}
