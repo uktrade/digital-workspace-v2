@@ -1,0 +1,8 @@
+// Variables
+@import "vars/colors";
+
+@import "~govuk-frontend/govuk/helpers/colour";
+
+header {
+  background-color: $brand-color-red;
+}
