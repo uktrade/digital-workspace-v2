@@ -15,6 +15,7 @@ $govuk-image-url-function: frontend-image-url;
 @import "vars/colors";
 
 // GOV.UK Design System Overrides
+@import "govuk-overrides/footer";
 @import "govuk-overrides/header";
 
 // Components

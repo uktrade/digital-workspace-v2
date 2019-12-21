@@ -1,0 +1,14 @@
+.govuk-footer__inline-list-item--ws-wagtail-link {
+  a {
+		&:link,
+		&:visited,
+		&:hover,
+		&:active {
+			color: $govuk-link-colour;
+		}
+
+    &:focus {
+      @include govuk-focused-text;
+    }
+  }
+}

@@ -1,4 +1,4 @@
-{% load workspace_navigation static wagtailuserbar %}
+{% load workspace_navigation static %}
 {% load render_bundle webpack_static from webpack_loader %}
 
 <!DOCTYPE html>
@@ -33,7 +33,6 @@
 
   <body class="govuk-template__body ">
     <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-    {% wagtailuserbar %}
 
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
 
