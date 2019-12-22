@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'wagtail.contrib.forms',
     'wagtail.contrib.postgres_search',
     'wagtail.contrib.redirects',
+    'wagtail.contrib.table_block',
     'wagtail.embeds',
     'wagtail.sites',
     'wagtail.users',
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
 
     'modelcluster',
     'taggit',
+    'wagtailmedia',
 
     'django.contrib.admin',
     'django.contrib.auth',

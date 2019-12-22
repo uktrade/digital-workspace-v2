@@ -1,8 +1,13 @@
-// Variables
-@import "vars/colors";
-
-@import "~govuk-frontend/govuk/helpers/colour";
-
-header {
-  background-color: $brand-color-red;
+@function frontend-font-url($filename) {
+  @return url("~govuk-frontend/govuk/assets/fonts/" + $filename);
 }
+$govuk-font-url-function: frontend-font-url;
+
+// Variables
+// @import "vars/colors";
+
+// @import "~govuk-frontend/govuk/all";
+
+// TODO: This file is compiled by Webpack and injected into the Wagtail
+//       admin. We need to decide if we do want to override anything
+//       there as it can prove quite troublesome.

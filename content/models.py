@@ -1,11 +1,11 @@
 from django.db import models
 
-from wagtail.core import blocks
 from wagtail.core.models import Page
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.images.blocks import ImageChooserBlock
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
 from wagtail.search import index
+
+from . import blocks
 
 
 class ContentIndexPage(Page):
@@ -37,13 +37,13 @@ class ContentIndexPage(Page):
     ]
 
 class ContentPage(Page):
-    RICH_TEXT_FEATURES = ['h2', 'h3', 'h4', 'bold', 'italic', 'ol',
-                          'ul', 'link', 'document-link']
-
     excerpt = models.CharField(max_length=250, blank=True)
     body = StreamField([
-        ('text_content', blocks.RichTextBlock(features=RICH_TEXT_FEATURES)),
-        ('image', ImageChooserBlock())
+        ('heading', blocks.HeadingBlock()),
+        ('text', blocks.TextBlock()),
+        ('image', blocks.ImageBlock()),
+        ('internal_media', blocks.InternalMediaBlock()),
+        ('data_table', blocks.DataTableBlock())
     ])
 
     subpage_types = []

@@ -1,0 +1,58 @@
+.ws-streamfield-content__text {
+  /*
+    .rich-text is what content from Wagtail's RichText field is wrapped in by default - we cannot
+    add classes to the elements it outputs, so we'll style them here.
+  */
+
+  .rich-text {
+    h3 {
+      @extend %govuk-heading-s;
+    }
+
+    h4 {
+      @extend %govuk-heading-s;
+      @include govuk-font($size: 16, $weight: bold);
+    }
+
+    p, li {
+      @extend %govuk-body-m;
+    }
+
+    ul {
+      @extend %govuk-list;
+      @extend %govuk-list--bullet;
+    }
+
+    ol {
+      @extend %govuk-list;
+      @extend %govuk-list--number;
+    }
+
+    a {
+      @extend %govuk-link;
+    }
+  }
+}
+
+.ws-streamfield-content__image {
+  margin: 0 0 govuk-spacing(3) 0;
+  padding: 0;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+.ws-streamfield-content__caption {
+  padding: govuk-spacing(3);
+
+  @include govuk-font($size: 16);
+  background-color: govuk-colour("light-grey");
+}
+
+.ws-streamfield-content__media {
+  margin: 0 0 govuk-spacing(3) 0;
+  max-width: 100%;
+  height: auto;
+}
