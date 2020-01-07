@@ -6,8 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   context: __dirname,
   entry: {
-      main: ['./assets/js/application.js', './assets/stylesheets/application.scss'],
-      wagtail_admin: './assets/stylesheets/wagtail_admin.scss'
+      main: ['./assets/js/application.js', './assets/stylesheets/application.scss']
   },
   output: {
       path: path.resolve('./assets/webpack_bundles/'),

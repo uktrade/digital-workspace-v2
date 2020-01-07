@@ -1,0 +1,33 @@
+# Wagtail
+wagtail>=2.7,<2.8
+wagtailmedia>=0.4.0,<0.5
+
+# Django tools
+django-environ>=0.4.5,<0.5
+psycopg2>=2.8.4,<3
+django-webpack-loader>=0.6.0,<0.7
+
+# Other libraries
+requests>=2.22,<3
+
+# DIT dependencies
+django-staff-sso-client>=1.0.1,<1.1
+
+# Operational dependencies
+raven>=6.10.0,<7
+
+# Linting & security
+flake8>=3.7.9,<4
+flake8-bandit
+flake8-blind-except
+flake8-bugbear
+flake8-debugger
+flake8-import-order
+flake8-print
+flake8-quotes
+flake8-string-format
+pep8-naming
+pydocstyle
+
+# Development tools
+pip-tools

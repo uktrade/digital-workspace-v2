@@ -1,5 +1,3 @@
-PACKAGES=content home search workspace
-
 .DEFAULT: help
 
 help:
@@ -16,6 +14,9 @@ help:
 	@echo "make lint"
 	@echo "    Runs linters"
 	@echo
+	@echo "make clean"
+	@echo "    Removes compiled artefacts"
+	@echo
 
 assets_clean:
 	rm -f ./assets/webpack_bundles/*
@@ -27,4 +28,7 @@ assets_watch:
 	./node_modules/.bin/webpack --config webpack.config.js --watch
 
 lint:
-	pylint --rcfile=.pylintrc $(PACKAGES)
+	flake8
+
+clean:
+	find . -name '__pycache__' -exec rm -rf {} +

@@ -1,94 +1,93 @@
 from django.core.exceptions import ValidationError
-
 from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
-
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
+
 class HeadingBlock(blocks.CharBlock):
-    '''A (section) heading'''
+    """A (section) heading"""
 
     class Meta:
-        label = 'Section heading'
-        icon = 'title'
-        classname = 'full title'
-        template = 'blocks/heading.html'
+        label = "Section heading"
+        icon = "title"
+        classname = "full title"
+        template = "blocks/heading.html"
 
 
 class TextBlock(blocks.RichTextBlock):
-    '''A text content block'''
+    """A text content block"""
 
     class Meta:
-        icon = 'pilcrow'
-        template = 'blocks/text.html'
+        icon = "pilcrow"
+        template = "blocks/text.html"
 
-    def __init__(self, *args, **kwargs): # pylint: disable=unused-argument
-        super().__init__(features=['h3', 'h4', 'bold', 'italic', 'ol', 'ul',
-                                   'link', 'document-link'])
+    def __init__(self, *args, **kwargs):
+        super().__init__(features=["h3", "h4", "bold", "italic", "ol", "ul",
+                                   "link", "document-link"])
 
 
 class ImageBlock(blocks.StructBlock):
-    '''An image block with accessible metadata'''
+    """An image block with accessible metadata"""
 
     image = ImageChooserBlock()
     isdecorative = blocks.BooleanBlock(
         required=False,
-        label='Is this a decorative image?',
-        help_text='''
+        label="Is this a decorative image?",
+        help_text="""
         Tick if this image is entirely decorative and does not include
         important content. This will hide the image from users using
         screen readers.
-        '''
+        """
     )
     alt = blocks.CharBlock(
         required=False,
-        label='Alt text',
-        help_text='''
+        label="Alt text",
+        help_text="""
         Read out by screen readers or displayed if an image does not load
         or if images have been switched off.
 
         Unless this is a decorative image, it MUST have alt text that
         tells people what information the image provides, describes its
         content and function, and is specific, meaningful and concise.
-        '''
+        """
     )
     caption = blocks.CharBlock(
         required=False,
-        help_text='''
+        help_text="""
         Optional text displayed under the image on the page to provide
         context.
-        '''
+        """
     )
 
     class Meta:
-        icon = 'image'
-        template = 'blocks/image.html'
+        icon = "image"
+        template = "blocks/image.html"
 
     def clean(self, value):
-        if value['isdecorative']:
+        if value["isdecorative"]:
             errors = {}
 
-            if value['alt']:
-                errors['alt'] = ['Decorative images cannot have alt text']
-            if value['caption']:
-                errors['caption'] = ['Decorative images cannot have a caption']
+            if value["alt"]:
+                errors["alt"] = ["Decorative images cannot have alt text"]
+            if value["caption"]:
+                errors["caption"] = ["Decorative images cannot have a caption"]
 
             if errors:
                 raise ValidationError(
-                    'Alt or caption provided for decorative image',
+                    "Alt or caption provided for decorative image",
                     params=errors
                 )
-        elif not value['alt']:
+        elif not value["alt"]:
             raise ValidationError(
-                'Alt text is missing',
-                params={'alt': ['Image must have alt text']}
+                "Alt text is missing",
+                params={"alt": ["Image must have alt text"]}
             )
         return super().clean(value)
 
 
 class MediaChooserBlock(AbstractMediaChooserBlock):
-    '''Media file chooser for the admin interface
+    """Media file chooser for the admin interface
 
     ``wagtailmedia`` is quite an incomplete and immature plugin as Wagtail
     recommends embedding external videos only. We aim to move to that model
@@ -96,27 +95,27 @@ class MediaChooserBlock(AbstractMediaChooserBlock):
     functionality present in the previous Wordpress-based Digital Workspace.
 
     This block is only used to allow other blocks to have a media chooser,
-    and does not need to be able to render itself, hence it doesn't implement
+    and does not need to be able to render itself, hence it doesn"t implement
     ``AbstractMediaChooserBlock.render_basic()``.
-    '''
+    """
 
     def render_basic(self, value):
         pass
 
 
 class InternalMediaBlock(blocks.StructBlock):
-    '''A video or audio player block for uploaded media files'''
+    """A video or audio player block for uploaded media files"""
 
     media_file = MediaChooserBlock()
 
     class Meta:
-        label = 'Video or Audio'
-        icon = 'media'
-        template = 'blocks/media.html'
+        label = "Video or Audio"
+        icon = "media"
+        template = "blocks/media.html"
 
 
 class DataTableBlock(TableBlock):
-    '''A simple table block'''
+    """A simple table block"""
 
     class Meta:
-        template = 'blocks/table.html'
+        template = "blocks/table.html"

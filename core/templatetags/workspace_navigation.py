@@ -1,8 +1,8 @@
 from django import template
-
 from wagtail.core.models import Page
 
 register = template.Library()
+
 
 @register.inclusion_tag("tags/breadcrumbs.html", takes_context=True)
 def breadcrumbs(context):
