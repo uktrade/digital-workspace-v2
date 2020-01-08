@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from json.decoder import JSONDecodeError
 from logging import getLogger
 
 import requests
@@ -64,7 +65,7 @@ def get_user_profile(user_id):
             return MissingPeoplefinderProfile(setup_profile_url=settings.PEOPLEFINDER_URL)
 
         return None
-    except (requests.exceptions.RequestException, KeyError):
+    except (requests.exceptions.RequestException, JSONDecodeError, KeyError):
         LOGGER.warning("Could not get user profile for user %s", user_id, exc_info=True)
 
         return None
