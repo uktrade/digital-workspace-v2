@@ -3,7 +3,9 @@
 import os
 
 import environ
+import sentry_sdk
 from django.urls import reverse_lazy
+from sentry_sdk.integrations.django import DjangoIntegration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = os.path.join(BASE_DIR, "core")
@@ -14,6 +16,7 @@ env_file = os.path.join(BASE_DIR, ".env")
 if os.path.exists(env_file):
     env.read_env(env_file)
 
+APP_ENV = env.str("APP_ENV", "local")
 AUTHBROKER_URL = env("AUTHBROKER_URL")
 AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID")
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET")
@@ -26,6 +29,14 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 if env.str("DJANGO_EMAIL_BACKEND", None):
     EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND")
+
+# Sentry configuration
+if env.str("SENTRY_DSN", None):
+    sentry_sdk.init(
+        dsn=env("SENTRY_DSN"),
+        environment=APP_ENV,
+        integrations=[DjangoIntegration()]
+    )
 
 # This application will always be run behind a PaaS router (or locally),
 # so all hosts can be whitelisted

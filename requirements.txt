@@ -7,7 +7,7 @@
 attrs==19.3.0             # via flake8-bugbear
 bandit==1.6.2             # via flake8-bandit
 beautifulsoup4==4.6.0     # via wagtail
-certifi==2019.11.28       # via requests
+certifi==2019.11.28       # via requests, sentry-sdk
 chardet==3.0.4            # via requests
 click==7.0                # via pip-tools
 django-environ==0.4.5
@@ -50,16 +50,16 @@ pydocstyle==5.0.1
 pyflakes==2.1.1           # via flake8
 pytz==2019.3              # via django, django-modelcluster, wagtail
 pyyaml==5.3               # via bandit
-raven==6.10.0
 requests-oauthlib==1.3.0  # via django-staff-sso-client
 requests==2.22.0
+sentry-sdk==0.14.0
 six==1.13.0               # via bandit, flake8-print, html5lib, pip-tools, stevedore, wagtail
 smmap2==2.0.5             # via gitdb2
 snowballstemmer==2.0.0    # via pydocstyle
 sqlparse==0.3.0           # via django
 stevedore==1.31.0         # via bandit
 unidecode==1.1.1          # via wagtail
-urllib3==1.25.7           # via requests
+urllib3==1.25.7           # via requests, sentry-sdk
 wagtail==2.7
 wagtailmedia==0.4.0
 webencodings==0.5.1       # via html5lib
