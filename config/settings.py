@@ -43,7 +43,8 @@ if env.str("SENTRY_DSN", None):
     sentry_sdk.init(
         dsn=env("SENTRY_DSN"),
         environment=APP_ENV,
-        integrations=[DjangoIntegration()]
+        integrations=[DjangoIntegration()],
+        send_default_pii=True  # Enable associating exceptions to users
     )
 
 
