@@ -7,8 +7,11 @@ import sentry_sdk
 from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROJECT_DIR = os.path.join(BASE_DIR, "core")
+
+# Set directories to be used across settings
+BASE_DIR = environ.Path(__file__) - 2  # The root directory of the project
+PROJECT_DIR = os.path.join(BASE_DIR, "core")  # The project's "main" application
+
 
 # Read environment variables using `django-environ`, use `.env` if it exists
 env = environ.Env()
@@ -16,6 +19,8 @@ env_file = os.path.join(BASE_DIR, ".env")
 if os.path.exists(env_file):
     env.read_env(env_file)
 
+
+# Set required configuration from environment
 APP_ENV = env.str("APP_ENV", "local")
 AUTHBROKER_URL = env("AUTHBROKER_URL")
 AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID")
@@ -27,10 +32,13 @@ PEOPLEFINDER_API_URL = env("PEOPLEFINDER_API_URL")
 PEOPLEFINDER_URL = env("PEOPLEFINDER_URL")
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
+
+# Set optional configuration from environment
 if env.str("DJANGO_EMAIL_BACKEND", None):
     EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND")
 
-# Sentry configuration
+
+# Configure Sentry if a DSN is set
 if env.str("SENTRY_DSN", None):
     sentry_sdk.init(
         dsn=env("SENTRY_DSN"),
@@ -39,41 +47,47 @@ if env.str("SENTRY_DSN", None):
     )
 
 
-# Logging configuration
+# Configure logging
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['console']
+    "version": 1,
+    "disable_existing_loggers": False,
+    "root": {
+        "level": "WARNING",
+        "handlers": ["console"]
     },
-    'formatters': {
-        'verbose': {
-            'format': '%(asctime)s [%(levelname)s] [%(name)s] %(message)s'
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s [%(levelname)s] [%(name)s] %(message)s"
         }
     },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose"
         }
     }
 }
 
 
-# This application will always be run behind a PaaS router (or locally),
-# so all hosts can be whitelisted
+# Allow all hosts
+# (this application will always be run behind a PaaS router or locally)
 ALLOWED_HOSTS = ["*"]
 
-INSTALLED_APPS = [
+
+# Set up Django
+LOCAL_APPS = [
     "home",
     "content",
-    "search",
+    "search"
+]
 
+THIRD_PARTY_APPS = [
     "authbroker_client",
-    "webpack_loader",
+    "webpack_loader"
+]
 
+WAGTAIL_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.postgres_search",
     "wagtail.contrib.redirects",
@@ -90,8 +104,10 @@ INSTALLED_APPS = [
 
     "modelcluster",
     "taggit",
-    "wagtailmedia",
+    "wagtailmedia"
+]
 
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -99,6 +115,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles"
 ]
+
+INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + WAGTAIL_APPS + DJANGO_APPS
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -145,20 +163,24 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {"default": env.db()}
 
-# Use Staff SSO for authentication
+
+# Configure authentication and Staff SSO integration
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "authbroker_client.backends.AuthbrokerBackend"
 ]
+
 LOGIN_URL = reverse_lazy("authbroker_client:login")
 LOGIN_REDIRECT_URL = "/"
 
 
-# GDS style date/time format
+# Configure date/time format (GDS style)
 DATE_FORMAT = "j F Y"
 TIME_FORMAT = "P"
 DATETIME_FORMAT = r"j F Y \a\t P"
 
+
+# Configure assets
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder"
@@ -178,8 +200,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 
-# Wagtail settings
-
+# Configure Wagtail
 WAGTAIL_SITE_NAME = "workspace"
 
 WAGTAILSEARCH_BACKENDS = {
