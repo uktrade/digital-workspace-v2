@@ -3,10 +3,7 @@
   "author": "Department for International Trade",
   "private": true,
   "dependencies": {
-    "govuk-frontend": "^3.4.0"
-  },
-  "version": "0.1.0",
-  "devDependencies": {
+    "govuk-frontend": "^3.4.0",
     "css-loader": "^3.3.0",
     "extract-loader": "^3.1.0",
     "file-loader": "^5.0.2",
@@ -15,8 +12,17 @@
     "sass-loader": "^8.0.0",
     "webpack": "^4.41.2",
     "webpack-bundle-tracker": "^0.4.3",
-    "webpack-cli": "^3.3.10",
+    "webpack-cli": "^3.3.10"
+  },
+  "version": "0.1.0",
+  "devDependencies": {
     "webpack-dev-server": "^3.9.0"
+  },
+  "scripts": {
+    "dev": "yarn run webpack --config webpack.config.js --watch",
+    "build": "yarn run webpack --config webpack.config.js",
+    "heroku-postbuild": "yarn run build",
+    "clean": "rm -f ./assets/webpack_bundles/*"
   },
   "browserslist": [
     "last 3 chrome versions",
