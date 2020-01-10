@@ -13,9 +13,8 @@ __pycache__
 !.gitignore
 
 /node_modules
-/yarn-error.log
-yarn-debug.log*
-.yarn-integrity
+npm-debug.log*
+
 webpack-stats.json
 /assets/webpack_bundles
 

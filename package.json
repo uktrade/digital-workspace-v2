@@ -19,9 +19,9 @@
     "webpack-dev-server": "^3.9.0"
   },
   "scripts": {
-    "dev": "yarn run webpack --config webpack.config.js --watch",
-    "build": "yarn run webpack --config webpack.config.js",
-    "heroku-postbuild": "yarn run build",
+    "dev": "webpack --config webpack.config.js --watch",
+    "build": "webpack --config webpack.config.js",
+    "heroku-postbuild": "npm run build",
     "clean": "rm -f ./assets/webpack_bundles/*"
   },
   "browserslist": [
