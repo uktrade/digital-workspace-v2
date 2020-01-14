@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load humanize static wagtailcore_tags %}
+
+{% block title %}Information results for '{{ query }}'{% endblock %}
+
+{% block breadcrumbs %}
+  <nav class="govuk-breadcrumbs" role="navigation" aria-label="Breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/" aria-level="1">Home</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="{% url "search:search_global" %}?query={{ query|urlencode }}" aria-level="2">
+          Search for '{{ query }}'
+        </a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item" aria-current="page" aria-level="3">
+        Information results
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">
+    Information results for '{{ query }}'
+    <span class="govuk-caption-m">{{ num_results }} result{{ num_results|pluralize }}</span>
+  </h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if results %}
+          <ol class="govuk-list">
+              {% for result in results %}
+                  <li class="ws-search-result">
+                    <h3 class="ws-search-result--title">
+                      <a href="{{ result.url }}" class="ws-search-result--link">
+                        {{ result.title }}
+                      </a>
+                    </h3>
+                    <span class="ws-search-result--meta">
+                      Last updated {{ result.last_updated }}
+                      ({{ result.last_updated|naturaltime }})
+                    </span>
+                    <p class="ws-search-result--excerpt">{{ result.excerpt|safe }}</p>
+                  </li>
+              {% endfor %}
+          </ol>
+
+          <nav role="navigation" aria-label="Pagination">
+            <ul class="ws-pagination__list">
+              {% if results.has_previous %}
+                <li class="ws-pagination__item ws-pagination__item--previous">
+                  <a href="{% url 'search:search_wordpress' %}?query={{ query|urlencode }}&amp;page={{ results.previous_page_number }}" class="ws-pagination__link" rel="prev">
+                    <span class="ws-pagination__link-title">
+                      <svg class="ws-pagination__link-icon" xmlns="http://www.w3.org/2000/svg" height="13" width="17" viewBox="0 0 17 13">
+                        <path fill="currentColor" d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+                      </svg>
+                      <span class="ws-pagination__link-text">
+                        Previous page
+                      </span>
+                    </span>
+                    <span class="ws-pagination__link-divider visually-hidden">:</span>
+                    <span class="ws-pagination__link-label">{{results.previous_page_number }} of
+                      {{ num_pages }}</span>
+                  </a>
+                </li>
+              {% endif %}
+
+              {% if results.has_next %}
+                <li class="ws-pagination__item ws-pagination__item--next">
+                  <a href="{% url 'search:search_wordpress' %}?query={{ query|urlencode }}&amp;page={{ results.next_page_number }}" class="ws-pagination__link" rel="next">
+                    <span class="ws-pagination__link-title">
+                      <svg class="ws-pagination__link-icon" xmlns="http://www.w3.org/2000/svg" height="13" width="17" viewBox="0 0 17 13">
+                        <path fill="currentColor" d="m10.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+                      </svg>
+                      <span class="ws-pagination__link-text">
+                        Next page
+                      </span>
+                    </span>
+                    <span class="ws-pagination__link-divider visually-hidden">:</span>
+                    <span class="ws-pagination__link-label">{{ results.next_page_number }} of {{ num_pages }}</span>
+                  </a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+      {% elif query %}
+        {% include "search/includes/no_results.html" %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

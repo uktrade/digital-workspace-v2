@@ -17,12 +17,15 @@ $govuk-image-url-function: frontend-image-url;
 // GOV.UK Design System Overrides
 @import "govuk-overrides/footer";
 @import "govuk-overrides/header";
+@import "govuk-overrides/tag";
 
 // Components
 @import "components/content_cards";
 @import "components/content_page";
+@import "components/pagination";
 @import "components/search_and_profile_bar";
 @import "components/search_field";
+@import "components/search-result";
 @import "components/streamfield-content";
 
 // Grid

@@ -40,10 +40,10 @@ class MissingPeoplefinderProfile:
 
 
 def get_user_profile(user_id):
-    LOGGER.debug("Getting profile for %s from %s", user_id, settings.PEOPLEFINDER_API_URL)
-
     url = f"{settings.PEOPLEFINDER_API_URL}?ditsso_user_id={user_id}"
     headers = {"Authorization": f"Token token={settings.PEOPLEFINDER_API_KEY}"}
+
+    LOGGER.debug("Requesting profile for %s")
 
     try:
         response = requests.get(url, headers=headers)
@@ -62,10 +62,18 @@ def get_user_profile(user_id):
             )
 
         if response.status_code == 404:
-            return MissingPeoplefinderProfile(setup_profile_url=settings.PEOPLEFINDER_URL)
+            LOGGER.info("No profile found for %s", user_id)
+
+            return MissingPeoplefinderProfile(
+                setup_profile_url=settings.PEOPLEFINDER_URL
+            )
 
         return None
     except (requests.exceptions.RequestException, JSONDecodeError, KeyError):
-        LOGGER.warning("Could not get user profile for user %s", user_id, exc_info=True)
+        LOGGER.error(
+            "Failed to get or parse profile for user %s",
+            user_id,
+            exc_info=True
+        )
 
         return None

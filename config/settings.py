@@ -27,6 +27,11 @@ AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID")
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET")
 BASE_URL = env("WAGTAIL_BASE_URL")
 DEBUG = env.bool("DJANGO_DEBUG", False)
+LEGACY_WORDPRESS_API_URL = env("LEGACY_WORDPRESS_API_URL")
+LEGACY_WORDPRESS_API_CUSTOM_URL = env("LEGACY_WORDPRESS_API_CUSTOM_URL")
+LEGACY_WORDPRESS_API_KEY = env("LEGACY_WORDPRESS_API_KEY")
+LEGACY_WORDPRESS_FRONTEND_URL = env("LEGACY_WORDPRESS_FRONTEND_URL")
+LOG_LEVEL = env.str("DJANGO_LOG_LEVEL", "WARNING")
 PEOPLEFINDER_API_KEY = env("PEOPLEFINDER_API_KEY")
 PEOPLEFINDER_API_URL = env("PEOPLEFINDER_API_URL")
 PEOPLEFINDER_URL = env("PEOPLEFINDER_URL")
@@ -51,7 +56,7 @@ if env.str("SENTRY_DSN", None):
 # Configure Django security settings unless running locally
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
-    X_FRAME_OPTIONS = 'DENY'
+    X_FRAME_OPTIONS = "DENY"
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_HSTS_SECONDS = 15768000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -66,7 +71,7 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "root": {
-        "level": "WARNING",
+        "level": LOG_LEVEL,
         "handlers": ["console"]
     },
     "formatters": {
@@ -125,6 +130,7 @@ DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    "django.contrib.humanize",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles"

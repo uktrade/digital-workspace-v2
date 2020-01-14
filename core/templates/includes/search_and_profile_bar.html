@@ -1,15 +1,17 @@
 <div class="ws-search-and-profile-bar">
   <div class="ws-search-and-profile-bar__container ws-width-container govuk-grid-row">
     <div class="ws-search-and-profile-bar__search ws-search-field govuk-grid-column-one-half-from-desktop">
-      <label for="search-main" class="govuk-visually-hidden">
-       Search Digital Workspace
-      </label>
-      <div class="ws-search-field__item-wrapper">
-        <input type="search" value="" id="search-main" name="query" title="Search" aria-controls="" class="ws-search-field__item ws-search-field__input" placeholder="Search Digital Workspace">
-        <div class="ws-search-field__item ws-search-field__submit-wrapper">
-          <button type="submit" class="ws-search-field__submit">Search</button>
+      <form action="{% url 'search:search_global' %}" method="get">
+        <label for="search-main" class="govuk-visually-hidden">
+         Search Digital Workspace
+        </label>
+        <div class="ws-search-field__item-wrapper">
+          <input type="search" value="{{ query }}" id="search-main" name="query" title="Search" aria-controls="" class="ws-search-field__item ws-search-field__input" placeholder="Search Digital Workspace">
+          <div class="ws-search-field__item ws-search-field__submit-wrapper">
+            <button type="submit" class="ws-search-field__submit">Search</button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
 
     <div class="ws-search-and-profile-bar__profile govuk-grid-column-one-half-from-desktop">

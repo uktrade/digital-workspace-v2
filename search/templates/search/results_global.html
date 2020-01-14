@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load humanize static wagtailcore_tags %}
+
+{% block title %}Search results for '{{ query }}'{% endblock %}
+
+{% block breadcrumbs %}
+  <nav class="govuk-breadcrumbs" role="navigation" aria-label="Breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="/" aria-level="1">Home</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item" aria-current="page" aria-level="2">
+        Search for '{{ query }}'
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">Search results for '{{ query }}'</h1>
+
+  {% if has_results %}
+    <div class="govuk-tabs" data-module="govuk-tabs">
+      <h2 class="govuk-tabs__title">
+        Search results
+      </h2>
+      <ul class="govuk-tabs__list">
+        {% if wordpress_results %}
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#information">
+              Information
+            </a>
+            <span class="govuk-tag govuk-tag--ws-resultcount">{{ wordpress_num_results }}</span>
+          </li>
+        {% endif %}
+      </ul>
+
+      {% if wordpress_results %}
+        <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="information">
+          <h2 class="govuk-heading-l">
+            Information
+            <span class="govuk-caption-m">{{ wordpress_num_results }} result{{ wordpress_num_results|pluralize }}</span>
+          </h2>
+
+          <ol class="govuk-list">
+            {% for result in wordpress_results %}
+              <li class="ws-search-result">
+                <h3 class="ws-search-result--title">
+                  <a href="{{ result.url }}" class="ws-search-result--link">
+                    {{ result.title }}
+                  </a>
+                </h3>
+                <span class="ws-search-result--meta">
+                  Last updated {{ result.last_updated }}
+                  ({{ result.last_updated|naturaltime }})
+                </span>
+                <p class="ws-search-result--excerpt">{{ result.excerpt|safe }}</p>
+              </li>
+            {% endfor %}
+          </ol>
+
+          {% if wordpress_has_more_results %}
+            <a href="{% url "search:search_wordpress" %}?{{ querystring }}" class="govuk-button govuk-button--secondary">
+              View more information results
+            </a>
+          {% endif %}
+        </section>
+      {% endif %}
+    </div>
+  {% else %}
+    {% include "search/includes/no_results.html" %}
+  {% endif %}
+{% endblock %}

@@ -11,7 +11,8 @@ def breadcrumbs(context):
     self = context.get("self")
 
     if self is None or self.depth <= 2:
-        # Don't display breadcrumbs if the page isn't nested deeply enough (e.g. homepage)
+        # Don't display breadcrumbs if the page isn't nested
+        # deeply enough (e.g. homepage)
         ancestors = ()
     else:
         ancestors = Page.objects.ancestor_of(self, inclusive=True).filter(depth__gt=1)

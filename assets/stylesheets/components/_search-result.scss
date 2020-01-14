@@ -1,0 +1,32 @@
+.ws-search-result {
+    margin-top: govuk-spacing(4);
+    border-bottom: 1px solid govuk-colour("light-grey");
+}
+
+.ws-search-result--title {
+    @extend %govuk-heading-s;
+    margin-bottom: 0;
+}
+
+.ws-search-result--link {
+    @extend %govuk-link;
+}
+
+.ws-search-result--meta {
+    @include govuk-font($size: 16);
+    color: govuk-colour("dark-grey");
+}
+
+.ws-search-result--excerpt {
+    @extend %govuk-body-m;
+    line-height: 1.6;
+    margin-top: govuk-spacing(1);
+
+    strong {
+        font-weight: normal;
+        border-bottom: 3px solid #ffbf47;
+        margin-right: 1px;
+        background-color: #fff2d3;
+        padding: 2px 0px 0px;
+    }
+}
