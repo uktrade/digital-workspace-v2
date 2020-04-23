@@ -7,6 +7,8 @@ from django.conf import settings
 
 LOGGER = getLogger(__name__)
 
+TIMEOUT = 2  # seconds
+
 
 @dataclass
 class PeoplefinderProfile:
@@ -39,41 +41,64 @@ class MissingPeoplefinderProfile:
         return True
 
 
-def get_user_profile(user_id):
-    url = f"{settings.PEOPLEFINDER_API_URL}?ditsso_user_id={user_id}"
-    headers = {"Authorization": f"Token token={settings.PEOPLEFINDER_API_KEY}"}
+class PeoplefinderException(Exception):
+    """Raised when People Finder responds with something unexpected"""
 
-    LOGGER.debug("Requesting profile for %s")
+
+def get_user_profile(user_id):
+    LOGGER.debug("Requesting profile for %s", user_id)
 
     try:
-        response = requests.get(url, headers=headers)
-
-        if response.ok:
-            result = response.json()["data"]
-
-            return PeoplefinderProfile(
-                name=result["attributes"]["name"],
-                first_name=result["attributes"]["given-name"],
-                last_name=result["attributes"]["surname"],
-                profile_image_url=result["links"].get("profile-image-url"),
-                view_profile_url=result["links"]["profile"],
-                edit_profile_url=result["links"]["edit-profile"],
-                completion_percentage=result["attributes"]["completion-score"]
-            )
-
-        if response.status_code == 404:
-            LOGGER.info("No profile found for %s", user_id)
-
-            return MissingPeoplefinderProfile(
-                setup_profile_url=settings.PEOPLEFINDER_URL
-            )
-
+        profile = request("/people", {"ditsso_user_id": user_id})
+    except PeoplefinderException:
+        LOGGER.warning("Could not get profile for %s", user_id)
         return None
-    except (requests.exceptions.RequestException, JSONDecodeError, KeyError):
-        LOGGER.error(
-            "Failed to get or parse profile for user %s",
-            user_id,
-            exc_info=True
+
+    if profile and profile["data"]:
+        return PeoplefinderProfile(
+            name=profile["data"]["attributes"]["name"],
+            first_name=profile["data"]["attributes"]["given-name"],
+            last_name=profile["data"]["attributes"]["surname"],
+            profile_image_url=profile["data"]["links"].get("profile-image-url"),
+            view_profile_url=profile["data"]["links"]["profile"],
+            edit_profile_url=profile["data"]["links"]["edit-profile"],
+            completion_percentage=profile["data"]["attributes"]["completion-score"]
+        )
+    else:
+        LOGGER.info("No profile found for %s", user_id)
+        return MissingPeoplefinderProfile(
+            setup_profile_url=settings.PEOPLEFINDER_URL
         )
 
-        return None
+
+def request(path, params=None):
+    url = settings.PEOPLEFINDER_API_URL
+    full_url = url + path
+
+    headers = {"Authorization": f"Token token={settings.PEOPLEFINDER_API_KEY}"}
+
+    LOGGER.debug(
+        "Requesting from People Finder at '%s' with params %s",
+        full_url,
+        params
+    )
+
+    try:
+        response = requests.get(
+            full_url,
+            params=params, headers=headers, timeout=TIMEOUT
+        )
+
+        if response.ok:
+            return response.json()
+        else:
+            LOGGER.warning(
+                "Non-200 response (%s) from People Finder: %s",
+                response.status_code,
+                response.text
+            )
+            return None
+    except (requests.exceptions.RequestException, JSONDecodeError):
+        LOGGER.error("Failed to get or parse People Finder response", exc_info=True)
+
+        raise PeoplefinderException("Could not get or parse response")

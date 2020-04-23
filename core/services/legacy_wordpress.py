@@ -35,9 +35,7 @@ def __wp_request(url, path, params=None):
     try:
         response = requests.get(
             full_url,
-            params=params,
-            headers=headers,
-            timeout=TIMEOUT
+            params=params, headers=headers, timeout=TIMEOUT
         )
 
         if response.ok:

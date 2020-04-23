@@ -25,6 +25,15 @@
         Search results
       </h2>
       <ul class="govuk-tabs__list">
+        {% if pf_results %}
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#people">
+              People
+            </a>
+            <span class="govuk-tag govuk-tag--ws-resultcount">{{ pf_num_results }}</span>
+          </li>
+        {% endif %}
+
         {% if wordpress_results %}
           <li class="govuk-tabs__list-item">
             <a class="govuk-tabs__tab" href="#information">
@@ -34,6 +43,24 @@
           </li>
         {% endif %}
       </ul>
+
+      {% if pf_results %}
+        <section class="govuk-tabs__panel" id="people">
+          <h2 class="govuk-heading-l">
+            People
+            <span class="govuk-caption-m">{{ pf_num_results }} result{{ pf_num_results|pluralize }}</span>
+          </h2>
+
+          <ol>
+            {% for result in pf_results %}
+              <li>
+                <a href="{{ result.profile_url }}">{{ result.name }}</a>
+                <p>{{ result.role_and_group }}</p>
+              </li>
+            {% endfor %}
+          </ol>
+        </section>
+      {% endif %}
 
       {% if wordpress_results %}
         <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="information">

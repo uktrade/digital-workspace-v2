@@ -1,7 +1,7 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
 
-from .engines import wordpress
+from .engines import peoplefinder, wordpress
 
 
 def search_global(request):
@@ -11,13 +11,17 @@ def search_global(request):
         return render(request, "search/index.html")
 
     wordpress_results = wordpress.search(query, per_page=5)
+    pf_results = peoplefinder.search(query)[:6]
 
-    has_results = len(wordpress_results)
+    has_results = wordpress_results or pf_results
 
     return render(request, "search/results_global.html", {
         "query": query,
         "querystring": request.GET.urlencode,
         "has_results": has_results,
+        "pf_results": pf_results,
+        "pf_num_results": len(pf_results),
+        "pf_has_more_results": len(pf_results) > 6,
         "wordpress_results": wordpress_results,
         "wordpress_num_results": len(wordpress_results),
         "wordpress_has_more_results": len(wordpress_results) > 5
