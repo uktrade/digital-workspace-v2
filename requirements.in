@@ -1,24 +1,25 @@
 # Wagtail
-wagtail>=2.7,<2.8
-wagtailmedia>=0.4.0,<0.5
+wagtail>=2.8,<2.9
+wagtailmedia>=0.5.0,<0.6
 
 # Django tools
+django>=3.0.5,<3.1
 django-environ>=0.4.5,<0.5
-django-webpack-loader>=0.6.0,<0.7
-psycogreen>=1.0.1,<1.1
-psycopg2>=2.8.4,<3
+django-webpack-loader>=0.7.0,<0.8
+psycogreen>=1.0.2,<1.1
+psycopg2>=2.8.5,<3
 whitenoise>=5.0.1,<6
 
 # Other libraries
-requests>=2.22,<3
+requests>=2.23,<3
 
 # DIT dependencies
-django-staff-sso-client>=1.0.1,<1.1
+django-staff-sso-client>=2.1.0,<3
 
 # Operational dependencies
-gevent>=1.4.0,<2
+gevent>=20.4.0,<21
 gunicorn>=20.0.4,<21
-sentry-sdk>=0.14,<=0.15
+sentry-sdk>=0.14.3,<=0.15
 
 # Linting & security
 flake8>=3.7.9,<4
