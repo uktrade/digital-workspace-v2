@@ -15,5 +15,5 @@ lint:
 	flake8
 
 clean:
-	yarn clean
+	npm run clean
 	find . -name '__pycache__' -exec rm -rf {} +
