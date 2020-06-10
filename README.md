@@ -9,7 +9,7 @@ A [Wagtail]-based intranet for the Department for International Trade.
 ```bash
 cp .env.example .env               # ... and set variables as appropriate
 
-pip install -r requirements.txt
+pip install -r requirements.txt -r requirements-dev.txt   # or: pip-sync requirements.txt requirements-dev.txt
 npm install
 
 python3 manage.py migrate
