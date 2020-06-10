@@ -1,7 +1,9 @@
+import datetime
 from dataclasses import dataclass
 from json.decoder import JSONDecodeError
 from logging import getLogger
 
+import jwt
 import requests
 from django.conf import settings
 
@@ -12,13 +14,12 @@ LOGGER = getLogger(__name__)
 class PeoplefinderProfile:
     """A user profile from People Finder"""
 
+    email: str
     name: str
     first_name: str
-    last_name: str
-    profile_image_url: str
-    view_profile_url: str
-    edit_profile_url: str
     completion_percentage: int
+    profile_url: str
+    profile_image_url: str
 
     @staticmethod
     def is_blank():
@@ -40,32 +41,42 @@ class MissingPeoplefinderProfile:
 
 
 def get_user_profile(user_id):
-    LOGGER.debug("Getting profile for %s from %s", user_id, settings.PEOPLEFINDER_API_URL)
+    if not settings.PEOPLEFINDER_PROFILE_API_PRIVATE_KEY:
+        LOGGER.error("Missing People Finder API private key in settings.PEOPLEFINDER_PROFILE_API_PRIVATE_KEY")
+        return None
 
-    url = f"{settings.PEOPLEFINDER_API_URL}?ditsso_user_id={user_id}"
-    headers = {"Authorization": f"Token token={settings.PEOPLEFINDER_API_KEY}"}
+    LOGGER.debug("Fetching user profile for %s from %s", user_id, settings.PEOPLEFINDER_PROFILE_API_URL)
+
+    path = f"/api/v2/people_profiles/{user_id}"
+    url = settings.PEOPLEFINDER_PROFILE_API_URL + path
+
+    token = jwt.encode(
+        {"fullpath": path, "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=60)},
+        settings.PEOPLEFINDER_PROFILE_API_PRIVATE_KEY, algorithm="RS512"
+    ).decode("utf-8")
+    headers = {"Authorization": f"Bearer {token}"}
 
     try:
         response = requests.get(url, headers=headers)
 
         if response.ok:
-            result = response.json()["data"]
+            result = response.json()
 
             return PeoplefinderProfile(
-                name=result["attributes"]["name"],
-                first_name=result["attributes"]["given-name"],
-                last_name=result["attributes"]["surname"],
-                profile_image_url=result["links"].get("profile-image-url"),
-                view_profile_url=result["links"]["profile"],
-                edit_profile_url=result["links"]["edit-profile"],
-                completion_percentage=result["attributes"]["completion-score"]
+                email=result["email"],
+                name=result["name"],
+                first_name=result["first_name"],
+                completion_percentage=result["completion_score"],
+                profile_url=result["profile_url"],
+                profile_image_url=result.get("profile_image_url")
             )
 
         if response.status_code == 404:
             return MissingPeoplefinderProfile(setup_profile_url=settings.PEOPLEFINDER_URL)
 
+        LOGGER.error("Unexpected response status from People Finder API (Status %s): %s", response.status_code, response.text)
         return None
     except (requests.exceptions.RequestException, JSONDecodeError, KeyError):
-        LOGGER.warning("Could not get user profile for user %s", user_id, exc_info=True)
+        LOGGER.error("Could not get user profile for user %s", user_id, exc_info=True)
 
         return None
