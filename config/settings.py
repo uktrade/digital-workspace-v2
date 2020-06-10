@@ -51,7 +51,7 @@ if env.str("SENTRY_DSN", None):
 # Configure Django security settings unless running locally
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
-    X_FRAME_OPTIONS = 'DENY'
+    X_FRAME_OPTIONS = "DENY"
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_HSTS_SECONDS = 15768000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
