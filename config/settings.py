@@ -1,6 +1,7 @@
 """Django settings for the Digital Workspace project."""
 
 import os
+from base64 import b64decode
 
 import environ
 import sentry_sdk
@@ -27,8 +28,8 @@ AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID")
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET")
 BASE_URL = env("WAGTAIL_BASE_URL")
 DEBUG = env.bool("DJANGO_DEBUG", False)
-PEOPLEFINDER_API_KEY = env("PEOPLEFINDER_API_KEY")
-PEOPLEFINDER_API_URL = env("PEOPLEFINDER_API_URL")
+PEOPLEFINDER_PROFILE_API_PRIVATE_KEY = b64decode(env("PEOPLEFINDER_PROFILE_API_PRIVATE_KEY"), validate=True)
+PEOPLEFINDER_PROFILE_API_URL = env("PEOPLEFINDER_PROFILE_API_URL")
 PEOPLEFINDER_URL = env("PEOPLEFINDER_URL")
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
@@ -66,7 +67,7 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "root": {
-        "level": "WARNING",
+        "level": "DEBUG" if DEBUG else "WARNING",
         "handlers": ["console"]
     },
     "formatters": {

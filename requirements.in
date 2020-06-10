@@ -11,6 +11,7 @@ psycopg2>=2.8.5,<3
 whitenoise>=5.1.0,<6
 
 # Other libraries
+pyjwt[crypto]>=1.7.1,<2
 requests>=2.23,<3
 
 # DIT dependencies
@@ -35,4 +36,4 @@ pep8-naming
 pydocstyle
 
 # Development tools
-pip-tools
+pip-tools>=5.2.1,<6
