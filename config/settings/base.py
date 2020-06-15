@@ -8,11 +8,8 @@ import sentry_sdk
 from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
 
-
 # Set directories to be used across settings
-BASE_DIR = environ.Path(__file__) - 2  # The root directory of the project
-PROJECT_DIR = os.path.join(BASE_DIR, "core")  # The project's "main" application
-
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 
 # Read environment variables using `django-environ`, use `.env` if it exists
 env = environ.Env()
@@ -92,14 +89,16 @@ ALLOWED_HOSTS = ["*"]
 
 # Set up Django
 LOCAL_APPS = [
+    "core",
     "home",
     "content",
-    "search"
+    "search",
+    "import_wordpress",
 ]
 
 THIRD_PARTY_APPS = [
     "authbroker_client",
-    "webpack_loader"
+    "webpack_loader",
 ]
 
 WAGTAIL_APPS = [
@@ -148,7 +147,7 @@ MIDDLEWARE = [
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
-    "core.middleware.GetPeoplefinderProfileMiddleware"
+    "core.middleware.GetPeoplefinderProfileMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -156,22 +155,19 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            os.path.join(PROJECT_DIR, "templates"),
-        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages"
+                "django.contrib.messages.context_processors.messages",
             ],
             "libraries": {
                 "workspace_navigation": "core.templatetags.workspace_navigation"
             }
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
@@ -202,7 +198,7 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
-    os.path.join(PROJECT_DIR, "static"),
+    #os.path.join(BASE_DIR, "static"),
     os.path.join(BASE_DIR, "assets")
 ]
 

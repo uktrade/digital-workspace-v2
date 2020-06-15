@@ -17,3 +17,44 @@ lint:
 clean:
 	npm run clean
 	find . -name '__pycache__' -exec rm -rf {} +
+
+makemigrations:
+	docker-compose run wagtail python manage.py makemigrations
+
+migrate:
+	docker-compose run wagtail python manage.py migrate
+
+compilescss:
+	docker-compose run wagtail python manage.py compilescss
+
+test:
+	docker-compose run wagtail python manage.py test $(test)
+
+shell:
+	docker-compose run wagtail python manage.py shell
+
+flake8:
+	docker-compose run wagtail flake8
+
+up:
+	docker-compose up
+
+build:
+	docker-compose build
+
+elevate:
+	docker-compose run wagtail python manage.py elevate_sso_user_permissions
+
+collectstatic:
+	docker-compose run wagtail python manage.py collectstatic
+
+bash:
+	docker-compose run wagtail bash
+
+dev-requirements:
+	pip-compile --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
+
+production-requirements:
+	pip-compile --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --output-file requirements/production.txt requirements.in/production.in

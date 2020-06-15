@@ -1,0 +1,2 @@
+# Constrain to base requirements
+-r ../requirements/base.txt

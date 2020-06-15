@@ -1,8 +1,8 @@
-# Constrain to production requirements
--c requirements.txt
+# Constrain to base requirements
+-r ../requirements/base.txt
 
 # Development tools
-pip-tools>=5.2.1,<6
+pip-tools
 
 # Linting & security checking
 flake8>=3.8.3,<4

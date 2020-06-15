@@ -20,3 +20,12 @@ webpack-stats.json
 
 static/*
 media/
+
+# Wordpress output
+wordpress.xml
+
+# IDE
+.idea/
+
+# Libs
+src/wpparser/
