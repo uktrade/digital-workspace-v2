@@ -4,4 +4,12 @@
 
 {% block content %}
   <h1 class="govuk-heading-xl">Welcome to Workspace!</h1>
+
+  <ul class="nav navbar-nav">
+    {% for menu in menu_items %}
+        <li>
+            <a href="{{menu.url}}">{{menu.title}}</a>
+        </li>
+    {% endfor %}
+</ul>
 {% endblock content %}

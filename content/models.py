@@ -6,10 +6,10 @@ from wagtail.search import index
 
 from . import blocks
 
+RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
+
 
 class ContentIndexPage(Page):
-    RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
-
     excerpt = models.CharField(
         blank=False,
         max_length=250,
@@ -33,6 +33,21 @@ class ContentIndexPage(Page):
     content_panels = Page.content_panels + [
         FieldPanel("excerpt"),
         FieldPanel("introduction", classname="full")
+    ]
+
+
+
+
+class HTMLPage(Page):
+    body = RichTextField(
+        blank=True,
+        features=RICH_TEXT_FEATURES,
+        help_text="""Some text to describe what this section is about (will be
+        displayed above the list of child pages)"""
+    )
+
+    content_panels = Page.content_panels + [
+        FieldPanel("body"),
     ]
 
 

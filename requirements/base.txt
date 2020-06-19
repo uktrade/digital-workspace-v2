@@ -27,7 +27,7 @@ html5lib==1.0.1           # via wagtail
 idna==2.9                 # via requests
 l18n==2018.5              # via wagtail
 oauthlib==3.1.0           # via requests-oauthlib
-phpserialize==1.3         # via wpparser
+phpserialize==1.3         # via -r requirements.in/base.in, wpparser
 pillow==7.1.2             # via wagtail
 psycogreen==1.0.2         # via -r requirements.in/base.in
 psycopg2==2.8.5           # via -r requirements.in/base.in

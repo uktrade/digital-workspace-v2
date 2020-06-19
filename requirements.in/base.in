@@ -25,3 +25,5 @@ sentry-sdk>=0.14.4,<=0.15
 # Parse wordpress
 -e git+https://github.com/rossmiller/wpparser@82cf11af4dafc796daa745c705ade710c1cb30cb#egg=wpparser
 
+# PHP unserialise
+phpserialize
