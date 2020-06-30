@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags %}
 
-
 {% block content %}
   <div class="govuk-grid-row">
     <div class="ws-content-page govuk-grid-column-two-thirds">
@@ -15,6 +14,8 @@
           First published {{ page.first_published_at }}
         </time>
       </div>
+
+        {{ page.legacy_content|safe }}
 
       <div class="ws-streamfield-content">
         {% for block in page.body %}

@@ -30,6 +30,10 @@ PEOPLEFINDER_PROFILE_API_URL = env("PEOPLEFINDER_PROFILE_API_URL")
 PEOPLEFINDER_URL = env("PEOPLEFINDER_URL")
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+
 
 # Set optional configuration from environment
 if env.str("DJANGO_EMAIL_BACKEND", None):
@@ -99,6 +103,7 @@ LOCAL_APPS = [
 THIRD_PARTY_APPS = [
     "authbroker_client",
     "webpack_loader",
+    "storages",
 ]
 
 WAGTAIL_APPS = [
@@ -219,3 +224,8 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.contrib.postgres_search.backend"
     }
 }
+
+CAN_ELEVATE_SSO_USER_PERMISSIONS = False
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

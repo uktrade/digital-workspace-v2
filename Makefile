@@ -21,6 +21,9 @@ clean:
 makemigrations:
 	docker-compose run wagtail python manage.py makemigrations
 
+migrations:
+	docker-compose run wagtail python manage.py makemigrations
+
 migrate:
 	docker-compose run wagtail python manage.py migrate
 
@@ -38,6 +41,9 @@ flake8:
 
 up:
 	docker-compose up
+
+down:
+	docker-compose down
 
 build:
 	docker-compose build
@@ -61,3 +67,10 @@ production-requirements:
 
 superuser:
 	docker-compose run wagtail python manage.py createsuperuser
+
+import:
+	docker-compose run wagtail python manage.py fixtree
+	docker-compose run wagtail python manage.py import_wordpress
+
+fixtree:
+	docker-compose run wagtail python manage.py fixtree

@@ -16,8 +16,12 @@
         </time>
       </div>
 
+        {{ page.legacy_content|safe }}
+
       <div class="ws-streamfield-content">
-        {{ page.body|safe }}
+        {% for block in page.body %}
+          {% include_block block %}
+        {% endfor %}
       </div>
     </div>
   </div>

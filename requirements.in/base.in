@@ -9,10 +9,12 @@ django-webpack-loader>=0.7.0,<0.8
 psycogreen>=1.0.2,<1.1
 psycopg2>=2.8.5,<3
 whitenoise>=5.1.0,<6
+django-storages
 
 # Other libraries
 pyjwt[crypto]>=1.7.1,<2
 requests>=2.23,<3
+boto3
 
 # DIT dependencies
 django-staff-sso-client>=2.2.0,<3
