@@ -23,6 +23,7 @@ media/
 
 # Wordpress output
 wordpress.xml
+wordpress_all.xml
 
 # IDE
 .idea/

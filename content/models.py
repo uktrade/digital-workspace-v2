@@ -6,6 +6,8 @@ from wagtail.core.fields import StreamField
 from wagtail.core.models import Page
 from wagtail.search import index
 
+
+
 from modelcluster.fields import ParentalKey
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase, TagBase, ItemBase
@@ -84,6 +86,14 @@ class TaggedNews(ItemBase):
 
 class NewsPage(ContentPage):
     parent_page_types = ['content.NewsHome']
+
+    hero_image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
 
     tags = ClusterTaggableManager(
         through='content.TaggedNews',

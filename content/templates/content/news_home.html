@@ -15,6 +15,7 @@
             {% for news_item in posts %}
                 <li>
                     <h2>{{ news_item.title }}</h2>
+                    <a href="{% pageurl news_item %}">view</a>
                 </li>
             {% endfor %}
         </ul>

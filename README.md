@@ -9,12 +9,13 @@ A [Wagtail]-based intranet for the Department for International Trade.
 ```bash
 cp .env.example .env               # ... and set variables as appropriate
 
-pip install -r requirements.txt -r requirements-dev.txt   # or: pip-sync requirements.txt requirements-dev.txt
+make build
 npm install
+npm run build
 
-python3 manage.py migrate
-python3 manage.py createsuperuser
-python3 manage.py runserver
+make migrate
+make superuser
+make up
 ```
 
 You can now access Digital Workspace on [localhost:8000](http://localhost:8000>)
