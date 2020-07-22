@@ -46,15 +46,40 @@ def get_preview_image(content):
     pass
 
 
+def replace_caption(match):
+    parts = match.group(1).split(" />")
+    img_string = f'{parts[0]} data-caption="{parts[1].strip()}" />'
+    return img_string
+
+
 def set_content(
     content,
     content_page,
     attachments,
 ):
-    soup = BeautifulSoup(content)
+    # Replace img caption [] with img tag attribute
+    content = re.sub(
+        "\[caption.*\](.*)\[\/caption\]",
+        replace_caption,
+        content,
+    )
 
-    for index, img in enumerate(soup.find_all('img')):
-        img_classes = img['class']
+    soup = BeautifulSoup(content, features="html5lib")
+
+    images = []
+
+    for index, img in enumerate(soup.find_all("img")):
+        img_classes = img["class"]
+        alt = None
+        caption = None
+
+        print(img)
+
+        if img.has_attr("alt"):
+            alt = img["alt"]
+
+        if img.has_attr("data-caption"):
+            caption = img["data-caption"]
 
         for img_class in img_classes:
             # Check for reference to attachment
@@ -68,8 +93,6 @@ def set_content(
                     "",
                 )
 
-                print("s3_path", s3_path)
-
                 s3_bytes = download_s3_file(s3_path)
 
                 image_bytes = io.BytesIO(s3_bytes)
@@ -79,42 +102,52 @@ def set_content(
                     title=attachments[attachment_id]["title"],
                 )
                 image.save()
+                images.append({
+                    "image": image,
+                    "alt": alt,
+                    "caption": caption,
+                })
 
-                print("image.pk", image.pk)
+        print("LEN::", len(images))
 
-    #x = re.search("^The.*Spain$", txt)
+    starts_with_img = False
 
-    # Get all
-    image_caption_regex = "^\[caption.*\]<img.*src=\"(.*)\" [aA].*/>(.*)\[\/caption\]$"
-    captions = re.search(
-        image_caption_regex,
-        content,
-    )
+    if content.strip()[0:4] == "<img":
+        starts_with_img = True
 
-    # Remove caption content
-    caption_removal_regex = "^\[caption.*]<$"
-    content = re.sub(
-        'caption_removal_regex', '<', content
-    )
+    parts = re.split('<img.*/>', content.strip())
 
-    # split content around captions
-    content = content.replace("[/caption]")
+    block_content = []
+    image_counter = 0
 
-    # Check that number of content pieces is the same as number of images
+    if starts_with_img:
+        block_content.append({'type': 'image', 'value': {
+                    'image': images[image_counter]["image"].pk,
+                    'alt': images[image_counter]["alt"],
+                    'caption': images[image_counter]["caption"],
+                }
+            }
+        )
+        image_counter += 1
 
-    # Remove image tags
+    for content_part in parts:
+        if not content_part.strip():
+            continue
 
-    # Assemble content and images (add captions to images where relevant)
+        block_content.append(
+            {'type': 'text_section', 'value': content_part},
+        )
+        if len(images) < image_counter:
+            block_content.append({'type': 'image', 'value': {
+                        'image': images[image_counter]["image"].pk,
+                        'alt': images[image_counter]["alt"],
+                        'caption': images[image_counter]["caption"],
+                    }
+                }
+            )
+            image_counter += 1
 
-
-    # Split content on images and add images to stream
-    content_page.body = json.dumps([
-        {'type': 'heading', 'value': 'New Heading'},
-        {'type': 'heading', 'value': 'New Heading 23232'},
-        {'type': 'text_section', 'value': '<strong>My Paragraph</strong>'},
-        {'type': 'text_section', 'value': '<strong>My Paragraph</strong>'},
-        {'type': 'image', 'value': {'image': image.pk, 'alt': 'test'}},
-    ])
+    content_page.body = json.dumps(block_content)
 
     # revision = content_page.save_revision(
     #     user=self.import_user,
