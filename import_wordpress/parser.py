@@ -117,6 +117,8 @@ def create_news_page(
     #         hero_image=hero_image,
     #     )
     # else:
+    import json
+
     content_page = NewsPage(
         title=news_item["title"],
         slug=slugify(path),

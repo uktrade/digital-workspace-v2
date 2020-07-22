@@ -1,5 +1,8 @@
 import io
+import re
+import json
 
+from pathlib import Path
 from bs4 import BeautifulSoup
 import requests
 from io import BytesIO
@@ -58,6 +61,7 @@ def set_content(
             if img_class.startswith("wp-image-"):
                 attachment_id = img_class.replace("wp-image-", "")
                 attachment_url = attachments[attachment_id]["attachment_url"]
+                file_name = Path(attachment_url).name
 
                 s3_path = attachment_url.split("?")[0].replace(
                     "https://workspace-trade-gov-uk.s3.eu-west-2.amazonaws.com/",
@@ -71,10 +75,53 @@ def set_content(
                 image_bytes = io.BytesIO(s3_bytes)
 
                 image = Image(
-                    file=ImageFile(image_bytes, name="test.jpg"),
-                    title="test",
+                    file=ImageFile(image_bytes, name=file_name),
+                    title=attachments[attachment_id]["title"],
                 )
                 image.save()
+
+                print("image.pk", image.pk)
+
+    #x = re.search("^The.*Spain$", txt)
+
+    # Get all
+    image_caption_regex = "^\[caption.*\]<img.*src=\"(.*)\" [aA].*/>(.*)\[\/caption\]$"
+    captions = re.search(
+        image_caption_regex,
+        content,
+    )
+
+    # Remove caption content
+    caption_removal_regex = "^\[caption.*]<$"
+    content = re.sub(
+        'caption_removal_regex', '<', content
+    )
+
+    # split content around captions
+    content = content.replace("[/caption]")
+
+    # Check that number of content pieces is the same as number of images
+
+    # Remove image tags
+
+    # Assemble content and images (add captions to images where relevant)
+
+
+    # Split content on images and add images to stream
+    content_page.body = json.dumps([
+        {'type': 'heading', 'value': 'New Heading'},
+        {'type': 'heading', 'value': 'New Heading 23232'},
+        {'type': 'text_section', 'value': '<strong>My Paragraph</strong>'},
+        {'type': 'text_section', 'value': '<strong>My Paragraph</strong>'},
+        {'type': 'image', 'value': {'image': image.pk, 'alt': 'test'}},
+    ])
+
+    # revision = content_page.save_revision(
+    #     user=self.import_user,
+    #     submitted_for_moderation=False,
+    # )
+    # revision.publish()
+    content_page.save()
 
     return None
 
