@@ -40,7 +40,8 @@ class ContentPage(Page):
     ]
 
     body = StreamField([
-        ("heading", blocks.HeadingBlock()),
+        ("heading2", blocks.Heading2Block()),
+        ("heading3", blocks.Heading3Block()),
         ("text_section", blocks.TextBlock(
             blank=True,
             features=RICH_TEXT_FEATURES,

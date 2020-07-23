@@ -3,18 +3,19 @@ from django.db import migrations
 
 
 def create_homepage(apps, schema_editor):
+    # Get models
     ContentType = apps.get_model('contenttypes.ContentType')
     Page = apps.get_model('wagtailcore.Page')
     Site = apps.get_model('wagtailcore.Site')
     HomePage = apps.get_model('home.HomePage')
 
-    Page.objects.filter(slug="home").delete()
+    # Delete the default homepage
+    # If migration is run multiple times, it may have already been deleted
+    Page.objects.filter(id=2).delete()
 
     # Create content type for homepage model
-    homepage_content_type, _ = ContentType.objects.get_or_create(
-        model='homepage',
-        app_label='home',
-    )
+    homepage_content_type, __ = ContentType.objects.get_or_create(
+        model='homepage', app_label='home')
 
     # Create a new homepage
     homepage = HomePage.objects.create(
@@ -23,27 +24,24 @@ def create_homepage(apps, schema_editor):
         slug='home',
         content_type=homepage_content_type,
         path='00010001',
-        depth=2,  # Parents to root
+        depth=2,
         numchild=0,
         url_path='/home/',
     )
 
     # Create a site with the new homepage set as the root
     Site.objects.create(
-        hostname='localhost',
-        root_page=homepage,
-        is_default_site=True,
-    )
+        hostname='localhost', root_page=homepage, is_default_site=True)
 
 
 def remove_homepage(apps, schema_editor):
     # Get models
     ContentType = apps.get_model('contenttypes.ContentType')
-    Page = apps.get_model('wagtailcore.Page')
+    HomePage = apps.get_model('home.HomePage')
 
     # Delete the default homepage
     # Page and Site objects CASCADE
-    Page.objects.filter(slug="home").delete()
+    HomePage.objects.filter(slug='home', depth=2).delete()
 
     # Delete content type for homepage model
     ContentType.objects.filter(model='homepage', app_label='home').delete()
@@ -56,8 +54,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(
-            create_homepage,
-            remove_homepage,
-        ),
+        migrations.RunPython(create_homepage, remove_homepage),
     ]

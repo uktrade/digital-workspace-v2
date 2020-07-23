@@ -6,6 +6,9 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 import requests
 from io import BytesIO
+
+from django.contrib.auth.models import User
+
 from django.core.files.images import ImageFile
 from urllib.parse import urlparse
 
@@ -52,6 +55,17 @@ def replace_caption(match):
     return img_string
 
 
+def add_paragraph_tags(content):
+    return content
+    test = re.sub(
+        "(.+?)(?:\n|$)+",
+        r"<p>\1</p>\n\n",
+        content,
+    )
+    print("test", test)
+    return test
+
+
 def set_content(
     content,
     content_page,
@@ -65,15 +79,12 @@ def set_content(
     )
 
     soup = BeautifulSoup(content, features="html5lib")
-
     images = []
 
     for index, img in enumerate(soup.find_all("img")):
         img_classes = img["class"]
         alt = None
         caption = None
-
-        print(img)
 
         if img.has_attr("alt"):
             alt = img["alt"]
@@ -108,8 +119,6 @@ def set_content(
                     "caption": caption,
                 })
 
-        print("LEN::", len(images))
-
     starts_with_img = False
 
     if content.strip()[0:4] == "<img":
@@ -119,6 +128,7 @@ def set_content(
 
     block_content = []
     image_counter = 0
+    # parsed_first_text_block = False
 
     if starts_with_img:
         block_content.append({'type': 'image', 'value': {
@@ -134,10 +144,61 @@ def set_content(
         if not content_part.strip():
             continue
 
-        block_content.append(
-            {'type': 'text_section', 'value': content_part},
+        strong_parts = re.findall(
+            "\n\s+<strong>(.*)</strong>",
+            content_part,
+            flags=re.MULTILINE,
         )
-        if len(images) < image_counter:
+
+        text_contents = []
+
+        if len(strong_parts) == 0 and content_part.strip() != "":
+            print("1::", content_part)
+            block_content.append(
+                {'type': 'text_section', 'value': add_paragraph_tags(content_part)},
+            )
+
+        for strong_part in strong_parts:
+            # If str contains HTML, we do not want it as a heading
+            if " <" in strong_part:
+                text_contents.append({
+                    "type": "text",
+                    "value": content_part
+                })
+                continue
+
+            split_strong = content_part.split(strong_part, maxsplit=1)
+
+            # First part of content
+            text_contents.append({
+                "type": "text",
+                "value": add_paragraph_tags(
+                    split_strong[0].replace("<strong>", "").replace("</strong>", "")
+                )
+            })
+            # Add string part
+            text_contents.append({
+                "type": "heading",
+                "value": strong_part
+            })
+            # Set content part to remainder
+            content_part = split_strong[1]
+
+        for text_content in text_contents:
+            if text_content["type"] == "heading" and text_content["value"].strip() != "":
+                block_content.append(
+                    {'type': 'heading2', 'value': text_content["value"]},
+                )
+            elif text_content["value"].strip() != "":
+                block_content.append(
+                    {
+                        'type': 'text_section', 'value': add_paragraph_tags(
+                            text_content["value"]
+                        )
+                    },
+                )
+
+        if image_counter < len(images):
             block_content.append({'type': 'image', 'value': {
                         'image': images[image_counter]["image"].pk,
                         'alt': images[image_counter]["alt"],
@@ -149,11 +210,14 @@ def set_content(
 
     content_page.body = json.dumps(block_content)
 
-    # revision = content_page.save_revision(
-    #     user=self.import_user,
-    #     submitted_for_moderation=False,
-    # )
-    # revision.publish()
+    # TODO - make user who actually created content
+    user = User.objects.first()
+
+    revision = content_page.save_revision(
+        user=user,
+        submitted_for_moderation=False,
+    )
+    revision.publish()
     content_page.save()
 
     return None

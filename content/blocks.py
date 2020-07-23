@@ -5,14 +5,24 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
 
-class HeadingBlock(blocks.CharBlock):
+class Heading2Block(blocks.CharBlock):
     """A (section) heading"""
 
     class Meta:
         label = "Section heading"
         icon = "title"
         classname = "full title"
-        template = "blocks/heading.html"
+        template = "blocks/heading_2.html"
+
+
+class Heading3Block(blocks.CharBlock):
+    """A (section) heading"""
+
+    class Meta:
+        label = "Section heading"
+        icon = "title"
+        classname = "full title"
+        template = "blocks/heading_3.html"
 
 
 class TextBlock(blocks.RichTextBlock):
