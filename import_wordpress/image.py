@@ -45,10 +45,6 @@ def get_image_properties(post_data):
     return name, url, width, height
 
 
-def get_preview_image(content):
-    pass
-
-
 def replace_caption(match):
     parts = match.group(1).split(" />")
     img_string = f'{parts[0]} data-caption="{parts[1].strip()}" />'
@@ -56,14 +52,45 @@ def replace_caption(match):
 
 
 def add_paragraph_tags(content):
-    return content
-    test = re.sub(
+    with_p = re.sub(
         "(.+?)(?:\n|$)+",
         r"<p>\1</p>\n\n",
         content,
     )
-    print("test", test)
-    return test
+
+    soup = BeautifulSoup(with_p, features="html5lib")
+    body = soup.find("body")
+    tidied = re.sub("<p>\s*</p>", "", str(body)).replace("<body>", "").replace("</body>", "")
+
+    return tidied
+
+
+def create_image(image_url, file_name, title):
+    s3_path = image_url.split("?")[0].replace(
+        "https://workspace-trade-gov-uk.s3.eu-west-2.amazonaws.com/",
+        "",
+    )
+
+    s3_bytes = download_s3_file(s3_path)
+    image_bytes = io.BytesIO(s3_bytes)
+
+    image = Image(
+        file=ImageFile(image_bytes, name=file_name),
+        title=title,
+    )
+    image.save()
+    return image
+
+
+def create_preview_image(attachments, attachment_id):
+    attachment_url = attachments[attachment_id]["attachment_url"]
+    file_name = Path(attachment_url).name
+
+    return create_image(
+        attachment_url,
+        file_name,
+        attachments[attachment_id]["title"],
+    )
 
 
 def set_content(
@@ -99,26 +126,16 @@ def set_content(
                 attachment_url = attachments[attachment_id]["attachment_url"]
                 file_name = Path(attachment_url).name
 
-                s3_path = attachment_url.split("?")[0].replace(
-                    "https://workspace-trade-gov-uk.s3.eu-west-2.amazonaws.com/",
-                    "",
+                image = create_image(
+                    attachment_url,
+                    file_name,
+                    attachments[attachment_id]["title"],
                 )
-
-                s3_bytes = download_s3_file(s3_path)
-
-                image_bytes = io.BytesIO(s3_bytes)
-
-                image = Image(
-                    file=ImageFile(image_bytes, name=file_name),
-                    title=attachments[attachment_id]["title"],
-                )
-                image.save()
                 images.append({
                     "image": image,
                     "alt": alt,
                     "caption": caption,
                 })
-
     starts_with_img = False
 
     if content.strip()[0:4] == "<img":

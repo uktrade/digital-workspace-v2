@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags %}
-
+{% load wagtailimages_tags %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -15,7 +15,9 @@
             {% for news_item in posts %}
                 <li>
                     <h2>{{ news_item.title }}</h2>
-                    <a href="{% pageurl news_item %}">view</a>
+                    {% image news_item.hero_image width-630 %}
+                    <p>{{ news_item.excerpt }}</p>
+                    <a href="{% pageurl news_item %}">Read more</a>
                 </li>
             {% endfor %}
         </ul>

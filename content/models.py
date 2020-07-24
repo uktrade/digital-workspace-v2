@@ -6,8 +6,6 @@ from wagtail.core.fields import StreamField
 from wagtail.core.models import Page
 from wagtail.search import index
 
-
-
 from modelcluster.fields import ParentalKey
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase, TagBase, ItemBase
@@ -31,14 +29,6 @@ class ContentPage(Page):
 
     excerpt = models.CharField(max_length=250, blank=True)
 
-    search_fields = Page.search_fields + [
-        index.SearchField("excerpt"),
-    ]
-
-    content_panels = Page.content_panels + [
-        FieldPanel("excerpt"),
-    ]
-
     body = StreamField([
         ("heading2", blocks.Heading2Block()),
         ("heading3", blocks.Heading3Block()),
@@ -58,11 +48,13 @@ class ContentPage(Page):
     subpage_types = []
 
     search_fields = Page.search_fields + [
-        index.SearchField("body")
+        index.SearchField("body"),
+        index.SearchField("excerpt"),
     ]
 
     content_panels = Page.content_panels + [
-        StreamFieldPanel("body")
+        StreamFieldPanel("body"),
+        FieldPanel("excerpt"),
     ]
 
 
@@ -88,6 +80,7 @@ class TaggedNews(ItemBase):
 class NewsPage(ContentPage):
     parent_page_types = ['content.NewsHome']
 
+    # TODO - change to preview image
     hero_image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -103,6 +96,10 @@ class NewsPage(ContentPage):
 
     promote_panels = ContentPage.promote_panels + [
         FieldPanel('tags'),
+    ]
+
+    content_panels = ContentPage.content_panels + [
+        FieldPanel("hero_image"),
     ]
 
     @property

@@ -27,6 +27,7 @@ from wagtail.images.models import Image
 from content.models import ContentPage, NewsHome, NewsPage
 
 from .image import (
+    create_preview_image,
     set_content,
 )
 
@@ -104,28 +105,32 @@ def create_news_page(
         news_home = create_news_home(home_page, news_item["post_date"])
 
     path = get_slug(news_item["link"])
-
     live = is_live(news_item["status"])
 
-    # if hero_image:
-    #     content_page = NewsPage(
-    #         title=news_item["title"],
-    #         slug=slugify(path),
-    #         legacy_guid=news_item["guid"],
-    #         legacy_content=content,
-    #         live=live,
-    #         hero_image=hero_image,
-    #     )
-    # else:
-    import json
+    if "preview_image_id" in news_item:
+        preview_image = create_preview_image(
+            attachments,
+            news_item["preview_image_id"],
+        )
 
-    content_page = NewsPage(
-        title=news_item["title"],
-        slug=slugify(path),
-        legacy_guid=news_item["guid"],
-        legacy_content=news_item["content"],
-        live=live,
-    )
+        content_page = NewsPage(
+            title=news_item["title"],
+            slug=slugify(path),
+            legacy_guid=news_item["guid"],
+            legacy_content=news_item["content"],
+            live=live,
+            hero_image=preview_image,
+            excerpt=news_item["excerpt"]
+        )
+    else:
+        content_page = NewsPage(
+            title=news_item["title"],
+            slug=slugify(path),
+            legacy_guid=news_item["guid"],
+            legacy_content=news_item["content"],
+            live=live,
+            excerpt=news_item["excerpt"]
+        )
 
     news_home.add_child(instance=content_page)
     news_home.save()
@@ -151,10 +156,6 @@ root = element_tree.parse(xml_file).getroot()
 
 def parse_xml_file():
     home_page = Page.objects.filter(slug="home").first()
-
-    print("home_page", home_page)
-
-    print(root)
 
     items = {
         "acf_field": {},
@@ -185,28 +186,21 @@ def parse_xml_file():
     ]
 
     for item_tag in root.find("channel").findall('item'):
-
-        print("item_tag", item_tag)
-
         item = {}
 
         for tag_name in tag_names:
-            print("Finding tag: ", tag_name)
             tag = item_tag.find(tag_name, namespaces)
-
-            print("tag", tag)
 
             if hasattr(tag, "text"):
                 item[tag_name.replace("wp:", "").replace(":encoded", "")] = tag.text
             else:
                 print("Could not find tag: ", tag_name)
 
-        print(item)
-
         post_id_tag = item_tag.find("wp:post_id", namespaces)
         post_type_tag = item_tag.find("wp:post_type", namespaces)
         post_date = item_tag.find("wp:post_date", namespaces)
         pub_date = item_tag.find("pubDate", namespaces)
+        preview_image_attachment_id = ""
 
         item["post_date"] = datetime.strptime(
             post_date.text,
@@ -224,14 +218,22 @@ def parse_xml_file():
         for post_meta_tag in post_meta_tags:
             meta_key_tag = post_meta_tag.find("wp:meta_key", namespaces)
             meta_value_tag = post_meta_tag.find("wp:meta_value", namespaces)
-            if meta_key_tag.text == "amazonS3_cache":
-                s3_cache_php = meta_value_tag.text
-                s3_cache = php_loads(bytes(s3_cache_php, encoding='utf-8'))
 
-                print(s3_cache)
+            # Get preview image
+            if meta_key_tag.text == "image":
+                item["preview_image_id"] = meta_value_tag.text
+
+            # Get excerpt
+            if meta_key_tag.text == "excerpt":
+                item["excerpt"] = meta_value_tag.text
+
+            # if meta_key_tag.text == "amazonS3_cache":
+            #     s3_cache_php = meta_value_tag.text
+            #     s3_cache = php_loads(bytes(s3_cache_php, encoding='utf-8'))
+            #
+            #     print(s3_cache)
 
         post_type = post_type_tag.text.replace("wp:", "").replace("-", "_")
-
         post_id = post_id_tag.text
 
         if not post_id:
