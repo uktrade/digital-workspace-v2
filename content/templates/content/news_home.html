@@ -63,15 +63,11 @@
 {% endblock %}
 
 {% block tertiary_nav %}
-    <div class="govuk-form-group">
-      <label class="govuk-label" for="sort">
-        Categories
-      </label>
-      <select class="govuk-select" id="sort" name="sort">
-          <option>Select category</option>
-            {% for tag in page.get_child_tags %}
-                <option value="{{ tag.slug }}">{{ tag }}</option>
-            {% endfor %}
-      </select>
-    </div>
+    <form action="/your-name/" method="post">
+        {% csrf_token %}
+        <div class="govuk-form-group">
+            {{ category_form }}
+            <input type="submit" />
+        </div>
+    </form>
 {% endblock %}

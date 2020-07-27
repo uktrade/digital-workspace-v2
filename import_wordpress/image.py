@@ -25,24 +25,24 @@ from .utils import (
 img_extensions = [".jpg", ".png", ".gif", ".webp"]
 
 
-def is_image(post_data):
-    for img_extension in img_extensions:
-        if post_data["postmeta"]["attached_file"].endswith(img_extension):
-            return True
+# def is_image(post_data):
+#     for img_extension in img_extensions:
+#         if post_data["postmeta"]["attached_file"].endswith(img_extension):
+#             return True
+#
+#     return False
 
-    return False
 
-
-def get_image_properties(post_data):
-    name = post_data['postmeta']["attachment_metadata"][b"file"]
-    url = f"https://static.workspace.trade.gov.uk/wp-content/uploads/{post_data['postmeta']['attached_file']}"
-    width = int(post_data['postmeta']["attachment_metadata"][b"width"])
-    height = int(post_data['postmeta']["attachment_metadata"][b"height"])
-
-    print("width", width)
-    print("height", height)
-
-    return name, url, width, height
+# def get_image_properties(post_data):
+#     name = post_data['postmeta']["attachment_metadata"][b"file"]
+#     url = f"https://static.workspace.trade.gov.uk/wp-content/uploads/{post_data['postmeta']['attached_file']}"
+#     width = int(post_data['postmeta']["attachment_metadata"][b"width"])
+#     height = int(post_data['postmeta']["attachment_metadata"][b"height"])
+#
+#     print("width", width)
+#     print("height", height)
+#
+#     return name, url, width, height
 
 
 def replace_caption(match):
@@ -52,6 +52,7 @@ def replace_caption(match):
 
 
 def add_paragraph_tags(content):
+
     with_p = re.sub(
         "(.+?)(?:\n|$)+",
         r"<p>\1</p>\n\n",
@@ -170,14 +171,13 @@ def set_content(
         text_contents = []
 
         if len(strong_parts) == 0 and content_part.strip() != "":
-            print("1::", content_part)
             block_content.append(
                 {'type': 'text_section', 'value': add_paragraph_tags(content_part)},
             )
 
         for strong_part in strong_parts:
             # If str contains HTML, we do not want it as a heading
-            if " <" in strong_part:
+            if "<" in strong_part:
                 text_contents.append({
                     "type": "text",
                     "value": content_part
@@ -185,6 +185,8 @@ def set_content(
                 continue
 
             split_strong = content_part.split(strong_part, maxsplit=1)
+
+            print("SPLIT STRONG", split_strong)
 
             # First part of content
             text_contents.append({
@@ -198,8 +200,26 @@ def set_content(
                 "type": "heading",
                 "value": strong_part
             })
-            # Set content part to remainder
+
+            # Process remainder
+            # text_contents.append({
+            #     "type": "text",
+            #     "value": add_paragraph_tags(
+            #         split_strong[1].replace("<strong>", "").replace("</strong>", "")
+            #     )
+            # })
             content_part = split_strong[1]
+
+            print("CONTENT PART: ", content_part)
+
+        # TODO - figure out how to prevent the last piece of content from being rendered twice or not at all
+        # Add final piece if needed
+        # text_contents.append({
+        #     "type": "text",
+        #     "value": add_paragraph_tags(
+        #         content_part.replace("<strong>", "").replace("</strong>", "")
+        #     )
+        # })
 
         for text_content in text_contents:
             if text_content["type"] == "heading" and text_content["value"].strip() != "":

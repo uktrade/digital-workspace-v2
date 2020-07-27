@@ -37,16 +37,6 @@ from .utils import (
 
 xml_file = os.path.join(settings.BASE_DIR, "wordpress.xml")
 
-#wp_data = wpparser.parse(xml_file)
-
-
-
-
-import io
-
-
-#dict_to_list()
-
 counter = 0
 
 objects = [
@@ -104,7 +94,12 @@ def create_news_page(
     if not news_home:
         news_home = create_news_home(home_page, news_item["post_date"])
 
-    path = get_slug(news_item["link"])
+    path = get_slug(
+        news_item["link"].replace(
+            "/news-and-views",
+            "",
+        )
+    )
     live = is_live(news_item["status"])
 
     if "preview_image_id" in news_item:
@@ -249,90 +244,90 @@ def parse_xml_file():
             items["attachment"]
         )
 
-    return
-
-    for post in wp_data["posts"]:
-        title = "Placeholder..."
-
-        if "title" in post and post["title"] not in (None, ""):
-            title = post["title"]
-
-        legacy_guid = post["guid"]
-
-        if "post_type" in post:
-            # Images
-            if post["post_type"] == "attachment":
-                continue
-                if is_image(post):
-                    img_name, img_url, img_w, img_h = get_image_properties(post)
-                    #img_file = BytesIO(urlopen(img_url).read())
-
-                    http_res = requests.get(img_url)
-                    image_file = ImageFile(BytesIO(http_res.content), name=img_name.decode("utf-8"))
-                    image = Image(title=title, file=image_file, width=1, height=1)
-                    image.save()
-
-                    print("img_name", img_name.decode("utf-8") )
-                    print("img_url", img_url)
-                    print("img_w", img_w)
-                    print("img_h", img_h)
-                    #
-                    # Image.objects.create(
-                    #     title="Image title",
-                    #     # width=img_w,
-                    #     # height=img_h,
-                    #     # image_file is your StringIO/BytesIO object
-                    #     file=ImageFile(img_file, name=img_name.decode("utf-8"), size=(img_w, img_h)),
-                    # )
-                    # print("SAVED IMAGE...")
-
-            post_type = post["post_type"]
-            path = post["post_name"]
-
-            if not path:
-                continue
-
-            content = post["content"] or "Test"
-
-            post_date = None
-
-            if "post_date" in post:
-                post_date = datetime.strptime(
-                    post["post_date"],
-                    '%Y-%m-%d %H:%M:%S',
-                )
-
-            if post_type == "page":
-                parent_page = home_page
-
-                # print("legacy_guid", legacy_guid)
-                # print(path)
-                path = get_slug(path)
-
-                print(f"path={path}")
-
-                content_page = ContentPage(
-                    #path=path,
-                    title=title,
-                    slug=slugify(path),
-                    legacy_guid=legacy_guid,
-                    legacy_content=content,
-                    live=True,
-                    first_published_at=post_date,
-                )
-                parent_page.add_child(instance=content_page)
-                parent_page.save()
-
-            elif post_type == "news":
-                create_news_page(
-                    post,
-                    home_page,
-                    post_date,
-                    path,
-                    content,
-                    title,
-                    legacy_guid,
-                )
+    # return
+    #
+    # for post in wp_data["posts"]:
+    #     title = "Placeholder..."
+    #
+    #     if "title" in post and post["title"] not in (None, ""):
+    #         title = post["title"]
+    #
+    #     legacy_guid = post["guid"]
+    #
+    #     if "post_type" in post:
+    #         # # Images
+    #         # if post["post_type"] == "attachment":
+    #         #     continue
+    #         #     if is_image(post):
+    #         #         img_name, img_url, img_w, img_h = get_image_properties(post)
+    #         #         #img_file = BytesIO(urlopen(img_url).read())
+    #         #
+    #         #         http_res = requests.get(img_url)
+    #         #         image_file = ImageFile(BytesIO(http_res.content), name=img_name.decode("utf-8"))
+    #         #         image = Image(title=title, file=image_file, width=1, height=1)
+    #         #         image.save()
+    #         #
+    #         #         print("img_name", img_name.decode("utf-8") )
+    #         #         print("img_url", img_url)
+    #         #         print("img_w", img_w)
+    #         #         print("img_h", img_h)
+    #         #         #
+    #         #         # Image.objects.create(
+    #         #         #     title="Image title",
+    #         #         #     # width=img_w,
+    #         #         #     # height=img_h,
+    #         #         #     # image_file is your StringIO/BytesIO object
+    #         #         #     file=ImageFile(img_file, name=img_name.decode("utf-8"), size=(img_w, img_h)),
+    #         #         # )
+    #         #         # print("SAVED IMAGE...")
+    #
+    #         post_type = post["post_type"]
+    #         path = post["post_name"]
+    #
+    #         if not path:
+    #             continue
+    #
+    #         content = post["content"] or "Test"
+    #
+    #         post_date = None
+    #
+    #         if "post_date" in post:
+    #             post_date = datetime.strptime(
+    #                 post["post_date"],
+    #                 '%Y-%m-%d %H:%M:%S',
+    #             )
+    #
+    #         if post_type == "page":
+    #             parent_page = home_page
+    #
+    #             # print("legacy_guid", legacy_guid)
+    #             # print(path)
+    #             path = get_slug(path)
+    #
+    #             print(f"path={path}")
+    #
+    #             content_page = ContentPage(
+    #                 #path=path,
+    #                 title=title,
+    #                 slug=slugify(path),
+    #                 legacy_guid=legacy_guid,
+    #                 legacy_content=content,
+    #                 live=True,
+    #                 first_published_at=post_date,
+    #             )
+    #             parent_page.add_child(instance=content_page)
+    #             parent_page.save()
+    #
+    #         elif post_type == "news":
+    #             create_news_page(
+    #                 post,
+    #                 home_page,
+    #                 post_date,
+    #                 path,
+    #                 content,
+    #                 title,
+    #                 legacy_guid,
+    #             )
 
         # content = php_loads(bytes(post["content"], encoding='utf-8'))
         #
@@ -340,4 +335,3 @@ def parse_xml_file():
         #
 
 
-    print(post_types)

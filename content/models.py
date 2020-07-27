@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.shortcuts import render
 
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
 from wagtail.core.fields import StreamField
@@ -89,50 +90,110 @@ class NewsPage(ContentPage):
         related_name='+'
     )
 
-    tags = ClusterTaggableManager(
+    news_categories = ClusterTaggableManager(
         through='content.TaggedNews',
         blank=True,
     )
 
     promote_panels = ContentPage.promote_panels + [
-        FieldPanel('tags'),
+        FieldPanel('news_categories'),
     ]
 
     content_panels = ContentPage.content_panels + [
         FieldPanel("hero_image"),
     ]
 
+    def serve(self, request, *args, **kwargs):
+        from content.forms import NewsCategoryForm
+        context = super().get_context(request, **kwargs)
+        # TODO - store news cateogry after selected and select here
+        context["category_form"] = NewsCategoryForm(
+            selected_category=""
+        )
+
+        print("HIER...")
+        print(context)
+
+        return render(
+            request,
+            self.template,
+            context
+        )
+
     @property
-    def get_tags(self):
+    def get_categories(self):
         """
         Similar to the authors function above we're returning all the tags that
         are related to the blog post into a list we can access on the template.
         We're additionally adding a URL to access BlogPage objects with that tag
         """
-        tags = self.tags.all()
-        for tag in tags:
-            tag.url = '/' + '/'.join(s.strip('/') for s in [
+        categories = self.news_categories.all()
+        for cateory in categories:
+            cateory.url = '/' + '/'.join(s.strip('/') for s in [
                 self.get_parent().url,
                 'tags',
-                tag.slug
+                cateory.slug
             ])
-        return tags
+        return categories
 
 
-class NewsHome(Page):
+class NewsCategoryHome(Page):
     subpage_types = ["content.ContentPage"]
 
-    def get_child_tags(self):
-        tags = []
+    def get_child_categories(self):
+        categories = []
 
         news_pages = NewsPage.objects.live().descendant_of(self)
 
         for page in news_pages:
             # Not tags.append() because we don't want a list of lists
-            tags += page.get_tags
+            categories += page.get_categories
 
-        tags = sorted(set(tags))
-        return tags
+        categories = sorted(set(categories))
+        return categories
+
+    def get_context(self, request, *args, **kwargs):
+        """Adding custom stuff to our context."""
+        context = super().get_context(request, *args, **kwargs)
+        # Get all posts
+        all_news = NewsPage.objects.live().public().order_by('-first_published_at')
+        # Paginate all posts by 2 per page
+        paginator = Paginator(all_news, 9)
+        # Try to get the ?page=x value
+        page = request.GET.get("page")
+
+        try:
+            # If the page exists and the ?page=x is an int
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            posts = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            posts = paginator.page(paginator.num_pages)
+
+        # "posts" will have child pages; you'll need to use .specific in the template
+        # in order to access child properties, such as youtube_video_id and subtitle
+        context["posts"] = posts
+
+        return context
+
+
+class NewsHome(Page):
+    subpage_types = ["content.ContentPage"]
+
+    def get_child_categories(self):
+        categories = []
+
+        news_pages = NewsPage.objects.live().descendant_of(self)
+
+        for page in news_pages:
+            # Not tags.append() because we don't want a list of lists
+            categories += page.get_categories
+
+        categories = sorted(set(categories))
+        return categories
 
     def get_context(self, request, *args, **kwargs):
         """Adding custom stuff to our context."""
