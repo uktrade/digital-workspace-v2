@@ -10,7 +10,6 @@ class NewsCategoryForm(forms.Form):
             *args,
             **kwargs,
         )
-        test = TaggedNews.objects.all()
 
         categories = []
         for category in TaggedNews.objects.all():
@@ -22,10 +21,12 @@ class NewsCategoryForm(forms.Form):
 
         self.fields['news_category'] = forms.ChoiceField(
             choices=categories,
-            initial=selected_category
+            initial=selected_category,
         )
         self.fields["news_category"].widget.attrs.update(
             {
                 "class": "govuk-select",
-            }
+            },
         )
+
+        self.fields["news_category"].widget.attrs["onchange"] = "this.form.submit();"

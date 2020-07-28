@@ -1,11 +1,13 @@
 import os
-
+import uuid
 from datetime import datetime
 
 import requests
 
 import wpparser
+
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from django.core.files.images import ImageFile
 from django.template.defaultfilters import slugify
@@ -23,7 +25,6 @@ import xml.etree.ElementTree as element_tree
 from wagtail.core.models import Page
 from wagtail.images.models import Image
 
-
 from content.models import (
     ContentPage,
     NewsHome,
@@ -40,6 +41,8 @@ from .image import (
 from .utils import (
     is_live,
 )
+
+UserModel = get_user_model()
 
 xml_file = os.path.join(settings.BASE_DIR, "wordpress.xml")
 
@@ -111,6 +114,16 @@ def create_news_page(
     )
     live = is_live(news_item["status"])
 
+    author_email = f'{news_item["creator"]}@trade.gov.uk'
+    author = UserModel.objects.filter(email=author_email).first()
+
+    if not author:
+        author_email = f'{news_item["creator"]}@digital.trade.gov.uk'
+        author = UserModel.objects.filter(email=author_email).first()
+
+    if not author:
+        raise Exception(f"Cannot find author: {author_email}")
+
     if "preview_image_id" in news_item:
         preview_image = create_preview_image(
             attachments,
@@ -118,6 +131,8 @@ def create_news_page(
         )
 
         content_page = NewsPage(
+            first_published_at=news_item["pub_date"],
+            last_published_at=news_item["post_date"],
             title=news_item["title"],
             slug=slugify(path),
             legacy_guid=news_item["guid"],
@@ -128,6 +143,8 @@ def create_news_page(
         )
     else:
         content_page = NewsPage(
+            first_published_at=news_item["pub_date"],
+            last_published_at=news_item["post_date"],
             title=news_item["title"],
             slug=slugify(path),
             legacy_guid=news_item["guid"],
@@ -159,6 +176,7 @@ def create_news_page(
 
     # get preview image from HTML
     set_content(
+        author,
         news_item["content"],
         content_page,
         attachments,
@@ -178,6 +196,26 @@ root = element_tree.parse(xml_file).getroot()
 
 def parse_xml_file():
     home_page = Page.objects.filter(slug="home").first()
+
+    # Parse out users
+    for author in root.find("channel").findall('wp:author', namespaces):
+        email = author.find("wp:author_email", namespaces).text
+        first_name = author.find("wp:author_first_name", namespaces).text
+        last_name = author.find("wp:author_last_name", namespaces).text
+
+        if not first_name:
+            first_name = ""
+
+        if not last_name:
+            last_name = ""
+
+        user = UserModel(
+            username=uuid.uuid4(),
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+        )
+        user.save()
 
     items = {
         "acf_field": {},
@@ -222,6 +260,10 @@ def parse_xml_file():
         post_type_tag = item_tag.find("wp:post_type", namespaces)
         post_date = item_tag.find("wp:post_date", namespaces)
         pub_date = item_tag.find("pubDate", namespaces)
+
+        print("post_date", post_date.text)
+        print("pub_date", pub_date.text)
+
         preview_image_attachment_id = ""
 
         item["categories"] = []
@@ -236,13 +278,14 @@ def parse_xml_file():
             post_date.text,
             '%Y-%m-%d %H:%M:%S',
         )
-
-        if pub_date:
+        if hasattr(pub_date, "text"):
+            # Fri, 17 Jul 2020 10:00:07 +0000
             item["pub_date"] = datetime.strptime(
                 pub_date.text,
-                '%Y-%m-%d %H:%M:%S',
+                '%a, %d %b %Y %H:%M:%S %z',
             )
 
+        item["creator"] = item_tag.find("dc:creator", namespaces).text
         post_meta_tags = item_tag.findall("wp:postmeta", namespaces)
 
         for post_meta_tag in post_meta_tags:

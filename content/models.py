@@ -127,22 +127,6 @@ class NewsPage(ContentPage):
             context
         )
 
-    @property
-    def get_categories(self):
-        """
-        Similar to the authors function above we're returning all the tags that
-        are related to the blog post into a list we can access on the template.
-        We're additionally adding a URL to access BlogPage objects with that tag
-        """
-        categories = self.news_categories.all()
-        for category in categories:
-            category.url = '/' + '/'.join(s.strip('/') for s in [
-                self.get_parent().url,
-                'tags',
-                category.slug
-            ])
-        return categories
-
 
 class NewsHome(RoutablePageMixin, Page):
     subpage_types = ["content.ContentPage"]

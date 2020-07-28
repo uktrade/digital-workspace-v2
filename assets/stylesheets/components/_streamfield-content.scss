@@ -37,11 +37,14 @@
 .ws-streamfield-content__image {
   margin: 0 0 govuk-spacing(3) 0;
   padding: 0;
+  display: table;
 
   img {
     max-width: 100%;
     height: auto;
   }
+
+
 }
 
 .ws-streamfield-content__caption {

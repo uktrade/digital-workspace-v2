@@ -95,6 +95,7 @@ def create_preview_image(attachments, attachment_id):
 
 
 def set_content(
+    author,
     content,
     content_page,
     attachments,
@@ -247,11 +248,8 @@ def set_content(
 
     content_page.body = json.dumps(block_content)
 
-    # TODO - make user who actually created content
-    user = User.objects.first()
-
     revision = content_page.save_revision(
-        user=user,
+        user=author,
         submitted_for_moderation=False,
     )
     revision.publish()
