@@ -24,7 +24,13 @@ from wagtail.core.models import Page
 from wagtail.images.models import Image
 
 
-from content.models import ContentPage, NewsHome, NewsPage
+from content.models import (
+    ContentPage,
+    NewsHome,
+    NewsPage,
+    NewsCategoryTag,
+    TaggedNews,
+)
 
 from .image import (
     create_preview_image,
@@ -84,6 +90,9 @@ def create_news_home(home_page, post_date):
     return NewsHome.objects.all().first()
 
 
+processed_categories = []
+
+
 def create_news_page(
     home_page,
     news_item,
@@ -129,6 +138,24 @@ def create_news_page(
 
     news_home.add_child(instance=content_page)
     news_home.save()
+
+    # Set categories
+    if "categories" in news_item:
+        for category in news_item["categories"]:
+            if category not in processed_categories:
+                news_category = NewsCategoryTag(
+                    name=category,
+                    slug=slugify(category),
+                )
+                news_category.save()
+
+                tagged_news = TaggedNews(
+                    tag=news_category,
+                    content_object=content_page,
+                )
+                tagged_news.save()
+
+                processed_categories.append(category)
 
     # get preview image from HTML
     set_content(
@@ -197,6 +224,14 @@ def parse_xml_file():
         pub_date = item_tag.find("pubDate", namespaces)
         preview_image_attachment_id = ""
 
+        item["categories"] = []
+
+        category_tags = item_tag.findall("category")
+
+        for category_tag in category_tags:
+            if category_tag.get("domain") == "news_category":
+                item["categories"].append(category_tag.text)
+
         item["post_date"] = datetime.strptime(
             post_date.text,
             '%Y-%m-%d %H:%M:%S',
@@ -237,7 +272,7 @@ def parse_xml_file():
         items[post_type][post_id] = item
 
     # News
-    for key, value in items["news"].items() :
+    for key, value in items["news"].items():
         create_news_page(
             home_page,
             items["news"][key],

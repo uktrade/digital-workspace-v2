@@ -1,17 +1,20 @@
 from django.db import models
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.template.response import TemplateResponse
 
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page
 from wagtail.search import index
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 from modelcluster.fields import ParentalKey
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase, TagBase, ItemBase
 
-from . import blocks
+from content import blocks
+from content.forms import NewsCategoryForm
 
 RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
 
@@ -104,15 +107,19 @@ class NewsPage(ContentPage):
     ]
 
     def serve(self, request, *args, **kwargs):
-        from content.forms import NewsCategoryForm
         context = super().get_context(request, **kwargs)
-        # TODO - store news cateogry after selected and select here
+        # TODO - store news category after selected and select here
         context["category_form"] = NewsCategoryForm(
             selected_category=""
         )
 
-        print("HIER...")
-        print(context)
+        if "news_category" in request.POST:
+            news_category = request.POST["news_category"]
+            news_home = self.get_parent().specific
+            url = news_home.url + news_home.reverse_subpage(
+                name='news_category', args=(news_category,)
+            )
+            return redirect(url)
 
         return render(
             request,
@@ -128,16 +135,16 @@ class NewsPage(ContentPage):
         We're additionally adding a URL to access BlogPage objects with that tag
         """
         categories = self.news_categories.all()
-        for cateory in categories:
-            cateory.url = '/' + '/'.join(s.strip('/') for s in [
+        for category in categories:
+            category.url = '/' + '/'.join(s.strip('/') for s in [
                 self.get_parent().url,
                 'tags',
-                cateory.slug
+                category.slug
             ])
         return categories
 
 
-class NewsCategoryHome(Page):
+class NewsHome(RoutablePageMixin, Page):
     subpage_types = ["content.ContentPage"]
 
     def get_child_categories(self):
@@ -155,10 +162,21 @@ class NewsCategoryHome(Page):
     def get_context(self, request, *args, **kwargs):
         """Adding custom stuff to our context."""
         context = super().get_context(request, *args, **kwargs)
-        # Get all posts
-        all_news = NewsPage.objects.live().public().order_by('-first_published_at')
+
+        # Check for category
+        if "category" in kwargs:
+            category_id = NewsCategoryTag.objects.filter(
+                slug=kwargs["category"],
+            ).first().pk
+            news_items = NewsPage.objects.filter(
+                news_categories=category_id,
+            ).live().public().order_by('-first_published_at')
+        else:
+            # Get all posts
+            news_items = NewsPage.objects.live().public().order_by('-first_published_at')
+
         # Paginate all posts by 2 per page
-        paginator = Paginator(all_news, 9)
+        paginator = Paginator(news_items, 9)
         # Try to get the ?page=x value
         page = request.GET.get("page")
 
@@ -179,49 +197,15 @@ class NewsCategoryHome(Page):
 
         return context
 
+    @route(r'^category/(?P<category_slug>[-\w]+)/$', name="news_category")
+    def past_events(self, request, category_slug):
+        request.is_preview = getattr(request, 'is_preview', False)
 
-class NewsHome(Page):
-    subpage_types = ["content.ContentPage"]
-
-    def get_child_categories(self):
-        categories = []
-
-        news_pages = NewsPage.objects.live().descendant_of(self)
-
-        for page in news_pages:
-            # Not tags.append() because we don't want a list of lists
-            categories += page.get_categories
-
-        categories = sorted(set(categories))
-        return categories
-
-    def get_context(self, request, *args, **kwargs):
-        """Adding custom stuff to our context."""
-        context = super().get_context(request, *args, **kwargs)
-        # Get all posts
-        all_news = NewsPage.objects.live().public().order_by('-first_published_at')
-        # Paginate all posts by 2 per page
-        paginator = Paginator(all_news, 9)
-        # Try to get the ?page=x value
-        page = request.GET.get("page")
-
-        try:
-            # If the page exists and the ?page=x is an int
-            posts = paginator.page(page)
-        except PageNotAnInteger:
-            # If the ?page=x is not an int; show the first page
-            posts = paginator.page(1)
-        except EmptyPage:
-            # If the ?page=x is out of range (too high most likely)
-            # Then return the last page
-            posts = paginator.page(paginator.num_pages)
-
-        # "posts" will have child pages; you'll need to use .specific in the template
-        # in order to access child properties, such as youtube_video_id and subtitle
-        context["posts"] = posts
-
-        return context
-
+        return TemplateResponse(
+            request,
+            self.get_template(request),
+            self.get_context(request, category=category_slug)
+        )
 
 # class ContentIndexPage(ContentBase):
 #     introduction = RichTextField(
