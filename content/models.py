@@ -147,17 +147,47 @@ class NewsPage(ContentPage):
 class NewsHome(RoutablePageMixin, Page):
     subpage_types = ["content.ContentPage"]
 
-    def get_child_categories(self):
-        categories = []
+    @route(r'^$', name="news_home")
+    def news_home(self, request):
+        request.is_preview = getattr(request, 'is_preview', False)
+        context = self.get_context(request)
+        context["category_form"] = NewsCategoryForm(
+            selected_category=""
+        )
 
-        news_pages = NewsPage.objects.live().descendant_of(self)
+        if "news_category" in request.POST:
+            news_category = request.POST["news_category"]
+            url = self.url + self.reverse_subpage(
+                name='news_category', args=(news_category,)
+            )
+            return redirect(url)
 
-        for page in news_pages:
-            # Not tags.append() because we don't want a list of lists
-            categories += page.get_categories
+        return TemplateResponse(
+            request,
+            self.get_template(request),
+            context,
+        )
 
-        categories = sorted(set(categories))
-        return categories
+    @route(r'^category/(?P<category_slug>[-\w]+)/$', name="news_category")
+    def category_home(self, request, category_slug):
+        request.is_preview = getattr(request, 'is_preview', False)
+        context = self.get_context(request, category=category_slug)
+        context["category_form"] = NewsCategoryForm(
+            selected_category=""
+        )
+
+        if "news_category" in request.POST:
+            news_category = request.POST["news_category"]
+            url = self.url + self.reverse_subpage(
+                name='news_category', args=(news_category,)
+            )
+            return redirect(url)
+
+        return TemplateResponse(
+            request,
+            self.get_template(request),
+            context,
+        )
 
     def get_context(self, request, *args, **kwargs):
         """Adding custom stuff to our context."""
@@ -196,36 +226,3 @@ class NewsHome(RoutablePageMixin, Page):
         context["posts"] = posts
 
         return context
-
-    @route(r'^category/(?P<category_slug>[-\w]+)/$', name="news_category")
-    def past_events(self, request, category_slug):
-        request.is_preview = getattr(request, 'is_preview', False)
-
-        return TemplateResponse(
-            request,
-            self.get_template(request),
-            self.get_context(request, category=category_slug)
-        )
-
-# class ContentIndexPage(ContentBase):
-#     introduction = RichTextField(
-#         blank=True,
-#         features=RICH_TEXT_FEATURES,
-#         help_text="""Some text to describe what this section is about (will be
-#         displayed above the list of child pages)"""
-#     )
-#
-#     subpage_types = ["content.ContentIndexPage", "content.ContentPage"]
-#
-#     search_fields = Page.search_fields + [
-#         index.SearchField("excerpt"),
-#         index.SearchField("introduction")
-#     ]
-#
-#     content_panels = Page.content_panels + [
-#         FieldPanel("excerpt"),
-#         FieldPanel("introduction", classname="full")
-#     ]
-
-#
-
