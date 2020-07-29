@@ -61,10 +61,19 @@ $govuk-image-url-function: frontend-image-url;
   text-decoration: none;
 }
 
-.category-submit{
+.hide {
     position: absolute !important; /* Outside the DOM flow */
     height: 1px; width: 1px; /* Nearly collapsed */
     overflow: hidden;
     clip: rect(1px 1px 1px 1px); /* IE 7+ only support clip without commas */
     clip: rect(1px, 1px, 1px, 1px); /* All other browsers */
+}
+
+.comment-author {
+  font-weight: bold;
+}
+
+.comment-posted-date {
+  color: govuk-colour("mid-grey");
+  font-weight: normal;
 }

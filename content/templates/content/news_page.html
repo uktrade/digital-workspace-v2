@@ -23,6 +23,32 @@
           {% include_block block %}
         {% endfor %}
       </div>
+{#    Comments#}
+        {% if comment_count > 0 %}
+
+
+        <h2 class="govuk-heading-m">{{ comment_count }} comments</h2>
+
+        {% for comment in comments %}
+            <p class="govuk-body comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }} <span class="comment-posted-date">{{ comment.posted_date }}</span></p>
+
+            <p class="govuk-body">{{ comment.content }}</p>
+            <p class="govuk-body"><a href="">Reply</a></p>
+        {% endfor %}
+
+        {% endif %}
+        <h2 class="govuk-heading-m">Leave a comment</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="govuk-form-group">
+                {% for field in comment_form %}
+                    <label class="hide" for="{{ field.auto_id }}">Comment content</label>
+                    {{ field }}
+                {% endfor %}
+
+                <p><input value="Submit comment" type="submit" class="govuk-button" /></p>
+            </div>
+        </form>
     </div>
   </div>
 {% endblock %}
@@ -36,7 +62,7 @@
                 {{ field }}
             {% endfor %}
 
-            <input class="category-submit" type="submit" aria-hidden="true" />
+            <input class="hide" type="submit" aria-hidden="true" />
         </div>
     </form>
 {% endblock %}

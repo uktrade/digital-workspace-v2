@@ -31,6 +31,7 @@ from content.models import (
     NewsPage,
     NewsCategoryTag,
     TaggedNews,
+    Comment,
 )
 
 from .image import (
@@ -94,6 +95,42 @@ def create_news_home(home_page, post_date):
 
 
 processed_categories = []
+
+
+def create_comment(comment, content_page, comments):
+    # Check to see if comment exists (could have been made as a parent)
+    existing_comment = Comment.objects.filter(
+        legacy_id=int(comment["legacy_id"]),
+    ).first()
+
+    if existing_comment:
+        return existing_comment
+
+    # Check for parent
+    parent_comment = None
+
+    if comment["parent_id"] != '0':
+        parent_comment = Comment.objects.filter(
+            legacy_id=int(comment["parent_id"]),
+        ).first()
+
+        if not parent_comment:
+            # Get parent comment
+            for c in comments:
+                if c["legacy_id"] == comment["parent"]:
+                    parent_comment = create_comment(c, content_page, comments)
+
+    author = UserModel.objects.filter(email=comment["author_email"]).first()
+
+    assert author is not None
+
+    return Comment.objects.create(
+        legacy_id=int(comment["legacy_id"]),
+        author=author,
+        news_page=content_page,
+        content=comment["content"],
+        parent=parent_comment,
+    )
 
 
 def create_news_page(
@@ -173,6 +210,14 @@ def create_news_page(
                 tagged_news.save()
 
                 processed_categories.append(category)
+
+    # Comments
+    for comment in news_item["comments"]:
+        create_comment(
+            comment,
+            content_page,
+            news_item["comments"],
+        )
 
     # get preview image from HTML
     set_content(
@@ -261,11 +306,6 @@ def parse_xml_file():
         post_date = item_tag.find("wp:post_date", namespaces)
         pub_date = item_tag.find("pubDate", namespaces)
 
-        print("post_date", post_date.text)
-        print("pub_date", pub_date.text)
-
-        preview_image_attachment_id = ""
-
         item["categories"] = []
 
         category_tags = item_tag.findall("category")
@@ -305,6 +345,29 @@ def parse_xml_file():
             #     s3_cache = php_loads(bytes(s3_cache_php, encoding='utf-8'))
             #
             #     print(s3_cache)
+
+        # Comments
+        item["comments"] = []
+
+        comment_tags = item_tag.findall("wp:comment", namespaces)
+
+        for comment_tag in comment_tags:
+            comment_id = comment_tag.find("wp:comment_id", namespaces).text
+            author_email = comment_tag.find("wp:comment_author_email", namespaces).text
+            comment_date = datetime.strptime(
+                comment_tag.find("wp:comment_date", namespaces).text,
+                '%Y-%m-%d %H:%M:%S',
+            )
+            content = comment_tag.find("wp:comment_content", namespaces).text
+            parent_id = comment_tag.find("wp:comment_parent", namespaces).text
+            item["comments"].append({
+                "comment_id": comment_id,
+                "author_email": author_email,
+                "comment_date": comment_date,
+                "content": content,
+                "parent_id": parent_id,
+                "legacy_id": comment_id
+            })
 
         post_type = post_type_tag.text.replace("wp:", "").replace("-", "_")
         post_id = post_id_tag.text

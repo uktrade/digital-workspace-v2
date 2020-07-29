@@ -10,6 +10,7 @@ psycogreen>=1.0.2,<1.1
 psycopg2>=2.8.5,<3
 whitenoise>=5.1.0,<6
 django-storages
+django-extensions
 
 # Other libraries
 pyjwt[crypto]>=1.7.1,<2

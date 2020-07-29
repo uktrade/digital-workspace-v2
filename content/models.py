@@ -2,6 +2,7 @@ from django.db import models
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
+from django.contrib.auth import get_user_model
 
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
 from wagtail.core.fields import StreamField
@@ -14,7 +15,13 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase, TagBase, ItemBase
 
 from content import blocks
-from content.forms import NewsCategoryForm
+from content.forms import (
+    CommentForm,
+    NewsCategoryForm,
+)
+
+
+UserModel = get_user_model()
 
 RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
 
@@ -106,12 +113,33 @@ class NewsPage(ContentPage):
         FieldPanel("hero_image"),
     ]
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        comments = Comment.objects.filter(
+            news_page=self,
+        ).all()
+        context["comments"] = comments
+        context["comment_count"] = comments.count()
+
+        return context
+
     def serve(self, request, *args, **kwargs):
-        context = super().get_context(request, **kwargs)
+        # Add comment before calling get_context, so it's included
+        if "comment" in request.POST:
+            comment = request.POST["comment"]
+            Comment.objects.create(
+                content=comment,
+                author=request.user,
+                news_page=self,
+            )
+
+        context = self.get_context(request, **kwargs)
         # TODO - store news category after selected and select here
         context["category_form"] = NewsCategoryForm(
             selected_category=""
         )
+        context["comment_form"] = CommentForm()
 
         if "news_category" in request.POST:
             news_category = request.POST["news_category"]
@@ -210,3 +238,16 @@ class NewsHome(RoutablePageMixin, Page):
         context["posts"] = posts
 
         return context
+
+
+class Comment(models.Model):
+    legacy_id = models.IntegerField(null=True,)
+    news_page = models.ForeignKey(NewsPage, on_delete=models.CASCADE)
+    author = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    content = models.CharField(max_length=255)
+    posted_date = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey(
+        "content.Comment",
+        on_delete=models.CASCADE,
+        null=True,
+    )

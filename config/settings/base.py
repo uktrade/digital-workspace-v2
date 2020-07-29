@@ -98,6 +98,7 @@ LOCAL_APPS = [
     "content",
     "search",
     "import_wordpress",
+    "menu",
 ]
 
 THIRD_PARTY_APPS = [

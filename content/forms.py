@@ -30,3 +30,12 @@ class NewsCategoryForm(forms.Form):
         )
 
         self.fields["news_category"].widget.attrs["onchange"] = "this.form.submit();"
+
+
+class CommentForm(forms.Form):
+    comment = forms.CharField(
+        label='Comment',
+        max_length=255,
+        required=True,
+        widget=forms.Textarea(attrs={'class': 'govuk-textarea'})
+    )

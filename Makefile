@@ -69,6 +69,7 @@ superuser:
 	docker-compose run wagtail python manage.py createsuperuser
 
 import:
+	docker-compose down
 	docker-compose run wagtail python manage.py migrate
 	docker-compose run wagtail python manage.py fixtree
 	docker-compose run wagtail python manage.py import_wordpress
