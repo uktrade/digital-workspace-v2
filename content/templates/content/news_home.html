@@ -5,7 +5,7 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="ws-content-page govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">{{ page.title }}</h1>
+      <h1 class="govuk-heading-l">{{ page_title }}</h1>
 
         <!-- Perm sec live -->
 
@@ -15,6 +15,14 @@
             {% for news_item in posts %}
                 <li>
                     <h2 class="govuk-heading-m"><a href="{% pageurl news_item %}">{{ news_item.title }}</a></h2>
+                    <p class="govuk-body">
+                        {{ news_item.get_latest_revision.user.first_name }} {{ news_item.get_latest_revision.user.last_name }},
+                        {{ news_item.last_published_at }}
+                        {{ news_item.tagged_news.all }}
+                        {% for category in news_item.tagged_news_items.all %}
+                            <a class="govuk-link" href="/news-and-views/category/{{ category.tag.slug }}">{{ category.tag }}</a>,
+                        {% endfor %}
+                    </p>
                     {% image news_item.hero_image width-630 %}
                     <p class="govuk-body">{{ news_item.excerpt }}</p>
                     <a href="{% pageurl news_item %}" class="govuk-link">Read more</a>

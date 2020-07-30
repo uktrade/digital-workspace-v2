@@ -4,7 +4,12 @@ from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
 from django.contrib.auth import get_user_model
 
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
+from wagtail.admin.edit_handlers import (
+    FieldPanel,
+    StreamFieldPanel,
+)
+from wagtail.images.edit_handlers import ImageChooserPanel
+
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page
 from wagtail.search import index
@@ -110,7 +115,7 @@ class NewsPage(ContentPage):
     ]
 
     content_panels = ContentPage.content_panels + [
-        FieldPanel("hero_image"),
+        ImageChooserPanel("hero_image"),
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -205,17 +210,23 @@ class NewsHome(RoutablePageMixin, Page):
         """Adding custom stuff to our context."""
         context = super().get_context(request, *args, **kwargs)
 
+        context["page_title"] = self.title
+
         # Check for category
         if "category" in kwargs:
-            category_id = NewsCategoryTag.objects.filter(
+            category = NewsCategoryTag.objects.filter(
                 slug=kwargs["category"],
-            ).first().pk
+            ).first()
             news_items = NewsPage.objects.filter(
-                news_categories=category_id,
+                news_categories=category.pk,
             ).live().public().order_by('-first_published_at')
+
+            context["page_title"] = category.name
         else:
             # Get all posts
             news_items = NewsPage.objects.live().public().order_by('-first_published_at')
+
+        test = news_items.first()
 
         # Paginate all posts by 2 per page
         paginator = Paginator(news_items, 9)
@@ -251,3 +262,9 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
+
+    panels = [
+        FieldPanel('news_page'),
+        FieldPanel('author'),
+        FieldPanel('content'),
+    ]

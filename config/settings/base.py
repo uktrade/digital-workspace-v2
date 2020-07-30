@@ -122,6 +122,7 @@ WAGTAIL_APPS = [
     "wagtail.admin",
     "wagtail.core",
     "wagtail.contrib.routable_page",
+    "wagtail.contrib.modeladmin",
 
     "modelcluster",
     "taggit",

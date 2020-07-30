@@ -8,6 +8,7 @@
       <h1 class="govuk-heading-l">{{ page.title }}</h1>
 
       <div class="ws-content-page__metadata govuk-inset-text">
+          <p class="ws-content-page__metadata-item ws-content-page__metadata-item--highlighted">{{ page.get_latest_revision.user.first_name }} {{ page.get_latest_revision.user.last_name }}</p>
         <time class="ws-content-page__metadata-item ws-content-page__metadata-item--highlighted" datetime="{{ page.last_published_at|date:"c" }}">
           Last updated {{ page.last_published_at }}
         </time>
