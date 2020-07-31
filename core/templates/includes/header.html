@@ -1,4 +1,8 @@
+{% load menu_tags %}
 {% load render_bundle webpack_static from webpack_loader %}
+
+{#{% get_menu "main" as main_navigation %}#}
+{% load menu_tags %}
 
 <header class="govuk-header govuk-header--ws" role="banner" data-module="govuk-header">
   <div class="govuk-header__container govuk-header__container--ws ws-width-container">
@@ -13,55 +17,9 @@
       <a href="#" class="govuk-header__link govuk-header__link--ws govuk-header__link--service-name govuk-header__link--service-name--ws">
         Digital Workspace
       </a>
-
       <button type="button" class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
-
       <nav>
-        <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
-          <li class="govuk-header__navigation-item govuk-header__navigation-item--active govuk-header__navigation-item--active--ws">
-            <a class="govuk-header__link govuk-header__link--ws" href="/">
-              Home
-            </a>
-          </li>
-          <li class="govuk-header__navigation-item">
-            <a class="govuk-header__link govuk-header__link--ws" href="/news-and-views/">
-              News and views
-            </a>
-          </li>
-          <li class="govuk-header__navigation-item">
-            <a class="govuk-header__link govuk-header__link--ws" href="#">
-              Brexit Hub
-            </a>
-          </li>
-          <li class="govuk-header__navigation-item">
-            <a class="govuk-header__link govuk-header__link--ws" href="#">
-              Working at DIT
-            </a>
-          </li>
-          <li class="govuk-header__navigation-item">
-            <a class="govuk-header__link govuk-header__link--ws" href="#">
-              About us
-            </a>
-          </li>
-          <li class="govuk-header__navigation-item">
-            <a class="govuk-header__link govuk-header__link--ws" href="#">
-              Tools
-            </a>
-          </li>
-          <li class="govuk-header__navigation-item">
-            <a class="govuk-header__link govuk-header__link--ws" href="#">
-              Data Hub
-            </a>
-          </li>
-          
-          {% if peoplefinder_profile %}
-            <li class="govuk-header__navigation-item govuk-header__navigation-item--mobile-only">
-              <a class="govuk-header__link govuk-header__link--ws" href="#">
-                My profile ({{ peoplefinder_profile.first_name }})
-              </a>
-            </li>
-          {% endif %}
-        </ul>
+        {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
       </nav>
     </div>
   </div>

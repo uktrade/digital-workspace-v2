@@ -1,6 +1,7 @@
 # Wagtail
 wagtail>=2.9,<2.10
 wagtailmedia>=0.5.0,<0.6
+wagtailmenus>=2.8.0
 
 # Django tools
 django>=3.0.7,<3.1

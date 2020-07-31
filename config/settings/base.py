@@ -98,7 +98,6 @@ LOCAL_APPS = [
     "content",
     "search",
     "import_wordpress",
-    "menu",
 ]
 
 THIRD_PARTY_APPS = [
@@ -126,7 +125,8 @@ WAGTAIL_APPS = [
 
     "modelcluster",
     "taggit",
-    "wagtailmedia"
+    "wagtailmedia",
+    "wagtailmenus",
 ]
 
 DJANGO_APPS = [
@@ -170,6 +170,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "wagtailmenus.context_processors.wagtailmenus",
             ],
             "libraries": {
                 "workspace_navigation": "core.templatetags.workspace_navigation"
@@ -232,3 +233,5 @@ CAN_ELEVATE_SSO_USER_PERMISSIONS = False
 
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+WAGTAILMENUS_ACTIVE_CLASS = "govuk-header__navigation-item--active--ws"
