@@ -2,7 +2,9 @@ from wagtail.contrib.modeladmin.options import (
     ModelAdmin,
     modeladmin_register,
 )
-from .models import Comment
+from .models import (
+    Comment,
+)
 
 
 class CommentAdmin(ModelAdmin):
@@ -15,7 +17,6 @@ class CommentAdmin(ModelAdmin):
     list_display = ('content', 'author')
     list_filter = ('author',)
     search_fields = ('content', 'author')
-
 
 # Now you just need to register your customised ModelAdmin class with Wagtail
 modeladmin_register(CommentAdmin)

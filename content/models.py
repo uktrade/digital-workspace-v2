@@ -4,9 +4,17 @@ from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
 from django.contrib.auth import get_user_model
 
+from wagtail.core.models import Orderable, Page
+from modelcluster.fields import ParentalKey
+
+from wagtail.core.blocks import PageChooserBlock
+
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     StreamFieldPanel,
+    InlinePanel,
+    MultiFieldPanel,
+    PageChooserPanel,
 )
 from wagtail.images.edit_handlers import ImageChooserPanel
 
@@ -43,8 +51,6 @@ class ContentPage(Page):
         help_text="""Legacy content, pre-conversion"""
     )
 
-    excerpt = models.CharField(max_length=250, blank=True)
-
     body = StreamField([
         ("heading2", blocks.Heading2Block()),
         ("heading3", blocks.Heading3Block()),
@@ -65,11 +71,21 @@ class ContentPage(Page):
 
     search_fields = Page.search_fields + [
         index.SearchField("body"),
-        index.SearchField("excerpt"),
     ]
 
     content_panels = Page.content_panels + [
         StreamFieldPanel("body"),
+    ]
+
+
+class NewsBase(ContentPage):
+    excerpt = models.CharField(max_length=250, blank=True)
+
+    search_fields = ContentPage.search_fields + [
+        index.SearchField("excerpt"),
+    ]
+
+    content_panels = ContentPage.content_panels + [
         FieldPanel("excerpt"),
     ]
 
@@ -84,16 +100,107 @@ class NewsCategoryTag(TagBase):
 
 class TaggedNews(ItemBase):
     tag = models.ForeignKey(
-        NewsCategoryTag, related_name="tagged_news", on_delete=models.CASCADE
+        NewsCategoryTag, related_name="news_tag", on_delete=models.CASCADE
     )
     content_object = ParentalKey(
         to='content.NewsPage',
         on_delete=models.CASCADE,
-        related_name='tagged_news_items'
+        related_name='news_page'
     )
 
 
-class NewsPage(ContentPage):
+class ThemeTag(TagBase):
+    #free_tagging = False - enable to prevent new tags being added
+
+    class Meta:
+        verbose_name = "theme tag"
+        verbose_name_plural = "theme tags"
+
+
+class TaggedTheme(ItemBase):
+    tag = models.ForeignKey(
+        ThemeTag,
+        related_name="theme_tag",
+        on_delete=models.CASCADE,
+    )
+    content_object = ParentalKey(
+        to='content.PageWithTheme',
+        on_delete=models.CASCADE,
+        related_name='theme_page'
+    )
+
+
+class PageWithTheme(ContentPage):
+    pass
+
+
+class TopicHomePage(Page):
+    subpage_types = ['content.TopicPage', ]
+    # model just for use in editor hierarchy
+
+
+class TopicPage(PageWithTheme):
+    parent_page_types = ['content.TopicHomePage', ]
+    subpage_types = []  # Should not be able to create children
+
+    themes = ClusterTaggableManager(
+        through='content.TaggedTheme',
+        blank=False,  # Must have at least one theme
+        verbose_name="Themes",
+    )
+
+    content_panels = PageWithTheme.content_panels + [
+        FieldPanel("themes"),
+    ]
+
+
+class PoliciesAndGuidance(ContentPage):
+    subpage_types = ["content.Guidance", "content.Policy", ]
+    # model just for use in editor hierarchy
+
+
+class Topic(models.Model):
+    topic_page = models.ForeignKey(
+        TopicPage,
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+        #related_name='+',
+    )
+
+    panels = [
+        PageChooserPanel('topic_page'),
+    ]
+
+    class Meta:
+        abstract = True
+        verbose_name = "Topics"
+        verbose_name_plural = "Topics"
+
+
+class Guidance(PageWithTheme):
+    parent_page_types = ['content.PoliciesAndGuidance', ]
+    subpage_types = []  # Should not be able to create children
+
+    content_panels = PageWithTheme.content_panels + [
+        InlinePanel('related_topics', label="Topics", min_num=1, )
+    ]
+
+
+class RelatedTopics(Topic, Orderable):
+    topic_page_test = ParentalKey('content.Guidance', on_delete=models.CASCADE, related_name='related_topics')
+
+
+class Policy(PageWithTheme):
+    parent_page_types = ['content.PoliciesAndGuidance', ]
+    subpage_types = []  # Should not be able to create children
+
+    # content_panels = Page.content_panels + [
+    #     InlinePanel('related_links', label="Related Links"),
+    # ]
+
+
+class NewsPage(NewsBase):
     parent_page_types = ['content.NewsHome']
 
     # TODO - change to preview image
