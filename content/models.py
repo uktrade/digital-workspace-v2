@@ -40,6 +40,8 @@ RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
 
 
 class ContentPage(Page):
+    is_creatable = False
+
     legacy_guid = models.CharField(
         blank=True,
         max_length=255,
@@ -79,6 +81,8 @@ class ContentPage(Page):
 
 
 class NewsBase(ContentPage):
+    is_creatable = False
+
     excerpt = models.CharField(max_length=250, blank=True)
 
     search_fields = ContentPage.search_fields + [
@@ -131,15 +135,19 @@ class TaggedTheme(ItemBase):
 
 
 class PageWithTheme(ContentPage):
+    is_creatable = False
     pass
 
 
 class TopicHomePage(Page):
     subpage_types = ['content.TopicPage', ]
+    is_creatable = False
     # model just for use in editor hierarchy
 
 
 class TopicPage(PageWithTheme):
+    is_creatable = True
+
     parent_page_types = ['content.TopicHomePage', ]
     subpage_types = []  # Should not be able to create children
 
@@ -156,6 +164,7 @@ class TopicPage(PageWithTheme):
 
 class PoliciesAndGuidance(ContentPage):
     subpage_types = ["content.Guidance", "content.Policy", ]
+    is_creatable = False
     # model just for use in editor hierarchy
 
 
@@ -192,12 +201,18 @@ class RelatedTopics(Topic, Orderable):
 
 
 class Policy(PageWithTheme):
+    is_creatable = True
+
     parent_page_types = ['content.PoliciesAndGuidance', ]
     subpage_types = []  # Should not be able to create children
 
-    # content_panels = Page.content_panels + [
-    #     InlinePanel('related_links', label="Related Links"),
-    # ]
+    topic = models.ForeignKey(
+        "content.TopicTest", related_name="test", on_delete=models.CASCADE
+    )
+
+    content_panels = PageWithTheme.content_panels + [
+        FieldPanel("topic"),
+    ]
 
 
 class NewsPage(NewsBase):
@@ -269,6 +284,8 @@ class NewsPage(NewsBase):
 
 
 class NewsHome(RoutablePageMixin, Page):
+    is_creatable = False
+
     subpage_types = ["content.ContentPage"]
 
     @route(r'^$', name="news_home")
@@ -374,4 +391,28 @@ class Comment(models.Model):
         FieldPanel('news_page'),
         FieldPanel('author'),
         FieldPanel('content'),
+    ]
+
+
+class TopicTest(models.Model):
+    name = models.CharField(max_length=255)
+    body = StreamField([
+        ("heading2", blocks.Heading2Block()),
+        ("heading3", blocks.Heading3Block()),
+        ("text_section", blocks.TextBlock(
+            blank=True,
+            features=RICH_TEXT_FEATURES,
+            help_text="""Some text to describe what this section is about (will be
+            displayed above the list of child pages)"""
+        )),
+        ("image", blocks.ImageBlock()),
+        ("internal_media", blocks.InternalMediaBlock()),
+        ("data_table", blocks.DataTableBlock(
+            help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
+        ))
+    ])
+
+    panels = [
+        FieldPanel('name'),
+        StreamFieldPanel('body'),
     ]

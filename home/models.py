@@ -2,6 +2,8 @@ from wagtail.core.models import Page
 
 
 class HomePage(Page):
+    is_creatable = False
+
     def get_context(self, request, *args, **kwargs):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
         #context['posts'] = self.posts
