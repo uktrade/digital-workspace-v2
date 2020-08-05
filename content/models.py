@@ -394,6 +394,14 @@ class Comment(models.Model):
     ]
 
 
+class ThemeTest(models.Model):
+    name = models.CharField(max_length=255)
+
+    panels = [
+        FieldPanel('name'),
+    ]
+
+
 class TopicTest(models.Model):
     name = models.CharField(max_length=255)
     body = StreamField([
@@ -411,8 +419,12 @@ class TopicTest(models.Model):
             help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
         ))
     ])
+    themes = models.ManyToManyField(
+        ThemeTest,
+    )
 
     panels = [
         FieldPanel('name'),
         StreamFieldPanel('body'),
+        FieldPanel('themes'),
     ]
