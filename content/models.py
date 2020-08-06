@@ -39,6 +39,106 @@ UserModel = get_user_model()
 RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
 
 
+class Comment(models.Model):
+    legacy_id = models.IntegerField(null=True,)
+    news_page = models.ForeignKey("content.NewsPage", on_delete=models.CASCADE)
+    author = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    content = models.CharField(max_length=255)
+    posted_date = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey(
+        "content.Comment",
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.content
+
+    panels = [
+        FieldPanel('news_page'),
+        FieldPanel('author'),
+        FieldPanel('content'),
+    ]
+
+
+class Directorate(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    panels = [
+        FieldPanel('name'),
+    ]
+
+
+class Theme(models.Model):
+    theme = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.theme
+
+    panels = [
+        FieldPanel('theme'),
+    ]
+
+
+class Topic(models.Model):
+    name = models.CharField(max_length=255)
+    intro = StreamField([
+        ("heading2", blocks.Heading2Block()),
+        ("heading3", blocks.Heading3Block()),
+        ("text_section", blocks.TextBlock(
+            blank=True,
+            features=RICH_TEXT_FEATURES,
+            help_text="""Some text to describe what this section is about (will be
+            displayed above the list of child pages)"""
+        )),
+        ("image", blocks.ImageBlock()),
+        ("internal_media", blocks.InternalMediaBlock()),
+        ("data_table", blocks.DataTableBlock(
+            help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
+        ))
+    ])
+    themes = models.ManyToManyField(
+        Theme,
+    )
+    directorates = models.ManyToManyField(
+        Directorate,
+    )
+
+    def __str__(self):
+        return self.name
+
+    panels = [
+        FieldPanel('name'),
+        StreamFieldPanel('intro'),
+        FieldPanel('themes'),
+        FieldPanel('directorates'),
+    ]
+
+
+class NewsCategoryTag(TagBase):
+    #free_tagging = False - enable to prevent new tags being added
+
+    class Meta:
+        verbose_name = "news tag"
+        verbose_name_plural = "news tags"
+
+
+class NewsPageWithCategory(ItemBase):
+    tag = models.ForeignKey(
+        NewsCategoryTag,
+        related_name="news_tag",
+        on_delete=models.CASCADE,
+    )
+    content_object = ParentalKey(
+        to='content.NewsPage',
+        on_delete=models.CASCADE,
+        related_name='news_page'
+    )
+
+
 class ContentPage(Page):
     is_creatable = False
 
@@ -80,146 +180,54 @@ class ContentPage(Page):
     ]
 
 
-class NewsBase(ContentPage):
+class PageWithTopics(ContentPage):
+    topics = models.ManyToManyField(
+        Topic,
+    )
+
+    content_panels = ContentPage.content_panels + [
+        FieldPanel("topics"),
+    ]
+
+
+class PoliciesAndGuidance(Page):
+    subpage_types = ["content.Guidance", "content.Policy", ]
+    # model just for use in editor hierarchy
+
+
+class Guidance(PageWithTopics):
+    parent_page_types = ['content.PoliciesAndGuidance', ]
+    subpage_types = []  # Should not be able to create children
+
+
+class Policy(PageWithTopics):
+    is_creatable = True
+
+    parent_page_types = ['content.PoliciesAndGuidance', ]
+    subpage_types = []  # Should not be able to create children
+
+
+class ToolsHome(Page):
     is_creatable = False
+
+    subpage_types = ["content.Tool"]
+
+
+class Tool(PageWithTopics):
+    is_creatable = True
+
+    parent_page_types = ['content.ToolsHome']
+    subpage_types = []  # Should not be able to create children
+
+
+class NewsPage(PageWithTopics):
+    is_creatable = True
+    parent_page_types = ['content.NewsHome']
+    subpage_types = []  # Should not be able to create children
 
     excerpt = models.CharField(max_length=250, blank=True)
 
-    search_fields = ContentPage.search_fields + [
-        index.SearchField("excerpt"),
-    ]
-
-    content_panels = ContentPage.content_panels + [
-        FieldPanel("excerpt"),
-    ]
-
-
-class NewsCategoryTag(TagBase):
-    #free_tagging = False - enable to prevent new tags being added
-
-    class Meta:
-        verbose_name = "news tag"
-        verbose_name_plural = "news tags"
-
-
-class TaggedNews(ItemBase):
-    tag = models.ForeignKey(
-        NewsCategoryTag, related_name="news_tag", on_delete=models.CASCADE
-    )
-    content_object = ParentalKey(
-        to='content.NewsPage',
-        on_delete=models.CASCADE,
-        related_name='news_page'
-    )
-
-
-class ThemeTag(TagBase):
-    #free_tagging = False - enable to prevent new tags being added
-
-    class Meta:
-        verbose_name = "theme tag"
-        verbose_name_plural = "theme tags"
-
-
-class TaggedTheme(ItemBase):
-    tag = models.ForeignKey(
-        ThemeTag,
-        related_name="theme_tag",
-        on_delete=models.CASCADE,
-    )
-    content_object = ParentalKey(
-        to='content.PageWithTheme',
-        on_delete=models.CASCADE,
-        related_name='theme_page'
-    )
-
-
-class PageWithTheme(ContentPage):
-    is_creatable = False
-    pass
-
-
-class TopicHomePage(Page):
-    subpage_types = ['content.TopicPage', ]
-    is_creatable = False
-    # model just for use in editor hierarchy
-
-
-class TopicPage(PageWithTheme):
-    is_creatable = True
-
-    parent_page_types = ['content.TopicHomePage', ]
-    subpage_types = []  # Should not be able to create children
-
-    themes = ClusterTaggableManager(
-        through='content.TaggedTheme',
-        blank=False,  # Must have at least one theme
-        verbose_name="Themes",
-    )
-
-    content_panels = PageWithTheme.content_panels + [
-        FieldPanel("themes"),
-    ]
-
-
-class PoliciesAndGuidance(ContentPage):
-    subpage_types = ["content.Guidance", "content.Policy", ]
-    is_creatable = False
-    # model just for use in editor hierarchy
-
-
-class Topic(models.Model):
-    topic_page = models.ForeignKey(
-        TopicPage,
-        null=False,
-        blank=False,
-        on_delete=models.CASCADE,
-        #related_name='+',
-    )
-
-    panels = [
-        PageChooserPanel('topic_page'),
-    ]
-
-    class Meta:
-        abstract = True
-        verbose_name = "Topics"
-        verbose_name_plural = "Topics"
-
-
-class Guidance(PageWithTheme):
-    parent_page_types = ['content.PoliciesAndGuidance', ]
-    subpage_types = []  # Should not be able to create children
-
-    content_panels = PageWithTheme.content_panels + [
-        InlinePanel('related_topics', label="Topics", min_num=1, )
-    ]
-
-
-class RelatedTopics(Topic, Orderable):
-    topic_page_test = ParentalKey('content.Guidance', on_delete=models.CASCADE, related_name='related_topics')
-
-
-class Policy(PageWithTheme):
-    is_creatable = True
-
-    parent_page_types = ['content.PoliciesAndGuidance', ]
-    subpage_types = []  # Should not be able to create children
-
-    topic = models.ForeignKey(
-        "content.TopicTest", related_name="test", on_delete=models.CASCADE
-    )
-
-    content_panels = PageWithTheme.content_panels + [
-        FieldPanel("topic"),
-    ]
-
-
-class NewsPage(NewsBase):
-    parent_page_types = ['content.NewsHome']
-
-    # TODO - change to preview image
-    hero_image = models.ForeignKey(
+    preview_image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
         blank=True,
@@ -228,17 +236,24 @@ class NewsPage(NewsBase):
     )
 
     news_categories = ClusterTaggableManager(
-        through='content.TaggedNews',
-        blank=True,
+        through='content.NewsPageWithCategory',
+        blank=False,
+        help_text="News categories"
     )
 
-    promote_panels = ContentPage.promote_panels + [
-        FieldPanel('news_categories'),
+    search_fields = ContentPage.search_fields + [
+        index.SearchField("excerpt"),
     ]
 
     content_panels = ContentPage.content_panels + [
-        ImageChooserPanel("hero_image"),
+        FieldPanel("excerpt"),
+        ImageChooserPanel("preview_image"),
+        FieldPanel('news_categories', heading="Categories"),
     ]
+
+    # promote_panels = ContentPage.promote_panels + [
+    #     FieldPanel('news_categories'),
+    # ]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -286,7 +301,7 @@ class NewsPage(NewsBase):
 class NewsHome(RoutablePageMixin, Page):
     is_creatable = False
 
-    subpage_types = ["content.ContentPage"]
+    subpage_types = ["content.NewsPage"]
 
     @route(r'^$', name="news_home")
     def news_home(self, request):
@@ -373,58 +388,3 @@ class NewsHome(RoutablePageMixin, Page):
         context["posts"] = posts
 
         return context
-
-
-class Comment(models.Model):
-    legacy_id = models.IntegerField(null=True,)
-    news_page = models.ForeignKey(NewsPage, on_delete=models.CASCADE)
-    author = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-    content = models.CharField(max_length=255)
-    posted_date = models.DateTimeField(auto_now_add=True)
-    parent = models.ForeignKey(
-        "content.Comment",
-        on_delete=models.CASCADE,
-        null=True,
-    )
-
-    panels = [
-        FieldPanel('news_page'),
-        FieldPanel('author'),
-        FieldPanel('content'),
-    ]
-
-
-class ThemeTest(models.Model):
-    name = models.CharField(max_length=255)
-
-    panels = [
-        FieldPanel('name'),
-    ]
-
-
-class TopicTest(models.Model):
-    name = models.CharField(max_length=255)
-    body = StreamField([
-        ("heading2", blocks.Heading2Block()),
-        ("heading3", blocks.Heading3Block()),
-        ("text_section", blocks.TextBlock(
-            blank=True,
-            features=RICH_TEXT_FEATURES,
-            help_text="""Some text to describe what this section is about (will be
-            displayed above the list of child pages)"""
-        )),
-        ("image", blocks.ImageBlock()),
-        ("internal_media", blocks.InternalMediaBlock()),
-        ("data_table", blocks.DataTableBlock(
-            help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
-        ))
-    ])
-    themes = models.ManyToManyField(
-        ThemeTest,
-    )
-
-    panels = [
-        FieldPanel('name'),
-        StreamFieldPanel('body'),
-        FieldPanel('themes'),
-    ]

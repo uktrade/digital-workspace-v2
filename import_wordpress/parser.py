@@ -30,7 +30,7 @@ from content.models import (
     NewsHome,
     NewsPage,
     NewsCategoryTag,
-    TaggedNews,
+    NewsPageWithCategory,
     Comment,
 )
 
@@ -203,7 +203,7 @@ def create_news_page(
                 )
                 news_category.save()
 
-                tagged_news = TaggedNews(
+                tagged_news = NewsPageWithCategory(
                     tag=news_category,
                     content_object=content_page,
                 )

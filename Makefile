@@ -66,7 +66,16 @@ production-requirements:
 	pip-compile --output-file requirements/production.txt requirements.in/production.in
 
 superuser:
-	docker-compose run wagtail python manage.py createsuperuser
+	docker-compose run wagtail python manage.py migrate
+	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run wagtail python manage.py shell
+
+first-use:
+	docker-compose down
+	docker-compose run wagtail python manage.py migrate
+	docker-compose run wagtail python manage.py fixtree
+	docker-compose run wagtail python manage.py create_section_homepages
+	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run wagtail python manage.py shell
+	docker-compose up
 
 import:
 	docker-compose down

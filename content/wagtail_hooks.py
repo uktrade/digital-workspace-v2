@@ -4,15 +4,16 @@ from wagtail.contrib.modeladmin.options import (
 )
 from .models import (
     Comment,
-    TopicTest,
-    ThemeTest,
+    Directorate,
+    Theme,
+    Topic,
 )
 
 
 class CommentAdmin(ModelAdmin):
     model = Comment
     menu_label = 'Comment'  # ditch this to use verbose_name_plural from model
-    menu_icon = 'pilcrow'  # change as required
+    menu_icon = 'doc-empty'  # change as required
     menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
     add_to_settings_menu = False  # or True to add your model to the Settings sub-menu
     exclude_from_explorer = False  # or True to exclude pages of this type from Wagtail's explorer view
@@ -21,10 +22,10 @@ class CommentAdmin(ModelAdmin):
     search_fields = ('content', 'author')
 
 
-class TopicTestAdmin(ModelAdmin):
-    model = TopicTest
-    menu_label = 'TopicTest'  # ditch this to use verbose_name_plural from model
-    menu_icon = 'pilcrow'  # change as required
+class TopicAdmin(ModelAdmin):
+    model = Topic
+    menu_label = 'Topic'  # ditch this to use verbose_name_plural from model
+    menu_icon = 'tag'  # change as required
     menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
     add_to_settings_menu = False  # or True to add your model to the Settings sub-menu
     exclude_from_explorer = False  # or True to exclude pages of this type from Wagtail's explorer view
@@ -34,9 +35,21 @@ class TopicTestAdmin(ModelAdmin):
 
 
 class ThemeAdmin(ModelAdmin):
-    model = ThemeTest
+    model = Theme
     menu_label = 'Theme'  # ditch this to use verbose_name_plural from model
-    menu_icon = 'pilcrow'  # change as required
+    menu_icon = 'tag'  # change as required
+    menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
+    add_to_settings_menu = False  # or True to add your model to the Settings sub-menu
+    exclude_from_explorer = False  # or True to exclude pages of this type from Wagtail's explorer view
+    list_display = ('theme',)
+    list_filter = ('theme',)
+    search_fields = ('theme',)
+
+
+class DirectorateAdmin(ModelAdmin):
+    model = Directorate
+    menu_label = 'Directorate'  # ditch this to use verbose_name_plural from model
+    menu_icon = 'tag'  # change as required
     menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
     add_to_settings_menu = False  # or True to add your model to the Settings sub-menu
     exclude_from_explorer = False  # or True to exclude pages of this type from Wagtail's explorer view
@@ -44,7 +57,9 @@ class ThemeAdmin(ModelAdmin):
     list_filter = ('name',)
     search_fields = ('name',)
 
+
 # Now you just need to register your customised ModelAdmin class with Wagtail
 modeladmin_register(CommentAdmin)
-modeladmin_register(TopicTestAdmin)
+modeladmin_register(DirectorateAdmin)
 modeladmin_register(ThemeAdmin)
+modeladmin_register(TopicAdmin)

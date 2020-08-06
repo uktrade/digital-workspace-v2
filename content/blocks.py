@@ -9,7 +9,7 @@ class Heading2Block(blocks.CharBlock):
     """A (section) heading"""
 
     class Meta:
-        label = "Section heading"
+        label = "Heading 2"
         icon = "title"
         classname = "full title"
         template = "blocks/heading_2.html"
@@ -19,7 +19,7 @@ class Heading3Block(blocks.CharBlock):
     """A (section) heading"""
 
     class Meta:
-        label = "Section heading"
+        label = "Heading 3"
         icon = "title"
         classname = "full title"
         template = "blocks/heading_3.html"
