@@ -4,10 +4,20 @@ from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
 from django.contrib.auth import get_user_model
 
+from wagtail.snippets.models import register_snippet
+
+from modelcluster.fields import ParentalKey, ParentalManyToManyField
+
 from wagtail.core.models import Orderable, Page
 from modelcluster.fields import ParentalKey
 
 from wagtail.core.blocks import PageChooserBlock
+
+import logging
+
+logger = logging.getLogger("test")
+
+from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
 from wagtail.admin.edit_handlers import (
     FieldPanel,
@@ -26,6 +36,8 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from modelcluster.fields import ParentalKey
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase, TagBase, ItemBase
+
+from django.forms.widgets import CheckboxSelectMultiple
 
 from content import blocks
 from content.forms import (
@@ -60,16 +72,15 @@ class Comment(models.Model):
         FieldPanel('content'),
     ]
 
-
-class Directorate(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-    panels = [
-        FieldPanel('name'),
-    ]
+# class Directorate(models.Model):
+#     name = models.CharField(max_length=255)
+#
+#     def __str__(self):
+#         return self.name
+#
+#     panels = [
+#         FieldPanel('name'),
+#     ]
 
 
 class Theme(models.Model):
@@ -80,6 +91,22 @@ class Theme(models.Model):
 
     panels = [
         FieldPanel('theme'),
+    ]
+
+
+@register_snippet
+class NewsCategory(models.Model):
+    prepopulated_fields = {"slug": ("category",)}
+
+    slug = models.SlugField(max_length=255)
+    category = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.category
+
+    panels = [
+        FieldPanel('slug'),
+        FieldPanel('category'),
     ]
 
 
@@ -103,9 +130,9 @@ class Topic(models.Model):
     themes = models.ManyToManyField(
         Theme,
     )
-    directorates = models.ManyToManyField(
-        Directorate,
-    )
+    # directorates = models.ManyToManyField(
+    #     Directorate,
+    # )
 
     def __str__(self):
         return self.name
@@ -113,30 +140,30 @@ class Topic(models.Model):
     panels = [
         FieldPanel('name'),
         StreamFieldPanel('intro'),
-        FieldPanel('themes'),
-        FieldPanel('directorates'),
+        FieldPanel('themes', widget=CheckboxSelectMultiple),
+        # FieldPanel('directorates'),
     ]
 
+#
+# class NewsCategoryTag(TagBase):
+#     #free_tagging = False - enable to prevent new tags being added
+#
+#     class Meta:
+#         verbose_name = "news tag"
+#         verbose_name_plural = "news tags"
 
-class NewsCategoryTag(TagBase):
-    #free_tagging = False - enable to prevent new tags being added
 
-    class Meta:
-        verbose_name = "news tag"
-        verbose_name_plural = "news tags"
-
-
-class NewsPageWithCategory(ItemBase):
-    tag = models.ForeignKey(
-        NewsCategoryTag,
-        related_name="news_tag",
-        on_delete=models.CASCADE,
-    )
-    content_object = ParentalKey(
-        to='content.NewsPage',
-        on_delete=models.CASCADE,
-        related_name='news_page'
-    )
+# class NewsPageWithCategory(ItemBase):
+#     tag = models.ForeignKey(
+#         NewsCategoryTag,
+#         related_name="news_tag",
+#         on_delete=models.CASCADE,
+#     )
+#     content_object = ParentalKey(
+#         to='content.NewsPage',
+#         on_delete=models.CASCADE,
+#         related_name='news_page'
+#     )
 
 
 class ContentPage(Page):
@@ -181,12 +208,15 @@ class ContentPage(Page):
 
 
 class PageWithTopics(ContentPage):
-    topics = models.ManyToManyField(
+    topics = ParentalManyToManyField(
         Topic,
     )
 
     content_panels = ContentPage.content_panels + [
-        FieldPanel("topics"),
+        FieldPanel(
+            "topics",
+            #widget=CheckboxSelectMultiple,
+        ),
     ]
 
 
@@ -196,15 +226,17 @@ class PoliciesAndGuidance(Page):
 
 
 class Guidance(PageWithTopics):
+    is_creatable = True
+
     parent_page_types = ['content.PoliciesAndGuidance', ]
-    subpage_types = []  # Should not be able to create children
+    subpage_types = ["content.Guidance"]
 
 
 class Policy(PageWithTopics):
     is_creatable = True
 
     parent_page_types = ['content.PoliciesAndGuidance', ]
-    subpage_types = []  # Should not be able to create children
+    subpage_types = ["content.Policy"]
 
 
 class ToolsHome(Page):
@@ -218,6 +250,27 @@ class Tool(PageWithTopics):
 
     parent_page_types = ['content.ToolsHome']
     subpage_types = []  # Should not be able to create children
+
+
+class NewsPageNewsCategory(models.Model):
+    news_page = ParentalKey(
+        'content.NewsPage',
+        on_delete=models.CASCADE,
+        related_name='news_categories',
+    )
+
+    news_category = models.ForeignKey(
+        'content.NewsCategory',
+        on_delete=models.CASCADE,
+        related_name='news_pages',
+    )
+
+    panels = [
+        SnippetChooserPanel('news_category'),
+    ]
+
+    class Meta:
+        unique_together = ('news_page', 'news_category')
 
 
 class NewsPage(PageWithTopics):
@@ -234,12 +287,16 @@ class NewsPage(PageWithTopics):
         on_delete=models.SET_NULL,
         related_name='+'
     )
+    #
+    # news_categories = ParentalManyToManyField(
+    #     NewsCategory,
+    # )
 
-    news_categories = ClusterTaggableManager(
-        through='content.NewsPageWithCategory',
-        blank=False,
-        help_text="News categories"
-    )
+    # news_categories = ClusterTaggableManager(
+    #     through='content.NewsPageWithCategory',
+    #     blank=False,
+    #     help_text="News categories"
+    # )
 
     search_fields = ContentPage.search_fields + [
         index.SearchField("excerpt"),
@@ -248,8 +305,17 @@ class NewsPage(PageWithTopics):
     content_panels = ContentPage.content_panels + [
         FieldPanel("excerpt"),
         ImageChooserPanel("preview_image"),
-        FieldPanel('news_categories', heading="Categories"),
+        # FieldPanel(
+        #     'news_categories',
+        #     #heading="Categories",
+        #     #widget=CheckboxSelectMultiple,
+        # ),
+        InlinePanel('news_categories', label='News category'),
     ]
+
+    # content_panels = Page.content_panels + [
+    #     InlinePanel('categories2', label='category'),
+    # ]
 
     # promote_panels = ContentPage.promote_panels + [
     #     FieldPanel('news_categories'),
@@ -348,24 +414,21 @@ class NewsHome(RoutablePageMixin, Page):
     def get_context(self, request, *args, **kwargs):
         """Adding custom stuff to our context."""
         context = super().get_context(request, *args, **kwargs)
-
         context["page_title"] = self.title
 
         # Check for category
         if "category" in kwargs:
-            category = NewsCategoryTag.objects.filter(
+            category = NewsCategory.objects.filter(
                 slug=kwargs["category"],
             ).first()
             news_items = NewsPage.objects.filter(
-                news_categories=category.pk,
+                news_categories__id__in=[category.pk,],
             ).live().public().order_by('-first_published_at')
 
-            context["page_title"] = category.name
+            context["page_title"] = category.category
         else:
             # Get all posts
             news_items = NewsPage.objects.live().public().order_by('-first_published_at')
-
-        test = news_items.first()
 
         # Paginate all posts by 2 per page
         paginator = Paginator(news_items, 9)

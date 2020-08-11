@@ -20,6 +20,7 @@ boto3
 
 # DIT dependencies
 django-staff-sso-client>=2.2.0,<3
+django_log_formatter_ecs~=0.0.4
 
 # Operational dependencies
 gevent>=20.6.0,<21

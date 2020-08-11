@@ -1,9 +1,9 @@
 from django import forms
-
+from django.utils.text import slugify
 
 class NewsCategoryForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        from content.models import TaggedNews
+        from content.models import NewsCategory
 
         selected_category = kwargs.pop('selected_category', "")
         super(NewsCategoryForm, self).__init__(
@@ -12,9 +12,9 @@ class NewsCategoryForm(forms.Form):
         )
 
         categories = []
-        for category in TaggedNews.objects.all():
+        for category in NewsCategory.objects.all():
             categories.append(
-                (category.tag.slug, category.tag)
+                (category.slug, category.category)
             )
 
         categories.insert(0, ("", 'Select category'))

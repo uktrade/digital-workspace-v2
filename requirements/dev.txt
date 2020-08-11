@@ -18,6 +18,8 @@ cryptography==2.9.2       # via -r requirements.in/../requirements/base.txt, pyj
 django-cogwheels==0.3     # via -r requirements.in/../requirements/base.txt, wagtailmenus
 django-environ==0.4.5     # via -r requirements.in/../requirements/base.txt
 django-extensions==3.0.3  # via -r requirements.in/../requirements/base.txt
+django-ipware==3.0.1      # via -r requirements.in/../requirements/base.txt, django-log-formatter-ecs
+django-log-formatter-ecs==0.0.4  # via -r requirements.in/../requirements/base.txt
 django-modelcluster==5.0.2  # via -r requirements.in/../requirements/base.txt, wagtail
 django-staff-sso-client==2.2.0  # via -r requirements.in/../requirements/base.txt
 django-storages==1.9.1    # via -r requirements.in/../requirements/base.txt
@@ -46,7 +48,9 @@ gunicorn==20.0.4          # via -r requirements.in/../requirements/base.txt
 html5lib==1.0.1           # via -r requirements.in/../requirements/base.txt, wagtail
 idna==2.9                 # via -r requirements.in/../requirements/base.txt, requests
 jmespath==0.10.0          # via -r requirements.in/../requirements/base.txt, boto3, botocore
+kubi-ecs-logger==0.1.0    # via -r requirements.in/../requirements/base.txt, django-log-formatter-ecs
 l18n==2018.5              # via -r requirements.in/../requirements/base.txt, wagtail
+marshmallow==3.6.1        # via -r requirements.in/../requirements/base.txt, kubi-ecs-logger
 mccabe==0.6.1             # via flake8
 oauthlib==3.1.0           # via -r requirements.in/../requirements/base.txt, requests-oauthlib
 pbr==5.4.5                # via stevedore
