@@ -27,10 +27,12 @@ from wagtail.images.models import Image
 
 from content.models import (
     ContentPage,
+)
+
+from news.models import (
     NewsHome,
     NewsPage,
-    NewsCategoryTag,
-    NewsPageWithCategory,
+    NewsCategory,
     Comment,
 )
 
@@ -87,6 +89,7 @@ def create_news_home(home_page, post_date):
         slug="news-and-views",
         live=True,
         first_published_at=post_date,
+        show_in_menus=True,
     )
 
     home_page.add_child(instance=news_home)
@@ -175,7 +178,7 @@ def create_news_page(
             legacy_guid=news_item["guid"],
             legacy_content=news_item["content"],
             live=live,
-            hero_image=preview_image,
+            preview_image=preview_image,
             excerpt=news_item["excerpt"]
         )
     else:
@@ -193,23 +196,23 @@ def create_news_page(
     news_home.add_child(instance=content_page)
     news_home.save()
 
+    page_news_categories = []
+
     # Set categories
     if "categories" in news_item:
         for category in news_item["categories"]:
             if category not in processed_categories:
-                news_category = NewsCategoryTag(
-                    name=category,
-                    slug=slugify(category),
+                news_category = NewsCategory(
+                    category=category,
                 )
                 news_category.save()
-
-                tagged_news = NewsPageWithCategory(
-                    tag=news_category,
-                    content_object=content_page,
-                )
-                tagged_news.save()
-
                 processed_categories.append(category)
+            else:
+                news_category = NewsCategory.objects.filter(
+                    category=category,
+                ).first()
+
+            page_news_categories.append(news_category)
 
     # Comments
     for comment in news_item["comments"]:
@@ -225,6 +228,7 @@ def create_news_page(
         news_item["content"],
         content_page,
         attachments,
+        page_news_categories,
     )
 
 

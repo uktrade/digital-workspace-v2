@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.db import migrations
 
+from django.contrib.auth import get_user_model
+
+UserModel = get_user_model()
+
 
 def create_homepage(apps, schema_editor):
     # Get models
@@ -28,6 +32,16 @@ def create_homepage(apps, schema_editor):
         numchild=0,
         url_path='/home/',
     )
+
+    # author = UserModel.objects.first()
+    #
+    # revision = homepage.save_revision(
+    #     user=author,
+    #     submitted_for_moderation=False,
+    # )
+    # revision.publish()
+    homepage.show_in_menus = True
+    homepage.save()
 
     # Create a site with the new homepage set as the root
     Site.objects.create(

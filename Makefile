@@ -75,13 +75,20 @@ first-use:
 	docker-compose run wagtail python manage.py fixtree
 	docker-compose run wagtail python manage.py create_section_homepages
 	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run wagtail python manage.py shell
+	docker-compose run wagtail python manage.py create_menus
 	docker-compose up
 
 import:
 	docker-compose down
 	docker-compose run wagtail python manage.py migrate
 	docker-compose run wagtail python manage.py fixtree
+	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run wagtail python manage.py shell
 	docker-compose run wagtail python manage.py import_wordpress
+	docker-compose run wagtail python manage.py create_menus
+	docker-compose up
 
 fixtree:
 	docker-compose run wagtail python manage.py fixtree
+
+menus:
+	docker-compose run wagtail python manage.py create_menus

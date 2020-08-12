@@ -7,6 +7,9 @@ from wagtail.core.models import Page
 from content.models import (
     PoliciesAndGuidance,
     ToolsHome,
+)
+
+from news.models import (
     NewsHome,
 )
 
@@ -28,6 +31,7 @@ class Command(BaseCommand):
             slug="news-and-views",
             live=True,
             first_published_at=datetime.now(),
+            show_in_menus=True,
         )
 
         home_page.add_child(instance=news_home)
@@ -40,6 +44,7 @@ class Command(BaseCommand):
             slug="tools",
             live=True,
             first_published_at=datetime.now(),
+            show_in_menus=True,
         )
 
         home_page.add_child(instance=tools_home)
@@ -52,6 +57,7 @@ class Command(BaseCommand):
             slug="policies-and-guidance",
             live=True,
             first_published_at=datetime.now(),
+            show_in_menus=True,
         )
 
         home_page.add_child(instance=polcies_and_guidance)

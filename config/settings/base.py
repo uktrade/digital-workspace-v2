@@ -97,6 +97,7 @@ LOCAL_APPS = [
     "home",
     "content",
     "search",
+    "news",
     "import_wordpress",
 ]
 

@@ -21,6 +21,9 @@ from .utils import (
     download_s3_file,
 )
 
+from news.models import (
+    NewsPageNewsCategory,
+)
 
 img_extensions = [".jpg", ".png", ".gif", ".webp"]
 
@@ -99,6 +102,7 @@ def set_content(
     content,
     content_page,
     attachments,
+    page_news_categories,
 ):
     # Replace img caption [] with img tag attribute
     content = re.sub(
@@ -255,6 +259,10 @@ def set_content(
     revision.publish()
     content_page.save()
 
+    for news_category in page_news_categories:
+        NewsPageNewsCategory.objects.create(
+            news_category=news_category,
+            news_page=content_page,
+        )
+
     return None
-
-
