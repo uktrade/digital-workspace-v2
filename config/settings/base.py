@@ -98,6 +98,9 @@ LOCAL_APPS = [
     "content",
     "search",
     "news",
+    "working_at_dit",
+    "policies_and_guidance",
+    "tools",
     "import_wordpress",
 ]
 

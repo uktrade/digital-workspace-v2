@@ -214,6 +214,11 @@ def create_news_page(
 
             page_news_categories.append(news_category)
 
+    # Set categories
+    if "topics" in news_item:
+        for topic in news_item["topics"]:
+            pass
+
     # Comments
     for comment in news_item["comments"]:
         create_comment(
@@ -311,12 +316,18 @@ def parse_xml_file():
         pub_date = item_tag.find("pubDate", namespaces)
 
         item["categories"] = []
+        item["topics"] = []
 
         category_tags = item_tag.findall("category")
 
         for category_tag in category_tags:
             if category_tag.get("domain") == "news_category":
                 item["categories"].append(category_tag.text)
+            if category_tag.get("domain") == "topic_taxonomy":
+                item["topics"].append({
+                    "name": category_tag.text,
+                    "nice_name": category_tag.get("nicename"),
+                })
 
         item["post_date"] = datetime.strptime(
             post_date.text,

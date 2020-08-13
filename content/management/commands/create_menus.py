@@ -4,10 +4,11 @@ from django.core.management.base import BaseCommand
 
 from wagtail.core.models import Page
 
-from content.models import (
+from policies_and_guidance.models import (
     PoliciesAndGuidance,
-    ToolsHome,
 )
+
+from tools.models import ToolsHome
 
 from news.models import (
     NewsHome,

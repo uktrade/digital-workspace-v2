@@ -10,6 +10,7 @@ from wagtail.snippets.models import register_snippet
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     InlinePanel,
+    PageChooserPanel,
 )
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.core.models import Page
@@ -25,8 +26,9 @@ from news.forms import (
 
 from content.models import (
     ContentPage,
-    PageWithTopics,
 )
+
+from working_at_dit.models import PageWithTopics
 
 
 UserModel = get_user_model()

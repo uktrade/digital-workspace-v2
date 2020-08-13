@@ -4,20 +4,7 @@ from wagtail.contrib.modeladmin.options import (
 )
 from .models import (
     Theme,
-    Topic,
 )
-
-
-class TopicAdmin(ModelAdmin):
-    model = Topic
-    menu_label = 'Topic'  # ditch this to use verbose_name_plural from model
-    menu_icon = 'tag'  # change as required
-    menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
-    add_to_settings_menu = False  # or True to add your model to the Settings sub-menu
-    exclude_from_explorer = False  # or True to exclude pages of this type from Wagtail's explorer view
-    list_display = ('name',)
-    list_filter = ('name',)
-    search_fields = ('name',)
 
 
 class ThemeAdmin(ModelAdmin):
@@ -34,4 +21,3 @@ class ThemeAdmin(ModelAdmin):
 
 # Now you just need to register your customised ModelAdmin class with Wagtail
 modeladmin_register(ThemeAdmin)
-modeladmin_register(TopicAdmin)
