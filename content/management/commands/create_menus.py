@@ -5,7 +5,8 @@ from django.core.management.base import BaseCommand
 from wagtail.core.models import Page
 
 from policies_and_guidance.models import (
-    PoliciesAndGuidance,
+    PoliciesHome,
+    GuidanceHome,
 )
 
 from tools.models import ToolsHome

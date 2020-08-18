@@ -1,100 +1,17 @@
-import io
 import re
 import json
 
 from pathlib import Path
 from bs4 import BeautifulSoup
-import requests
-from io import BytesIO
 
-from django.contrib.auth.models import User
-
-from django.core.files.images import ImageFile
-from urllib.parse import urlparse
-
-from django.core.files.base import ContentFile
-
-from wagtail.images.models import Image
-
-from .utils import (
-    convert_domain,
-    download_s3_file,
+from import_wordpress.utils.helpers import (
+    add_paragraph_tags,
+    replace_caption,
+    create_image,
 )
 
-from news.models import (
-    NewsPageNewsCategory,
-)
 
 img_extensions = [".jpg", ".png", ".gif", ".webp"]
-
-
-# def is_image(post_data):
-#     for img_extension in img_extensions:
-#         if post_data["postmeta"]["attached_file"].endswith(img_extension):
-#             return True
-#
-#     return False
-
-
-# def get_image_properties(post_data):
-#     name = post_data['postmeta']["attachment_metadata"][b"file"]
-#     url = f"https://static.workspace.trade.gov.uk/wp-content/uploads/{post_data['postmeta']['attached_file']}"
-#     width = int(post_data['postmeta']["attachment_metadata"][b"width"])
-#     height = int(post_data['postmeta']["attachment_metadata"][b"height"])
-#
-#     print("width", width)
-#     print("height", height)
-#
-#     return name, url, width, height
-
-
-def replace_caption(match):
-    parts = match.group(1).split(" />")
-    img_string = f'{parts[0]} data-caption="{parts[1].strip()}" />'
-    return img_string
-
-
-def add_paragraph_tags(content):
-
-    with_p = re.sub(
-        "(.+?)(?:\n|$)+",
-        r"<p>\1</p>\n\n",
-        content,
-    )
-
-    soup = BeautifulSoup(with_p, features="html5lib")
-    body = soup.find("body")
-    tidied = re.sub("<p>\s*</p>", "", str(body)).replace("<body>", "").replace("</body>", "")
-
-    return tidied
-
-
-def create_image(image_url, file_name, title):
-    s3_path = image_url.split("?")[0].replace(
-        "https://workspace-trade-gov-uk.s3.eu-west-2.amazonaws.com/",
-        "",
-    )
-
-    s3_bytes = download_s3_file(s3_path)
-    image_bytes = io.BytesIO(s3_bytes)
-
-    image = Image(
-        file=ImageFile(image_bytes, name=file_name),
-        title=title,
-    )
-    image.save()
-    return image
-
-
-def create_preview_image(attachments, attachment_id):
-    attachment_url = attachments[attachment_id]["attachment_url"]
-    file_name = Path(attachment_url).name
-
-    return create_image(
-        attachment_url,
-        file_name,
-        attachments[attachment_id]["title"],
-    )
 
 
 def set_content(
@@ -102,7 +19,6 @@ def set_content(
     content,
     content_page,
     attachments,
-    page_news_categories,
 ):
     # Replace img caption [] with img tag attribute
     content = re.sub(
@@ -259,10 +175,3 @@ def set_content(
     revision.publish()
     content_page.save()
 
-    for news_category in page_news_categories:
-        NewsPageNewsCategory.objects.create(
-            news_category=news_category,
-            news_page=content_page,
-        )
-
-    return None

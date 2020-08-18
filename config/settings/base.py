@@ -101,6 +101,9 @@ LOCAL_APPS = [
     "working_at_dit",
     "policies_and_guidance",
     "tools",
+    "about_us",
+    "transition",
+    "networks",
     "import_wordpress",
 ]
 
@@ -239,3 +242,11 @@ CAN_ELEVATE_SSO_USER_PERMISSIONS = False
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 WAGTAILMENUS_ACTIVE_CLASS = "govuk-header__navigation-item--active--ws"
+
+NAMESPACES = {
+    "excerpt": "http://wordpress.org/export/1.2/excerpt/",
+    "content": "http://purl.org/rss/1.0/modules/content/",
+    "wfw": "http://wellformedweb.org/CommentAPI/",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "wp": "http://wordpress.org/export/1.2/",
+}

@@ -1,0 +1,176 @@
+from django.template.defaultfilters import slugify
+from django.contrib.auth import get_user_model
+
+from wagtail.core.models import Page
+
+from news.models import (
+    NewsHome,
+    NewsPage,
+    NewsCategory,
+    NewsPageNewsCategory,
+    Comment,
+)
+
+from import_wordpress.parser.process_content import (
+    set_content,
+)
+
+from import_wordpress.utils.helpers import (
+    create_preview_image,
+    is_live,
+    get_slug,
+    get_author,
+)
+
+
+UserModel = get_user_model()
+
+home_page = Page.objects.filter(slug="home").first()
+
+processed_categories = []
+
+
+def create_news_home(post_date):
+    news_home = NewsHome(
+        # path="news-and-views",
+        title="All News",
+        slug="news-and-views",
+        live=True,
+        first_published_at=post_date,
+        show_in_menus=True,
+    )
+
+    home_page.add_child(instance=news_home)
+    home_page.save()
+    return NewsHome.objects.all().first()
+
+
+def create_comment(comment, content_page, comments):
+    # Check to see if comment exists (could have been made as a parent)
+    existing_comment = Comment.objects.filter(
+        legacy_id=int(comment["legacy_id"]),
+    ).first()
+
+    if existing_comment:
+        return existing_comment
+
+    # Check for parent
+    parent_comment = None
+
+    if comment["parent_id"] != '0':
+        parent_comment = Comment.objects.filter(
+            legacy_id=int(comment["parent_id"]),
+        ).first()
+
+        if not parent_comment:
+            # Get parent comment
+            for c in comments:
+                if c["legacy_id"] == comment["parent"]:
+                    parent_comment = create_comment(c, content_page, comments)
+
+    author = UserModel.objects.filter(email=comment["author_email"]).first()
+
+    assert author is not None
+
+    return Comment.objects.create(
+        legacy_id=int(comment["legacy_id"]),
+        author=author,
+        news_page=content_page,
+        content=comment["content"],
+        parent=parent_comment,
+    )
+
+
+def create_news_page(
+    news_item,
+    attachments,
+):
+    # check for existence of parent news page
+    news_home = Page.objects.filter(slug="news-and-views").first()
+
+    path = get_slug(
+        news_item["link"].replace(
+            "/news-and-views",
+            "",
+        )
+    )
+    live = is_live(news_item["status"])
+
+    author = get_author(news_item)
+
+    if "preview_image_id" in news_item:
+        preview_image = create_preview_image(
+            attachments,
+            news_item["preview_image_id"],
+        )
+
+        content_page = NewsPage(
+            first_published_at=news_item["pub_date"],
+            last_published_at=news_item["post_date"],
+            title=news_item["title"],
+            slug=slugify(path),
+            legacy_guid=news_item["guid"],
+            legacy_content=news_item["content"],
+            live=live,
+            preview_image=preview_image,
+            excerpt=news_item["excerpt"]
+        )
+    else:
+        content_page = NewsPage(
+            first_published_at=news_item["pub_date"],
+            last_published_at=news_item["post_date"],
+            title=news_item["title"],
+            slug=slugify(path),
+            legacy_guid=news_item["guid"],
+            legacy_content=news_item["content"],
+            live=live,
+            excerpt=news_item["excerpt"]
+        )
+
+    news_home.add_child(instance=content_page)
+    news_home.save()
+
+    page_news_categories = []
+
+    # Set categories
+    if "categories" in news_item:
+        for category in news_item["categories"]:
+            if category not in processed_categories:
+                news_category = NewsCategory(
+                    category=category,
+                )
+                news_category.save()
+                processed_categories.append(category)
+            else:
+                news_category = NewsCategory.objects.filter(
+                    category=category,
+                ).first()
+
+            page_news_categories.append(news_category)
+
+    # Set categories
+    if "topics" in news_item:
+        for topic in news_item["topics"]:
+            pass
+
+    # Comments
+    for comment in news_item["comments"]:
+        create_comment(
+            comment,
+            content_page,
+            news_item["comments"],
+        )
+
+    # get preview image from HTML
+    set_content(
+        author,
+        news_item["content"],
+        content_page,
+        attachments,
+    )
+
+    for news_category in page_news_categories:
+        NewsPageNewsCategory.objects.create(
+            news_category=news_category,
+            news_page=content_page,
+        )

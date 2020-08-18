@@ -37,12 +37,14 @@ RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
 @register_snippet
 class Theme(models.Model):
     theme = models.CharField(max_length=255)
+    summary = models.CharField(max_length=255)
 
     def __str__(self):
         return self.theme
 
     panels = [
         FieldPanel('theme'),
+        FieldPanel('summary'),
     ]
 
 
@@ -86,3 +88,15 @@ class ContentPage(Page):
     content_panels = Page.content_panels + [
         StreamFieldPanel("body"),
     ]
+
+
+class PrivacyPolicyHome(ContentPage):
+    is_creatable = False
+
+    subpage_types = ["content.PrivacyPolicy", ]
+
+
+class PrivacyPolicy(ContentPage):
+    is_creatable = True
+
+    subpage_types = []

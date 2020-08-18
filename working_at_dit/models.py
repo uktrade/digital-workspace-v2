@@ -34,6 +34,10 @@ class WorkingAtDITHome(ContentPage):
         StreamFieldPanel('body'),
     ]
 
+    subpage_types = ["working_at_dit.Topic", "working_at_dit.HowDoI", ]
+
+
+class TopicHome(Page):
     subpage_types = ["working_at_dit.Topic"]
 
 
@@ -91,3 +95,11 @@ class PageWithTopics(ContentPage):
     content_panels = ContentPage.content_panels + [
         InlinePanel('topics', label="Topics"),
     ]
+
+
+class HowDoIHome(ContentPage):
+    subpage_types = ["working_at_dit.HowDoI"]  # Should not be able to create children
+
+
+class HowDoI(PageWithTopics):
+    subpage_types = []  # Should not be able to create children
