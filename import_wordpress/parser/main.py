@@ -105,6 +105,7 @@ def parse_xml_file():
 
         item["categories"] = []
         item["topics"] = []
+        item["themes"] = []
 
         category_tags = item_tag.findall("category")
 
@@ -113,6 +114,11 @@ def parse_xml_file():
                 item["categories"].append(category_tag.text)
             if category_tag.get("domain") == "topic_taxonomy":
                 item["topics"].append({
+                    "name": category_tag.text,
+                    "nice_name": category_tag.get("nicename"),
+                })
+            if category_tag.get("domain") == "theme_taxonomy":
+                item["themes"].append({
                     "name": category_tag.text,
                     "nice_name": category_tag.get("nicename"),
                 })

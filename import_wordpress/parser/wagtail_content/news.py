@@ -11,6 +11,8 @@ from news.models import (
     Comment,
 )
 
+from working_at_dit.models import PageTopic, Topic
+
 from import_wordpress.parser.process_content import (
     set_content,
 )
@@ -148,11 +150,6 @@ def create_news_page(
 
             page_news_categories.append(news_category)
 
-    # Set categories
-    if "topics" in news_item:
-        for topic in news_item["topics"]:
-            pass
-
     # Comments
     for comment in news_item["comments"]:
         create_comment(
@@ -174,3 +171,20 @@ def create_news_page(
             news_category=news_category,
             news_page=content_page,
         )
+
+    # Set relationship with Topic pages
+    if "topics" in news_item:
+        for wp_topic in news_item["topics"]:
+            topic = Topic.objects.filter(title=wp_topic["name"]).first()
+            PageTopic.objects.get_or_create(
+                topic=topic,
+                page=content_page,
+            )
+            content_page.save()
+
+    revision = content_page.save_revision(
+        user=author,
+        submitted_for_moderation=False,
+    )
+    revision.publish()
+    content_page.save()

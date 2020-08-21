@@ -12,7 +12,9 @@ from import_wordpress.utils.helpers import (
     is_live,
 )
 
-from working_at_dit.models import Topic
+from content.models import Theme
+
+from working_at_dit.models import Topic, TopicTheme
 
 
 def create_topic(topic, attachments):
@@ -27,6 +29,12 @@ def create_topic(topic, attachments):
     )
 
     topic_home = Page.objects.filter(slug="topics").first()
+
+    wp_themes = [t["nice_name"] for t in topic["themes"]]
+
+    themes = Theme.objects.filter(
+        theme__in=wp_themes
+    ).all()
 
     topic_page = Topic(
         first_published_at=topic["pub_date"],
@@ -47,3 +55,16 @@ def create_topic(topic, attachments):
         topic_page,
         attachments
     )
+
+    for theme in themes:
+        TopicTheme.objects.get_or_create(
+            theme__name=theme,
+            topic=topic_page,
+        )
+
+    revision = topic_page.save_revision(
+        user=author,
+        submitted_for_moderation=False,
+    )
+    revision.publish()
+    topic_page.save()

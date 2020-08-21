@@ -107,7 +107,7 @@ def set_content(
 
             split_strong = content_part.split(strong_part, maxsplit=1)
 
-            print("SPLIT STRONG", split_strong)
+            #print("SPLIT STRONG", split_strong)
 
             # First part of content
             text_contents.append({
@@ -131,7 +131,7 @@ def set_content(
             # })
             content_part = split_strong[1]
 
-            print("CONTENT PART: ", content_part)
+            #print("CONTENT PART: ", content_part)
 
         # TODO - figure out how to prevent the last piece of content from being rendered twice or not at all
         # Add final piece if needed
