@@ -31,7 +31,7 @@ compilescss:
 	docker-compose run wagtail python manage.py compilescss
 
 test:
-	docker-compose run wagtail python manage.py test $(test)
+	docker-compose run wagtail python manage.py test $(test) --keepdb
 
 shell:
 	docker-compose run wagtail python manage.py shell

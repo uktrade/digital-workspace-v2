@@ -58,6 +58,7 @@ def set_content(
                     "alt": alt,
                     "caption": caption,
                 })
+
     starts_with_img = False
 
     if content.strip()[0:4] == "<img":
@@ -174,4 +175,3 @@ def set_content(
     )
     revision.publish()
     content_page.save()
-
