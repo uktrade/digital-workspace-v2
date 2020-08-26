@@ -1,3 +1,5 @@
+import json
+
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 
@@ -13,8 +15,8 @@ from news.models import (
 
 from working_at_dit.models import PageTopic, Topic
 
-from import_wordpress.parser.process_content import (
-    set_content,
+from import_wordpress.parser.block_content import (
+    parse_into_blocks,
 )
 
 from import_wordpress.utils.helpers import (
@@ -158,13 +160,19 @@ def create_news_page(
             news_item["comments"],
         )
 
-    # get preview image from HTML
-    set_content(
-        author,
+    block_content = parse_into_blocks(
         news_item["content"],
-        content_page,
         attachments,
     )
+
+    content_page.body = json.dumps(block_content)
+
+    # revision = content_page.save_revision(
+    #     user=author,
+    #     submitted_for_moderation=False,
+    # )
+    # revision.publish()
+    # content_page.save()
 
     for news_category in page_news_categories:
         NewsPageNewsCategory.objects.create(

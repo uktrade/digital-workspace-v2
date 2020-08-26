@@ -1,10 +1,11 @@
+import json
+
 from django.template.defaultfilters import slugify
 
 from wagtail.core.models import Page
 
-
-from import_wordpress.parser.process_content import (
-    set_content,
+from import_wordpress.parser.block_content import (
+    parse_into_blocks,
 )
 from import_wordpress.utils.helpers import (
     get_author,
@@ -49,12 +50,12 @@ def create_topic(topic, attachments):
     topic_home.add_child(instance=topic_page)
     topic_home.save()
 
-    set_content(
-        author,
+    block_content = parse_into_blocks(
         topic["content"],
-        topic_page,
-        attachments
+        attachments,
     )
+
+    topic_page.body = json.dumps(block_content)
 
     for theme in themes:
         TopicTheme.objects.get_or_create(

@@ -17,11 +17,14 @@ current_parent_tags = []
 
 def prep_content(content):
     # Replace img caption [] with img tag attribute
-    return re.sub(
+    content = re.sub(
         "\[caption.*\](.*)\[\/caption\]",
         replace_caption,
         content,
     )
+
+    # Clean up strong tags
+    return re.sub("(<\/strong>\s*<strong>)", "", content)
 
 
 def flatten_parent_tags():
@@ -71,36 +74,89 @@ def process_image(img):
             return image, alt, caption
 
 
-def process_content(tag, blocks):
-    print("tag", tag)
-    if tag.name == "img":
-        proceeding_html = flatten_parent_tags()
+def append_block_text(blocks):
+    proceeding_html = flatten_parent_tags()
+    text_content = proceeding_html.replace("<body >", "").replace("</body>", "")
 
+    if text_content != "":
         blocks.append({
                 'type': 'text_section',
-                'value': proceeding_html
+                'value': add_paragraph_tags(text_content)
             },
         )
+
+
+def is_heading(tag):
+    if (
+            (
+                (
+                    tag.previous_sibling and
+                    (
+                        str(tag.previous_sibling.strip()).endswith(".") or
+                        tag.previous_sibling.strip() == ""
+                    )
+                )
+                or
+                    not tag.previous_sibling
+            )
+            and
+            (
+                (
+                    tag.next_sibling and
+                    (
+                        (
+                            len(tag.next_sibling.strip()) > 0 and
+                            str(tag.next_sibling.strip())[0].isupper()
+                        ) or
+                            tag.next_sibling.strip() == ""
+                    )
+                )
+                or
+                    not tag.next_sibling
+            )
+    ):
+        return True
+
+    return False
+
+
+def process_content(tag, blocks, depth):
+    if tag.name == "strong":
+        print(is_heading(tag))
+        print(depth)
+    print(tag)
+    print("====")
+    if tag.name == "img":
+        append_block_text(blocks)
 
         image, alt, caption = process_image(tag)
 
         blocks.append({
                 'type': 'image', 'value': {
-                    'image': image,
+                    'image': image.pk,
                     'alt': alt,
                     'caption': caption,
                 }
             }
         )
+    elif tag.name == "strong" and depth == 2 and is_heading(tag):
+        # If this is level 2, swap for header tag
+        append_block_text(blocks)
+
+        blocks.append({
+            "type": "heading2",
+            "value": tag.text
+        })
     else:
         if not hasattr(tag, 'contents') or len(tag.contents) == 1:
             # It's text or an element with only text inside
             if str(tag).strip() != "":
-                current_parent_tags.append(str(tag).strip())
+                current_parent_tags.append(f" {str(tag).strip()} ")
         else:
             current_parent_tags.append(unfurl_tag(tag))
+            depth += 1
             for child in tag.children:
-                process_content(child, blocks)
+                process_content(child, blocks, depth)
             current_parent_tags.append(f"</{tag.name}>")
 
 
@@ -113,17 +169,13 @@ def parse_into_blocks(html_content, attachments):
 
     blocks = []
 
-    process_content(soup.body, blocks)
+    print("soup.body")
+    print(soup.body)
+
+    # Process HTML into Wagtail StreamField blocks
+    process_content(soup.body, blocks, 1)
 
     # Add final HTML
-    final_html = flatten_parent_tags()
-    blocks.append({
-            'type': 'text_section',
-            'value': final_html
-        },
-    )
+    append_block_text(blocks)
 
-    print(blocks)
-
-
-    # TODO - output is set of blocks that can be added to page
+    return blocks

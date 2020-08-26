@@ -5,6 +5,8 @@ import boto3
 from pathlib import Path
 from bs4 import BeautifulSoup
 
+from htmllaundry import sanitize
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.images import ImageFile
@@ -62,12 +64,13 @@ def replace_caption(match):
 
 
 def add_paragraph_tags(content):
-
     with_p = re.sub(
         "(.+?)(?:\n|$)+",
         r"<p>\1</p>\n\n",
         content,
     )
+
+    with_p = sanitize(with_p)
 
     soup = BeautifulSoup(with_p, features="html5lib")
     body = soup.find("body")
