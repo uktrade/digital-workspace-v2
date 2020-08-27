@@ -14,6 +14,7 @@ from django.core.files.images import ImageFile
 from wagtail.core.models import Page
 from wagtail.images.models import Image
 
+from working_at_dit.models import Topic, PageTopic
 
 s3 = boto3.client('s3')
 
@@ -128,3 +129,15 @@ def get_author(item):
         raise Exception(f"Cannot find author: {author_email}")
 
     return author
+
+
+def set_topics(content, page):
+    # Set relationship with Topic pages
+    if "topics" in content:
+        for wp_topic in content["topics"]:
+            topic = Topic.objects.filter(title=wp_topic["name"]).first()
+            PageTopic.objects.get_or_create(
+                topic=topic,
+                page=page,
+            )
+            page.save()

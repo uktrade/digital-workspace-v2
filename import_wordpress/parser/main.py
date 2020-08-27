@@ -12,10 +12,19 @@ from import_wordpress.parser.comments import get_comments
 from import_wordpress.parser.wagtail_content.news import create_news_page
 from import_wordpress.parser.wagtail_content.theme import create_theme
 from import_wordpress.parser.wagtail_content.topic import create_topic
+from import_wordpress.parser.wagtail_content.about_us import (
+    create_about_us,
+    populate_about_us_home,
+)
 from import_wordpress.parser.users import create_users
 from import_wordpress.utils.page_hierarchy import create_section_homepages
 
 from django.conf import settings
+
+from about_us.models import (
+    AboutUs,
+    AboutUsHome,
+)
 
 namespaces = settings.NAMESPACES
 
@@ -168,6 +177,33 @@ def parse_xml_file():
 
     # Second step is to generate Wagtail content
 
+    # Page content
+    for key, value in items["page"].items():
+        # About us
+        if value["link"].startswith(value["link"]):
+            if value["link"] == "/about-us/":
+                populate_about_us_home(
+                    items["page"][key],
+                    items["attachment"],
+                )
+            else:
+                # It's not the homepage
+                link_parts = items["page"][key]["link"].split("/")
+                link_parts.remove("about-us")
+                link_parts = list(filter(lambda a: a != "", link_parts))
+
+                parent = AboutUsHome.objects.filter(slug="about-us").first()
+
+                for index, part in enumerate(link_parts, start=1):
+                    if index == len(link_parts):
+                        create_about_us(
+                            items["page"][key],
+                            parent,
+                            part,
+                            items["attachment"],
+                        )
+                    else:
+                        parent = AboutUs.objects.filter(slug=part).first()
     # Themes
     for key, value in items["theme"].items():
         create_theme(

@@ -121,11 +121,6 @@ def is_heading(tag):
 
 
 def process_content(tag, blocks, depth):
-    if tag.name == "strong":
-        print(is_heading(tag))
-        print(depth)
-    print(tag)
-    print("====")
     if tag.name == "img":
         append_block_text(blocks)
 
@@ -168,9 +163,6 @@ def parse_into_blocks(html_content, attachments):
     soup = BeautifulSoup(html_content, features="html5lib")
 
     blocks = []
-
-    print("soup.body")
-    print(soup.body)
 
     # Process HTML into Wagtail StreamField blocks
     process_content(soup.body, blocks, 1)

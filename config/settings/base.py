@@ -161,7 +161,7 @@ MIDDLEWARE = [
     "wagtail.core.middleware.SiteMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 
-    #"authbroker_client.middleware.ProtectAllViewsMiddleware",
+    #"authbroker_client.middleware.ProtectAllViewsMiddleware",  # TODO - restore
     "core.middleware.GetPeoplefinderProfileMiddleware",
 ]
 
@@ -180,7 +180,7 @@ TEMPLATES = [
                 "wagtailmenus.context_processors.wagtailmenus",
             ],
             "libraries": {
-                "workspace_navigation": "core.templatetags.workspace_navigation"
+                "workspace_navigation": "core.templatetags.workspace_navigation",
             }
         },
     }
