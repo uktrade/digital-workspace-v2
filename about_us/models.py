@@ -1,13 +1,13 @@
-from content.models import ContentPage
+from working_at_dit.models import PageWithTopics
 
 
-class AboutUsHome(ContentPage):
+class AboutUsHome(PageWithTopics):
     is_creatable = False
 
     subpage_types = ["about_us.AboutUs"]
 
 
-class AboutUs(ContentPage):
+class AboutUs(PageWithTopics):
     is_creatable = True
 
     parent_page_types = ['about_us.AboutUsHome']

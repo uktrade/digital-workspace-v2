@@ -89,3 +89,30 @@ class HowDoIHome(ContentPage):
 
 class HowDoI(PageWithTopics):
     subpage_types = []  # Should not be able to create children
+
+
+class PoliciesAndGuidanceHome(Page):
+    subpage_types = ["working_at_dit.PoliciesHome", "working_at_dit.GuidanceHome", ]
+    # model just for use in editor hierarchy
+
+
+class PoliciesHome(Page):
+    subpage_types = ["working_at_dit.Policy", ]
+    # model just for use in editor hierarchy
+
+
+class GuidanceHome(Page):
+    subpage_types = ["working_at_dit.Guidance", ]
+    # model just for use in editor hierarchy
+
+
+class Guidance(PageWithTopics):
+    is_creatable = True
+
+    subpage_types = ["working_at_dit.Guidance"]
+
+
+class Policy(PageWithTopics):
+    is_creatable = True
+
+    subpage_types = ["working_at_dit.Policy"]

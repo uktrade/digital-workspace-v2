@@ -1,0 +1,57 @@
+import json
+
+from django.template.defaultfilters import slugify
+
+from import_wordpress.parser.block_content import (
+    parse_into_blocks,
+)
+from import_wordpress.utils.helpers import (
+    get_author,
+    get_slug,
+    is_live,
+    set_topics,
+)
+
+from working_at_dit.models import HowDoIHome, HowDoI
+
+
+def create_how_do_i(how_do_i, attachments):
+    author = get_author(how_do_i)
+    live = is_live(how_do_i["status"])
+
+    path = get_slug(
+        how_do_i["link"].replace(
+            "/working-at-dit/how-do-i",
+            "",
+        )
+    )
+
+    how_do_i_home = HowDoIHome.objects.filter(slug="how-do-i").first()
+
+    content_page = HowDoI(
+        first_published_at=how_do_i["pub_date"],
+        last_published_at=how_do_i["post_date"],
+        title=how_do_i["title"],
+        slug=slugify(path),
+        legacy_guid=how_do_i["guid"],
+        legacy_content=how_do_i["content"],
+        live=live,
+    )
+
+    how_do_i_home.add_child(instance=content_page)
+    how_do_i_home.save()
+
+    block_content = parse_into_blocks(
+        how_do_i["content"],
+        attachments,
+    )
+
+    content_page.body = json.dumps(block_content)
+    set_topics(how_do_i, content_page)
+
+    revision = content_page.save_revision(
+        user=author,
+        submitted_for_moderation=False,
+    )
+    revision.publish()
+    content_page.save()

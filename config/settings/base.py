@@ -99,7 +99,6 @@ LOCAL_APPS = [
     "search",
     "news",
     "working_at_dit",
-    "policies_and_guidance",
     "tools",
     "about_us",
     "transition",

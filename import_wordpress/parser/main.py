@@ -12,6 +12,10 @@ from import_wordpress.parser.comments import get_comments
 from import_wordpress.parser.wagtail_content.news import create_news_page
 from import_wordpress.parser.wagtail_content.theme import create_theme
 from import_wordpress.parser.wagtail_content.topic import create_topic
+from import_wordpress.parser.wagtail_content.how_do_i import create_how_do_i
+from import_wordpress.parser.wagtail_content.policy_or_guidance import (
+    create_policy_or_guidance,
+)
 from import_wordpress.parser.wagtail_content.about_us import (
     create_about_us,
     populate_about_us_home,
@@ -158,6 +162,10 @@ def parse_xml_file():
             if meta_key_tag.text == "excerpt":
                 item["excerpt"] = meta_value_tag.text
 
+            # Policy or guidance
+            if meta_key_tag.text == "policy_or_guidance":
+                item["policy_or_guidance"] = meta_value_tag.text
+
             # if meta_key_tag.text == "amazonS3_cache":
             #     s3_cache_php = meta_value_tag.text
             #     s3_cache = php_loads(bytes(s3_cache_php, encoding='utf-8'))
@@ -176,6 +184,26 @@ def parse_xml_file():
         items[post_type][post_id] = item
 
     # Second step is to generate Wagtail content
+
+    # Themes
+    for key, value in items["theme"].items():
+        create_theme(
+            items["theme"][key],
+        )
+
+    # Topics
+    for key, value in items["topic"].items():
+        create_topic(
+            items["topic"][key],
+            items["attachment"],
+        )
+
+    # News
+    for key, value in items["news"].items():
+        create_news_page(
+            items["news"][key],
+            items["attachment"]
+        )
 
     # Page content
     for key, value in items["page"].items():
@@ -204,23 +232,17 @@ def parse_xml_file():
                         )
                     else:
                         parent = AboutUs.objects.filter(slug=part).first()
-    # Themes
-    for key, value in items["theme"].items():
-        create_theme(
-            items["theme"][key],
-        )
 
-    # Topics
-    for key, value in items["topic"].items():
-        create_topic(
-            items["topic"][key],
+    # How do I content
+    for key, value in items["howdoi"].items():
+        create_how_do_i(
+            items["howdoi"][key],
             items["attachment"],
         )
 
-    # News
-    for key, value in items["news"].items():
-        create_news_page(
-            items["news"][key],
-            items["attachment"]
+    # Policies and guidance
+    for key, value in items["policy"].items():
+        create_policy_or_guidance(
+            items["policy"][key],
+            items["attachment"],
         )
-

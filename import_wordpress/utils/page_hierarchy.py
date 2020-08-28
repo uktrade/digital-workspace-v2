@@ -4,8 +4,6 @@ from django.core.management.base import BaseCommand
 
 from wagtail.core.models import Page
 
-from policies_and_guidance.models import PoliciesAndGuidanceHome, PoliciesHome, GuidanceHome
-
 from tools.models import ToolsHome
 
 from news.models import (
@@ -20,6 +18,9 @@ from working_at_dit.models import (
     WorkingAtDITHome,
     HowDoIHome,
     TopicHome,
+    PoliciesAndGuidanceHome,
+    PoliciesHome,
+    GuidanceHome,
 )
 
 from content.models import PrivacyPolicyHome
@@ -92,7 +93,7 @@ def create_section_homepages():
 
     policies_and_guidance = PoliciesAndGuidanceHome(
         title="Policies and Guidance",
-        slug="policies_and_guidance",
+        slug="policies-and-guidance",
         live=True,
         first_published_at=datetime.now(),
         show_in_menus=True,

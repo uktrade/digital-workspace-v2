@@ -245,7 +245,7 @@ class NewsHome(RoutablePageMixin, Page):
             # Then return the last page
             posts = paginator.page(paginator.num_pages)
 
-        # "posts" will have child pages; you'll need to use .specific in the template
+        # "posts" will have child pages; you'll need to use .specific in the templates
         # in order to access child properties, such as youtube_video_id and subtitle
         context["posts"] = posts
 
