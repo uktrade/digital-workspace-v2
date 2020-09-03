@@ -30,6 +30,16 @@ class TopicHome(Page):
 class Topic(ContentPage):
     subpage_types = []  # Should not be able to create children
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        context["related_news"] = PageTopic.objects.filter(
+            topic=self.contentpage,
+            page__content_type__app_label="news"
+        ).order_by("page__title")
+
+        return context
+
     content_panels = ContentPage.content_panels + [
         InlinePanel('topic_themes', label='Themes'),
     ]
@@ -78,6 +88,8 @@ class PageTopic(models.Model):
 
 
 class PageWithTopics(ContentPage):
+    excerpt = models.CharField(max_length=250, blank=True, null=True)
+
     content_panels = ContentPage.content_panels + [
         InlinePanel('topics', label="Topics"),
     ]

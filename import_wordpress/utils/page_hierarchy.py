@@ -45,7 +45,7 @@ def create_section_homepages():
 
     transition = TransitionHome(
         title="Transition",
-        slug="transition",
+        slug="transition-hub",
         live=True,
         first_published_at=datetime.now(),
         show_in_menus=True,

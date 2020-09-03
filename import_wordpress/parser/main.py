@@ -1,7 +1,6 @@
 import os
 from datetime import datetime
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 
 import xml.etree.ElementTree as element_tree
@@ -16,19 +15,11 @@ from import_wordpress.parser.wagtail_content.how_do_i import create_how_do_i
 from import_wordpress.parser.wagtail_content.policy_or_guidance import (
     create_policy_or_guidance,
 )
-from import_wordpress.parser.wagtail_content.about_us import (
-    create_about_us,
-    populate_about_us_home,
-)
 from import_wordpress.parser.users import create_users
 from import_wordpress.utils.page_hierarchy import create_section_homepages
+from import_wordpress.utils.page import set_page_content
 
 from django.conf import settings
-
-from about_us.models import (
-    AboutUs,
-    AboutUsHome,
-)
 
 namespaces = settings.NAMESPACES
 
@@ -185,11 +176,15 @@ def parse_xml_file():
 
     # Second step is to generate Wagtail content
 
+    print("Creating themes...")
+
     # Themes
     for key, value in items["theme"].items():
         create_theme(
             items["theme"][key],
         )
+
+    print("Creating topics...")
 
     # Topics
     for key, value in items["topic"].items():
@@ -198,6 +193,8 @@ def parse_xml_file():
             items["attachment"],
         )
 
+    print("Creating news...")
+
     # News
     for key, value in items["news"].items():
         create_news_page(
@@ -205,33 +202,13 @@ def parse_xml_file():
             items["attachment"]
         )
 
+    print("Creating page content...")
+
     # Page content
     for key, value in items["page"].items():
-        # About us
-        if value["link"].startswith(value["link"]):
-            if value["link"] == "/about-us/":
-                populate_about_us_home(
-                    items["page"][key],
-                    items["attachment"],
-                )
-            else:
-                # It's not the homepage
-                link_parts = items["page"][key]["link"].split("/")
-                link_parts.remove("about-us")
-                link_parts = list(filter(lambda a: a != "", link_parts))
+        set_page_content(key, value, items)
 
-                parent = AboutUsHome.objects.filter(slug="about-us").first()
-
-                for index, part in enumerate(link_parts, start=1):
-                    if index == len(link_parts):
-                        create_about_us(
-                            items["page"][key],
-                            parent,
-                            part,
-                            items["attachment"],
-                        )
-                    else:
-                        parent = AboutUs.objects.filter(slug=part).first()
+    print("Creating how do Is...")
 
     # How do I content
     for key, value in items["howdoi"].items():
@@ -239,6 +216,8 @@ def parse_xml_file():
             items["howdoi"][key],
             items["attachment"],
         )
+
+    print("Creating policies and guidance...")
 
     # Policies and guidance
     for key, value in items["policy"].items():

@@ -6,4 +6,6 @@
     {% for block in page.body %}
         {% include_block block %}
     {% endfor %}
+    <hr>
+    {% include "includes/child-links.html" with children=children num_cols=2 %}
 {% endblock %}

@@ -99,8 +99,6 @@ class NewsPage(PageWithTopics):
     parent_page_types = ['news.NewsHome']
     subpage_types = []  # Should not be able to create children
 
-    excerpt = models.CharField(max_length=250, blank=True)
-
     preview_image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,

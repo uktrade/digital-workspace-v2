@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from wagtailmenus.models import MainMenu, MainMenuItem, Site
+from wagtailmenus.models import MainMenu, Site
 
 from news.models import (
     NewsHome,
@@ -34,6 +34,7 @@ class Command(BaseCommand):
         working_at_dit_home = WorkingAtDITHome.objects.all()
         about_us_home = AboutUsHome.objects.all()
         tools_home = ToolsHome.objects.all()
+        # TODO - figure out a way of dealing with Data Hub link
 
         main_menu.add_menu_items_for_pages(news_home)
         main_menu.add_menu_items_for_pages(transition_home)

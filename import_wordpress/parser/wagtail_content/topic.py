@@ -2,6 +2,7 @@ import json
 
 from django.template.defaultfilters import slugify
 
+from wagtail.contrib.redirects.models import Redirect
 from wagtail.core.models import Page
 
 from import_wordpress.parser.block_content import (
@@ -22,12 +23,10 @@ def create_topic(topic, attachments):
     author = get_author(topic)
     live = is_live(topic["status"])
 
-    path = get_slug(
-        topic["link"].replace(
-            "/working-at-dit",
-            "",
-        )
-    )
+    path = get_slug(topic["link"].replace(
+        "/working-at-dit",
+        "",
+    ))
 
     topic_home = Page.objects.filter(slug="topics").first()
 
@@ -69,3 +68,10 @@ def create_topic(topic, attachments):
     )
     revision.publish()
     topic_page.save()
+
+    # Create redirect
+    if live:
+        Redirect.objects.create(
+            old_path=topic["link"][:-1],
+            redirect_page=topic_page,
+        )

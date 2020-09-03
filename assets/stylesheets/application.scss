@@ -78,3 +78,40 @@ $govuk-image-url-function: frontend-image-url;
   font-weight: normal;
 }
 
+.children-2-col {
+  column-width: auto;
+  column-count: 2;
+  .govuk-heading-s {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.children-3-col {
+  column-width: auto;
+  column-count: 3;
+  .govuk-heading-s {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.col-child {
+  break-inside: avoid;
+  margin-bottom: 20px;
+}
+
+.excerpt {
+  margin: 0;
+  padding: 0;
+}
+
+.updated-at {
+  color: $govuk-secondary-text-colour;
+  margin: 0;
+  padding: 0;
+}
+
+.related-topics {
+  border-top:3px solid $govuk-error-colour;
+}
