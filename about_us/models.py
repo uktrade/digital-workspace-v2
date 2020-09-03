@@ -23,6 +23,9 @@ class AboutUsHome(PageWithTopics):
     subpage_types = ["about_us.AboutUs"]
 
     def get_context(self, request, *args, **kwargs):
+        # TODO - should this only be 1 level of child pages deep?
+        # It seems like the pages with child pages use a different format
+        # which is more like the homepage
         context = super().get_context(request, *args, **kwargs)
 
         children = AboutUs.objects.all().order_by("title")
