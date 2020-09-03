@@ -1,5 +1,6 @@
 import json
 
+
 from django.template.defaultfilters import slugify
 
 from import_wordpress.parser.block_content import (
@@ -59,15 +60,20 @@ def create_page(page_content, content_class, parent, path, attachments):
     if page_content["excerpt"]:
         content_page.excerpt = page_content["excerpt"]
 
+    if "redirect_url" in page_content:
+        content_page.redirect_url = page_content["redirect_url"]
+
     parent.add_child(instance=content_page)
     parent.save()
 
-    block_content = parse_into_blocks(
-        page_content["content"],
-        attachments,
-    )
+    if page_content["content"]:
+        block_content = parse_into_blocks(
+            page_content["content"],
+            attachments,
+        )
 
-    content_page.body = json.dumps(block_content)
+        content_page.body = json.dumps(block_content)
+
     set_topics(page_content, content_page)
 
     revision = content_page.save_revision(

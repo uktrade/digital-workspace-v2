@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from phpserialize import unserialize
 
 from django.contrib.auth import get_user_model
 
@@ -156,6 +157,13 @@ def parse_xml_file():
             # Policy or guidance
             if meta_key_tag.text == "policy_or_guidance":
                 item["policy_or_guidance"] = meta_value_tag.text
+
+            # Redirect
+            if meta_key_tag.text == "redirect_url":
+                if meta_value_tag.text:
+                    converted_php = unserialize(str.encode(meta_value_tag.text))
+                    print("converted_php url:", converted_php[b"url"].decode("utf-8") )
+                    item["redirect_url"] = converted_php[b"url"].decode("utf-8")
 
             # if meta_key_tag.text == "amazonS3_cache":
             #     s3_cache_php = meta_value_tag.text

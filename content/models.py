@@ -54,12 +54,14 @@ class ContentPage(Page):
 
     legacy_guid = models.CharField(
         blank=True,
+        null=True,
         max_length=255,
         help_text="""Wordpress GUID"""
     )
 
     legacy_content = models.TextField(
         blank=True,
+        null=True,
         help_text="""Legacy content, pre-conversion"""
     )
 
