@@ -33,7 +33,7 @@ def create_topic(topic, attachments):
     wp_themes = [t["nice_name"] for t in topic["themes"]]
 
     themes = Theme.objects.filter(
-        theme__in=wp_themes
+        title__in=wp_themes
     ).all()
 
     topic_page = Topic(

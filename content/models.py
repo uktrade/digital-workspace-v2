@@ -36,11 +36,12 @@ RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
 
 @register_snippet
 class Theme(models.Model):
-    theme = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255)
     summary = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.theme
+        return self.title
 
     panels = [
         FieldPanel('theme'),
@@ -102,3 +103,23 @@ class PrivacyPolicy(ContentPage):
     is_creatable = True
 
     subpage_types = []
+
+
+class DirectChildrenMixin:
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["children"] = []
+
+        child_depth = self.depth + 1
+
+        import importlib
+
+        for subpage_type in self.subpage_types:
+            parts = subpage_type.split(".")
+            module = importlib.import_module(f"{parts[0]}.models")
+            children = getattr(module, parts[1]).objects.filter(
+                depth=child_depth
+            ).order_by("title")
+            context["children"].extend(children)
+
+        return context

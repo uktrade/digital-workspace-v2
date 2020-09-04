@@ -1,6 +1,6 @@
 from django.db import models
 from django.shortcuts import redirect
-from content.models import ContentPage
+from content.models import ContentPage, DirectChildrenMixin
 
 from wagtail.admin.edit_handlers import (
     FieldPanel,
@@ -25,16 +25,8 @@ class Tool(PageWithTopics):
         return redirect(self.redirect_url)
 
 
-class ToolsHome(ContentPage):
+class ToolsHome(ContentPage, DirectChildrenMixin):
     is_creatable = False
 
     subpage_types = ["tools.Tool"]
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-
-        children = Tool.objects.all().order_by("title")
-
-        context["children"] = children
-
-        return context

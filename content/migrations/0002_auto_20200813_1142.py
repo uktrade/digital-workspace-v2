@@ -31,10 +31,4 @@ class Migration(migrations.Migration):
             },
             bases=('content.contentpage',),
         ),
-        migrations.AddField(
-            model_name='theme',
-            name='summary',
-            field=models.CharField(max_length=255),
-            preserve_default=False,
-        ),
     ]

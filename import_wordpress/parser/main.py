@@ -162,7 +162,6 @@ def parse_xml_file():
             if meta_key_tag.text == "redirect_url":
                 if meta_value_tag.text:
                     converted_php = unserialize(str.encode(meta_value_tag.text))
-                    print("converted_php url:", converted_php[b"url"].decode("utf-8") )
                     item["redirect_url"] = converted_php[b"url"].decode("utf-8")
 
             # if meta_key_tag.text == "amazonS3_cache":

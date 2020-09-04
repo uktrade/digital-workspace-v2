@@ -34,7 +34,9 @@ class Migration(migrations.Migration):
             name='Theme',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('theme', models.CharField(max_length=255)),
+                ('title', models.CharField(max_length=255)),
+                ('summary', models.CharField(max_length=255)),
+                ('slug', models.SlugField(max_length=255)),
             ],
         ),
     ]

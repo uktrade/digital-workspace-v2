@@ -2,8 +2,24 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    {% for block in page.body %}
-        {% include_block block %}
-    {% endfor %}
+    <h1 class="govuk-heading-l">{{ title }}</h1>
+    <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+        {% for theme in themes %}
+        <div class="govuk-accordion__section ">
+            <div class="govuk-accordion__section-header">
+                <h2 class="govuk-accordion__section-heading">
+                    <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
+                      {{ theme.title }}
+                    </span>
+                </h2>
+            </div>
+            <div id="accordion-default-content-1" class="govuk-accordion__section-content"
+                 aria-labelledby="accordion-default-heading-1">
+                {% for theme_topic in theme.theme_topics.all %}
+                    <p class='govuk-body'>{{ theme_topic.topic.title }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}

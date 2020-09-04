@@ -11,7 +11,7 @@
         </div>
         {% if page_topics.count > 0 %}
             <div class="govuk-grid-column-one-third related-topics">
-                    <h2>Related topics</h2>
+                    <h2 class="govuk-heading-m">Related topics</h2>
                     <ul>
                         {% for page_topic in page_topics %}
                             <li><a href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a></li>
@@ -20,4 +20,5 @@
             </div>
         {% endif %}
     </div>
+    {% include "includes/child-links.html" with children=children num_cols=3 %}
 {% endblock %}

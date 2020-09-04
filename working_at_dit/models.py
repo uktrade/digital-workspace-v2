@@ -11,7 +11,7 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
 from modelcluster.fields import ParentalKey
 
-from content.models import ContentPage
+from content.models import ContentPage, Theme
 
 
 class WorkingAtDITHome(ContentPage):
@@ -21,6 +21,27 @@ class WorkingAtDITHome(ContentPage):
     ]
 
     subpage_types = ["working_at_dit.Topic", "working_at_dit.HowDoI", ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        # Get topics, group by theme
+        themes = Theme.objects.all()
+
+        context["themes"] = Theme.objects.all()
+
+        return context
+
+        for theme in themes:
+            context["themes"][theme.slug] = {
+                "title": theme.title,
+                "topics": []
+            }
+            topic_themes = TopicTheme.objects.filter(theme=theme)
+
+            for topic_theme in topic_themes:
+                context["themes"][theme.slug]["topics"].append(topic_theme.topic)
+
+        return context
 
 
 class TopicHome(Page):
@@ -94,6 +115,15 @@ class PageWithTopics(ContentPage):
         FieldPanel("excerpt"),
         InlinePanel('topics', label="Topics"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        context["page_topics"] = PageTopic.objects.filter(
+            page=self.pagewithtopics.contentpage,
+        ).order_by("page__title")
+
+        return context
 
 
 class HowDoIHome(ContentPage):
