@@ -24,22 +24,7 @@ class WorkingAtDITHome(ContentPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        # Get topics, group by theme
-        themes = Theme.objects.all()
-
         context["themes"] = Theme.objects.all()
-
-        return context
-
-        for theme in themes:
-            context["themes"][theme.slug] = {
-                "title": theme.title,
-                "topics": []
-            }
-            topic_themes = TopicTheme.objects.filter(theme=theme)
-
-            for topic_theme in topic_themes:
-                context["themes"][theme.slug]["topics"].append(topic_theme.topic)
 
         return context
 

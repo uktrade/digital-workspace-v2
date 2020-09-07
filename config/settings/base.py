@@ -249,3 +249,14 @@ NAMESPACES = {
     "dc": "http://purl.org/dc/elements/1.1/",
     "wp": "http://wordpress.org/export/1.2/",
 }
+
+WAGTAILSEARCH_BACKENDS = {
+    'default': {
+        'BACKEND': 'wagtail.search.backends.elasticsearch7',
+        'URLS': [env("ELASTIC_SEARCH_URL")],
+        'INDEX': 'wagtail',
+        'TIMEOUT': 5,
+        'OPTIONS': {},
+        'INDEX_SETTINGS': {},
+    }
+}

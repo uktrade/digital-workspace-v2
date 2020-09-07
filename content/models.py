@@ -44,7 +44,7 @@ class Theme(models.Model):
         return self.title
 
     panels = [
-        FieldPanel('theme'),
+        FieldPanel('title'),
         FieldPanel('summary'),
     ]
 

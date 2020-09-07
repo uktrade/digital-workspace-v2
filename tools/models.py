@@ -25,8 +25,7 @@ class Tool(PageWithTopics):
         return redirect(self.redirect_url)
 
 
-class ToolsHome(ContentPage, DirectChildrenMixin):
+class ToolsHome(DirectChildrenMixin, ContentPage):
     is_creatable = False
 
     subpage_types = ["tools.Tool"]
-

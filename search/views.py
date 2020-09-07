@@ -20,14 +20,16 @@ def search(request):
 
     # Pagination
     paginator = Paginator(search_results, 10)
+
     try:
-        search_results = paginator.page(page)
+        paginated_results = paginator.page(page)
     except PageNotAnInteger:
-        search_results = paginator.page(1)
+        paginated_results = paginator.page(1)
     except EmptyPage:
-        search_results = paginator.page(paginator.num_pages)
+        paginated_results = paginator.page(paginator.num_pages)
 
     return render(request, "search/search.html", {
+        "num_results": search_results.count(),
         "search_query": search_query,
-        "search_results": search_results,
+        "search_results": paginated_results,
     })

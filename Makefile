@@ -61,7 +61,7 @@ dev-requirements:
 	pip-compile --output-file requirements/base.txt requirements.in/base.in
 	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
 
-production-requirements:
+prod-requirements:
 	pip-compile --output-file requirements/base.txt requirements.in/base.in
 	pip-compile --output-file requirements/production.txt requirements.in/production.in
 
@@ -85,6 +85,7 @@ import:
 	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run wagtail python manage.py shell
 	docker-compose run wagtail python manage.py import_wordpress
 	docker-compose run wagtail python manage.py create_menus
+	docker-compose run wagtail python manage.py update_index
 	docker-compose up
 
 fixtree:
@@ -92,3 +93,9 @@ fixtree:
 
 menus:
 	docker-compose run wagtail python manage.py create_menus
+
+index:
+	docker-compose run wagtail python manage.py update_index
+
+listlinks:
+	docker-compose run wagtail python manage.py list_links
