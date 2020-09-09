@@ -1,9 +1,7 @@
-"""Django settings for the Digital Workspace project."""
-
 import os
 from base64 import b64decode
-
 import environ
+
 import sentry_sdk
 from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -250,6 +248,59 @@ NAMESPACES = {
     "wp": "http://wordpress.org/export/1.2/",
 }
 
+synonyms = []
+stop_words = []
+
+synonyms_file = os.path.join(
+    BASE_DIR, 'config/synonyms.txt'
+)
+
+stop_words_file = os.path.join(
+    BASE_DIR, 'config/stop-words.txt'
+)
+
+with open(synonyms_file) as synonyms_file:
+    for line in synonyms_file:
+        # TODO - handle "=>"
+        if line.strip().startswith('#'):
+            continue
+        synonyms.append(line.strip())
+
+with open(stop_words_file) as stop_words_file:
+    for line in stop_words_file:
+        if line.strip().startswith('#'):
+            continue
+        stop_words.append(line.strip())
+
+# synonym_filter = token_filter(
+#     'synonym_filter',  # Any name for the filter
+#     'synonym',  # Synonym filter type
+#     synonyms=synonyms,
+# )
+#
+# stop_word_filter = token_filter(
+#     'stop_word_filter',
+#     'stop',
+#     stopwords=stop_words,
+# )
+
+# search_text_analyzer = analyzer(
+#     'search_text_analyzer',
+#     tokenizer='standard',
+#     filter=[
+#         # The ORDER is important here.
+#         'standard',
+#         'lowercase',
+#         stop_word_filter,
+#         synonym_filter,
+#         # Note! 'snowball' comes after 'synonym_filter'
+#         'snowball',
+#     ],
+#     # char_filter=['html_strip']
+# )
+
+print(stop_words)
+
 WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.search.backends.elasticsearch7',
@@ -257,6 +308,42 @@ WAGTAILSEARCH_BACKENDS = {
         'INDEX': 'wagtail',
         'TIMEOUT': 5,
         'OPTIONS': {},
-        'INDEX_SETTINGS': {},
+        'INDEX_SETTINGS': {
+            'settings': {
+                'index': {
+                    'number_of_shards': 1,
+                },
+                "analysis": {
+                    "analyzer": {
+                        "wagtail_search_analyser": {
+                            "tokenizer": "standard",
+                            "filter": [
+                                #"lowercase",
+                                "stop",
+                                #"search_synonyms",
+                                #"search_snowball",
+                            ]
+                        }
+                    },
+                    #"filter": {
+                        # "search_stop_words": {
+                        #     "type": "stop",
+                        #     "ignore_case": True,
+                        #     "stopwords": stop_words
+                        # },
+                        # "search_synonyms": {
+                        #     "type": "synonym",
+                        #     "lenient": True,
+                        #     "ignore_case": True,
+                        #     "synonyms": synonyms
+                        # },
+                        # "search_snowball": {
+                        #     "type": "snowball",
+                        #     "language": "English"
+                        # }
+                    #}
+                }
+            }
+        }
     }
 }

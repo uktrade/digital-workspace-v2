@@ -26,6 +26,7 @@ from taggit.models import TaggedItemBase, TagBase, ItemBase
 
 from django.forms.widgets import CheckboxSelectMultiple
 
+from wagtail.core import blocks as wagtail_blocks
 from content import blocks
 
 
@@ -79,7 +80,11 @@ class ContentPage(Page):
         ("internal_media", blocks.InternalMediaBlock()),
         ("data_table", blocks.DataTableBlock(
             help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
-        ))
+        )),
+    ])
+
+    pinned_phrases = StreamField([
+        ("phrase", wagtail_blocks.ListBlock(wagtail_blocks.CharBlock(blank=True)))
     ])
 
     subpage_types = []
@@ -90,6 +95,7 @@ class ContentPage(Page):
 
     content_panels = Page.content_panels + [
         StreamFieldPanel("body"),
+        StreamFieldPanel("pinned_phrases"),
     ]
 
 

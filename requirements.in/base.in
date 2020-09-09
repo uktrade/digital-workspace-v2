@@ -34,3 +34,6 @@ phpserialize
 
 # Beautiful Soup
 beautifulsoup4
+
+# Elastic Search
+elasticsearch-dsl

@@ -11,22 +11,8 @@ class ExcludeFromSearch(models.Model):
     term = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.title
-
-    panels = [
-        FieldPanel('term'),
-    ]
-
-
-@register_snippet
-class Synonym(models.Model):
-    term = models.CharField(max_length=255)
-    alternative = models.CharField(max_length=255)
-
-    def __str__(self):
         return self.term
 
     panels = [
         FieldPanel('term'),
-        FieldPanel('alternative'),
     ]
