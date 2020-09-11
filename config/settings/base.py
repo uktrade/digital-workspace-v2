@@ -299,8 +299,6 @@ with open(stop_words_file) as stop_words_file:
 #     # char_filter=['html_strip']
 # )
 
-print(stop_words)
-
 WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.search.backends.elasticsearch7',
@@ -315,33 +313,62 @@ WAGTAILSEARCH_BACKENDS = {
                 },
                 "analysis": {
                     "analyzer": {
-                        "wagtail_search_analyser": {
-                            "tokenizer": "standard",
+                        "default": {
+                            "tokenizer": "lowercase",
                             "filter": [
-                                #"lowercase",
-                                "stop",
-                                #"search_synonyms",
+                                "lowercase",
+                                "search_stop_words",
+                                "search_synonyms",
                                 #"search_snowball",
                             ]
-                        }
+                        },
+                        # Override edgengram_analyzer to remove unwanted "asciifolding" and "edgengram" filters
+                        "edgengram_analyzer": {
+                            "type": "custom",
+                            "tokenizer": "lowercase",
+                            "filter": [
+                                "lowercase",
+                                "search_stop_words",
+                                "search_synonyms",
+                            ]
+                        },
+                        # Override edgengram_analyzer to remove unwanted filters
+                        "ngram_analyzer": {
+                            "type": "custom",
+                            "tokenizer": "lowercase",
+                            "filter": [
+                                "lowercase",
+                                "search_stop_words",
+                                "search_synonyms",
+                            ]
+                        },
                     },
-                    #"filter": {
-                        # "search_stop_words": {
-                        #     "type": "stop",
-                        #     "ignore_case": True,
-                        #     "stopwords": stop_words
-                        # },
-                        # "search_synonyms": {
-                        #     "type": "synonym",
-                        #     "lenient": True,
-                        #     "ignore_case": True,
-                        #     "synonyms": synonyms
-                        # },
+                    "filter": {
+                        "search_stop_words": {
+                            "type": "stop",
+                            "stopwords": stop_words
+                        },
+                        "search_synonyms": {
+                            "type": "synonym",
+                            "lenient": True,
+                            "synonyms": synonyms
+                        },
                         # "search_snowball": {
                         #     "type": "snowball",
                         #     "language": "English"
                         # }
-                    #}
+                    },
+                    # "tokenizer": {
+                    #     "search_tokenizer": {
+                    #         "type": "ngram",
+                    #         "min_gram": 3,
+                    #         "max_gram": 3,
+                    #         "token_chars": [
+                    #             "letter",
+                    #             "digit"
+                    #         ]
+                    #     }
+                    # },
                 }
             }
         }

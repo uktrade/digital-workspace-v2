@@ -10,8 +10,13 @@ def search(request):
 
     # Search
     if search_query:
-        search_results = Page.objects.live().search(search_query)
-        query = Query.get(search_query)
+        # Check for quoted phrase
+        if search_query.startswith('"') and search_query.endswith('"'):
+            search_results = Page.objects.live().search(search_query.lower(), operator='and')
+        else:
+            search_results = Page.objects.live().search(search_query.lower())
+
+        query = Query.get(search_query.lower())
 
         # Record hit
         query.add_hit()

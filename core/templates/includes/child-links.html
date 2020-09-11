@@ -1,7 +1,9 @@
 <div class="children-{{ num_cols }}-col">
     {% for child in children %}
         <div class="col-child">
-            <h3 class="govuk-heading-s"><a href="{{ child.url }}">{{ child.title }}</a></h3>
+            <h3 class="govuk-heading-s">
+                <a {% if target_blank %}target="_blank" {% endif %}href="{{ child.url }}">{{ child.title }}</a>
+            </h3>
             <p class="govuk-body excerpt">{{ child.excerpt }}</p>
             <p class="govuk-body updated-at">Updated {{ child.last_published_at }}</p>
         </div>
