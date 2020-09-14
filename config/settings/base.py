@@ -289,7 +289,7 @@ else:
 WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.search.backends.elasticsearch7',
-        'URLS': [env("ELASTIC_SEARCH_URL")],
+        'URLS': [ELASTIC_SEARCH_URL,],
         'INDEX': 'wagtail',
         'TIMEOUT': 5,
         'OPTIONS': {},
