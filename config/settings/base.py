@@ -15,6 +15,10 @@ env_file = os.path.join(BASE_DIR, ".env")
 if os.path.exists(env_file):
     env.read_env(env_file)
 
+VCAP_SERVICES = env.json('VCAP_SERVICES', {})
+
+print("VCAP_SERVICES")
+print(VCAP_SERVICES)
 
 # Set required configuration from environment
 APP_ENV = env.str("APP_ENV", "local")
@@ -28,10 +32,18 @@ PEOPLEFINDER_PROFILE_API_URL = env("PEOPLEFINDER_PROFILE_API_URL")
 PEOPLEFINDER_URL = env("PEOPLEFINDER_URL")
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
-AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-
+# AWS
+if 'aws-s3-bucket' in VCAP_SERVICES:
+    app_bucket_creds = VCAP_SERVICES['aws-s3-bucket']['credentials']
+    AWS_ACCESS_KEY_ID = app_bucket_creds["aws_access_key_id"]
+    AWS_SECRET_ACCESS_KEY = app_bucket_creds["aws_secret_access_key"]
+    AWS_REGION = app_bucket_creds["aws_region"]
+    AWS_S3_REGION_NAME = app_bucket_creds["aws_region"]
+    AWS_STORAGE_BUCKET_NAME = app_bucket_creds["bucket_name"]
+else:
+    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 
 # Set optional configuration from environment
 if env.str("DJANGO_EMAIL_BACKEND", None):
@@ -272,32 +284,10 @@ with open(stop_words_file) as stop_words_file:
             continue
         stop_words.append(line.strip())
 
-# synonym_filter = token_filter(
-#     'synonym_filter',  # Any name for the filter
-#     'synonym',  # Synonym filter type
-#     synonyms=synonyms,
-# )
-#
-# stop_word_filter = token_filter(
-#     'stop_word_filter',
-#     'stop',
-#     stopwords=stop_words,
-# )
-
-# search_text_analyzer = analyzer(
-#     'search_text_analyzer',
-#     tokenizer='standard',
-#     filter=[
-#         # The ORDER is important here.
-#         'standard',
-#         'lowercase',
-#         stop_word_filter,
-#         synonym_filter,
-#         # Note! 'snowball' comes after 'synonym_filter'
-#         'snowball',
-#     ],
-#     # char_filter=['html_strip']
-# )
+if 'elasticsearch' in VCAP_SERVICES:
+    ELASTIC_SEARCH_URL = VCAP_SERVICES['elasticsearch']["credentials"]["host"]
+else:
+    ELASTIC_SEARCH_URL = env("ELASTIC_SEARCH_URL")
 
 WAGTAILSEARCH_BACKENDS = {
     'default': {
