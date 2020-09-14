@@ -194,6 +194,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+if 'postgres' in VCAP_SERVICES:
+    DATABASE_URL = VCAP_SERVICES['postgres'][0]['credentials']['uri']
+else:
+    DATABASE_URL = os.getenv('DATABASE_URL')
+
 DATABASES = {"default": env.db()}
 
 
