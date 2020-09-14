@@ -17,9 +17,6 @@ if os.path.exists(env_file):
 
 VCAP_SERVICES = env.json('VCAP_SERVICES', {})
 
-print("VCAP_SERVICES")
-print(VCAP_SERVICES)
-
 # Set required configuration from environment
 APP_ENV = env.str("APP_ENV", "local")
 AUTHBROKER_URL = env("AUTHBROKER_URL")
@@ -34,7 +31,7 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # AWS
 if 'aws-s3-bucket' in VCAP_SERVICES:
-    app_bucket_creds = VCAP_SERVICES['aws-s3-bucket']['credentials']
+    app_bucket_creds = VCAP_SERVICES['aws-s3-bucket'][0]['credentials']
     AWS_ACCESS_KEY_ID = app_bucket_creds["aws_access_key_id"]
     AWS_SECRET_ACCESS_KEY = app_bucket_creds["aws_secret_access_key"]
     AWS_REGION = app_bucket_creds["aws_region"]
@@ -285,7 +282,7 @@ with open(stop_words_file) as stop_words_file:
         stop_words.append(line.strip())
 
 if 'elasticsearch' in VCAP_SERVICES:
-    ELASTIC_SEARCH_URL = VCAP_SERVICES['elasticsearch']["credentials"]["host"]
+    ELASTIC_SEARCH_URL = VCAP_SERVICES['elasticsearch'][0]["credentials"]["uri"]
 else:
     ELASTIC_SEARCH_URL = env("ELASTIC_SEARCH_URL")
 
