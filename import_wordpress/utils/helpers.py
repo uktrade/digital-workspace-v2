@@ -16,11 +16,11 @@ from wagtail.images.models import Image
 
 from working_at_dit.models import Topic, PageTopic
 
-s3 = boto3.client(
+legacy_s3 = boto3.client(
     's3',
-    region_name=settings.AWS_S3_REGION_NAME,
-    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+    #region_name=settings.LEGACY_AWS_S3_REGION_NAME,
+    aws_access_key_id=settings.LEGACY_AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=settings.LEGACY_AWS_SECRET_ACCESS_KEY,
 )
 
 
@@ -53,9 +53,9 @@ def is_live(status):
     return False
 
 
-def download_s3_file(file_name):
-    s3_response_object = s3.get_object(
-        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+def download_legacy_s3_file(file_name):
+    s3_response_object = legacy_s3.get_object(
+        Bucket=settings.LEGACY_AWS_STORAGE_BUCKET_NAME,
         Key=file_name,
     )
     object_content = s3_response_object['Body'].read()
@@ -91,7 +91,7 @@ def create_image(image_url, file_name, title):
         "",
     )
 
-    s3_bytes = download_s3_file(s3_path)
+    s3_bytes = download_legacy_s3_file(s3_path)
     image_bytes = io.BytesIO(s3_bytes)
 
     image = Image(
