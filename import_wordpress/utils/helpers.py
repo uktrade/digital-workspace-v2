@@ -16,7 +16,12 @@ from wagtail.images.models import Image
 
 from working_at_dit.models import Topic, PageTopic
 
-s3 = boto3.client('s3')
+s3 = boto3.client(
+    's3',
+    region_name=settings.AWS_S3_REGION_NAME,
+    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+)
 
 
 UserModel = get_user_model()
