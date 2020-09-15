@@ -254,9 +254,6 @@ WAGTAILSEARCH_BACKENDS = {
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = False
 
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 WAGTAILMENUS_ACTIVE_CLASS = "govuk-header__navigation-item--active--ws"
 
 NAMESPACES = {
