@@ -1,8 +1,9 @@
 import io
+import os
 import re
 import boto3
+from urllib.parse import urlparse
 
-from pathlib import Path
 from bs4 import BeautifulSoup
 
 from htmllaundry import sanitize
@@ -104,7 +105,8 @@ def create_image(image_url, file_name, title):
 
 def create_preview_image(attachments, attachment_id):
     attachment_url = attachments[attachment_id]["attachment_url"]
-    file_name = Path(attachment_url).name
+    parsed_url = urlparse(attachment_url)
+    file_name = os.path.basename(parsed_url.path)
 
     return create_image(
         attachment_url,

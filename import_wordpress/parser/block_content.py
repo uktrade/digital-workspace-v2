@@ -1,4 +1,6 @@
+import os
 import re
+from urllib.parse import urlparse
 
 from pathlib import Path
 from bs4 import BeautifulSoup
@@ -63,7 +65,8 @@ def process_image(img):
         if img_class.startswith("wp-image-"):
             attachment_id = img_class.replace("wp-image-", "")
             attachment_url = wp_attachments[attachment_id]["attachment_url"]
-            file_name = Path(attachment_url).name
+            parsed_url = urlparse(attachment_url)
+            file_name = os.path.basename(parsed_url.path)
 
             image = create_image(
                 attachment_url,

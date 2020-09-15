@@ -1,5 +1,9 @@
 from .base import *  # noqa
 
+MIDDLEWARE += [
+    "authbroker_client.middleware.ProtectAllViewsMiddleware",
+]
+
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
