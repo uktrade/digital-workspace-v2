@@ -6,7 +6,6 @@ import sys
 
 from django_log_formatter_ecs import ECSFormatter
 
-
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
 LOG_TO_ELK = env.bool("LOG_TO_ELK", default=False)
