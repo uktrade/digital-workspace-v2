@@ -124,6 +124,7 @@ THIRD_PARTY_APPS = [
     "authbroker_client",
     "webpack_loader",
     "storages",
+    "django_elasticsearch_dsl",
 ]
 
 WAGTAIL_APPS = [
@@ -295,10 +296,17 @@ if 'elasticsearch' in VCAP_SERVICES:
 else:
     ELASTIC_SEARCH_URL = env("ELASTIC_SEARCH_URL")
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': ELASTIC_SEARCH_URL,
+    },
+}
+
+
 WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.search.backends.elasticsearch7',
-        'URLS': [ELASTIC_SEARCH_URL,],
+        'URLS': ["http://elasticsearch:9200",],
         'INDEX': 'wagtail',
         'TIMEOUT': 5,
         'OPTIONS': {},

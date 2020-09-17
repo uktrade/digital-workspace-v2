@@ -3,6 +3,8 @@ from django.db import models
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     StreamFieldPanel,
+    InlinePanel,
+    FieldRowPanel,
 )
 from wagtail.core import blocks as wagtail_blocks
 from wagtail.core.fields import StreamField
@@ -66,8 +68,24 @@ class ContentPage(Page):
     ])
 
     pinned_phrases = StreamField([
-        ("phrase", wagtail_blocks.ListBlock(wagtail_blocks.CharBlock(blank=True)))
-    ])
+            (
+                "pinned_keyword_or_phrase",
+                blocks.PhraseBlock(required=False)
+            ),
+        ],
+        blank=True,
+    )
+
+    excluded_phrases = StreamField([
+            (
+                "excluded_keyword_or_phrase",
+                blocks.ExcludedPhraseBlock(required=False)
+            ),
+        ],
+        blank=True,
+    )
+
+    #pinned_phrases = blocks.ListBlock(wagtail_blocks.CharBlock(required=False))
 
     subpage_types = []
 
@@ -77,7 +95,11 @@ class ContentPage(Page):
 
     content_panels = Page.content_panels + [
         StreamFieldPanel("body"),
+    ]
+
+    promote_panels = Page.promote_panels + [
         StreamFieldPanel("pinned_phrases"),
+        StreamFieldPanel("excluded_phrases"),
     ]
 
 
