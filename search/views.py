@@ -53,22 +53,22 @@ def search(request):
             # TODO check which index the term was found in, if it's only title, no preview?
             result_page_ids.append(hit.pk)
 
-        exclusions = SearchExclusionPageLookUp.objects.filter(
+        exclusions = list(SearchExclusionPageLookUp.objects.filter(
             search_result_exclusion__keyword_or_phrase__in=query_parts,
         ).values_list(
             'object_id',
             flat=True,
-        )
+        ))
 
-        pinned = SearchPinPageLookUp.objects.filter(
+        pinned = list(SearchPinPageLookUp.objects.filter(
             search_result_exclusion__keyword_or_phrase__in=query_parts,
         ).values_list(
             'object_id',
             flat=True,
-        )
+        ))
 
         page_ids = [
-            pid for pid in result_page_ids if pid not in exclusions and pid not in pinned
+            pid for pid in result_page_ids if int(pid) not in exclusions and int(pid) not in pinned
         ]
 
         pinned_results = ContentPage.objects.live().filter(
@@ -95,7 +95,7 @@ def search(request):
 
     return render(request, "search/search.html", {
         "pinned_results": pinned_results,
-        "num_results": search_results.count(),
+        "num_results": pinned_results.count() + search_results.count(),
         "search_query": search_query,
         "search_results": paginated_results,
     })

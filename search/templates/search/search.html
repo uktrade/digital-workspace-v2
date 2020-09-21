@@ -6,18 +6,33 @@
 {% block title %}Search{% endblock %}
 
 {% block content %}
-    <h1>Search</h1>
-    <form action="{% url 'search' %}" method="get">
-        <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
-        <input type="submit" value="Search" class="button">
-    </form>
 
-    <h2>{{ num_results }} results</h2>
-    {% if search_results %}
-        <ul>
+        <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+    <fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+    <h1 class="govuk-fieldset__heading">
+        Search
+    </h1>
+  </legend>
+</fieldset>
+
+    <form  action="{% url 'search' %}" method="get">
+    <fieldset class="govuk-fieldset">
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="address-line-1">
+                Search term <span class="govuk-visually-hidden">line 1 of 2</span>
+            </label>
+            <input class="govuk-input" id="query" name="query" type="text"{% if search_query %} value="{{ search_query }}"{% endif %}>
+            <input value="search" type="submit" class="govuk-button" data-module="govuk-button">
+    </form>
+    <p class="govuk-body">{{ num_results }} {% if num_results == 1 %}result{% else %}results{% endif %}</p>
+    {% if pinned_results %}
+        <ul class="search-results">
             {% for result in pinned_results %}
-                <li>
-                    <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
+                <li class="pinned-result">
+                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}">{{ result }}</a></h3>
                     {% if result.search_description %}
                         {{ result.search_description }}
                     {% endif %}
@@ -26,10 +41,10 @@
         </ul>
     {% endif %}
     {% if search_results %}
-        <ul>
+        <ul class="search-results">
             {% for result in search_results %}
                 <li>
-                    <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
+                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}">{{ result }}</a></h3>
                     {% if result.search_description %}
                         {{ result.search_description }}
                     {% endif %}
@@ -42,7 +57,10 @@
         {% if search_results.has_next %}
             <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
         {% endif %}
-    {% elif search_query %}
+    {% endif %}
+    {% if not pinned_results and not search_query %}
         No results found
     {% endif %}
 {% endblock %}
+</div>
+</div>

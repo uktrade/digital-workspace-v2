@@ -302,7 +302,6 @@ ELASTICSEARCH_DSL = {
     },
 }
 
-
 WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.search.backends.elasticsearch7',
