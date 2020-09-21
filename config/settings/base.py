@@ -306,7 +306,7 @@ ELASTICSEARCH_DSL = {
 WAGTAILSEARCH_BACKENDS = {
     'default': {
         'BACKEND': 'wagtail.search.backends.elasticsearch7',
-        'URLS': ["http://elasticsearch:9200",],
+        'URLS': [ELASTIC_SEARCH_URL],
         'INDEX': 'wagtail',
         'TIMEOUT': 5,
         'OPTIONS': {},
