@@ -37,3 +37,4 @@ beautifulsoup4
 
 # Elastic Search
 elasticsearch-dsl
+django-elasticsearch-dsl
