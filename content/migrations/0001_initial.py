@@ -18,6 +18,13 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='SearchResultExclusion',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('keyword_or_phrase', models.CharField(max_length=255)),
+            ],
+        ),
+        migrations.CreateModel(
             name='ContentPage',
             fields=[
                 ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
@@ -26,6 +33,7 @@ class Migration(migrations.Migration):
                 ('body', wagtail.core.fields.StreamField([('heading2', content.blocks.Heading2Block()), ('heading3', content.blocks.Heading3Block()), ('text_section', content.blocks.TextBlock(blank=True, features=['bold', 'italic', 'ol', 'ul', 'link', 'document-link'], help_text='Some text to describe what this section is about (will be\n            displayed above the list of child pages)')), ('image', wagtail.core.blocks.StructBlock([('image', wagtail.images.blocks.ImageChooserBlock()), ('isdecorative', wagtail.core.blocks.BooleanBlock(help_text='\n        Tick if this image is entirely decorative and does not include\n        important content. This will hide the image from users using\n        screen readers.\n        ', label='Is this a decorative image?', required=False)), ('alt', wagtail.core.blocks.CharBlock(help_text='\n        Read out by screen readers or displayed if an image does not load\n        or if images have been switched off.\n\n        Unless this is a decorative image, it MUST have alt text that\n        tells people what information the image provides, describes its\n        content and function, and is specific, meaningful and concise.\n        ', label='Alt text', required=False)), ('caption', wagtail.core.blocks.CharBlock(help_text='\n        Optional text displayed under the image on the page to provide\n        context.\n        ', required=False))])), ('internal_media', wagtail.core.blocks.StructBlock([('media_file', content.blocks.MediaChooserBlock())])), ('data_table', content.blocks.DataTableBlock(help_text='ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING'))])),
                 ('pinned_phrases', wagtail.core.fields.StreamField([('pinned_keyword_or_phrase', content.blocks.PhraseBlock(required=False))], blank=True)),
                 ('excluded_phrases', wagtail.core.fields.StreamField([('excluded_keyword_or_phrase', content.blocks.ExcludedPhraseBlock(required=False))], blank=True)),
+                ('search_exclusions', models.ManyToManyField(to='content.SearchResultExclusion', related_name="search_exclusions")),
             ],
             options={
                 'abstract': False,

@@ -1,5 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+
+from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     StreamFieldPanel,
@@ -12,7 +17,11 @@ from wagtail.core.models import Page
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
+from modelcluster.fields import ParentalKey
+from modelcluster.fields import ParentalManyToManyField
+
 from content import blocks
+from content.utils import manage_excluded, manage_pinned
 
 UserModel = get_user_model()
 
@@ -85,8 +94,6 @@ class ContentPage(Page):
         blank=True,
     )
 
-    #pinned_phrases = blocks.ListBlock(wagtail_blocks.CharBlock(required=False))
-
     subpage_types = []
 
     search_fields = Page.search_fields + [
@@ -101,6 +108,36 @@ class ContentPage(Page):
         StreamFieldPanel("pinned_phrases"),
         StreamFieldPanel("excluded_phrases"),
     ]
+
+    def save(self, *args, **kwargs):
+        manage_excluded(self, self.excluded_phrases.stream_data)
+        manage_pinned(self, self.pinned_phrases.stream_data)
+
+        return super().save(*args, **kwargs)
+
+
+class SearchKeywordOrPhrase(models.Model):
+    keyword_or_phrase = models.CharField(max_length=255)
+
+
+class SearchExclusionPageLookUp(models.Model):
+    search_result_exclusion = models.ForeignKey(
+        SearchKeywordOrPhrase,
+        on_delete=models.CASCADE,
+    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+
+class SearchPinPageLookUp(models.Model):
+    search_result_exclusion = models.ForeignKey(
+        SearchKeywordOrPhrase,
+        on_delete=models.CASCADE,
+    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
 
 
 class PrivacyPolicyHome(ContentPage):

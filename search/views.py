@@ -8,6 +8,12 @@ from wagtail.core.models import Page
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
+from content.models import ContentPage
+from content.models import (
+    SearchExclusionPageLookUp,
+    SearchPinPageLookUp,
+)
+
 
 def search(request):
     search_query = request.GET.get("query", None)
@@ -19,15 +25,6 @@ def search(request):
     for query_part in query_parts:
         # Check for phrases
         if " " in query_part:
-            # phrase = ""
-            # phrase_parts = query_part.split(" ")
-            #
-            # for phrase_part in phrase_parts:
-            #     if phrase == "":
-            #         phrase = phrase_part
-            #     else:
-            #         phrase = f"{phrase} AND {phrase_part}"
-
             query_part = f"\"{query_part}\""
 
         if search_terms == "":
@@ -50,19 +47,39 @@ def search(request):
         )
 
         response = make_search.execute()
-        page_ids = []
+        result_page_ids = []
 
         for hit in response.hits:
-            # TODO check which index the term was found in, if it's only title, no preview
-            page_ids.append(hit.pk)
+            # TODO check which index the term was found in, if it's only title, no preview?
+            result_page_ids.append(hit.pk)
 
-        search_results = response.hits
+        exclusions = SearchExclusionPageLookUp.objects.filter(
+            search_result_exclusion__keyword_or_phrase__in=query_parts,
+        ).values_list(
+            'object_id',
+            flat=True,
+        )
 
-        # search_results = Page.objects.live().filter(
-        #     pk__in=page_ids,
-        # )
+        pinned = SearchPinPageLookUp.objects.filter(
+            search_result_exclusion__keyword_or_phrase__in=query_parts,
+        ).values_list(
+            'object_id',
+            flat=True,
+        )
+
+        page_ids = [
+            pid for pid in result_page_ids if pid not in exclusions and pid not in pinned
+        ]
+
+        pinned_results = ContentPage.objects.live().filter(
+            pk__in=pinned,
+        )
+
+        search_results = ContentPage.objects.live().filter(
+            pk__in=page_ids,
+        )
     else:
-        Page.objects.none()
+        search_results = ContentPage.objects.none()
 
     # Pagination
     paginator = Paginator(search_results, 10)
@@ -77,6 +94,7 @@ def search(request):
         paginated_results = paginator.page(paginator.num_pages)
 
     return render(request, "search/search.html", {
+        "pinned_results": pinned_results,
         "num_results": search_results.count(),
         "search_query": search_query,
         "search_results": paginated_results,

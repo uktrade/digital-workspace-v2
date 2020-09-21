@@ -11,8 +11,21 @@
         <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
         <input type="submit" value="Search" class="button">
     </form>
+
+    <h2>{{ num_results }} results</h2>
     {% if search_results %}
-        <h2>{{ num_results }}</h2>
+        <ul>
+            {% for result in pinned_results %}
+                <li>
+                    <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
+                    {% if result.search_description %}
+                        {{ result.search_description }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if search_results %}
         <ul>
             {% for result in search_results %}
                 <li>
