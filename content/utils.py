@@ -10,10 +10,10 @@ def remove_orhpan_keyword_and_phrases():
 
     # Remove all search exclusions not associated with a page
     exclude_look_up_ids = SearchExclusionPageLookUp.objects.all().values_list(
-        "search_result_exclusion__pk",
+        "search_keyword_or_phrase__pk",
     )
     pin_look_up_ids = SearchPinPageLookUp.objects.all().values_list(
-        "search_result_exclusion__pk",
+        "search_keyword_or_phrase__pk",
     )
 
     SearchKeywordOrPhrase.objects.exclude(
@@ -23,7 +23,10 @@ def remove_orhpan_keyword_and_phrases():
     ).delete()
 
 
-def manage_pinned(obj, pinned_phrases):
+def manage_pinned(obj, pinned_phrases_string):
+    if not pinned_phrases_string:
+        return
+
     from content.models import (
         SearchKeywordOrPhrase,
         SearchPinPageLookUp,
@@ -35,26 +38,33 @@ def manage_pinned(obj, pinned_phrases):
         content_type=ContentType.objects.get_for_model(obj),
     ).delete()
 
-    for key_word_or_phrase in pinned_phrases:
-        search_result_exclusion = SearchKeywordOrPhrase.objects.filter(
-            keyword_or_phrase=key_word_or_phrase[1],
+    pinned_phrases = pinned_phrases_string.split(",")
+
+    for key_word_or_phrase_obj in pinned_phrases:
+        key_word_or_phrase = key_word_or_phrase_obj.lower().replace("'", "").replace('"', '').strip()
+
+        if key_word_or_phrase == "":
+            continue
+
+        search_keyword_or_phrase = SearchKeywordOrPhrase.objects.filter(
+            keyword_or_phrase=key_word_or_phrase,
         ).first()
 
-        if not search_result_exclusion:
-            search_result_exclusion = SearchKeywordOrPhrase(
-                keyword_or_phrase=key_word_or_phrase[1],
+        if not search_keyword_or_phrase:
+            search_keyword_or_phrase = SearchKeywordOrPhrase(
+                keyword_or_phrase=key_word_or_phrase,
             )
-            search_result_exclusion.save()
+            search_keyword_or_phrase.save()
 
         pin = SearchPinPageLookUp.objects.filter(
-            search_result_exclusion=search_result_exclusion,
+            search_keyword_or_phrase=search_keyword_or_phrase,
             object_id=obj.pk,
             content_type=ContentType.objects.get_for_model(obj),
         ).first()
 
         if not pin:
             SearchPinPageLookUp.objects.create(
-                search_result_exclusion=search_result_exclusion,
+                search_keyword_or_phrase=search_keyword_or_phrase,
                 object_id=obj.pk,
                 content_type=ContentType.objects.get_for_model(obj),
             )
@@ -62,7 +72,10 @@ def manage_pinned(obj, pinned_phrases):
     remove_orhpan_keyword_and_phrases()
 
 
-def manage_excluded(obj, excluded_phrases):
+def manage_excluded(obj, excluded_phrases_string):
+    if not excluded_phrases_string:
+        return
+
     from content.models import (
         SearchExclusionPageLookUp,
         SearchKeywordOrPhrase,
@@ -74,26 +87,33 @@ def manage_excluded(obj, excluded_phrases):
         content_type=ContentType.objects.get_for_model(obj),
     ).delete()
 
-    for key_word_or_phrase in excluded_phrases:
-        search_result_exclusion = SearchKeywordOrPhrase.objects.filter(
-            keyword_or_phrase=key_word_or_phrase[1],
+    excluded_phrases = excluded_phrases_string.split(",")
+
+    for key_word_or_phrase_obj in excluded_phrases:
+        key_word_or_phrase = key_word_or_phrase_obj.lower().replace("'", "").replace('"', '').strip()
+
+        if key_word_or_phrase == "":
+            continue
+
+        search_keyword_or_phrase = SearchKeywordOrPhrase.objects.filter(
+            keyword_or_phrase=key_word_or_phrase,
         ).first()
 
-        if not search_result_exclusion:
-            search_result_exclusion = SearchKeywordOrPhrase(
-                keyword_or_phrase=key_word_or_phrase[1],
+        if not search_keyword_or_phrase:
+            search_keyword_or_phrase = SearchKeywordOrPhrase(
+                keyword_or_phrase=key_word_or_phrase,
             )
-            search_result_exclusion.save()
+            search_keyword_or_phrase.save()
 
         exclusion = SearchExclusionPageLookUp.objects.filter(
-            search_result_exclusion=search_result_exclusion,
+            search_keyword_or_phrase=search_keyword_or_phrase,
             object_id=obj.pk,
             content_type=ContentType.objects.get_for_model(obj),
         ).first()
 
         if not exclusion:
             SearchExclusionPageLookUp.objects.create(
-                search_result_exclusion=search_result_exclusion,
+                search_keyword_or_phrase=search_keyword_or_phrase,
                 object_id=obj.pk,
                 content_type=ContentType.objects.get_for_model(obj),
             )

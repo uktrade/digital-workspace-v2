@@ -76,28 +76,25 @@ class ContentPage(Page):
         )),
     ])
 
-    pinned_phrases = StreamField([
-            (
-                "pinned_keyword_or_phrase",
-                blocks.PhraseBlock(required=False)
-            ),
-        ],
+    pinned_phrases = models.CharField(
         blank=True,
+        null=True,
+        max_length=255,
+        help_text="Pinned keywords and phrases",
     )
 
-    excluded_phrases = StreamField([
-            (
-                "excluded_keyword_or_phrase",
-                blocks.ExcludedPhraseBlock(required=False)
-            ),
-        ],
+    excluded_phrases = models.CharField(
         blank=True,
+        null=True,
+        max_length=255,
+        help_text="Excluded keywords and phrases",
     )
 
     subpage_types = []
 
     search_fields = Page.search_fields + [
         index.SearchField("body"),
+        index.FilterField('slug'),
     ]
 
     content_panels = Page.content_panels + [
@@ -105,13 +102,13 @@ class ContentPage(Page):
     ]
 
     promote_panels = Page.promote_panels + [
-        StreamFieldPanel("pinned_phrases"),
-        StreamFieldPanel("excluded_phrases"),
+        FieldPanel("pinned_phrases"),
+        FieldPanel("excluded_phrases"),
     ]
 
     def save(self, *args, **kwargs):
-        manage_excluded(self, self.excluded_phrases.stream_data)
-        manage_pinned(self, self.pinned_phrases.stream_data)
+        manage_excluded(self, self.excluded_phrases)
+        manage_pinned(self, self.pinned_phrases)
 
         return super().save(*args, **kwargs)
 
@@ -121,7 +118,7 @@ class SearchKeywordOrPhrase(models.Model):
 
 
 class SearchExclusionPageLookUp(models.Model):
-    search_result_exclusion = models.ForeignKey(
+    search_keyword_or_phrase = models.ForeignKey(
         SearchKeywordOrPhrase,
         on_delete=models.CASCADE,
     )
@@ -131,7 +128,7 @@ class SearchExclusionPageLookUp(models.Model):
 
 
 class SearchPinPageLookUp(models.Model):
-    search_result_exclusion = models.ForeignKey(
+    search_keyword_or_phrase = models.ForeignKey(
         SearchKeywordOrPhrase,
         on_delete=models.CASCADE,
     )

@@ -43,46 +43,62 @@ def search(request):
         ).query(
             "query_string",
             query=search_terms,
-            default_field="_all_text",
+            #default_field="_all_text",
+        ).highlight(
+            'title',
+            'content_contentpage__body',
         )
 
+        print(make_search.to_dict())
+
         response = make_search.execute()
-        result_page_ids = []
+
+        exclusions = list(SearchExclusionPageLookUp.objects.filter(
+            search_keyword_or_phrase__keyword_or_phrase__in=query_parts,
+        ).values_list(
+            'object_id',
+            flat=True,
+        ))
+
+        hits = []
 
         for hit in response.hits:
             # TODO check which index the term was found in, if it's only title, no preview?
-            result_page_ids.append(hit.pk)
+            if hit.pk not in exclusions:
+                hits.append(hit)
 
-        exclusions = list(SearchExclusionPageLookUp.objects.filter(
-            search_result_exclusion__keyword_or_phrase__in=query_parts,
-        ).values_list(
-            'object_id',
-            flat=True,
-        ))
+
+            print(hit.meta.highlight)
+            #result_page_ids.append(hit.pk)
+            #
+            # test = hit.meta.highlight
+            #
+            # for fragment in hit.meta.highlight.body:
+            #     print(fragment)
 
         pinned = list(SearchPinPageLookUp.objects.filter(
-            search_result_exclusion__keyword_or_phrase__in=query_parts,
+            search_keyword_or_phrase__keyword_or_phrase__in=query_parts,
         ).values_list(
             'object_id',
             flat=True,
         ))
 
-        page_ids = [
-            pid for pid in result_page_ids if int(pid) not in exclusions and int(pid) not in pinned
-        ]
+        # page_ids = [
+        #     pid for pid in result_page_ids if int(pid) not in exclusions and int(pid) not in pinned
+        # ]
 
         pinned_results = ContentPage.objects.live().filter(
             pk__in=pinned,
         )
 
-        search_results = ContentPage.objects.live().filter(
-            pk__in=page_ids,
-        )
+        # search_results = ContentPage.objects.live().filter(
+        #     pk__in=page_ids,
+        # )
     else:
-        search_results = ContentPage.objects.none()
+        search_results = [] #ContentPage.objects.none()
 
     # Pagination
-    paginator = Paginator(search_results, 10)
+    paginator = Paginator(hits, 10)
 
     # TODO Create preview text
 
@@ -95,7 +111,7 @@ def search(request):
 
     return render(request, "search/search.html", {
         "pinned_results": pinned_results,
-        "num_results": pinned_results.count() + search_results.count(),
+        "num_results": pinned_results.count() + len(hits),
         "search_query": search_query,
         "search_results": paginated_results,
     })

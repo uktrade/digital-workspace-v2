@@ -33,9 +33,7 @@
             {% for result in pinned_results %}
                 <li class="pinned-result">
                     <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}">{{ result }}</a></h3>
-                    {% if result.search_description %}
-                        {{ result.search_description }}
-                    {% endif %}
+
                 </li>
             {% endfor %}
         </ul>
@@ -44,9 +42,17 @@
         <ul class="search-results">
             {% for result in search_results %}
                 <li>
-                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}">{{ result }}</a></h3>
-                    {% if result.search_description %}
-                        {{ result.search_description }}
+                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% slugurl result.slug_filter %}">{{ result.title }}</a></h3>
+                    {% if result.meta.highlight.title %}
+                        {% for item in result.meta.highlight.title %}
+                            <p class="govuk-body">{{ item|safe }}</p>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if result.meta.highlight.content_contentpage__body %}
+                        {% for item in result.meta.highlight.content_contentpage__body %}
+                            <p class="govuk-body">{{ item|safe }}</p>
+                        {% endfor %}
                     {% endif %}
                 </li>
             {% endfor %}
