@@ -1,3 +1,5 @@
+from bs4 import BeautifulSoup
+
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -90,10 +92,16 @@ class ContentPage(Page):
         help_text="Excluded keywords and phrases",
     )
 
+    body_no_html = models.TextField(
+        blank=True,
+        null=True,
+    )
+
     subpage_types = []
 
     search_fields = Page.search_fields + [
-        index.SearchField("body"),
+        index.SearchField("body_no_html"),
+        #index.SearchField("body"),
         index.FilterField('slug'),
     ]
 
@@ -107,6 +115,13 @@ class ContentPage(Page):
     ]
 
     def save(self, *args, **kwargs):
+        body_string = str(self.body)
+
+        self.body_no_html = BeautifulSoup(
+            body_string,
+            "html.parser"
+        ).text
+
         manage_excluded(self, self.excluded_phrases)
         manage_pinned(self, self.pinned_phrases)
 

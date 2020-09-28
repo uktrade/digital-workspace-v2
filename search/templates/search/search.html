@@ -13,21 +13,34 @@
     <fieldset class="govuk-fieldset">
   <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
     <h1 class="govuk-fieldset__heading">
-        Search
+        Search results for <em>{{ search_query }}</em>
     </h1>
   </legend>
 </fieldset>
 
     <form  action="{% url 'search' %}" method="get">
-    <fieldset class="govuk-fieldset">
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="address-line-1">
-                Search term <span class="govuk-visually-hidden">line 1 of 2</span>
-            </label>
-            <input class="govuk-input" id="query" name="query" type="text"{% if search_query %} value="{{ search_query }}"{% endif %}>
-            <input value="search" type="submit" class="govuk-button" data-module="govuk-button">
+
+
+    <div class="govuk-grid-row">
+  <div class="govuk-grid-column-three-quarters">
+
+        <fieldset class="govuk-fieldset">
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-visually-hidden" for="address-line-1" >
+                    Search term
+                </label>
+                <input class="govuk-input" id="query" name="query" type="text"{% if search_query %} value="{{ search_query }}"{% endif %}>
+            </div>
+        </fieldset>
+  </div>
+      <div class="govuk-grid-column-one-quarter">
+          <input value="search" type="submit" class="govuk-button" data-module="govuk-button">
+      </div>
+
+    </div>
+
     </form>
-    <p class="govuk-body">{{ num_results }} {% if num_results == 1 %}result{% else %}results{% endif %}</p>
+    <p class="govuk-body">{{ num_results }} {% if num_results == 1 %}result{% else %}results{% endif %} found</p>
     {% if pinned_results %}
         <ul class="search-results">
             {% for result in pinned_results %}
@@ -45,13 +58,13 @@
                     <h3 class="govuk-heading-m"><a class="govuk-link" href="{% slugurl result.slug_filter %}">{{ result.title }}</a></h3>
                     {% if result.meta.highlight.title %}
                         {% for item in result.meta.highlight.title %}
-                            <p class="govuk-body">{{ item|safe }}</p>
+                            <p class="govuk-body">...{{ item|safe }}...</p>
                         {% endfor %}
                     {% endif %}
 
-                    {% if result.meta.highlight.content_contentpage__body %}
-                        {% for item in result.meta.highlight.content_contentpage__body %}
-                            <p class="govuk-body">{{ item|safe }}</p>
+                    {% if result.meta.highlight.content_contentpage__body_no_html %}
+                        {% for item in result.meta.highlight.content_contentpage__body_no_html %}
+                            <p class="govuk-body">...{{ item|safe }}...</p>
                         {% endfor %}
                     {% endif %}
                 </li>

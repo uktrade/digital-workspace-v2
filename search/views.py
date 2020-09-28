@@ -46,7 +46,8 @@ def search(request):
             #default_field="_all_text",
         ).highlight(
             'title',
-            'content_contentpage__body',
+            'content_contentpage__body_no_html',
+            fragment_size=250,
         )
 
         print(make_search.to_dict())
@@ -66,15 +67,6 @@ def search(request):
             # TODO check which index the term was found in, if it's only title, no preview?
             if hit.pk not in exclusions:
                 hits.append(hit)
-
-
-            print(hit.meta.highlight)
-            #result_page_ids.append(hit.pk)
-            #
-            # test = hit.meta.highlight
-            #
-            # for fragment in hit.meta.highlight.body:
-            #     print(fragment)
 
         pinned = list(SearchPinPageLookUp.objects.filter(
             search_keyword_or_phrase__keyword_or_phrase__in=query_parts,
