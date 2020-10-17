@@ -31,8 +31,17 @@ class Command(BaseCommand):
                         '%a, %d %b %Y %H:%M:%S %z',
                     )
                 except:
-                    publish_date = "Unknown"
+                    continue
 
+            # Check for attachment
+            attachment_urls = item_tag.findall("wp:attachment_url", namespaces)
+
+            if len(attachment_urls) > 0:
+                attachment_url = attachment_urls[0]
+                print(f"attachment\t{attachment_url.text}\t{publish_date}")
+                continue
+
+            # # Look in content
             content_tag = item_tag.find("content:encoded", namespaces)
 
             if content_tag.text:

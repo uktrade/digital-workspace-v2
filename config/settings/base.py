@@ -315,37 +315,6 @@ WAGTAILSEARCH_BACKENDS = {
                     'number_of_shards': 1,
                 },
                 "analysis": {
-                    "analyzer": {
-                        "default": {
-                            "tokenizer": "lowercase",
-                            "filter": [
-                                "lowercase",
-                                "search_stop_words",
-                                "search_synonyms",
-                                #"search_snowball",
-                            ]
-                        },
-                        # Override edgengram_analyzer to remove unwanted "asciifolding" and "edgengram" filters
-                        "edgengram_analyzer": {
-                            "type": "custom",
-                            "tokenizer": "lowercase",
-                            "filter": [
-                                "lowercase",
-                                "search_stop_words",
-                                "search_synonyms",
-                            ]
-                        },
-                        # Override edgengram_analyzer to remove unwanted filters
-                        "ngram_analyzer": {
-                            "type": "custom",
-                            "tokenizer": "lowercase",
-                            "filter": [
-                                "lowercase",
-                                "search_stop_words",
-                                "search_synonyms",
-                            ]
-                        },
-                    },
                     "filter": {
                         "search_stop_words": {
                             "type": "stop",
@@ -356,22 +325,16 @@ WAGTAILSEARCH_BACKENDS = {
                             "lenient": True,
                             "synonyms": synonyms
                         },
-                        # "search_snowball": {
-                        #     "type": "snowball",
-                        #     "language": "English"
-                        # }
                     },
-                    # "tokenizer": {
-                    #     "search_tokenizer": {
-                    #         "type": "ngram",
-                    #         "min_gram": 3,
-                    #         "max_gram": 3,
-                    #         "token_chars": [
-                    #             "letter",
-                    #             "digit"
-                    #         ]
-                    #     }
-                    # },
+                    "analyzer": {
+                        "stop_and_synonyms": {
+                            "tokenizer": "lowercase",
+                            "filter": [
+                                "search_stop_words",
+                                "search_synonyms",
+                            ]
+                        },
+                    }
                 }
             }
         }

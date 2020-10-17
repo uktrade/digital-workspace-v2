@@ -61,6 +61,12 @@ class NewsCategory(models.Model):
     slug = models.SlugField(max_length=255, unique=True,)
     category = models.CharField(max_length=255, unique=True,)
 
+    lead = models.ForeignKey(
+        'news.NewsPage',
+        on_delete=models.CASCADE,
+        related_name='news_pages',
+    )
+
     def __str__(self):
         return self.category
 
@@ -70,6 +76,7 @@ class NewsCategory(models.Model):
 
     panels = [
         FieldPanel('category'),
+        PageChooserPanel('lead'),
     ]
 
 

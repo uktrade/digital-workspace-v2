@@ -43,9 +43,13 @@ def search(request):
         ).query(
             "query_string",
             query=search_terms,
-            #default_field="_all_text",
+            fields=[
+                "content_contentpage__search_title",
+                "content_contentpage__body_no_html"
+            ]
+            # default_field="title",
         ).highlight(
-            'title',
+            'search_title',
             'content_contentpage__body_no_html',
             fragment_size=250,
         )

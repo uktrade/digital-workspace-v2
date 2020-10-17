@@ -49,6 +49,13 @@ class ContentPage(Page):
     is_creatable = False
     show_in_menus = True
 
+    # This field is used in search indexing as
+    # we can't change the search_analyzer property
+    # of the default title field
+    search_title = models.CharField(
+        max_length=255,
+    )
+
     legacy_guid = models.CharField(
         blank=True,
         null=True,
@@ -100,8 +107,23 @@ class ContentPage(Page):
     subpage_types = []
 
     search_fields = Page.search_fields + [
-        index.SearchField("body_no_html"),
-        #index.SearchField("body"),
+        index.SearchField(
+            'search_title',
+            partial_match=True,
+            boost=2,
+            es_extra={
+                "search_analyzer": "stop_and_synonyms",
+            }
+        ),
+        index.SearchField(
+            "body_no_html",
+            partial_match=True,
+            es_extra={
+                "search_analyzer": "stop_and_synonyms",
+            }
+        ),
+        index.AutocompleteField('body_no_html'),
+        index.AutocompleteField('search_title'),
         index.FilterField('slug'),
     ]
 
@@ -121,6 +143,10 @@ class ContentPage(Page):
             body_string,
             "html.parser"
         ).text
+
+        # Required so we can override
+        # search analyzer (see above)
+        self.search_title = self.title
 
         manage_excluded(self, self.excluded_phrases)
         manage_pinned(self, self.pinned_phrases)
