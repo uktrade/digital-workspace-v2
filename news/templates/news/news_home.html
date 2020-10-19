@@ -2,30 +2,27 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-{% block content %}
+{% block main_content %}
     <div class="govuk-grid-row">
-        <div class="ws-content-page govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">{{ page_title }}</h1>
-            <!-- Perm sec live -->
-        <div class="hero-news">
-<div class="news-item">
-<div class="hero-news-copy">
-<h1 class="heading-medium">
-<a href="/news-and-views/perm-sec-live">Perm Sec Live</a>
-</h1>
-<div class="hero-news-excerpt">
-<p>
-Live updates from our Permanent Secretary, Antonia Romeo.
-</p>
-<a class="cta-read-more" href="/news-and-views/perm-sec-live">Read more</a>
-</div>
-</div>
-<div class="hero-news-image-container">
-<img alt="Perm Sec Live" src="https://static.workspace.trade.gov.uk/wp-content/uploads/2020/09/01085302/Perm-Sec-Live-desk.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJRGYEMW44XHCO4DA%2F20201016%2Feu-west-2%2Fs3%2Faws4_request&amp;X-Amz-Date=20201016T105524Z&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Expires=900&amp;X-Amz-Signature=8960b2fd64d93a8f778017a524a403754f64b6dbbadb2a53d159796745a2ffca">
-</div>
-</div>
-</div>
-            <!-- /Perm sec live -->
+        {% if category %}
+            <div class="govuk-grid-column-full">
+                <h1 class="govuk-heading-l">{{ category.category }}</h1>
+                {% if category.lead_story %}
+                    <div class="category-lead-story">
+                        <div class="govuk-grid-row">
+                            <div class="govuk-grid-column-one-half">
+                                <h2 class="govuk-heading-s">{{ category.lead_story.title }}</h2>
+                                <p class="govuk-body">{{ category.lead_story.excerpt }}</p>
+                            </div>
+                            <div class="govuk-grid-column-one-half">
+                                {% image category.lead_story.preview_image width-500 %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="govuk-grid-column-two-thirds">
             <ul class="news-items">
                 {% for news_item in posts %}
                     <li>
@@ -78,18 +75,8 @@ Live updates from our Permanent Secretary, Antonia Romeo.
                 </div>
             {% endif %}
         </div>
-    </div>
-{% endblock %}
-
-{% block tertiary_nav %}
-    <form class="news-category-form" action="" method="post">
-        {% csrf_token %}
-        <div class="govuk-form-group">
-            {% for field in category_form %}
-                <label class="govuk-body govuk-!-font-size-19" for="{{ field.auto_id }}">Categories</label>
-                {{ field }}
-            {% endfor %}
-            <input class="hide" type="submit" aria-hidden="true"/>
+        <div class="govuk-grid-column-one-third">
+            {% include "news/includes/news_categories.html" %}
         </div>
-    </form>
+    </div>
 {% endblock %}

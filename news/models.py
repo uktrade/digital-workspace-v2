@@ -21,7 +21,7 @@ from modelcluster.fields import ParentalKey
 
 from news.forms import (
     CommentForm,
-    NewsCategoryForm,
+    #NewsCategoryForm,
 )
 
 from content.models import (
@@ -61,10 +61,12 @@ class NewsCategory(models.Model):
     slug = models.SlugField(max_length=255, unique=True,)
     category = models.CharField(max_length=255, unique=True,)
 
-    lead = models.ForeignKey(
+    lead_story = models.ForeignKey(
         'news.NewsPage',
         on_delete=models.CASCADE,
         related_name='news_pages',
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -76,7 +78,7 @@ class NewsCategory(models.Model):
 
     panels = [
         FieldPanel('category'),
-        PageChooserPanel('lead'),
+        PageChooserPanel('lead_story'),
     ]
 
 
@@ -147,9 +149,9 @@ class NewsPage(PageWithTopics):
 
         context = self.get_context(request, **kwargs)
         # TODO - store news category after selected and select here
-        context["category_form"] = NewsCategoryForm(
-            selected_category=""
-        )
+        # context["category_form"] = NewsCategoryForm(
+        #     selected_category=""
+        # )
         context["comment_form"] = CommentForm()
 
         if "news_category" in request.POST:
@@ -177,9 +179,6 @@ class NewsHome(RoutablePageMixin, Page):
     def news_home(self, request):
         request.is_preview = getattr(request, 'is_preview', False)
         context = self.get_context(request)
-        context["category_form"] = NewsCategoryForm(
-            selected_category=""
-        )
 
         if "news_category" in request.POST:
             news_category = request.POST["news_category"]
@@ -198,9 +197,9 @@ class NewsHome(RoutablePageMixin, Page):
     def category_home(self, request, category_slug):
         request.is_preview = getattr(request, 'is_preview', False)
         context = self.get_context(request, category=category_slug)
-        context["category_form"] = NewsCategoryForm(
-            selected_category=""
-        )
+        # context["category_form"] = NewsCategoryForm(
+        #     selected_category=""
+        # )
 
         if "news_category" in request.POST:
             news_category = request.POST["news_category"]
@@ -220,6 +219,9 @@ class NewsHome(RoutablePageMixin, Page):
         context = super().get_context(request, *args, **kwargs)
         context["page_title"] = self.title
 
+        categories = NewsCategory.objects.all()
+        context["categories"] = categories
+
         # Check for category
         if "category" in kwargs:
             category = NewsCategory.objects.filter(
@@ -229,7 +231,7 @@ class NewsHome(RoutablePageMixin, Page):
                 news_categories__id__in=[category.pk,],
             ).live().public().order_by('-first_published_at')
 
-            context["page_title"] = category.category
+            context["category"] = category
         else:
             # Get all posts
             news_items = NewsPage.objects.live().public().order_by('-first_published_at')

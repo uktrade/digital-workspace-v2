@@ -13,8 +13,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='newscategory',
-            name='lead',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='news_pages', to='news.NewsPage'),
+            name='lead_story',
+            field=models.ForeignKey(null=True, blank=True, on_delete=django.db.models.deletion.CASCADE, related_name='news_pages', to='news.NewsPage'),
             preserve_default=False,
         ),
     ]

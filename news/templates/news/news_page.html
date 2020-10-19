@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "2_col_content.html" %}
 {% load wagtailcore_tags %}
 
 {% block content %}
@@ -36,14 +36,5 @@
 {% endblock %}
 
 {% block tertiary_nav %}
-    <form class="news-category-form" action="" method="post">
-        {% csrf_token %}
-        <div class="govuk-form-group">
-            {% for field in category_form %}
-                <label class="govuk-body govuk-!-font-size-19" for="{{ field.auto_id }}">Categories</label>
-                {{ field }}
-            {% endfor %}
-            <input class="hide" type="submit" aria-hidden="true"/>
-        </div>
-    </form>
+    {% include "news/includes/news_categories.html" %}
 {% endblock %}

@@ -32,12 +32,9 @@
 
     <body class="govuk-template__body ">
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-
         <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
-
         {% include "includes/header.html" %}
         {% include "includes/search_and_profile_bar.html" %}
-
         <div class="ws-width-container">
             <div class="govuk-phase-banner">
                 <p class="govuk-phase-banner__content">
@@ -49,22 +46,13 @@
                   </span>
                 </p>
             </div>
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    {% block breadcrumbs %}
-                        {% breadcrumbs %}
-                    {% endblock %}
-                </div>
-                <div class="govuk-grid-column-one-third">
-                    {% block tertiary_nav %}
-                    {% endblock %}
-                </div>
-            </div>
             <main class="govuk-main-wrapper " id="main-content" role="main">
-                {% block content %}{% endblock %}
+                {% block breadcrumbs %}
+                    {% breadcrumbs %}
+                {% endblock %}
+                {% block main_content %}{% endblock %}
             </main>
         </div>
-
         {% include "includes/footer.html" %}
         {% render_bundle 'main' 'js' %}
     </body>
