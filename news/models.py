@@ -44,6 +44,7 @@ class Comment(models.Model):
         "news.Comment",
         on_delete=models.CASCADE,
         null=True,
+        related_name="replies",
     )
 
     def __str__(self):
@@ -116,6 +117,10 @@ class NewsPage(PageWithTopics):
         related_name='+'
     )
 
+    featured_on_news_home = models.BooleanField(
+        default=False,
+    )
+
     search_fields = ContentPage.search_fields + [
         index.SearchField("excerpt"),
     ]
@@ -126,14 +131,32 @@ class NewsPage(PageWithTopics):
         InlinePanel('news_categories', label='News category'),
     ]
 
+    promote_panels = Page.promote_panels + [
+        FieldPanel("featured_on_news_home"),
+    ]
+
+    def save(self, *args, **kwargs):
+        # If set as featured article, set all other
+        # articles to be not being
+        if self.featured_on_news_home:
+            NewsPage.objects.exclude(
+                slug=self.slug,
+            ).update(featured_on_news_home=False)
+
+        return super().save(*args, **kwargs)
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         comments = Comment.objects.filter(
             news_page=self,
         ).all()
+
         context["comments"] = comments
         context["comment_count"] = comments.count()
+
+        categories = NewsCategory.objects.all()
+        context["categories"] = categories
 
         return context
 
@@ -141,26 +164,16 @@ class NewsPage(PageWithTopics):
         # Add comment before calling get_context, so it's included
         if "comment" in request.POST:
             comment = request.POST["comment"]
+            in_reply_to = request.POST.get("in_reply_to", None)
             Comment.objects.create(
                 content=comment,
                 author=request.user,
                 news_page=self,
+                parent_id=in_reply_to,
             )
 
         context = self.get_context(request, **kwargs)
-        # TODO - store news category after selected and select here
-        # context["category_form"] = NewsCategoryForm(
-        #     selected_category=""
-        # )
         context["comment_form"] = CommentForm()
-
-        if "news_category" in request.POST:
-            news_category = request.POST["news_category"]
-            news_home = self.get_parent().specific
-            url = news_home.url + news_home.reverse_subpage(
-                name='news_category', args=(news_category,)
-            )
-            return redirect(url)
 
         return render(
             request,
@@ -180,12 +193,12 @@ class NewsHome(RoutablePageMixin, Page):
         request.is_preview = getattr(request, 'is_preview', False)
         context = self.get_context(request)
 
-        if "news_category" in request.POST:
-            news_category = request.POST["news_category"]
-            url = self.url + self.reverse_subpage(
-                name='news_category', args=(news_category,)
-            )
-            return redirect(url)
+        featured_page = NewsPage.objects.filter(
+            featured_on_news_home=True,
+        ).first()
+
+        if featured_page:
+            context["featured_page"] = featured_page
 
         return TemplateResponse(
             request,
@@ -197,16 +210,6 @@ class NewsHome(RoutablePageMixin, Page):
     def category_home(self, request, category_slug):
         request.is_preview = getattr(request, 'is_preview', False)
         context = self.get_context(request, category=category_slug)
-        # context["category_form"] = NewsCategoryForm(
-        #     selected_category=""
-        # )
-
-        if "news_category" in request.POST:
-            news_category = request.POST["news_category"]
-            url = self.url + self.reverse_subpage(
-                name='news_category', args=(news_category,)
-            )
-            return redirect(url)
 
         return TemplateResponse(
             request,

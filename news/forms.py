@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 
 class CommentForm(forms.Form):
@@ -8,34 +9,28 @@ class CommentForm(forms.Form):
         required=True,
         widget=forms.Textarea(attrs={'class': 'govuk-textarea'})
     )
+    in_reply_to = forms.IntegerField(
+        required=False,
+        widget=forms.HiddenInput(),
+    )
 
+    def clean_in_reply_to(self):
+        from news.models import Comment
+        in_reply_to = self.cleaned_data['in_reply_to']
 
-# class NewsCategoryForm(forms.Form):
-#     def __init__(self, *args, **kwargs):
-#         from news.models import NewsCategory
-#
-#         selected_category = kwargs.pop('selected_category', "")
-#         super(NewsCategoryForm, self).__init__(
-#             *args,
-#             **kwargs,
-#         )
-#
-#         categories = []
-#         for category in NewsCategory.objects.all():
-#             categories.append(
-#                 (category.slug, category.category)
-#             )
-#
-#         categories.insert(0, ("", 'Select category'))
-#
-#         self.fields['news_category'] = forms.ChoiceField(
-#             choices=categories,
-#             initial=selected_category,
-#         )
-#         self.fields["news_category"].widget.attrs.update(
-#             {
-#                 "class": "govuk-select",
-#             },
-#         )
-#
-#         self.fields["news_category"].widget.attrs["onchange"] = "this.form.submit();"
+        if in_reply_to:
+            if not in_reply_to.is_integer():
+                raise ValidationError(
+                    "Cannot save comment, provided id is not an integer"
+                )
+
+            original_comment = Comment.objects.filter(
+                pk=in_reply_to,
+            ).first()
+
+            if not original_comment:
+                raise ValidationError(
+                    "Cannot save comment, cannot find comment that was replied to"
+                )
+
+        return in_reply_to

@@ -2,39 +2,55 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="ws-content-page govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">{{ page.title }}</h1>
-            {% include "includes/attribution.html" with page=page %}
-            <div class="ws-streamfield-content">
-                {% for block in page.body %}
-                    {% include_block block %}
-                {% endfor %}
-            </div>
-            {% if comment_count > 0 %}
-                <h2 class="govuk-heading-m">{{ comment_count }} comments</h2>
-                {% for comment in comments %}
-                    <p class="govuk-body comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}
-                        <span class="comment-posted-date">{{ comment.posted_date }}</span></p>
-                    <p class="govuk-body">{{ comment.content }}</p>
-                    <p class="govuk-body"><a href="">Reply</a></p>
-                {% endfor %}
-            {% endif %}
-            <h2 class="govuk-heading-m">Leave a comment</h2>
-            <form action="" method="post">
-                {% csrf_token %}
-                <div class="govuk-form-group">
-                    {% for field in comment_form %}
-                        <label class="hide" for="{{ field.auto_id }}">Comment content</label>
-                        {{ field }}
-                    {% endfor %}
-                    <p><input value="Submit comment" type="submit" class="govuk-button"/></p>
-                </div>
-            </form>
-        </div>
+    <h1 class="govuk-heading-l">{{ page.title }}</h1>
+    {% include "includes/attribution.html" with page=page %}
+    <div class="ws-streamfield-content">
+        {% for block in page.body %}
+            {% include_block block %}
+        {% endfor %}
     </div>
+    {% if comment_count > 0 %}
+        <h2 class="govuk-heading-m">{{ comment_count }} comments</h2>
+        {% for comment in comments %}
+            <p class="govuk-body comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}
+                <span class="comment-posted-date">{{ comment.posted_date }}</span>
+            </p>
+            <p class="govuk-body">{{ comment.content }}</p>
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Reply to this comment</legend>
+                <form action="" method="post" onsubmit="setCommentId(this, {{ comment.pk }});">
+                    {% csrf_token %}
+                    <div class="govuk-form-group">
+                        {% for field in comment_form %}
+                            <label class="hide" for="{{ field.auto_id }}">Comment content</label>
+                            {{ field }}
+                        {% endfor %}
+                        <p><input value="Submit comment" type="submit" class="govuk-button"/></p>
+                    </div>
+                </form>
+            </fieldset>
+            <p class="govuk-body" aria-hidden="true"><a href="">Reply</a></p>
+        {% endfor %}
+    {% endif %}
+    <h2 class="govuk-heading-m">Leave a comment</h2>
+    <form action="" method="post" onsubmit="">
+        {% csrf_token %}
+        <div class="govuk-form-group">
+            {% for field in comment_form %}
+                <label class="hide" for="{{ field.auto_id }}">Comment content</label>
+                {{ field }}
+            {% endfor %}
+            <p><input value="Submit comment" type="submit" class="govuk-button"/></p>
+        </div>
+    </form>
+    <script>
+        function setCommentId(commentForm, commentId) {
+            commentForm.elements["in_reply_to"].value = commentId;
+        }
+    </script>
 {% endblock %}
 
-{% block tertiary_nav %}
+{% block tertiary_col_content %}
     {% include "news/includes/news_categories.html" %}
 {% endblock %}

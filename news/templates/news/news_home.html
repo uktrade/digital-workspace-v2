@@ -8,19 +8,12 @@
             <div class="govuk-grid-column-full">
                 <h1 class="govuk-heading-l">{{ category.category }}</h1>
                 {% if category.lead_story %}
-                    <div class="category-lead-story">
-                        <div class="govuk-grid-row">
-                            <div class="govuk-grid-column-one-half">
-                                <h2 class="govuk-heading-s">{{ category.lead_story.title }}</h2>
-                                <p class="govuk-body">{{ category.lead_story.excerpt }}</p>
-                            </div>
-                            <div class="govuk-grid-column-one-half">
-                                {% image category.lead_story.preview_image width-500 %}
-                            </div>
-                        </div>
-                    </div>
+                    {% include "news/includes/lead_story.html" with news_article=category.lead_story %}
                 {% endif %}
             </div>
+        {% endif %}
+        {% if featured_page %}
+            {% include "news/includes/lead_story.html" with news_article=featured_page %}
         {% endif %}
         <div class="govuk-grid-column-two-thirds">
             <ul class="news-items">
