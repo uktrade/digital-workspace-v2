@@ -10,28 +10,40 @@
         {% endfor %}
     </div>
     {% if comment_count > 0 %}
-        <h2 class="govuk-heading-m">{{ comment_count }} comments</h2>
-        {% for comment in comments %}
-            <p class="govuk-body comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}
-                <span class="comment-posted-date">{{ comment.posted_date }}</span>
-            </p>
-            <p class="govuk-body">{{ comment.content }}</p>
-
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Reply to this comment</legend>
-                <form action="" method="post" onsubmit="setCommentId(this, {{ comment.pk }});">
-                    {% csrf_token %}
-                    <div class="govuk-form-group">
-                        {% for field in comment_form %}
-                            <label class="hide" for="{{ field.auto_id }}">Comment content</label>
-                            {{ field }}
-                        {% endfor %}
-                        <p><input value="Submit comment" type="submit" class="govuk-button"/></p>
-                    </div>
-                </form>
-            </fieldset>
-            <p class="govuk-body" aria-hidden="true"><a href="">Reply</a></p>
-        {% endfor %}
+        <div class="news-article-comments">
+            <h2 class="govuk-heading-m">{{ comment_count }} comments</h2>
+            {% for comment in comments %}
+                <p class="govuk-body comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}
+                    <span class="comment-posted-date">{{ comment.posted_date }}</span>
+                </p>
+                <p class="govuk-body">{{ comment.content }}</p>
+                <p class="govuk-body" aria-hidden="true" id="reply-link-{{ comment.pk }}"><a class="govuk-link" href="#" onclick="return displayReplyForm({{ comment.pk }})">Reply</a></p>
+                <fieldset id="reply-{{ comment.pk }}" class="reply-fieldset govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Reply to this comment</legend>
+                    <form action="" method="post" onsubmit="setCommentId(this, {{ comment.pk }});">
+                        {% csrf_token %}
+                        <div class="govuk-form-group">
+                            {% for field in comment_form %}
+                                <label class="hide" for="{{ field.auto_id }}">Comment content</label>
+                                {{ field }}
+                            {% endfor %}
+                            <p><input value="Submit comment" type="submit" class="govuk-button"/></p>
+                        </div>
+                    </form>
+                </fieldset>
+                {% if comment.replies.all.count > 0 %}
+                    <h3 class="govuk-heading-s">Replies</h3>
+                    {% for reply in comment.replies.all %}
+                        <div class="govuk-inset-text">
+                            <p class="govuk-body comment-author">{{ reply.author.first_name }} {{ comment.author.last_name }}
+                                <span class="comment-posted-date">{{ reply.posted_date }}</span>
+                            </p>
+                            <p class="govuk-body">{{ reply.content }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
     {% endif %}
     <h2 class="govuk-heading-m">Leave a comment</h2>
     <form action="" method="post" onsubmit="">
@@ -47,6 +59,13 @@
     <script>
         function setCommentId(commentForm, commentId) {
             commentForm.elements["in_reply_to"].value = commentId;
+        }
+
+        function displayReplyForm(commentId) {
+            document.getElementById("reply-" + commentId).style.display = 'block';
+            document.getElementById("reply-link-" + commentId).style.display = 'none';
+
+            return false;
         }
     </script>
 {% endblock %}

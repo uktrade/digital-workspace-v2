@@ -19,6 +19,9 @@ current_parent_tags = []
 
 def prep_content(content):
     # Replace img caption [] with img tag attribute
+    if not content:
+        return None
+
     content = re.sub(
         "\[caption.*\](.*)\[\/caption\]",
         replace_caption,
@@ -60,21 +63,22 @@ def process_image(img):
     if img.has_attr("data-caption"):
         caption = img["data-caption"]
 
-    for img_class in img_classes:
-        # Check for reference to attachment
-        if img_class.startswith("wp-image-"):
-            attachment_id = img_class.replace("wp-image-", "")
-            attachment_url = wp_attachments[attachment_id]["attachment_url"]
-            parsed_url = urlparse(attachment_url)
-            file_name = os.path.basename(parsed_url.path)
-
-            image = create_image(
-                attachment_url,
-                file_name,
-                wp_attachments[attachment_id]["title"],
-            )
-
-            return image, alt, caption
+    # for img_class in img_classes:
+    #     # Check for reference to attachment
+    #     if img_class.startswith("wp-image-"):
+    #         attachment_id = img_class.replace("wp-image-", "")
+    #         attachment_url = wp_attachments[attachment_id]["attachment_url"]
+    #         parsed_url = urlparse(attachment_url)
+    #         file_name = os.path.basename(parsed_url.path)
+    #
+    #         image = create_image(
+    #             attachment_url,
+    #             file_name,
+    #             wp_attachments[attachment_id]["title"],
+    #         )
+    #
+    #         return image, alt, caption
+    return None, None, None
 
 
 def append_block_text(blocks):
@@ -90,53 +94,57 @@ def append_block_text(blocks):
 
 
 def is_heading(tag):
-    if (
-            (
+    try:
+        if (
                 (
-                    tag.previous_sibling and
                     (
-                        str(tag.previous_sibling.strip()).endswith(".") or
-                        tag.previous_sibling.strip() == ""
-                    )
-                )
-                or
-                    not tag.previous_sibling
-            )
-            and
-            (
-                (
-                    tag.next_sibling and
-                    (
+                        tag.previous_sibling and
                         (
-                            len(tag.next_sibling.strip()) > 0 and
-                            str(tag.next_sibling.strip())[0].isupper()
-                        ) or
-                            tag.next_sibling.strip() == ""
+                            str(tag.previous_sibling.strip()).endswith(".") or
+                            tag.previous_sibling.strip() == ""
+                        )
                     )
+                    or
+                        not tag.previous_sibling
                 )
-                or
-                    not tag.next_sibling
-            )
-    ):
-        return True
-
-    return False
+                and
+                (
+                    (
+                        tag.next_sibling and
+                        (
+                            (
+                                len(tag.next_sibling.strip()) > 0 and
+                                str(tag.next_sibling.strip())[0].isupper()
+                            ) or
+                                tag.next_sibling.strip() == ""
+                        )
+                    )
+                    or
+                        not tag.next_sibling
+                )
+        ):
+            return True
+    except:
+        pass
+    finally:
+        return False
 
 
 def process_content(tag, blocks, depth):
     if tag.name == "img":
-        append_block_text(blocks)
-
-        image, alt, caption = process_image(tag)
-
-        blocks.append({
-                'type': 'image', 'value': {
-                    'image': image.pk,
-                    'alt': alt,
-                    'caption': caption,
-                }
-            }
-        )
+        pass
+        # append_block_text(blocks)
+        #
+        # image, alt, caption = process_image(tag)
+        #
+        # blocks.append({
+        #         'type': 'image', 'value': {
+        #             'image': image.pk,
+        #             'alt': alt,
+        #             'caption': caption,
+        #         }
+        #     }
+        # )
     elif tag.name == "strong" and depth == 2 and is_heading(tag):
         # If this is level 2, swap for header tag
         append_block_text(blocks)
@@ -159,6 +167,9 @@ def process_content(tag, blocks, depth):
 
 
 def parse_into_blocks(html_content, attachments):
+    if not html_content:
+        return None
+
     global wp_attachments
     wp_attachments = attachments
 

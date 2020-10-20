@@ -69,12 +69,18 @@ def create_comment(comment, content_page, comments):
         if not parent_comment:
             # Get parent comment
             for c in comments:
+                if "parent" not in comment:
+                    return
+
                 if c["legacy_id"] == comment["parent"]:
                     parent_comment = create_comment(c, content_page, comments)
 
     author = UserModel.objects.filter(email=comment["author_email"]).first()
 
-    assert author is not None
+    #assert author is not None
+    # TODO - think about implications
+    if author is None:
+        return
 
     return Comment.objects.create(
         legacy_id=int(comment["legacy_id"]),
@@ -89,6 +95,9 @@ def create_news_page(
     news_item,
     attachments,
 ):
+    if not news_item["title"]:
+        return
+
     # check for existence of parent news page
     news_home = Page.objects.filter(slug="news-and-views").first()
 
@@ -102,11 +111,16 @@ def create_news_page(
 
     author = get_author(news_item)
 
+    excerpt = None
+
+    if "excerpt" in news_item:
+        excerpt = news_item["excerpt"]
+
     if "preview_image_id" in news_item:
-        preview_image = create_preview_image(
-            attachments,
-            news_item["preview_image_id"],
-        )
+        # preview_image = create_preview_image(
+        #     attachments,
+        #     news_item["preview_image_id"],
+        # )
 
         content_page = NewsPage(
             first_published_at=news_item["pub_date"],
@@ -116,8 +130,8 @@ def create_news_page(
             legacy_guid=news_item["guid"],
             legacy_content=news_item["content"],
             live=live,
-            preview_image=preview_image,
-            excerpt=news_item["excerpt"]
+            #preview_image=preview_image,
+            excerpt=excerpt,
         )
     else:
         content_page = NewsPage(
@@ -128,7 +142,7 @@ def create_news_page(
             legacy_guid=news_item["guid"],
             legacy_content=news_item["content"],
             live=live,
-            excerpt=news_item["excerpt"]
+            excerpt=excerpt,
         )
 
     news_home.add_child(instance=content_page)
@@ -184,6 +198,11 @@ def create_news_page(
     if "topics" in news_item:
         for wp_topic in news_item["topics"]:
             topic = Topic.objects.filter(title=wp_topic["name"]).first()
+
+            if not topic:
+                print("COULD NOT FIND TOPIC: ", topic)
+                continue
+
             PageTopic.objects.get_or_create(
                 topic=topic,
                 page=content_page,

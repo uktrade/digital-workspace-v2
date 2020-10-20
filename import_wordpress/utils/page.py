@@ -66,6 +66,11 @@ def set_page_content(page_key, page_value, items):
 
                 for index, part in enumerate(link_parts, start=1):
                     if index == len(link_parts):
+
+                        # print("page_key", page_key)
+                        # print("page_value", page_value)
+                        # print("items", items)
+
                         create_page(
                             items["page"][page_key],
                             page_type,
@@ -75,3 +80,7 @@ def set_page_content(page_key, page_value, items):
                         )
                     else:
                         parent = page_type.objects.filter(slug=part).first()
+
+                        if parent is None:
+                            
+                            print("PARENT IS NONE: slug=", part)

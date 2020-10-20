@@ -38,7 +38,7 @@ class Comment(models.Model):
     legacy_id = models.IntegerField(null=True,)
     news_page = models.ForeignKey("news.NewsPage", on_delete=models.CASCADE)
     author = models.ForeignKey(UserModel, on_delete=models.CASCADE)
-    content = models.CharField(max_length=255)
+    content = models.TextField()
     posted_date = models.DateTimeField(auto_now_add=True)
     parent = models.ForeignKey(
         "news.Comment",
@@ -150,10 +150,14 @@ class NewsPage(PageWithTopics):
 
         comments = Comment.objects.filter(
             news_page=self,
+            parent_id=None,
         ).all()
 
         context["comments"] = comments
-        context["comment_count"] = comments.count()
+
+        context["comment_count"] = Comment.objects.filter(
+            news_page=self,
+        ).count()
 
         categories = NewsCategory.objects.all()
         context["categories"] = categories

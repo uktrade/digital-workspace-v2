@@ -26,7 +26,7 @@ namespaces = settings.NAMESPACES
 
 UserModel = get_user_model()
 
-xml_file = os.path.join(settings.BASE_DIR, "wordpress.xml")
+xml_file = os.path.join(settings.BASE_DIR, "wordpress_all.xml")
 
 counter = 0
 
@@ -134,8 +134,15 @@ def parse_xml_file():
         )
         if hasattr(pub_date, "text"):
             # Fri, 17 Jul 2020 10:00:07 +0000
+            pub_date_text = pub_date.text
+            if "-0001 00:00:00 +0000" in pub_date_text:
+                pub_date_text = pub_date_text.replace(
+                    "-0001",
+                    "2000",
+                )
+
             item["pub_date"] = datetime.strptime(
-                pub_date.text,
+                pub_date_text,
                 '%a, %d %b %Y %H:%M:%S %z',
             )
 
@@ -183,33 +190,33 @@ def parse_xml_file():
 
     # Second step is to generate Wagtail content
 
-    print("Creating themes...")
+    # print("Creating themes...")
 
-    # Themes
-    for key, value in items["theme"].items():
-        create_theme(
-            items["theme"][key],
-        )
-
-    print("Creating topics...")
-
-    # Topics
-    for key, value in items["topic"].items():
-        create_topic(
-            items["topic"][key],
-            items["attachment"],
-        )
-
-    print("Creating news...")
-
-    # News
-    for key, value in items["news"].items():
-        create_news_page(
-            items["news"][key],
-            items["attachment"]
-        )
-
-    print("Creating page content...")
+    # # Themes
+    # for key, value in items["theme"].items():
+    #     create_theme(
+    #         items["theme"][key],
+    #     )
+    #
+    # print("Creating topics...")
+    #
+    # # Topics
+    # for key, value in items["topic"].items():
+    #     create_topic(
+    #         items["topic"][key],
+    #         items["attachment"],
+    #     )
+    #
+    # print("Creating news...")
+    #
+    # # News
+    # for key, value in items["news"].items():
+    #     create_news_page(
+    #         items["news"][key],
+    #         items["attachment"]
+    #     )
+    #
+    # print("Creating page content...")
 
     # Page content
     for key, value in items["page"].items():

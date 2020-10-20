@@ -66,6 +66,11 @@ def download_legacy_s3_file(file_name):
 
 def replace_caption(match):
     parts = match.group(1).split(" />")
+
+    # TODO - think about implication
+    if len(parts) < 2:
+        return ""
+
     img_string = f'{parts[0]} data-caption="{parts[1].strip()}" />'
     return img_string
 
@@ -87,6 +92,8 @@ def add_paragraph_tags(content):
 
 
 def create_image(image_url, file_name, title):
+    return None
+
     s3_path = image_url.split("?")[0].replace(
         "https://workspace-trade-gov-uk.s3.eu-west-2.amazonaws.com/",
         "",
@@ -125,15 +132,33 @@ def get_slug(slug):
 
 
 def get_author(item):
-    author_email = f'{item["creator"]}@trade.gov.uk'
-    author = UserModel.objects.filter(email=author_email).first()
+    domains = [
+        "trade.gov.uk",
+        "digital.trade.gov.uk",
+        "trade.gsi.gov.uk",
+    ]
+
+    author = None
+
+    # Exceptions to general pattern
+    if item["creator"] == "DavidMatthews":
+        item["creator"] = "David.Matthews"
+
+    for domain in domains:
+        author_email = f'{item["creator"].lower()}@{domain}'
+        author = UserModel.objects.filter(
+            email=author_email
+        ).first()
+
+        if author:
+            break
 
     if not author:
-        author_email = f'{item["creator"]}@digital.trade.gov.uk'
-        author = UserModel.objects.filter(email=author_email).first()
-
-    if not author:
-        raise Exception(f"Cannot find author: {author_email}")
+        print("Could not find author: ", item["creator"])
+        author = UserModel.objects.filter(
+            email="connect@digital.trade.gov.uk"
+        ).first()
+        #raise Exception(f"Cannot find author: {author_email}")
 
     return author
 

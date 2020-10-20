@@ -1,0 +1,18 @@
+
+.news-article-comments {
+  .govuk-inset-text {
+      margin: 10px 0 20px 0;
+  }
+  .reply-fieldset {
+    display: none;
+  }
+}
+
+.comment-author {
+  font-weight: bold;
+}
+
+.comment-posted-date {
+  color: govuk-colour("mid-grey");
+  font-weight: normal;
+}

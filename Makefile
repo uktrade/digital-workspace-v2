@@ -85,7 +85,6 @@ import:
 	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run wagtail python manage.py shell
 	docker-compose run --rm wagtail python manage.py import_wordpress
 	docker-compose run --rm wagtail python manage.py create_menus
-	docker-compose run --rm wagtail python manage.py update_index
 	docker-compose up
 
 fixtree:
