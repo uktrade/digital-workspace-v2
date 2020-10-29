@@ -28,10 +28,14 @@ def create_how_do_i(how_do_i, attachments):
 
     how_do_i_home = HowDoIHome.objects.filter(slug="how-do-i").first()
 
+    title = how_do_i["title"]
+    if not title:
+        title = "NO TITLE"
+
     content_page = HowDoI(
         first_published_at=how_do_i["pub_date"],
         last_published_at=how_do_i["post_date"],
-        title=how_do_i["title"],
+        title=title,
         slug=slugify(path),
         legacy_guid=how_do_i["guid"],
         legacy_content=how_do_i["content"],

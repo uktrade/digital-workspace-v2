@@ -15,7 +15,7 @@ def create_homepage(apps, schema_editor):
 
     # Delete the default homepage
     # If migration is run multiple times, it may have already been deleted
-    Page.objects.filter(id=2).delete()
+    Page.objects.filter(slug="home").delete()
 
     # Create content type for homepage model
     homepage_content_type, __ = ContentType.objects.get_or_create(

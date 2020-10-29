@@ -12,7 +12,11 @@ from working_at_dit.models import PageWithTopics
 class Tool(PageWithTopics):
     is_creatable = True
 
-    redirect_url = models.URLField(null=True, blank=True)
+    redirect_url = models.CharField(
+        null=True,
+        blank=True,
+        max_length=2048,
+    )
 
     parent_page_types = ['tools.ToolsHome']
     subpage_types = []  # Should not be able to create children

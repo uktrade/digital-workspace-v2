@@ -26,6 +26,7 @@ from news.forms import (
 
 from content.models import (
     ContentPage,
+    BasePage,
 )
 
 from working_at_dit.models import PageWithTopics
@@ -186,7 +187,7 @@ class NewsPage(PageWithTopics):
         )
 
 
-class NewsHome(RoutablePageMixin, Page):
+class NewsHome(RoutablePageMixin, BasePage):
     show_in_menus = True
     is_creatable = False
 

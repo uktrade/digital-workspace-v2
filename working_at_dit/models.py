@@ -11,7 +11,7 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
 from modelcluster.fields import ParentalKey
 
-from content.models import ContentPage, Theme
+from content.models import BasePage, ContentPage, Theme
 
 
 class WorkingAtDITHome(ContentPage):
@@ -29,7 +29,7 @@ class WorkingAtDITHome(ContentPage):
         return context
 
 
-class TopicHome(Page):
+class TopicHome(BasePage):
     subpage_types = ["working_at_dit.Topic"]
 
 
@@ -94,7 +94,7 @@ class PageTopic(models.Model):
 
 
 class PageWithTopics(ContentPage):
-    excerpt = models.CharField(max_length=250, blank=True, null=True)
+    excerpt = models.CharField(max_length=360, blank=True, null=True)
 
     content_panels = ContentPage.content_panels + [
         FieldPanel("excerpt"),
@@ -119,17 +119,17 @@ class HowDoI(PageWithTopics):
     subpage_types = []  # Should not be able to create children
 
 
-class PoliciesAndGuidanceHome(Page):
+class PoliciesAndGuidanceHome(BasePage):
     subpage_types = ["working_at_dit.PoliciesHome", "working_at_dit.GuidanceHome", ]
     # model just for use in editor hierarchy
 
 
-class PoliciesHome(Page):
+class PoliciesHome(BasePage):
     subpage_types = ["working_at_dit.Policy", ]
     # model just for use in editor hierarchy
 
 
-class GuidanceHome(Page):
+class GuidanceHome(BasePage):
     subpage_types = ["working_at_dit.Guidance", ]
     # model just for use in editor hierarchy
 

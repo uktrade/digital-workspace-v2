@@ -18,7 +18,7 @@ from import_wordpress.parser.wagtail_content.policy_or_guidance import (
 )
 from import_wordpress.parser.users import create_users
 from import_wordpress.utils.page_hierarchy import create_section_homepages
-from import_wordpress.utils.page import set_page_content
+from import_wordpress.utils.page import populate_page
 
 from django.conf import settings
 
@@ -198,22 +198,22 @@ def parse_xml_file():
 
     # Second step is to generate Wagtail content
 
-    # print("Creating themes...")
+    print("Creating themes...")
 
-    # # Themes
-    # for key, value in items["theme"].items():
-    #     create_theme(
-    #         items["theme"][key],
-    #     )
-    #
-    # print("Creating topics...")
-    #
-    # # Topics
-    # for key, value in items["topic"].items():
-    #     create_topic(
-    #         items["topic"][key],
-    #         items["attachment"],
-    #     )
+    # Themes
+    for key, value in items["theme"].items():
+        create_theme(
+            items["theme"][key],
+        )
+
+    print("Creating topics...")
+
+    # Topics
+    for key, value in items["topic"].items():
+        create_topic(
+            items["topic"][key],
+            items["attachment"],
+        )
     #
     # print("Creating news...")
     #
@@ -227,15 +227,36 @@ def parse_xml_file():
     print("Creating page content...")
 
     # Page content
+
+    exclude_sections = [
+        "/working-at-dit/",
+        "/teams/",
+        "/regions/",
+        "/sectors/",
+        "/national-democracy-week-dit-women/",
+        "/introduction-to-procurement-in-dit/",
+        "/guidance-for-carers/",
+        "/health-and-wellbeing-advocates/",
+    ]
+
     for key, value in items["page"].items():
-        print("Page key:", key)
-        print("value", value)
-        set_page_content(key, value, items)
+        print("Processing page: ", value["link"])
+
+        if value["status"] == "publish":
+            exclude = False
+
+            for exclude_section in exclude_sections:
+                if exclude_section == value["link"] or exclude_section in value["link"]:
+                    exclude = True
+
+            if not exclude:
+                populate_page(value["link"], items)
 
     print("Creating how do Is...")
 
     # How do I content
     for key, value in items["howdoi"].items():
+        print("HOW DO I: ", items["howdoi"][key])
         create_how_do_i(
             items["howdoi"][key],
             items["attachment"],

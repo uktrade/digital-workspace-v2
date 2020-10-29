@@ -78,6 +78,9 @@ import:
 	docker-compose stop wagtail
 	docker-compose up
 
+import_:
+	docker-compose exec wagtail python manage.py import_wordpress
+
 fixtree:
 	docker-compose run --rm wagtail python manage.py fixtree
 

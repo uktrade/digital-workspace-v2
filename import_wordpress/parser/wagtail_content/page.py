@@ -13,16 +13,21 @@ from import_wordpress.utils.helpers import (
 )
 
 
-def populate_section_homepage(content, content_class, attachments, page_type):
+def populate_section_homepage(content, content_class, attachments, path):
     author = get_author(content)
     live = is_live(content["status"])
 
-    page_home = content_class.objects.filter(slug=page_type).first()
+    page_home = content_class.objects.filter(slug=slugify(path)).first()
+
+    title = content["title"]
+    if not title:
+        title = "NO TITLE"
 
     page_home.first_published_at = content["pub_date"]
     page_home.last_published_at = content["post_date"]
-    page_home.title = content["title"]
+    page_home.title = title
     page_home.legacy_guid = content["guid"]
+    page_home.legacy_path = path
     page_home.legacy_content = content["content"]
     page_home.live = live
     page_home.save()
@@ -42,16 +47,34 @@ def populate_section_homepage(content, content_class, attachments, page_type):
     revision.publish()
     page_home.save()
 
+    return page_home
 
-def create_page(page_content, content_class, parent, path, attachments):
+
+def get_page_path(full_path):
+    parts = full_path.split("/")
+    return f'{"/".join(parts[-2])}/'
+
+
+def create_page(
+    page_content,
+    content_class,
+    parent,
+    path,
+    attachments,
+):
     author = get_author(page_content)
     live = is_live(page_content["status"])
+
+    title = page_content["title"]
+    if not title:
+        title = "NO TITLE"
 
     content_page = content_class(
         first_published_at=page_content["pub_date"],
         last_published_at=page_content["post_date"],
-        title=page_content["title"],
-        slug=slugify(path),
+        title=title,
+        slug=slugify(get_page_path(path)),
+        legacy_path=path,
         legacy_guid=page_content["guid"],
         legacy_content=page_content["content"],
         live=live,
@@ -82,3 +105,5 @@ def create_page(page_content, content_class, parent, path, attachments):
     )
     revision.publish()
     content_page.save()
+
+    return content_page

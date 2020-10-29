@@ -45,7 +45,15 @@ class Theme(models.Model):
     ]
 
 
-class ContentPage(Page):
+class BasePage(Page):
+    legacy_path = models.CharField(
+        max_length=500,
+        blank=True,
+        null=True,
+    )
+
+
+class ContentPage(BasePage):
     is_creatable = False
     show_in_menus = True
 
@@ -67,10 +75,6 @@ class ContentPage(Page):
         blank=True,
         null=True,
         help_text="""Legacy content, pre-conversion"""
-    )
-
-    legacy_path = models.CharField(
-        max_length=500,
     )
 
     body = StreamField([

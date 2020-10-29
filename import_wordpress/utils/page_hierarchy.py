@@ -38,6 +38,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=1,
+        legacy_path="/news-and-views/"
     )
 
     home_page.add_child(instance=news_home)
@@ -50,6 +51,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=2,
+        legacy_path="/transition-hub/"
     )
 
     home_page.add_child(instance=transition)
@@ -62,6 +64,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=3,
+        legacy_path="/working-at-dit/",
     )
 
     home_page.add_child(instance=working_at_dit_home)
@@ -74,6 +77,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=1,
+        legacy_path="/topics/"
     )
 
     working_at_dit_home.add_child(instance=topic_home)
@@ -86,6 +90,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=2,
+        legacy_path="/working-at-dit/how-do-i/"
     )
 
     working_at_dit_home.add_child(instance=how_do_i)
@@ -98,6 +103,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=3,
+        legacy_path="/working-at-dit/policies-and-guidance/"
     )
 
     working_at_dit_home.add_child(instance=policies_and_guidance)
@@ -135,6 +141,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=4,
+        legacy_path="/about-us/"
     )
 
     home_page.add_child(instance=about_us)
@@ -147,6 +154,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=5,
+        legacy_path="/tools/"
     )
 
     home_page.add_child(instance=tools_home)
@@ -159,6 +167,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=6,
+        legacy_path="/networks/"
     )
 
     home_page.add_child(instance=networks)
@@ -171,6 +180,7 @@ def create_section_homepages():
         first_published_at=datetime.now(),
         show_in_menus=True,
         depth=7,
+        legacy_path="/working-at-dit/policies-and-guidance/privacy-policies/"
     )
 
     home_page.add_child(instance=privacy_policy)
