@@ -1,9 +1,10 @@
 import os
 import re
 from urllib.parse import urlparse
-
 from pathlib import Path
 from bs4 import BeautifulSoup
+
+from django.conf import settings
 
 from import_wordpress.utils.helpers import (
     add_paragraph_tags,
@@ -53,6 +54,9 @@ def unfurl_tag(tag):
 
 
 def process_image(img):
+    if not settings.IMPORT_IMAGES:
+        return None, None, None
+
     img_classes = img["class"]
     alt = None
     caption = None
@@ -63,21 +67,22 @@ def process_image(img):
     if img.has_attr("data-caption"):
         caption = img["data-caption"]
 
-    # for img_class in img_classes:
-    #     # Check for reference to attachment
-    #     if img_class.startswith("wp-image-"):
-    #         attachment_id = img_class.replace("wp-image-", "")
-    #         attachment_url = wp_attachments[attachment_id]["attachment_url"]
-    #         parsed_url = urlparse(attachment_url)
-    #         file_name = os.path.basename(parsed_url.path)
-    #
-    #         image = create_image(
-    #             attachment_url,
-    #             file_name,
-    #             wp_attachments[attachment_id]["title"],
-    #         )
-    #
-    #         return image, alt, caption
+    for img_class in img_classes:
+        # Check for reference to attachment
+        if img_class.startswith("wp-image-"):
+            attachment_id = img_class.replace("wp-image-", "")
+            attachment_url = wp_attachments[attachment_id]["attachment_url"]
+            parsed_url = urlparse(attachment_url)
+            file_name = os.path.basename(parsed_url.path)
+
+            image = create_image(
+                attachment_url,
+                file_name,
+                wp_attachments[attachment_id]["title"],
+            )
+
+            return image, alt, caption
+
     return None, None, None
 
 
@@ -132,19 +137,20 @@ def is_heading(tag):
 
 def process_content(tag, blocks, depth):
     if tag.name == "img":
-        pass
-        # append_block_text(blocks)
-        #
-        # image, alt, caption = process_image(tag)
-        #
-        # blocks.append({
-        #         'type': 'image', 'value': {
-        #             'image': image.pk,
-        #             'alt': alt,
-        #             'caption': caption,
-        #         }
-        #     }
-        # )
+        if not settings.IMPORT_IMAGES:
+            return
+
+        append_block_text(blocks)
+        image, alt, caption = process_image(tag)
+
+        blocks.append({
+                'type': 'image', 'value': {
+                    'image': image.pk,
+                    'alt': alt,
+                    'caption': caption,
+                }
+            }
+        )
     elif tag.name == "strong" and depth == 2 and is_heading(tag):
         # If this is level 2, swap for header tag
         append_block_text(blocks)

@@ -13,7 +13,7 @@ from import_wordpress.utils.helpers import (
 )
 
 
-def populate_homepage(content, content_class, attachments, page_type):
+def populate_section_homepage(content, content_class, attachments, page_type):
     author = get_author(content)
     live = is_live(content["status"])
 

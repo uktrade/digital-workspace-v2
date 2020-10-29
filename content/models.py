@@ -69,6 +69,10 @@ class ContentPage(Page):
         help_text="""Legacy content, pre-conversion"""
     )
 
+    legacy_path = models.CharField(
+        max_length=500,
+    )
+
     body = StreamField([
         ("heading2", blocks.Heading2Block()),
         ("heading3", blocks.Heading3Block()),

@@ -92,7 +92,8 @@ def add_paragraph_tags(content):
 
 
 def create_image(image_url, file_name, title):
-    return None
+    if not settings.IMPORT_IMAGES:
+        return None
 
     s3_path = image_url.split("?")[0].replace(
         "https://workspace-trade-gov-uk.s3.eu-west-2.amazonaws.com/",

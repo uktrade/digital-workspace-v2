@@ -57,34 +57,25 @@ collectstatic:
 bash:
 	docker-compose run --rm wagtail bash
 
-dev-requirements:
+requirements:
 	pip-compile --output-file requirements/base.txt requirements.in/base.in
 	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-
-prod-requirements:
-	pip-compile --output-file requirements/base.txt requirements.in/base.in
-	pip-compile --output-file requirements/production.txt requirements.in/production.in
+	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
 
 superuser:
 	docker-compose run --rm wagtail python manage.py migrate
-	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run wagtail python manage.py shell
-
-first-use:
-	docker-compose down
-	docker-compose run --rm wagtail python manage.py migrate
-	docker-compose run --rm wagtail python manage.py fixtree
-	docker-compose run --rm wagtail python manage.py create_section_homepages
-	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run wagtail python manage.py shell
-	docker-compose run --rm wagtail python manage.py create_menus
-	docker-compose up
+	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
 
 import:
 	docker-compose down
-	docker-compose run --rm wagtail python manage.py migrate
-	docker-compose run --rm wagtail python manage.py fixtree
-	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run wagtail python manage.py shell
-	docker-compose run --rm wagtail python manage.py import_wordpress
-	docker-compose run --rm wagtail python manage.py create_menus
+	docker-compose up -d
+	docker-compose exec wagtail python manage.py migrate
+	docker-compose exec wagtail python manage.py fixtree
+	docker-compose exec wagtail python manage.py create_section_homepages
+	docker-compose exec wagtail python manage.py import_wordpress
+	docker-compose exec wagtail python manage.py create_menus
+	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
+	docker-compose stop wagtail
 	docker-compose up
 
 fixtree:

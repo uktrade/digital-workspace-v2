@@ -26,7 +26,7 @@ namespaces = settings.NAMESPACES
 
 UserModel = get_user_model()
 
-xml_file = os.path.join(settings.BASE_DIR, "wordpress_all.xml")
+xml_file = os.path.join(settings.BASE_DIR, "wordpress.xml")
 
 counter = 0
 
@@ -99,7 +99,11 @@ def parse_xml_file():
             tag = item_tag.find(tag_name, namespaces)
 
             if hasattr(tag, "text"):
-                item[tag_name.replace("wp:", "").replace(":encoded", "")] = tag.text
+                cleaned_tag_name = tag_name.replace("wp:", "").replace(":encoded", "")
+                item[cleaned_tag_name] = tag.text
+                # Add default for title
+                if tag_name == "title" and item[cleaned_tag_name] is None:
+                    item["tite"] = "NO TITLE"
             else:
                 print("Could not find tag: ", tag_name)
 
@@ -135,16 +139,20 @@ def parse_xml_file():
         if hasattr(pub_date, "text"):
             # Fri, 17 Jul 2020 10:00:07 +0000
             pub_date_text = pub_date.text
-            if "-0001 00:00:00 +0000" in pub_date_text:
-                pub_date_text = pub_date_text.replace(
-                    "-0001",
-                    "2000",
-                )
 
-            item["pub_date"] = datetime.strptime(
-                pub_date_text,
-                '%a, %d %b %Y %H:%M:%S %z',
-            )
+            if pub_date_text:
+                if "-0001 00:00:00 +0000" in pub_date_text:
+                    pub_date_text = pub_date_text.replace(
+                        "-0001",
+                        "2000",
+                    )
+
+                item["pub_date"] = datetime.strptime(
+                    pub_date_text,
+                    '%a, %d %b %Y %H:%M:%S %z',
+                )
+            else:
+                item["pub_date"] = None
 
         item["creator"] = item_tag.find("dc:creator", namespaces).text
         post_meta_tags = item_tag.findall("wp:postmeta", namespaces)
@@ -215,11 +223,13 @@ def parse_xml_file():
     #         items["news"][key],
     #         items["attachment"]
     #     )
-    #
-    # print("Creating page content...")
+
+    print("Creating page content...")
 
     # Page content
     for key, value in items["page"].items():
+        print("Page key:", key)
+        print("value", value)
         set_page_content(key, value, items)
 
     print("Creating how do Is...")

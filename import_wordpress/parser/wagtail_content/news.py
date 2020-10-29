@@ -116,23 +116,37 @@ def create_news_page(
     if "excerpt" in news_item:
         excerpt = news_item["excerpt"]
 
-    if "preview_image_id" in news_item:
-        # preview_image = create_preview_image(
-        #     attachments,
-        #     news_item["preview_image_id"],
-        # )
+    from django.conf import settings
 
-        content_page = NewsPage(
-            first_published_at=news_item["pub_date"],
-            last_published_at=news_item["post_date"],
-            title=news_item["title"],
-            slug=slugify(path),
-            legacy_guid=news_item["guid"],
-            legacy_content=news_item["content"],
-            live=live,
-            #preview_image=preview_image,
-            excerpt=excerpt,
-        )
+    if settings.IMPORT_IMAGES:
+        if "preview_image_id" in news_item:
+            preview_image = create_preview_image(
+                attachments,
+                news_item["preview_image_id"],
+            )
+
+            content_page = NewsPage(
+                first_published_at=news_item["pub_date"],
+                last_published_at=news_item["post_date"],
+                title=news_item["title"],
+                slug=slugify(path),
+                legacy_guid=news_item["guid"],
+                legacy_content=news_item["content"],
+                live=live,
+                preview_image=preview_image,
+                excerpt=excerpt,
+            )
+        else:
+            content_page = NewsPage(
+                first_published_at=news_item["pub_date"],
+                last_published_at=news_item["post_date"],
+                title=news_item["title"],
+                slug=slugify(path),
+                legacy_guid=news_item["guid"],
+                legacy_content=news_item["content"],
+                live=live,
+                excerpt=excerpt,
+            )
     else:
         content_page = NewsPage(
             first_published_at=news_item["pub_date"],

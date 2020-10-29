@@ -340,3 +340,5 @@ WAGTAILSEARCH_BACKENDS = {
         }
     }
 }
+
+IMPORT_IMAGES = False
