@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
             name='PageWithTopics',
             fields=[
                 ('contentpage_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='content.ContentPage')),
-                ('excerpt', models.CharField(blank=True, max_length=360, null=True)),
+                ('excerpt', models.CharField(blank=True, max_length=600, null=True)),
             ],
             options={
                 'abstract': False,

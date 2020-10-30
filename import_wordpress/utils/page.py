@@ -69,13 +69,6 @@ def get_page_data(path, items):
 
 def populate_page(path, items):
     # Check for existence of page
-    page = ContentPage.objects.filter(
-        legacy_path=path,
-    ).first()
-
-    if page:
-        return page
-
     try:
         page_type_key = get_page_type(path)
     except:
@@ -83,22 +76,16 @@ def populate_page(path, items):
 
     parent_path = get_parent_path(path)
 
-    print("parent_path=", parent_path)
-
     parent = ContentPage.objects.filter(
         legacy_path=parent_path,
     ).first()
-
-    print("parent", parent)
-
-    print("page_type", page_types[page_type_key]["page_class"])
 
     if not parent:
         parent = populate_page(parent_path, items)
 
     page_data = get_page_data(path, items)
 
-    if parent.slug == "home":
+    if page_type_key == path:
         return populate_section_homepage(
             page_data,
             page_types[page_type_key]["home_page_class"],
@@ -106,9 +93,16 @@ def populate_page(path, items):
             path,
         )
 
+    page = ContentPage.objects.filter(
+        legacy_path=path,
+    ).first()
+
+    if page:
+        return page
+
     return create_page(
         page_data,
-        page_types[page_type_key]["page_class"],  # content_class
+        page_types[page_type_key]["page_class"],
         parent,
         path,
         items["attachment"],

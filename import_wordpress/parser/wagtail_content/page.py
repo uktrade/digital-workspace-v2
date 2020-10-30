@@ -66,8 +66,12 @@ def create_page(
     live = is_live(page_content["status"])
 
     title = page_content["title"]
+
     if not title:
         title = "NO TITLE"
+
+    if "[ARCHIVED]" in title or "[ARCHIVE]" in title or "Archive - " in title:
+        live = False
 
     content_page = content_class(
         first_published_at=page_content["pub_date"],
@@ -99,11 +103,12 @@ def create_page(
 
     set_topics(page_content, content_page)
 
-    revision = content_page.save_revision(
-        user=author,
-        submitted_for_moderation=False,
-    )
-    revision.publish()
-    content_page.save()
+    if live:
+        revision = content_page.save_revision(
+            user=author,
+            submitted_for_moderation=False,
+        )
+        revision.publish()
+        content_page.save()
 
     return content_page

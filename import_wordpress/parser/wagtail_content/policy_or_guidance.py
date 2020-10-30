@@ -24,7 +24,11 @@ from working_at_dit.models import (
 
 def create_policy_or_guidance(policy_or_guidance, attachments):
     author = get_author(policy_or_guidance)
+
     live = is_live(policy_or_guidance["status"])
+
+    if not live:
+        return
 
     link = policy_or_guidance["link"].replace(
         "/working-at-dit/policies-and-guidance",

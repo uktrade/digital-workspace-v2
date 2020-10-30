@@ -170,9 +170,9 @@ def set_topics(content, page):
         for wp_topic in content["topics"]:
             topic = Topic.objects.filter(title=wp_topic["name"]).first()
 
-            if not topic:
-                print("wp_topic['name']", wp_topic["name"])
-                print("page", page)
+            if not topic:  # Some topics have been archvied
+                print(f'SKIPPED TOPIC: "{wp_topic["name"]}" for page {page}')
+                continue
 
             PageTopic.objects.get_or_create(
                 topic=topic,

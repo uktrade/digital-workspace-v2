@@ -94,7 +94,7 @@ class PageTopic(models.Model):
 
 
 class PageWithTopics(ContentPage):
-    excerpt = models.CharField(max_length=360, blank=True, null=True)
+    excerpt = models.CharField(max_length=600, blank=True, null=True)
 
     content_panels = ContentPage.content_panels + [
         FieldPanel("excerpt"),

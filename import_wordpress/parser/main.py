@@ -122,6 +122,8 @@ def parse_xml_file():
             if category_tag.get("domain") == "news_category":
                 item["categories"].append(category_tag.text)
             if category_tag.get("domain") == "topic_taxonomy":
+                print("FOUND TOPIC")
+                print(category_tag.get("nicename"))
                 item["topics"].append({
                     "name": category_tag.text,
                     "nice_name": category_tag.get("nicename"),
@@ -210,19 +212,23 @@ def parse_xml_file():
 
     # Topics
     for key, value in items["topic"].items():
+
+        print("CREATING TOPIC")
+        print(items["topic"][key]["link"])
+
         create_topic(
             items["topic"][key],
             items["attachment"],
         )
-    #
-    # print("Creating news...")
-    #
-    # # News
-    # for key, value in items["news"].items():
-    #     create_news_page(
-    #         items["news"][key],
-    #         items["attachment"]
-    #     )
+
+    print("Creating news...")
+
+    # News
+    for key, value in items["news"].items():
+        create_news_page(
+            items["news"][key],
+            items["attachment"]
+        )
 
     print("Creating page content...")
 
@@ -240,8 +246,6 @@ def parse_xml_file():
     ]
 
     for key, value in items["page"].items():
-        print("Processing page: ", value["link"])
-
         if value["status"] == "publish":
             exclude = False
 
@@ -256,7 +260,6 @@ def parse_xml_file():
 
     # How do I content
     for key, value in items["howdoi"].items():
-        print("HOW DO I: ", items["howdoi"][key])
         create_how_do_i(
             items["howdoi"][key],
             items["attachment"],
@@ -266,6 +269,7 @@ def parse_xml_file():
 
     # Policies and guidance
     for key, value in items["policy"].items():
+        print("PATH", items["policy"][key]["link"])
         create_policy_or_guidance(
             items["policy"][key],
             items["attachment"],

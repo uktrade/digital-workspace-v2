@@ -44,6 +44,8 @@ def create_section_homepages():
     home_page.add_child(instance=news_home)
     home_page.save()
 
+    news_home.save_revision().publish()
+
     transition = TransitionHome(
         title="Transition",
         slug="transition-hub",
@@ -56,6 +58,8 @@ def create_section_homepages():
 
     home_page.add_child(instance=transition)
     home_page.save()
+
+    transition.save_revision().publish()
 
     working_at_dit_home = WorkingAtDITHome(
         title="Working at DIT",
@@ -70,6 +74,8 @@ def create_section_homepages():
     home_page.add_child(instance=working_at_dit_home)
     home_page.save()
 
+    working_at_dit_home.save_revision().publish()
+
     topic_home = TopicHome(
         title="Topics",
         slug="topics",
@@ -82,6 +88,8 @@ def create_section_homepages():
 
     working_at_dit_home.add_child(instance=topic_home)
     working_at_dit_home.save()
+
+    topic_home.save_revision().publish()
 
     how_do_i = HowDoIHome(
         title="How Do I",
@@ -96,6 +104,8 @@ def create_section_homepages():
     working_at_dit_home.add_child(instance=how_do_i)
     working_at_dit_home.save()
 
+    how_do_i.save_revision().publish()
+
     policies_and_guidance = PoliciesAndGuidanceHome(
         title="Policies and Guidance",
         slug="policies-and-guidance",
@@ -109,6 +119,8 @@ def create_section_homepages():
     working_at_dit_home.add_child(instance=policies_and_guidance)
     working_at_dit_home.save()
 
+    policies_and_guidance.save_revision().publish()
+
     policies = PoliciesHome(
         title="Policies",
         slug="policies",
@@ -121,6 +133,8 @@ def create_section_homepages():
     policies_and_guidance.add_child(instance=policies)
     policies_and_guidance.save()
 
+    policies.save_revision().publish()
+
     guidance = GuidanceHome(
         title="Guidance",
         slug="guidance",
@@ -132,6 +146,8 @@ def create_section_homepages():
 
     policies_and_guidance.add_child(instance=guidance)
     policies_and_guidance.save()
+
+    guidance.save_revision().publish()
 
     # About Us
     about_us = AboutUsHome(
@@ -147,6 +163,8 @@ def create_section_homepages():
     home_page.add_child(instance=about_us)
     home_page.save()
 
+    about_us.save_revision().publish()
+
     tools_home = ToolsHome(
         title="Tools",
         slug="tools",
@@ -159,6 +177,8 @@ def create_section_homepages():
 
     home_page.add_child(instance=tools_home)
     home_page.save()
+
+    tools_home.save_revision().publish()
 
     networks = NetworksHome(
         title="Networks",
@@ -173,6 +193,8 @@ def create_section_homepages():
     home_page.add_child(instance=networks)
     home_page.save()
 
+    networks.save_revision().publish()
+
     privacy_policy = PrivacyPolicyHome(
         title="Privacy Policy",
         slug="privacy-policy",
@@ -185,3 +207,5 @@ def create_section_homepages():
 
     home_page.add_child(instance=privacy_policy)
     home_page.save()
+
+    privacy_policy.save_revision().publish()
