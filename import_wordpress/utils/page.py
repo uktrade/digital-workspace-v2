@@ -49,7 +49,8 @@ def get_page_type(path):
         if path.startswith(type_key):
             return type_key
 
-    raise Exception(f"ORPHAN PAGE: {path}")
+    print(f"ORPHAN PAGE: {path}")
+    raise Exception("Orphan page")
 
 
 def get_parent_path(path):
@@ -64,7 +65,7 @@ def get_page_data(path, items):
         if value["link"] == path:
             return value
 
-    raise Exception(f"Cannot find page {path}")
+    raise Exception("Cannot find page")
 
 
 def populate_page(path, items):

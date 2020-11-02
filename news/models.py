@@ -216,6 +216,8 @@ class NewsHome(RoutablePageMixin, BasePage):
         request.is_preview = getattr(request, 'is_preview', False)
         context = self.get_context(request, category=category_slug)
 
+        test = self.get_template(request)
+
         return TemplateResponse(
             request,
             self.get_template(request),
@@ -236,29 +238,43 @@ class NewsHome(RoutablePageMixin, BasePage):
                 slug=kwargs["category"],
             ).first()
             news_items = NewsPage.objects.filter(
-                news_categories__id__in=[category.pk,],
+                news_categories__news_category_id__in=[category.pk,],
             ).live().public().order_by('-first_published_at')
 
             context["category"] = category
         else:
             # Get all posts
-            news_items = NewsPage.objects.live().public().order_by('-first_published_at')
+            news_items = NewsPage.objects.live().public().order_by(
+                '-first_published_at',
+            )
 
         # Paginate all posts by 2 per page
         paginator = Paginator(news_items, 9)
         # Try to get the ?page=x value
-        page = request.GET.get("page")
+        page = int(request.GET.get("page", 1))
 
         try:
             # If the page exists and the ?page=x is an int
             posts = paginator.page(page)
-        except PageNotAnInteger:
-            # If the ?page=x is not an int; show the first page
-            posts = paginator.page(1)
         except EmptyPage:
             # If the ?page=x is out of range (too high most likely)
             # Then return the last page
             posts = paginator.page(paginator.num_pages)
+
+        start = 1
+        total_shown = 10
+
+        if paginator.num_pages < total_shown:
+            total_shown = paginator.num_pages
+
+        if page > 9:
+            start = page - 7
+            total_shown = 10
+
+            if (page + 2) > paginator.num_pages:
+                start = paginator.num_pages - 9
+
+        context["pagination_range"] = range(start, (start + total_shown))
 
         # "posts" will have child pages; you'll need to use .specific in the templates
         # in order to access child properties, such as youtube_video_id and subtitle

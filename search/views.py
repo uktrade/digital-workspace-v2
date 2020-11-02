@@ -32,7 +32,7 @@ def search(request):
         else:
             search_terms = f"{search_terms} OR {query_part}"
 
-    page = request.GET.get("page", 1)
+    page = int(request.GET.get("page", 1))
 
     if search_query:
         make_search = Search(
@@ -56,7 +56,14 @@ def search(request):
 
         print(make_search.to_dict())
 
-        response = make_search.execute()
+        search_start = page - 1
+
+        results_start = search_start * page
+        results_end = results_start + 10
+
+        response = make_search[results_start:results_end].execute()
+
+        total = response.hits.total.value
 
         exclusions = list(SearchExclusionPageLookUp.objects.filter(
             search_keyword_or_phrase__keyword_or_phrase__in=query_parts,
@@ -87,27 +94,18 @@ def search(request):
             pk__in=pinned,
         )
 
+        #paginated_links =
+
         # search_results = ContentPage.objects.live().filter(
         #     pk__in=page_ids,
         # )
     else:
         search_results = [] #ContentPage.objects.none()
 
-    # Pagination
-    paginator = Paginator(hits, 10)
-
-    # TODO Create preview text
-
-    try:
-        paginated_results = paginator.page(page)
-    except PageNotAnInteger:
-        paginated_results = paginator.page(1)
-    except EmptyPage:
-        paginated_results = paginator.page(paginator.num_pages)
-
     return render(request, "search/search.html", {
         "pinned_results": pinned_results,
-        "num_results": pinned_results.count() + len(hits),
+        "num_results": pinned_results.count() + total,
         "search_query": search_query,
-        "search_results": paginated_results,
+        "search_results": hits,
+        #"pagination_range": range(start, (start + total_shown))
     })

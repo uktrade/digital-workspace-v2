@@ -122,8 +122,8 @@ def parse_xml_file():
             if category_tag.get("domain") == "news_category":
                 item["categories"].append(category_tag.text)
             if category_tag.get("domain") == "topic_taxonomy":
-                print("FOUND TOPIC")
-                print(category_tag.get("nicename"))
+                # print("FOUND TOPIC")
+                # print(category_tag.get("nicename"))
                 item["topics"].append({
                     "name": category_tag.text,
                     "nice_name": category_tag.get("nicename"),
@@ -212,10 +212,6 @@ def parse_xml_file():
 
     # Topics
     for key, value in items["topic"].items():
-
-        print("CREATING TOPIC")
-        print(items["topic"][key]["link"])
-
         create_topic(
             items["topic"][key],
             items["attachment"],
@@ -233,28 +229,9 @@ def parse_xml_file():
     print("Creating page content...")
 
     # Page content
-
-    exclude_sections = [
-        "/working-at-dit/",
-        "/teams/",
-        "/regions/",
-        "/sectors/",
-        "/national-democracy-week-dit-women/",
-        "/introduction-to-procurement-in-dit/",
-        "/guidance-for-carers/",
-        "/health-and-wellbeing-advocates/",
-    ]
-
     for key, value in items["page"].items():
         if value["status"] == "publish":
-            exclude = False
-
-            for exclude_section in exclude_sections:
-                if exclude_section == value["link"] or exclude_section in value["link"]:
-                    exclude = True
-
-            if not exclude:
-                populate_page(value["link"], items)
+            populate_page(value["link"], items)
 
     print("Creating how do Is...")
 
@@ -269,7 +246,6 @@ def parse_xml_file():
 
     # Policies and guidance
     for key, value in items["policy"].items():
-        print("PATH", items["policy"][key]["link"])
         create_policy_or_guidance(
             items["policy"][key],
             items["attachment"],
