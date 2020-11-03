@@ -47,7 +47,7 @@ class Topic(ContentPage):
         context["related_news"] = PageTopic.objects.filter(
             topic=self.contentpage,
             page__content_type__app_label="news"
-        ).order_by("page__title")
+        ).order_by("topic__last_published_at")[:10]
 
         return context
 

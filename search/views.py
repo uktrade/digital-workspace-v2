@@ -1,4 +1,6 @@
+import logging
 import shlex
+import math
 
 from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -15,8 +17,17 @@ from content.models import (
 )
 
 
+logger = logging.getLogger(__name__)
+
+
 def search(request):
+    page = int(request.GET.get("page", 1))
     search_query = request.GET.get("query", None)
+
+    previous_page = None
+    next_page = None
+    total_shown = 10
+
     # OR based search apart from anything quoted
 
     query_parts = shlex.split(search_query.lower())
@@ -32,7 +43,26 @@ def search(request):
         else:
             search_terms = f"{search_terms} OR {query_part}"
 
-    page = int(request.GET.get("page", 1))
+    exclusions = list(SearchExclusionPageLookUp.objects.filter(
+        search_keyword_or_phrase__keyword_or_phrase__in=query_parts,
+    ).values_list(
+        'object_id',
+        flat=True,
+    ))
+
+    pinned_ids = list(SearchPinPageLookUp.objects.filter(
+        search_keyword_or_phrase__keyword_or_phrase__in=query_parts,
+    ).values_list(
+        'object_id',
+        flat=True,
+    ))
+
+    pinned_results = ContentPage.objects.live().filter(
+        pk__in=pinned_ids,
+        live=True,
+    ).order_by(
+        "-last_published_at",
+    )
 
     if search_query:
         make_search = Search(
@@ -48,29 +78,37 @@ def search(request):
                 "content_contentpage__body_no_html"
             ]
             # default_field="title",
+        ).filter(
+            'term',
+            live_filter=True,
         ).highlight(
             'search_title',
             'content_contentpage__body_no_html',
-            fragment_size=250,
+            fragment_size=150,
         )
 
-        print(make_search.to_dict())
+        for exclude in exclusions:
+            make_search = make_search.exclude(
+                "match",
+                pk=exclude
+            )
 
-        search_start = page - 1
+        for pinned_id in pinned_ids:
+            make_search = make_search.exclude(
+                "match",
+                pk=pinned_id
+            )
 
-        results_start = search_start * page
-        results_end = results_start + 10
+        logger.debug(f"Search dict: {make_search.to_dict()}")
+
+        search_start = (page - 1) * total_shown
+
+        results_start = search_start
+        results_end = results_start + total_shown
 
         response = make_search[results_start:results_end].execute()
 
         total = response.hits.total.value
-
-        exclusions = list(SearchExclusionPageLookUp.objects.filter(
-            search_keyword_or_phrase__keyword_or_phrase__in=query_parts,
-        ).values_list(
-            'object_id',
-            flat=True,
-        ))
 
         hits = []
 
@@ -79,33 +117,44 @@ def search(request):
             if hit.pk not in exclusions:
                 hits.append(hit)
 
-        pinned = list(SearchPinPageLookUp.objects.filter(
-            search_keyword_or_phrase__keyword_or_phrase__in=query_parts,
-        ).values_list(
-            'object_id',
-            flat=True,
-        ))
+        show_total = pinned_results.count() + total
 
-        # page_ids = [
-        #     pid for pid in result_page_ids if int(pid) not in exclusions and int(pid) not in pinned
-        # ]
+        num_pages = math.floor(total / total_shown)
 
-        pinned_results = ContentPage.objects.live().filter(
-            pk__in=pinned,
-        )
+        if total % total_shown:
+            num_pages += 1
 
-        #paginated_links =
+        pagination_range = None
 
-        # search_results = ContentPage.objects.live().filter(
-        #     pk__in=page_ids,
-        # )
-    else:
-        search_results = [] #ContentPage.objects.none()
+        if num_pages > 1:
+            start = 1
+
+            if num_pages < total_shown:
+                total_shown = num_pages
+
+            if page > 9:
+                start = page - 7
+                total_shown = 10
+
+                if (page + 2) > num_pages:
+                    start = num_pages - 9
+
+            pagination_range = range(start, (start + total_shown))
+
+            if page < num_pages:
+                next_page = page + 1
+
+            if page > 1:
+                previous_page = page - 1
 
     return render(request, "search/search.html", {
         "pinned_results": pinned_results,
         "num_results": pinned_results.count() + total,
         "search_query": search_query,
         "search_results": hits,
-        #"pagination_range": range(start, (start + total_shown))
+        "pagination_range": pagination_range,
+        "page": page,
+        "next_page": next_page,
+        "previous_page": previous_page,
+        "show_total": show_total,
     })

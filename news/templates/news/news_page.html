@@ -11,7 +11,7 @@
     </div>
     {% if comment_count > 0 %}
         <div class="news-article-comments">
-            <h2 class="govuk-heading-m">{{ comment_count }} comments</h2>
+            <h2 class="govuk-heading-m">{{ comment_count }} {% if comment_count > 1 %}comments{% else %}comment{% endif %}</h2>
             {% for comment in comments %}
                 <p class="govuk-body comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}
                     <span class="comment-posted-date">{{ comment.posted_date }}</span>

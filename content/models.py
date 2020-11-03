@@ -97,20 +97,32 @@ class ContentPage(BasePage):
         blank=True,
         null=True,
         max_length=255,
-        help_text="Pinned keywords and phrases",
+        help_text="A comma separated list of pinned keywords and phrases. "
+                  "Do not use quotes for phrases. The page will be pinned "
+                  "to the first page of search results for these terms.",
     )
 
     excluded_phrases = models.CharField(
         blank=True,
         null=True,
         max_length=255,
-        help_text="Excluded keywords and phrases",
+        help_text="A comma separated list of excluded keywords and phrases. "
+                  "Do not use quotes for phrases. The page will be removed "
+                  "from search results for these terms",
     )
 
     body_no_html = models.TextField(
         blank=True,
         null=True,
     )
+
+    @property
+    def preview_text(self):
+        if self.body_no_html:
+            parts = self.body_no_html.split(" ")
+            return " ".join(parts[0:40])
+
+        return None
 
     subpage_types = []
 

@@ -29,7 +29,7 @@ class TextBlock(blocks.RichTextBlock):
     """A text content block"""
 
     class Meta:
-        icon = "pilcrow"
+        icon = "edit"
         template = "blocks/text.html"
 
     def __init__(self, *args, **kwargs):

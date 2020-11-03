@@ -120,21 +120,26 @@ class NewsPage(PageWithTopics):
 
     featured_on_news_home = models.BooleanField(
         default=False,
+        help_text="If checked, this will cause the page to "
+                  "be the featured article on the news homepage. "
+                  "Other pages will no longer be marked as the "
+                  "featured article."
     )
 
     search_fields = ContentPage.search_fields + [
         index.SearchField("excerpt"),
     ]
 
-    content_panels = PageWithTopics.content_panels + [
+    content_panels = [
         FieldPanel("excerpt"),
         ImageChooserPanel("preview_image"),
+    ] + PageWithTopics.content_panels + [
         InlinePanel('news_categories', label='News category'),
     ]
 
-    promote_panels = Page.promote_panels + [
+    promote_panels = [
         FieldPanel("featured_on_news_home"),
-    ]
+    ] + PageWithTopics.promote_panels
 
     def save(self, *args, **kwargs):
         # If set as featured article, set all other

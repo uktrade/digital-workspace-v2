@@ -29,6 +29,7 @@ $govuk-image-url-function: frontend-image-url;
 @import "components/news_lead_story";
 @import "components/pagination";
 @import "components/accordion";
+@import "components/search_results";
 // Grid
 
 .ws-width-container {
@@ -119,15 +120,6 @@ $govuk-image-url-function: frontend-image-url;
   }
 }
 
-.search-results {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  em {
-    font-weight: bold;
-  }
-}
-
 .govuk-main-wrapper {
     padding-top: 10px;
 }
@@ -142,4 +134,12 @@ $govuk-image-url-function: frontend-image-url;
     //margin-right: 15px;
     //margin-left: 15px;
   }
+}
+
+.children-2-col {
+  margin-top: 40px;
+}
+
+.children-3-col {
+  margin-top: 40px;
 }
