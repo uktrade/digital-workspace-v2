@@ -86,6 +86,6 @@ def create_policy_or_guidance(policy_or_guidance, attachments):
     # Create redirect
     if live:
         Redirect.objects.create(
-            old_path=f'/policies-and-guidance{link[:-1]}',
+            old_path=f'/working-at-dit/policies-and-guidance{link[:-1]}',
             redirect_page=content_page,
         )

@@ -104,7 +104,6 @@ LOGGING = {
 # (this application will always be run behind a PaaS router or locally)
 ALLOWED_HOSTS = ["*"]
 
-
 # Set up Django
 LOCAL_APPS = [
     "core",

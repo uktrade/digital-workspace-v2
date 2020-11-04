@@ -44,6 +44,9 @@ class Theme(models.Model):
         FieldPanel('summary'),
     ]
 
+    class Meta:
+        ordering = ['-title']
+
 
 class BasePage(Page):
     legacy_path = models.CharField(

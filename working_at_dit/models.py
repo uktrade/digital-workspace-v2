@@ -25,11 +25,9 @@ class WorkingAtDITHome(ContentPage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        test = Theme.objects.all().first()
-
-        test1 = test.theme_topics.all()
-
-        context["themes"] = Theme.objects.all()
+        context["themes"] = Theme.objects.all().order_by(
+            "title"
+        )
 
         return context
 
@@ -75,6 +73,7 @@ class TopicTheme(models.Model):
 
     class Meta:
         unique_together = ('topic', 'theme')
+        ordering = ['topic__title']
 
 
 class PageTopic(models.Model):

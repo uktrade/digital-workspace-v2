@@ -43,6 +43,87 @@ page_types = {
     },
 }
 
+orphans = {
+    "/dits-history/": "about-us",
+    "/how-we-are-structured/": "about-us",
+    "/lpg/": "about-us",
+    "/our-management/": "about-us",
+    "/our-ministers/": "about-us",
+    "/our-unions/": "about-us",
+    "/our-vision-mission-and-values/": "about-us",
+    "/single-departmental-plan/": "about-us",
+    "/asia-and-australasia-negotiations/": "guidance",
+    "/book-clubs/": "guidance",
+    "/change-management-in-dit/": "guidance",
+    "/current-apprenticeships-and-funded-qualifications/": "guidance",
+    "/di-guidance-and-support/": "guidance",
+    "/dit/": "guidance",
+    "/dit/2020-people-survey-corporate-functions-team-codes/": "guidance",
+    "/dit/2020-people-survey-frequently-asked-questions-faqs/": "guidance",
+    "/dit/2020-people-survey-global-strategy-directorate-team-codes/": "guidance",
+    "/dit/2020-people-survey-global-trade-and-investment-team-codes/": "guidance",
+    "/dit/2020-people-survey-global-trade-investment-overseas-team-codes/": "guidance",
+    "/dit/2020-people-survey-great-team-code/": "guidance",
+    "/dit/2020-people-survey-ministerial-strategy-directorate-team-codes/": "guidance",
+    "/dit/2020-people-survey/": "guidance",
+    "/dit/dit-people-survey-2019-headline-results/": "guidance",
+    "/dit/dit-people-survey-2019-headline-results/communications-marketing/": "guidance",
+    "/dit/dit-people-survey-2019-headline-results/corporate-functions-commercial/": "guidance",
+    "/dit/dit-people-survey-2019-headline-results/global-strategy-directorate/": "guidance",
+    "/dit/dit-people-survey-2019-headline-results/great-peoplesurvey/": "guidance",
+    "/dit/dit-people-survey-2019-headline-results/gti-overseas-africa/": "guidance",
+    "/dit/dit-people-survey-2019-headline-results/gti-uk-regions/": "guidance",
+    "/dit/dit-people-survey-2019-headline-results/ministerial-strategy-directorate-peoplesurvey/": "guidance",
+    "/dit/dit-people-survey-2019-headline-results/portfolio-development-directorate/": "guidance",
+    "/dit/dit-people-survey-results-2018/": "guidance",
+    "/dit/dit-people-survey-results-2018/chief-operating-officer-group-coo-people-survey-results-2018/": "guidance",
+    "/dit/dit-people-survey-results-2018/communications-and-marketing-people-survey-results-2018/": "guidance",
+    "/dit/dit-people-survey-results-2018/exports-group-people-survey-results-2018/": "guidance",
+    "/dit/dit-people-survey-results-2018/great-people-survey-results-2018/": "guidance",
+    "/dit/dit-people-survey-results-2018/international-strategy-directorate-isd-people-survey-results-2018/": "guidance",
+    "/dit/dit-people-survey-results-2018/investment-group-people-survey-results-2018/": "guidance",
+    "/dit/dit-people-survey-results-2018/ministerial-strategy-directorate-msd-people-survey-results-2018/": "guidance",
+    "/dit/dit-people-survey-results-2018/trade-policy-group-tpg-people-survey-results-2018/": "guidance",
+    "/dit/people-survey-results/": "guidance",
+    "/dit/people-survey-results/communications/": "guidance",
+    "/dit/people-survey-results/corporate-centre-people-survey/": "guidance",
+    "/dit/people-survey-results/great/": "guidance",
+    "/dit/people-survey-results/international-trade-and-investment-results/": "guidance",
+    "/dit/people-survey-results/international-trade-and-investment-results/international-trade-and-investment-overseas-results/": "guidance",
+    "/dit/people-survey-results/international-trade-and-investment-results/international-trade-and-investment-uk-results/": "guidance",
+    "/dit/people-survey-results/ministerial-strategy-directorate/": "guidance",
+    "/dit/people-survey-results/trade-policy-group-people-survey/": "guidance",
+    "/dit/trade-policy-group-team-code-people-survey-2020/": "guidance",
+    "/future-work-in-the-ddat-data-science-team/": "guidance",
+    "/guidance-for-carers/": "guidance",
+    "/how-data-science-teams-are-solving-complex-problems-across-dit/": "guidance",
+    "/how-dit-data-science-solved-ukefs-struggle-to-identify-companies/": "guidance",
+    "/identifying-the-public-procurement-landscape-by-matching-data-sets/": "guidance",
+    "/introduction-to-procurement-in-dit/": "guidance",
+    "/language-training-from-the-fco/": "guidance",
+    "/managers-guide-to-mental-health/": "guidance",
+    "/mapping-the-relationships-of-business-flows-between-the-uk-and-pakistan/": "guidance",
+    "/mental-health-action-plan-mhap/": "guidance",
+    "/natural-language-processing-to-identify-policy-feedback-on-eu-exit/": "guidance",
+    "/negotiation-planning-and-capability/": "guidance",
+    "/neurodiversity-celebration-week-16-to-22-march-2020/": "guidance",
+    "/people-plan/": "guidance",
+    "/people-plan/civil-service-covid-19-pulse-survey/": "guidance",
+    "/people-plan/dit-people-survey-2019/": "guidance",
+    "/people-plan/the-pulse-survey-2020/": "guidance",
+    "/resilience/": "guidance",
+    "/roles-and-responsibilities-recruit-interim-labour/": "guidance",
+    "/sexual-harassment-survey-results/": "guidance",
+    "/whistleblowing/": "guidance",
+    "/redundancy-policy/": "policy",
+}
+
+# def check_for_orphan(path):
+#     if orphans.has_key(path):
+#         return
+
+
+
 
 def get_page_type(path):
     for type_key, type_value in page_types.items():
@@ -69,6 +150,8 @@ def get_page_data(path, items):
 
 
 def populate_page(path, items):
+    #path = check_for_orphan(path)
+
     # Check for existence of page
     try:
         page_type_key = get_page_type(path)

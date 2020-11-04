@@ -30,7 +30,7 @@ def create_topic(topic, attachments):
 
     topic_home = Page.objects.filter(slug="topics").first()
 
-    wp_themes = [t["nice_name"] for t in topic["themes"]]
+    wp_themes = [t["name"] for t in topic["themes"]]
 
     themes = Theme.objects.filter(
         title__in=wp_themes
@@ -58,7 +58,7 @@ def create_topic(topic, attachments):
 
     for theme in themes:
         TopicTheme.objects.get_or_create(
-            theme__name=theme,
+            theme=theme,
             topic=topic_page,
         )
 
