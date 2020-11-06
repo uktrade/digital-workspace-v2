@@ -44,14 +44,14 @@ page_types = {
 }
 
 orphans = {
-    "/dits-history/": "about-us",
-    "/how-we-are-structured/": "about-us",
-    "/lpg/": "about-us",
-    "/our-management/": "about-us",
-    "/our-ministers/": "about-us",
-    "/our-unions/": "about-us",
-    "/our-vision-mission-and-values/": "about-us",
-    "/single-departmental-plan/": "about-us",
+    "/dits-history/": "/about-us/dits-history/",
+    "/how-we-are-structured/": "/about-us/how-we-are-structured/",
+    "/lpg/": "/about-us/lpg/",
+    "/our-management/": "/about-us/our-management/",
+    "/our-ministers/": "/about-us/our-ministers/",
+    "/our-unions/": "/about-us/our-unions/",
+    "/our-vision-mission-and-values/": "/about-us/our-vision-mission-and-values/",
+    "/single-departmental-plan/": "/about-us/single-departmental-plan/",
     "/asia-and-australasia-negotiations/": "guidance",
     "/book-clubs/": "guidance",
     "/change-management-in-dit/": "guidance",

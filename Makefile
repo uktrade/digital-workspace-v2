@@ -74,6 +74,7 @@ import:
 	docker-compose exec wagtail python manage.py create_section_homepages
 	docker-compose exec wagtail python manage.py import_wordpress
 	docker-compose exec wagtail python manage.py create_menus
+	docker-compose run --rm wagtail python manage.py create_groups
 	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
 	docker-compose stop wagtail
 	docker-compose up
@@ -92,3 +93,6 @@ index:
 
 listlinks:
 	docker-compose run --rm wagtail python manage.py list_links
+
+groups:
+	docker-compose run --rm wagtail python manage.py create_groups
