@@ -109,7 +109,7 @@ class PageWithTopics(ContentPage):
         context = super().get_context(request, *args, **kwargs)
 
         context["page_topics"] = PageTopic.objects.filter(
-            page=self.pagewithtopics.contentpage,
+            page=self,
         ).order_by("page__title")
 
         return context

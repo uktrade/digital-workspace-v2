@@ -98,6 +98,11 @@ def create_news_page(
     if not news_item["title"]:
         return
 
+    live = is_live(news_item["status"])
+
+    if not live:
+        return
+
     # check for existence of parent news page
     news_home = Page.objects.filter(slug="news-and-views").first()
 
@@ -107,7 +112,6 @@ def create_news_page(
             "",
         )
     )
-    live = is_live(news_item["status"])
 
     author = get_author(news_item)
 

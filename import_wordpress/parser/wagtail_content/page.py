@@ -12,6 +12,8 @@ from import_wordpress.utils.helpers import (
     set_topics,
 )
 
+from wagtail.core.models import Page
+
 
 def populate_section_homepage(content, content_class, attachments, path):
     author = get_author(content)
@@ -53,6 +55,18 @@ def populate_section_homepage(content, content_class, attachments, path):
 def get_page_path(full_path):
     parts = full_path.split("/")
     return f'{"/".join(parts[-2])}/'
+
+# def check_slug(page_path, counter=0):
+#     slug = slugify(get_page_path(page_path))
+#     existing_page = Page.objects.filter(
+#         slug=slug,
+#     ).first()
+#
+#     if existing_page:
+#         counter += 1
+#         return check_slug(f"{page_path[:-1]}_{counter}/")
+#
+#     return slug
 
 
 def create_page(

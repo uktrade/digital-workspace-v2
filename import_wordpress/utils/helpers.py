@@ -123,11 +123,11 @@ def create_preview_image(attachments, attachment_id):
     )
 
 
-def get_slug(slug):
+def get_slug(slug, counter=1):
     page_with_slug = Page.objects.filter(slug=slug).first()
 
     if page_with_slug:
-        return get_slug(f"{page_with_slug}-1")
+        return get_slug(f"{page_with_slug}-{counter}", (counter + 1))
 
     return slug
 

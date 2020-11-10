@@ -147,6 +147,7 @@ WAGTAIL_APPS = [
     "taggit",
     "wagtailmedia",
     "wagtailmenus",
+    "wagtail_draftail_anchors",
 ]
 
 DJANGO_APPS = [
@@ -342,3 +343,26 @@ WAGTAILSEARCH_BACKENDS = {
 }
 
 IMPORT_IMAGES = False
+
+from wagtail.embeds.oembed_providers import youtube, vimeo
+
+# Add a custom provider
+# Your custom provider must support oEmbed for this to work. You should be
+# able to find these details in the provider's documentation.
+# - 'endpoint' is the URL of the oEmbed endpoint that Wagtail will call
+# - 'urls' specifies which patterns
+ms_stream_provider = {
+    'endpoint': 'https://web.microsoftstream.com/oembed',
+    'urls': [
+        '^https://.+?.microsoftstream.com/video/.+$',
+    ]
+}
+#https://*.microsoftstream.com/video/ID
+#https://web.microsoftstream.com/video/2db4eeae-f9f8-4324-997a-41f682dea240
+
+WAGTAILEMBEDS_FINDERS = [
+    {
+        'class': 'wagtail.embeds.finders.oembed',
+        'providers': [youtube, vimeo, ms_stream_provider],
+    }
+]

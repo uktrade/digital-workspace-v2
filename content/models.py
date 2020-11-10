@@ -91,6 +91,9 @@ class ContentPage(BasePage):
         )),
         ("image", blocks.ImageBlock()),
         ("internal_media", blocks.InternalMediaBlock()),
+        ("video", blocks.VideoBlock(
+            help_text="""Video embedding"""
+        )),
         ("data_table", blocks.DataTableBlock(
             help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
         )),

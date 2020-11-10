@@ -1,17 +1,13 @@
-from django.contrib.auth.management import create_permissions
-from django.db import migrations
 from wagtail.core.models import (
-    Page,
     GroupPagePermission,
-    GroupCollectionPermission,
-    Collection,
 )
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import Group, Permission
 
 from django.core.management.base import BaseCommand
 
 from news.models import NewsHome
 
+from home.models import HomePage
 from about_us.models import AboutUsHome
 from networks.models import NetworksHome
 from tools.models import ToolsHome
@@ -50,18 +46,6 @@ class Command(BaseCommand):
     help = "Create page permissions"
 
     def handle(self, *args, **options):
-        # Remove standard groups
-        editors, _ = Group.objects.get_or_create(
-            name='Editors',
-        )
-
-        moderators, _ = Group.objects.get_or_create(
-            name='Moderators',
-        )
-
-        moderators.delete()
-        editors.delete()
-
         # Set up new groups
         viewers, _ = Group.objects.get_or_create(
             name='Viewers',
@@ -75,50 +59,53 @@ class Command(BaseCommand):
             name='News Moderators',
         )
 
-        editors, _ = Group.objects.get_or_create(
+        editors = Group.objects.filter(
             name='Editors',
-        )
+        ).first()
 
-        moderators, _ = Group.objects.get_or_create(
+        moderators = Group.objects.filter(
             name='Moderators',
-        )
-
-        moderators.permissions.clear()
-        moderators.save()
+        ).first()
 
         # Add wagtail admin permission
-        wagtail_admin_permisson = Permission.objects.get(
+        wagtail_admin_permission = Permission.objects.get(
             codename='access_admin'
         )
 
-        news_editors.permissions.add(wagtail_admin_permisson)
+        viewers.permissions.add(wagtail_admin_permission)
+
+        news_editors.permissions.add(wagtail_admin_permission)
         news_editors.save()
 
-        news_moderators.permissions.add(wagtail_admin_permisson)
+        news_moderators.permissions.add(wagtail_admin_permission)
         news_moderators.save()
 
         news_permissions = [
             "add_newscategory",
             "change_newscategory",
             "view_newscategory",
+
+            "add_image",
+            "change_image",
+            "delete_image",
+            "add_document",
+            "change_document",
+            "delete_document",
+            "add_media",
+            "change_media",
+            "delete_media",
         ]
 
         for news_permission in news_permissions:
-            permisson = Permission.objects.get(
+            permission = Permission.objects.get(
                 codename=news_permission
             )
 
-            news_editors.permissions.add(permisson)
+            news_editors.permissions.add(permission)
             news_editors.save()
 
-            news_moderators.permissions.add(permisson)
+            news_moderators.permissions.add(permission)
             news_moderators.save()
-
-        editors.permissions.add(wagtail_admin_permisson)
-        editors.save()
-
-        moderators.permissions.add(wagtail_admin_permisson)
-        moderators.save()
 
         # News
         news_home = NewsHome.objects.first()
@@ -137,6 +124,14 @@ class Command(BaseCommand):
                 permission_type=identifier,
             )
 
+        GroupPagePermission.objects.filter(
+            group=editors,
+        ).delete()
+
+        GroupPagePermission.objects.filter(
+            group=moderators,
+        ).delete()
+
         for top_level_page_type in top_level_page_types:
             top_level_page = top_level_page_type.objects.first()
 
@@ -153,3 +148,15 @@ class Command(BaseCommand):
                     page=top_level_page,
                     permission_type=identifier,
                 )
+
+        # Make it so all groups can view all pages
+        home = HomePage.objects.first()
+
+        for group in [
+            viewers,
+        ]:
+            GroupPagePermission.objects.get_or_create(
+                group=group,
+                page=home,
+                permission_type="edit",
+            )

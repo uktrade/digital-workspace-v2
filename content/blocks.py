@@ -3,6 +3,7 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
+from wagtail.embeds.blocks import EmbedBlock
 
 
 class Heading2Block(blocks.CharBlock):
@@ -34,7 +35,7 @@ class TextBlock(blocks.RichTextBlock):
 
     def __init__(self, *args, **kwargs):
         super().__init__(features=["h3", "h4", "bold", "italic", "ol", "ul",
-                                   "link", "document-link"])
+                                   "link", "document-link", "anchor-identifier", ])
 
 
 class ImageBlock(blocks.StructBlock):
@@ -131,21 +132,31 @@ class DataTableBlock(TableBlock):
         template = "blocks/table.html"
 
 
-class PhraseBlock(blocks.CharBlock):
-    """A search phrase"""
+class VideoBlock(blocks.StructBlock):
+    """Only used for Video Card modals."""
+    video = EmbedBlock() # <-- the part we need
 
     class Meta:
-        label = "Pinned keyword or phrase"
-        icon = "search"
-        classname = "phrase"
-        #template = "blocks/phrase.html"
+        template = "blocks/video_embed.html"
+        icon = "media"
+        label = "Embed Video"
 
-
-class ExcludedPhraseBlock(blocks.CharBlock):
-    """A search phrase"""
-
-    class Meta:
-        label = "Excluded keyword or phrase"
-        icon = "cross"
-        classname = "phrase"
-        #template = "blocks/phrase.html"
+#
+# class PhraseBlock(blocks.CharBlock):
+#     """A search phrase"""
+#
+#     class Meta:
+#         label = "Pinned keyword or phrase"
+#         icon = "search"
+#         classname = "phrase"
+#         #template = "blocks/phrase.html"
+#
+#
+# class ExcludedPhraseBlock(blocks.CharBlock):
+#     """A search phrase"""
+#
+#     class Meta:
+#         label = "Excluded keyword or phrase"
+#         icon = "cross"
+#         classname = "phrase"
+#         #template = "blocks/phrase.html"

@@ -85,7 +85,8 @@ sqlparse==0.3.1           # via -r requirements.in/../requirements/base.txt, dja
 stevedore==2.0.0          # via bandit
 unidecode==1.1.1          # via -r requirements.in/../requirements/base.txt, wagtail
 urllib3==1.25.9           # via -r requirements.in/../requirements/base.txt, botocore, elasticsearch, requests, sentry-sdk
-wagtail==2.9              # via -r requirements.in/../requirements/base.txt, wagtailmedia
+wagtail-draftail-anchors==0.2.0  # via -r requirements.in/../requirements/base.txt
+wagtail==2.9.3            # via -r requirements.in/../requirements/base.txt, wagtail-draftail-anchors, wagtailmedia
 wagtailmedia==0.5.0       # via -r requirements.in/../requirements/base.txt
 wagtailmenus==3.0.2       # via -r requirements.in/../requirements/base.txt
 webencodings==0.5.1       # via -r requirements.in/../requirements/base.txt, html5lib
