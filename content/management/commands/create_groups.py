@@ -47,9 +47,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Set up new groups
-        viewers, _ = Group.objects.get_or_create(
-            name='Viewers',
-        )
+        # viewers, _ = Group.objects.get_or_create(
+        #     name='Viewers',
+        # )
 
         news_editors, _ = Group.objects.get_or_create(
             name='News editors',
@@ -72,7 +72,7 @@ class Command(BaseCommand):
             codename='access_admin'
         )
 
-        viewers.permissions.add(wagtail_admin_permission)
+        # viewers.permissions.add(wagtail_admin_permission)
 
         news_editors.permissions.add(wagtail_admin_permission)
         news_editors.save()
@@ -150,13 +150,13 @@ class Command(BaseCommand):
                 )
 
         # Make it so all groups can view all pages
-        home = HomePage.objects.first()
-
-        for group in [
-            viewers,
-        ]:
-            GroupPagePermission.objects.get_or_create(
-                group=group,
-                page=home,
-                permission_type="edit",
-            )
+        # home = HomePage.objects.first()
+        #
+        # for group in [
+        #     viewers,
+        # ]:
+        #     GroupPagePermission.objects.get_or_create(
+        #         group=group,
+        #         page=home,
+        #         permission_type="edit",
+        #     )

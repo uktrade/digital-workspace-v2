@@ -2,16 +2,19 @@ from bs4 import BeautifulSoup
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     StreamFieldPanel,
     InlinePanel,
     FieldRowPanel,
+    PageChooserPanel,
 )
 from wagtail.core import blocks as wagtail_blocks
 from wagtail.core.fields import StreamField
@@ -28,6 +31,114 @@ from content.utils import manage_excluded, manage_pinned
 UserModel = get_user_model()
 
 RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
+
+
+@register_snippet
+class QuickLink(models.Model):
+    title = models.CharField(max_length=255)
+    link_to = ParentalKey(
+        'content.ContentPage',
+        on_delete=models.CASCADE,
+        related_name='quick_links_pages',
+    )
+
+    def __str__(self):
+        return f"'{self.title}' which links to the '{self.link_to.title}' page"
+
+    panels = [
+        FieldPanel('title'),
+        PageChooserPanel('link_to'),
+    ]
+
+    class Meta:
+        ordering = ['-title']
+
+
+@register_snippet
+class WhatsPopular(models.Model):
+    title = models.CharField(max_length=255)
+    link_to = ParentalKey(
+        'content.ContentPage',
+        on_delete=models.CASCADE,
+        related_name='whats_popular_pages',
+        blank=True,
+        null=True,
+    )
+    external_url = models.URLField(
+        blank=True,
+        null=True,
+    )
+    preview_image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
+    def __str__(self):
+        return self.title
+
+    panels = [
+        FieldPanel('title'),
+        ImageChooserPanel("preview_image"),
+        PageChooserPanel('link_to'),
+        FieldPanel('external_url'),
+    ]
+
+    class Meta:
+        ordering = ['-title']
+
+    def clean(self):
+        if self.external_url and self.link_to:
+            raise ValidationError(
+                "Please choose an external URL or a page within the site. "
+                "You cannot have both."
+            )
+
+        page_count = WhatsPopular.objects.count()
+
+        if page_count > 2:
+            raise ValidationError(
+                "You can have a maximum of 3 \"what's popular\" pages. "
+                "Please remove one of the others before adding a new one."
+            )
+
+
+@register_snippet
+class HowDoIPreview(models.Model):
+    how_do_i_page = ParentalKey(
+        'working_at_dit.HowDoI',
+        on_delete=models.CASCADE,
+        related_name='how_do_i_on_home_pages',
+    )
+
+    def __str__(self):
+        return self.how_do_i_page
+
+    panels = [
+        PageChooserPanel('how_do_i_page'),
+    ]
+
+
+@register_snippet
+class SiteAlertBanner(models.Model):
+    banner_text = models.CharField(max_length=255)
+    activated = models.BooleanField(default=False, )
+
+    def __str__(self):
+        return self.banner_text
+
+    def clean(self):
+        activated_banner = SiteAlertBanner.objects.filter(
+            activated=True,
+        ).first()
+
+        if activated_banner and self.activated:
+            raise ValidationError(
+                "You can only have one active banner at a time. "
+                f"Currently the '{activated_banner}' banner is active"
+            )
 
 
 @register_snippet

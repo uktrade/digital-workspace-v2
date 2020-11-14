@@ -2,8 +2,14 @@ from wagtail.contrib.modeladmin.options import (
     ModelAdmin,
     modeladmin_register,
 )
+from wagtail.core import hooks
+
 from .models import (
     Theme,
+    QuickLink,
+    WhatsPopular,
+    HowDoIPreview,
+    SiteAlertBanner,
 )
 
 
@@ -19,5 +25,52 @@ class ThemeAdmin(ModelAdmin):
     search_fields = ('title',)
 
 
-# Now you just need to register your customised ModelAdmin class with Wagtail
+class QuickLinksAdmin(ModelAdmin):
+    model = QuickLink
+    menu_label = 'Quick links'
+    menu_icon = 'link'
+    menu_order = 200
+    add_to_settings_menu = False
+    exclude_from_explorer = False
+
+
+class WhatsPopularAdmin(ModelAdmin):
+    model = WhatsPopular
+    menu_label = "What's popular?"
+    menu_icon = 'link'
+    menu_order = 200
+    add_to_settings_menu = False
+    exclude_from_explorer = False
+
+
+class HowDoIPreviewAdmin(ModelAdmin):
+    model = HowDoIPreview
+    menu_label = "How do I preview"
+    menu_icon = 'link'
+    menu_order = 200
+    add_to_settings_menu = False
+    exclude_from_explorer = False
+
+
+class SiteAlertBannerAdmin(ModelAdmin):
+    model = SiteAlertBanner
+    menu_label = "Site alert banner"
+    menu_icon = 'warning'
+    menu_order = 200
+    add_to_settings_menu = True
+    exclude_from_explorer = True
+    list_display = ('banner_text', 'activated')
+
+
 modeladmin_register(ThemeAdmin)
+modeladmin_register(QuickLinksAdmin)
+modeladmin_register(WhatsPopularAdmin)
+modeladmin_register(HowDoIPreviewAdmin)
+modeladmin_register(SiteAlertBannerAdmin)
+
+
+@hooks.register('construct_page_action_menu')
+def remove_submit_to_moderator_option(menu_items, request, context):
+    # TODO - remove delete page item
+
+    menu_items[:] = [item for item in menu_items if item.name != 'action-submit']

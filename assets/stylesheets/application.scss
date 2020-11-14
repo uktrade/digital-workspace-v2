@@ -148,3 +148,11 @@ $govuk-image-url-function: frontend-image-url;
 .children-3-col {
   margin-top: 40px;
 }
+
+// Video
+.video-embed {
+  iframe {
+    width: 100%!important;
+    height: calc(100vw * 0.56)
+  }
+}

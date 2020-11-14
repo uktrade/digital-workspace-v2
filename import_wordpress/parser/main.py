@@ -80,7 +80,17 @@ tag_names = [
     "wp:attachment_url",
 ]
 
+# Swap policies and guidance URLs
+
+
 root = element_tree.parse(xml_file).getroot()
+
+# Update paths
+
+
+skip_list = [
+    "/sectors/technology-and-smart-cities/",
+]
 
 
 def parse_xml_file():
@@ -196,7 +206,8 @@ def parse_xml_file():
         if not post_id:
             post_id = item["link"].replace("/?attachment_id=", "")
 
-        items[post_type][post_id] = item
+        if item["link"] not in skip_list:
+            items[post_type][post_id] = item
 
     # Second step is to generate Wagtail content
 
@@ -219,12 +230,12 @@ def parse_xml_file():
 
     print("Creating news...")
 
-    # News
-    for key, value in items["news"].items():
-        create_news_page(
-            items["news"][key],
-            items["attachment"]
-        )
+    # # News
+    # for key, value in items["news"].items():
+    #     create_news_page(
+    #         items["news"][key],
+    #         items["attachment"]
+    #     )
 
     print("Creating page content...")
 
