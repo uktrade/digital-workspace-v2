@@ -26,6 +26,26 @@ class Heading3Block(blocks.CharBlock):
         template = "blocks/heading_3.html"
 
 
+class Heading4Block(blocks.CharBlock):
+    """A (section) heading"""
+
+    class Meta:
+        label = "Heading 4"
+        icon = "title"
+        classname = "full title"
+        template = "blocks/heading_4.html"
+
+
+class Heading5Block(blocks.CharBlock):
+    """A (section) heading"""
+
+    class Meta:
+        label = "Heading 5"
+        icon = "title"
+        classname = "full title"
+        template = "blocks/heading_5.html"
+
+
 class TextBlock(blocks.RichTextBlock):
     """A text content block"""
 
@@ -34,8 +54,7 @@ class TextBlock(blocks.RichTextBlock):
         template = "blocks/text.html"
 
     def __init__(self, *args, **kwargs):
-        super().__init__(features=["h3", "h4", "bold", "italic", "ol", "ul",
-                                   "link", "document-link", "anchor-identifier", ])
+        super().__init__(features=kwargs["features"])
 
 
 class ImageBlock(blocks.StructBlock):
@@ -134,7 +153,10 @@ class DataTableBlock(TableBlock):
 
 class VideoBlock(blocks.StructBlock):
     """Only used for Video Card modals."""
-    video = EmbedBlock() # <-- the part we need
+    video = EmbedBlock(
+        help_text="Paste a URL from Microsoft Stream or Youtube. Please "
+                  "use the page URL rather than the URL from the embed code."
+    ) # <-- the part we need
 
     class Meta:
         template = "blocks/video_embed.html"

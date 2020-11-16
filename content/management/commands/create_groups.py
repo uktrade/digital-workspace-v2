@@ -91,9 +91,9 @@ class Command(BaseCommand):
             "add_document",
             "change_document",
             "delete_document",
-            "add_media",
-            "change_media",
-            "delete_media",
+            # "add_media",
+            # "change_media",
+            # "delete_media",
         ]
 
         for news_permission in news_permissions:
@@ -148,6 +148,38 @@ class Command(BaseCommand):
                     page=top_level_page,
                     permission_type=identifier,
                 )
+
+        moderator_permissions = [
+            "add_quicklink",
+            "change_quicklink",
+            "delete_quicklink",
+            "view_quicklink",
+            "view_whatspopular",
+            "add_whatspopular",
+            "change_whatspopular",
+            "delete_whatspopular",
+            "delete_sitealertbanner",
+            "view_sitealertbanner",
+            "add_sitealertbanner",
+            "change_sitealertbanner",
+            "add_howdoipreview",
+            "view_howdoipreview",
+            "delete_howdoipreview",
+            "change_howdoipreview",
+            "add_comment",
+            "change_comment",
+            "delete_comment",
+            "view_comment",
+        ]
+
+        for moderator_permission in moderator_permissions:
+            permissions = Permission.objects.filter(
+                codename=moderator_permission
+            )
+
+            for permission in permissions:
+                moderators.permissions.add(permission)
+                moderators.save()
 
         # Make it so all groups can view all pages
         # home = HomePage.objects.first()

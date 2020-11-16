@@ -6,9 +6,6 @@ from wagtail.core import hooks
 
 from .models import (
     Theme,
-    QuickLink,
-    WhatsPopular,
-    HowDoIPreview,
     SiteAlertBanner,
 )
 
@@ -25,33 +22,6 @@ class ThemeAdmin(ModelAdmin):
     search_fields = ('title',)
 
 
-class QuickLinksAdmin(ModelAdmin):
-    model = QuickLink
-    menu_label = 'Quick links'
-    menu_icon = 'link'
-    menu_order = 200
-    add_to_settings_menu = False
-    exclude_from_explorer = False
-
-
-class WhatsPopularAdmin(ModelAdmin):
-    model = WhatsPopular
-    menu_label = "What's popular?"
-    menu_icon = 'link'
-    menu_order = 200
-    add_to_settings_menu = False
-    exclude_from_explorer = False
-
-
-class HowDoIPreviewAdmin(ModelAdmin):
-    model = HowDoIPreview
-    menu_label = "How do I preview"
-    menu_icon = 'link'
-    menu_order = 200
-    add_to_settings_menu = False
-    exclude_from_explorer = False
-
-
 class SiteAlertBannerAdmin(ModelAdmin):
     model = SiteAlertBanner
     menu_label = "Site alert banner"
@@ -63,9 +33,6 @@ class SiteAlertBannerAdmin(ModelAdmin):
 
 
 modeladmin_register(ThemeAdmin)
-modeladmin_register(QuickLinksAdmin)
-modeladmin_register(WhatsPopularAdmin)
-modeladmin_register(HowDoIPreviewAdmin)
 modeladmin_register(SiteAlertBannerAdmin)
 
 

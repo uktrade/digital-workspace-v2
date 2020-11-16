@@ -131,10 +131,12 @@ class NewsPage(PageWithTopics):
     ]
 
     content_panels = [
-        FieldPanel("excerpt"),
-        ImageChooserPanel("preview_image"),
     ] + PageWithTopics.content_panels + [
-        InlinePanel('news_categories', label='News category'),
+        ImageChooserPanel("preview_image"),
+        InlinePanel(
+            'news_categories',
+            label='News categories'
+        ),
     ]
 
     promote_panels = [

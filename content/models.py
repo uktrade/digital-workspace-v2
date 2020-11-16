@@ -30,95 +30,19 @@ from content.utils import manage_excluded, manage_pinned
 
 UserModel = get_user_model()
 
-RICH_TEXT_FEATURES = ["bold", "italic", "ol", "ul", "link", "document-link"]
-
-
-@register_snippet
-class QuickLink(models.Model):
-    title = models.CharField(max_length=255)
-    link_to = ParentalKey(
-        'content.ContentPage',
-        on_delete=models.CASCADE,
-        related_name='quick_links_pages',
-    )
-
-    def __str__(self):
-        return f"'{self.title}' which links to the '{self.link_to.title}' page"
-
-    panels = [
-        FieldPanel('title'),
-        PageChooserPanel('link_to'),
-    ]
-
-    class Meta:
-        ordering = ['-title']
-
-
-@register_snippet
-class WhatsPopular(models.Model):
-    title = models.CharField(max_length=255)
-    link_to = ParentalKey(
-        'content.ContentPage',
-        on_delete=models.CASCADE,
-        related_name='whats_popular_pages',
-        blank=True,
-        null=True,
-    )
-    external_url = models.URLField(
-        blank=True,
-        null=True,
-    )
-    preview_image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
-
-    def __str__(self):
-        return self.title
-
-    panels = [
-        FieldPanel('title'),
-        ImageChooserPanel("preview_image"),
-        PageChooserPanel('link_to'),
-        FieldPanel('external_url'),
-    ]
-
-    class Meta:
-        ordering = ['-title']
-
-    def clean(self):
-        if self.external_url and self.link_to:
-            raise ValidationError(
-                "Please choose an external URL or a page within the site. "
-                "You cannot have both."
-            )
-
-        page_count = WhatsPopular.objects.count()
-
-        if page_count > 2:
-            raise ValidationError(
-                "You can have a maximum of 3 \"what's popular\" pages. "
-                "Please remove one of the others before adding a new one."
-            )
-
-
-@register_snippet
-class HowDoIPreview(models.Model):
-    how_do_i_page = ParentalKey(
-        'working_at_dit.HowDoI',
-        on_delete=models.CASCADE,
-        related_name='how_do_i_on_home_pages',
-    )
-
-    def __str__(self):
-        return self.how_do_i_page
-
-    panels = [
-        PageChooserPanel('how_do_i_page'),
-    ]
+RICH_TEXT_FEATURES = [
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "bold",
+    "italic",
+    "ol",
+    "ul",
+    "link",
+    "document-link",
+    "anchor-identifier",
+]
 
 
 @register_snippet
@@ -194,6 +118,8 @@ class ContentPage(BasePage):
     body = StreamField([
         ("heading2", blocks.Heading2Block()),
         ("heading3", blocks.Heading3Block()),
+        ("heading4", blocks.Heading4Block()),
+        ("heading5", blocks.Heading5Block()),
         ("text_section", blocks.TextBlock(
             blank=True,
             features=RICH_TEXT_FEATURES,
@@ -201,7 +127,7 @@ class ContentPage(BasePage):
             displayed above the list of child pages)"""
         )),
         ("image", blocks.ImageBlock()),
-        ("internal_media", blocks.InternalMediaBlock()),
+        # ("internal_media", blocks.InternalMediaBlock()),
         ("video", blocks.VideoBlock(
             help_text="""Video embedding"""
         )),
