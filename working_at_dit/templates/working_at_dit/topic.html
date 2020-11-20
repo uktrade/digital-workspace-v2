@@ -10,6 +10,14 @@
             {% endfor %}
         </div>
         <div class="govuk-grid-column-one-third">
+            <h2 class="govuk-heading-m">Tools</h2>
+            {% for tool in tools %}
+                <p class="govuk-body">
+                    <a href="{{ tool.page.url }}">
+                        {{ tool.page.title }}
+                    </a>
+                </p>
+            {% endfor %}
             <h2 class="govuk-heading-m">Related news</h2>
             {% for page_topic in related_news %}
                 <p class="govuk-body">
@@ -20,4 +28,16 @@
             {% endfor %}
         </div>
     </div>
+    <h2 class="govuk-heading-m">Policies and Guidance</h2>
+    {% for page_pg in policies_and_guidance %}
+        <p class="govuk-body">
+            <a href="{{ page_pg.page.url }}">
+                {{ page_pg.page.title }}
+            </a>
+            <br />
+            <span class="updated-at">
+                {{ page_pg.page.last_published_at }}
+            </span>
+        </p>
+    {% endfor %}
 {% endblock %}

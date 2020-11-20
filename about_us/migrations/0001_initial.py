@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
-            bases=(content.models.DirectChildrenMixin, 'working_at_dit.pagewithtopics'),
+            bases=('working_at_dit.pagewithtopics',),
         ),
         migrations.CreateModel(
             name='AboutUsHome',
@@ -32,6 +32,6 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
-            bases=(content.models.DirectChildrenMixin, 'working_at_dit.pagewithtopics'),
+            bases=('working_at_dit.pagewithtopics',),
         ),
     ]

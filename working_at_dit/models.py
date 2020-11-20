@@ -47,6 +47,20 @@ class Topic(ContentPage):
             page__content_type__app_label="news"
         ).order_by("topic__last_published_at")[:10]
 
+        policies_and_guidance = PageTopic.objects.filter(
+            topic=self.contentpage,
+            page__content_type__app_label="working_at_dit"
+        ).order_by("page__last_published_at")
+
+        context["policies_and_guidance"] = policies_and_guidance
+
+        tools = PageTopic.objects.filter(
+            topic=self.contentpage,
+            page__content_type__app_label="tools"
+        ).order_by("page__last_published_at")
+
+        context["tools"] = tools
+
         return context
 
     content_panels = ContentPage.content_panels + [
@@ -110,7 +124,7 @@ class PageWithTopics(ContentPage):
 
         context["page_topics"] = PageTopic.objects.filter(
             page=self,
-        ).order_by("page__title")
+        ).order_by("topic__title")
 
         return context
 
@@ -139,12 +153,14 @@ class GuidanceHome(BasePage):
 
 
 class Guidance(PageWithTopics):
+    template = "working_at_dit/policy_guidance.html"
     is_creatable = True
 
     subpage_types = ["working_at_dit.Guidance"]
 
 
 class Policy(PageWithTopics):
+    template = "working_at_dit/policy_guidance.html"
     is_creatable = True
 
     subpage_types = ["working_at_dit.Policy"]

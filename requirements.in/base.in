@@ -19,6 +19,7 @@ pyjwt[crypto]>=1.7.1,<2
 requests>=2.23,<3
 boto3
 htmllaundry
+mammoth
 
 # DIT dependencies
 django-staff-sso-client>=2.2.0,<3

@@ -31,10 +31,6 @@ from content.utils import manage_excluded, manage_pinned
 UserModel = get_user_model()
 
 RICH_TEXT_FEATURES = [
-    "h2",
-    "h3",
-    "h4",
-    "h5",
     "bold",
     "italic",
     "ol",
@@ -251,23 +247,3 @@ class PrivacyPolicy(ContentPage):
     is_creatable = True
 
     subpage_types = []
-
-
-class DirectChildrenMixin:
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        context["children"] = []
-
-        child_depth = self.depth + 1
-
-        import importlib
-
-        for subpage_type in self.subpage_types:
-            parts = subpage_type.split(".")
-            module = importlib.import_module(f"{parts[0]}.models")
-            children = getattr(module, parts[1]).objects.filter(
-                depth=child_depth
-            ).order_by("title")
-            context["children"].extend(children)
-
-        return context

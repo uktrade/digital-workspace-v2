@@ -76,6 +76,8 @@ def create_page(
     path,
     attachments,
 ):
+    print(f"Processing path: {path}")
+
     author = get_author(page_content)
     live = is_live(page_content["status"])
 

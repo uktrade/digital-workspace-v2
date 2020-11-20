@@ -30,3 +30,7 @@ wordpress_all.xml
 
 # Libs
 src/wpparser/
+
+# Misc
+country_factsheet.xml
+country_factsheet.docx

@@ -34,6 +34,6 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
-            bases=(content.models.DirectChildrenMixin, 'content.contentpage'),
+            bases=('content.contentpage',),
         ),
     ]

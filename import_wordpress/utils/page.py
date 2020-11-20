@@ -43,24 +43,6 @@ page_types = {
     },
 }
 
-orphans = {
-    "/dits-history/": "/about-us/dits-history/",
-    "/how-we-are-structured/": "/about-us/how-we-are-structured/",
-    "/lpg/": "/about-us/lpg/",
-    "/our-management/": "/about-us/our-management/",
-    "/our-ministers/": "/about-us/our-ministers/",
-    "/our-unions/": "/about-us/our-unions/",
-    "/our-vision-mission-and-values/": "/about-us/our-vision-mission-and-values/",
-    "/single-departmental-plan/": "/about-us/single-departmental-plan/",
-}
-
-
-def check_for_orphan(path):
-    if path in orphans:
-        return orphans[path]
-
-    return None
-
 
 def get_page_type(path):
     for type_key, type_value in page_types.items():
@@ -83,16 +65,12 @@ def get_page_data(path, items):
         if value["link"] == path:
             return value
 
+    print("Unable to find path: ", path)
+
     raise Exception("Cannot find page")
 
 
 def populate_page(path, items):
-    orphan_path = check_for_orphan(path)
-
-    if orphan_path:
-        # TODO - create redirect
-        path = orphan_path
-
     # Check for existence of page
     try:
         page_type_key = get_page_type(path)

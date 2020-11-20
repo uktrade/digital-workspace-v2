@@ -20,6 +20,11 @@ from import_wordpress.parser.users import create_users
 from import_wordpress.utils.page_hierarchy import create_section_homepages
 from import_wordpress.utils.page import populate_page
 
+from import_wordpress.utils.orphans import (
+    orphan_policy,
+    orphan_guidance,
+)
+
 from django.conf import settings
 
 namespaces = settings.NAMESPACES
@@ -91,6 +96,18 @@ root = element_tree.parse(xml_file).getroot()
 skip_list = [
     "/sectors/technology-and-smart-cities/",
 ]
+
+# TODO - create redirects
+orphans = {
+    "/dits-history/": "/about-us/dits-history/",
+    "/how-we-are-structured/": "/about-us/how-we-are-structured/",
+    "/lpg/": "/about-us/lpg/",
+    "/our-management/": "/about-us/our-management/",
+    "/our-ministers/": "/about-us/our-ministers/",
+    "/our-unions/": "/about-us/our-unions/",
+    "/our-vision-mission-and-values/": "/about-us/our-vision-mission-and-values/",
+    "/single-departmental-plan/": "/about-us/single-departmental-plan/",
+}
 
 
 def parse_xml_file():
@@ -207,7 +224,17 @@ def parse_xml_file():
             post_id = item["link"].replace("/?attachment_id=", "")
 
         if item["link"] not in skip_list:
-            items[post_type][post_id] = item
+            if item["link"] in orphans:
+                item["link"] = orphans[item["link"]]
+
+            if item["link"] in orphan_guidance:
+                item["policy_or_guidance"] = "guidance"
+                items["policy"][post_id] = item
+            elif item["link"] in orphan_policy:
+                items["policy"][post_id] = item
+                item["policy_or_guidance"] = "policy"
+            else:
+                items[post_type][post_id] = item
 
     # Second step is to generate Wagtail content
 

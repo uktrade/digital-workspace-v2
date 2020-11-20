@@ -4,6 +4,11 @@ from django.template.defaultfilters import slugify
 
 from wagtail.contrib.redirects.models import Redirect
 
+from import_wordpress.utils.orphans import (
+    orphan_policy,
+    orphan_guidance,
+)
+
 from import_wordpress.parser.block_content import (
     parse_into_blocks,
 )
@@ -85,7 +90,11 @@ def create_policy_or_guidance(policy_or_guidance, attachments):
 
     # Create redirect
     if live:
+        redirect_url = link[:-1]
+        if link in orphan_policy or link in orphan_guidance:
+            redirect_url = link
+
         Redirect.objects.create(
-            old_path=f'/working-at-dit/policies-and-guidance{link[:-1]}',
+            old_path=f'/working-at-dit/policies-and-guidance{redirect_url}',
             redirect_page=content_page,
         )

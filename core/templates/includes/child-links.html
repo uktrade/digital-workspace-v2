@@ -1,5 +1,6 @@
 <div class="children-{{ num_cols }}-col">
-    {% for child in children %}
+
+    {% for child in self.get_children.specific %}
         <div class="col-child">
             <h3 class="govuk-heading-s">
                 <a {% if target_blank %}target="_blank" {% endif %}href="{{ child.url }}">{{ child.title }}</a>
