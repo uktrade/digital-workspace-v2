@@ -27,6 +27,8 @@ from content.models import PrivacyPolicyHome
 
 from networks.models import NetworksHome
 
+from country_fact_sheet.models import CountryFactSheetHome
+
 
 def create_section_homepages():
     home_page = Page.objects.filter(slug="home").first()
@@ -209,3 +211,18 @@ def create_section_homepages():
     home_page.save()
 
     privacy_policy.save_revision().publish()
+
+    country_fact_sheet_homepage = CountryFactSheetHome(
+        title="Trade statistics country fact sheets",
+        slug="country-fact-sheets",
+        live=True,
+        first_published_at=datetime.now(),
+        show_in_menus=True,
+        depth=2,
+        legacy_path="/working-at-dit/policies-and-guidance/trade-statistics-country-factsheets/"
+    )
+
+    home_page.add_child(instance=country_fact_sheet_homepage)
+    home_page.save()
+
+    country_fact_sheet_homepage.save_revision().publish()

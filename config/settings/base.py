@@ -116,6 +116,7 @@ LOCAL_APPS = [
     "about_us",
     "transition",
     "networks",
+    "country_fact_sheet",
     "import_wordpress",
 ]
 
