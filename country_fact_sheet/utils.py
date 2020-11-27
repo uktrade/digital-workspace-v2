@@ -14,9 +14,6 @@ HEADERS = [
     "Heading6",
 ]
 
-def unzip_file(file_path):
-    pass
-
 
 def get_style(paragraph):
     style_value = None

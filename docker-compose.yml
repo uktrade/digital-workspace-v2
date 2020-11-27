@@ -40,3 +40,19 @@ services:
        condition: service_healthy
    environment:
      - DJANGO_SETTINGS_MODULE=config.settings.local
+ celery:
+   build:
+      context: .
+   env_file: .env
+   command: celery -A config worker -l info
+   volumes:
+     - .:/app
+   depends_on:
+     - db
+     - redis
+   environment:
+     - DJANGO_SETTINGS_MODULE=config.settings.local
+ redis:
+   image: redis:buster
+   ports:
+     - "6379:6379"

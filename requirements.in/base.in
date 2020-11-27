@@ -30,6 +30,9 @@ gevent>=20.6.0,<21
 gunicorn>=20.0.4,<21
 sentry-sdk>=0.14.4,<=0.15
 elasticsearch
+s3chunkuploader==0.12
+celery
+redis
 
 # PHP unserialise
 phpserialize

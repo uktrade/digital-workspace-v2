@@ -11,6 +11,8 @@ CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 LOG_TO_ELK = env.bool("LOG_TO_ELK", default=False)
 ELK_ADDRESS = env("ELK_ADDRESS", default=None)
 
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 if LOG_TO_ELK:
     class LogstashHTTPHandler(logging.Handler):
         def emit(self, record):

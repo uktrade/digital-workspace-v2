@@ -49,6 +49,13 @@ LEGACY_AWS_STORAGE_BUCKET_NAME = env("LEGACY_AWS_STORAGE_BUCKET_NAME")
 LEGACY_AWS_ACCESS_KEY_ID = env("LEGACY_AWS_ACCESS_KEY_ID")
 LEGACY_AWS_SECRET_ACCESS_KEY = env("LEGACY_AWS_SECRET_ACCESS_KEY")
 
+# s3chunkuploader
+FILE_UPLOAD_HANDLERS = ('s3chunkuploader.file_handler.S3FileUploadHandler',)
+CLEAN_FILE_NAME = True
+
+# Celery file upload config
+IGNORE_ANTI_VIRUS = env.bool("IGNORE_ANTI_VIRUS", False)
+
 # Set optional configuration from environment
 if env.str("DJANGO_EMAIL_BACKEND", None):
     EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND")

@@ -1,7 +1,7 @@
 import logging
-from datetime import datetime
+
 from bs4 import BeautifulSoup
-import mammoth
+
 
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
@@ -9,10 +9,13 @@ from django.db import models
 from django import forms
 from django.core.exceptions import ValidationError
 
-from wagtail.core.models import Page
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.snippets.models import register_snippet
 from content.models import BasePage, ContentPage
+
+from s3chunkuploader.fields import S3FileField
+
+from country_fact_sheet.tasks import process_fact_sheets
 
 from wagtail.admin.edit_handlers import (
     FieldPanel,
@@ -25,53 +28,39 @@ UserModel = get_user_model()
 logger = logging.getLogger(__name__)
 
 
-def get_country_name_from_file_name(file_name):
-    parts = file_name.split()
-    return parts[0]
+class CountryFactSheetUpload(models.Model):
+    UNPROCESSED = "unprocessed"
+    PROCESSING = "processing"
+    PROCESSED = "processed"
+    PROCESSED_WITH_ERROR = "processed_error"
+    ANTIVIRUS = "antivirus"
+    PROCESSED_WITH_VIRUS = "Found virus"
 
+    STATUS_CHOICES = [
+        (UNPROCESSED, "Unprocessed"),
+        (ANTIVIRUS, "Checking for viruses"),
+        (PROCESSED_WITH_ERROR, "Processed. Page not created, error(s) found."),
+        (PROCESSED_WITH_VIRUS, "Processed. Found virus."),
+        (PROCESSING, "Processing"),
+        (PROCESSED, "Processed and page created"),
+    ]
 
-def process_html(html):
-    soup = BeautifulSoup(html)
-    for p in soup.findAll('p'):
-        p['class'] = 'govuk-body'
-
-    for h1 in soup.findAll('h1'):
-        h1['class'] = 'govuk-heading-l'
-
-    for h2 in soup.findAll('h2'):
-        h2['class'] = 'govuk-heading-m'
-
-    for h3 in soup.findAll('h3'):
-        h3['class'] = 'govuk-heading-m'
-
-    for h4 in soup.findAll('h4'):
-        h4['class'] = 'govuk-heading-m'
-
-    for h5 in soup.findAll('h5'):
-        h5['class'] = 'govuk-heading-m'
-
-    for h6 in soup.findAll('h6'):
-        h6['class'] = 'govuk-body-s'
-
-    for ul in soup.findAll('ul'):
-        ul['class'] = 'govuk-list'
-
-    for ul in soup.findAll('li'):
-        ul['class'] = 'govuk-link'
-
-    soup.body.unwrap()
-    return str(soup)
-
-
-# class CountryFactSheetUpload(models.Model):
-#     uploaded_on = models.DateTimeField(auto_now_add=True)
-#     uploaded_by = models.ForeignKey(
-#         get_user_model(),
-#         on_delete=models.CASCADE,
-#         related_name="users"
-#     )
-#     country_name = models.CharField(max_length=255)
-#     file_name = models.CharField(max_length=255)
+    uploaded_on = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="users"
+    )
+    country_name = models.CharField(max_length=255)
+    # file_name = models.CharField(max_length=255)
+    s3_document_file = S3FileField(max_length=1000, null=True, blank=True, )
+    status = models.CharField(
+        max_length=100,
+        choices=STATUS_CHOICES,
+        default=UNPROCESSED,
+    )
+    user_error_message = models.TextField(null=True, blank=True,)
+    error_message = models.CharField(max_length=255, null=True, blank=True,)
 
 
 class CountryFactSheet(BasePage):
@@ -111,6 +100,9 @@ class CountryFactSheetHomeForm(WagtailAdminPageForm):
         required=False,
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super().clean()
 
@@ -124,62 +116,79 @@ class CountryFactSheetHomeForm(WagtailAdminPageForm):
         if country_fact_sheets:
             files = self.files.getlist('country_fact_sheets')
             for file in files:
-                # TODO - virus scan files
-                # TODO - put into celery worker process
-                # try:
-                logger.info(f"Processing fact sheet file {file.name}")
-                country_name = get_country_name_from_file_name(file.name)
+                logger.info(f"Processing '{file.name}' country file")
+                # When using a model form, you must use the
+                # name attribute of the file rather than
+                # passing the request file var directly as this is the
+                # required when using the chunk uploader project
+                CountryFactSheetUpload.objects.create(
+                    s3_document_file=file.name,
+                    uploaded_by=self.initial["user"],
+                )
+            process_fact_sheets.delay()
 
-                with file.open() as docx_file:
-                    result = mammoth.convert_to_html(docx_file)
-                    fact_sheet_html = process_html(result.value)
-
-                    fact_sheet_page = CountryFactSheet.objects.filter(
-                        slug=slugify(file.name)
-                    ).first()
-
-                    if not fact_sheet_page:
-                        country_fact_sheet_home = Page.objects.filter(
-                            slug="country-fact-sheets",
-                        ).first()
-
-                        fact_sheet = CountryFactSheet(
-                            first_published_at=datetime.now(),
-                            last_published_at=datetime.now(),
-                            title=country_name,
-                            slug=slugify(file.name),
-                            live=True,
-                            fact_sheet_content=fact_sheet_html,
-                            depth=3,
-                        )
-
-                        country_fact_sheet_home.add_child(instance=fact_sheet)
-                        country_fact_sheet_home.save()
-                    else:
-                        fact_sheet_page.fact_sheet_content = fact_sheet_html
-                        fact_sheet_page.save()
-
-                    # TODO - log messages somewhere if relevant
-                    #messages = result.messages  # Any messages, such as warnings during conversion
-                # except Exception as ex:
-                #     raise ValidationError(
-                #         f"There was a problem processing your files - {ex}"
-                #         "TODO - add further explanation" # TODO
-                #     )
         if commit:
             page.save()
         return page
 
 
+from wagtail.admin.edit_handlers import TabbedInterface, ObjectList
+
+
+class CustomTabbedInterface(TabbedInterface):
+    def get_form_class(self):
+        form_class = super().get_form_class()
+        request = self.request
+        if request:
+            # check request is available to ensure this instance has been bound to it
+            user = self.request.user
+
+            def initiate_class(*args, **kwargs):
+                # instead of returning the class, return a function that returns the instantiated class
+                # here we can inject a kwarg `initial` into the generated form
+                # important: this gets called for edit view also and initial will override the instance data
+                # kwarg['instance'] will be the `Page` instance and can be inspected as needed
+                kwargs['initial'] = {'user': user}
+
+                return form_class(*args, **kwargs)
+
+            return initiate_class
+
+        return form_class
+
+
 class CountryFactSheetHome(ContentPage):
     subpage_types = ["country_fact_sheet.CountryFactSheet", ]
 
+    edit_handler = CustomTabbedInterface([
+        ObjectList(ContentPage.content_panels, heading='Content'),
+        ObjectList(ContentPage.promote_panels, heading='Promote'),
+        ObjectList(ContentPage.settings_panels, heading='Settings', classname="settings"),
+    ])
+
+    def form_valid(self, form, *args, **kwargs):
+        return super().form_valid(form, *args, **kwargs)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+
+        # TODO - add listing of country fact sheets
         return context
 
     content_panels = ContentPage.content_panels + [
-        FieldPanel('country_fact_sheets'),
+        #FieldPanel('country_fact_sheets'),
     ]
+
+    # def save(self, *args, **kwargs):
+    #     return super().save(*args, **kwargs)
+
+    def get_form_class(self):
+        return super().get_form_class()
+
+    def on_request_bound(self):
+        return super().on_request_bound()
 
     base_form_class = CountryFactSheetHomeForm
