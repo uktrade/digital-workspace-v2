@@ -1,7 +1,6 @@
 import os
 import re
 from urllib.parse import urlparse
-from pathlib import Path
 from bs4 import BeautifulSoup
 
 from django.conf import settings
@@ -12,6 +11,12 @@ from import_wordpress.utils.helpers import (
     create_image,
 )
 
+
+ASSET_EXTENSIONS = (
+    ".docx",
+    ".pdf",
+    # TODO - add remaining if actually use this logic
+)
 
 wp_attachments = None
 
@@ -27,6 +32,12 @@ def prep_content(content):
         "\[caption.*\](.*)\[\/caption\]",
         replace_caption,
         content,
+    )
+
+    # Update path in asset URLs
+    content = content.replace(
+        settings.OLD_ASSET_PATH,
+        settings.NEW_ASSET_PATH,
     )
 
     # Clean up strong tags
@@ -172,6 +183,18 @@ def process_content(tag, blocks, depth):
             current_parent_tags.append(f"</{tag.name}>")
 
 
+def identify_asset_links(soup):
+    documents = []
+
+    a_tags = soup.find_all('a')
+
+    for a_tag in a_tags:
+        if a_tag.string.endswith(ASSET_EXTENSIONS):
+            documents.append(a_tag.string)
+
+    return documents
+
+
 def parse_into_blocks(html_content, attachments):
     if not html_content:
         return None
@@ -186,6 +209,12 @@ def parse_into_blocks(html_content, attachments):
 
     # Process HTML into Wagtail StreamField blocks
     process_content(soup.body, blocks, 1)
+
+    # TODO - don't think we need to do anything other than swap document
+    # link path for now but just in case:
+    # documents = identify_asset_links(soup)
+
+    # TODO - find any asset links and add them to document list, return from this function
 
     # Add final HTML
     append_block_text(blocks)

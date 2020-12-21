@@ -13,7 +13,7 @@ from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.snippets.models import register_snippet
 from content.models import BasePage, ContentPage
 
-from s3chunkuploader.fields import S3FileField
+#from s3chunkuploader.fields import S3FileField
 
 from country_fact_sheet.tasks import process_fact_sheets
 
@@ -53,7 +53,7 @@ class CountryFactSheetUpload(models.Model):
     )
     country_name = models.CharField(max_length=255)
     # file_name = models.CharField(max_length=255)
-    s3_document_file = S3FileField(max_length=1000, null=True, blank=True, )
+    s3_document_file = models.FileField(max_length=1000, null=True, blank=True, )
     status = models.CharField(
         max_length=100,
         choices=STATUS_CHOICES,

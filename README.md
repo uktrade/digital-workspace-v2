@@ -42,3 +42,7 @@ buildpack will automatically run the npm `heroku-postbuild` step after
 ---
 
 [Wagtail]: https://www.wagtail.io
+
+
+## Notes in import
+When importing we will need to copy the content of the current buckets to their new locations (or possibly leave them where they are and update references to them).

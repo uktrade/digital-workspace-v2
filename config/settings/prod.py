@@ -4,7 +4,12 @@ MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
 ]
 
+
+# DEFAULT_FILE_STORAGE must be set to 'storages.backends.s3boto3.S3Boto3Storage'
+# if using S3FileUploadHandler for file upload handling
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# s3chunkuploader
+FILE_UPLOAD_HANDLERS = ('chunk_uploader.file_handler.S3FileUploadHandler',)
 #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 AWS_DEFAULT_ACL = None

@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime
 from phpserialize import unserialize
 
@@ -117,6 +118,8 @@ def parse_xml_file():
     create_section_homepages()
     create_users(root)
 
+    processed_items = []
+
     # Iterate through Wordpress structures - "item" is a types of content, including pages
     # First step is to create a structure that we can use to create Wagtail content
     for item_tag in root.find("channel").findall('item'):
@@ -186,6 +189,8 @@ def parse_xml_file():
         item["creator"] = item_tag.find("dc:creator", namespaces).text
         post_meta_tags = item_tag.findall("wp:postmeta", namespaces)
 
+        item["documents"] = []
+
         for post_meta_tag in post_meta_tags:
             meta_key_tag = post_meta_tag.find("wp:meta_key", namespaces)
             meta_value_tag = post_meta_tag.find("wp:meta_value", namespaces)
@@ -201,6 +206,10 @@ def parse_xml_file():
             # Policy or guidance
             if meta_key_tag.text == "policy_or_guidance":
                 item["policy_or_guidance"] = meta_value_tag.text
+
+            # Documents
+            if re.match("documents_[0-9]+_title", meta_key_tag.text):
+                item["documents"].append(meta_value_tag.text)
 
             # Redirect
             if meta_key_tag.text == "redirect_url":
@@ -236,26 +245,28 @@ def parse_xml_file():
             else:
                 items[post_type][post_id] = item
 
+        processed_items.append(item)
+
     # Second step is to generate Wagtail content
 
     print("Creating themes...")
 
-    # Themes
-    for key, value in items["theme"].items():
-        create_theme(
-            items["theme"][key],
-        )
-
-    print("Creating topics...")
-
-    # Topics
-    for key, value in items["topic"].items():
-        create_topic(
-            items["topic"][key],
-            items["attachment"],
-        )
-
-    print("Creating news...")
+    # # Themes
+    # for key, value in items["theme"].items():
+    #     create_theme(
+    #         items["theme"][key],
+    #     )
+    #
+    # print("Creating topics...")
+    #
+    # # Topics
+    # for key, value in items["topic"].items():
+    #     create_topic(
+    #         items["topic"][key],
+    #         items["attachment"],
+    #     )
+    #
+    # print("Creating news...")
 
     # # News
     # for key, value in items["news"].items():
@@ -264,27 +275,36 @@ def parse_xml_file():
     #         items["attachment"]
     #     )
 
-    print("Creating page content...")
+    # print("Creating page content...")
+    #
+    # # Page content
+    # for key, value in items["page"].items():
+    #     if value["status"] == "publish":
+    #         populate_page(
+    #             value["link"],
+    #             items,
+    #         )
+    #
+    # print("Creating how do Is...")
+    #
+    # # How do I content
+    # for key, value in items["howdoi"].items():
+    #     create_how_do_i(
+    #         items["howdoi"][key],
+    #         items["attachment"],
+    #     )
+    #
+    # print("Creating policies and guidance...")
 
-    # Page content
-    for key, value in items["page"].items():
-        if value["status"] == "publish":
-            populate_page(value["link"], items)
+    # # Policies and guidance
+    # for key, value in items["policy"].items():
+    #     create_policy_or_guidance(
+    #         items["policy"][key],
+    #         items["attachment"],
+    #     )
 
-    print("Creating how do Is...")
-
-    # How do I content
-    for key, value in items["howdoi"].items():
-        create_how_do_i(
-            items["howdoi"][key],
-            items["attachment"],
-        )
-
-    print("Creating policies and guidance...")
-
-    # Policies and guidance
-    for key, value in items["policy"].items():
-        create_policy_or_guidance(
-            items["policy"][key],
-            items["attachment"],
-        )
+    print("Document links found:")
+    for item in processed_items:
+        if item["documents"]:
+            for document in item["documents"]:
+                print(f'{item["link"]}\t{document}\n')

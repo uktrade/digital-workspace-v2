@@ -11,7 +11,11 @@ CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 LOG_TO_ELK = env.bool("LOG_TO_ELK", default=False)
 ELK_ADDRESS = env("ELK_ADDRESS", default=None)
 
-#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# DEFAULT_FILE_STORAGE must be set to 'storages.backends.s3boto3.S3Boto3Storage'
+# if using S3FileUploadHandler for file upload handling
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+# s3chunkuploader
+FILE_UPLOAD_HANDLERS = ('chunk_uploader.chunk_uploader.S3FileUploadHandler',)
 
 if LOG_TO_ELK:
     class LogstashHTTPHandler(logging.Handler):

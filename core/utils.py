@@ -2,7 +2,11 @@ import requests
 from io import BytesIO
 import boto3
 
+from django import forms
 from django.conf import settings
+
+#from wagtail.admin import widgets
+#from wagtail.images.forms import BaseImageForm
 
 
 def run_anti_virus(file_body):
@@ -39,3 +43,11 @@ def get_s3_file_body(file_name):
     )
     data = obj.get()['Body'].read()
     return BytesIO(data)
+
+
+# class CustomImageForm(BaseImageForm):
+#     class Meta:
+#         # set the 'file' widget to a FileInput rather than the default ClearableFileInput
+#         # so that when editing, we don't get the 'currently: ...' banner which is
+#         # a bit pointless here
+#         widgets["file"] = forms.FileInput()

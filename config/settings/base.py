@@ -49,8 +49,6 @@ LEGACY_AWS_STORAGE_BUCKET_NAME = env("LEGACY_AWS_STORAGE_BUCKET_NAME")
 LEGACY_AWS_ACCESS_KEY_ID = env("LEGACY_AWS_ACCESS_KEY_ID")
 LEGACY_AWS_SECRET_ACCESS_KEY = env("LEGACY_AWS_SECRET_ACCESS_KEY")
 
-# s3chunkuploader
-FILE_UPLOAD_HANDLERS = ('s3chunkuploader.file_handler.S3FileUploadHandler',)
 CLEAN_FILE_NAME = True
 
 # Celery file upload config
@@ -125,6 +123,7 @@ LOCAL_APPS = [
     "networks",
     "country_fact_sheet",
     "import_wordpress",
+    "chunk_uploader",
 ]
 
 THIRD_PARTY_APPS = [
@@ -374,3 +373,14 @@ WAGTAILEMBEDS_FINDERS = [
         'providers': [youtube, vimeo, ms_stream_provider],
     }
 ]
+
+# For use in import of Wordpress content - TODO - remove after import
+OLD_ASSET_PATH = "TODO - add me"
+NEW_ASSET_PATH = "TODO - add me"
+
+WAGTAILIMAGES_IMAGE_FORM_BASE = 'myapp.forms.MyImageBaseForm'
+
+# ClamAV
+CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
+CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
+CLAM_AV_URL = env("CLAM_AV_URL", default=None)
