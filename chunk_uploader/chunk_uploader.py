@@ -1,3 +1,4 @@
+from base64 import b64encode
 import boto3
 import logging
 
@@ -24,12 +25,18 @@ AWS_STORAGE_BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
 CLAM_AV_USERNAME = settings.CLAM_AV_USERNAME
 CLAM_AV_PASSWORD = settings.CLAM_AV_PASSWORD
 CLAM_AV_URL = settings.CLAM_AV_URL
-CLAM_PATH = '/v3/scan'
+CLAM_PATH = '/v2/scan-chunked'
 
 CLAM_AUTH = (
     settings.CLAM_AV_USERNAME,
     settings.CLAM_AV_PASSWORD,
 )
+
+class SkipFile(UploadFileException):
+    """
+    This exception is raised by an upload handler that wants to skip a given file.
+    """
+    pass
 
 s3_client = boto3.client(
     's3',
@@ -87,9 +94,8 @@ class ThreadedS3ChunkUploader(ThreadPoolExecutor):
 
 
 def generate_object_key(file_name):
-    return slugify(file_name)
-
-from base64 import b64encode
+    return file_name
+    #return slugify(file_name)
 
 
 class S3FileUploadHandler(FileUploadHandler):
@@ -120,12 +126,6 @@ class S3FileUploadHandler(FileUploadHandler):
                 key=self.s3_key,
                 upload_id=self.upload_id
             )
-
-            # prepare a storages object as a file placeholder
-            self.storage = S3Boto3Storage()
-            self.file = S3Boto3StorageFile(self.s3_key, 'w', self.storage)
-            self.file.original_name = self.file_name
-            self.file.content_type = self.content_type
         except Exception as ex:
             print(ex)
             raise Exception()
@@ -144,6 +144,8 @@ class S3FileUploadHandler(FileUploadHandler):
         return None
 
     def receive_data_chunk(self, raw_data, start):
+        raise UploadFileException()
+
         try:
             self.executor.add(raw_data)
             self.av_conn.send(raw_data)
@@ -156,6 +158,8 @@ class S3FileUploadHandler(FileUploadHandler):
         resp = self.av_conn.getresponse()
 
         if resp.status != 200:
+            # TODO - delete file from S3, or maybe wothout file.close it doesn't matter
+            response_content = resp.read()
             raise Exception("Problem checking AV for file")
 
         parts = self.executor.get_parts()
@@ -166,89 +170,27 @@ class S3FileUploadHandler(FileUploadHandler):
             UploadId=self.upload_id,
             MultipartUpload={
                 'Parts': parts
-            }
+            },
         )
+
+        
+
         self.executor.shutdown()
-        self.file.file_size = file_size
-        self.file.close()
-        return self.file
+
+        storage = S3Boto3Storage()
+        file = S3Boto3StorageFile(self.s3_key, 'rb', storage)
+        file.original_name = self.file_name
+        file.content_type = self.content_type
+
+        file.file_size = file_size
+        file.close()
+
+        return file
 
     def abort(self, exception):
-        self.file.close()
         self.client.abort_multipart_upload(
             Bucket=AWS_STORAGE_BUCKET_NAME,
             Key=self.s3_key,
             UploadId=self.upload_id,
         )
         raise UploadFileException(exception)
-
-
-# @app.route("/v3/scan", methods=["POST", "GET"])
-# @auth.login_required
-# def scan_v2():
-#     print('Hello world!', file=sys.stderr)
-#
-#
-#     # if len(request.files) != 1:
-#     #     return "Provide a single file", 400
-#
-#
-#
-#     try:
-#         chunk_size = 4096
-#         file_name = "test"# urllib.parse.unquote(filename)
-#         #bytes_left = int(request.headers.get('content-length'))
-#         file_bytes = io.BytesIO()
-#
-#         print('Hier....', file=sys.stderr)
-#         # with open(file_bytes, 'wb') as file_data:
-#         #     chunk_size = 5120
-#         #     while bytes_left > 0:
-#         #         chunk = request.stream.read(chunk_size)
-#         #         file_data.write(chunk)
-#         #         bytes_left -= len(chunk)
-#
-#         while True:
-#             print('WTF....', file=sys.stderr)
-#             try:
-#                 print('WTF....', file=sys.stderr)
-#                 chunk = request.stream.read(chunk_size)
-#
-#                 if len(chunk) == 0:
-#                     return
-#
-#                 print('Wrote chunk...!', file=sys.stderr)
-#
-#                 file_data.write(chunk)
-#             except Exception as ex:
-#                 print(ex, file=sys.stderr)
-#                 return "Error"
-#
-#         logger.info("Starting scan for {app_user} of {file_name}".format(
-#             app_user=g.current_user,
-#             file_name=filename
-#         ))
-#
-#         start_time = timeit.default_timer()
-#         resp = cd.instream(file_data)
-#         elapsed = timeit.default_timer() - start_time
-#
-#         status, reason = resp["stream"]
-#
-#         response = {
-#             'malware': False if status == "OK" else True,
-#             'reason': reason,
-#             'time': elapsed
-#         }
-#
-#         logger.info("Scan v2 for {app_user} of {file_name} complete. Took: {elapsed}. Malware found?: {status}".format(
-#             app_user=g.current_user,
-#             file_name=file_data.filename,
-#             elapsed=elapsed,
-#             status=response['malware']
-#         ))
-#
-#         return jsonify(response)
-#     except Exception as ex:
-#         print('Hier....', file=sys.stderr)
-#         return "Error", 500
