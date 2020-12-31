@@ -141,6 +141,10 @@ def generate_object_key(file_name):
     return f"{file_name.replace(extension, '')}_{time_stamp}{extension}"
 
 
+class ChunkReceiver():
+    
+
+
 class S3FileUploadHandler(FileUploadHandler):
     def connect_av(self):
         credentials = b64encode(
@@ -158,8 +162,6 @@ class S3FileUploadHandler(FileUploadHandler):
         self.av_conn.putheader('Transfer-encoding', "chunked")
 
         self.av_conn.endheaders()
-
-
 
     def new_file(self, *args, **kwargs):
         try:
@@ -197,7 +199,6 @@ class S3FileUploadHandler(FileUploadHandler):
             ) from ex
 
     def send_av_chunk(self, chunk):
-        test = len(chunk)
         self.av_conn.send(hex(len(chunk))[2:].encode('utf-8'))
         self.av_conn.send(b'\r\n')
         self.av_conn.send(chunk)
