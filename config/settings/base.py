@@ -123,7 +123,7 @@ LOCAL_APPS = [
     "networks",
     "country_fact_sheet",
     "import_wordpress",
-    "chunk_uploader",
+    "file_upload_handler",
 ]
 
 THIRD_PARTY_APPS = [

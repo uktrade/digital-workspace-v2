@@ -21,7 +21,10 @@ AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
 # if using S3FileUploadHandler for file upload handling
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # s3chunkuploader
-FILE_UPLOAD_HANDLERS = ('chunk_uploader.chunk_uploader.S3FileUploadHandler',)
+FILE_UPLOAD_HANDLERS = (
+    'chunk_uploader.s3.S3FileUploadHandler',
+    'chunk_uploader.clam_av.ClamAVFileUploadHandler',
+)  # Order is important (maybe!?) - TODO - check in unit test
 
 if LOG_TO_ELK:
     class LogstashHTTPHandler(logging.Handler):
