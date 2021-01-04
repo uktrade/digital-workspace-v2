@@ -1,6 +1,7 @@
 from base64 import b64encode
 import boto3
 import json
+import concurrent.futures
 import logging
 import pathlib
 import uuid
@@ -13,57 +14,21 @@ from django.core.files.uploadhandler import FileUploadHandler, UploadFileExcepti
 from storages.backends.s3boto3 import S3Boto3StorageFile, S3Boto3Storage
 from django.conf import settings
 
-from abc import ABC, abstractmethod
+from file_upload_handler.util import check_required_setting
 
 
 logger = logging.getLogger(__name__)
 
 
-class VirusFoundInFileException(UploadFileException):
-    pass
-
-
-class AntiVirusServiceErrorException(UploadFileException):
-    pass
-
-
 class AbortS3UploadException(UploadFileException):
     pass
-
-
-class MalformedAntiVirusResponseException(UploadFileException):
-    pass
-
-
-class ErrorProcessingChunkException(UploadFileException):
-    pass
-
-
-def check_required_setting(setting_key):
-    if getattr(settings, setting_key, None) is None:
-        # Nb cannot throw exception here because of
-        # Django bootstrap order of play
-        logger.error(
-            f"Cannot process file uploads, a required setting, "
-            f"'{setting_key}' for Django S3 uploader is missing"
-        )
-        return None
-
-    return getattr(settings, setting_key)
-
 
 # AWS
 AWS_ACCESS_KEY_ID = check_required_setting("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = check_required_setting("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = check_required_setting("AWS_STORAGE_BUCKET_NAME")
 AWS_REGION = getattr(settings, "AWS_REGION", None)
-CHUNK_SIZE = 6 * 1024 * 1024
-
-# Clam AV
-CLAM_AV_USERNAME = check_required_setting("S3_CHUNK_CLAM_AV_USERNAME")
-CLAM_AV_PASSWORD = check_required_setting("S3_CHUNK_CLAM_AV_PASSWORD")
-CLAM_AV_URL = check_required_setting("S3_CHUNK_CLAM_AV_URL")
-CLAM_PATH = getattr(settings, "S3_CHUNK_CLAM_PATH", '/v2/scan-chunked')
+S3_MIN_PART_SIZE = 6 * 1024 * 1024
 
 ADD_TIMESTAMP_TO_OBJECT_NAME = getattr(
     settings,
@@ -82,27 +47,62 @@ if (
     )
 
 
-class ChunkReceiver(ABC):
-    @abstractmethod
-    def receive_data_chunk(self, chunk):
-        pass
+class ThreadedS3ChunkUploader(ThreadPoolExecutor):
+    def __init__(self, client, bucket, key, upload_id, max_workers=None):
+        max_workers = max_workers or 10
+        self.bucket = bucket
+        self.key = key
+        self.upload_id = upload_id
+        self.client = client
+        self.part_number = 0
+        self.parts = []
+        self.queue = []
+        self.current_queue_size = 0
+        self.futures = []
+        super().__init__(max_workers=max_workers)
 
-    @abstractmethod
-    def validate(self):
-        pass
+    def add(self, body):
+        if body:
+            content_length = len(body)
+            self.queue.append(body)
+            self.current_queue_size += content_length
 
-    @abstractmethod
-    def complete(self):
-        pass
+        if not body or self.current_queue_size > S3_MIN_PART_SIZE:
+            self.part_number += 1
+            _body = self.drain_queue()
+            future = self.submit(
+                self.client.upload_part,
+                Bucket=self.bucket,
+                Key=self.key,
+                PartNumber=self.part_number,
+                UploadId=self.upload_id,
+                Body=_body,
+                ContentLength=len(_body),
+            )
+            self.parts.append((self.part_number, future))
+            self.futures.append(future)
+            logger.debug('Prepared part %s', self.part_number)
 
-    @abstractmethod
-    def abort(self):
-        pass
+    def drain_queue(self):
+        body = b''.join(self.queue)
+        self.queue = []
+        self.current_queue_size = 0
+        return body
+
+    def get_parts(self):
+        return [{
+            'PartNumber': part[0],
+            'ETag': part[1].result()['ETag'],
+            } for part in self.parts
+        ]
 
 
-class S3ChunkUpload(ChunkReceiver):
-    def __init__(self, content_type):
-        self.content_type = content_type
+class S3FileUploadHandler(FileUploadHandler):
+    def new_file(self, *args, **kwargs):
+        super().new_file(*args, **kwargs)
+        extension = pathlib.Path(self.file_name).suffix
+        time_stamp = f'{timezone.now().strftime("%Y%m%d%H%M%S")}'
+        self.new_file_name = f"{self.file_name.replace(extension, '')}_{time_stamp}{extension}"
 
         self.s3_client = boto3.client(
             's3',
@@ -119,170 +119,20 @@ class S3ChunkUpload(ChunkReceiver):
             ContentType=self.content_type,
         )
         self.upload_id = self.multipart['UploadId']
-
-    def receive_data_chunk(self, chunk):
-        pass
-        # print("len(chunk)")
-        # print(len(chunk))
-        #
-        # result = self.s3_client.upload_part(
-        #     Bucket=AWS_STORAGE_BUCKET_NAME,
-        #     Key=self.s3_key,
-        #     PartNumber=self.part_number,
-        #     UploadId=self.upload_id,
-        #     Body=chunk,
-        #     ContentLength=len(chunk),
-        # )
-        # self.parts.append((self.part_number, result))
-        # self.part_number += 1
-
-    def get_parts(self):
-        return [{
-            'PartNumber': part[0],
-            'ETag': part[1]['ETag'],
-            } for part in self.parts
-        ]
-
-    def validate(self):
-        pass
-
-    def complete(self, new_file_name):
-        pass
-        # parts = self.get_parts()
-        #
-        # self.s3_client.complete_multipart_upload(
-        #     Bucket=AWS_STORAGE_BUCKET_NAME,
-        #     Key=self.s3_key,
-        #     UploadId=self.upload_id,
-        #     MultipartUpload={
-        #         'Parts': parts
-        #     },
-        # )
-        #
-        # self.s3_client.copy_object(
-        #     Bucket=AWS_STORAGE_BUCKET_NAME,
-        #     CopySource=f"{AWS_STORAGE_BUCKET_NAME}/{self.s3_key}",
-        #     Key=new_file_name,
-        #     Metadata={
-        #         "clam-av-result": "passed",
-        #     },
-        #     ContentType=self.content_type,
-        #     MetadataDirective='REPLACE',
-        # )
-        # self.s3_client.delete_object(
-        #     Bucket=AWS_STORAGE_BUCKET_NAME,
-        #     Key=self.s3_key,
-        # )
-
-    def abort(self):
-        try:
-            self.s3_client.abort_multipart_upload(
-                Bucket=AWS_STORAGE_BUCKET_NAME,
-                Key=self.s3_key,
-                UploadId=self.upload_id,
-            )
-        except Exception as ex:
-            raise AbortS3UploadException(
-                "Error when aborting S3 multipart upload"
-            ) from ex
-
-
-class ClamAVChunkUpload(ChunkReceiver):
-    def __init__(self, content_type):
-        self.av_conn = http_client.HTTPConnection(
-            CLAM_AV_URL,
+        self.executor = ThreadedS3ChunkUploader(
+            self.s3_client,
+            AWS_STORAGE_BUCKET_NAME,
+            key=self.s3_key,
+            upload_id=self.upload_id
         )
-
-        credentials = b64encode(
-            bytes(
-                f"{CLAM_AV_USERNAME}:{CLAM_AV_PASSWORD}",
-                encoding='utf8',
-            )
-        ).decode("ascii")
-
-        self.av_conn.connect()
-        self.av_conn.putrequest('POST', CLAM_PATH)
-        self.av_conn.putheader('Content-Type', content_type)
-        self.av_conn.putheader('Authorization', f'Basic {credentials}')
-        self.av_conn.putheader('Transfer-encoding', "chunked")
-        self.av_conn.endheaders()
-
-    def receive_data_chunk(self, chunk):
-        self.av_conn.send(hex(len(chunk))[2:].encode('utf-8'))
-        self.av_conn.send(b'\r\n')
-        self.av_conn.send(chunk)
-        self.av_conn.send(b'\r\n')
-
-    def validate(self):
-        self.av_conn.send(b'0\r\n\r\n')
-        resp = self.av_conn.getresponse()
-        response_content = resp.read()
-
-        if resp.status != 200:
-            logger.error(
-                f"Non 200 response from anti virus service, content: {response_content}"
-            )
-            self.abort()
-            raise AntiVirusServiceErrorException
-        else:
-            json_response = json.loads(response_content)
-
-            if "malware" not in json_response:
-                raise MalformedAntiVirusResponseException()
-
-            if json_response["malware"]:
-                raise VirusFoundInFileException()
-
-    def complete(self, new_file_name):
-        pass
-
-    def abort(self):
-        pass
-
-
-CHUNK_RECEIVERS = [
-    S3ChunkUpload,
-    ClamAVChunkUpload,
-]
-
-
-class S3FileUploadHandler(FileUploadHandler):
-    chunk_size = CHUNK_SIZE
-
-    def __init__(self, request=None):
-        super().__init__(request)
-        self.receivers = []
-        self.new_file_name = ""
-
-    def new_file(self, *args, **kwargs):
-        try:
-            super().new_file(*args, **kwargs)
-            extension = pathlib.Path(self.file_name).suffix
-            time_stamp = f'{timezone.now().strftime("%Y%m%d%H%M%S")}'
-            self.new_file_name = f"{self.file_name.replace(extension, '')}_{time_stamp}{extension}"
-
-            for receiver in CHUNK_RECEIVERS:
-                self.receivers.append(
-                    receiver(
-                        self.content_type,
-                    )
-                )
-
-        except Exception as ex:
-            raise UploadFileException(
-                "Error setting up chunk receivers"
-            ) from ex
 
     def receive_data_chunk(self, raw_data, start):
         try:
-            for receiver in self.receivers:
-                receiver.receive_data_chunk(raw_data)
-        except Exception as ex:
-            for receiver in self.receivers:
-                receiver.abort()
-            raise ErrorProcessingChunkException(
-                "An exception occurred when processing a file chunk"
-            ) from ex
+            self.executor.add(raw_data)
+        except Exception as exc:
+            self.abort(exc)
+
+        return raw_data
 
     def handle_raw_input(
         self,
@@ -297,25 +147,72 @@ class S3FileUploadHandler(FileUploadHandler):
         self.content_len = content_length
 
     def file_complete(self, file_size):
-        try:
-            for receiver in self.receivers:
-                receiver.validate()
+        self.executor.add(None)
 
-            for receiver in self.receivers:
-                receiver.complete(self.new_file_name)
+        # Wait for all threads to complete
+        concurrent.futures.wait(
+            self.executor.futures,
+            return_when=concurrent.futures.ALL_COMPLETED
+        )
 
-            storage = S3Boto3Storage()
-            file = S3Boto3StorageFile(self.new_file_name, 'rb', storage)
-            file.content_type = self.content_type
+        # Wait for all threads to complete
+        parts = self.executor.get_parts()  #, _ = concurrent.futures.wait(
+        #     self.executor.get_parts(),
+        #     return_when=concurrent.futures.ALL_COMPLETED
+        # )
 
-            file.file_size = file_size
-            file.close()
+        self.s3_client.complete_multipart_upload(
+            Bucket=AWS_STORAGE_BUCKET_NAME,
+            Key=self.s3_key,
+            UploadId=self.upload_id,
+            MultipartUpload={
+                'Parts': parts
+            },
+        )
 
-            return file
-        except Exception as ex:
-            for receiver in self.receivers:
-                receiver.abort()
+        self.s3_client.copy_object(
+            Bucket=AWS_STORAGE_BUCKET_NAME,
+            CopySource=f"{AWS_STORAGE_BUCKET_NAME}/{self.s3_key}",
+            Key=self.new_file_name,
+            Metadata={
+                "clam-av-result": "passed",
+            },
+            ContentType=self.content_type,
+            MetadataDirective='REPLACE',
+        )
+        self.s3_client.delete_object(
+            Bucket=AWS_STORAGE_BUCKET_NAME,
+            Key=self.s3_key,
+        )
 
-            raise UploadFileException(
-                "An exception occurred when attempting to upload and scan a file"
-            ) from ex
+        storage = S3Boto3Storage()
+        file = S3Boto3StorageFile(self.new_file_name, 'rb', storage)
+        file.content_type = self.content_type
+
+        file.file_size = file_size
+        file.close()
+
+        return file
+
+    def abort(self):
+        self.s3_client.abort_multipart_upload(
+            Bucket=self.bucket_name,
+            Key=self.s3_key,
+            UploadId=self.upload_id,
+        )
+
+    def upload_complete(self):
+        """
+        Signal that the upload is complete. Subclasses should perform cleanup
+        that is necessary for this handler.
+        """
+        from django.core.exceptions import ValidationError
+        raise ValidationError("ERROR....")
+        pass
+
+    def upload_interrupted(self):
+        """
+        Signal that the upload was interrupted. Subclasses should perform
+        cleanup that is necessary for this handler.
+        """
+        pass
