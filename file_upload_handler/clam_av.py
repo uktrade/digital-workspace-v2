@@ -1,21 +1,15 @@
 from base64 import b64encode
-import boto3
 import json
 import logging
-import pathlib
-import uuid
-from concurrent.futures import ThreadPoolExecutor
 
 from http import client as http_client
 
-from django.utils import timezone
 from django.core.files.uploadhandler import FileUploadHandler, UploadFileException
-from storages.backends.s3boto3 import S3Boto3StorageFile, S3Boto3Storage
 from django.conf import settings
 
-from django.core.files.uploadhandler import SkipFile
-
 from file_upload_handler.util import check_required_setting
+
+from file_upload_handler.models import ScannedFile
 
 
 logger = logging.getLogger(__name__)
@@ -74,57 +68,52 @@ class ClamAVFileUploadHandler(FileUploadHandler):
 
         return raw_data
 
-    def handle_raw_input(
-        self,
-        input_data,
-        META,
-        content_length,
-        boundary,
-        encoding=None,
-    ):
-        self.request = input_data
-        self.META = META
-        self.content_len = content_length
-
     def file_complete(self, file_size):
         self.av_conn.send(b'0\r\n\r\n')
         resp = self.av_conn.getresponse()
         response_content = resp.read()
 
-        raise SkipFile()
-
+        scanned_file = ScannedFile()
 
         if resp.status != 200:
-            logger.error(
+            scanned_file.av_passed = False
+            scanned_file.av_reason = "Non 200 response from AV server"
+            scanned_file.save()
+
+            raise AntiVirusServiceErrorException(
                 f"Non 200 response from anti virus service, content: {response_content}"
             )
-            self.abort()
-            raise AntiVirusServiceErrorException
         else:
             json_response = json.loads(response_content)
 
             if "malware" not in json_response:
+                scanned_file.av_passed = False
+                scanned_file.av_reason = "Malformed response from AV server"
+                scanned_file.save()
+
                 raise MalformedAntiVirusResponseException()
 
             if json_response["malware"]:
+                scanned_file.av_passed = False
+                scanned_file.av_reason = json_response["reason"]
+                scanned_file.save()
                 raise VirusFoundInFileException()
 
+            scanned_file.av_passed = True
+            scanned_file.save()
+
+            # We are using 'content_type_extra' as the a means of making
+            # the results available to following file handlers
+
+            # TODO - put in a PR to Django project to allow file_complete
+            # to return objects and not break out of file handler loop
+            if not hasattr(self.content_type_extra, "clam_av_results"):
+                self.content_type_extra["clam_av_results"] = []
+
+            self.content_type_extra["clam_av_results"].append({
+                "file_name": self.file_name,
+                "av_passed": True,
+                "scanned_at": scanned_file.scanned_at.strftime("%Y-%m-%d, %H:%M:%S")
+            })
+
             return None
-
-    def upload_complete(self):
-        """
-        Signal that the upload is complete. Subclasses should perform cleanup
-        that is necessary for this handler.
-        """
-        # from django.core.exceptions import ValidationError
-        # raise ValidationError("ERROR....")
-        pass
-
-    def upload_interrupted(self):
-        """
-        Signal that the upload was interrupted. Subclasses should perform
-        cleanup that is necessary for this handler.
-        """
-        from django.core.exceptions import ValidationError
-        raise ValidationError("ERROR....")
-        pass

@@ -26,6 +26,8 @@ FILE_UPLOAD_HANDLERS = (
     'file_upload_handler.s3.S3FileUploadHandler',
 )  # Order is important (maybe!?) - TODO - check in unit test
 
+AV_SIGNATURE_SECRET_KEY = "secrey key!!!"
+
 if LOG_TO_ELK:
     class LogstashHTTPHandler(logging.Handler):
         def emit(self, record):

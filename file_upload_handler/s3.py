@@ -1,19 +1,16 @@
-from base64 import b64encode
 import boto3
-import json
 import concurrent.futures
 import logging
 import pathlib
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 
-from http import client as http_client
-
 from django.utils import timezone
 from django.core.files.uploadhandler import FileUploadHandler, UploadFileException
 from storages.backends.s3boto3 import S3Boto3StorageFile, S3Boto3Storage
 from django.conf import settings
 
+from file_upload_handler.sign import sign
 from file_upload_handler.util import check_required_setting
 
 
@@ -22,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class AbortS3UploadException(UploadFileException):
     pass
+
 
 # AWS
 AWS_ACCESS_KEY_ID = check_required_setting("AWS_ACCESS_KEY_ID")
@@ -79,8 +77,8 @@ class ThreadedS3ChunkUploader(ThreadPoolExecutor):
                 Body=_body,
                 ContentLength=len(_body),
             )
-            self.parts.append((self.part_number, future))
             self.futures.append(future)
+            self.parts.append((self.part_number, future))
             logger.debug('Prepared part %s', self.part_number)
 
     def drain_queue(self):
@@ -134,18 +132,6 @@ class S3FileUploadHandler(FileUploadHandler):
 
         return raw_data
 
-    def handle_raw_input(
-        self,
-        input_data,
-        META,
-        content_length,
-        boundary,
-        encoding=None,
-    ):
-        self.request = input_data
-        self.META = META
-        self.content_len = content_length
-
     def file_complete(self, file_size):
         self.executor.add(None)
 
@@ -155,11 +141,7 @@ class S3FileUploadHandler(FileUploadHandler):
             return_when=concurrent.futures.ALL_COMPLETED
         )
 
-        # Wait for all threads to complete
-        parts = self.executor.get_parts()  #, _ = concurrent.futures.wait(
-        #     self.executor.get_parts(),
-        #     return_when=concurrent.futures.ALL_COMPLETED
-        # )
+        parts = self.executor.get_parts()
 
         self.s3_client.complete_multipart_upload(
             Bucket=AWS_STORAGE_BUCKET_NAME,
@@ -170,13 +152,27 @@ class S3FileUploadHandler(FileUploadHandler):
             },
         )
 
+        av_metadata = {}
+
+        if "clam_av_results" in self.content_type_extra:
+            for result in self.content_type_extra["clam_av_results"]:
+                if result["file_name"] == self.file_name:
+                    # Sign file size
+                    signed = sign(str(file_size).encode())
+                    # Set headers
+                    if result["av_passed"]:
+                        av_metadata["av-scanned-at"] = result["scanned_at"]
+                        av_metadata["av-passed"] = "True"
+                        av_metadata["av-signature"] = signed.decode('utf-8')
+
+            # Remove 'clam_av_results' from content_type_extra
+            del self.content_type_extra["clam_av_results"]
+
         self.s3_client.copy_object(
             Bucket=AWS_STORAGE_BUCKET_NAME,
             CopySource=f"{AWS_STORAGE_BUCKET_NAME}/{self.s3_key}",
             Key=self.new_file_name,
-            Metadata={
-                "clam-av-result": "passed",
-            },
+            Metadata=av_metadata,
             ContentType=self.content_type,
             MetadataDirective='REPLACE',
         )
@@ -200,19 +196,3 @@ class S3FileUploadHandler(FileUploadHandler):
             Key=self.s3_key,
             UploadId=self.upload_id,
         )
-
-    def upload_complete(self):
-        """
-        Signal that the upload is complete. Subclasses should perform cleanup
-        that is necessary for this handler.
-        """
-        from django.core.exceptions import ValidationError
-        raise ValidationError("ERROR....")
-        pass
-
-    def upload_interrupted(self):
-        """
-        Signal that the upload was interrupted. Subclasses should perform
-        cleanup that is necessary for this handler.
-        """
-        pass
