@@ -4,13 +4,16 @@ MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
 ]
 
+AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
 
 # DEFAULT_FILE_STORAGE must be set to 'storages.backends.s3boto3.S3Boto3Storage'
 # if using S3FileUploadHandler for file upload handling
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # s3chunkuploader
-FILE_UPLOAD_HANDLERS = ('chunk_uploader.file_handler.S3FileUploadHandler',)
-#STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+FILE_UPLOAD_HANDLERS = (
+    'file_upload_handler.clam_av.ClamAVFileUploadHandler',
+    'file_upload_handler.s3.S3FileUploadHandler',
+)  # Order is important (maybe!?) - TODO - check in unit test
 
 AWS_DEFAULT_ACL = None
 AWS_S3_SIGNATURE_VERSION = 's3v4'

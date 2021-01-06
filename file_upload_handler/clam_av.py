@@ -1,7 +1,7 @@
 from base64 import b64encode
 import json
 import logging
-
+import pathlib
 from http import client as http_client
 
 from django.core.files.uploadhandler import FileUploadHandler, UploadFileException
@@ -18,10 +18,11 @@ logger = logging.getLogger(__name__)
 CHUNK_SIZE = 5 * 1024 * 1024
 
 # Clam AV
-CLAM_AV_USERNAME = check_required_setting("S3_CHUNK_CLAM_AV_USERNAME")
-CLAM_AV_PASSWORD = check_required_setting("S3_CHUNK_CLAM_AV_PASSWORD")
-CLAM_AV_URL = check_required_setting("S3_CHUNK_CLAM_AV_URL")
-CLAM_PATH = getattr(settings, "S3_CHUNK_CLAM_PATH", '/v2/scan-chunked')
+CLAM_AV_USERNAME = check_required_setting("CLAM_AV_USERNAME")
+CLAM_AV_PASSWORD = check_required_setting("CLAM_AV_PASSWORD")
+CLAM_AV_URL = check_required_setting("CLAM_AV_URL")
+CLAM_PATH = getattr(settings, "CLAM_PATH", '/v2/scan-chunked')
+CLAM_AV_IGNORE_EXTENSIONS = getattr(settings, "CLAM_AV_IGNORE_EXTENSIONS", {})
 
 
 class VirusFoundInFileException(UploadFileException):
@@ -38,9 +39,18 @@ class MalformedAntiVirusResponseException(UploadFileException):
 
 class ClamAVFileUploadHandler(FileUploadHandler):
     chunk_size = CHUNK_SIZE
+    skip_av_check = False
 
     def new_file(self, *args, **kwargs):
         super().new_file(*args, **kwargs)
+        extension = pathlib.Path(self.file_name).suffix
+
+        if extension in CLAM_AV_IGNORE_EXTENSIONS:
+            self.skip_av_check = True
+            return
+
+        print("FROM CLASS CLAM_AV_URL", flush=True)
+        print(CLAM_AV_URL, flush=True)
 
         self.av_conn = http_client.HTTPConnection(
             CLAM_AV_URL,
@@ -61,14 +71,18 @@ class ClamAVFileUploadHandler(FileUploadHandler):
         self.av_conn.endheaders()
 
     def receive_data_chunk(self, raw_data, start):
-        self.av_conn.send(hex(len(raw_data))[2:].encode('utf-8'))
-        self.av_conn.send(b'\r\n')
-        self.av_conn.send(raw_data)
-        self.av_conn.send(b'\r\n')
+        if not self.skip_av_check:
+            self.av_conn.send(hex(len(raw_data))[2:].encode('utf-8'))
+            self.av_conn.send(b'\r\n')
+            self.av_conn.send(raw_data)
+            self.av_conn.send(b'\r\n')
 
         return raw_data
 
     def file_complete(self, file_size):
+        if self.skip_av_check:
+            return None
+
         self.av_conn.send(b'0\r\n\r\n')
         resp = self.av_conn.getresponse()
         response_content = resp.read()
@@ -113,7 +127,7 @@ class ClamAVFileUploadHandler(FileUploadHandler):
             self.content_type_extra["clam_av_results"].append({
                 "file_name": self.file_name,
                 "av_passed": True,
-                "scanned_at": scanned_file.scanned_at.strftime("%Y-%m-%d, %H:%M:%S")
+                "scanned_at": scanned_file.scanned_at
             })
 
             return None

@@ -10,7 +10,7 @@ from django.core.files.uploadhandler import FileUploadHandler, UploadFileExcepti
 from storages.backends.s3boto3 import S3Boto3StorageFile, S3Boto3Storage
 from django.conf import settings
 
-from file_upload_handler.sign import sign
+from file_upload_handler.signature import sign
 from file_upload_handler.util import check_required_setting
 
 
@@ -26,7 +26,7 @@ AWS_ACCESS_KEY_ID = check_required_setting("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = check_required_setting("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = check_required_setting("AWS_STORAGE_BUCKET_NAME")
 AWS_REGION = getattr(settings, "AWS_REGION", None)
-S3_MIN_PART_SIZE = 6 * 1024 * 1024
+S3_MIN_PART_SIZE = 5 * 1024 * 1024
 
 ADD_TIMESTAMP_TO_OBJECT_NAME = getattr(
     settings,
@@ -39,7 +39,7 @@ if (
     settings.DEFAULT_FILE_STORAGE != 'storages.backends.s3boto3.S3Boto3Storage'
 ):
     # Nb cannot throw exception here because of
-    # Django bootstrap order of play
+    # Django order of play
     logger.error(
         "You must use S3Boto3Storage with this file handler"
     )
@@ -152,30 +152,38 @@ class S3FileUploadHandler(FileUploadHandler):
             },
         )
 
-        av_metadata = {}
-
-        if "clam_av_results" in self.content_type_extra:
-            for result in self.content_type_extra["clam_av_results"]:
-                if result["file_name"] == self.file_name:
-                    # Sign file size
-                    signed = sign(str(file_size).encode())
-                    # Set headers
-                    if result["av_passed"]:
-                        av_metadata["av-scanned-at"] = result["scanned_at"]
-                        av_metadata["av-passed"] = "True"
-                        av_metadata["av-signature"] = signed.decode('utf-8')
-
-            # Remove 'clam_av_results' from content_type_extra
-            del self.content_type_extra["clam_av_results"]
-
         self.s3_client.copy_object(
             Bucket=AWS_STORAGE_BUCKET_NAME,
             CopySource=f"{AWS_STORAGE_BUCKET_NAME}/{self.s3_key}",
             Key=self.new_file_name,
-            Metadata=av_metadata,
             ContentType=self.content_type,
-            MetadataDirective='REPLACE',
         )
+
+        if "clam_av_results" in self.content_type_extra:
+            for result in self.content_type_extra["clam_av_results"]:
+                if result["file_name"] == self.file_name:
+                    s3_resp = self.s3_client.head_object(
+                        Bucket=AWS_STORAGE_BUCKET_NAME,
+                        Key=self.new_file_name,
+                    )
+                    # Sign file e_tag
+                    e_tag = s3_resp["ETag"].replace('"', '')
+                    signed = sign(e_tag.encode())
+                    # Set AV headers
+                    if result["av_passed"]:
+                        self.s3_client.copy_object(
+                            Bucket=AWS_STORAGE_BUCKET_NAME,
+                            CopySource=f"{AWS_STORAGE_BUCKET_NAME}/{self.new_file_name}",
+                            Key=self.new_file_name,
+                            Metadata={
+                                "av-scanned-at": result["scanned_at"].strftime("%Y-%m-%d %H:%M:%S"),
+                                "av-passed": "True",
+                                "av-signature": signed.decode('utf-8')
+                            },
+                            ContentType=self.content_type,
+                            MetadataDirective='REPLACE',
+                        )
+
         self.s3_client.delete_object(
             Bucket=AWS_STORAGE_BUCKET_NAME,
             Key=self.s3_key,

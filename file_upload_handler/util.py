@@ -7,12 +7,15 @@ logger = logging.getLogger(__name__)
 
 
 def check_required_setting(setting_key):
+    print("FROM check_required_setting", flush=True)
+    print(settings.CLAM_AV_URL, flush=True)
+
     if getattr(settings, setting_key, None) is None:
         # Nb cannot throw exception here because of
         # Django bootstrap order of play
         logger.error(
             f"Cannot process file uploads, a required setting, "
-            f"'{setting_key}' for Django S3 uploader is missing"
+            f"'{setting_key}', for a file upload handler is missing"
         )
         return None
 

@@ -11,10 +11,6 @@ CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 LOG_TO_ELK = env.bool("LOG_TO_ELK", default=False)
 ELK_ADDRESS = env("ELK_ADDRESS", default=None)
 
-S3_CHUNK_CLAM_AV_USERNAME = env("S3_CHUNK_CLAM_AV_USERNAME")
-S3_CHUNK_CLAM_AV_PASSWORD = env("S3_CHUNK_CLAM_AV_PASSWORD")
-S3_CHUNK_CLAM_AV_URL = env("S3_CHUNK_CLAM_AV_URL")
-
 AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
 
 # DEFAULT_FILE_STORAGE must be set to 'storages.backends.s3boto3.S3Boto3Storage'
@@ -26,7 +22,7 @@ FILE_UPLOAD_HANDLERS = (
     'file_upload_handler.s3.S3FileUploadHandler',
 )  # Order is important (maybe!?) - TODO - check in unit test
 
-AV_SIGNATURE_SECRET_KEY = "secrey key!!!"
+AV_SIGNATURE_SECRET_KEY = "secret key!!!"
 
 if LOG_TO_ELK:
     class LogstashHTTPHandler(logging.Handler):
