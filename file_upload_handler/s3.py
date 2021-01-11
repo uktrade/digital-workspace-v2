@@ -1,4 +1,4 @@
-import boto3
+from boto3 import client as boto3_client
 import concurrent.futures
 import logging
 import pathlib
@@ -45,6 +45,7 @@ if (
     )
 
 
+# TODO - check to see if boto3 client needs reuse logic like in original
 class ThreadedS3ChunkUploader(ThreadPoolExecutor):
     def __init__(self, client, bucket, key, upload_id, max_workers=None):
         max_workers = max_workers or 10
@@ -102,20 +103,23 @@ class S3FileUploadHandler(FileUploadHandler):
         time_stamp = f'{timezone.now().strftime("%Y%m%d%H%M%S")}'
         self.new_file_name = f"{self.file_name.replace(extension, '')}_{time_stamp}{extension}"
 
-        self.s3_client = boto3.client(
+        self.s3_client = boto3_client(
             's3',
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             region_name=AWS_REGION,
         )
+
         self.parts = []
         self.part_number = 1
         self.s3_key = f"chunk_upload_{str(uuid.uuid4())}"
+
         self.multipart = self.s3_client.create_multipart_upload(
             Bucket=AWS_STORAGE_BUCKET_NAME,
             Key=self.s3_key,
             ContentType=self.content_type,
         )
+
         self.upload_id = self.multipart['UploadId']
         self.executor = ThreadedS3ChunkUploader(
             self.s3_client,
@@ -128,7 +132,8 @@ class S3FileUploadHandler(FileUploadHandler):
         try:
             self.executor.add(raw_data)
         except Exception as exc:
-            self.abort(exc)
+            logger.error("Aborting S3 upload", exc_info=exc)
+            self.abort()
 
         return raw_data
 
@@ -169,6 +174,7 @@ class S3FileUploadHandler(FileUploadHandler):
                     # Sign file e_tag
                     e_tag = s3_resp["ETag"].replace('"', '')
                     signed = sign(e_tag.encode())
+
                     # Set AV headers
                     if result["av_passed"]:
                         self.s3_client.copy_object(
@@ -178,7 +184,7 @@ class S3FileUploadHandler(FileUploadHandler):
                             Metadata={
                                 "av-scanned-at": result["scanned_at"].strftime("%Y-%m-%d %H:%M:%S"),
                                 "av-passed": "True",
-                                "av-signature": signed.decode('utf-8')
+                                "av-signature": signed,
                             },
                             ContentType=self.content_type,
                             MetadataDirective='REPLACE',

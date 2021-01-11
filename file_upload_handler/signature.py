@@ -10,7 +10,7 @@ AUTH_SIZE = 16
 def sign(to_sign):
     hashed = blake2b(digest_size=AUTH_SIZE, key=SECRET_KEY)
     hashed.update(to_sign)
-    return hashed.hexdigest().encode('utf-8')
+    return hashed.hexdigest()
 
 
 def verify(to_verify, sig):
