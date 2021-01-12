@@ -223,8 +223,6 @@ class NewsHome(RoutablePageMixin, BasePage):
         request.is_preview = getattr(request, 'is_preview', False)
         context = self.get_context(request, category=category_slug)
 
-        test = self.get_template(request)
-
         return TemplateResponse(
             request,
             self.get_template(request),

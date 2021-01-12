@@ -251,57 +251,57 @@ def parse_xml_file():
 
     print("Creating themes...")
 
-    # # Themes
-    # for key, value in items["theme"].items():
-    #     create_theme(
-    #         items["theme"][key],
-    #     )
-    #
-    # print("Creating topics...")
-    #
-    # # Topics
-    # for key, value in items["topic"].items():
-    #     create_topic(
-    #         items["topic"][key],
-    #         items["attachment"],
-    #     )
-    #
-    # print("Creating news...")
+    # Themes
+    for key, value in items["theme"].items():
+        create_theme(
+            items["theme"][key],
+        )
 
-    # # News
-    # for key, value in items["news"].items():
-    #     create_news_page(
-    #         items["news"][key],
-    #         items["attachment"]
-    #     )
+    print("Creating topics...")
 
-    # print("Creating page content...")
-    #
-    # # Page content
-    # for key, value in items["page"].items():
-    #     if value["status"] == "publish":
-    #         populate_page(
-    #             value["link"],
-    #             items,
-    #         )
-    #
-    # print("Creating how do Is...")
-    #
-    # # How do I content
-    # for key, value in items["howdoi"].items():
-    #     create_how_do_i(
-    #         items["howdoi"][key],
-    #         items["attachment"],
-    #     )
-    #
-    # print("Creating policies and guidance...")
+    # Topics
+    for key, value in items["topic"].items():
+        create_topic(
+            items["topic"][key],
+            items["attachment"],
+        )
 
-    # # Policies and guidance
-    # for key, value in items["policy"].items():
-    #     create_policy_or_guidance(
-    #         items["policy"][key],
-    #         items["attachment"],
-    #     )
+    print("Creating news...")
+
+    # News
+    for key, value in items["news"].items():
+        create_news_page(
+            items["news"][key],
+            items["attachment"]
+        )
+
+    print("Creating page content...")
+
+    # Page content
+    for key, value in items["page"].items():
+        if value["status"] == "publish":
+            populate_page(
+                value["link"],
+                items,
+            )
+
+    print("Creating how do Is...")
+
+    # How do I content
+    for key, value in items["howdoi"].items():
+        create_how_do_i(
+            items["howdoi"][key],
+            items["attachment"],
+        )
+
+    print("Creating policies and guidance...")
+
+    # Policies and guidance
+    for key, value in items["policy"].items():
+        create_policy_or_guidance(
+            items["policy"][key],
+            items["attachment"],
+        )
 
     print("Document links found:")
     for item in processed_items:

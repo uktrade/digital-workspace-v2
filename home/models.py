@@ -1,5 +1,9 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+import atoma
+import requests
+from home.util import get_tweets
+from django.core.cache import cache
 
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.admin.edit_handlers import (
@@ -10,6 +14,10 @@ from wagtail.snippets.models import register_snippet
 
 from modelcluster.fields import ParentalKey
 from wagtail.core.models import Page
+
+from news.models import NewsPage
+
+from working_at_dit.models import HowDoI
 
 
 @register_snippet
@@ -55,9 +63,6 @@ class WhatsPopular(models.Model):
         related_name='+'
     )
 
-    def __str__(self):
-        return self.title
-
     panels = [
         FieldPanel('title'),
         ImageChooserPanel("preview_image"),
@@ -68,6 +73,9 @@ class WhatsPopular(models.Model):
     class Meta:
         ordering = ['-title']
 
+    def __str__(self):
+        return self.title
+
     def clean(self):
         if self.external_url and self.link_to:
             raise ValidationError(
@@ -75,9 +83,7 @@ class WhatsPopular(models.Model):
                 "You cannot have both."
             )
 
-        page_count = WhatsPopular.objects.count()
-
-        if page_count > 2:
+        if WhatsPopular.objects.count() == 3 and self.id not in WhatsPopular.objects.all().values_list('id', flat=True):
             raise ValidationError(
                 "You can have a maximum of 3 \"what's popular\" pages. "
                 "Please remove one of the others before adding a new one."
@@ -108,12 +114,41 @@ class HomePage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
-        #context['posts'] = self.posts
-        #context['blog_page'] = self
 
-        context['menu_items'] = self.get_children().filter(
-            live=True,
-            show_in_menus=True,
-        )
+        # Quick links
+        quick_links = QuickLink.objects.all()
+        context['quick_links'] = quick_links
+
+        # News
+        news_items = NewsPage.objects.live().public().order_by(
+            '-first_published_at',
+        )[:8]
+        context['news_items'] = news_items
+
+        # Tweets
+        if not cache.get('homepage_tweets'):
+            cache.set(
+                'homepage_tweets',
+                sorted(get_tweets(), key=lambda x: x.created_at, reverse=True),
+                3000,
+            )
+
+        context['tweets'] = cache.get('homepage_tweets')
+
+        # What's popular
+        context['whats_popular_items'] = WhatsPopular.objects.all()
+
+        # How do I
+        context['how_do_i_items'] = HowDoI.objects.live().public().order_by(
+            '-first_published_at',
+        )[:10]
+
+        # GOVUK news
+        govuk_news_feed_url = "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=department-for-international-trade"
+
+        response = requests.get(govuk_news_feed_url)
+        feed = atoma.parse_atom_bytes(response.content)
+
+        context['govuk_feed'] = feed.entries[:6]
 
         return context

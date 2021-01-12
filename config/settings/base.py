@@ -384,3 +384,35 @@ WAGTAILIMAGES_IMAGE_FORM_BASE = 'myapp.forms.MyImageBaseForm'
 CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
 CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_URL = env("CLAM_AV_URL", default=None)
+
+# Redis
+if 'redis' in VCAP_SERVICES:
+    credentials = VCAP_SERVICES['redis'][0]['credentials']
+    CELERY_BROKER_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
+        credentials['password'],
+        credentials['host'],
+        credentials['port'],
+    )
+else:
+    CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": CELERY_BROKER_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "wp_"
+    }
+}
+
+# Twitter
+TWITTER_ACCESS_TOKEN = env("TWITTER_ACCESS_TOKEN")
+TWITTER_ACCESS_SECRET = env("TWITTER_ACCESS_SECRET")
+
+TWITTER_OAUTH_CONSUMER_KEY = env("TWITTER_OAUTH_CONSUMER_KEY")
+TWITTER_OAUTH_CONSUMER_SECRET = env("TWITTER_OAUTH_CONSUMER_SECRET")
+
+TWITTER_DEPT_USER = env("TWITTER_DEPT_USER")
+TWITTER_SEC_STATE_USER = env("CELERY_BROKER_URL", default=None)

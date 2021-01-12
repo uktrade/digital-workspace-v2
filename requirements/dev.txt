@@ -6,7 +6,8 @@
 #
 amqp==5.0.2               # via -r requirements.in/../requirements/base.txt, kombu
 asgiref==3.2.7            # via -r requirements.in/../requirements/base.txt, django
-attrs==19.3.0             # via flake8-bugbear
+atoma==0.0.17             # via -r requirements.in/../requirements/base.txt
+attrs==20.3.0             # via -r requirements.in/../requirements/base.txt, atoma, flake8-bugbear
 bandit==1.6.2             # via flake8-bandit
 beautifulsoup4==4.8.2     # via -r requirements.in/../requirements/base.txt, wagtail
 billiard==3.6.3.0         # via -r requirements.in/../requirements/base.txt, celery
@@ -21,6 +22,7 @@ click-repl==0.1.6         # via -r requirements.in/../requirements/base.txt, cel
 click==7.1.2              # via -r requirements.in/../requirements/base.txt, celery, click-didyoumean, click-repl, pip-tools
 cobble==0.1.3             # via -r requirements.in/../requirements/base.txt, mammoth
 cryptography==2.9.2       # via -r requirements.in/../requirements/base.txt, pyjwt
+defusedxml==0.6.0         # via -r requirements.in/../requirements/base.txt, atoma
 django-cogwheels==0.3     # via -r requirements.in/../requirements/base.txt, wagtailmenus
 django-elasticsearch-dsl==7.1.4  # via -r requirements.in/../requirements/base.txt
 django-environ==0.4.5     # via -r requirements.in/../requirements/base.txt
@@ -28,12 +30,13 @@ django-extensions==3.0.3  # via -r requirements.in/../requirements/base.txt
 django-ipware==2.1.0      # via -r requirements.in/../requirements/base.txt, django-log-formatter-ecs
 django-log-formatter-ecs==0.0.4  # via -r requirements.in/../requirements/base.txt
 django-modelcluster==5.0.2  # via -r requirements.in/../requirements/base.txt, wagtail
+django-redis==4.12.1      # via -r requirements.in/../requirements/base.txt
 django-staff-sso-client==2.2.0  # via -r requirements.in/../requirements/base.txt
 django-storages==1.10     # via -r requirements.in/../requirements/base.txt
 django-taggit==1.3.0      # via -r requirements.in/../requirements/base.txt, wagtail
 django-treebeard==4.3.1   # via -r requirements.in/../requirements/base.txt, wagtail
 django-webpack-loader==0.7.0  # via -r requirements.in/../requirements/base.txt
-django==3.0.7             # via -r requirements.in/../requirements/base.txt, django-staff-sso-client, django-storages, django-taggit, django-treebeard, djangorestframework, wagtail
+django==3.0.7             # via -r requirements.in/../requirements/base.txt, django-redis, django-staff-sso-client, django-storages, django-taggit, django-treebeard, djangorestframework, wagtail
 djangorestframework==3.11.0  # via -r requirements.in/../requirements/base.txt, wagtail
 docutils==0.15.2          # via -r requirements.in/../requirements/base.txt, botocore
 draftjs-exporter==2.1.7   # via -r requirements.in/../requirements/base.txt, wagtail
@@ -79,20 +82,22 @@ pycparser==2.20           # via -r requirements.in/../requirements/base.txt, cff
 pydocstyle==5.0.2         # via -r requirements.in/dev.in
 pyflakes==2.2.0           # via flake8
 pyjwt[crypto]==1.7.1      # via -r requirements.in/../requirements/base.txt
-python-dateutil==2.8.1    # via -r requirements.in/../requirements/base.txt, botocore, elasticsearch-dsl
+pysocks==1.7.1            # via -r requirements.in/../requirements/base.txt, requests
+python-dateutil==2.8.1    # via -r requirements.in/../requirements/base.txt, atoma, botocore, elasticsearch-dsl
 pytz==2020.1              # via -r requirements.in/../requirements/base.txt, celery, django, django-modelcluster, l18n
 pyyaml==5.3.1             # via bandit
-redis==3.5.3              # via -r requirements.in/../requirements/base.txt
-requests-oauthlib==1.3.0  # via -r requirements.in/../requirements/base.txt, django-staff-sso-client
-requests==2.23.0          # via -r requirements.in/../requirements/base.txt, requests-oauthlib, wagtail
+redis==3.5.3              # via -r requirements.in/../requirements/base.txt, django-redis
+requests-oauthlib==1.3.0  # via -r requirements.in/../requirements/base.txt, django-staff-sso-client, tweepy
+requests[socks]==2.23.0   # via -r requirements.in/../requirements/base.txt, requests-oauthlib, tweepy, wagtail
 s3transfer==0.3.3         # via -r requirements.in/../requirements/base.txt, boto3
 sentry-sdk==0.14.4        # via -r requirements.in/../requirements/base.txt
-six==1.15.0               # via -r requirements.in/../requirements/base.txt, bandit, click-repl, cryptography, django-elasticsearch-dsl, django-extensions, elasticsearch-dsl, flake8-print, html5lib, htmllaundry, l18n, pip-tools, python-dateutil
+six==1.15.0               # via -r requirements.in/../requirements/base.txt, bandit, click-repl, cryptography, django-elasticsearch-dsl, django-extensions, elasticsearch-dsl, flake8-print, html5lib, htmllaundry, l18n, pip-tools, python-dateutil, tweepy
 smmap==3.0.4              # via gitdb
 snowballstemmer==2.0.0    # via pydocstyle
 soupsieve==2.0.1          # via -r requirements.in/../requirements/base.txt, beautifulsoup4
 sqlparse==0.3.1           # via -r requirements.in/../requirements/base.txt, django
 stevedore==2.0.0          # via bandit
+tweepy==3.10.0            # via -r requirements.in/../requirements/base.txt
 unidecode==1.1.1          # via -r requirements.in/../requirements/base.txt, wagtail
 urllib3==1.25.9           # via -r requirements.in/../requirements/base.txt, botocore, elasticsearch, requests, sentry-sdk
 vine==5.0.0               # via -r requirements.in/../requirements/base.txt, amqp, celery

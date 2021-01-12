@@ -1,0 +1,18 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<div class="home-news-item">
+    {% image news_item.preview_image width-240 height-100 %}
+    <h4 class="govuk-heading-s"><a href="{% pageurl news_item %}">{{ news_item.title }}</a></h4>
+    <p class="govuk-body-s news-meta">
+        {{ news_item.get_latest_revision.user.first_name }} {{ news_item.get_latest_revision.user.last_name }},
+        {{ news_item.last_published_at }}
+        {{ news_item.tagged_news.all }}
+        {% for category in news_item.tagged_news_items.all %}
+            <a class="govuk-link"
+               href="/news-and-views/category/{{ category.tag.slug }}">{{ category.tag }}</a>,
+        {% endfor %}
+    </p>
+    <p class="govuk-body-s">{{ news_item.excerpt }}</p>
+    <a href="{% pageurl news_item %}" class="govuk-link">Read more</a>
+</div>

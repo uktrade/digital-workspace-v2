@@ -1,14 +1,15 @@
 from hashlib import blake2b
 from hmac import compare_digest
 
-from django.conf import settings
+from file_upload_handler.util import check_required_setting
 
-SECRET_KEY = settings.AV_SIGNATURE_SECRET_KEY.encode()
+
+SECRET_KEY = check_required_setting("AV_SIGNATURE_SECRET_KEY")
 AUTH_SIZE = 16
 
 
 def sign(to_sign):
-    hashed = blake2b(digest_size=AUTH_SIZE, key=SECRET_KEY)
+    hashed = blake2b(digest_size=AUTH_SIZE, key=SECRET_KEY.encode())
     hashed.update(to_sign)
     return hashed.hexdigest()
 
