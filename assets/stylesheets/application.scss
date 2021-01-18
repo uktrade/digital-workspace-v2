@@ -34,10 +34,6 @@ $govuk-image-url-function: frontend-image-url;
 @import "components/country_fact_sheets";
 // Grid
 
-.ws-width-container {
-  @include govuk-width-container(1100px);
-}
-
 // TODO - break out below if needed
 .news-items {
   list-style: none;
@@ -130,15 +126,6 @@ $govuk-image-url-function: frontend-image-url;
     padding-bottom: 20px;
 }
 
-@media (min-width: 840px) {
-  .ws-width-container {
-    max-width: 820px;
-    margin: 0 auto;
-    //margin-right: 15px;
-    //margin-left: 15px;
-  }
-}
-
 .govuk-header {
   border-bottom: 0;
 }
@@ -157,4 +144,8 @@ $govuk-image-url-function: frontend-image-url;
     width: 100%!important;
     height: calc(100vw * 0.56)
   }
+}
+
+.govuk-phase-banner__content {
+  margin: 0!important;
 }

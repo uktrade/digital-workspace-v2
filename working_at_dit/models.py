@@ -135,6 +135,14 @@ class HowDoIHome(ContentPage):
 class HowDoI(PageWithTopics):
     subpage_types = []  # Should not be able to create children
 
+    include_link_on_homepage = models.BooleanField(
+        default=False,
+    )
+
+    content_panels = PageWithTopics.content_panels + [
+        FieldPanel("include_link_on_homepage"),
+    ]
+
 
 class PoliciesAndGuidanceHome(BasePage):
     subpage_types = ["working_at_dit.PoliciesHome", "working_at_dit.GuidanceHome", ]

@@ -35,7 +35,7 @@
         <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
         {% include "includes/header.html" %}
         {% include "includes/search_and_profile_bar.html" %}
-        <div class="ws-width-container">
+        <div class="govuk-width-container">
             <div class="govuk-phase-banner">
                 <p class="govuk-phase-banner__content">
                     <strong class="govuk-tag govuk-phase-banner__content__tag">
@@ -46,6 +46,8 @@
                   </span>
                 </p>
             </div>
+        </div>
+        <div class="govuk-width-container">
             <main class="govuk-main-wrapper " id="main-content" role="main">
                 {% block breadcrumbs %}
                     {% breadcrumbs %}

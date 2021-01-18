@@ -18,7 +18,7 @@ def get_tweets():
 
     twitter_users = [
         settings.TWITTER_DEPT_USER,
-        settings.TWITTER_SEC_STATE_USER,
+        settings.TWITTER_PERM_SEC_USER,
     ]
 
     tweets = []

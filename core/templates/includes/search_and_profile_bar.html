@@ -1,39 +1,34 @@
-<div class="ws-search-and-profile-bar">
-    <div class="ws-search-and-profile-bar__container ws-width-container govuk-grid-row">
-        <form action="/search/">
-            <div class="ws-search-and-profile-bar__search ws-search-field govuk-grid-column-one-half-from-desktop">
-                <label for="search-main" class="govuk-visually-hidden">
-                    Search Digital Workspace
-                </label>
-                <div class="ws-search-field__item-wrapper">
-                    <input type="search" value="" id="search-main" name="query" title="Search" aria-controls=""
-                           class="ws-search-field__item ws-search-field__input" placeholder="Search Digital Workspace">
-                    <div class="ws-search-field__item ws-search-field__submit-wrapper">
-                        <button type="submit" class="ws-search-field__submit">Search</button>
-                    </div>
-                </div>
-            </div>
+<div class="search-and-profile-bar">
+    <div class="govuk-width-container">
+        <form class="search-form" method="GET" action="https://people.trade.gov.uk/search">
+            <label for="search-main" class="govuk-visually-hidden">
+                Search people, teams and skills
+            </label>
+            <input name="search[filters][]" type="hidden" value="people">
+            <input name="search[filters][]" type="hidden" value="groups">
+            <input class="govuk-input" type="search" name="search[query]" title="Search people, teams and skills" aria-controls="" placeholder="Search people, teams and skills">
+            <button type="submit">Search</button>
         </form>
-        <div class="ws-search-and-profile-bar__profile govuk-grid-column-one-half-from-desktop">
+        <div class="people-finder-panel">
             {% if peoplefinder_profile.is_blank %}
-                <a class="ws-search-and-profile-bar__profile-link" href="{{ peoplefinder_profile.setup_profile_url }}">
-                    <div class="ws-search-and-profile-bar__profile-details">
+                <a class="people-finder-profile-link" href="{{ peoplefinder_profile.setup_profile_url }}">
+                    <div class="profile-details">
                         Please set up your profile
-                        <span class="ws-search-and-profile-bar__profile-prompt">
+                        <span class="profile-prompt">
                           Set up your profile now
                         </span>
                     </div>
                 </a>
             {% elif peoplefinder_profile %}
-                <a class="ws-search-and-profile-bar__profile-link" href="{{ peoplefinder_profile.profile_url }}">
+                <a class="profile-link" href="{{ peoplefinder_profile.profile_url }}">
                     {% if peoplefinder_profile.profile_image_url %}
                         <img src="{{ peoplefinder_profile.profile_image_url }}"
                              alt="Profile image of {{ peoplefinder_profile.name }}"
-                             class="ws-search-and-profile-bar__profile-image">
+                             class="profile-image">
                     {% endif %}
-                    <div class="ws-search-and-profile-bar__profile-details">
+                    <div class="profile-details">
                         Hi, {{ peoplefinder_profile.first_name|truncatechars:25 }}
-                        <span class="ws-search-and-profile-bar__profile-prompt">
+                        <span class="profile-prompt">
                           {% if peoplefinder_profile.is_complete %}
                               View your profile
                           {% else %}

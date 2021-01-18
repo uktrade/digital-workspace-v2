@@ -20,7 +20,7 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 FILE_UPLOAD_HANDLERS = (
     'file_upload_handler.clam_av.ClamAVFileUploadHandler',
     'file_upload_handler.s3.S3FileUploadHandler',
-)  # Order is important (maybe!?) - TODO - check in unit test
+)  # Order is important
 
 AV_SIGNATURE_SECRET_KEY = "secret key!!!"
 

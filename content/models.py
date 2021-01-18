@@ -28,7 +28,7 @@ from modelcluster.fields import ParentalManyToManyField
 from content import blocks
 from content.utils import manage_excluded, manage_pinned
 
-UserModel = get_user_model()
+User = get_user_model()
 
 RICH_TEXT_FEATURES = [
     "bold",

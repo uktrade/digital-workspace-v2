@@ -9,8 +9,10 @@
   }
 }
 
-.govuk-header__container--ws {
-  border-bottom: govuk-spacing(2) solid $brand-color-primary;
+.govuk-header__container {
+  border-bottom: 5px solid $brand-color-primary;
+  margin-bottom: 0;
+  padding-top: 6px;
 }
 
 .govuk-header__navigation-item--active--ws {
@@ -64,4 +66,9 @@
 
 .govuk-main-wrapper  {
   padding-top: 20px;
+}
+
+.govuk-header__content {
+  width: auto;
+  margin-top:10px;
 }

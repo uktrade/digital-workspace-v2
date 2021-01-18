@@ -2,7 +2,7 @@
 {% load wagtailimages_tags %}
 
 <div class="home-news-item">
-    {% image news_item.preview_image width-240 height-100 %}
+    <a href="{% pageurl news_item %}">{% image news_item.preview_image width-240 height-100 %}</a>
     <h4 class="govuk-heading-s"><a href="{% pageurl news_item %}">{{ news_item.title }}</a></h4>
     <p class="govuk-body-s news-meta">
         {{ news_item.get_latest_revision.user.first_name }} {{ news_item.get_latest_revision.user.last_name }},

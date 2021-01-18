@@ -133,7 +133,7 @@ class HomePage(Page):
                 3000,
             )
 
-        context['tweets'] = cache.get('homepage_tweets')
+        context['tweets'] = cache.get('homepage_tweets')[:3]
 
         # What's popular
         context['whats_popular_items'] = WhatsPopular.objects.all()
@@ -144,11 +144,18 @@ class HomePage(Page):
         )[:10]
 
         # GOVUK news
-        govuk_news_feed_url = "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=department-for-international-trade"
+        if not cache.get('homepage_govuk_news'):
+            govuk_news_feed_url = "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=department-for-international-trade"
 
-        response = requests.get(govuk_news_feed_url)
-        feed = atoma.parse_atom_bytes(response.content)
+            response = requests.get(govuk_news_feed_url)
+            feed = atoma.parse_atom_bytes(response.content)
 
-        context['govuk_feed'] = feed.entries[:6]
+            cache.set(
+                'homepage_govuk_news',
+                feed.entries[:6],
+                3000,
+            )
+
+        context['govuk_feed'] = cache.get('homepage_govuk_news')
 
         return context
