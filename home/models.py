@@ -90,22 +90,6 @@ class WhatsPopular(models.Model):
             )
 
 
-@register_snippet
-class HowDoIPreview(models.Model):
-    how_do_i_page = ParentalKey(
-        'working_at_dit.HowDoI',
-        on_delete=models.CASCADE,
-        related_name='how_do_i_on_home_pages',
-    )
-
-    def __str__(self):
-        return self.how_do_i_page
-
-    panels = [
-        PageChooserPanel('how_do_i_page'),
-    ]
-
-
 class HomePage(Page):
     is_creatable = False
     show_in_menus = True
@@ -139,7 +123,7 @@ class HomePage(Page):
         context['whats_popular_items'] = WhatsPopular.objects.all()
 
         # How do I
-        context['how_do_i_items'] = HowDoI.objects.live().public().order_by(
+        context['how_do_i_items'] = HowDoI.objects.filter(include_link_on_homepage=True).live().public().order_by(
             '-first_published_at',
         )[:10]
 

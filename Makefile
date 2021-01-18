@@ -64,7 +64,7 @@ all-requirements:
 
 superuser:
 	docker-compose run --rm wagtail python manage.py migrate
-	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
+	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')" | docker-compose run --rm wagtail python manage.py shell
 
 import:
 	docker-compose down

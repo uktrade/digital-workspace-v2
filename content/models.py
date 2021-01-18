@@ -195,6 +195,13 @@ class ContentPage(BasePage):
         FieldPanel("excluded_phrases"),
     ]
 
+    def full_clean(self, *args, **kwargs):
+        # Required so we can override
+        # search analyzer (see above)
+        self.search_title = self.title
+
+        super().full_clean(*args, **kwargs)
+
     def save(self, *args, **kwargs):
         body_string = str(self.body)
 
@@ -205,7 +212,7 @@ class ContentPage(BasePage):
 
         # Required so we can override
         # search analyzer (see above)
-        self.search_title = self.title
+        # self.search_title = self.title # 
 
         manage_excluded(self, self.excluded_phrases)
         manage_pinned(self, self.pinned_phrases)

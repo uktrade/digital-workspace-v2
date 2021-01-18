@@ -7,7 +7,6 @@ from wagtail.core import hooks
 from .models import (
     QuickLink,
     WhatsPopular,
-    HowDoIPreview,
 )
 
 
@@ -29,15 +28,5 @@ class WhatsPopularAdmin(ModelAdmin):
     exclude_from_explorer = False
 
 
-class HowDoIPreviewAdmin(ModelAdmin):
-    model = HowDoIPreview
-    menu_label = "How do I preview"
-    menu_icon = 'link'
-    menu_order = 200
-    add_to_settings_menu = False
-    exclude_from_explorer = False
-
-
 modeladmin_register(QuickLinksAdmin)
 modeladmin_register(WhatsPopularAdmin)
-modeladmin_register(HowDoIPreviewAdmin)
