@@ -33,13 +33,6 @@ def create_homepage(apps, schema_editor):
         url_path='/home/',
     )
 
-    # author = UserModel.objects.first()
-    #
-    # revision = homepage.save_revision(
-    #     user=author,
-    #     submitted_for_moderation=False,
-    # )
-    # revision.publish()
     homepage.show_in_menus = True
     homepage.save()
 

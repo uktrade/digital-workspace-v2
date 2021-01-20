@@ -46,3 +46,21 @@ buildpack will automatically run the npm `heroku-postbuild` step after
 
 ## Notes in import
 When importing we will need to copy the content of the current buckets to their new locations (or possibly leave them where they are and update references to them).
+
+
+## S3 - transfer of assets and security
+The use of the original project bucket will be maintained. This bucket is
+hooked up to the static.workspace.trade.gov.uk asset serving service which
+provides SSO authenticated access to the assets within it.
+
+S3Boto3Storage from django storages is used for media storage configuration,
+meaning that files are written to S3 on save. django storages has been configured
+through the use of the AWS_S3_CUSTOM_DOMAIN setting to use static.workspace.trade.gov.uk
+as the domain for serving media assets.
+
+So, when a media file is saved, it is sent to S3 but the page rendered to the URL
+for that asset uses the SSO authenticated service at static.workspace.trade.gov.uk
+
+In order to make Wagtail images, document, video record aware of the content of
+the bucket we need to iterate through the bucket content and create the relevant records.
+

@@ -13,7 +13,8 @@ from wagtail.admin.edit_handlers import (
 from wagtail.snippets.models import register_snippet
 
 from modelcluster.fields import ParentalKey
-from wagtail.core.models import Page
+
+from content.models import BasePage
 
 from news.models import NewsPage
 
@@ -90,7 +91,7 @@ class WhatsPopular(models.Model):
             )
 
 
-class HomePage(Page):
+class HomePage(BasePage):
     is_creatable = False
     show_in_menus = True
 

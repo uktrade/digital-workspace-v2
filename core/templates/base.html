@@ -1,5 +1,6 @@
 {% load workspace_navigation static %}
 {% load render_bundle webpack_static from webpack_loader %}
+{% load static wagtailcore_tags %}
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
     <head>
@@ -35,6 +36,21 @@
         <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
         {% include "includes/header.html" %}
         {% include "includes/search_and_profile_bar.html" %}
+
+        {% if not seen_cookie_banner %}
+        <div class="cookie-banner">
+            <div class="govuk-width-container">
+                <div class="govuk-phase-banner">
+                    <p class="govuk-phase-banner__content">
+                        <span class="govuk-phase-banner__text">
+                            GOV.UK uses cookies to make the site simpler. <a class="govuk-link" href="{% slugurl "cookies" %}">Find out more about cookies</a>
+                      </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <div class="govuk-width-container">
             <div class="govuk-phase-banner">
                 <p class="govuk-phase-banner__content">

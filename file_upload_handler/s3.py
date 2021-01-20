@@ -40,8 +40,9 @@ if (
 ):
     # Nb cannot throw exception here because of
     # Django order of play
-    logger.error(
-        "You must use S3Boto3Storage with this file handler"
+    logger.warning(
+        "You must use S3Boto3Storage or a class that "
+        "inherits from it with this file handler"
     )
 
 

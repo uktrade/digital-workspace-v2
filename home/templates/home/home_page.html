@@ -79,7 +79,7 @@
                 {% for tweet in tweets %}
                     <li>
                         <div class="img-wrapper">
-                        <img src="{{ tweet.user.profile_image_url }}">
+                        <img alt="Profile image for {{ tweet.user.name }} account" src="{{ tweet.user.profile_image_url }}">
                         </div>
                         <div class="details">
                             {% if tweet.user.name == "Department for International Trade" %}

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 
 from django.contrib.auth import get_user_model
@@ -7,6 +9,12 @@ from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+
+from wagtail.documents.blocks import (
+    DocumentChooserBlock,
+)
+
+from wagtail.core.blocks import ListBlock, StructBlock
 
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.admin.edit_handlers import (
@@ -86,6 +94,28 @@ class BasePage(Page):
         null=True,
     )
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["seen_cookie_banner"] = request.COOKIES.get(
+            'seen_cookie_banner'
+        )
+
+        return context
+
+    def serve(self, request):
+        response = super().serve(request)
+
+        if not request.COOKIES.get(
+            'seen_cookie_banner'
+        ):
+            response.set_cookie(
+                'seen_cookie_banner',
+                1,
+                secure=False,
+            )
+
+        return response
+
 
 class ContentPage(BasePage):
     is_creatable = False
@@ -130,6 +160,13 @@ class ContentPage(BasePage):
         ("data_table", blocks.DataTableBlock(
             help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
         )),
+        ('document_list', ListBlock(
+            StructBlock([
+                ('document', DocumentChooserBlock(
+                    help_text="Upload a document",
+                )),
+            ])
+        ))
     ])
 
     pinned_phrases = models.CharField(

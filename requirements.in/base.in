@@ -36,6 +36,7 @@ celery
 redis
 tweepy
 atoma
+Pillow
 
 # PHP unserialise
 phpserialize

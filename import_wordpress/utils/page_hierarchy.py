@@ -4,6 +4,8 @@ from django.core.management.base import BaseCommand
 
 from wagtail.core.models import Page
 
+from content.models import ContentPage
+
 from tools.models import ToolsHome
 
 from news.models import (
@@ -32,6 +34,21 @@ from country_fact_sheet.models import CountryFactSheetHome
 
 def create_section_homepages():
     home_page = Page.objects.filter(slug="home").first()
+
+    # Cookies
+    cookie_explanation = ContentPage(
+        title="Cookies",
+        slug="cookies",
+        live=True,
+        first_published_at=datetime.now(),
+        show_in_menus=False,
+        depth=8,
+    )
+
+    home_page.add_child(instance=cookie_explanation)
+    home_page.save()
+
+    cookie_explanation.save_revision().publish()
 
     news_home = NewsHome(
         title="News",

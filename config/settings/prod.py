@@ -16,7 +16,7 @@ FILE_UPLOAD_HANDLERS = (
 )  # Order is important (maybe!?) - TODO - check in unit test
 
 AWS_DEFAULT_ACL = None
-AWS_S3_SIGNATURE_VERSION = 's3v4'
+#AWS_S3_SIGNATURE_VERSION = 's3v4'
 
 # SECURE_BROWSER_XSS_FILTER = True
 # X_FRAME_OPTIONS = 'DENY'

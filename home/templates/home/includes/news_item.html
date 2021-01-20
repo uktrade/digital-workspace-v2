@@ -13,6 +13,5 @@
                href="/news-and-views/category/{{ category.tag.slug }}">{{ category.tag }}</a>,
         {% endfor %}
     </p>
-    <p class="govuk-body-s">{{ news_item.excerpt }}</p>
-    <a href="{% pageurl news_item %}" class="govuk-link">Read more</a>
+    <p class="govuk-body-s"><a href="{% pageurl news_item %}" class="govuk-link">{{ news_item.excerpt }}</a></p>
 </div>
