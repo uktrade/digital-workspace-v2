@@ -64,3 +64,5 @@ for that asset uses the SSO authenticated service at static.workspace.trade.gov.
 In order to make Wagtail images, document, video record aware of the content of
 the bucket we need to iterate through the bucket content and create the relevant records.
 
+I am creating a managament command to do the above.
+

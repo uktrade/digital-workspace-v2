@@ -18,9 +18,9 @@ AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-AWS_S3_URL_PROTOCOL = "https"
-AWS_S3_CUSTOM_DOMAIN = "static.workspace.trade.gov.uk"
-AWS_QUERYSTRING_AUTH = False
+# AWS_S3_URL_PROTOCOL = "https"
+# AWS_S3_CUSTOM_DOMAIN = "static.workspace.trade.gov.uk"
+# AWS_QUERYSTRING_AUTH = False
 
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 #STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

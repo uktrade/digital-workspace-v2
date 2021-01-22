@@ -1,11 +1,15 @@
-import io
+import hashlib
 import boto3
 import os
-import sys
 from datetime import datetime
 
+from PIL import Image
+from io import BytesIO
 
-from PIL.Image import frombytes
+from wagtail.images.models import Image as WagtailImage
+from wagtail.core.models import Collection
+
+from taggit.models import Tag
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -20,7 +24,6 @@ IMG_EXTENSIONS = (
     ".apng",
     ".avif",
     ".jpeg",
-    ".svg",
 )
 
 VIDEO_EXTENSIONS = (
@@ -28,43 +31,103 @@ VIDEO_EXTENSIONS = (
     ".mov",
 )
 
-embed_sql = """
-INSERT INTO public.wagtailembeds_embed(
-	id, url, max_width, type, html, title, author_name, provider_name, thumbnail_url, width, height, last_updated)
-	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-"""
-
-document_sql = """
+DOCUMENT_SQL = """
 INSERT INTO public.wagtaildocs_document(
-	title, file, created_at, uploaded_by_user_id, collection_id, file_size, file_hash)
-	VALUES ({1}, {2}, {3}, {3}, 1, {4}, {5});
+    title, file, created_at, uploaded_by_user_id, collection_id, file_size, file_hash)
+    VALUES (`{1}`, {2}, {3}, {3}, 1, {4}, {5});
 """
 
 IMG_SQL_TEMPLATE = """
 INSERT INTO public.wagtailimages_image(
-	title, file, width, height, created_at, uploaded_by_user_id, file_size, collection_id, file_hash)
-	VALUES ({1}, {2}, {3}, {4}, {5}, {6}, {7}, 1, {8});
+    title, file, width, height, created_at, uploaded_by_user_id, file_size, collection_id, file_hash)
+    VALUES ('{0}', '{1}', {2}, {3}, '{4}', {5}, {6}, {7}, '{8}');
 """
 
-media_sql = """
+MEDIA_SQL = """
 INSERT INTO public.wagtailmedia_media(
-	title, file, type, duration, width, height, thumbnail, created_at, collection_id, uploaded_by_user_id)
-	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    title, file, type, duration, width, height, thumbnail, created_at, collection_id, uploaded_by_user_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 """
 
 User = get_user_model()
 
 
+class ImageAlreadyExistsException(Exception):
+    pass
+
+
+class ErrorGettingYearMonthException(Exception):
+    pass
+
+
+def get_month_year(key):
+    # wp-content/uploads/2021/01/
+    try:
+        parts = key.split("/")
+        year = parts[2]
+        month = datetime.date(1900, parts[3], 1).strftime('%B')
+        return month, year,
+    except:
+        raise ErrorGettingYearMonthException()
+
+
+def create_image_record(
+    cursor,
+    file_name,
+    key,
+    file_data,
+    file_size,
+    file_hash,
+    user,
+):
+    # See if image already exists
+    if WagtailImage.objects.filter(file=key).first():
+        print("Image already exists in database, skipping")
+        raise ImageAlreadyExistsException()
+
+    year, month = get_month_year(key)
+
+    collection = Collection.objects.filter(name=year).first()
+
+    if not collection:
+        root_collection = Collection.get_first_root_node()
+        collection = root_collection.add_child(name=year)
+
+    try:
+        img = Image.open(BytesIO(file_data))
+        image_sql = IMG_SQL_TEMPLATE.format(
+            file_name,
+            key,
+            img.width,
+            img.height,
+            datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
+            user.id,
+            file_size,
+            collection.id,
+            file_hash,
+        )
+        cursor.execute(image_sql)
+    except Exception as ex:
+        print("COULD NOT PROCESS IMAGE, ex: ", ex)
+
+    # Create tags
+    image = WagtailImage.objects.filter(
+        file=key
+    ).first()
+
+    image.tags.add(month)
+
+
 class Command(BaseCommand):
-    help = ""
+    help = "Generate database records for assets on S3"
 
     def handle(self, *args, **options):
         with connection.cursor() as cursor:
-            user = User.objects.filter(username="admin")
+            user = User.objects.filter(username="admin").first()
 
             session = boto3.Session(
                 aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
             )
 
             s3 = session.resource('s3')
@@ -73,27 +136,29 @@ class Command(BaseCommand):
                 settings.AWS_STORAGE_BUCKET_NAME,
             )
 
-            for asset_key in asset_bucket.objects.all():
-                s3_response_object = s3.get_object(
-                    Bucket=settings.AWS_STORAGE_BUCKET_NAME,
-                    Key=asset_key,
+            for bucket_object in asset_bucket.objects.all():
+                print(f"Processing object {bucket_object.key}")
+                obj = s3.Object(
+                    settings.AWS_STORAGE_BUCKET_NAME,
+                    bucket_object.key,
                 )
+                file_data = obj.get()['Body'].read()
 
-                s3_bytes = s3_response_object['Body'].read()
-                asset_bytes = io.BytesIO(s3_bytes)
-                file_name = os.path.basename(asset_key)
+                file_hash = hashlib.sha1(file_data).hexdigest()
+                file_name = os.path.basename(bucket_object.key)
 
-                if asset_key.endswith(IMG_EXTENSIONS):
-                    img = frombytes(asset_bytes)
-                    image_sql = IMG_SQL_TEMPLATE.format(
-                        file_name,
-                        asset_key,
-                        img.width,
-                        img.height,
-                        datetime.now(),
-                        user.id,
-                        sys.getsizeof(asset_bytes),
-                        1,
-                        hash(asset_bytes),
-                    )
-                    cursor.execute(image_sql)
+                if bucket_object.key.endswith(IMG_EXTENSIONS):
+                    try:
+                        create_image_record(
+                            cursor,
+                            file_name,
+                            bucket_object.key,
+                            file_data,
+                            bucket_object.size,
+                            file_hash,
+                            user,
+                        )
+                    except ImageAlreadyExistsException:
+                        continue
+                    except ErrorGettingYearMonthException:
+                        continue
