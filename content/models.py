@@ -94,27 +94,27 @@ class BasePage(Page):
         null=True,
     )
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        context["seen_cookie_banner"] = request.COOKIES.get(
-            'seen_cookie_banner'
-        )
-
-        return context
-
-    def serve(self, request):
-        response = super().serve(request)
-
-        if not request.COOKIES.get(
-            'seen_cookie_banner'
-        ):
-            response.set_cookie(
-                'seen_cookie_banner',
-                1,
-                secure=False,
-            )
-
-        return response
+    # def get_context(self, request, *args, **kwargs):
+    #     context = super().get_context(request, *args, **kwargs)
+    #     context["seen_cookie_banner"] = request.COOKIES.get(
+    #         'seen_cookie_banner'
+    #     )
+    #
+    #     return context
+    #
+    # def serve(self, request):
+    #     response = super().serve(request)
+    #
+    #     if not request.COOKIES.get(
+    #         'seen_cookie_banner'
+    #     ):
+    #         response.set_cookie(
+    #             'seen_cookie_banner',
+    #             1,
+    #             secure=False,
+    #         )
+    #
+    #     return response
 
 
 class ContentPage(BasePage):

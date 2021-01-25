@@ -7,6 +7,7 @@ from PIL import Image
 from io import BytesIO
 
 from wagtail.images.models import Image as WagtailImage
+from wagtail.documents.models import Document as WagtailDocument
 from wagtail.core.models import Collection
 
 from taggit.models import Tag
@@ -15,6 +16,16 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.db import connection
+
+DOCUMENT_EXTENSIONS = (
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".ppt",
+    ".pptx",
+    ".pdf",
+)
 
 IMG_EXTENSIONS = (
     ".jpg",
@@ -31,7 +42,7 @@ VIDEO_EXTENSIONS = (
     ".mov",
 )
 
-DOCUMENT_SQL = """
+DOCUMENT_SQL_TEMPLATE = """
 INSERT INTO public.wagtaildocs_document(
     title, file, created_at, uploaded_by_user_id, collection_id, file_size, file_hash)
     VALUES (`{1}`, {2}, {3}, {3}, 1, {4}, {5});
@@ -43,7 +54,7 @@ INSERT INTO public.wagtailimages_image(
     VALUES ('{0}', '{1}', {2}, {3}, '{4}', {5}, {6}, {7}, '{8}');
 """
 
-MEDIA_SQL = """
+MEDIA_SQL_TEMPLATE = """
 INSERT INTO public.wagtailmedia_media(
     title, file, type, duration, width, height, thumbnail, created_at, collection_id, uploaded_by_user_id)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
@@ -52,7 +63,7 @@ INSERT INTO public.wagtailmedia_media(
 User = get_user_model()
 
 
-class ImageAlreadyExistsException(Exception):
+class AssetAlreadyExistsException(Exception):
     pass
 
 
@@ -64,9 +75,8 @@ def get_month_year(key):
     # wp-content/uploads/2021/01/
     try:
         parts = key.split("/")
-        year = parts[2]
-        month = datetime.date(1900, parts[3], 1).strftime('%B')
-        return month, year,
+        target_date = datetime.date(parts[2], parts[3], 1).strftime('%B')
+        return target_date.strftime("%b"), target_date.year,
     except:
         raise ErrorGettingYearMonthException()
 
@@ -78,20 +88,14 @@ def create_image_record(
     file_data,
     file_size,
     file_hash,
+    collection_id,
+    month,
     user,
 ):
     # See if image already exists
     if WagtailImage.objects.filter(file=key).first():
         print("Image already exists in database, skipping")
-        raise ImageAlreadyExistsException()
-
-    year, month = get_month_year(key)
-
-    collection = Collection.objects.filter(name=year).first()
-
-    if not collection:
-        root_collection = Collection.get_first_root_node()
-        collection = root_collection.add_child(name=year)
+        raise AssetAlreadyExistsException()
 
     try:
         img = Image.open(BytesIO(file_data))
@@ -103,7 +107,7 @@ def create_image_record(
             datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
             user.id,
             file_size,
-            collection.id,
+            collection_id,
             file_hash,
         )
         cursor.execute(image_sql)
@@ -116,6 +120,43 @@ def create_image_record(
     ).first()
 
     image.tags.add(month)
+
+
+def create_document_record(
+    cursor,
+    file_name,
+    key,
+    file_size,
+    file_hash,
+    collection_id,
+    month,
+    user,
+):
+    # See if image already exists
+    if WagtailDocument.objects.filter(file=key).first():
+        print("Document already exists in database, skipping")
+        raise AssetAlreadyExistsException()
+
+    try:
+        document_sql = DOCUMENT_SQL_TEMPLATE.format(
+            file_name,
+            key,
+            datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
+            user.id,
+            collection_id,
+            file_size,
+            file_hash,
+        )
+        cursor.execute(document_sql)
+    except Exception as ex:
+        print("COULD NOT PROCESS IMAGE, ex: ", ex)
+
+    # Create tags
+    document = WagtailDocument.objects.filter(
+        file=key
+    ).first()
+
+    document.tags.add(month)
 
 
 class Command(BaseCommand):
@@ -147,6 +188,14 @@ class Command(BaseCommand):
                 file_hash = hashlib.sha1(file_data).hexdigest()
                 file_name = os.path.basename(bucket_object.key)
 
+                year, month = get_month_year(bucket_object.key)
+
+                collection = Collection.objects.filter(name=year).first()
+
+                if not collection:
+                    root_collection = Collection.get_first_root_node()
+                    collection = root_collection.add_child(name=year)
+
                 if bucket_object.key.endswith(IMG_EXTENSIONS):
                     try:
                         create_image_record(
@@ -156,9 +205,27 @@ class Command(BaseCommand):
                             file_data,
                             bucket_object.size,
                             file_hash,
+                            collection.id,
+                            month,
                             user,
                         )
-                    except ImageAlreadyExistsException:
+                    except AssetAlreadyExistsException:
+                        continue
+                    except ErrorGettingYearMonthException:
+                        continue
+                if bucket_object.key.endswith(DOCUMENT_EXTENSIONS):
+                    try:
+                        create_document_record(
+                            cursor,
+                            file_name,
+                            bucket_object.key,
+                            bucket_object.size,
+                            file_hash,
+                            collection.id,
+                            month,
+                            user,
+                        )
+                    except AssetAlreadyExistsException:
                         continue
                     except ErrorGettingYearMonthException:
                         continue
