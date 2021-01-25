@@ -6,6 +6,8 @@ from datetime import datetime
 from PIL import Image
 from io import BytesIO
 
+from wagtailmedia.models import Media as WagtailMedia
+
 from wagtail.images.models import Image as WagtailImage
 from wagtail.documents.models import Document as WagtailDocument
 from wagtail.core.models import Collection
@@ -37,7 +39,7 @@ IMG_EXTENSIONS = (
     ".jpeg",
 )
 
-VIDEO_EXTENSIONS = (
+MEDIA_EXTENSIONS = (
     ".mp4",
     ".mov",
 )
@@ -56,8 +58,8 @@ INSERT INTO public.wagtailimages_image(
 
 MEDIA_SQL_TEMPLATE = """
 INSERT INTO public.wagtailmedia_media(
-    title, file, type, duration, width, height, thumbnail, created_at, collection_id, uploaded_by_user_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    title, file, type, duration, created_at, collection_id, uploaded_by_user_id)
+    VALUES (?, ?, ?, 1000, ?, ?, ?);
 """
 
 User = get_user_model()
@@ -159,6 +161,40 @@ def create_document_record(
     document.tags.add(month)
 
 
+def create_media_record(
+    cursor,
+    file_name,
+    key,
+    collection_id,
+    month,
+    user,
+):
+    # See if image already exists
+    if WagtailMedia.objects.filter(file=key).first():
+        print("Document already exists in database, skipping")
+        raise AssetAlreadyExistsException()
+
+    try:
+        media_sql = MEDIA_SQL_TEMPLATE.format(
+            file_name,
+            key,
+            "video",
+            datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
+            collection_id,
+            user.id,
+        )
+        cursor.execute(media_sql)
+    except Exception as ex:
+        print("COULD NOT PROCESS IMAGE, ex: ", ex)
+
+    # Create tags
+    media = WagtailMedia.objects.filter(
+        file=key
+    ).first()
+
+    media.tags.add(month)
+
+
 class Command(BaseCommand):
     help = "Generate database records for assets on S3"
 
@@ -196,8 +232,8 @@ class Command(BaseCommand):
                     root_collection = Collection.get_first_root_node()
                     collection = root_collection.add_child(name=year)
 
-                if bucket_object.key.endswith(IMG_EXTENSIONS):
-                    try:
+                try:
+                    if bucket_object.key.endswith(IMG_EXTENSIONS):
                         create_image_record(
                             cursor,
                             file_name,
@@ -209,12 +245,7 @@ class Command(BaseCommand):
                             month,
                             user,
                         )
-                    except AssetAlreadyExistsException:
-                        continue
-                    except ErrorGettingYearMonthException:
-                        continue
-                if bucket_object.key.endswith(DOCUMENT_EXTENSIONS):
-                    try:
+                    elif bucket_object.key.endswith(DOCUMENT_EXTENSIONS):
                         create_document_record(
                             cursor,
                             file_name,
@@ -225,7 +256,16 @@ class Command(BaseCommand):
                             month,
                             user,
                         )
-                    except AssetAlreadyExistsException:
-                        continue
-                    except ErrorGettingYearMonthException:
-                        continue
+                    elif bucket_object.key.endswith(MEDIA_EXTENSIONS):
+                        create_media_record(
+                            cursor,
+                            file_name,
+                            bucket_object.key,
+                            collection.id,
+                            month,
+                            user,
+                        )
+                except AssetAlreadyExistsException:
+                    continue
+                except ErrorGettingYearMonthException:
+                    continue

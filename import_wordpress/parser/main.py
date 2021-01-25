@@ -152,8 +152,6 @@ def parse_xml_file():
             if category_tag.get("domain") == "news_category":
                 item["categories"].append(category_tag.text)
             if category_tag.get("domain") == "topic_taxonomy":
-                # print("FOUND TOPIC")
-                # print(category_tag.get("nicename"))
                 item["topics"].append({
                     "name": category_tag.text,
                     "nice_name": category_tag.get("nicename"),
@@ -216,12 +214,6 @@ def parse_xml_file():
                 if meta_value_tag.text:
                     converted_php = unserialize(str.encode(meta_value_tag.text))
                     item["redirect_url"] = converted_php[b"url"].decode("utf-8")
-
-            # if meta_key_tag.text == "amazonS3_cache":
-            #     s3_cache_php = meta_value_tag.text
-            #     s3_cache = php_loads(bytes(s3_cache_php, encoding='utf-8'))
-            #
-            #     print(s3_cache)
 
         # News comments
         item["comments"] = get_comments(item_tag)

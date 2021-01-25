@@ -99,30 +99,6 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
 
-
-# Configure logging
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "root": {
-        "level": "DEBUG" if DEBUG else "WARNING",
-        "handlers": ["console"]
-    },
-    "formatters": {
-        "verbose": {
-            "format": "%(asctime)s [%(levelname)s] [%(name)s] %(message)s"
-        }
-    },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose"
-        }
-    }
-}
-
-
 # Allow all hosts
 # (this application will always be run behind a PaaS router or locally)
 ALLOWED_HOSTS = ["*"]
@@ -201,7 +177,7 @@ MIDDLEWARE = [
     "wagtail.core.middleware.SiteMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 
-    #"authbroker_client.middleware.ProtectAllViewsMiddleware",  # TODO - restore
+    "authbroker_client.middleware.ProtectAllViewsMiddleware",  # TODO - restore
     "core.middleware.GetPeoplefinderProfileMiddleware",
 ]
 
@@ -395,8 +371,18 @@ WAGTAILEMBEDS_FINDERS = [
 ]
 
 # For use in import of Wordpress content - TODO - remove after import
-OLD_ASSET_PATH = "TODO - add me"
-NEW_ASSET_PATH = "TODO - add me"
+OLD_ASSET_PATHS = (
+    "dit.useconnect.co.uk",
+    "admin.workspace.trade.gov.uk",
+    'digital-workspace-staging.london.cloudapps.digital',
+    'api.workspace.trade.uat.uktrade.io',
+    'admin.workspace.trade.uat.uktrade.io',
+    'digital-workspace-dev.london.cloudapps.digital',
+)
+NEW_ASSET_PATH = "static.workspace.trade.gov.uk"
+
+AUTHOR_TO_BE_SUBSTITUTED = env("AUTHOR_TO_BE_SUBSTITUTED")
+AUTHOR_SUBSTITUTED = env("AUTHOR_SUBSTITUTED")
 
 WAGTAILIMAGES_IMAGE_FORM_BASE = 'myapp.forms.MyImageBaseForm'
 

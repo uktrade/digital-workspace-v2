@@ -109,6 +109,10 @@ class ClamAVFileUploadHandler(FileUploadHandler):
                 scanned_file.av_passed = False
                 scanned_file.av_reason = json_response["reason"]
                 scanned_file.save()
+                logger.error(
+                    f"Malware found in user uploaded file "
+                    f"'{self.file_name}', exiting upload process"
+                )
                 raise VirusFoundInFileException()
 
             scanned_file.av_passed = True

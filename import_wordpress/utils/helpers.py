@@ -1,8 +1,5 @@
-import io
-import os
 import re
 import boto3
-from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 
@@ -10,10 +7,9 @@ from htmllaundry import sanitize
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.files.images import ImageFile
 
 from wagtail.core.models import Page
-from wagtail.images.models import Image
+from wagtail.images.models import Image as WagtailImage
 
 from working_at_dit.models import Topic, PageTopic
 
@@ -28,40 +24,11 @@ legacy_s3 = boto3.client(
 UserModel = get_user_model()
 
 
-legacy_domains = [
-    'digital-workspace-staging.london.cloudapps.digital',
-    'api.workspace.trade.uat.uktrade.io',
-    'admin.workspace.trade.uat.uktrade.io',
-    'admin.workspace.trade.gov.uk',
-    'digital-workspace-dev.london.cloudapps.digital',
-    'dit.useconnect.co.uk',
-]
-
-asset_domain = "workspace-trade-gov-uk.s3.eu-west-2.amazonaws.com"
-
-
-def convert_domain(src_value):
-    for legacy_domain in legacy_domains:
-        src_value = src_value.replace(legacy_domain, asset_domain)
-
-    return src_value
-
-
 def is_live(status):
     if status == "publish":
         return True
 
     return False
-
-
-def download_legacy_s3_file(file_name):
-    s3_response_object = legacy_s3.get_object(
-        Bucket=settings.LEGACY_AWS_STORAGE_BUCKET_NAME,
-        Key=file_name,
-    )
-    object_content = s3_response_object['Body'].read()
-
-    return object_content
 
 
 def replace_caption(match):
@@ -73,6 +40,24 @@ def replace_caption(match):
 
     img_string = f'{parts[0]} data-caption="{parts[1].strip()}" />'
     return img_string
+
+
+def replace_video(match):
+    video_details = re.findall('^.*mp4="(.*)".* poster="(.*)"', match.group(1))
+    video_url = video_details[0]
+    poster = video_details[1]
+
+    video_string = f"""
+    <video preload="meta" controls class="ws-streamfield-content__media" poster="{poster}">
+        <source src="{video_url}" type="video/mp4" />
+        <p class="govuk-body">
+            Video file:
+            <a href="{video_url}">Download</a>
+        </p>
+    </video>
+    """
+
+    return video_string
 
 
 def add_paragraph_tags(content):
@@ -91,36 +76,18 @@ def add_paragraph_tags(content):
     return tidied
 
 
-def create_image(image_url, file_name, title):
-    if not settings.IMPORT_IMAGES:
-        return None
-
-    s3_path = image_url.split("?")[0].replace(
-        "https://workspace-trade-gov-uk.s3.eu-west-2.amazonaws.com/",
-        "",
-    )
-
-    s3_bytes = download_legacy_s3_file(s3_path)
-    image_bytes = io.BytesIO(s3_bytes)
-
-    image = Image(
-        file=ImageFile(image_bytes, name=file_name),
-        title=title,
-    )
-    image.save()
-    return image
+def get_asset_path(get_asset_path):
+    return re.findall(
+        "https://static.workspace.trade.gov.uk/(.*)\?",
+        get_asset_path
+    )[0]
 
 
-def create_preview_image(attachments, attachment_id):
+def get_preview_image(attachments, attachment_id):
     attachment_url = attachments[attachment_id]["attachment_url"]
-    parsed_url = urlparse(attachment_url)
-    file_name = os.path.basename(parsed_url.path)
+    asset_path = get_asset_path(attachment_url)
 
-    return create_image(
-        attachment_url,
-        file_name,
-        attachments[attachment_id]["title"],
-    )
+    return WagtailImage.objects.filter(file=asset_path)
 
 
 def get_slug(slug, counter=1):
@@ -142,8 +109,8 @@ def get_author(item):
     author = None
 
     # Exceptions to general pattern
-    if item["creator"] == "DavidMatthews":
-        item["creator"] = "David.Matthews"
+    if item["creator"] == settings.AUTHOR_TO_BE_SUBSTITUTED:
+        item["creator"] = settings.AUTHOR_SUBSTITUTED
 
     for domain in domains:
         author_email = f'{item["creator"].lower()}@{domain}'

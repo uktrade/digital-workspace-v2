@@ -20,7 +20,7 @@ from import_wordpress.parser.block_content import (
 )
 
 from import_wordpress.utils.helpers import (
-    create_preview_image,
+    get_preview_image,
     is_live,
     get_slug,
     get_author,
@@ -120,37 +120,23 @@ def create_news_page(
     if "excerpt" in news_item:
         excerpt = news_item["excerpt"]
 
-    from django.conf import settings
+    if "preview_image_id" in news_item:
+        preview_image = get_preview_image(
+            attachments,
+            news_item["preview_image_id"],
+        )
 
-    if settings.IMPORT_IMAGES:
-        if "preview_image_id" in news_item:
-            preview_image = create_preview_image(
-                attachments,
-                news_item["preview_image_id"],
-            )
-
-            content_page = NewsPage(
-                first_published_at=news_item["pub_date"],
-                last_published_at=news_item["post_date"],
-                title=news_item["title"],
-                slug=slugify(path),
-                legacy_guid=news_item["guid"],
-                legacy_content=news_item["content"],
-                live=live,
-                preview_image=preview_image,
-                excerpt=excerpt,
-            )
-        else:
-            content_page = NewsPage(
-                first_published_at=news_item["pub_date"],
-                last_published_at=news_item["post_date"],
-                title=news_item["title"],
-                slug=slugify(path),
-                legacy_guid=news_item["guid"],
-                legacy_content=news_item["content"],
-                live=live,
-                excerpt=excerpt,
-            )
+        content_page = NewsPage(
+            first_published_at=news_item["pub_date"],
+            last_published_at=news_item["post_date"],
+            title=news_item["title"],
+            slug=slugify(path),
+            legacy_guid=news_item["guid"],
+            legacy_content=news_item["content"],
+            live=live,
+            preview_image=preview_image,
+            excerpt=excerpt,
+        )
     else:
         content_page = NewsPage(
             first_published_at=news_item["pub_date"],

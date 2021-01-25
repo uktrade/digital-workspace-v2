@@ -66,3 +66,7 @@ the bucket we need to iterate through the bucket content and create the relevant
 
 I am creating a managament command to do the above.
 
+## Migration process
+Run migrations
+Run management command to create Wagtail records for files within S3 bucket
+Run import logic (relies on asset records being in app DB)

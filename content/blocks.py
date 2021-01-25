@@ -151,7 +151,7 @@ class DataTableBlock(TableBlock):
         template = "blocks/table.html"
 
 
-class VideoBlock(blocks.StructBlock):
+class EmbedVideoBlock(blocks.StructBlock):
     """Only used for Video Card modals."""
     video = EmbedBlock(
         help_text="Paste a URL from Microsoft Stream or Youtube. Please "

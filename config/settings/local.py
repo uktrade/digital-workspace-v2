@@ -29,6 +29,7 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # STATIC_URL = "/static/"
 
 
+
 # s3chunkuploader
 FILE_UPLOAD_HANDLERS = (
     'file_upload_handler.clam_av.ClamAVFileUploadHandler',
@@ -37,75 +38,24 @@ FILE_UPLOAD_HANDLERS = (
 
 AV_SIGNATURE_SECRET_KEY = "secret key!!!"
 
-if LOG_TO_ELK:
-    class LogstashHTTPHandler(logging.Handler):
-        def emit(self, record):
-            log_entry = self.format(record)
-
-            return requests.post(
-                ELK_ADDRESS,
-                data='{}'.format(log_entry),
-                headers={
-                    "Content-type": "application/json"
-                },
-            ).content
-
-    LOGGING = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        "formatters": {
-            "ecs_formatter": {
-                "()": ECSFormatter,
-            },
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "stdout": {"class": "logging.StreamHandler", "stream": sys.stdout, },
+        "null": {"class": "logging.NullHandler", },
+    },
+    "root": {"handlers": ["stdout"], "level": os.getenv("ROOT_LOG_LEVEL", "INFO"), },
+    "loggers": {
+        "django": {
+            "handlers": ["stdout", ],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": True,
         },
-        'handlers': {
-            'stdout': {
-                'class': 'logging.StreamHandler',
-                'stream': sys.stdout,
-                'formatter': 'ecs_formatter',
-            },
-            'logstash': {
-                '()': LogstashHTTPHandler,
-                'formatter': 'ecs_formatter',
-            },
+        "django.server": {
+            "handlers": ["stdout", ],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": True,
         },
-        'loggers': {
-            'django.request': {
-                'handlers': ['stdout', 'logstash', ],
-                'level': 'WARNING',
-                'propagate': True,
-            },
-            'test': {
-                'handlers': ['stdout', 'logstash', ],
-                'level': 'DEBUG',
-                'propagate': True,
-            },
-        },
-    }
-else:
-    LOGGING = {
-        "version": 1,
-        "disable_existing_loggers": False,
-        'handlers': {
-            'stdout': {
-                'class': 'logging.StreamHandler',
-                'stream': sys.stdout,
-            },
-        },
-        'root': {
-            'handlers': ['stdout'],
-            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
-        },
-        'loggers': {
-            'django': {
-                'handlers': ['stdout', ],
-                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-                'propagate': True,
-            },
-            'forecast.import_csv': {
-                'handlers': ['stdout', ],
-                'level': 'INFO',
-                'propagate': True,
-            },
-        },
-    }
+    },
+}

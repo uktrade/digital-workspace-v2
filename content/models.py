@@ -94,27 +94,19 @@ class BasePage(Page):
         null=True,
     )
 
-    # def get_context(self, request, *args, **kwargs):
-    #     context = super().get_context(request, *args, **kwargs)
-    #     context["seen_cookie_banner"] = request.COOKIES.get(
-    #         'seen_cookie_banner'
-    #     )
-    #
-    #     return context
-    #
-    # def serve(self, request):
-    #     response = super().serve(request)
-    #
-    #     if not request.COOKIES.get(
-    #         'seen_cookie_banner'
-    #     ):
-    #         response.set_cookie(
-    #             'seen_cookie_banner',
-    #             1,
-    #             secure=False,
-    #         )
-    #
-    #     return response
+    def serve(self, request):
+        response = super().serve(request)
+
+        if not request.COOKIES.get(
+            'seen_cookie_banner'
+        ):
+            response.set_cookie(
+                'seen_cookie_banner',
+                1,
+                secure=False,
+            )
+
+        return response
 
 
 class ContentPage(BasePage):
@@ -154,19 +146,15 @@ class ContentPage(BasePage):
         )),
         ("image", blocks.ImageBlock()),
         # ("internal_media", blocks.InternalMediaBlock()),
-        ("video", blocks.VideoBlock(
-            help_text="""Video embedding"""
+        ("embed_video", blocks.EmbedVideoBlock(
+            help_text="""Embed a video"""
+        )),
+        ("media", blocks.InternalMediaBlock(
+            help_text="""Link to a media block"""
         )),
         ("data_table", blocks.DataTableBlock(
             help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
         )),
-        ('document_list', ListBlock(
-            StructBlock([
-                ('document', DocumentChooserBlock(
-                    help_text="Upload a document",
-                )),
-            ])
-        ))
     ])
 
     pinned_phrases = models.CharField(
