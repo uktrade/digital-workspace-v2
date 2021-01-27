@@ -3,13 +3,15 @@ from hmac import compare_digest
 
 from file_upload_handler.util import check_required_setting
 
-
-SECRET_KEY = check_required_setting("AV_SIGNATURE_SECRET_KEY")
 AUTH_SIZE = 16
 
 
 def sign(to_sign):
-    hashed = blake2b(digest_size=AUTH_SIZE, key=SECRET_KEY.encode())
+    secret_key = check_required_setting("AV_SIGNATURE_SECRET_KEY")
+    hashed = blake2b(
+        digest_size=AUTH_SIZE,
+        key=secret_key,
+    )
     hashed.update(to_sign)
     return hashed.hexdigest()
 
