@@ -113,7 +113,7 @@ LOCAL_APPS = [
     "country_fact_sheet",
     "import_wordpress",
     "file_upload_handler",
-    "user",
+    "user.apps.UserConfig",
 ]
 
 THIRD_PARTY_APPS = [
