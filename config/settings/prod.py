@@ -21,7 +21,7 @@ FILE_UPLOAD_HANDLERS = (
     'file_upload_handler.s3.S3FileUploadHandler',
 )  # Order is important
 
-AWS_DEFAULT_ACL = None
+#AWS_DEFAULT_ACL = None
 #AWS_S3_SIGNATURE_VERSION = 's3v4'
 
 # SECURE_BROWSER_XSS_FILTER = True
