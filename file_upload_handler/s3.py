@@ -22,10 +22,20 @@ class AbortS3UploadException(UploadFileException):
 
 
 # AWS
-AWS_ACCESS_KEY_ID = check_required_setting("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = check_required_setting("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = check_required_setting("AWS_STORAGE_BUCKET_NAME")
+AWS_ACCESS_KEY_ID = check_required_setting(
+    "AWS_ACCESS_KEY_ID",
+    "CHUNK_UPLOADER_AWS_ACCESS_KEY_ID",
+)
+AWS_SECRET_ACCESS_KEY = check_required_setting(
+    "AWS_SECRET_ACCESS_KEY",
+    "CHUNK_UPLOADER_AWS_SECRET_ACCESS_KEY",
+)
+AWS_STORAGE_BUCKET_NAME = check_required_setting(
+    "AWS_STORAGE_BUCKET_NAME",
+    "CHUNK_UPLOADER_AWS_STORAGE_BUCKET_NAME",
+)
 AWS_REGION = getattr(settings, "AWS_REGION", None)
+S3_ROOT_DIRECTORY = getattr(settings, "CHUNK_UPLOADER_S3_ROOT_DIRECTORY", None)
 S3_MIN_PART_SIZE = 5 * 1024 * 1024
 
 ADD_TIMESTAMP_TO_OBJECT_NAME = getattr(
@@ -44,6 +54,9 @@ if (
         "You must use S3Boto3Storage or a class that "
         "inherits from it with this file handler"
     )
+
+if S3_ROOT_DIRECTORY and not S3_ROOT_DIRECTORY.endswith("/"):
+    S3_ROOT_DIRECTORY = f"{S3_ROOT_DIRECTORY}/"
 
 
 # TODO - check to see if boto3 client needs reuse logic like in original
@@ -102,7 +115,7 @@ class S3FileUploadHandler(FileUploadHandler):
         super().new_file(*args, **kwargs)
         extension = pathlib.Path(self.file_name).suffix
         time_stamp = f'{timezone.now().strftime("%Y%m%d%H%M%S")}'
-        self.new_file_name = f"{self.file_name.replace(extension, '')}_{time_stamp}{extension}"
+        self.new_file_name = f"{S3_ROOT_DIRECTORY}{self.file_name.replace(extension, '')}_{time_stamp}{extension}"
 
         self.s3_client = boto3_client(
             's3',

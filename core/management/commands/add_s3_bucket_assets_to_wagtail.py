@@ -1,7 +1,7 @@
 import hashlib
 import boto3
 import os
-from datetime import datetime
+from datetime import datetime, date
 
 from PIL import Image
 from io import BytesIO
@@ -11,8 +11,6 @@ from wagtailmedia.models import Media as WagtailMedia
 from wagtail.images.models import Image as WagtailImage
 from wagtail.documents.models import Document as WagtailDocument
 from wagtail.core.models import Collection
-
-from taggit.models import Tag
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -47,7 +45,7 @@ MEDIA_EXTENSIONS = (
 DOCUMENT_SQL_TEMPLATE = """
 INSERT INTO public.wagtaildocs_document(
     title, file, created_at, uploaded_by_user_id, collection_id, file_size, file_hash)
-    VALUES (`{1}`, {2}, {3}, {3}, 1, {4}, {5});
+    VALUES ('{0}', '{1}', '{2}', {3}, {4}, {5}, '{6}');
 """
 
 IMG_SQL_TEMPLATE = """
@@ -58,11 +56,15 @@ INSERT INTO public.wagtailimages_image(
 
 MEDIA_SQL_TEMPLATE = """
 INSERT INTO public.wagtailmedia_media(
-    title, file, type, duration, created_at, collection_id, uploaded_by_user_id)
-    VALUES (?, ?, ?, 1000, ?, ?, ?);
+    title, file, type, duration, created_at, collection_id, uploaded_by_user_id, thumbnail)
+    VALUES ('{0}', '{1}', '{2}', 1000, '{3}', {4}, {5}, '/assets/images/preview.png');
 """
 
 User = get_user_model()
+
+
+class ErrorCreatingAssetException(Exception):
+    pass
 
 
 class AssetAlreadyExistsException(Exception):
@@ -77,7 +79,7 @@ def get_month_year(key):
     # wp-content/uploads/2021/01/
     try:
         parts = key.split("/")
-        target_date = datetime.date(parts[2], parts[3], 1).strftime('%B')
+        target_date = date(int(parts[2]), int(parts[3]), 1)
         return target_date.strftime("%b"), target_date.year,
     except:
         raise ErrorGettingYearMonthException()
@@ -106,22 +108,24 @@ def create_image_record(
             key,
             img.width,
             img.height,
-            datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             user.id,
             file_size,
             collection_id,
             file_hash,
         )
+        print(image_sql)
         cursor.execute(image_sql)
     except Exception as ex:
         print("COULD NOT PROCESS IMAGE, ex: ", ex)
+        raise ErrorCreatingAssetException()
 
     # Create tags
     image = WagtailImage.objects.filter(
         file=key
     ).first()
 
-    image.tags.add(month)
+    image.tags.add(str(month))
 
 
 def create_document_record(
@@ -143,7 +147,7 @@ def create_document_record(
         document_sql = DOCUMENT_SQL_TEMPLATE.format(
             file_name,
             key,
-            datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             user.id,
             collection_id,
             file_size,
@@ -151,14 +155,15 @@ def create_document_record(
         )
         cursor.execute(document_sql)
     except Exception as ex:
-        print("COULD NOT PROCESS IMAGE, ex: ", ex)
+        print("COULD NOT PROCESS DOCUMENT, ex: ", ex)
+        raise ErrorCreatingAssetException()
 
     # Create tags
     document = WagtailDocument.objects.filter(
         file=key
     ).first()
 
-    document.tags.add(month)
+    document.tags.add(str(month))
 
 
 def create_media_record(
@@ -179,20 +184,21 @@ def create_media_record(
             file_name,
             key,
             "video",
-            datetime.now().strftime("%Y-%m-%d, %H:%M:%S"),
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             collection_id,
             user.id,
         )
         cursor.execute(media_sql)
     except Exception as ex:
-        print("COULD NOT PROCESS IMAGE, ex: ", ex)
+        print("COULD NOT PROCESS MEDIA RECORD, ex: ", ex)
+        raise ErrorCreatingAssetException()
 
     # Create tags
     media = WagtailMedia.objects.filter(
         file=key
     ).first()
 
-    media.tags.add(month)
+    media.tags.add(str(month))
 
 
 class Command(BaseCommand):
@@ -221,16 +227,19 @@ class Command(BaseCommand):
                 )
                 file_data = obj.get()['Body'].read()
 
+                if len(file_data) == 0:  # it's a "folder"
+                    continue
+
                 file_hash = hashlib.sha1(file_data).hexdigest()
                 file_name = os.path.basename(bucket_object.key)
 
-                year, month = get_month_year(bucket_object.key)
+                month, year = get_month_year(bucket_object.key)
 
                 collection = Collection.objects.filter(name=year).first()
 
                 if not collection:
                     root_collection = Collection.get_first_root_node()
-                    collection = root_collection.add_child(name=year)
+                    collection = root_collection.add_child(name=str(year))
 
                 try:
                     if bucket_object.key.endswith(IMG_EXTENSIONS):
