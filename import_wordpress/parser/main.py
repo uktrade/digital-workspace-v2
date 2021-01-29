@@ -32,7 +32,19 @@ namespaces = settings.NAMESPACES
 
 UserModel = get_user_model()
 
+# Replace asset paths
 xml_file = os.path.join(settings.BASE_DIR, "wordpress.xml")
+
+with open(xml_file, 'r+') as f:
+    text = f.read()
+    for asset_path in settings.OLD_ASSET_PATHS:
+        text = text.replace(
+            asset_path,
+            settings.NEW_ASSET_PATH,
+        )
+    f.seek(0)
+    f.write(text)
+    f.truncate()
 
 counter = 0
 

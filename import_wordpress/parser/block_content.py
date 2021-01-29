@@ -35,13 +35,6 @@ def prep_content(content):
         content,
     )
 
-    # Update path in asset URLs
-    for old_asset_path in settings.OLD_ASSET_PATHS:
-        content = content.replace(
-            old_asset_path,
-            settings.NEW_ASSET_PATH,
-        )
-
     # Clean up strong tags
     return re.sub("(<\/strong>\s*<strong>)", "", content)
 
@@ -67,26 +60,30 @@ def unfurl_tag(tag):
 
 
 def process_image(img):
-    img_classes = img["class"]
-    alt = None
-    caption = None
+    try:
+        img_classes = img["class"]
+        alt = None
+        caption = None
 
-    if img.has_attr("alt"):
-        alt = img["alt"]
+        if img.has_attr("alt"):
+            alt = img["alt"]
 
-    if img.has_attr("data-caption"):
-        caption = img["data-caption"]
+        if img.has_attr("data-caption"):
+            caption = img["data-caption"]
 
-    for img_class in img_classes:
-        # Check for reference to attachment
-        if img_class.startswith("wp-image-"):
-            attachment_id = img_class.replace("wp-image-", "")
-            attachment_url = wp_attachments[attachment_id]["attachment_url"]
-            parsed_url = urlparse(attachment_url)
-            s3_key = get_asset_path(parsed_url)
+        for img_class in img_classes:
+            # Check for reference to attachment
+            if img_class.startswith("wp-image-"):
+                attachment_id = img_class.replace("wp-image-", "")
+                attachment_url = wp_attachments[attachment_id]["attachment_url"]
+                parsed_url = urlparse(attachment_url)
+                s3_key = get_asset_path(parsed_url)
 
-            image = WagtailImage.objects.filter(file=s3_key)
-            return image, alt, caption
+                image = WagtailImage.objects.filter(file=s3_key)
+                return image, alt, caption
+
+    except Exception as ex:
+        print(f"Error creating image record, ex: {ex}")
 
     return None, None, None
 

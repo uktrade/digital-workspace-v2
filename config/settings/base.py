@@ -373,6 +373,7 @@ OLD_ASSET_PATHS = (
     'api.workspace.trade.uat.uktrade.io',
     'admin.workspace.trade.uat.uktrade.io',
     'digital-workspace-dev.london.cloudapps.digital',
+    'workspace-trade-gov-uk.s3.eu-west-2.amazonaws.com',
 )
 NEW_ASSET_PATH = "static.workspace.trade.gov.uk"
 
@@ -397,16 +398,16 @@ if 'redis' in VCAP_SERVICES:
 else:
     CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": CELERY_BROKER_URL,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-        "KEY_PREFIX": "wp_"
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": CELERY_BROKER_URL,
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient"
+#         },
+#         "KEY_PREFIX": "wp_"
+#     }
+# }
 
 # Twitter
 TWITTER_ACCESS_TOKEN = env("TWITTER_ACCESS_TOKEN")

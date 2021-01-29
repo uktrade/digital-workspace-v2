@@ -49,10 +49,10 @@ services:
      - .:/app
    depends_on:
      - db
-     - redis
+#     - redis
    environment:
      - DJANGO_SETTINGS_MODULE=config.settings.local
- redis:
-   image: redis:buster
-   ports:
-     - "6379:6379"
+# redis:
+#   image: redis:buster
+#   ports:
+#     - "6379:6379"

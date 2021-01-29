@@ -12,7 +12,7 @@ AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
 DEFAULT_FILE_STORAGE = "core.asset_storage.AssetStorage"
 
 AWS_S3_URL_PROTOCOL = "https"
-AWS_S3_CUSTOM_DOMAIN = "digital-workspace-s3proxy-staging.london.cloudapps.digital"
+AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
 #AWS_S3_CUSTOM_DOMAIN = "assets.workspace.trade.uat.uktrade.io"
 AWS_QUERYSTRING_AUTH = True
 

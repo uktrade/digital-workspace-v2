@@ -64,9 +64,10 @@ for that asset uses the SSO authenticated service at static.workspace.trade.gov.
 In order to make Wagtail images, document, video record aware of the content of
 the bucket we need to iterate through the bucket content and create the relevant records.
 
-I am creating a managament command to do the above.
+I am creating a management command to do the above.
 
-## Migration process
-Run migrations
-Run management command to create Wagtail records for files within S3 bucket
-Run import logic (relies on asset records being in app DB)
+## Migration process (assumes access to old system is maintained for reference)
+Run migrations (5 mins)
+Run management command to create Wagtail records for files within S3 bucket (4 hrs)
+Run import logic (relies on asset records being in app DB) (1 hr)
+Create manual items - quick links, What's Popular, How to list

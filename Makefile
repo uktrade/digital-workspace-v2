@@ -70,7 +70,7 @@ import:
 	docker-compose down
 	docker-compose up -d
 	docker-compose exec wagtail python manage.py migrate
-	docker-compose exec wagtail python manage.py fixtree
+	#docker-compose exec wagtail python manage.py add_s3_bucket_assets_to_wagtail
 	docker-compose exec wagtail python manage.py create_section_homepages
 	docker-compose exec wagtail python manage.py import_wordpress
 	docker-compose exec wagtail python manage.py create_menus

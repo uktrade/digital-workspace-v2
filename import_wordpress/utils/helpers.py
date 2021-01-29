@@ -13,13 +13,6 @@ from wagtail.images.models import Image as WagtailImage
 
 from working_at_dit.models import Topic, PageTopic
 
-legacy_s3 = boto3.client(
-    's3',
-    #region_name=settings.LEGACY_AWS_S3_REGION_NAME,
-    aws_access_key_id=settings.LEGACY_AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.LEGACY_AWS_SECRET_ACCESS_KEY,
-)
-
 
 UserModel = get_user_model()
 
@@ -77,6 +70,8 @@ def add_paragraph_tags(content):
 
 
 def get_asset_path(get_asset_path):
+    print("get_asset_path")
+    print(get_asset_path)
     return re.findall(
         "https://static.workspace.trade.gov.uk/(.*)\?",
         get_asset_path
@@ -84,10 +79,14 @@ def get_asset_path(get_asset_path):
 
 
 def get_preview_image(attachments, attachment_id):
-    attachment_url = attachments[attachment_id]["attachment_url"]
-    asset_path = get_asset_path(attachment_url)
+    try:
+        attachment_url = attachments[attachment_id]["attachment_url"]
+        asset_path = get_asset_path(attachment_url)
 
-    return WagtailImage.objects.filter(file=asset_path)
+        return WagtailImage.objects.filter(file=asset_path)
+    except Exception as ex:
+        print(f"Exception when calling 'get_preview_image' ex:'{ex}'")
+        return None
 
 
 def get_slug(slug, counter=1):
