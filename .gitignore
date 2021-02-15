@@ -1,0 +1,41 @@
+.DS_Store
+*.pyc
+*.log
+*.swp
+*.retry
+.env
+*~
+/logs
+/data
+.~*
+common/CACHE
+__pycache__
+!.gitignore
+
+/node_modules
+npm-debug.log*
+
+webpack-stats.json
+/assets/webpack_bundles
+
+static/*
+media/
+
+# Wordpress output
+wordpress.xml
+wordpress_all.xml
+wordpress_part.xml
+
+# IDE
+.idea/
+
+# Libs
+src/wpparser/
+
+# Misc
+country_factsheet.xml
+country_factsheet.docx
+backup_file.backup
+backup_file_dev.backup
+backup.sql
+backup.dump

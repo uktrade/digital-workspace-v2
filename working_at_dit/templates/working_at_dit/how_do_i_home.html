@@ -1,0 +1,16 @@
+{% extends "1_col_content.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+    <h1 class="govuk-heading-l">{{ page.title }}</h1>
+    {% for block in page.body %}
+        {% include_block block %}
+    {% endfor %}
+    <ul class="govuk-list">
+        {% for how_do_i_page in how_do_i_pages %}
+            <li>
+                <a class="govuk-link" href="{% pageurl how_do_i_page %}">{{ how_do_i_page.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
