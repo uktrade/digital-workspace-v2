@@ -1,0 +1,19 @@
+# Constrain to base requirements
+-r ../requirements/base.txt
+
+# Development tools
+pip-tools
+
+# Linting & security checking
+flake8>=3.8.3,<4
+flake8-bandit
+flake8-blind-except
+flake8-bugbear
+flake8-debugger
+flake8-import-order
+flake8-print
+flake8-quotes
+flake8-string-format
+pep8-naming
+pydocstyle
+black

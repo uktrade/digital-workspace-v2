@@ -1,0 +1,20 @@
+
+.pagination {
+  margin: 40px 0;
+  .previous {
+    float: left;
+    margin-right: 10px;
+  }
+  .next {
+    float: left;
+  }
+  .page-links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    li {
+      float: left;
+      margin-right: 10px;
+    }
+  }
+}

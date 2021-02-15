@@ -1,0 +1,21 @@
+
+.category-lead-story {
+  background-color: govuk-colour("light-grey");
+  padding: 20px;
+  margin-bottom: 20px;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.news-items {
+    h2 {
+        margin-bottom: 0;
+    }
+
+    p {
+        margin-bottom: 0;
+    }
+}

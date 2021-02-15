@@ -1,0 +1,45 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.9.0
+        environment:
+          DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
+          DJANGO_SETTINGS_MODULE: config.settings.ci
+          SECRET_KEY: used_for_testing
+          ALLOWED_HOSTS: "*"
+      - image: circleci/postgres:11-postgis-ram
+        environment:
+          POSTGRES_USER: ubuntu
+          POSTGRES_DB: dw_test
+          POSTGRES_PASSWORD: ""
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+      - run:
+          name: Install Python deps
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements/dev.txt
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
+      - run:
+          name: Run black
+          command: |
+            . venv/bin/activate
+            black trade_remedies_api --check
+      - run:
+          name: Run Flake8
+          command: |
+            . venv/bin/activate
+            python -m flake8

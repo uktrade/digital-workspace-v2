@@ -1,0 +1,122 @@
+.DEFAULT: help
+
+help:
+	@echo "Workspace Makefile"
+	@echo "------------------"
+	@echo
+	@echo "make lint"
+	@echo "    Runs linters"
+	@echo
+	@echo "make clean"
+	@echo "    Removes compiled artefacts"
+	@echo
+
+flake8:
+	docker-compose run --rm flake8
+
+clean:
+	npm run clean
+	find . -name '__pycache__' -exec rm -rf {} +
+
+makemigrations:
+	docker-compose run --rm wagtail python manage.py makemigrations
+
+migrations:
+	docker-compose run --rm wagtail python manage.py makemigrations
+
+migrate:
+	docker-compose run --rm wagtail python manage.py migrate
+
+compilescss:
+	docker-compose run --rm wagtail python manage.py compilescss
+
+test:
+	docker-compose run --rm wagtail python manage.py test $(test) --keepdb
+
+shell:
+	docker-compose run --rm wagtail python manage.py shell
+
+flake8:
+	docker-compose run --rm wagtail flake8
+
+black:
+	docker-compose run --rm wagtail black .
+
+up:
+	docker-compose up
+
+down:
+	docker-compose down
+
+build:
+	docker-compose build
+
+elevate:
+	docker-compose run --rm wagtail python manage.py elevate_sso_user_permissions
+
+collectstatic:
+	docker-compose run --rm wagtail python manage.py collectstatic
+
+bash:
+	docker-compose run --rm wagtail bash
+
+all-requirements:
+	pip-compile --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
+	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
+
+superuser:
+	docker-compose run --rm wagtail python manage.py migrate
+	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')" | docker-compose run --rm wagtail python manage.py shell
+
+import:
+	docker-compose down
+	docker-compose up -d
+	docker-compose exec wagtail python manage.py migrate
+	#docker-compose exec wagtail python manage.py add_s3_bucket_assets_to_wagtail
+	#docker-compose exec wagtail python manage.py create_section_homepages
+	docker-compose exec wagtail python manage.py import_wordpress
+	docker-compose exec wagtail python manage.py create_menus
+	docker-compose run --rm wagtail python manage.py create_groups
+	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
+	docker-compose stop wagtail
+	docker-compose up
+
+restore_test_db:
+	docker-compose stop db
+	docker-compose up -d db
+	dropdb -h localhost -U postgres digital_workspace
+	createdb -h localhost -U postgres digital_workspace
+	pg_restore -h localhost -U postgres --dbname=digital_workspace --verbose backup_file.backup
+	docker-compose exec wagtail python manage.py migrate
+
+import_test:
+	docker-compose stop db
+	docker-compose up -d db
+	dropdb -h localhost -U postgres digital_workspace
+	createdb -h localhost -U postgres digital_workspace
+	pg_restore -h localhost -U postgres --dbname=digital_workspace --verbose backup_file.backup
+	docker-compose exec wagtail python manage.py migrate
+	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
+	docker-compose run --rm wagtail python manage.py fixtree
+	docker-compose exec wagtail python manage.py import_wordpress
+	docker-compose exec wagtail python manage.py create_menus
+	docker-compose run --rm wagtail python manage.py create_groups
+
+add_s3_assets:
+	docker-compose exec wagtail python manage.py add_s3_bucket_assets_to_wagtail
+
+fixtree:
+	docker-compose run --rm wagtail python manage.py fixtree
+
+menus:
+	docker-compose run --rm wagtail python manage.py create_menus
+
+index:
+	docker-compose run --rm wagtail python manage.py update_index
+
+listlinks:
+	docker-compose run --rm wagtail python manage.py list_links
+
+groups:
+	docker-compose run --rm wagtail python manage.py create_groups

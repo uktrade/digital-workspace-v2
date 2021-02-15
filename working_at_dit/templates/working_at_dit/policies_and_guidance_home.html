@@ -1,0 +1,10 @@
+{% extends "1_col_content.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+    <h1 class="govuk-heading-l">{{ page.title }}</h1>
+    {% include "includes/attribution.html" with page=page %}
+    {% for block in page.body %}
+        {% include_block block %}
+    {% endfor %}
+{% endblock %}
