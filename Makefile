@@ -52,7 +52,7 @@ build:
 	docker-compose build
 
 elevate:
-	docker-compose run --rm wagtail python manage.py elevate_sso_user_permissions
+	docker-compose run --rm wagtail python manage.py elevate_sso_user_permissions --email=$(email)
 
 collectstatic:
 	docker-compose run --rm wagtail python manage.py collectstatic
