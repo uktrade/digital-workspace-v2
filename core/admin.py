@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 
-class DigitialWorkspaceAdminSite(AdminSite):
+class DigitalWorkspaceAdminSite(AdminSite):
     site_header = "Digital Workspace Administration"
 
     def login(self, request, extra_context=None):
@@ -18,4 +18,4 @@ class DigitialWorkspaceAdminSite(AdminSite):
         return HttpResponseRedirect("/")
 
 
-admin_site = DigitialWorkspaceAdminSite(name="dw_admin")
+admin_site = DigitalWorkspaceAdminSite(name="dw_admin")
