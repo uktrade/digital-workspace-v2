@@ -1,6 +1,6 @@
 # Wagtail
 wagtail>=2.12
-wagtailmedia>=0.5.0,<0.6
+wagtailmedia
 wagtailmenus>=2.8.0
 wagtail-draftail-anchors>=0.2.0
 
