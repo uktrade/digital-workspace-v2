@@ -118,10 +118,11 @@ THIRD_PARTY_APPS = [
 ]
 
 WAGTAIL_APPS = [
+    "modelcluster",
+    "taggit",
+
     "wagtail.contrib.forms",
-    "wagtail.contrib.postgres_search",
     "wagtail.contrib.redirects",
-    "wagtail.contrib.table_block",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -131,10 +132,6 @@ WAGTAIL_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail.core",
-    "wagtail.contrib.routable_page",
-    "wagtail.contrib.modeladmin",
-    "modelcluster",
-    "taggit",
     "wagtailmedia",
     "wagtailmenus",
     "wagtail_draftail_anchors",
@@ -160,7 +157,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "wagtail.core.middleware.SiteMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "core.middleware.GetPeoplefinderProfileMiddleware",
@@ -231,7 +227,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "https://static.workspace.trade.gov.uk/wp-content/"
 
 # Configure Wagtail
-WAGTAIL_SITE_NAME = "workspace"
+WAGTAIL_SITE_NAME = "Digital Workspace"
 
 WAGTAILSEARCH_BACKENDS = {
     "default": {"BACKEND": "wagtail.contrib.postgres_search.backend"}
