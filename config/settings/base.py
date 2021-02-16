@@ -120,7 +120,6 @@ THIRD_PARTY_APPS = [
 WAGTAIL_APPS = [
     "modelcluster",
     "taggit",
-
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -213,9 +212,7 @@ STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 ]
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "assets")
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets")]
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
