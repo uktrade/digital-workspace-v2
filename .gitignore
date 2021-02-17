@@ -39,3 +39,4 @@ backup_file.backup
 backup_file_dev.backup
 backup.sql
 backup.dump
+backup_s3_asset_only.backup
