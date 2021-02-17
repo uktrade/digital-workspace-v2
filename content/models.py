@@ -22,8 +22,6 @@ from content.utils import manage_excluded, manage_pinned
 User = get_user_model()
 
 RICH_TEXT_FEATURES = [
-    "bold",
-    "italic",
     "ol",
     "ul",
     "link",
@@ -140,18 +138,6 @@ class ContentPage(BasePage):
         ]
     )
 
-    footer_documents = StreamField(
-        [
-            (
-                "footer_document_list_item",
-                DocumentChooserBlock(
-                    help_text="""Show a list of documents at the end of the page""",
-                ),
-            ),
-        ],
-        blank=True,
-    )
-
     pinned_phrases = models.CharField(
         blank=True,
         null=True,
@@ -208,7 +194,6 @@ class ContentPage(BasePage):
 
     content_panels = Page.content_panels + [
         StreamFieldPanel("body"),
-        StreamFieldPanel("footer_documents"),
     ]
 
     promote_panels = [
