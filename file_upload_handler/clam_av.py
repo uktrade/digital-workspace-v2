@@ -2,7 +2,7 @@ import json
 import logging
 import pathlib
 from base64 import b64encode
-from http.client import HTTPConnection
+from http.client import HTTPConnection, HTTPSConnection
 
 from django.conf import settings
 from django.core.files.uploadhandler import FileUploadHandler, UploadFileException
@@ -48,8 +48,8 @@ class ClamAVFileUploadHandler(FileUploadHandler):
             self.skip_av_check = True
             return
 
-        self.av_conn = HTTPConnection(
-            CLAM_AV_URL,
+        self.av_conn = HTTPSConnection(
+            host=CLAM_AV_URL,
         )
 
         credentials = b64encode(
