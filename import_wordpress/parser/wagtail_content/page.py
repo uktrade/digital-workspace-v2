@@ -1,6 +1,7 @@
 import abc
 import json
 import logging
+from abc import ABC
 from urllib.parse import urlparse
 
 from django.conf import settings
@@ -8,11 +9,11 @@ from django.contrib.auth import get_user_model
 from django.template.defaultfilters import slugify
 from wagtail.core.models import Page
 from wagtail.documents.models import Document as WagtailDocument
+from wagtail.images.models import Image as WagtailImage
 
 from import_wordpress.parser.block_content import (
     parse_into_blocks,
 )
-from working_at_dit.models import HowDoI, HowDoIHome
 from working_at_dit.models import PageTopic, Topic
 
 
@@ -34,12 +35,16 @@ ARCHIVE_STR_LIST = (
 )
 
 
-class WPPage:
-    def __init__(self, path, page_content, attachments):
+class WPPage(ABC):
+    def __init__(self, page_content, path=None, attachments=[]):
+        logger.info(f"Creating page with path: {path}")
         self.path = path
         self.page_content = page_content
         self.attachments = attachments
         self.wagtail_page = None
+
+        if not self.live:
+            logger.warning("Page is not live")
 
     @property
     def archived(self):
@@ -104,21 +109,21 @@ class WPPage:
 
         return author
 
-    def set_topics(content, page):
+    def set_topics(self):
         # Set relationship with Topic pages
-        if "topics" in content:
-            for wp_topic in content["topics"]:
+        if "topics" in self.page_content:
+            for wp_topic in self.page_content["topics"]:
                 topic = Topic.objects.filter(title=wp_topic["name"]).first()
 
                 if not topic:  #  Some topics have been archived
-                    logger.warning(f'SKIPPED TOPIC: "{wp_topic["name"]}" for page "{page}"')
+                    logger.warning(f'SKIPPED TOPIC: "{wp_topic["name"]}" for page "{self.wagtail_page}"')
                     continue
 
                 PageTopic.objects.get_or_create(
                     topic=topic,
-                    page=page,
+                    page=self.wagtail_page,
                 )
-                page.save()
+                self.wagtail_page.save()
 
     def assign_documents(self):
         for document_file_post_id in self.page_content["document_files"]:
@@ -141,6 +146,16 @@ class WPPage:
                             document.title = title
                             document.save()
 
+    def get_preview_image(self, attachment_id):
+        try:
+            attachment_url = self.attachments[attachment_id]["attachment_url"]
+            parsed = urlparse(attachment_url)
+
+            return WagtailImage.objects.filter(file=parsed.path[1:]).first()
+        except Exception:
+            logger.error("Exception when calling 'get_preview_image'", exc_info=True)
+            return None
+
     def get_slug(self, slug, counter=1):
         page_with_slug = Page.objects.filter(slug=slug).first()
 
@@ -162,7 +177,7 @@ class WPPage:
     def post_create(self):
         parent = self.get_parent()
 
-        if self.page_content["excerpt"]:
+        if "excerpt" in self.page_content and self.page_content["excerpt"]:
             self.wagtail_page.excerpt = self.page_content["excerpt"]
 
         if "redirect_url" in self.page_content:
@@ -179,8 +194,8 @@ class WPPage:
 
             self.wagtail_page.body = json.dumps(block_content)
 
-        self.set_topics(self.page_content, self.wagtail_page)
-        self.assign_documents(self.wagtail_page, self.page_content, self.attachments)
+        self.set_topics()
+        self.assign_documents()
 
         self.wagtail_page.save()
 
@@ -196,10 +211,12 @@ class WPPage:
 
 
 class SectionHomepage(WPPage):
-    def __init__(self, path, page_content, content_class, attachments):
-        super(WPPage, self).__init__(path, page_content)
+    def __init__(self, page_content, content_class, path=None, attachments=[]):
+        super().__init__(page_content, path, attachments)
         self.content_class = content_class
-        self.attachments = attachments
+
+    def get_parent(self):
+        raise NotImplementedError()
 
     def create(self):
         self.wagtail_page = self.content_class.objects.filter(
@@ -221,7 +238,7 @@ class SectionHomepage(WPPage):
         )
 
         self.wagtail_page.body = json.dumps(block_content)
-        self.set_topics(self.page_content, self.wagtail_page)
+        self.set_topics()
 
         revision = self.wagtail_page.save_revision(
             user=self.author,
@@ -230,11 +247,17 @@ class SectionHomepage(WPPage):
         revision.publish()
         self.wagtail_page.save()
 
+        return self.wagtail_page
+
 
 class StandardPage(WPPage):
-    def __init__(self, path, page_content, content_class):
-        super(WPPage, self).__init__(path, page_content)
+    def __init__(self, page_content, content_class, parent, path=None, attachments=[]):
+        super().__init__(page_content, path, attachments)
         self.content_class = content_class
+        self.parent_object = parent
+
+    def get_parent(self):
+        return self.parent_object
 
     def create(self):
         self.wagtail_page = self.content_class(
@@ -247,7 +270,9 @@ class StandardPage(WPPage):
             legacy_content=self.page_content["content"],
             live=self.live,
             pinned_phrases=self.pinned,
-            excluded_phrases=self.exclude,
+            excluded_phrases=self.excluded,
         )
         self.post_create()
+
+        return self.wagtail_page
 

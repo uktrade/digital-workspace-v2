@@ -6,8 +6,8 @@ from about_us.models import (
 )
 from content.models import ContentPage
 from import_wordpress.parser.wagtail_content.page import (
-    create_page,
-    populate_section_homepage,
+    SectionHomepage,
+    StandardPage,
 )
 from networks.models import (
     Network,
@@ -88,12 +88,12 @@ def populate_page(path, items):
     page_data = get_page_data(path, items)
 
     if page_type_key == path:
-        return populate_section_homepage(
-            page_data,
-            page_types[page_type_key]["home_page_class"],
-            items["attachment"],
-            path,
-        )
+        return SectionHomepage(
+            page_content=page_data,
+            content_class=page_types[page_type_key]["home_page_class"],
+            attachments=items["attachment"],
+            path=path,
+        ).create()
 
     page = ContentPage.objects.filter(
         legacy_path=path,
@@ -102,10 +102,14 @@ def populate_page(path, items):
     if page:
         return page
 
-    return create_page(
-        page_data,
-        page_types[page_type_key]["page_class"],
-        parent,
-        path,
-        items["attachment"],
+    standard_page = StandardPage(
+        page_content=page_data,
+        content_class=page_types[page_type_key]["page_class"],
+        parent=parent,
+        path=path,
+        attachments=items["attachment"],
     )
+    if standard_page.live:
+        return standard_page.create()
+
+    return None

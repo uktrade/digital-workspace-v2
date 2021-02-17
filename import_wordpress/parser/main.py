@@ -11,13 +11,13 @@ from wagtail.core.models import Page
 
 from import_wordpress.parser.comments import get_comments
 from import_wordpress.parser.users import create_users
-from import_wordpress.parser.wagtail_content.how_do_i import create_how_do_i
-from import_wordpress.parser.wagtail_content.news import create_news_page
+from import_wordpress.parser.wagtail_content.how_do_i import HowDoIPage
+from import_wordpress.parser.wagtail_content.news import WagtailNewsPage
 from import_wordpress.parser.wagtail_content.policy_or_guidance import (
-    create_policy_or_guidance,
+    PolicyOrGuidancePage,
 )
 from import_wordpress.parser.wagtail_content.theme import create_theme
-from import_wordpress.parser.wagtail_content.topic import create_topic
+from import_wordpress.parser.wagtail_content.topic import TopicPage
 from import_wordpress.utils.orphans import (
     orphan_guidance,
     orphan_policy,
@@ -259,7 +259,6 @@ def parse_xml_file():
         processed_items.append(item)
 
     # Second step is to generate Wagtail content
-
     logger.info("Creating themes...")
 
     # Themes
@@ -272,16 +271,23 @@ def parse_xml_file():
 
     # Topics
     for key, _value in items["topic"].items():
-        create_topic(
-            items["topic"][key],
-            items["attachment"],
+        topic_page = TopicPage(
+            page_content=items["topic"][key],
+            attachments=items["attachment"],
         )
+        if topic_page.live:
+            topic_page.create()
 
     logger.info("Creating news...")
 
     # News
-    for key, _value in items["news"].items():
-        create_news_page(items["news"][key], items["attachment"])
+    # for key, _value in items["news"].items():
+    #     news_page = WagtailNewsPage(
+    #         page_content=items["news"][key],
+    #         attachments=items["attachment"],
+    #     )
+    #     if news_page.live:
+    #         news_page.create()
 
     # Page content
     for _key, value in items["page"].items():
@@ -295,16 +301,20 @@ def parse_xml_file():
 
     # How do I content
     for key, _value in items["howdoi"].items():
-        create_how_do_i(
-            items["howdoi"][key],
-            items["attachment"],
+        how_do_i = HowDoIPage(
+            page_content=items["howdoi"][key],
+            attachments=items["attachment"],
         )
+        if how_do_i.live:
+            how_do_i.create()
 
     logger.info("Creating policies and guidance...")
 
     # Policies and guidance
     for key, _value in items["policy"].items():
-        create_policy_or_guidance(
-            items["policy"][key],
-            items["attachment"],
+        policy_or_guidance = PolicyOrGuidancePage(
+            page_content=items["policy"][key],
+            attachments=items["attachment"],
         )
+        if policy_or_guidance.live:
+            policy_or_guidance.create()
