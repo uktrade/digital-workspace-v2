@@ -5,7 +5,6 @@ from base64 import b64decode
 import environ
 import sentry_sdk
 from django.urls import reverse_lazy
-from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # Set directories to be used across settings
@@ -122,6 +121,7 @@ WAGTAIL_APPS = [
     "taggit",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.table_block",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -131,6 +131,8 @@ WAGTAIL_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail.core",
+    "wagtail.contrib.routable_page",
+    "wagtail.contrib.modeladmin",
     "wagtailmedia",
     "wagtailmenus",
     "wagtail_draftail_anchors",
@@ -421,53 +423,6 @@ LOGGING = {
             ],
             "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),
             "propagate": True,
-        },
-    },
-}
-
-ENVIRONMENT_LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "ecs_formatter": {
-            "()": ECSFormatter,
-        },
-        "simple": {"format": "%(levelname)s %(message)s"},
-    },
-    "handlers": {
-        "ecs": {
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-            "formatter": "ecs_formatter",
-        },
-    },
-    "root": {
-        "handlers": [
-            "ecs",
-        ],
-        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
-    },
-    "loggers": {
-        "django": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
-            "propagate": False,
-        },
-        "django.server": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "ERROR"),
-            "propagate": False,
-        },
-        "django.db.backends": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": os.getenv("DJANGO_DB_LOG_LEVEL", "ERROR"),
-            "propagate": False,
         },
     },
 }
