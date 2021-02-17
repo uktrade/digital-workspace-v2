@@ -57,6 +57,9 @@ elevate:
 collectstatic:
 	docker-compose run --rm wagtail python manage.py collectstatic
 
+findstatic:
+	docker-compose run --rm wagtail python manage.py findstatic $(app)
+
 bash:
 	docker-compose run --rm wagtail bash
 

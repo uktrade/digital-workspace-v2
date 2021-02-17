@@ -216,7 +216,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
@@ -227,10 +227,6 @@ MEDIA_URL = "https://static.workspace.trade.gov.uk/wp-content/"
 
 # Configure Wagtail
 WAGTAIL_SITE_NAME = "Digital Workspace"
-
-WAGTAILSEARCH_BACKENDS = {
-    "default": {"BACKEND": "wagtail.contrib.postgres_search.backend"}
-}
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = False
 
