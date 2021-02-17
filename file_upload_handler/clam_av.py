@@ -3,6 +3,8 @@ import logging
 import pathlib
 from base64 import b64encode
 from http.client import HTTPConnection, HTTPSConnection
+# Check that HTTPSConnection is secure in the version of Python you are using
+# https://wiki.openstack.org/wiki/OSSN/OSSN-0033
 
 from django.conf import settings
 from django.core.files.uploadhandler import FileUploadHandler, UploadFileException
@@ -22,6 +24,7 @@ CLAM_AV_PASSWORD = check_required_setting("CLAM_AV_PASSWORD")
 CLAM_AV_URL = check_required_setting("CLAM_AV_URL")
 CLAM_PATH = getattr(settings, "CLAM_PATH", "/v2/scan-chunked")
 CLAM_AV_IGNORE_EXTENSIONS = getattr(settings, "CLAM_AV_IGNORE_EXTENSIONS", {})
+CLAM_USE_HTTP = getattr(settings, "CLAM_USE_HTTP", False)  # Do not use in production!
 
 
 class VirusFoundInFileException(UploadFileException):
@@ -48,9 +51,15 @@ class ClamAVFileUploadHandler(FileUploadHandler):
             self.skip_av_check = True
             return
 
-        self.av_conn = HTTPSConnection(
-            host=CLAM_AV_URL,
-        )
+        if CLAM_USE_HTTP:
+            self.av_conn = HTTPConnection(
+                host=CLAM_AV_URL,
+            )
+        else:
+            self.av_conn = HTTPSConnection(  # noqa S309
+                host=CLAM_AV_URL,
+                port=443,
+            )
 
         credentials = b64encode(
             bytes(
@@ -59,12 +68,16 @@ class ClamAVFileUploadHandler(FileUploadHandler):
             )
         ).decode("ascii")
 
-        self.av_conn.connect()
-        self.av_conn.putrequest("POST", CLAM_PATH)
-        self.av_conn.putheader("Content-Type", self.content_type)
-        self.av_conn.putheader("Authorization", f"Basic {credentials}")
-        self.av_conn.putheader("Transfer-encoding", "chunked")
-        self.av_conn.endheaders()
+        try:
+            self.av_conn.connect()
+            self.av_conn.putrequest("POST", CLAM_PATH)
+            self.av_conn.putheader("Content-Type", self.content_type)
+            self.av_conn.putheader("Authorization", f"Basic {credentials}")
+            self.av_conn.putheader("Transfer-encoding", "chunked")
+            self.av_conn.endheaders()
+        except Exception as ex:
+            logger.error("Error connecting to ClamAV service", exc_info=True)
+            raise AntiVirusServiceErrorException(ex)
 
     def receive_data_chunk(self, raw_data, start):
         if not self.skip_av_check:
