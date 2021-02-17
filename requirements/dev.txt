@@ -104,7 +104,7 @@ regex==2020.11.13         # via black
 requests-oauthlib==1.3.0  # via -r requirements.in/../requirements/base.txt, django-staff-sso-client, tweepy
 requests[socks]==2.23.0   # via -r requirements.in/../requirements/base.txt, requests-oauthlib, tweepy, wagtail
 s3transfer==0.3.3         # via -r requirements.in/../requirements/base.txt, boto3
-sentry-sdk==0.14.4        # via -r requirements.in/../requirements/base.txt
+sentry-sdk==0.20.2        # via -r requirements.in/../requirements/base.txt
 six==1.15.0               # via -r requirements.in/../requirements/base.txt, bandit, bleach, click-repl, cryptography, django-elasticsearch-dsl, django-extensions, elasticsearch-dsl, flake8-print, html5lib, htmllaundry, l18n, pip-tools, python-dateutil, tweepy
 smmap==3.0.4              # via gitdb
 snowballstemmer==2.0.0    # via pydocstyle

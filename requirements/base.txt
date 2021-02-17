@@ -78,7 +78,7 @@ redis==3.5.3              # via -r requirements.in/base.in, django-redis
 requests-oauthlib==1.3.0  # via django-staff-sso-client, tweepy
 requests[socks]==2.23.0   # via -r requirements.in/base.in, requests-oauthlib, tweepy, wagtail
 s3transfer==0.3.3         # via boto3
-sentry-sdk==0.14.4        # via -r requirements.in/base.in
+sentry-sdk==0.20.2        # via -r requirements.in/base.in
 six==1.15.0               # via bleach, click-repl, cryptography, django-elasticsearch-dsl, django-extensions, elasticsearch-dsl, html5lib, htmllaundry, l18n, python-dateutil, tweepy
 soupsieve==2.0.1          # via beautifulsoup4
 sqlparse==0.3.1           # via django
