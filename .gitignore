@@ -11,6 +11,7 @@
 common/CACHE
 __pycache__
 !.gitignore
+.venv/
 
 /node_modules
 npm-debug.log*
@@ -28,6 +29,7 @@ wordpress_part.xml
 
 # IDE
 .idea/
+.vscode/
 
 # Libs
 src/wpparser/

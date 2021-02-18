@@ -21,6 +21,10 @@ make up
 You can now access Digital Workspace on [localhost:8000](http://localhost:8000>)
 and the admin interface on [localhost:8000/admin](http://localhost:8000/admin).
 
+If you need a virtualenv with the packages installed please run `./setup-local.sh`.
+This is useful if you are using [vscode](https://code.visualstudio.com/) with the
+[python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python).
+
 ---
 
 ## Assets

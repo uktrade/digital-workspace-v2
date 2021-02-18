@@ -1,3 +1,5 @@
+{% load render_bundle webpack_static from webpack_loader %}
+
 <div class="search-and-profile-bar">
     <div class="govuk-width-container">
         <form class="search-form" method="GET" action="https://people.trade.gov.uk/search">
@@ -11,7 +13,7 @@
         </form>
         <div class="people-finder-panel">
             {% if peoplefinder_profile.is_blank %}
-                <a class="people-finder-profile-link" href="{{ peoplefinder_profile.setup_profile_url }}">
+                <a class="profile-link" href="{{ peoplefinder_profile.setup_profile_url }}">
                     <div class="profile-details">
                         Please set up your profile
                         <span class="profile-prompt">
@@ -21,21 +23,25 @@
                 </a>
             {% elif peoplefinder_profile %}
                 <a class="profile-link" href="{{ peoplefinder_profile.profile_url }}">
-                    {% if peoplefinder_profile.profile_image_url %}
-                        <img src="{{ peoplefinder_profile.profile_image_url }}"
-                             alt="Profile image of {{ peoplefinder_profile.name }}"
-                             class="profile-image">
-                    {% endif %}
                     <div class="profile-details">
                         Hi, {{ peoplefinder_profile.first_name|truncatechars:25 }}
                         <span class="profile-prompt">
-                          {% if peoplefinder_profile.is_complete %}
-                              View your profile
-                          {% else %}
-                              Set up your profile ({{ peoplefinder_profile.completion_percentage }}% complete)
-                          {% endif %}
+                            {% if peoplefinder_profile.is_complete %}
+                                View your profile
+                            {% else %}
+                                Set up your profile ({{ peoplefinder_profile.completion_percentage }}% complete)
+                            {% endif %}
                         </span>
                     </div>
+                    {% if peoplefinder_profile.profile_image %}
+                    <img src="{{ peoplefinder_profile.profile_image_url }}"
+                            alt="Profile image of {{ peoplefinder_profile.name }}"
+                            class="profile-image">
+                    {% else %}
+                    <img src="{% webpack_static 'no-photo.png' %}"
+                            alt="No photo"
+                            class="profile-image">
+                    {% endif %}
                 </a>
             {% endif %}
         </div>
