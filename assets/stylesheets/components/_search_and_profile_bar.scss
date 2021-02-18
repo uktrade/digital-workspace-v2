@@ -16,7 +16,12 @@
 }
 
 .people-finder-panel {
-  .people-finder-profile-link {
+  display: flex;
+  justify-content: flex-end;
+
+  .profile-link {
+    display: flex;
+
     &:link,
     &:hover,
     &:visited {
@@ -31,32 +36,28 @@
       }
     }
   }
+
+  @media only screen and (max-width: 767px) {
+    .profile-link {
+      display: none;
+    }
+  }
+
   .profile-details {
     @include govuk-font($size: 16, $weight: bold);
     background-color: darken($brand-color-grey90, 5%);
-    height: 40px;
     max-width: 250px;
     padding: govuk-spacing(2) govuk-spacing(3) govuk-spacing(2) govuk-spacing(6);
-    float: right;
     text-align: right;
     color: govuk-colour("white");
   }
 
   .profile-image {
-    display: block;
-    float: right;
-    height: 60px;
+    height: 64px;
   }
 
   .profile-prompt {
     @include govuk-font($size: 14);
     display: block;
-    text-decoration: underline;
-  }
-}
-
-@media only screen and (max-width: 767px) {
-  .people-finder-profile-link {
-   display: none;
   }
 }
