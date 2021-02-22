@@ -19,3 +19,6 @@ pydocstyle
 black
 Faker
 factory-boy
+
+# Testing
+pytest-django==4.1.0

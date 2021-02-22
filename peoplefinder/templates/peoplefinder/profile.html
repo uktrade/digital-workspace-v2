@@ -1,0 +1,21 @@
+{% extends 'peoplefinder/page.html' %}
+
+{% block content %}
+<h1 class="govuk-heading-l">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+<p><a class="govuk-link" href="mailto:{{ profile.user.email }}">{{ profile.user.email }}</a></p>
+
+{% for role in roles %}
+    <p class="govuk-body-m"><strong>{{ role.job_title }}</strong> in <a class="govuk-link" href="/teams/{{ role.team.slug }}">{{ role.team.name }}</a></p>
+{% endfor %}
+
+{% if profile.user == user %}
+    <p><a class="govuk-button" href="/people/{{ profile.user.id }}/edit">Edit profile</a></p>
+{% endif %}
+
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">My manager</dt>
+        <dd class="govuk-summary-list__value"><a class="govuk-link" href="/people/{{ profile.manager.user.id }}">{{ profile.manager.user.first_name }} {{ profile.manager.user.last_name }}</a></dd>
+    </div>
+</dl>
+{% endblock %}

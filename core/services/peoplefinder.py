@@ -63,7 +63,7 @@ def get_user_profile(user_id):
         },
         settings.PEOPLEFINDER_PROFILE_API_PRIVATE_KEY,
         algorithm="RS512",
-    ).decode("utf-8")
+    )
     headers = {"Authorization": f"Bearer {token}"}
 
     try:

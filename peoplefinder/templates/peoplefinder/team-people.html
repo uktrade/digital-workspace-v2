@@ -1,0 +1,12 @@
+{% extends 'peoplefinder/page.html' %}
+
+{% block content %}
+<span class="govuk-caption-l">{{ team.short_name }}</span>
+<h1 class="govuk-heading-l">All people</h2>
+
+<ul>
+    {% for profile in people %}
+        <li><a class="govuk-link" href="/people/{{ profile.user.id }}">{{ profile.user.first_name }} {{ profile.user.last_name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

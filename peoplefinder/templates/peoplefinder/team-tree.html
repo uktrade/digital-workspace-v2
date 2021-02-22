@@ -1,0 +1,9 @@
+{% extends 'peoplefinder/page.html' %}
+{% load sub_teams_tree %}
+
+{% block content %}
+<span class="govuk-caption-l">{{ team.short_name }}</span>
+<h1 class="govuk-heading-l">All sub-teams</h1>
+
+{% sub_teams_tree team %}
+{% endblock %}
