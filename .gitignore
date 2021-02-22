@@ -12,6 +12,7 @@ common/CACHE
 __pycache__
 !.gitignore
 .venv/
+.pytest_cache/
 
 /node_modules
 npm-debug.log*

@@ -11,9 +11,6 @@ help:
 	@echo "    Removes compiled artefacts"
 	@echo
 
-flake8:
-	docker-compose run --rm flake8
-
 clean:
 	npm run clean
 	find . -name '__pycache__' -exec rm -rf {} +
@@ -31,7 +28,7 @@ compilescss:
 	docker-compose run --rm wagtail python manage.py compilescss
 
 test:
-	docker-compose run --rm wagtail python manage.py test --settings=config.settings.test $(test) --keepdb
+	docker-compose run --rm wagtail pytest $(tests)
 
 shell:
 	docker-compose run --rm wagtail python manage.py shell
@@ -41,6 +38,9 @@ flake8:
 
 black:
 	docker-compose run --rm wagtail black .
+
+check-fixme:
+	git --no-pager grep -rni fixme -- ':!./Makefile'
 
 up:
 	docker-compose up
