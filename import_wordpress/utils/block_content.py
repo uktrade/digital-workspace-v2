@@ -134,7 +134,7 @@ def process_image(img, wp_attachments):
 def get_body_contents(html):
     soup = BeautifulSoup(html, features="html5lib")
     soup.prettify()
-    for attr in ['head', 'html', 'body']:
+    for attr in ["head", "html", "body"]:
         if hasattr(soup, attr):
             getattr(soup, attr).unwrap()
     return str(soup)
@@ -144,7 +144,7 @@ def append_block_text(blocks, parent_tags):
     proceeding_html = sanitize(flatten_parent_tags(parent_tags))
     text_content = get_body_contents(proceeding_html)
 
-    text_content = re.sub(' +', ' ', text_content)
+    text_content = re.sub(" +", " ", text_content)
     text_content = text_content.replace("<p> </p>", "").strip()
     text_content = text_content.replace("</p> <p>", "</p><p>")
     text_content = text_content.replace("<p> ", "<p>")

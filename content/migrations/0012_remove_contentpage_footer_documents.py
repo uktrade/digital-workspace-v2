@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('content', '0011_contentpage_footer_documents'),
+        ("content", "0011_contentpage_footer_documents"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='contentpage',
-            name='footer_documents',
+            model_name="contentpage",
+            name="footer_documents",
         ),
     ]

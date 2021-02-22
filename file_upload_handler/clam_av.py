@@ -3,6 +3,7 @@ import logging
 import pathlib
 from base64 import b64encode
 from http.client import HTTPConnection, HTTPSConnection
+
 # Check that HTTPSConnection is secure in the version of Python you are using
 # https://wiki.openstack.org/wiki/OSSN/OSSN-0033
 

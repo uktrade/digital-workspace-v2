@@ -33,8 +33,6 @@ def create_comment(comment, content_page, comments):
             return existing_comment
 
         #  Check for parent
-        parent_comment = None
-
         if comment["parent_id"] != "0":
             parent_comment = Comment.objects.filter(
                 legacy_id=int(comment["parent_id"]),
@@ -91,7 +89,10 @@ class WagtailNewsPage(WPPage):
             excluded_phrases=self.excluded,
         )
 
-        if "preview_image_id" in self.page_content and self.page_content["preview_image_id"]:
+        if (
+            "preview_image_id" in self.page_content and  # noqa W504
+            self.page_content["preview_image_id"]
+        ):
             preview_image = self.get_preview_image(
                 self.page_content["preview_image_id"],
             )

@@ -1,5 +1,4 @@
 import concurrent.futures
-from datetime import datetime
 from unittest.mock import MagicMock, call, patch
 
 from django.test import TestCase
@@ -9,7 +8,6 @@ from file_upload_handler.s3 import (
     S3FileUploadHandler,
     ThreadedS3ChunkUploader,
 )
-from file_upload_handler.signature import verify
 
 
 class S3FileHandlerTestCase(TestCase):

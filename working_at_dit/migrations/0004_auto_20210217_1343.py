@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('working_at_dit', '0003_howdoi_include_link_on_homepage'),
+        ("working_at_dit", "0003_howdoi_include_link_on_homepage"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='pagewithtopics',
-            name='excerpt',
+            model_name="pagewithtopics",
+            name="excerpt",
             field=models.CharField(blank=True, max_length=700, null=True),
         ),
     ]

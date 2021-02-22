@@ -1,4 +1,3 @@
-from unittest.mock import Mock, patch
 from django.test import (
     TestCase,
 )
@@ -91,7 +90,7 @@ class TestBlockContent(TestCase):
         self.assertEqual(blocks[3]["type"], "text_section")
         self.assertEqual(
             blocks[3]["value"],
-            "<p>Another paragraph of text without tag.</p><p>Yet another paragraph of text without tag.</p>"
+            "<p>Another paragraph of text without tag.</p><p>Yet another paragraph of text without tag.</p>",
         )
 
         self.assertEqual(blocks[4]["type"], "heading2")

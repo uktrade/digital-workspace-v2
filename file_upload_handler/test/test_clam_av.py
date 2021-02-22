@@ -99,7 +99,9 @@ class ClamAVFileHandlerTestCase(TestCase):
         self.assertEqual(len(self.clam_av_file_handler.av_conn.mock_calls), 0)
 
     @patch("file_upload_handler.clam_av.HTTPSConnection")
-    def test_file_complete_with_non_200_response_from_av_service(self, _http_connection):
+    def test_file_complete_with_non_200_response_from_av_service(
+        self, _http_connection
+    ):
         self.create_av_handler()
 
         self.clam_av_file_handler.av_conn.getresponse.return_value = Mock(

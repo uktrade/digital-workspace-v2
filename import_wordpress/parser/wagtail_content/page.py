@@ -36,7 +36,7 @@ ARCHIVE_STR_LIST = (
 
 
 class WPPage(ABC):
-    def __init__(self, page_content, path=None, attachments=[]):
+    def __init__(self, page_content, path=None, attachments=[]):  # noqa B006
         logger.info(f"Creating page with path: {path}")
         self.path = path
         self.page_content = page_content
@@ -105,7 +105,9 @@ class WPPage(ABC):
 
         if not author:
             logger.warning(f"Could not find author: '{self.page_content['creator']}'")
-            author = UserModel.objects.filter(email="connect@digital.trade.gov.uk").first()
+            author = UserModel.objects.filter(
+                email="connect@digital.trade.gov.uk"
+            ).first()
 
         return author
 
@@ -116,7 +118,9 @@ class WPPage(ABC):
                 topic = Topic.objects.filter(title=wp_topic["name"]).first()
 
                 if not topic:  #  Some topics have been archived
-                    logger.warning(f'SKIPPED TOPIC: "{wp_topic["name"]}" for page "{self.wagtail_page}"')
+                    logger.warning(
+                        f'SKIPPED TOPIC: "{wp_topic["name"]}" for page "{self.wagtail_page}"'
+                    )
                     continue
 
                 PageTopic.objects.get_or_create(
@@ -211,7 +215,7 @@ class WPPage(ABC):
 
 
 class SectionHomepage(WPPage):
-    def __init__(self, page_content, content_class, path=None, attachments=[]):
+    def __init__(self, page_content, content_class, path=None, attachments=[]):  # noqa B006
         super().__init__(page_content, path, attachments)
         self.content_class = content_class
 
@@ -251,7 +255,7 @@ class SectionHomepage(WPPage):
 
 
 class StandardPage(WPPage):
-    def __init__(self, page_content, content_class, parent, path=None, attachments=[]):
+    def __init__(self, page_content, content_class, parent, path=None, attachments=[]):  # noqa B006
         super().__init__(page_content, path, attachments)
         self.content_class = content_class
         self.parent_object = parent
@@ -275,4 +279,3 @@ class StandardPage(WPPage):
         self.post_create()
 
         return self.wagtail_page
-
