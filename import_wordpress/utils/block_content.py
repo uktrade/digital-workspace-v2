@@ -146,9 +146,8 @@ def append_block_text(blocks, parent_tags):
 
     text_content = re.sub(" +", " ", text_content)
     text_content = text_content.replace("<p> </p>", "").strip()
-    text_content = text_content.replace("</p> <p>", "</p><p>")
-    text_content = text_content.replace("<p> ", "<p>")
-    text_content = text_content.replace(" </p> ", "</p>")
+    # Find and remove any extraneous whitespace around html tags.
+    text_content = re.sub(r"\s*(<\/?[a-z]>)\s*", r"\g<1>", text_content)
 
     if text_content != "":
         blocks.append(

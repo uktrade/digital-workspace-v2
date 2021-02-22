@@ -85,6 +85,15 @@ class TestBlockContent(TestCase):
         self.assertEqual(blocks[0]["value"], "Strong used as heading")
 
         self.assertEqual(blocks[1]["type"], "text_section")
+        self.assertEqual(
+            blocks[1]["value"],
+            (
+                "<p>Text with a paragraph 1</p>"
+                "<p><strong>Nested strong tag</strong></p>"
+                "<p>Paragraph of text without tag.</p>"
+            ),
+        )
+
         self.assertEqual(blocks[2]["type"], "heading2")
 
         self.assertEqual(blocks[3]["type"], "text_section")
