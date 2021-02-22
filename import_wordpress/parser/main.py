@@ -281,13 +281,13 @@ def parse_xml_file():
     logger.info("Creating news...")
 
     # News
-    # for key, _value in items["news"].items():
-    #     news_page = WagtailNewsPage(
-    #         page_content=items["news"][key],
-    #         attachments=items["attachment"],
-    #     )
-    #     if news_page.live:
-    #         news_page.create()
+    for key, _value in items["news"].items():
+        news_page = WagtailNewsPage(
+            page_content=items["news"][key],
+            attachments=items["attachment"],
+        )
+        if news_page.live:
+            news_page.create()
 
     # Page content
     for _key, value in items["page"].items():

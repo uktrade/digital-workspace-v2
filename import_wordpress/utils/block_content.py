@@ -191,13 +191,13 @@ def process_video(tag, attachments):
     s3_key = get_url_from_wp_guid(tag["src"], attachments)
 
     if s3_key is None:
-        logger.info(f"CANNOT FIND VIDEO S3 KEY: {s3_key}")
+        logger.warning(f"CANNOT FIND VIDEO S3 KEY: {s3_key}")
         return None
 
     media = WagtailMedia.objects.filter(file=s3_key).first()
 
     if media is None:
-        logger.info(f"CANNOT FIND WAGTAIL MEDIA WITH S3 KEY: {s3_key}")
+        logger.warning(f"CANNOT FIND WAGTAIL MEDIA WITH S3 KEY: {s3_key}")
 
     return media
 
