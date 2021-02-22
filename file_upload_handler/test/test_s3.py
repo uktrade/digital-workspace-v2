@@ -1,4 +1,5 @@
 import concurrent.futures
+from datetime import datetime
 from unittest.mock import MagicMock, call, patch
 
 from django.test import TestCase
@@ -55,6 +56,44 @@ class S3FileHandlerTestCase(TestCase):
         )
         # Check that we started to send data
         self.s3_file_handler.executor.mock_calls[0] = call.send(b"4")
+
+    @patch("file_upload_handler.s3.boto3_client")
+    @patch("file_upload_handler.s3.S3Boto3Storage")
+    @patch("file_upload_handler.s3.S3Boto3StorageFile")
+    def test_addition_of_av_header(self, storage_file, storage, client):
+        self.create_s3_handler()
+
+        # Add content_type_extra which would have been added by file handler processor
+        self.s3_file_handler.content_type_extra = {"clam_av_results": []}
+        self.s3_file_handler.content_type_extra["clam_av_results"].append(
+            {"file_name": "file.txt", "av_passed": True, "scanned_at": datetime.now()}
+        )
+
+        # Return ETag from mock so signature can be created
+        e_tag = "Test..."
+
+        self.s3_file_handler.s3_client.head_object = MagicMock()
+        self.s3_file_handler.s3_client.head_object.return_value = {
+            "ETag": e_tag,
+        }
+
+        self.s3_file_handler.file_complete(0)
+
+        # copy_object should have been called twice,
+        # the second time to add the AV metadata
+        self.assertEqual(
+            self.s3_file_handler.s3_client.copy_object.call_count,
+            2,
+        )
+
+        second_copy_obj_call_list = (
+            self.s3_file_handler.s3_client.copy_object.call_args_list[1][1]
+        )
+
+        self.assertTrue("Metadata" in second_copy_obj_call_list)
+
+        self.assertTrue("av-passed" in second_copy_obj_call_list["Metadata"])
+        self.assertTrue(second_copy_obj_call_list["Metadata"]["av-passed"])
 
 
 class ThreadedS3ChunkUploaderTestCase(TestCase):
