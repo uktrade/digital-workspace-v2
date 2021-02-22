@@ -17,3 +17,5 @@ flake8-string-format
 pep8-naming
 pydocstyle
 black
+Faker
+factory-boy

@@ -6,7 +6,7 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
-def check_required_setting(setting_key, secondary_setting_key=None):
+def check_required_setting(setting_key, secondary_setting_key=""):
     if getattr(settings, setting_key, None) is None:
         if getattr(settings, secondary_setting_key, None) is None:
             # Nb cannot throw exception here because of

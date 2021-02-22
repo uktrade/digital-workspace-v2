@@ -11,7 +11,7 @@ from file_upload_handler.clam_av import (
 )
 from file_upload_handler.models import ScannedFile
 
-test_clam_av_url = "http://test.com"
+test_clam_av_domain = "test.com"
 
 
 # Need to directly override settings rather than using
@@ -21,7 +21,7 @@ class ClamAVFileHandlerTestCase(TestCase):
         self.request_factory = RequestFactory()
         self.request = self.request_factory.request()
 
-    @patch("file_upload_handler.clam_av.CLAM_AV_URL", test_clam_av_url)
+    @patch("file_upload_handler.clam_av.CLAM_AV_DOMAIN", test_clam_av_domain)
     def create_av_handler(self):
         self.clam_av_file_handler = ClamAVFileUploadHandler(
             request=self.request,
@@ -34,12 +34,12 @@ class ClamAVFileHandlerTestCase(TestCase):
             content_type_extra=None,
         )
 
-    @patch("file_upload_handler.clam_av.HTTPConnection")
+    @patch("file_upload_handler.clam_av.HTTPSConnection")
     def test_init_connection(self, http_connection):
         self.create_av_handler()
 
         # Check that we made a connection
-        http_connection.mock_calls[0] = call(test_clam_av_url)
+        http_connection.mock_calls[0] = call(test_clam_av_domain)
 
     @patch("file_upload_handler.clam_av.HTTPConnection")
     def test_chunk_is_received(self, http_connection):
@@ -98,8 +98,8 @@ class ClamAVFileHandlerTestCase(TestCase):
         # Check that we did send to AV
         self.assertEqual(len(self.clam_av_file_handler.av_conn.mock_calls), 0)
 
-    @patch("file_upload_handler.clam_av.HTTPConnection")
-    def test_file_complete_with_non_200_response_from_av_service(self, http_connection):
+    @patch("file_upload_handler.clam_av.HTTPSConnection")
+    def test_file_complete_with_non_200_response_from_av_service(self, _http_connection):
         self.create_av_handler()
 
         self.clam_av_file_handler.av_conn.getresponse.return_value = Mock(
@@ -112,8 +112,8 @@ class ClamAVFileHandlerTestCase(TestCase):
         self.assertEqual(ScannedFile.objects.count(), 1)
         self.assertFalse(ScannedFile.objects.first().av_passed)
 
-    @patch("file_upload_handler.clam_av.HTTPConnection")
-    def test_file_complete_malformed_av_response(self, http_connection):
+    @patch("file_upload_handler.clam_av.HTTPSConnection")
+    def test_file_complete_malformed_av_response(self, _http_connection):
         self.create_av_handler()
 
         self.clam_av_file_handler.av_conn.getresponse.return_value = Mock(
@@ -126,8 +126,8 @@ class ClamAVFileHandlerTestCase(TestCase):
         self.assertEqual(ScannedFile.objects.count(), 1)
         self.assertFalse(ScannedFile.objects.first().av_passed)
 
-    @patch("file_upload_handler.clam_av.HTTPConnection")
-    def test_file_complete_virus_found(self, http_connection):
+    @patch("file_upload_handler.clam_av.HTTPSConnection")
+    def test_file_complete_virus_found(self, _http_connection):
         self.create_av_handler()
 
         self.clam_av_file_handler.av_conn.getresponse.return_value = Mock(
@@ -140,8 +140,8 @@ class ClamAVFileHandlerTestCase(TestCase):
         self.assertEqual(ScannedFile.objects.count(), 1)
         self.assertFalse(ScannedFile.objects.first().av_passed)
 
-    @patch("file_upload_handler.clam_av.HTTPConnection")
-    def test_file_complete_no_virus_found(self, http_connection):
+    @patch("file_upload_handler.clam_av.HTTPSConnection")
+    def test_file_complete_no_virus_found(self, _http_connection):
         self.create_av_handler()
 
         # Add content_type_extra which would have been added by file handler processor
