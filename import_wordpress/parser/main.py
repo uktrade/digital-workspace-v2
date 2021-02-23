@@ -1,5 +1,4 @@
 import logging
-import os
 import re
 from datetime import datetime
 
@@ -33,40 +32,18 @@ namespaces = settings.NAMESPACES
 UserModel = get_user_model()
 
 
-xml_file = os.path.join(settings.BASE_DIR, "wordpress.xml")
-
-with open(xml_file, "r+") as f:
-    text = f.read()
-    for asset_path in settings.OLD_ASSET_PATHS:
-        text = text.replace(
-            asset_path,
-            settings.NEW_ASSET_PATH,
-        )
-    f.seek(0)
-    f.write(text)
-    f.truncate()
-
-counter = 0
-
-objects = [
-    "Title",
-    "File",
-    # ...
-]
-
-post_types = [
-    "acf-field",
-    "acf-field-group",
-    "attachment",
-    "howdoi",
-    "menu",
-    "news",
-    "page",
-    "policy",
-    "popular_page",
-    "theme",
-    "post",
-    "topic",
+TAG_NAMES = [
+    "title",
+    "content:encoded",
+    "wp:post_parent",
+    "wp:post_name",
+    "wp:status",
+    "wp:post_id",
+    "wp:post_type",
+    "wp:status",
+    "link",
+    "guid",
+    "wp:attachment_url",
 ]
 
 items = {
@@ -84,29 +61,26 @@ items = {
     "topic": {},
 }
 
-tag_names = [
-    "title",
-    "content:encoded",
-    "wp:post_parent",
-    "wp:post_name",
-    "wp:status",
-    "wp:post_id",
-    "wp:post_type",
-    "wp:status",
-    "link",
-    "guid",
-    "wp:attachment_url",
-]
-
-root = ElementTree.parse(xml_file).getroot()
-
 skip_list = settings.SKIP_LIST
 
 # TODO - create redirects
 orphans = settings.ORPHAN_PAGES
 
 
-def parse_xml_file():
+def parse_xml_file(xml_file):
+    with open(xml_file, "r+") as f:
+        text = f.read()
+        for asset_path in settings.OLD_ASSET_PATHS:
+            text = text.replace(
+                asset_path,
+                settings.NEW_ASSET_PATH,
+            )
+        f.seek(0)
+        f.write(text)
+        f.truncate()
+
+    root = ElementTree.parse(xml_file).getroot()
+
     # delete all pages
     Page.objects.all().exclude(slug="home").exclude(slug="root").delete()
 
@@ -120,7 +94,7 @@ def parse_xml_file():
     for item_tag in root.find("channel").findall("item"):
         item = {}
 
-        for tag_name in tag_names:
+        for tag_name in TAG_NAMES:
             tag = item_tag.find(tag_name, namespaces)
 
             if hasattr(tag, "text"):

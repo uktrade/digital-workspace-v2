@@ -14,7 +14,7 @@
             <h2 class="govuk-heading-m">{{ comment_count }} {% if comment_count > 1 %}comments{% else %}comment{% endif %}</h2>
             {% for comment in comments %}
                 <p class="govuk-body comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}
-                    <span class="comment-posted-date">{{ comment.posted_date }}</span>
+                    <span class="comment-posted-date govuk-body-s">{{ comment.posted_date }}</span>
                 </p>
                 <p class="govuk-body">{{ comment.content }}</p>
                 <p class="govuk-body" aria-hidden="true" id="reply-link-{{ comment.pk }}"><a class="govuk-link" href="#" onclick="return displayReplyForm({{ comment.pk }})">Reply</a></p>
@@ -36,7 +36,7 @@
                     {% for reply in comment.replies.all %}
                         <div class="govuk-inset-text">
                             <p class="govuk-body comment-author">{{ reply.author.first_name }} {{ comment.author.last_name }}
-                                <span class="comment-posted-date">{{ reply.posted_date }}</span>
+                                <span class="comment-posted-date govuk-body-s">{{ reply.posted_date }}</span>
                             </p>
                             <p class="govuk-body">{{ reply.content }}</p>
                         </div>

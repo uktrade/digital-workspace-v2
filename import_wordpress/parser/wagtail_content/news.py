@@ -19,9 +19,6 @@ logger = logging.getLogger(__name__)
 UserModel = get_user_model()
 
 
-processed_categories = []
-
-
 def create_comment(comment, content_page, comments):
     try:
         # Check to see if comment exists (could have been made as a parent)
@@ -31,6 +28,8 @@ def create_comment(comment, content_page, comments):
 
         if existing_comment:
             return existing_comment
+
+        parent_comment = None
 
         #  Check for parent
         if comment["parent_id"] != "0":
@@ -47,16 +46,19 @@ def create_comment(comment, content_page, comments):
                     if c["legacy_id"] == comment["parent"]:
                         parent_comment = create_comment(c, content_page, comments)
 
-        author = UserModel.objects.filter(email=comment["author_email"]).first()
+        author = UserModel.objects.filter(
+            email=comment["author_email"]
+        ).first()
 
-        # assert author is not None
-        # TODO - think about implications
-        if author is None:
-            return
+        logger.info(
+            f"Creating comment '{comment['content']}' by {comment['author_name']}"
+        )
 
         return Comment.objects.create(
             legacy_id=int(comment["legacy_id"]),
             author=author,
+            author_email=comment["author_email"],
+            author_name=comment["author_name"],
             news_page=content_page,
             content=comment["content"],
             parent=parent_comment,
@@ -103,16 +105,15 @@ class WagtailNewsPage(WPPage):
         # Set categories
         if "categories" in self.page_content:
             for category in self.page_content["categories"]:
-                if category not in processed_categories:
+                news_category = NewsCategory.objects.filter(
+                    category=category,
+                ).first()
+
+                if not news_category:
                     news_category = NewsCategory(
                         category=category,
                     )
                     news_category.save()
-                    processed_categories.append(category)
-                else:
-                    news_category = NewsCategory.objects.filter(
-                        category=category,
-                    ).first()
 
                 page_news_categories.append(news_category)
 

@@ -1,3 +1,6 @@
+import os
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from import_wordpress.parser.main import parse_xml_file
@@ -8,4 +11,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Parse Wordpress XML and create content
-        parse_xml_file()
+        xml_file = os.path.join(settings.BASE_DIR, "wordpress.xml")
+        parse_xml_file(xml_file)
