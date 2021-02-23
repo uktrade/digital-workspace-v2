@@ -186,14 +186,6 @@ class S3FileUploadHandler(FileUploadHandler):
         if "clam_av_results" in self.content_type_extra:
             for result in self.content_type_extra["clam_av_results"]:
                 if result["file_name"] == self.file_name:
-                    # s3_resp = self.s3_client.head_object(
-                    #     Bucket=AWS_STORAGE_BUCKET_NAME,
-                    #     Key=self.new_file_name,
-                    # )
-                    # Sign file e_tag
-                    # e_tag = s3_resp["ETag"].replace('"', "")
-                    # signed = sign(e_tag.encode())
-
                     # Set AV headers
                     if result["av_passed"]:
                         self.s3_client.copy_object(
@@ -205,7 +197,6 @@ class S3FileUploadHandler(FileUploadHandler):
                                     "%Y-%m-%d %H:%M:%S"
                                 ),
                                 "av-passed": "True",
-                                # "av-signature": signed,
                             },
                             ContentType=self.content_type,
                             MetadataDirective="REPLACE",

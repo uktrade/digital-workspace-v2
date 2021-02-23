@@ -85,13 +85,15 @@ def process_content(tag, blocks, depth, attachments):
             len(tag.contents) == 1 and tag.contents[0].name is None
         ):
             # It's text or an element with only text inside
-            if str(tag).strip() != "":
+            if str(tag).strip().replace(" ", "") != "":
                 current_parent_tags.append(f" {str(tag).strip()} ")
         else:
-            current_parent_tags.append(unfurl_tag(tag))
+            if tag.name != "body":
+                current_parent_tags.append(unfurl_tag(tag))
             depth += 1
             for child in tag.children:
                 process_content(child, blocks, depth, attachments)
+
             current_parent_tags.append(f"</{tag.name}>")
 
     #  remove all classes (there's stuff left over from Word pastes etc)

@@ -56,6 +56,9 @@ class Comment(models.Model):
 
 @register_snippet
 class NewsCategory(models.Model):
+    class Meta:
+        verbose_name_plural = "Categories"
+
     slug = models.SlugField(
         max_length=255,
         unique=True,
