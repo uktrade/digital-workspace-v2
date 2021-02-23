@@ -7,32 +7,44 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcore', '0060_fix_workflow_unique_constraint'),
-        ('wagtailmenus', '0023_remove_use_specific'),
-        ('wagtailforms', '0004_add_verbose_name_plural'),
-        ('wagtailredirects', '0006_redirect_increase_max_length'),
-        ('country_fact_sheet', '0003_auto_20201127_0707'),
+        ("wagtailcore", "0060_fix_workflow_unique_constraint"),
+        ("wagtailmenus", "0023_remove_use_specific"),
+        ("wagtailforms", "0004_add_verbose_name_plural"),
+        ("wagtailredirects", "0006_redirect_increase_max_length"),
+        ("country_fact_sheet", "0003_auto_20201127_0707"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='countryfactsheetupload',
-            name='uploaded_by',
+            model_name="countryfactsheetupload",
+            name="uploaded_by",
         ),
         migrations.AddField(
-            model_name='countryfactsheethome',
-            name='group_factsheets',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wagtailcore.collection'),
+            model_name="countryfactsheethome",
+            name="group_factsheets",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="wagtailcore.collection",
+            ),
         ),
         migrations.AddField(
-            model_name='countryfactsheethome',
-            name='hmtc_region_factsheets',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wagtailcore.collection'),
+            model_name="countryfactsheethome",
+            name="hmtc_region_factsheets",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="wagtailcore.collection",
+            ),
         ),
         migrations.DeleteModel(
-            name='CountryFactSheet',
+            name="CountryFactSheet",
         ),
         migrations.DeleteModel(
-            name='CountryFactSheetUpload',
+            name="CountryFactSheetUpload",
         ),
     ]

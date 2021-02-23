@@ -258,7 +258,12 @@ class SectionHomepage(WPPage):
 
 class StandardPage(WPPage):
     def __init__(
-        self, page_content, content_class, parent, path=None, attachments=[]  # noqa B006
+        self,
+        page_content,
+        content_class,
+        parent,
+        path=None,
+        attachments=[],  # noqa B006
     ):
         super().__init__(page_content, path, attachments)
         self.content_class = content_class

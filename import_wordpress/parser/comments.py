@@ -12,6 +12,7 @@ def get_comments(item_tag):
     for comment_tag in comment_tags:
         comment_id = comment_tag.find("wp:comment_id", namespaces).text
         author_email = comment_tag.find("wp:comment_author_email", namespaces).text
+        author_name = comment_tag.find("wp:comment_author", namespaces).text
         comment_date = datetime.strptime(
             comment_tag.find("wp:comment_date", namespaces).text,
             "%Y-%m-%d %H:%M:%S",
@@ -22,6 +23,7 @@ def get_comments(item_tag):
             {
                 "comment_id": comment_id,
                 "author_email": author_email,
+                "author_name": author_name,
                 "comment_date": comment_date,
                 "content": content,
                 "parent_id": parent_id,
