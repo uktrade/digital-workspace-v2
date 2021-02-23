@@ -90,8 +90,8 @@ class WagtailNewsPage(WPPage):
         )
 
         if (
-            "preview_image_id" in self.page_content and  # noqa W504
-            self.page_content["preview_image_id"]
+            "preview_image_id" in self.page_content
+            and self.page_content["preview_image_id"]  # noqa W504
         ):
             preview_image = self.get_preview_image(
                 self.page_content["preview_image_id"],

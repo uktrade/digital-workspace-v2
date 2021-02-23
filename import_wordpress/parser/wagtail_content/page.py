@@ -170,12 +170,12 @@ class WPPage(ABC):
 
     @abc.abstractmethod
     def create(self):
-        # Child classes must implement this and populate self.wagtail_page
+        ###Child classes must implement this and populate self.wagtail_page###  # noqa
         return
 
     @abc.abstractmethod
     def get_parent(self):
-        # Child classes can implement this if they need to carry out post create process
+        ###Child classes can implement this if they need to carry out post create processes###   # noqa
         return
 
     def post_create(self):
@@ -215,7 +215,9 @@ class WPPage(ABC):
 
 
 class SectionHomepage(WPPage):
-    def __init__(self, page_content, content_class, path=None, attachments=[]):  # noqa B006
+    def __init__(
+        self, page_content, content_class, path=None, attachments=[]  # noqa B006
+    ):
         super().__init__(page_content, path, attachments)
         self.content_class = content_class
 
@@ -255,7 +257,9 @@ class SectionHomepage(WPPage):
 
 
 class StandardPage(WPPage):
-    def __init__(self, page_content, content_class, parent, path=None, attachments=[]):  # noqa B006
+    def __init__(
+        self, page_content, content_class, parent, path=None, attachments=[]  # noqa B006
+    ):
         super().__init__(page_content, path, attachments)
         self.content_class = content_class
         self.parent_object = parent

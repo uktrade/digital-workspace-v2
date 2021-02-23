@@ -1,5 +1,6 @@
 import logging
 import re
+from textwrap import dedent
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
@@ -40,7 +41,6 @@ def add_paragraph_tags(content):
 def replace_caption(match):
     parts = match.group(1).split(" />")
 
-    # TODO - think about implication
     if len(parts) < 2:
         return ""
 
@@ -78,11 +78,8 @@ def prep_content(content):
             content,
         )
 
-    # Clean up strong tags
-    # content = re.sub("(<\/strong>\s*<strong>)", " ", content)
-
     # Add paragraph tags
-    content = add_paragraph_tags(content)
+    content = add_paragraph_tags(dedent(content))
 
     return content
 
