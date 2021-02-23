@@ -170,12 +170,12 @@ class WPPage(ABC):
 
     @abc.abstractmethod
     def create(self):
-        ###Child classes must implement this and populate self.wagtail_page###  # noqa
+        """Child classes must implement this and populate self.wagtail_page"""
         return
 
     @abc.abstractmethod
     def get_parent(self):
-        ###Child classes can implement this if they need to carry out post create processes###   # noqa
+        """Child classes can implement this if they need to carry out post create processes"""
         return
 
     def post_create(self):
