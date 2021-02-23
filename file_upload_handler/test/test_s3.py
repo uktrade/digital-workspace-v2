@@ -9,7 +9,6 @@ from file_upload_handler.s3 import (
     S3FileUploadHandler,
     ThreadedS3ChunkUploader,
 )
-from file_upload_handler.signature import verify
 
 
 class S3FileHandlerTestCase(TestCase):
@@ -95,11 +94,6 @@ class S3FileHandlerTestCase(TestCase):
 
         self.assertTrue("av-passed" in second_copy_obj_call_list["Metadata"])
         self.assertTrue(second_copy_obj_call_list["Metadata"]["av-passed"])
-        self.assertTrue("av-signature" in second_copy_obj_call_list["Metadata"])
-
-        # Check that signature matches
-        av_signature = second_copy_obj_call_list["Metadata"]["av-signature"]
-        self.assertTrue(verify(e_tag.encode(), av_signature))
 
 
 class ThreadedS3ChunkUploaderTestCase(TestCase):

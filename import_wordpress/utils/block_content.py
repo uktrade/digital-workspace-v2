@@ -1,5 +1,6 @@
 import logging
 import re
+from textwrap import dedent
 from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
@@ -40,7 +41,6 @@ def add_paragraph_tags(content):
 def replace_caption(match):
     parts = match.group(1).split(" />")
 
-    # TODO - think about implication
     if len(parts) < 2:
         return ""
 
@@ -78,11 +78,8 @@ def prep_content(content):
             content,
         )
 
-    # Clean up strong tags
-    # content = re.sub("(<\/strong>\s*<strong>)", " ", content)
-
     # Add paragraph tags
-    content = add_paragraph_tags(content)
+    content = add_paragraph_tags(dedent(content))
 
     return content
 
@@ -120,8 +117,10 @@ def process_image(img, wp_attachments):
                 attachment_id = img_class.replace("wp-image-", "")
                 attachment_url = wp_attachments[attachment_id]["attachment_url"]
                 parsed = urlparse(attachment_url)
+                img_path = parsed.path[1:]
+                logger.info(f"Finding image '{img_path}'")
 
-                image = WagtailImage.objects.filter(file=parsed.path[1:]).first()
+                image = WagtailImage.objects.filter(file=img_path).first()
                 return image, alt, caption
     except Exception:
         logger.error("Error processing image tag", exc_info=True)
@@ -129,21 +128,29 @@ def process_image(img, wp_attachments):
     return None, None, None
 
 
+def get_body_contents(html):
+    soup = BeautifulSoup(html, features="html5lib")
+    soup.prettify()
+    for attr in ["head", "html", "body"]:
+        if hasattr(soup, attr):
+            getattr(soup, attr).unwrap()
+    return str(soup)
+
+
 def append_block_text(blocks, parent_tags):
-    proceeding_html = flatten_parent_tags(parent_tags)
-    text_content = proceeding_html.replace("<body >", "").replace("</body>", "")
+    proceeding_html = sanitize(flatten_parent_tags(parent_tags))
+    text_content = get_body_contents(proceeding_html)
 
-    text_content_no_lb = proceeding_html.replace("\n", " ").replace("\r", "")
+    text_content = re.sub(" +", " ", text_content)
+    text_content = text_content.replace("<p> </p>", "").strip()
+    # Find and remove any extraneous whitespace around html tags.
+    text_content = re.sub(r"\s*(<\/?[a-z]>)\s*", r"\g<1>", text_content)
 
-    if (
-        text_content_no_lb.strip() != "<p >"
-        and text_content_no_lb.strip() != ""  # noqa W504
-        and text_content_no_lb.strip() != "&nbsp;"  # noqa W504
-    ):
+    if text_content != "":
         blocks.append(
             {
                 "type": "text_section",
-                "value": sanitize(text_content).replace("<p> </p>", ""),
+                "value": text_content,
             },
         )
 
@@ -191,13 +198,13 @@ def process_video(tag, attachments):
     s3_key = get_url_from_wp_guid(tag["src"], attachments)
 
     if s3_key is None:
-        logger.info(f"CANNOT FIND VIDEO S3 KEY: {s3_key}")
+        logger.warning(f"CANNOT FIND VIDEO S3 KEY: {s3_key}")
         return None
 
     media = WagtailMedia.objects.filter(file=s3_key).first()
 
     if media is None:
-        logger.info(f"CANNOT FIND WAGTAIL MEDIA WITH S3 KEY: {s3_key}")
+        logger.warning(f"CANNOT FIND WAGTAIL MEDIA WITH S3 KEY: {s3_key}")
 
     return media
 

@@ -3,6 +3,7 @@ import logging
 import pathlib
 from base64 import b64encode
 from http.client import HTTPConnection, HTTPSConnection
+
 # Check that HTTPSConnection is secure in the version of Python you are using
 # https://wiki.openstack.org/wiki/OSSN/OSSN-0033
 
@@ -21,7 +22,7 @@ CHUNK_SIZE = 5 * 1024 * 1024
 # Clam AV
 CLAM_AV_USERNAME = check_required_setting("CLAM_AV_USERNAME")
 CLAM_AV_PASSWORD = check_required_setting("CLAM_AV_PASSWORD")
-CLAM_AV_URL = check_required_setting("CLAM_AV_URL")
+CLAM_AV_DOMAIN = check_required_setting("CLAM_AV_DOMAIN")
 CLAM_PATH = getattr(settings, "CLAM_PATH", "/v2/scan-chunked")
 CLAM_AV_IGNORE_EXTENSIONS = getattr(settings, "CLAM_AV_IGNORE_EXTENSIONS", {})
 CLAM_USE_HTTP = getattr(settings, "CLAM_USE_HTTP", False)  # Do not use in production!
@@ -53,11 +54,11 @@ class ClamAVFileUploadHandler(FileUploadHandler):
 
         if CLAM_USE_HTTP:
             self.av_conn = HTTPConnection(
-                host=CLAM_AV_URL,
+                host=CLAM_AV_DOMAIN,
             )
         else:
             self.av_conn = HTTPSConnection(  # noqa S309
-                host=CLAM_AV_URL,
+                host=CLAM_AV_DOMAIN,
                 port=443,
             )
 

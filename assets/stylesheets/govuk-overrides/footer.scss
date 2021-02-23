@@ -8,7 +8,11 @@
 		}
 
     &:focus {
-      @include govuk-focused-text;
-    }
+		@include govuk-focused-text;
+	}
+
+	svg {
+		display: none;
+	}
   }
 }

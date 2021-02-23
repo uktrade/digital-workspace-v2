@@ -10,9 +10,6 @@ from wagtail.admin.edit_handlers import (
 )
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page
-from wagtail.documents.blocks import (
-    DocumentChooserBlock,
-)
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
@@ -22,8 +19,6 @@ from content.utils import manage_excluded, manage_pinned
 User = get_user_model()
 
 RICH_TEXT_FEATURES = [
-    "bold",
-    "italic",
     "ol",
     "ul",
     "link",
@@ -140,18 +135,6 @@ class ContentPage(BasePage):
         ]
     )
 
-    footer_documents = StreamField(
-        [
-            (
-                "footer_document_list_item",
-                DocumentChooserBlock(
-                    help_text="""Show a list of documents at the end of the page""",
-                ),
-            ),
-        ],
-        blank=True,
-    )
-
     pinned_phrases = models.CharField(
         blank=True,
         null=True,
@@ -208,7 +191,6 @@ class ContentPage(BasePage):
 
     content_panels = Page.content_panels + [
         StreamFieldPanel("body"),
-        StreamFieldPanel("footer_documents"),
     ]
 
     promote_panels = [

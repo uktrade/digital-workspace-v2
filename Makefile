@@ -31,7 +31,7 @@ compilescss:
 	docker-compose run --rm wagtail python manage.py compilescss
 
 test:
-	docker-compose run --rm wagtail python manage.py test $(test) --keepdb
+	docker-compose run --rm wagtail python manage.py test --settings=config.settings.test $(test) --keepdb
 
 shell:
 	docker-compose run --rm wagtail python manage.py shell
@@ -76,8 +76,7 @@ import:
 	docker-compose down
 	docker-compose up -d
 	docker-compose exec wagtail python manage.py migrate
-	#docker-compose exec wagtail python manage.py add_s3_bucket_assets_to_wagtail
-	#docker-compose exec wagtail python manage.py create_section_homepages
+	docker-compose exec wagtail python manage.py add_s3_bucket_assets_to_wagtail
 	docker-compose exec wagtail python manage.py import_wordpress
 	docker-compose exec wagtail python manage.py create_menus
 	docker-compose run --rm wagtail python manage.py create_groups
@@ -98,9 +97,9 @@ import_test:
 	docker-compose up -d db
 	dropdb -h localhost -U postgres digital_workspace
 	createdb -h localhost -U postgres digital_workspace
-	pg_restore -h localhost -U postgres --dbname=digital_workspace --verbose backup_file.backup
+	pg_restore -h localhost -U postgres --dbname=digital_workspace --verbose backup_s3_asset_only.backup
 	docker-compose exec wagtail python manage.py migrate
-	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
+	#echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
 	docker-compose run --rm wagtail python manage.py fixtree
 	docker-compose exec wagtail python manage.py import_wordpress
 	docker-compose exec wagtail python manage.py create_menus

@@ -161,24 +161,3 @@ class EmbedVideoBlock(blocks.StructBlock):
         template = "blocks/video_embed.html"
         icon = "media"
         label = "Embed Video"
-
-
-#
-# class PhraseBlock(blocks.CharBlock):
-#     """A search phrase"""
-#
-#     class Meta:
-#         label = "Pinned keyword or phrase"
-#         icon = "search"
-#         classname = "phrase"
-#         #template = "blocks/phrase.html"
-#
-#
-# class ExcludedPhraseBlock(blocks.CharBlock):
-#     """A search phrase"""
-#
-#     class Meta:
-#         label = "Excluded keyword or phrase"
-#         icon = "cross"
-#         classname = "phrase"
-#         #template = "blocks/phrase.html"
