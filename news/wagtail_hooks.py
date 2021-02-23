@@ -18,9 +18,19 @@ class CommentAdmin(ModelAdmin):
     exclude_from_explorer = (
         False  # or True to exclude pages of this type from Wagtail's explorer view
     )
-    list_display = ("content", "author")
-    list_filter = ("author",)
-    search_fields = ("content", "author")
+    list_display = (
+        "content",
+        "author",
+        "legacy_author_name",
+    )
+    search_fields = (
+        "content",
+        "legacy_author_name",
+        "legacy_author_email",
+        "author__first_name",
+        "author__last_name",
+        "author__email",
+    )
 
 
 class NewsCategoryAdmin(ModelAdmin):

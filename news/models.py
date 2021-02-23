@@ -37,8 +37,8 @@ class Comment(models.Model):
     author = models.ForeignKey(
         UserModel, null=True, blank=True, on_delete=models.CASCADE
     )
-    author_name = models.CharField(max_length=255, blank=True, null=True)
-    author_email = models.EmailField(blank=True, null=True)
+    legacy_author_name = models.CharField(max_length=255, blank=True, null=True)
+    legacy_author_email = models.EmailField(blank=True, null=True)
     content = models.TextField()
     posted_date = models.DateTimeField(auto_now_add=True)
     parent = models.ForeignKey(
