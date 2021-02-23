@@ -46,9 +46,7 @@ def create_comment(comment, content_page, comments):
                     if c["legacy_id"] == comment["parent"]:
                         parent_comment = create_comment(c, content_page, comments)
 
-        author = UserModel.objects.filter(
-            email=comment["author_email"]
-        ).first()
+        author = UserModel.objects.filter(email=comment["author_email"]).first()
 
         logger.info(
             f"Creating comment '{comment['content']}' by {comment['author_name']}"

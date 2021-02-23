@@ -7,37 +7,51 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcore', '0060_fix_workflow_unique_constraint'),
-        ('country_fact_sheet', '0004_auto_20210219_0645'),
+        ("wagtailcore", "0060_fix_workflow_unique_constraint"),
+        ("country_fact_sheet", "0004_auto_20210219_0645"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='countryfactsheethome',
-            name='group_factsheets',
+            model_name="countryfactsheethome",
+            name="group_factsheets",
         ),
         migrations.RemoveField(
-            model_name='countryfactsheethome',
-            name='hmtc_region_factsheets',
+            model_name="countryfactsheethome",
+            name="hmtc_region_factsheets",
         ),
         migrations.AddField(
-            model_name='countryfactsheethome',
-            name='group_factsheets_collection',
-            field=models.ForeignKey(blank=True, help_text='Uploaded PDF documents in the selected collection will be displayed as a list of country factsheets on the page.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wagtailcore.collection'),
+            model_name="countryfactsheethome",
+            name="group_factsheets_collection",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Uploaded PDF documents in the selected collection will be displayed as a list of country factsheets on the page.",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="wagtailcore.collection",
+            ),
         ),
         migrations.AddField(
-            model_name='countryfactsheethome',
-            name='group_factsheets_heading',
+            model_name="countryfactsheethome",
+            name="group_factsheets_heading",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
         migrations.AddField(
-            model_name='countryfactsheethome',
-            name='hmtc_region_factsheets_collection',
-            field=models.ForeignKey(blank=True, help_text='Uploaded PDF documents in the selected collection will be displayed as a list of country factsheets on the page.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wagtailcore.collection'),
+            model_name="countryfactsheethome",
+            name="hmtc_region_factsheets_collection",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Uploaded PDF documents in the selected collection will be displayed as a list of country factsheets on the page.",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="wagtailcore.collection",
+            ),
         ),
         migrations.AddField(
-            model_name='countryfactsheethome',
-            name='hmtc_region_factsheets_heading',
+            model_name="countryfactsheethome",
+            name="hmtc_region_factsheets_heading",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
     ]

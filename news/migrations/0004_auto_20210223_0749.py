@@ -8,30 +8,30 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('news', '0003_auto_20210218_0336'),
+        ("news", "0003_auto_20210218_0336"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='comment',
-            name='author_email',
+            model_name="comment",
+            name="author_email",
             field=models.EmailField(max_length=254, null=True, blank=True),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='comment',
-            name='author_name',
+            model_name="comment",
+            name="author_name",
             field=models.CharField(max_length=255, null=True, blank=True),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='author',
+            model_name="comment",
+            name="author",
             field=models.ForeignKey(
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
-                to=settings.AUTH_USER_MODEL
+                to=settings.AUTH_USER_MODEL,
             ),
         ),
     ]

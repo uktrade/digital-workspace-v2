@@ -7,29 +7,53 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcore', '0060_fix_workflow_unique_constraint'),
-        ('country_fact_sheet', '0005_auto_20210219_0746'),
+        ("wagtailcore", "0060_fix_workflow_unique_constraint"),
+        ("country_fact_sheet", "0005_auto_20210219_0746"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='countryfactsheethome',
-            name='group_factsheets_collection',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wagtailcore.collection', verbose_name='Group factsheets collection'),
+            model_name="countryfactsheethome",
+            name="group_factsheets_collection",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="wagtailcore.collection",
+                verbose_name="Group factsheets collection",
+            ),
         ),
         migrations.AlterField(
-            model_name='countryfactsheethome',
-            name='group_factsheets_heading',
-            field=models.CharField(blank=True, max_length=50, null=True, verbose_name='Group factsheets heading'),
+            model_name="countryfactsheethome",
+            name="group_factsheets_heading",
+            field=models.CharField(
+                blank=True,
+                max_length=50,
+                null=True,
+                verbose_name="Group factsheets heading",
+            ),
         ),
         migrations.AlterField(
-            model_name='countryfactsheethome',
-            name='hmtc_region_factsheets_collection',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wagtailcore.collection', verbose_name='HMTC region factsheets collection'),
+            model_name="countryfactsheethome",
+            name="hmtc_region_factsheets_collection",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="+",
+                to="wagtailcore.collection",
+                verbose_name="HMTC region factsheets collection",
+            ),
         ),
         migrations.AlterField(
-            model_name='countryfactsheethome',
-            name='hmtc_region_factsheets_heading',
-            field=models.CharField(blank=True, max_length=50, null=True, verbose_name='HMTC region factsheets heading'),
+            model_name="countryfactsheethome",
+            name="hmtc_region_factsheets_heading",
+            field=models.CharField(
+                blank=True,
+                max_length=50,
+                null=True,
+                verbose_name="HMTC region factsheets heading",
+            ),
         ),
     ]
