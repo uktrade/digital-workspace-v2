@@ -1,10 +1,7 @@
 import os
 
 from django.conf import settings
-
-from django.test import (
-    TestCase,
-)
+from django.test import TestCase
 
 from import_wordpress.parser.main import parse_xml_file
 from news.models import Comment
