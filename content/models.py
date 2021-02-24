@@ -42,7 +42,7 @@ class SiteAlertBanner(models.Model):
             activated=True,
         ).first()
 
-        if activated_banner and self.activated:
+        if activated_banner and self.id != activated_banner.id and self.activated:
             raise ValidationError(
                 "You can only have one active banner at a time. "
                 f"Currently the '{activated_banner}' banner is active"
