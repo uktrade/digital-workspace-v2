@@ -1,5 +1,6 @@
 
-.home-wrapper {
+.ws-home-wrapper {
+  margin-top: 16px;
   ul {
     list-style: none;
     padding: 0;
@@ -34,10 +35,6 @@
         a {
           text-decoration: none;
         }
-      }
-
-      .news-meta {
-        color: $govuk-secondary-text-colour;
       }
 
       img {
@@ -210,4 +207,8 @@
       }
     }
   }
+}
+
+.news-meta {
+  color: $govuk-secondary-text-colour;
 }

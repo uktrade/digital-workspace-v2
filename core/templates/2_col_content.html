@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% block content %}{% endblock %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="ws-primary-content">
+                    <article>
+                        {% block content %}{% endblock %}
+                    </article>
+                </div>
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <div class="ws-secondary-content">
+                    {% block tertiary_col_content %}{% endblock %}
+                </div>
+            </div>
         </div>
-        <div class="govuk-grid-column-one-third">
-            {% block tertiary_col_content %}
-            {% endblock %}
-        </div>
-    </div>
 {% endblock %}
