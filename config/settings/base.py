@@ -428,12 +428,12 @@ LOGGING = {
 }
 
 # Parser settings (remove after import)
-IMPORT_USER_PWD = env("IMPORT_USER_PWD")
+IMPORT_USER_PWD = env("IMPORT_USER_PWD", default=None)
 
-OLD_ASSET_PATHS = env.list("OLD_ASSET_PATHS")
+OLD_ASSET_PATHS = env.list("OLD_ASSET_PATHS", default=[])
 
-AUTHOR_TO_BE_SUBSTITUTED = env("AUTHOR_TO_BE_SUBSTITUTED")
-AUTHOR_SUBSTITUTED = env("AUTHOR_SUBSTITUTED")
+AUTHOR_TO_BE_SUBSTITUTED = env("AUTHOR_TO_BE_SUBSTITUTED", default=None)
+AUTHOR_SUBSTITUTED = env("AUTHOR_SUBSTITUTED", default=None)
 
 NAMESPACES = {
     "excerpt": "http://wordpress.org/export/1.2/excerpt/",
@@ -443,6 +443,6 @@ NAMESPACES = {
     "wp": "http://wordpress.org/export/1.2/",
 }
 
-SKIP_LIST = env.list("SKIP_LIST")
+SKIP_LIST = env.list("SKIP_LIST", default=[])
 
-ORPHAN_PAGES = env.dict("ORPHAN_PAGES")
+ORPHAN_PAGES = env.dict("ORPHAN_PAGES", default={})

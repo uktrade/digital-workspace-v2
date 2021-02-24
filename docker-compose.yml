@@ -27,7 +27,6 @@ services:
  wagtail:
    build:
       context: .
-   env_file: .env
    command: python manage.py runserver 0.0.0.0:8000
    volumes:
      - ./:/app/
@@ -35,15 +34,12 @@ services:
      - "0.0.0.0:8000:8000"
    depends_on:
      db:
-       condition: service_healthy
      elasticsearch:
-       condition: service_healthy
    environment:
      - DJANGO_SETTINGS_MODULE=config.settings.local
  celery:
    build:
       context: .
-   env_file: .env
    command: celery -A config worker -l info
    volumes:
      - .:/app
