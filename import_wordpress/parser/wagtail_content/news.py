@@ -55,8 +55,8 @@ def create_comment(comment, content_page, comments):
         return Comment.objects.create(
             legacy_id=int(comment["legacy_id"]),
             author=author,
-            author_email=comment["author_email"],
-            author_name=comment["author_name"],
+            legacy_author_email=comment["author_email"],
+            legacy_author_name=comment["author_name"],
             news_page=content_page,
             content=comment["content"],
             parent=parent_comment,
