@@ -1,3 +1,12 @@
+.govuk-header {
+  border-bottom: 0;
+}
+
+.govuk-header__content {
+  width: auto;
+  margin-top:10px;
+}
+
 .govuk-header--ws {
   background-color: govuk-colour("white");
 }
@@ -62,13 +71,4 @@
   @include govuk-media-query ($from: desktop) {
     display: none;
   }
-}
-
-.govuk-main-wrapper  {
-  padding-top: 20px;
-}
-
-.govuk-header__content {
-  width: auto;
-  margin-top:10px;
 }
