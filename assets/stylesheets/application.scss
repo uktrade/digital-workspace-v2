@@ -15,138 +15,22 @@ $govuk-image-url-function: frontend-image-url;
 @import "vars/colors";
 
 // GOV.UK Design System Overrides
-@import "govuk-overrides/footer";
 @import "govuk-overrides/header";
+@import "govuk-overrides/main";
+@import "govuk-overrides/footer";
 
 // Components
+@import "components/accordion";
 @import "components/content_cards";
 @import "components/content_page";
 @import "components/cookie_bar";
 @import "components/home";
+@import "components/layout";
+@import "components/news_article";
 @import "components/news_article_comments";
 @import "components/news_category_menu";
+@import "components/pagination";
 @import "components/search_and_profile_bar";
 @import "components/search_field";
-@import "components/streamfield-content";
-@import "components/news_article";
-@import "components/pagination";
-@import "components/accordion";
 @import "components/search_results";
-@import "components/country_fact_sheets";
-// Grid
-
-// TODO - break out below if needed
-.news-items {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-  li {
-    border-bottom: 1px solid black;
-    padding: 12px 0 24px 0;
-  }
-
-  h2 {
-    a {
-      color: #005ea5;
-    }
-  }
-
-  p {
-    padding:10px 0;
-  }
-}
-
-.news-category-form {
-  padding:18px 0 0 0;
-}
-
-.govuk-heading-m a {
-  text-decoration: none;
-}
-
-.hide {
-    position: absolute !important; /* Outside the DOM flow */
-    height: 1px; width: 1px; /* Nearly collapsed */
-    overflow: hidden;
-    clip: rect(1px 1px 1px 1px); /* IE 7+ only support clip without commas */
-    clip: rect(1px, 1px, 1px, 1px); /* All other browsers */
-}
-
-.children-2-col {
-  column-width: auto;
-  column-count: 2;
-  .govuk-heading-s {
-    padding: 0;
-    margin: 0;
-  }
-}
-
-.children-3-col {
-  column-width: auto;
-  column-count: 3;
-  .govuk-heading-s {
-    padding: 0;
-    margin: 0;
-  }
-}
-
-.col-child {
-  break-inside: avoid;
-  margin-bottom: 20px;
-}
-
-.excerpt {
-  margin: 0;
-  padding: 0;
-}
-
-.updated-at {
-  color: $govuk-secondary-text-colour;
-  margin: 0;
-  padding: 6px 0 0 0;
-}
-
-.related-topics {
-  border-top:3px solid $govuk-error-colour;
-}
-
-.pinned-result {
-  background-color: govuk-colour("light-grey");
-  padding: 10px;
-  a {
-    color: white;
-  }
-}
-
-.govuk-main-wrapper {
-    padding-top: 10px;
-}
-
-.govuk-breadcrumbs {
-    padding-bottom: 20px;
-}
-
-.govuk-header {
-  border-bottom: 0;
-}
-
-.children-2-col {
-  margin-top: 40px;
-}
-
-.children-3-col {
-  margin-top: 40px;
-}
-
-// Video
-.video-embed {
-  iframe {
-    width: 100%!important;
-    height: calc(100vw * 0.56)
-  }
-}
-
-.govuk-phase-banner__content {
-  margin: 0!important;
-}
+@import "components/streamfield-content";

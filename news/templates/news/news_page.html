@@ -24,7 +24,7 @@
                         {% csrf_token %}
                         <div class="govuk-form-group">
                             {% for field in comment_form %}
-                                <label class="hide" for="{{ field.auto_id }}">Comment content</label>
+                                <label class="ws-hide" for="{{ field.auto_id }}">Comment content</label>
                                 {{ field }}
                             {% endfor %}
                             <p><input value="Submit comment" type="submit" class="govuk-button"/></p>
@@ -50,7 +50,7 @@
         {% csrf_token %}
         <div class="govuk-form-group">
             {% for field in comment_form %}
-                <label class="hide" for="{{ field.auto_id }}">Comment content</label>
+                <label class="ws-hide" for="{{ field.auto_id }}">Comment content</label>
                 {{ field }}
             {% endfor %}
             <p><input value="Submit comment" type="submit" class="govuk-button"/></p>
