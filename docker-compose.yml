@@ -33,8 +33,9 @@ services:
    ports:
      - "0.0.0.0:8000:8000"
    depends_on:
-     db:
-     elasticsearch:
+     - db
+     - redis
+     - elasticsearch
    environment:
      - DJANGO_SETTINGS_MODULE=config.settings.local
  celery:
