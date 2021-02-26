@@ -338,9 +338,6 @@ CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
 CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 
-# Anti virus signature key
-AV_SIGNATURE_SECRET_KEY = env("AV_SIGNATURE_SECRET_KEY")
-
 # Redis
 if "redis" in VCAP_SERVICES:
     credentials = VCAP_SERVICES["redis"][0]["credentials"]

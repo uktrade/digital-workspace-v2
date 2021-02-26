@@ -259,8 +259,12 @@ class PrivacyPolicyHome(ContentPage):
         "content.PrivacyPolicy",
     ]
 
+    template = "content/content_page.html"
+
 
 class PrivacyPolicy(ContentPage):
     is_creatable = True
 
     subpage_types = []
+
+    template = "content/content_page.html"

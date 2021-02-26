@@ -1,44 +1,45 @@
-{% extends "1_col_content.html" %}
+{% extends "2_col_content.html" %}
 {% load wagtailcore_tags %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">{{ page.title }}</h1>
-            {% for block in page.body %}
-                {% include_block block %}
-            {% endfor %}
-
-            {% if how_do_is %}
-                <h2 class="govuk-heading-m">How do I?</h2>
-                <ul class="govuk-list">
-                    {% for how_do_i in how_do_is %}
-                        <li>
-                            <a class="govuk-link" href="{{ how_do_i.page.url }}">
-                                {{ how_do_i.page.title }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            {% if policies_and_guidance %}
-                <h2 class="govuk-heading-m">Policies and Guidance</h2>
-                {% for page_pg in policies_and_guidance %}
-                    <ul class="govuk-list">
-                        <li>
-                            <a class="govuk-link" href="{{ page_pg.page.url }}">
-                                {{ page_pg.page.title }}
-                            </a>
-                            <br />
-                            <span class="govuk-body-s">
-                                {{ page_pg.page.last_published_at }}
-                            </span>
-                        </li>
-                    </ul>
+        <h1 class="govuk-heading-l">{{ page.title }}</h1>
+        {% for block in page.body %}
+            {% include_block block %}
+        {% endfor %}
+        {% if how_do_is %}
+            <h2 class="govuk-heading-m">How do I?</h2>
+            <ul class="govuk-list">
+                {% for how_do_i in how_do_is %}
+                    <li>
+                        <a class="govuk-link" href="{{ how_do_i.page.url }}">
+                            {{ how_do_i.page.title }}
+                        </a>
+                    </li>
                 {% endfor %}
-            {% endif %}
-        </div>
-        <div class="govuk-grid-column-one-third">
+            </ul>
+        {% endif %}
+        {% if policies_and_guidance %}
+            <h2 class="govuk-heading-m">Policies and Guidance</h2>
+            {% for page_pg in policies_and_guidance %}
+                <ul class="govuk-list">
+                    <li>
+                        <a class="govuk-link" href="{{ page_pg.page.url }}">
+                            {{ page_pg.page.title }}
+                        </a>
+                        <br />
+                        <span class="govuk-body-s ws-secondary-meta">
+                            {{ page_pg.page.last_published_at }}
+                        </span>
+                    </li>
+                </ul>
+            {% endfor %}
+        {% endif %}
+
+{% endblock %}
+
+{% block tertiary_col_content %}
+
+        {% if tools %}
             <h2 class="govuk-heading-m">Tools</h2>
             <ul class="govuk-list">
                 {% for tool in tools %}
@@ -49,6 +50,8 @@
                     </li>
                 {% endfor %}
             </ul>
+        {% endif %}
+        {% if related_news %}
             <h2 class="govuk-heading-m">Related news</h2>
             <ul class="govuk-list">
                 {% for page_topic in related_news %}
@@ -56,10 +59,10 @@
                         <a class="govuk-link" href="{{ page_topic.page.url }}">
                             {{ page_topic.page.title }}
                         </a>
-                        <p class="govuk-body-s">{{ page_topic.page.last_published_at }}</p>
+                        <p class="govuk-body-s ws-secondary-meta">{{ page_topic.page.last_published_at }}</p>
                     </li>
                 {% endfor %}
             </ul>
-        </div>
-    </div>
+        {% endif %}
+
 {% endblock %}

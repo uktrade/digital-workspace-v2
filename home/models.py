@@ -111,7 +111,7 @@ class HomePage(BasePage):
             NewsPage.objects.live()
             .public()
             .order_by(
-                "-first_published_at",
+                "-last_published_at",
             )[:8]
         )
         context["news_items"] = news_items

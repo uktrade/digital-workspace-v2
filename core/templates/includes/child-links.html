@@ -1,12 +1,11 @@
-<div class="children-{{ num_cols }}-col">
-
+<div class="ws-children-{{ num_cols }}-col">
     {% for child in self.get_children.specific %}
-        <div class="col-child">
+        <div class="ws-col-child">
             <h3 class="govuk-heading-s">
                 <a {% if target_blank %}target="_blank" {% endif %}href="{{ child.url }}">{{ child.title }}</a>
             </h3>
-            <p class="govuk-body excerpt">{{ child.excerpt }}</p>
-            <p class="govuk-body-s updated-at">Updated {{ child.last_published_at }}</p>
+            <p class="govuk-body ws-excerpt">{{ child.excerpt }}</p>
+            <p class="govuk-body-s ws-updated-at">Updated {{ child.last_published_at }}</p>
         </div>
     {% endfor %}
 </div>

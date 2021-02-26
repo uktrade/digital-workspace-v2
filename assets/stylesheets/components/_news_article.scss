@@ -1,5 +1,5 @@
 
-.category-lead-story {
+.ws-category-lead-story {
   background-color: govuk-colour("light-grey");
   padding: 20px;
   margin-bottom: 20px;
@@ -10,12 +10,35 @@
   }
 }
 
-.news-items {
-    h2 {
-        margin-bottom: 0;
-    }
+.ws-news-items {
+  h2 {
+      margin-bottom: 0;
+  }
 
-    p {
-        margin-bottom: 0;
+  p {
+      margin-bottom: 0;
+  }
+
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li:first-child {
+    padding-top: 0;
+  }
+
+  li {
+    border-bottom: 1px solid black;
+    padding: 12px 0 24px 0;
+  }
+
+  h2 {
+    a {
+      color: #005ea5;
     }
+  }
+
+  p {
+    padding: 10px 0;
+  }
 }
