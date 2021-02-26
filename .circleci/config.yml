@@ -1,45 +1,27 @@
-version: 2.1
+version: 2
 jobs:
-  build:
-    docker:
-      - image: circleci/python:3.9.0
-        environment:
-          DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
-          DJANGO_SETTINGS_MODULE: config.settings.ci
-          SECRET_KEY: used_for_testing
-          ALLOWED_HOSTS: "*"
-      - image: circleci/postgres:11-postgis-ram
-        environment:
-          POSTGRES_USER: ubuntu
-          POSTGRES_DB: dw_test
-          POSTGRES_PASSWORD: ""
-
-    steps:
-      - checkout
-      - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
-      - run:
-          name: Install Python deps
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements/dev.txt
-      - save_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
-          paths:
-            - "venv"
-      - run:
-          name: Run tests
-          command: |
-            . venv/bin/activate
-            pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
-      - run:
-          name: Run black
-          command: |
-            . venv/bin/activate
-            black trade_remedies_api --check
-      - run:
-          name: Run Flake8
-          command: |
-            . venv/bin/activate
-            python -m flake8
+    build:
+        machine:
+            image: ubuntu-1604:202004-01
+        steps:
+            - checkout
+            - run:
+                name: Copy env file
+                command: cp .env.ci .env
+            - run:
+                name: build containers
+                command: make build
+            - run:
+                name: run black (code formatting check)
+                command: make black
+            - run:
+                name: run flake8 (coding standards compliance test)
+                command: make flake8
+            - run:
+                name: run unit tests
+                command: make test
+            - run:
+                name: Publish unit test coverage
+                command: |
+                    wget -O codecov.sh https://codecov.io/bash
+                    bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
