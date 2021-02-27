@@ -270,7 +270,7 @@ WAGTAILSEARCH_BACKENDS = {
         "AUTO_UPDATE": False,
         "URLS": [ELASTIC_SEARCH_URL],
         "INDEX": "wagtail",
-        "TIMEOUT": 5,
+        "TIMEOUT": 60,
         "OPTIONS": {},
         "INDEX_SETTINGS": {
             "settings": {
