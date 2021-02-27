@@ -33,6 +33,7 @@ ARCHIVE_STR_LIST = (
     "[ARCHIVE]",
     "Archive - ",
     "ARCHIVED",
+    "ARCHIVE",
 )
 
 

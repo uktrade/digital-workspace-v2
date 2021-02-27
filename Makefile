@@ -99,7 +99,7 @@ import_test:
 	createdb -h localhost -U postgres digital_workspace
 	pg_restore -h localhost -U postgres --dbname=digital_workspace --verbose backup_s3_asset_only.backup
 	docker-compose exec wagtail python manage.py migrate
-	#echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
+	docker-compose exec wagtail python manage.py add_s3_bucket_assets_to_wagtail
 	docker-compose run --rm wagtail python manage.py fixtree
 	docker-compose exec wagtail python manage.py import_wordpress
 	docker-compose exec wagtail python manage.py create_menus

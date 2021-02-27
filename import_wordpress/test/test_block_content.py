@@ -103,3 +103,16 @@ class TestBlockContent(TestCase):
         )
 
         self.assertEqual(blocks[4]["type"], "heading2")
+
+    def test_links_have_spaces_before_and_after(self):
+        html = 'this is some text <a href="#">test</a> <strong>some</strong> other text'
+
+        blocks = parse_into_blocks(html, [])
+
+        self.assertEqual(blocks[0]["type"], "text_section")
+        self.assertEqual(
+            blocks[0]["value"],
+            (
+                '<p>this is some text <a href="#">test</a> <strong>some</strong> other text</p>'
+            ),
+        )
