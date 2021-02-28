@@ -1,3 +1,4 @@
+from django.db import models
 from content.models import ContentPage
 
 
@@ -8,6 +9,12 @@ class NetworksHome(ContentPage):
 
 
 class Network(ContentPage):
+    excerpt = models.CharField(
+        max_length=700,
+        blank=True,
+        null=True,
+    )
+
     is_creatable = True
 
     parent_page_types = [
