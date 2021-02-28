@@ -54,6 +54,7 @@ def create_comment(comment, content_page, comments):
 
         return Comment.objects.create(
             legacy_id=int(comment["legacy_id"]),
+            posted_date=comment["comment_date"],
             author=author,
             legacy_author_email=comment["author_email"],
             legacy_author_name=comment["author_name"],
@@ -130,3 +131,16 @@ class WagtailNewsPage(WPPage):
                 news_category=news_category,
                 news_page=self.wagtail_page,
             )
+
+        revision = self.wagtail_page.save_revision(
+            user=self.author,
+            submitted_for_moderation=False,
+            log_action=False,
+        )
+        revision.publish()
+        revision.created_at = self.page_content["post_date"]
+        revision.save()
+        self.wagtail_page.last_published_at = self.page_content["post_date"]
+        self.wagtail_page.first_published_at = self.page_content["post_date"]
+        self.wagtail_page.latest_revision_created_at = self.page_content["post_date"]
+        self.wagtail_page.save()
