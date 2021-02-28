@@ -3,14 +3,16 @@
 {% load wagtailimages_tags %}
 
 {% block main_content %}
-    <article class="ws-two-col">
+    <article>
         <div class="govuk-grid-row">
             {% if category %}
                 <div class="govuk-grid-column-full">
-                    <h1 class="govuk-heading-l">{{ category.category }}</h1>
-                    {% if category.lead_story %}
-                        {% include "news/includes/lead_story.html" with news_article=category.lead_story %}
-                    {% endif %}
+                    <div class="govuk-width-container">
+                        <h1 class="govuk-heading-l">{{ category.category }}</h1>
+                        {% if category.lead_story %}
+                            {% include "news/includes/lead_story.html" with news_article=category.lead_story %}
+                        {% endif %}
+                    </div>
                 </div>
             {% endif %}
             {% if featured_page %}

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
@@ -40,7 +42,7 @@ class Comment(models.Model):
     legacy_author_name = models.CharField(max_length=255, blank=True, null=True)
     legacy_author_email = models.EmailField(blank=True, null=True)
     content = models.TextField()
-    posted_date = models.DateTimeField(auto_now_add=True)
+    posted_date = models.DateTimeField(default=datetime.now)
     parent = models.ForeignKey(
         "news.Comment",
         on_delete=models.CASCADE,
@@ -119,6 +121,10 @@ class NewsPage(PageWithTopics):
     parent_page_types = ["news.NewsHome"]
     subpage_types = []  # Should not be able to create children
 
+    allow_comments = models.BooleanField(
+        default=True,
+    )
+
     preview_image = models.ForeignKey(
         "wagtailimages.Image",
         null=True,
@@ -142,6 +148,7 @@ class NewsPage(PageWithTopics):
     content_panels = PageWithTopics.content_panels + [  # noqa W504
         ImageChooserPanel("preview_image"),
         InlinePanel("news_categories", label="News categories"),
+        FieldPanel("allow_comments"),
     ]
 
     promote_panels = [
@@ -164,10 +171,9 @@ class NewsPage(PageWithTopics):
         comments = Comment.objects.filter(
             news_page=self,
             parent_id=None,
-        ).all()
+        ).order_by("posted_date")
 
         context["comments"] = comments
-
         context["comment_count"] = Comment.objects.filter(
             news_page=self,
         ).count()

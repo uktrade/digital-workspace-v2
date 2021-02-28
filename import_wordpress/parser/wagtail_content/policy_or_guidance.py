@@ -73,6 +73,9 @@ class PolicyOrGuidancePage(WPPage):
             revision = self.wagtail_page.save_revision(
                 user=self.author,
                 submitted_for_moderation=False,
+                log_action=False,
             )
             revision.publish()
+            revision.created_at = self.page_content["post_date"]
+            revision.save()
             self.wagtail_page.save()
