@@ -276,6 +276,15 @@ class NewsHome(RoutablePageMixin, BasePage):
                 )
             )
 
+            featured_page = NewsPage.objects.filter(
+                featured_on_news_home=True,
+            ).first()
+
+            if featured_page:
+                news_items = news_items.exclude(
+                    pk=featured_page.pk,
+                )
+
         # Paginate all posts by 2 per page
         paginator = Paginator(news_items, 9)
         # Try to get the ?page=x value
