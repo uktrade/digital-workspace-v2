@@ -171,7 +171,7 @@ class NewsPage(PageWithTopics):
         comments = Comment.objects.filter(
             news_page=self,
             parent_id=None,
-        ).order_by("posted_date")
+        ).order_by("-posted_date")
 
         context["comments"] = comments
         context["comment_count"] = Comment.objects.filter(
