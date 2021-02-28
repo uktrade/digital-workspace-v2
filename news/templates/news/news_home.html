@@ -8,7 +8,9 @@
             {% if category %}
                 <div class="govuk-grid-column-full">
                     <div class="govuk-width-container">
-                        <h1 class="govuk-heading-l">{{ category.category }}</h1>
+                        <div class="ws-primary-content">
+                            <h1 class="govuk-heading-l">{{ category.category }}</h1>
+                        </div>
                         {% if category.lead_story %}
                             {% include "news/includes/lead_story.html" with news_article=category.lead_story %}
                         {% endif %}

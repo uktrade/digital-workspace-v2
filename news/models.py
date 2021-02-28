@@ -260,6 +260,11 @@ class NewsHome(RoutablePageMixin, BasePage):
                 .order_by("-first_published_at")
             )
 
+            if category.lead_story:
+                news_items = news_items.exclude(
+                    pk=category.lead_story.pk,
+                )
+
             context["category"] = category
         else:
             # Get all posts

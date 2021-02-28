@@ -255,13 +255,13 @@ def parse_xml_file(xml_file):
     logger.info("Creating news...")
 
     # News
-    # for key, _value in items["news"].items():
-    #     news_page = WagtailNewsPage(
-    #         page_content=items["news"][key],
-    #         attachments=items["attachment"],
-    #     )
-    #     if news_page.live:
-    #         news_page.create()
+    for key, _value in items["news"].items():
+        news_page = WagtailNewsPage(
+            page_content=items["news"][key],
+            attachments=items["attachment"],
+        )
+        if news_page.live:
+            news_page.create()
 
     # Page content
     for _key, value in items["page"].items():
@@ -274,21 +274,21 @@ def parse_xml_file(xml_file):
     logger.info("Creating how do Is...")
 
     # How do I content
-    # for key, _value in items["howdoi"].items():
-    #     how_do_i = HowDoIPage(
-    #         page_content=items["howdoi"][key],
-    #         attachments=items["attachment"],
-    #     )
-    #     if how_do_i.live:
-    #         how_do_i.create()
+    for key, _value in items["howdoi"].items():
+        how_do_i = HowDoIPage(
+            page_content=items["howdoi"][key],
+            attachments=items["attachment"],
+        )
+        if how_do_i.live:
+            how_do_i.create()
 
     logger.info("Creating policies and guidance...")
 
     # Policies and guidance
-    # for key, _value in items["policy"].items():
-    #     policy_or_guidance = PolicyOrGuidancePage(
-    #         page_content=items["policy"][key],
-    #         attachments=items["attachment"],
-    #     )
-    #     if policy_or_guidance.live:
-    #         policy_or_guidance.create()
+    for key, _value in items["policy"].items():
+        policy_or_guidance = PolicyOrGuidancePage(
+            page_content=items["policy"][key],
+            attachments=items["attachment"],
+        )
+        if policy_or_guidance.live:
+            policy_or_guidance.create()
