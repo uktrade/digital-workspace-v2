@@ -282,7 +282,6 @@ class NewsHome(RoutablePageMixin, BasePage):
                 NewsPage.objects.live()
                 .public()
                 .order_by(
-                    "-pinned_on_home",
                     "-first_published_at",
                 )
             )

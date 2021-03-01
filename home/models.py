@@ -111,6 +111,7 @@ class HomePage(BasePage):
             NewsPage.objects.live()
             .public()
             .order_by(
+                "-pinned_on_home",
                 "-last_published_at",
             )[:8]
         )
