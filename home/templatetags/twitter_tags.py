@@ -15,6 +15,8 @@ add_link_regex = re.compile(r"(https://t.co/[^ ]+)")
 @stringfilter
 def add_twitter_link(text, autoescape=True):
     cleaned = bleach.clean(text)
+    if "http:" in cleaned:
+        cleaned = cleaned.replace("http", "https")
 
     return mark_safe(  # noqa S308, S703
         add_link_regex.sub(

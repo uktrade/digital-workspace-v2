@@ -457,3 +457,5 @@ NAMESPACES = {
 SKIP_LIST = env.list("SKIP_LIST", default=[])
 
 ORPHAN_PAGES = env.dict("ORPHAN_PAGES", default={})
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
