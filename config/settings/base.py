@@ -107,6 +107,7 @@ LOCAL_APPS = [
     "import_wordpress",
     "file_upload_handler",
     "user.apps.UserConfig",
+    "pingdom.apps.PingdomConfig",
 ]
 
 THIRD_PARTY_APPS = [
@@ -423,6 +424,10 @@ LOGGING = {
         },
     },
 }
+
+AUTHBROKER_ANONYMOUS_PATHS = [
+    "/pingdom/ping.xml",
+]
 
 # Parser settings (remove after import)
 IMPORT_USER_PWD = env("IMPORT_USER_PWD", default=None)
