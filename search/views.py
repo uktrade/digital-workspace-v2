@@ -21,6 +21,9 @@ def search(request):
     page = int(request.GET.get("page", 1))
     search_query = request.GET.get("query", None)
 
+    if search_query is None:
+        search_query = request.GET.get("s", None)
+
     previous_page = None
     next_page = None
     total_shown = 10
