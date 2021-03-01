@@ -5,8 +5,12 @@
     <a href="{% pageurl news_item %}">{% image news_item.preview_image width-300 height-195 %}</a>
     <h4 class="govuk-heading-s"><a class="govuk-link" href="{% pageurl news_item %}">{{ news_item.title }}</a></h4>
     <p class="govuk-body-s ws-secondary-meta">
-        {% if news_item.get_latest_revision.user %}
-            {{ news_item.get_latest_revision.user.first_name }} {{ news_item.get_latest_revision.user.last_name }},
+        {% if news_item.perm_sec_as_author %}
+            {{ settings.PERM_SEC_NAME }}
+        {% else %}
+            {% if news_item.get_latest_revision.user %}
+                {{ news_item.get_latest_revision.user.first_name }} {{ news_item.get_latest_revision.user.last_name }},
+            {% endif %}
         {% endif %}
         {{ news_item.last_published_at }}
         {% for news_category_lkup in news_item.news_categories.all %}

@@ -27,8 +27,12 @@
                             <li>
                                 <h2 class="govuk-heading-m"><a href="{% pageurl news_item %}">{{ news_item.title }}</a></h2>
                                 <p class="govuk-body-s">
-                                    {% if news_item.get_latest_revision.user %}
-                                        {{ news_item.get_latest_revision.user.first_name }} {{ news_item.get_latest_revision.user.last_name }},
+                                    {% if news_item.perm_sec_as_author %}
+                                        {{ settings.PERM_SEC_NAME }}
+                                    {% else %}
+                                        {% if news_item.get_latest_revision.user %}
+                                            {{ news_item.get_latest_revision.user.first_name }} {{ news_item.get_latest_revision.user.last_name }},
+                                        {% endif %}
                                     {% endif %}
                                     {{ news_item.last_published_at }}
                                     {% for news_category_lkup in news_item.news_categories.all %}
