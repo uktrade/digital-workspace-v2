@@ -448,3 +448,5 @@ NAMESPACES = {
 SKIP_LIST = env.list("SKIP_LIST", default=[])
 
 ORPHAN_PAGES = env.dict("ORPHAN_PAGES", default={})
+
+PERM_SEC_AUTHOR_NAME = env("PERM_SEC_AUTHOR_NAME", default=None)

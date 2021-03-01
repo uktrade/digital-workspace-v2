@@ -22,13 +22,10 @@ class TestBlockContent(TestCase):
         self.assertEqual(Comment.objects.count(), 6)
 
         earliest_comment_date = datetime.strptime(
-            "2021-02-02 12:21:37",
-            '%Y-%m-%d %H:%M:%S'
+            "2021-02-02 12:21:37", "%Y-%m-%d %H:%M:%S"
         )
 
-        earliest_comment = Comment.objects.order_by(
-            "posted_date"
-        ).first()
+        earliest_comment = Comment.objects.order_by("posted_date").first()
 
         self.assertEqual(
             earliest_comment_date,

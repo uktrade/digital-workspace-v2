@@ -80,5 +80,7 @@ class PolicyOrGuidancePage(WPPage):
             revision.save()
             self.wagtail_page.last_published_at = self.page_content["post_date"]
             self.wagtail_page.first_published_at = self.page_content["post_date"]
-            self.wagtail_page.latest_revision_created_at = self.page_content["post_date"]
+            self.wagtail_page.latest_revision_created_at = self.page_content[
+                "post_date"
+            ]
             self.wagtail_page.save()
