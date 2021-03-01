@@ -97,7 +97,7 @@ class TopicTheme(models.Model):
 
     class Meta:
         unique_together = ("topic", "theme")
-        #ordering = ["topic__title"]
+        ordering = ["topic__title"]
 
 
 class PageTopic(models.Model):
