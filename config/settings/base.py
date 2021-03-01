@@ -204,6 +204,12 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_URL = reverse_lazy("authbroker_client:login")
 LOGIN_REDIRECT_URL = "/"
 
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
 # Configure date/time format (GDS style)
 DATE_FORMAT = "j F Y"
 TIME_FORMAT = "P"
@@ -373,11 +379,14 @@ TWITTER_PERM_SEC_USER = env("TWITTER_PERM_SEC_USER", default=None)
 GTM_CODE = env("GTM_CODE", default=None)
 GTM_AUTH = env("GTM_AUTH", default=None)
 
+PERM_SEC_NAME = env("PERM_SEC_NAME", default=None)
+
 # Using https://pypi.org/project/django-settings-export/ for template settings access
 SETTINGS_EXPORT = [
     "DEBUG",
     "GTM_CODE",
     "GTM_AUTH",
+    "PERM_SEC_NAME",
 ]
 
 LOGGING = {
@@ -448,5 +457,3 @@ NAMESPACES = {
 SKIP_LIST = env.list("SKIP_LIST", default=[])
 
 ORPHAN_PAGES = env.dict("ORPHAN_PAGES", default={})
-
-PERM_SEC_AUTHOR_NAME = env("PERM_SEC_AUTHOR_NAME", default=None)
