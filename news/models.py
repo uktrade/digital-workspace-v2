@@ -121,6 +121,14 @@ class NewsPage(PageWithTopics):
     parent_page_types = ["news.NewsHome"]
     subpage_types = []  # Should not be able to create children
 
+    pinned_on_home = models.BooleanField(
+        default=False,
+    )
+
+    perm_sec_as_author = models.BooleanField(
+        default=False,
+    )
+
     allow_comments = models.BooleanField(
         default=True,
     )
@@ -149,6 +157,8 @@ class NewsPage(PageWithTopics):
         ImageChooserPanel("preview_image"),
         InlinePanel("news_categories", label="News categories"),
         FieldPanel("allow_comments"),
+        FieldPanel("perm_sec_as_author"),
+        FieldPanel("pinned_on_home"),
     ]
 
     promote_panels = [
@@ -272,6 +282,7 @@ class NewsHome(RoutablePageMixin, BasePage):
                 NewsPage.objects.live()
                 .public()
                 .order_by(
+                    "pinned_on_home",
                     "-first_published_at",
                 )
             )

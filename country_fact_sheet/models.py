@@ -118,12 +118,12 @@ class CountryFactSheetHome(ContentPage):
         if context["page"].hmtc_region_factsheets_collection:
             context["hmtc_region_factsheets"] = Document.objects.filter(
                 collection=context["page"].hmtc_region_factsheets_collection
-            )
+            ).order_by("title")
 
         if context["page"].group_factsheets_collection:
             context["group_factsheets"] = Document.objects.filter(
                 collection=context["page"].group_factsheets_collection
-            )
+            ).order_by("title")
 
         return context
 
