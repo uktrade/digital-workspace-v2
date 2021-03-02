@@ -267,7 +267,7 @@ class NewsHome(RoutablePageMixin, BasePage):
                 )
                 .live()
                 .public()
-                .order_by("-first_published_at")
+                .order_by("-last_published_at")
             )
 
             if category.lead_story:
@@ -282,7 +282,7 @@ class NewsHome(RoutablePageMixin, BasePage):
                 NewsPage.objects.live()
                 .public()
                 .order_by(
-                    "-first_published_at",
+                    "-last_published_at",
                 )
             )
 
