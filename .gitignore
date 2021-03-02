@@ -42,6 +42,7 @@ backup_file_dev.backup
 backup.sql
 backup.dump
 backup_s3_asset_only.backup
+backup_file_post_live.backup
 
 # Add core app static folder
 !core/static/core
