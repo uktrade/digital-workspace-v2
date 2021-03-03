@@ -23,11 +23,9 @@
     padding: 0 !important;
   }
 
-  .home-news-items {
-    .news-item {
+  .ws-home-grid-items {
+    li {
       padding: 0 0 12px 0;
-      margin-bottom: 12px;
-
       .govuk-heading-s {
         margin: 0 0 8px 0;
         padding: 0;
@@ -89,14 +87,6 @@
     }
   }
 
-  .ws-whats-popular {
-    img {
-      width: 100%;
-      object-fit: cover;
-      height: auto;
-    }
-  }
-
   .tweets {
     box-sizing: border-box;
 
@@ -131,19 +121,19 @@
     section {
       margin: 0 0 24px 0;
     }
-    .home-news-items {
+    .ws-home-grid-items {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       column-gap: 20px;
 
       li {
-        margin-bottom: 24px;
-
         img {
-          width: 100%;
-          object-fit: cover;
-          height: 165px;
+          height: 195px;
         }
+      }
+
+      .news-item {
+        margin-bottom: 24px;
       }
 
       .news-item-1 {
