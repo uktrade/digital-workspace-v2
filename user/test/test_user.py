@@ -1,11 +1,11 @@
 import uuid
+
 from django.conf import settings
 from django.test import TestCase
 
-from user.test.factories import UserFactory
-
 from user.backends import CustomAuthbrokerBackend
 from user.models import User
+from user.test.factories import UserFactory
 
 
 class TestSSOUserProfile(TestCase):
