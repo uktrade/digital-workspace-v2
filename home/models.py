@@ -112,6 +112,7 @@ class HomePage(BasePage):
             .public()
             .order_by(
                 "-pinned_on_home",
+                "result_weighting",
                 "-last_published_at",
             )[:8]
         )
