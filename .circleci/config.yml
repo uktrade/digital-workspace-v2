@@ -17,6 +17,8 @@ jobs:
             - run:
                 name: build webpack
                 command: npm run build
+    test:
+        steps:
             - run:
                 name: run black (code formatting check)
                 command: make black
@@ -26,6 +28,9 @@ jobs:
             - run:
                 name: run unit tests
                 command: make test
+        parallelism: 4
+    post:
+        steps:
             - run:
                 name: Publish unit test coverage
                 command: |
