@@ -12,4 +12,6 @@ class UserFactory(factory.django.DjangoModelFactory):
     first_name = "Jane"
     last_name = "Smith"
     email = "jane.smith@test.com"
-    username = uuid.uuid4()
+    legacy_sso_user_id = uuid.uuid4()
+    username = "jane.smith@-1111111@id.test.gov.uk"
+    sso_contact_email = "jane.smith@test.com"
