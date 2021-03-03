@@ -198,7 +198,7 @@ DATABASES = {"default": env.db()}
 # Configure authentication and Staff SSO integration
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "authbroker_client.backends.AuthbrokerBackend",
+    "user.backends.CustomAuthbrokerBackend",
 ]
 
 LOGIN_URL = reverse_lazy("authbroker_client:login")
