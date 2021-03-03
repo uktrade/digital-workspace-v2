@@ -17,7 +17,7 @@ class GetPeoplefinderProfileMiddleware:
 
     def process_template_response(self, request, response):
         if response.context_data:
-            profile = peoplefinder.get_user_profile(request.user.username)
+            profile = peoplefinder.get_user_profile(request.user.legacy_sso_user_id)
             response.context_data["peoplefinder_profile"] = profile
 
         return response
