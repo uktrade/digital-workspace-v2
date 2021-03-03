@@ -121,6 +121,11 @@ class NewsPage(PageWithTopics):
     parent_page_types = ["news.NewsHome"]
     subpage_types = []  # Should not be able to create children
 
+    result_weighting = models.IntegerField(
+        null=True,
+        blank=True,
+    )
+
     pinned_on_home = models.BooleanField(
         default=False,
     )
@@ -159,6 +164,7 @@ class NewsPage(PageWithTopics):
         FieldPanel("allow_comments"),
         FieldPanel("perm_sec_as_author"),
         FieldPanel("pinned_on_home"),
+        FieldPanel("result_weighting"),
     ]
 
     promote_panels = [
@@ -267,7 +273,10 @@ class NewsHome(RoutablePageMixin, BasePage):
                 )
                 .live()
                 .public()
-                .order_by("-last_published_at")
+                .order_by(
+                    "result_weighting",
+                    "-last_published_at"
+                )
             )
 
             if category.lead_story:
@@ -282,6 +291,7 @@ class NewsHome(RoutablePageMixin, BasePage):
                 NewsPage.objects.live()
                 .public()
                 .order_by(
+                    "result_weighting",
                     "-last_published_at",
                 )
             )
