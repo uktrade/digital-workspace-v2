@@ -8,7 +8,7 @@ class Country(models.Model):
     code = models.CharField(max_length=2, primary_key=True)
     name = models.CharField(max_length=255)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -16,7 +16,7 @@ class Workday(models.Model):
     code = models.CharField(max_length=3, primary_key=True)
     name = models.CharField(max_length=9)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 

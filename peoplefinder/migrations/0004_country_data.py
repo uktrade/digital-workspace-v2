@@ -267,7 +267,7 @@ def insert_country_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("peoplefinder", "0004_auto_20210302_0955"),
+        ("peoplefinder", "0003_auto_20210303_1430"),
     ]
 
     operations = [
