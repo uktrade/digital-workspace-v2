@@ -89,7 +89,7 @@
     }
   }
 
-  .whats-popular {
+  .ws-whats-popular {
     img {
       width: 100%;
       object-fit: cover;
@@ -185,12 +185,13 @@
       }
     }
 
-    .whats-popular {
+    .ws-whats-popular {
       column-count: 3;
       column-fill: auto;
 
       img {
         width: 100%;
+        height: auto;
         object-fit: cover;
       }
     }
