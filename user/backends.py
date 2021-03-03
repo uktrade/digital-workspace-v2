@@ -5,7 +5,6 @@ from authbroker_client.utils import (
     has_valid_token,
 )
 from django.contrib.auth import get_user_model
-from django.db.models import Q
 
 
 User = get_user_model()
@@ -26,7 +25,9 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
         )
 
         # There can only be 0 users or 1 match
-        assert users_matching_sso_record.count() < 2, "Duplicate email SSO id user found"
+        assert (  # noqa S101
+            users_matching_sso_record.count() < 2
+        ), "Duplicate email SSO id user found"
         user = users_matching_sso_record.first()
 
         if user:
@@ -44,7 +45,7 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
                 sso_contact_email=profile["contact_email"],
                 first_name=profile["first_name"],
                 last_name=profile["last_name"],
-                legacy_sso_user_id=profile["user_id"]
+                legacy_sso_user_id=profile["user_id"],
             )
 
         user.set_unusable_password()

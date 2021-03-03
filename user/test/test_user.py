@@ -84,8 +84,6 @@ class TestSSOUserProfile(TestCase):
         self.assertEqual(User.objects.count(), 2)
 
         self.assertEqual(
-            User.objects.filter(
-                username=profile["email_user_id"]
-            ).count(),
+            User.objects.filter(username=profile["email_user_id"]).count(),
             1,
         )
