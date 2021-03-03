@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0006_workday_data'),
+        ("peoplefinder", "0006_workday_data"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='person',
-            name='country',
-            field=models.ForeignKey(default='GB', on_delete=django.db.models.deletion.SET_DEFAULT, related_name='+', to='peoplefinder.country'),
+            model_name="person",
+            name="country",
+            field=models.ForeignKey(
+                default="GB",
+                on_delete=django.db.models.deletion.SET_DEFAULT,
+                related_name="+",
+                to="peoplefinder.country",
+            ),
         ),
     ]

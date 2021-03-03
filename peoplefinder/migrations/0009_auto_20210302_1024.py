@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0008_auto_20210302_1024'),
+        ("peoplefinder", "0008_auto_20210302_1024"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='person',
-            name='workdays',
-            field=models.ManyToManyField(blank=True, to='peoplefinder.Workday'),
+            model_name="person",
+            name="workdays",
+            field=models.ManyToManyField(blank=True, to="peoplefinder.Workday"),
         ),
     ]
