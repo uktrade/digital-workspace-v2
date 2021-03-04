@@ -28,11 +28,7 @@
                 {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
             </nav>
             <div class="site-search">
-                <form class="search-form" action="/search/">
-                    <label for="search-site" class="govuk-visually-hidden">Search Digital Workspace</label>
-                    <input id="search-site" class="govuk-input" name="query" placeholder="Search site" type="search"/>
-                    <button type="submit">Search</button>
-                </form>
+                {% include 'includes/search-form.html' %}
             </div>
         </div>
     </div>
