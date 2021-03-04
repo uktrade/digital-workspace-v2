@@ -72,6 +72,11 @@ def search(request):
         )
     )
 
+    total = 0
+    hits = []
+    pagination_range = None
+    show_total = pinned_results.count() + total
+
     if search_query:
         make_search = (
             Search(index="wagtail__wagtailcore_page")
@@ -130,8 +135,6 @@ def search(request):
 
         if total % total_shown:
             num_pages += 1
-
-        pagination_range = None
 
         if num_pages > 1:
             start = 1
