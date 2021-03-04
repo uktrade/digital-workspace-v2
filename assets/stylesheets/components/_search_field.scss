@@ -97,6 +97,14 @@ $input-size: 40px;
   }
 }
 
+.site-search-mobile {
+  .search-form {
+    button {
+      background-color: $govuk-link-colour;
+    }
+  }
+}
+
 @media only screen and (max-width: 767px) {
   .site-search {
    display: none;
