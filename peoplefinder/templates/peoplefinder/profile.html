@@ -1,21 +1,96 @@
 {% extends 'peoplefinder/page.html' %}
 
 {% block content %}
-<h1 class="govuk-heading-l">{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
-<p><a class="govuk-link" href="mailto:{{ profile.user.email }}">{{ profile.user.email }}</a></p>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-s">Picture</h2>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">{{ profile.user.get_full_name }}</h1>
 
-{% for role in roles %}
-    <p class="govuk-body-m"><strong>{{ role.job_title }}</strong> in <a class="govuk-link" href="/teams/{{ role.team.slug }}">{{ role.team.name }}</a></p>
-{% endfor %}
+        <dl class="ws-profile__primary-contact-list govuk-body-l">
+            <dt class="govuk-visually-hidden">Preferred email</dt>
+            {% if profile.contact_email %}
+                <dd><a href="mailto:{{ profile.contact_email }}" class="govuk-link">{{ profile.contact_email }}</a></dd>
+            {% else %}
+                <dd><a href="mailto:{{ profile.user.email }}" class="govuk-link">{{ profile.user.email }}</a></dd>
+            {% endif %}
 
-{% if profile.user == user %}
-    <p><a class="govuk-button" href="/people/{{ profile.user.id }}/edit">Edit profile</a></p>
-{% endif %}
+            {% if profile.primary_phone_number %}
+                <dt class="govuk-visually-hidden">Preferred contact number</dt>
+                <dd><a href="tel:{{ profile.primary_phone_number }}" class="govuk-link">{{ profile.primary_phone_number }}</a></dd>
+            {% endif %}
+        </dl>
+        
+        {% for role in roles %}
+            <p class="govuk-body-m"><strong>{{ role.job_title }}</strong> in <a class="govuk-link" href="/teams/{{ role.team.slug }}">{{ role.team.name }}</a></p>
+        {% endfor %}
+        
+        {% if profile.user == user %}
+            <p><a class="govuk-button" href="/people/{{ profile.user.id }}/edit">Edit profile</a></p>
+        {% endif %}
+    </div>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--visible">
 
 <dl class="govuk-summary-list">
+    {% if profile.building %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Place(s) I usually work</dt>
+            <dd class="govuk-summary-list__value">{{ profile.building }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.town_city_or_region %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Town, city or region</dt>
+            <dd class="govuk-summary-list__value">{{ profile.town_city_or_region }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.country %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Country</dt>
+            <dd class="govuk-summary-list__value">{{ profile.country }}</dd>
+        </div>
+    {% endif %}
+
     <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">My manager</dt>
-        <dd class="govuk-summary-list__value"><a class="govuk-link" href="/people/{{ profile.manager.user.id }}">{{ profile.manager.user.first_name }} {{ profile.manager.user.last_name }}</a></dd>
+        <dt class="govuk-summary-list__key">Preferred email</dt>
+        {% if profile.contact_email %}
+            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.contact_email }}" class="govuk-link">{{ profile.contact_email }}</a></dd>
+        {% else %}
+            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.user.email }}" class="govuk-link">{{ profile.user.email }}</a></dd>
+        {% endif %}
     </div>
+
+    {% if profile.primary_phone_number %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Preferred contact number</dt>
+            <dd class="govuk-summary-list__value"><a href="tel:{{ profile.primary_phone_number }}" class="govuk-link">{{ profile.primary_phone_number }}</a></dd>
+        </div>
+    {% endif %}
+
+    {% if profile.secondary_phone_number %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Alternative contact number</dt>
+            <dd class="govuk-summary-list__value"><a href="tel:{{ profile.secondary_phone_number }}" class="govuk-link">{{ profile.secondary_phone_number }}</a></dd>
+        </div>
+    {% endif %}
+
+    {% if profile.pronouns %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">My pronouns</dt>
+            <dd class="govuk-summary-list__value">{{ profile.pronouns }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.workdays %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Days I work</dt>
+            <dd class="govuk-summary-list__value">{{ profile.workdays.all|join:", " }}</dd>
+        </div>
+    {% endif %}
 </dl>
 {% endblock %}
