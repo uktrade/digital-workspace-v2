@@ -275,6 +275,7 @@ WAGTAILSEARCH_BACKENDS = {
     "default": {
         "BACKEND": "wagtail.search.backends.elasticsearch7",
         "AUTO_UPDATE": True,
+        "ATOMIC_REBUILD": True,
         "URLS": [ELASTIC_SEARCH_URL],
         "INDEX": "wagtail",
         "TIMEOUT": 60,
