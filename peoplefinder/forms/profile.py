@@ -21,6 +21,9 @@ class ProfileForm(forms.ModelForm):
             "international_building",
             "location_in_building",
             "workdays",
+            "grade",
+            "manager",
+            "do_not_work_for_dit",
         ]
         widgets = {"workdays": forms.CheckboxSelectMultiple}
 
@@ -75,6 +78,16 @@ class ProfileForm(forms.ModelForm):
         self.fields["workdays"].widget.attrs.update(
             {"class": "govuk-checkboxes__input"}
         )
+        self.fields["grade"].widget.attrs.update(
+            {"class": "govuk-select govuk-!-width-one-half"}
+        )
+        # Manager is a custom component
+        self.fields["do_not_work_for_dit"].widget.attrs.update(
+            {"class": "govuk-checkboxes__input"}
+        )
+        self.fields[
+            "do_not_work_for_dit"
+        ].label = "My manager is not listed because I do not work for DIT"
 
         self.initial.update(
             first_name=person.user.first_name,

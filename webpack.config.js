@@ -6,17 +6,18 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   context: __dirname,
   entry: {
-      main: ['./assets/js/application.js', './assets/stylesheets/application.scss']
+    main: ['./assets/js/application.js', './assets/stylesheets/application.scss'],
+    htmx: ['./assets/js/htmx.js']
   },
   output: {
-      path: path.resolve('./assets/webpack_bundles/'),
-      publicPath: '/static/webpack_bundles/',
-      filename: "[name]-[hash].js"
+    path: path.resolve('./assets/webpack_bundles/'),
+    publicPath: '/static/webpack_bundles/',
+    filename: "[name]-[hash].js"
   },
 
   plugins: [
-    new BundleTracker({filename: './webpack-stats.json'}),
-		new MiniCssExtractPlugin({
+    new BundleTracker({ filename: './webpack-stats.json' }),
+    new MiniCssExtractPlugin({
       filename: '[name]-[hash].css',
       chunkFilename: '[id]-[hash].css'
     })
@@ -42,7 +43,7 @@ module.exports = {
         test: /\.s[ac]ss$/i,
         use: [
           {
-						loader: MiniCssExtractPlugin.loader
+            loader: MiniCssExtractPlugin.loader
           },
           'css-loader',
           'sass-loader'

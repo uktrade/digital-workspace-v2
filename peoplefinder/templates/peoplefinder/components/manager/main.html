@@ -1,0 +1,23 @@
+{% comment %}
+Context:
+    profile (Person): The person behind the profile
+    manager (Person): The person's manager
+{% endcomment %}
+
+<div id="manager-component" class="govuk-!-width-one-half">
+    <div class="govuk-!-margin-bottom-2">
+        {% if manager %}
+            <p class="govuk-body-m">{{ manager.user.get_full_name }}{% if manager.roles.first %} ({{ manager.roles.first.team.name }}, {{ manager.roles.first.job_title }}){% endif %}</p>
+        {% else %}
+            <p class="govuk-body-m">No manager assigned</p>
+        {% endif %}
+        <input type="hidden" name="manager" id="id_manager" value="{{ manager.user.id }}">
+    </div>
+
+    <div hx-target="this" hx-swap="outerHTML">
+        <button
+            class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
+            hx-get="{% url 'profile-edit-manager-update' profile.user.id %}"
+        >Update manager</button>
+    </div>
+</div>

@@ -1,6 +1,10 @@
 {% extends 'peoplefinder/page.html' %}
 
+{% load render_bundle from webpack_loader %}
+
 {% block content %}
+{% render_bundle 'htmx' 'js' %}
+
 <h1 class="govuk-heading-l">Edit profile</h1>
 <form class="ws-profile-edit-form" method="post">
     {% csrf_token %}
@@ -164,7 +168,24 @@
                 </div>
             </div>
         </details>
+    </fieldset>
 
+    <fieldset>
+        <h2 class="govuk-heading-m">Grade and manager</h2>
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="{{ form.grade.id_for_label }}">Grade</label>
+            {{ form.grade }}
+        </div>
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="{{ form.manager.id_for_label }}">Manager</label>
+            {% include 'peoplefinder/components/manager/main.html' with profile=profile manager=profile.manager %}
+        </div>
+
+        <div class="govuk-form-group">
+            {% include 'peoplefinder/components/checkbox.html' with checkbox=form.do_not_work_for_dit %}
+        </div>
     </fieldset>
 
     <input class="govuk-button" type="submit" value="Save profile">

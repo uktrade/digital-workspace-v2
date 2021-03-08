@@ -1,14 +1,48 @@
-from django.urls import path
+from django.urls import include, path
 
 from peoplefinder.views.home import PeopleHome, TeamHome
+from peoplefinder.views.manager import (
+    ManagerCancel,
+    ManagerSearch,
+    ManagerSelect,
+    ManagerUpdate,
+)
 from peoplefinder.views.profile import ProfileDetailView, ProfileEditView
 from peoplefinder.views.team import TeamDetailView, TeamPeopleView, TeamTreeView
 
 
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
-    path("<pk>/", ProfileDetailView.as_view(), name="profile-view"),
-    path("<pk>/edit", ProfileEditView.as_view(), name="profile-edit"),
+    path("<int:profile_pk>/", ProfileDetailView.as_view(), name="profile-view"),
+    path("<int:profile_pk>/edit/", ProfileEditView.as_view(), name="profile-edit"),
+    # Manager component
+    path(
+        "<int:profile_pk>/edit/manager/",
+        include(
+            [
+                path(
+                    "select/<int:user_pk>",
+                    ManagerSelect.as_view(),
+                    name="profile-edit-manager-select",
+                ),
+                path(
+                    "update",
+                    ManagerUpdate.as_view(),
+                    name="profile-edit-manager-update",
+                ),
+                path(
+                    "cancel",
+                    ManagerCancel.as_view(),
+                    name="profile-edit-manager-cancel",
+                ),
+                path(
+                    "search",
+                    ManagerSearch.as_view(),
+                    name="profile-edit-manager-search",
+                ),
+            ]
+        ),
+    ),
 ]
 
 teams_urlpatterns = [
