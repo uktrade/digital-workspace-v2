@@ -18,6 +18,17 @@ SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
+INSTALLED_APPS += [
+    "elasticapm.contrib.django",
+]
+
+ELASTIC_APM = {
+    "SERVICE_NAME": "Digital Workspace",
+    "SECRET_TOKEN": env("ELASTIC_APM_SECRET_TOKEN"),
+    "SERVER_URL": env("ELASTIC_APM_SERVER_URL"),
+    "ENVIRONMENT": env("APP_ENV"),
+    "SERVER_TIMEOUT": env("ELASTIC_APM_SERVER_TIMEOUT", default="20s"),
+}
 
 LOGGING = {
     "version": 1,
