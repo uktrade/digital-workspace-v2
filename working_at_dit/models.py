@@ -30,10 +30,6 @@ class WorkingAtDITHome(ContentPage):
         return context
 
 
-class TopicHome(BasePage):
-    subpage_types = ["working_at_dit.Topic"]
-
-
 class Topic(ContentPage):
     subpage_types = []  # Should not be able to create children
 
@@ -76,6 +72,17 @@ class Topic(ContentPage):
     content_panels = ContentPage.content_panels + [
         InlinePanel("topic_themes", label="Themes"),
     ]
+
+
+class TopicHome(BasePage):
+    template = "working_at_dit/section_home.html"
+    subpage_types = ["working_at_dit.Topic"]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["children"] = Topic.objects.live().public().order_by("title")
+
+        return context
 
 
 class TopicTheme(models.Model):
@@ -152,12 +159,13 @@ class HowDoI(PageWithTopics):
 
 
 class HowDoIHome(ContentPage):
+    template = "working_at_dit/section_home.html"
     subpage_types = ["working_at_dit.HowDoI"]  # Should not be able to create children
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        context["how_do_i_pages"] = HowDoI.objects.live().public().order_by("title")
+        context["children"] = HowDoI.objects.live().public().order_by("title")
 
         return context
 
@@ -185,24 +193,27 @@ class PoliciesAndGuidanceHome(BasePage):
 
 
 class PoliciesHome(BasePage):
+    template = "working_at_dit/section_home.html"
     subpage_types = [
         "working_at_dit.Policy",
     ]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["policies"] = Policy.objects.live().public().order_by("title")
+        context["children"] = Policy.objects.live().public().order_by("title")
 
         return context
 
 
 class GuidanceHome(BasePage):
+    template = "working_at_dit/section_home.html"
+
     subpage_types = [
         "working_at_dit.Guidance",
     ]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["guidances"] = Guidance.objects.live().public().order_by("title")
+        context["children"] = Guidance.objects.live().public().order_by("title")
 
         return context

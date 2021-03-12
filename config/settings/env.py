@@ -18,6 +18,7 @@ SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
