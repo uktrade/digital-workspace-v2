@@ -20,6 +20,7 @@ class ProfileDetailView(DetailView, PeoplefinderView):
         roles = profile.roles.select_related("team").all()
 
         context["roles"] = roles
+        context["title"] = profile.user.get_full_name()
 
         if roles:
             # TODO: How do we know which team to select as the main one?
@@ -27,7 +28,9 @@ class ProfileDetailView(DetailView, PeoplefinderView):
             context["team"] = team
             # TODO: `parent_teams` is common to all views. Perhaps we should
             # refactor this into a common base view or mixin?
-            context["parent_teams"] = TeamService().get_all_parent_teams(team)
+            context["parent_teams"] = list(TeamService().get_all_parent_teams(team)) + [
+                team
+            ]
 
         return context
 
