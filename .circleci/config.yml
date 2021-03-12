@@ -2,7 +2,7 @@ version: 2
 jobs:
     build:
         machine:
-            image: ubuntu-1604:202004-01
+            image: ubuntu-2004:202101-01
         steps:
             - checkout
             - run:
@@ -11,6 +11,12 @@ jobs:
             - run:
                 name: build containers
                 command: make build
+            - run:
+                name: install npm packages
+                command: npm install
+            - run:
+                name: build webpack
+                command: npm run build
             - run:
                 name: run black (code formatting check)
                 command: make black
