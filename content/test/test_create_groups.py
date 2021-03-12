@@ -21,8 +21,9 @@ class CreateGroupsTestCase(TestCase):
 
     def test_permissions(self):
         # news moderators have the same collection permissions as moderators
+        # apart from the document choose permission
         self.assertEqual(
-            self.news_moderators.collection_permissions.count(),
+            self.news_moderators.collection_permissions.count() - 1,
             self.moderators.collection_permissions.count(),
         )
 
