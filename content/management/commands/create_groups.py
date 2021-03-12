@@ -77,6 +77,8 @@ MODERATOR_PERMISSIONS = [
     "change_comment",
     "delete_comment",
     "view_comment",
+    # Add missing choose document permission
+    "choose_document",
 ]
 
 NEWS_MODERATOR_PERMISSIONS = [
