@@ -27,6 +27,30 @@ This is useful if you are using [vscode](https://code.visualstudio.com/) with th
 
 ---
 
+## Tests
+
+You can write tests using [pytest](https://docs.pytest.org/en/stable/) and [pytest-django](https://pytest-django.readthedocs.io/en/latest/).
+
+```bash
+# Run all tests
+make test
+
+# Run selected tests
+make test tests=peoplefinder
+
+# Run tests interactively
+make bash
+pytest
+
+# To recreate the database use the --create-db flag
+make test tests="peoplefinder --create-db"
+# or interactively
+make bash
+pytest --create-db
+```
+
+The pytest settings can be found in the `pyproject.toml` file.
+
 ## Assets
 
 Assets are handled via Webpack and `django-webpack-loader`. A number of npm

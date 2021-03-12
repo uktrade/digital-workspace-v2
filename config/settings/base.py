@@ -29,6 +29,9 @@ BASE_URL = env("WAGTAIL_BASE_URL")
 
 DEBUG = env.bool("DJANGO_DEBUG", False)
 
+# Feature flag to enable the new peoplefinder v2
+# TODO: Remove feature flag once we have migrated to v2 in prod
+PEOPLEFINDER_V2 = env.bool("PEOPLEFINDER_V2", False)
 PEOPLEFINDER_PROFILE_API_PRIVATE_KEY = b64decode(
     env("PEOPLEFINDER_PROFILE_API_PRIVATE_KEY"), validate=True
 )
@@ -108,6 +111,7 @@ LOCAL_APPS = [
     "file_upload_handler",
     "user.apps.UserConfig",
     "pingdom.apps.PingdomConfig",
+    "peoplefinder.apps.PeoplefinderConfig",
 ]
 
 THIRD_PARTY_APPS = [

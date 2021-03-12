@@ -17,7 +17,7 @@ django_redis
 django-settings-export
 
 # Other libraries
-pyjwt[crypto]>=1.7.1,<2
+pyjwt[crypto]==2.0.1
 requests>=2.23,<3
 boto3
 htmllaundry
