@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from core.admin import admin_site
-from peoplefinder.forms import TeamModelForm
+from peoplefinder.forms.admin import TeamModelForm
 from peoplefinder.models import Person, Team, TeamMember
 from peoplefinder.services.team import TeamService
 
