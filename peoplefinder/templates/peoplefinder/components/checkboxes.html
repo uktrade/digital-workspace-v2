@@ -1,0 +1,10 @@
+<div class="govuk-checkboxes">
+    {% for checkbox in field %}
+        <div class="govuk-checkboxes__item">
+            {{ checkbox.tag }}
+            <label class="govuk-label govuk-checkboxes__label" for="{{ checkbox.id_for_label }}">
+                {{ checkbox.choice_label }}
+            </label>
+        </div>
+    {% endfor %}
+</div>

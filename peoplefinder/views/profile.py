@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 
+from peoplefinder.forms.profile import ProfileForm
 from peoplefinder.models import Person
 from peoplefinder.services.team import TeamService
 from .base import PeoplefinderView
@@ -33,8 +34,9 @@ class ProfileDetailView(DetailView, PeoplefinderView):
 
 class ProfileEditView(UserPassesTestMixin, UpdateView, PeoplefinderView):
     model = Person
+    context_object_name = "profile"
+    form_class = ProfileForm
     template_name = "peoplefinder/profile-edit.html"
-    fields = ["manager", "do_not_work_for_dit"]
 
     def test_func(self) -> bool:
         # The profile must be that of the logged in user.
