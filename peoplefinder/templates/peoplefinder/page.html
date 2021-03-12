@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ title }}{% endblock %}
+
 {% block main_content %}
 <div class="govuk-breadcrumbs">
     <ol class="govuk-breadcrumbs__list">
@@ -11,6 +13,11 @@
                 <a class="govuk-link" href="/teams/{{ team.slug }}">{{ team.short_name }}</a>
             </li>
         {% endfor %}
+        {% if title %}
+            <li class="govuk-breadcrumbs__list-item">
+                {{ title }}
+            </li>
+        {% endif %}
     </ol>
 </div>
 
