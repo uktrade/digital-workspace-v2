@@ -16,6 +16,15 @@ npm run build
 make migrate
 make superuser
 make up
+
+# Optional steps
+
+# Start a bash session
+make bash
+# Create test users
+python manage.py create_test_users
+# Create user profiles
+python manage.py create_user_profiles
 ```
 
 You can now access Digital Workspace on [localhost:8000](http://localhost:8000>)
