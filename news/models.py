@@ -273,10 +273,7 @@ class NewsHome(RoutablePageMixin, BasePage):
                 )
                 .live()
                 .public()
-                .order_by(
-                    "result_weighting",
-                    "-last_published_at"
-                )
+                .order_by("result_weighting", "-first_published_at")
             )
 
             if category.lead_story:
@@ -290,10 +287,7 @@ class NewsHome(RoutablePageMixin, BasePage):
             news_items = (
                 NewsPage.objects.live()
                 .public()
-                .order_by(
-                    "result_weighting",
-                    "-last_published_at",
-                )
+                .order_by("result_weighting", "-first_published_at")
             )
 
             featured_page = NewsPage.objects.filter(
