@@ -25,6 +25,8 @@ make bash
 python manage.py create_test_users
 # Create user profiles
 python manage.py create_user_profiles
+# Create test teams
+python manage.py create_test_teams
 ```
 
 You can now access Digital Workspace on [localhost:8000](http://localhost:8000>)
