@@ -113,7 +113,7 @@ class HomePage(BasePage):
             .order_by(
                 "-pinned_on_home",
                 "result_weighting",
-                "-last_published_at",
+                "-first_published_at",
             )[:8]
         )
         context["news_items"] = news_items
