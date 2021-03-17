@@ -1,3 +1,5 @@
+from typing import Optional
+
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -15,6 +17,7 @@ from wagtail.snippets.models import register_snippet
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned
+from user.models import User as UserModel
 
 User = get_user_model()
 
@@ -87,6 +90,17 @@ class BasePage(Page):
             )
 
         return response
+
+    def get_first_publisher(self) -> Optional[UserModel]:
+        """Return the first publisher of the page or None."""
+        first_revision_with_user = (
+            self.revisions.exclude(user=None).order_by("created_at", "id").first()
+        )
+
+        if first_revision_with_user:
+            return first_revision_with_user.user
+        else:
+            return None
 
 
 class ContentPage(BasePage):
