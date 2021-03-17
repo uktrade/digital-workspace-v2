@@ -12,7 +12,7 @@
                 {{ news_item.get_latest_revision.user.first_name }} {{ news_item.get_latest_revision.user.last_name }},
             {% endif %}
         {% endif %}
-        {{ news_item.last_published_at }}
+        {{ news_item.first_published_at }}
         {% for news_category_lkup in news_item.news_categories.all %}
             <a class="govuk-link" href="/news-and-views/category/{{ news_category_lkup.news_category.slug }}">{{ news_category_lkup.news_category.category }}</a>,
         {% endfor %}
