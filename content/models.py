@@ -6,6 +6,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
+from simple_history.models import HistoricalRecords
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     StreamFieldPanel,
@@ -36,6 +37,7 @@ class SiteAlertBanner(models.Model):
     activated = models.BooleanField(
         default=False,
     )
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.banner_text
@@ -57,6 +59,7 @@ class Theme(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
     summary = models.CharField(max_length=255)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.title
@@ -244,6 +247,7 @@ class ContentPage(BasePage):
 
 class SearchKeywordOrPhrase(models.Model):
     keyword_or_phrase = models.CharField(max_length=1000)
+    history = HistoricalRecords()
 
 
 class SearchExclusionPageLookUp(models.Model):
@@ -254,6 +258,7 @@ class SearchExclusionPageLookUp(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+    history = HistoricalRecords()
 
 
 class SearchPinPageLookUp(models.Model):
@@ -264,6 +269,7 @@ class SearchPinPageLookUp(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+    history = HistoricalRecords()
 
 
 class PrivacyPolicyHome(ContentPage):

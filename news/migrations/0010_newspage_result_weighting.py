@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('news', '0009_newspage_pinned_on_home'),
+        ("news", "0009_newspage_pinned_on_home"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='newspage',
-            name='result_weighting',
+            model_name="newspage",
+            name="result_weighting",
             field=models.IntegerField(blank=True, null=True),
         ),
     ]

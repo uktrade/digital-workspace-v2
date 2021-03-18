@@ -119,6 +119,7 @@ THIRD_PARTY_APPS = [
     "webpack_loader",
     "storages",
     "django_elasticsearch_dsl",
+    "simple_history",
 ]
 
 WAGTAIL_APPS = [
@@ -166,6 +167,7 @@ MIDDLEWARE = [
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "core.middleware.GetPeoplefinderProfileMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"

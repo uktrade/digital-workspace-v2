@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils.text import slugify
 from modelcluster.fields import ParentalKey
+from simple_history.models import HistoricalRecords
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     InlinePanel,
@@ -49,6 +50,7 @@ class Comment(models.Model):
         null=True,
         related_name="replies",
     )
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.content
@@ -81,6 +83,7 @@ class NewsCategory(models.Model):
         null=True,
         blank=True,
     )
+    history = history = HistoricalRecords()
 
     def __str__(self):
         return self.category

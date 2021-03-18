@@ -99,10 +99,6 @@ django-ipware==2.1.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-log-formatter-ecs
-django-log-formatter-ecs==0.0.4
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   -r requirements.in/prod.in
 django-modelcluster==5.1
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -110,6 +106,8 @@ django-modelcluster==5.1
 django-redis==4.12.1
     # via -r requirements.in/../requirements/base.txt
 django-settings-export==1.2.1
+    # via -r requirements.in/../requirements/base.txt
+django-simple-history==2.12.0
     # via -r requirements.in/../requirements/base.txt
 django-staff-sso-client==3.1.0
     # via -r requirements.in/../requirements/base.txt
@@ -137,6 +135,10 @@ django==3.1.6
     #   django-treebeard
     #   djangorestframework
     #   wagtail
+django_log_formatter_ecs==0.0.4
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   -r requirements.in/prod.in
 djangorestframework==3.12.2
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -296,6 +298,7 @@ six==1.15.0
     #   click-repl
     #   django-elasticsearch-dsl
     #   django-extensions
+    #   django-simple-history
     #   elasticsearch-dsl
     #   html5lib
     #   htmllaundry
