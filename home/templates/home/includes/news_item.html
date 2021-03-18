@@ -8,8 +8,8 @@
         {% if news_item.perm_sec_as_author %}
             {{ settings.PERM_SEC_NAME }},
         {% else %}
-            {% if news_item.get_latest_revision.user %}
-                {{ news_item.get_latest_revision.user.first_name }} {{ news_item.get_latest_revision.user.last_name }},
+            {% if news_item.get_first_publisher %}
+                {{ news_item.get_first_publisher.get_full_name }},
             {% endif %}
         {% endif %}
         {{ news_item.first_published_at }}

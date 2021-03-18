@@ -3,7 +3,7 @@
 
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    {% include "includes/attribution.html" with page=page perm_sec_as_author=self.perm_sec_as_author %}
+    {% include "includes/attribution.html" with page=page perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=True %}
     <div class="ws-streamfield-content">
         {% for block in page.body %}
             {% include_block block %}
