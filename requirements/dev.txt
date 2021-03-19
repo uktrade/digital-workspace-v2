@@ -285,7 +285,7 @@ pep8-naming==0.10.0
     # via -r requirements.in/dev.in
 phpserialize==1.3
     # via -r requirements.in/../requirements/base.txt
-pillow==7.1.2
+pillow==8.1.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
@@ -431,7 +431,7 @@ vine==5.0.0
     #   celery
 wagtail-draftail-anchors==0.2.0
     # via -r requirements.in/../requirements/base.txt
-wagtail==2.12
+wagtail==2.12.3
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail-draftail-anchors
