@@ -60,6 +60,17 @@ pytest --create-db
 
 The pytest settings can be found in the `pyproject.toml` file.
 
+## Make commands
+
+### upgrade-package
+
+Upgrade a single pip package.
+
+Takes a single required argument `package` which is the name of the package you
+want to upgade.
+
+Example: `make upgrade-package package=pillow`
+
 ## Assets
 
 Assets are handled via Webpack and `django-webpack-loader`. A number of npm
@@ -88,7 +99,7 @@ static.workspace.dev.uktrade.digital
 workspace.staging.uktrade.digital
 static.workspace.staging.uktrade.digital
 
-# Prod
+## Prod
 workspace.trade.gov.uk
 static.workspace.trade.gov.uk
 
