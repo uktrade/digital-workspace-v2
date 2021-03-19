@@ -68,6 +68,11 @@ all-requirements:
 	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
 	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
 
+upgrade-package:
+	pip-compile --upgrade-package $(package) --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --upgrade-package $(package) --output-file requirements/dev.txt requirements.in/dev.in
+	pip-compile --upgrade-package $(package) --output-file requirements/prod.txt requirements.in/prod.in
+
 superuser:
 	docker-compose run --rm wagtail python manage.py migrate
 	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')" | docker-compose run --rm wagtail python manage.py shell
