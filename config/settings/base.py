@@ -387,7 +387,11 @@ TWITTER_PERM_SEC_USER = env("TWITTER_PERM_SEC_USER", default=None)
 GTM_CODE = env("GTM_CODE", default=None)
 GTM_AUTH = env("GTM_AUTH", default=None)
 
+# Perm secretary name
 PERM_SEC_NAME = env("PERM_SEC_NAME", default=None)
+
+# Support request email contact list
+SUPPORT_REQUEST_EMAILS = env.list("SUPPORT_REQUEST_EMAILS", default=[])
 
 # Using https://pypi.org/project/django-settings-export/ for template settings access
 SETTINGS_EXPORT = [
