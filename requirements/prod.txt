@@ -44,6 +44,7 @@ celery==5.0.2
 certifi==2020.4.5.2
     # via
     #   -r requirements.in/../requirements/base.txt
+    #   elastic-apm
     #   elasticsearch
     #   requests
     #   sentry-sdk
@@ -99,6 +100,10 @@ django-ipware==2.1.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-log-formatter-ecs
+django-log-formatter-ecs==0.0.4
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   -r requirements.in/prod.in
 django-modelcluster==5.1
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -135,10 +140,6 @@ django==3.1.6
     #   django-treebeard
     #   djangorestframework
     #   wagtail
-django_log_formatter_ecs==0.0.4
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   -r requirements.in/prod.in
 djangorestframework==3.12.2
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -151,6 +152,8 @@ draftjs-exporter==2.1.7
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
+elastic-apm==6.0.0
+    # via -r requirements.in/prod.in
 elasticsearch-dsl==7.2.1
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -323,6 +326,7 @@ urllib3==1.25.9
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
+    #   elastic-apm
     #   elasticsearch
     #   requests
     #   sentry-sdk
