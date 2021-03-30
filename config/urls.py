@@ -8,6 +8,7 @@ from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from core.admin import admin_site
+from core.urls import urlpatterns as core_urlpatterns
 from peoplefinder.urls import people_urlpatterns, teams_urlpatterns
 from search import views as search_views
 
@@ -20,6 +21,8 @@ urlpatterns = [
     ),
     # Django admin
     path("django-admin/", admin_site.urls),
+    # Core
+    path("core/", include(core_urlpatterns)),
     # Wagtail
     path("admin/login/", RedirectView.as_view(url="/")),  # override Wagtail login
     path("admin/", include(wagtailadmin_urls)),
