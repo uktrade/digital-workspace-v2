@@ -71,7 +71,9 @@
                     {% breadcrumbs %}
                 {% endblock %}
                 {% block main_content %}{% endblock %}
-                {% include "includes/page_problem.html" %}
+                {% block page_problem %}
+                    {% include "includes/problem_found.html" %}
+                {% endblock %}
             </main>
         </div>
         {% include "includes/footer.html" %}

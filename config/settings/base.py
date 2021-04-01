@@ -389,9 +389,6 @@ GTM_AUTH = env("GTM_AUTH", default=None)
 # Perm secretary name
 PERM_SEC_NAME = env("PERM_SEC_NAME", default=None)
 
-# Support request email contact list
-SUPPORT_REQUEST_EMAILS = env.list("SUPPORT_REQUEST_EMAILS", default=[])
-
 # Using https://pypi.org/project/django-settings-export/ for template settings access
 SETTINGS_EXPORT = [
     "DEBUG",
@@ -470,3 +467,8 @@ SKIP_LIST = env.list("SKIP_LIST", default=[])
 ORPHAN_PAGES = env.dict("ORPHAN_PAGES", default={})
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
+
+# Support request email and GOV.UK Notify details
+SUPPORT_REQUEST_EMAIL = env("SUPPORT_REQUEST_EMAIL")
+GOVUK_NOTIFY_API_KEY = env("GOVUK_NOTIFY_API_KEY")
+PAGE_PROBLEM_EMAIL_TEMPLATE_ID = env("PAGE_PROBLEM_EMAIL_TEMPLATE_ID")
