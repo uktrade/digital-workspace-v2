@@ -15,6 +15,8 @@ from wagtail.core.models import Page
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
+from core.forms import PageProblemFoundForm
+
 from content import blocks
 from content.utils import manage_excluded, manage_pinned
 from user.models import User as UserModel
@@ -58,6 +60,12 @@ class BasePage(Page):
 
     promote_panels = []
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["page_problem_form"] = PageProblemFoundForm()
+
+        return context
+
     def serve(self, request):
         response = super().serve(request)
 
@@ -67,6 +75,12 @@ class BasePage(Page):
                 1,
                 secure=False,
             )
+
+        response.set_cookie(
+            "last_viewed",
+            request.build_absolute_uri(),
+            secure=True,
+        )
 
         return response
 
