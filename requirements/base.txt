@@ -140,8 +140,10 @@ kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
 l18n==2018.5
     # via wagtail
-lxml==4.5.2
-    # via htmllaundry
+lxml==4.6.3
+    # via
+    #   -r requirements.in/base.in
+    #   htmllaundry
 mammoth==1.4.13
     # via -r requirements.in/base.in
 marshmallow==3.6.1
