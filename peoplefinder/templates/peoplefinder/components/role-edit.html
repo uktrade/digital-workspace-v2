@@ -1,0 +1,46 @@
+{% comment %}
+Context:
+    profile: A person's profile
+    role: A persons's role
+    form: The role form
+{% endcomment %}
+
+<form class="pf-role-form" hx-target="this" hx-swap="outerHTML">
+    {% csrf_token %}
+
+    <h3 class="govuk-heading-s">Team</h2>
+
+    {% include 'peoplefinder/components/messages.html' %}
+
+    {{ form.person }}
+    <team-select
+        name="team"
+        url="{% url 'team-select' %}"
+        current-team-id="{{ form.instance.team.id }}"
+    ></team-select>
+    {% include 'peoplefinder/components/input.html' with field=form.job_title %}
+    {% include 'peoplefinder/components/checkbox.html' with field=form.head_of_team %}
+
+    {% if role %}
+        <button
+            class="govuk-button"
+            hx-post="{% url 'role' profile.user.id role.id %}"
+        >Update</button>
+        <button
+            class="govuk-button govuk-button--warning"
+            hx-delete="{% url 'role' profile.user.id role.id %}"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        >Leave</button>
+    {% else %}
+        <button
+            class="govuk-button"
+            hx-post="{% url 'roles' profile.user.id %}"
+            hx-vals='{"person_id": "{{ profile.user.id }}"}'
+        >Save</button>
+        <button
+            class="govuk-button govuk-button--secondary"
+            hx-delete="{% url 'roles' profile.user.id %}"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        >Cancel</button>
+    {% endif %}
+</form>
