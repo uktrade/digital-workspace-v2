@@ -47,6 +47,3 @@ backup_file_post_live.backup
 
 # Add core app static folder
 !core/static/core
-
-# Front end
-package-lock.json
