@@ -66,10 +66,9 @@ NEW_ASSET_PATH = env("NEW_ASSET_PATH")
 # file upload handling
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-# s3chunkuploader
 FILE_UPLOAD_HANDLERS = (
-    "file_upload_handler.clam_av.ClamAVFileUploadHandler",
-    "file_upload_handler.s3.S3FileUploadHandler",
+    "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
+    "django_chunk_upload_handlers.s3.S3FileUploadHandler",
 )  # Order is important
 
 CLEAN_FILE_NAME = True
@@ -108,7 +107,6 @@ LOCAL_APPS = [
     "networks",
     "country_fact_sheet",
     "import_wordpress",
-    "file_upload_handler",
     "user.apps.UserConfig",
     "pingdom.apps.PingdomConfig",
     "peoplefinder.apps.PeoplefinderConfig",
@@ -120,6 +118,7 @@ THIRD_PARTY_APPS = [
     "storages",
     "django_elasticsearch_dsl",
     "simple_history",
+    "django_chunk_upload_handlers",
 ]
 
 WAGTAIL_APPS = [
@@ -466,3 +465,6 @@ SKIP_LIST = env.list("SKIP_LIST", default=[])
 ORPHAN_PAGES = env.dict("ORPHAN_PAGES", default={})
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
+
+# Set file uploads to throw exception when virus found
+CHUNK_UPLOADER_RAISE_EXCEPTION_ON_VIRUS_FOUND = True

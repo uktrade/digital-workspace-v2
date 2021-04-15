@@ -8,6 +8,5 @@ SKIP_CLAM_AV_FILE_UPLOAD = False
 
 if SKIP_CLAM_AV_FILE_UPLOAD:
     FILE_UPLOAD_HANDLERS = (
-        # "file_upload_handler.clam_av.ClamAVFileUploadHandler",
-        "file_upload_handler.s3.S3FileUploadHandler",
-    )  # Order is important
+        "django_chunk_upload_handlers.s3.S3FileUploadHandler",
+    )

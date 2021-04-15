@@ -23,7 +23,9 @@ billiard==3.6.3.0
 bleach==3.3.0
     # via -r requirements.in/base.in
 boto3==1.14.10
-    # via -r requirements.in/base.in
+    # via
+    #   -r requirements.in/base.in
+    #   django-chunk-upload-handlers
 botocore==1.17.10
     # via
     #   boto3
@@ -56,6 +58,8 @@ defusedxml==0.6.0
     # via
     #   -r requirements.in/base.in
     #   atoma
+django-chunk-upload-handlers==0.0.4
+    # via -r requirements.in/base.in
 django-cogwheels==0.3
     # via wagtailmenus
 django-elasticsearch-dsl==7.1.4
@@ -81,7 +85,9 @@ django-simple-history==2.12.0
 django-staff-sso-client==3.1.0
     # via -r requirements.in/base.in
 django-storages==1.11.1
-    # via -r requirements.in/base.in
+    # via
+    #   -r requirements.in/base.in
+    #   django-chunk-upload-handlers
 django-taggit==1.3.0
     # via wagtail
 django-treebeard==4.3.1
@@ -91,6 +97,7 @@ django-webpack-loader==0.7.0
 django==3.1.6
     # via
     #   -r requirements.in/base.in
+    #   django-chunk-upload-handlers
     #   django-filter
     #   django-redis
     #   django-settings-export
