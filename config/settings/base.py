@@ -119,6 +119,7 @@ THIRD_PARTY_APPS = [
     "django_elasticsearch_dsl",
     "simple_history",
     "django_chunk_upload_handlers",
+    "django_audit_log_middleware",
 ]
 
 WAGTAIL_APPS = [
@@ -167,6 +168,7 @@ MIDDLEWARE = [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "core.middleware.GetPeoplefinderProfileMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
+    "django_audit_log_middleware.AuditLogMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -468,3 +470,6 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
 # Set file uploads to throw exception when virus found
 CHUNK_UPLOADER_RAISE_EXCEPTION_ON_VIRUS_FOUND = True
+
+# Set username field to be used in audit log as that's where store SSO email id
+AUDIT_LOG_USER_FIELD = "username"
