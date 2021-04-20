@@ -84,6 +84,8 @@ defusedxml==0.6.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   atoma
+django-audit-log-middleware==0.0.4
+    # via -r requirements.in/../requirements/base.txt
 django-chunk-upload-handlers==0.0.4
     # via -r requirements.in/../requirements/base.txt
 django-cogwheels==0.3
@@ -100,14 +102,13 @@ django-filter==2.4.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
-django-ipware==2.1.0
+django-ipware==3.0.2
     # via
     #   -r requirements.in/../requirements/base.txt
+    #   django-audit-log-middleware
     #   django-log-formatter-ecs
-django-log-formatter-ecs==0.0.4
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   -r requirements.in/prod.in
+django-log-formatter-ecs==0.0.5
+    # via -r requirements.in/../requirements/base.txt
 django-modelcluster==5.1
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -137,6 +138,7 @@ django-webpack-loader==0.7.0
 django==3.1.6
     # via
     #   -r requirements.in/../requirements/base.txt
+    #   django-audit-log-middleware
     #   django-chunk-upload-handlers
     #   django-filter
     #   django-redis
