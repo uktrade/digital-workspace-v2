@@ -58,7 +58,7 @@ defusedxml==0.6.0
     # via
     #   -r requirements.in/base.in
     #   atoma
-django-audit-log-middleware==0.0.3
+django-audit-log-middleware==0.0.4
     # via -r requirements.in/base.in
 django-chunk-upload-handlers==0.0.4
     # via -r requirements.in/base.in
