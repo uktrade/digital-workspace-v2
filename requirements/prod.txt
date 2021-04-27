@@ -135,7 +135,7 @@ django-treebeard==4.3.1
     #   wagtail
 django-webpack-loader==0.7.0
     # via -r requirements.in/../requirements/base.txt
-django==3.1.6
+django==3.1.8
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
@@ -282,6 +282,8 @@ pytz==2020.1
     #   django
     #   django-modelcluster
     #   l18n
+pyyaml==5.4.1
+    # via -r requirements.in/../requirements/base.txt
 redis==3.5.3
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -346,7 +348,7 @@ vine==5.0.0
     #   celery
 wagtail-draftail-anchors==0.2.0
     # via -r requirements.in/../requirements/base.txt
-wagtail==2.12.3
+wagtail==2.12.4
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail-draftail-anchors
