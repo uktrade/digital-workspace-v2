@@ -1,11 +1,11 @@
 # Wagtail
-wagtail==2.12.3
+wagtail>=2.12.4
 wagtailmedia
 wagtailmenus>=2.8.0
 wagtail-draftail-anchors>=0.2.0
 
 # Django tools
-django>=3.1.6
+django>=3.1.8
 django-environ>=0.4.5,<0.5
 django-webpack-loader>=0.7.0,<0.8
 psycogreen>=1.0.2,<1.1
@@ -54,3 +54,4 @@ elasticsearch-dsl
 django-elasticsearch-dsl
 
 lxml>=4.6.3
+PyYAML>=5.4
