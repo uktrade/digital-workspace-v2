@@ -45,19 +45,17 @@ LOGGING = {
     "handlers": {
         "ecs": {
             "class": "logging.StreamHandler",
-            "stream": sys.stdout,  # noqa F405
             "formatter": "ecs_formatter",
         },
-        "stdout": {
+        "simple": {
             "class": "logging.StreamHandler",
-            "stream": sys.stdout,  # noqa F405
             "formatter": "simple",
         },
     },
     "root": {
         "handlers": [
             "ecs",
-            "stdout",
+            "simple",
         ],
         "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),  # noqa F405
     },
@@ -65,7 +63,7 @@ LOGGING = {
         "django": {
             "handlers": [
                 "ecs",
-                "stdout",
+                "simple",
             ],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),  # noqa F405
             "propagate": False,
@@ -73,7 +71,7 @@ LOGGING = {
         "django.server": {
             "handlers": [
                 "ecs",
-                "stdout",
+                "simple",
             ],
             "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "ERROR"),  # noqa F405
             "propagate": False,
@@ -81,7 +79,7 @@ LOGGING = {
         "django.db.backends": {
             "handlers": [
                 "ecs",
-                "stdout",
+                "simple",
             ],
             "level": os.getenv("DJANGO_DB_LOG_LEVEL", "ERROR"),  # noqa F405
             "propagate": False,
