@@ -12,6 +12,7 @@ class ProfileDetailView(DetailView, PeoplefinderView):
     model = Person
     context_object_name = "profile"
     template_name = "peoplefinder/profile.html"
+    pk_url_kwarg = "profile_pk"
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -40,6 +41,7 @@ class ProfileEditView(UserPassesTestMixin, UpdateView, PeoplefinderView):
     context_object_name = "profile"
     form_class = ProfileForm
     template_name = "peoplefinder/profile-edit.html"
+    pk_url_kwarg = "profile_pk"
 
     def test_func(self) -> bool:
         # The profile must be that of the logged in user.

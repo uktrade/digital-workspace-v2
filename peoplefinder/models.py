@@ -2,6 +2,9 @@ from django.db import models
 from django.urls import reverse
 
 
+# TODO: django doesnt support on update cascade and it's possible that a code
+# might change in the future so we should probably change this to use an id
+# column.
 class Country(models.Model):
     class Meta:
         constraints = [
@@ -36,6 +39,20 @@ class Workday(models.Model):
         return self.name
 
 
+class Grade(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["code"], name="unique_grade_code"),
+            models.UniqueConstraint(fields=["name"], name="unique_grade_name"),
+        ]
+
+    code = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Person(models.Model):
     user = models.OneToOneField(
         "user.User", models.CASCADE, primary_key=True, related_name="profile"
@@ -47,6 +64,9 @@ class Person(models.Model):
         "Country", models.SET_DEFAULT, default=Country.get_default_id, related_name="+"
     )
     workdays = models.ManyToManyField("Workday", blank=True, related_name="+")
+    grade = models.ForeignKey(
+        "Grade", models.SET_NULL, null=True, blank=True, related_name="+"
+    )
 
     pronouns = models.CharField(max_length=16, null=True, blank=True)
     contact_email = models.EmailField(null=True, blank=True)
@@ -59,11 +79,13 @@ class Person(models.Model):
     regional_building = models.CharField(max_length=50, null=True, blank=True)
     international_building = models.CharField(max_length=50, null=True, blank=True)
     location_in_building = models.CharField(max_length=50, null=True, blank=True)
-
     do_not_work_for_dit = models.BooleanField(default=False)
 
+    def __str__(self) -> str:
+        return self.user.get_full_name()
+
     def get_absolute_url(self) -> str:
-        return reverse("profile-view", kwargs={"pk": self.pk})
+        return reverse("profile-view", kwargs={"profile_pk": self.pk})
 
 
 class Team(models.Model):
