@@ -182,13 +182,15 @@
             <label class="govuk-label" for="{{ form.manager.id_for_label }}">Manager</label>
             {% include 'peoplefinder/components/manager/main.html' with profile=profile manager=profile.manager %}
         </div>
-
-        <div class="govuk-form-group">
-            {% include 'peoplefinder/components/checkbox.html' with checkbox=form.do_not_work_for_dit %}
-        </div>
+        
+        {% include 'peoplefinder/components/checkbox.html' with field=form.do_not_work_for_dit %}
     </fieldset>
 
     <input class="govuk-button" type="submit" value="Save profile">
     <a class="govuk-button govuk-button--secondary" href="{% url 'profile-view' profile.user.id %}">Cancel and go back</a>
 </form>
+
+<fieldset>
+    {% include 'peoplefinder/components/teams-and-roles.html' with profile=profile role_forms=role_forms %}
+</fieldset>
 {% endblock %}

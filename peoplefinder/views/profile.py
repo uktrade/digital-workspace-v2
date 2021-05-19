@@ -3,6 +3,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 
 from peoplefinder.forms.profile import ProfileForm
+from peoplefinder.forms.role import RoleForm
 from peoplefinder.models import Person
 from peoplefinder.services.team import TeamService
 from .base import PeoplefinderView
@@ -46,3 +47,15 @@ class ProfileEditView(UserPassesTestMixin, UpdateView, PeoplefinderView):
     def test_func(self) -> bool:
         # The profile must be that of the logged in user.
         return self.get_object().user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        profile = context["profile"]
+        roles = profile.roles.select_related("team").all()
+
+        role_forms = [RoleForm(instance=role) for role in roles]
+
+        context.update(roles=roles, role_forms=role_forms)
+
+        return context

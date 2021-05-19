@@ -8,6 +8,7 @@ from peoplefinder.views.manager import (
     ManagerUpdate,
 )
 from peoplefinder.views.profile import ProfileDetailView, ProfileEditView
+from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.team import TeamDetailView, TeamPeopleView, TeamTreeView
 
 
@@ -43,6 +44,13 @@ people_urlpatterns = [
             ]
         ),
     ),
+    # Roles
+    path("<int:profile_pk>/edit/roles/", RoleFormView.as_view(), name="roles"),
+    path(
+        "<int:profile_pk>/edit/roles/<int:role_pk>/",
+        RoleFormView.as_view(),
+        name="role",
+    ),
 ]
 
 teams_urlpatterns = [
@@ -50,4 +58,8 @@ teams_urlpatterns = [
     path("<slug>/", TeamDetailView.as_view(), name="team-view"),
     path("<slug>/tree", TeamTreeView.as_view(), name="team-tree"),
     path("<slug>/people", TeamPeopleView.as_view(), name="team-people"),
+]
+
+api_urlpatterns = [
+    path("team-select", TeamSelectView.as_view(), name="team-select"),
 ]
