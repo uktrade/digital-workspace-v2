@@ -1,9 +1,16 @@
-from typing import Optional
+from typing import Iterator, Optional, TypedDict
 
 from django.db import connection, transaction
 from django.db.models import QuerySet, Subquery
 
 from peoplefinder.models import Team, TeamTree
+
+
+class TeamSelectDatum(TypedDict):
+    team_id: int
+    team_name: str
+    parent_id: Optional[int]
+    parent_name: Optional[str]
 
 
 class TeamService:
@@ -124,3 +131,31 @@ class TeamService:
         return Team.objects.exclude(
             id__in=Subquery(teams_with_parents.values("child"))
         ).get()
+
+    def get_team_select_data(self) -> Iterator[TeamSelectDatum]:
+        """Return the teams data for the team-select web component.
+
+        Yields:
+            dict of team select data
+        """
+        root_team = self.get_root_team()
+        full_team_tree = (
+            TeamTree.objects.select_related("child")
+            .filter(depth=1)
+            .order_by("child", "depth")
+        )
+
+        yield {
+            "team_id": root_team.id,
+            "team_name": root_team.name,
+            "parent_id": None,
+            "parent_name": None,
+        }
+
+        for team_node in full_team_tree:
+            yield {
+                "team_id": team_node.child.id,
+                "team_name": team_node.child.name,
+                "parent_id": team_node.parent.id,
+                "parent_name": team_node.parent.name,
+            }

@@ -1,0 +1,25 @@
+{% load static %}
+
+{% comment %}
+Context:
+    profile: A person's profile
+    role_forms: List of the persons's role forms
+{% endcomment %}
+
+<script src="{% static 'peoplefinder/team-select.js' %}"></script>
+
+<div class="pf-roles">
+    <h2 class="govuk-heading-m">Teams and roles</h2>
+    <div id="roles">
+        {% for form in role_forms %}
+            {% include 'peoplefinder/components/role-edit.html' with profile=profile role=form.instance form=form %}
+        {% endfor %}
+    </div>
+
+    <button
+        class="govuk-button govuk-button--secondary"
+        hx-get="{% url 'roles' profile.user.id %}"
+        hx-target="#roles"
+        hx-swap="beforeend"
+    >Add role</button>
+</div>
