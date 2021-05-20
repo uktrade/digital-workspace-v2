@@ -9,18 +9,13 @@
 <form class="ws-profile-edit-form" method="post">
     {% csrf_token %}
 
+    {% include 'peoplefinder/components/error-summary.html' with form=form %}
+
     <fieldset>
         <h2 class="govuk-heading-m">Personal details</h2>
 
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="{{ form.first_name.id_for_label }}">First name</label>
-            {{ form.first_name }}
-        </div>
-
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="{{ form.last_name.id_for_label }}">Last name</label>
-            {{ form.last_name }}
-        </div>
+        {% include 'peoplefinder/components/input.html' with field=form.first_name %}
+        {% include 'peoplefinder/components/input.html' with field=form.last_name %}
 
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
@@ -29,10 +24,7 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="{{ form.pronouns.id_for_label }}">My pronouns</label>
-                    {{ form.pronouns }}
-                </div>
+                {% include 'peoplefinder/components/input.html' with field=form.pronouns %}
             </div>
         </details>
     </fieldset>
@@ -40,11 +32,7 @@
     <fieldset>
         <h2 class="govuk-heading-m">Email addresses</h2>
 
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="{{ form.email.id_for_label }}">Main work email address</label>
-            <span class="govuk-hint">Enter your own official work email address provided by the organisation you are directly employed by or contracted to.</span>
-            {{ form.email }}
-        </div>
+        {% include 'peoplefinder/components/input.html' with field=form.email %}
 
         <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -70,16 +58,7 @@
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <div class="govuk-form-group">
-                        <label class="govuk-label" for="{{ form.contact_email.id_for_label }}">Contact email address</label>
-                        <span class="govuk-hint">
-                            Enter the email address your colleagues should contact you on, for example,
-                            a jobshare or Private Office mailbox. This will be shown on your profile
-                            instead of your main work email address. Do not enter a personal email address,
-                            or a work email address that is not safe for official information.
-                        </span>
-                        {{ form.contact_email }}
-                    </div>
+                    {% include 'peoplefinder/components/input.html' with field=form.contact_email %}
                 </div>
             </details>
         </p>
@@ -89,11 +68,7 @@
     <fieldset>
         <h2 class="govuk-heading-m">Contact details</h2>
 
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="{{ form.primary_phone_number.id_for_label }}">Preferred contact number</label>
-            <span class="govuk-hint">Enter your preferred contact telephone number. Include your country dialling code.</span>
-            {{ form.primary_phone_number }}
-        </div>
+        {% include 'peoplefinder/components/input.html' with field=form.primary_phone_number %}
 
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
@@ -102,11 +77,7 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="{{ form.secondary_phone_number.id_for_label }}">Alternative contact number</label>
-                    <span class="govuk-hint">Enter an alternative contact telephone number. Include your country dialling code.</span>
-                    {{ form.secondary_phone_number }}
-                </div>
+                {% include 'peoplefinder/components/input.html' with field=form.secondary_phone_number %}
             </div>
         </details>
     </fieldset>
@@ -114,21 +85,11 @@
     <fieldset>
         <h2 class="govuk-heading-m">Location and working patterns</h2>
 
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="{{ form.country.id_for_label }}">Country</label>
-            {{ form.country }}
-        </div>
+        {% include 'peoplefinder/components/input.html' with field=form.country %}
 
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="{{ form.town_city_or_region.id_for_label }}">Town, city or region</label>
-            <span class="govuk-hint">For example, London</span>
-            {{ form.town_city_or_region }}
-        </div>
+        {% include 'peoplefinder/components/input.html' with field=form.town_city_or_region %}
 
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="{{ form.building.id_for_label }}">Where do you usually work?</label>
-            {{ form.building }}
-        </div>
+        {% include 'peoplefinder/components/input.html' with field=form.building %}
 
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
@@ -137,15 +98,9 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="{{ form.regional_building.id_for_label }}">UK regional building or location</label>
-                    {{ form.regional_building }}
-                </div>
+                {% include 'peoplefinder/components/input.html' with field=form.regional_building %}
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="{{ form.international_building.id_for_label }}">International building or location</label>
-                    {{ form.international_building }}
-                </div>
+                {% include 'peoplefinder/components/input.html' with field=form.international_building %}
             </div>
         </details>
 
@@ -156,16 +111,7 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="{{ form.location_in_building.id_for_label }}">Where in the building do you work?</label>
-                    <span class="govuk-hint">Skip this question if you work in a Foreign and Commonwealth Office (FCO) building</span>
-                    {{ form.location_in_building }}
-                </div>
-
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="{{ form.workdays.id_for_label }}">Which days do you usually work?</label>
-                    {% include 'peoplefinder/components/checkboxes.html' with field=form.workdays %}
-                </div>
+                {% include 'peoplefinder/components/checkboxes.html' with field=form.workdays %}
             </div>
         </details>
     </fieldset>
@@ -173,10 +119,7 @@
     <fieldset>
         <h2 class="govuk-heading-m">Grade and manager</h2>
 
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="{{ form.grade.id_for_label }}">Grade</label>
-            {{ form.grade }}
-        </div>
+        {% include 'peoplefinder/components/input.html' with field=form.grade %}
 
         <div class="govuk-form-group">
             <label class="govuk-label" for="{{ form.manager.id_for_label }}">Manager</label>
