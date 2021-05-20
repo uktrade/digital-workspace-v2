@@ -19,7 +19,6 @@ class ProfileForm(forms.ModelForm):
             "building",
             "regional_building",
             "international_building",
-            "location_in_building",
             "workdays",
             "grade",
             "manager",
@@ -29,7 +28,13 @@ class ProfileForm(forms.ModelForm):
 
     first_name = forms.CharField()
     last_name = forms.CharField()
-    email = forms.EmailField()
+    email = forms.EmailField(
+        label="Main work email address",
+        help_text=(
+            "Enter your own official work email address provided by the"
+            " organisation you are directly employed by or contracted to."
+        ),
+    )
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -72,9 +77,6 @@ class ProfileForm(forms.ModelForm):
         self.fields["international_building"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
-        self.fields["location_in_building"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half"}
-        )
         self.fields["workdays"].widget.attrs.update(
             {"class": "govuk-checkboxes__input"}
         )
@@ -85,9 +87,6 @@ class ProfileForm(forms.ModelForm):
         self.fields["do_not_work_for_dit"].widget.attrs.update(
             {"class": "govuk-checkboxes__input"}
         )
-        self.fields[
-            "do_not_work_for_dit"
-        ].label = "My manager is not listed because I do not work for DIT"
 
         self.initial.update(
             first_name=person.user.first_name,

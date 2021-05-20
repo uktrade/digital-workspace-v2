@@ -4,6 +4,13 @@
     <label class="govuk-label" for="{{ field.id_for_label }}">
         {{ field.label }}
     </label>
+
+    {% if field.help_text %}
+        <div class="govuk-hint">
+            {{ field.help_text }}
+        </div>
+    {% endif %}
+
     {% if field.errors %}
         {% add_class field 'govuk-input--error' %}
         {% for error in field.errors %}

@@ -63,23 +63,70 @@ class Person(models.Model):
     country = models.ForeignKey(
         "Country", models.SET_DEFAULT, default=Country.get_default_id, related_name="+"
     )
-    workdays = models.ManyToManyField("Workday", blank=True, related_name="+")
+    workdays = models.ManyToManyField(
+        "Workday",
+        verbose_name="Which days do you usually work?",
+        blank=True,
+        related_name="+",
+    )
     grade = models.ForeignKey(
         "Grade", models.SET_NULL, null=True, blank=True, related_name="+"
     )
 
     pronouns = models.CharField(max_length=16, null=True, blank=True)
-    contact_email = models.EmailField(null=True, blank=True)
+    contact_email = models.EmailField(
+        "Contact email address",
+        null=True,
+        blank=True,
+        help_text=(
+            "Enter the email address your colleagues should contact you on, for"
+            " example, a jobshare or Private Office mailbox. This will be shown on your"
+            " profile instead of your main work email address. Do not enter a personal"
+            " email address, or a work email address that is not safe for official"
+            " information."
+        ),
+    )
     # TODO: Find out what the longest value in live is.
-    primary_phone_number = models.CharField(max_length=20, null=True, blank=True)
-    secondary_phone_number = models.CharField(max_length=20, null=True, blank=True)
+    primary_phone_number = models.CharField(
+        "Preferred contact number",
+        max_length=20,
+        null=True,
+        blank=True,
+        help_text=(
+            "Enter your preferred contact telephone number. Include your country"
+            " dialling code."
+        ),
+    )
+    secondary_phone_number = models.CharField(
+        "Alternative contact number",
+        max_length=20,
+        null=True,
+        blank=True,
+        help_text=(
+            "Enter an alternative contact telephone number. Include your country"
+            " dialling code."
+        ),
+    )
     # TODO: Find out what the longest value in live is.
-    town_city_or_region = models.CharField(max_length=50, null=True, blank=True)
-    building = models.CharField(max_length=50, null=True, blank=True)
-    regional_building = models.CharField(max_length=50, null=True, blank=True)
-    international_building = models.CharField(max_length=50, null=True, blank=True)
-    location_in_building = models.CharField(max_length=50, null=True, blank=True)
-    do_not_work_for_dit = models.BooleanField(default=False)
+    town_city_or_region = models.CharField(
+        "Town, city or region",
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text="For example, London",
+    )
+    building = models.CharField(
+        "Where do you usually work?", max_length=50, null=True, blank=True
+    )
+    regional_building = models.CharField(
+        "UK regional building or location", max_length=50, null=True, blank=True
+    )
+    international_building = models.CharField(
+        "International building or location", max_length=50, null=True, blank=True
+    )
+    do_not_work_for_dit = models.BooleanField(
+        "My manager is not listed because I do not work for DIT", default=False
+    )
 
     def __str__(self) -> str:
         return self.user.get_full_name()
