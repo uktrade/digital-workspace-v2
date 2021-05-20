@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
+{% load render_bundle from webpack_loader %}
+
 {% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+{% render_bundle 'peoplefinder' 'css' %}
+{% endblock %}
 
 {% block main_content %}
 <div class="govuk-breadcrumbs">
@@ -25,4 +31,8 @@
     {% block content %}
     {% endblock %}
 </main>
+{% endblock %}
+
+{% block scripts %}
+{% render_bundle 'peoplefinder' 'js' %}
 {% endblock %}

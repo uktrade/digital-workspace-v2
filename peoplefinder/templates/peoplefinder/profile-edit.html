@@ -1,12 +1,12 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% load render_bundle from webpack_loader %}
+{% load static %}
 
 {% block content %}
-{% render_bundle 'htmx' 'js' %}
+<script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
 
 <h1 class="govuk-heading-l">Edit profile</h1>
-<form class="ws-profile-edit-form" method="post">
+<form class="ws-profile-edit-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     {% include 'peoplefinder/components/error-summary.html' with form=form %}
@@ -129,11 +129,25 @@
         {% include 'peoplefinder/components/checkbox.html' with field=form.do_not_work_for_dit %}
     </fieldset>
 
+    <fieldset>
+        <h2 class="govuk-heading-m">Profile photo</h2>
+        <profile-photo
+            name="photo"
+            photo-url="{{ profile.photo.url }}"
+            x-name="x"
+            y-name="y"
+            width-name="width"
+            height-name="height"
+        ></profile-photo>
+    </fieldset>
+
     <input class="govuk-button" type="submit" value="Save profile">
     <a class="govuk-button govuk-button--secondary" href="{% url 'profile-view' profile.user.id %}">Cancel and go back</a>
 </form>
 
 <fieldset>
+    <h2 class="govuk-heading-m">Profile photo</h2>
+
     {% include 'peoplefinder/components/teams-and-roles.html' with profile=profile role_forms=role_forms %}
 </fieldset>
 {% endblock %}
