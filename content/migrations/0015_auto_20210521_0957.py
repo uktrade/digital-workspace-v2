@@ -6,18 +6,21 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('content', '0014_historicalsearchexclusionpagelookup_historicalsearchkeywordorphrase_historicalsearchpinpagelookup_hi'),
+        (
+            "content",
+            "0014_historicalsearchexclusionpagelookup_historicalsearchkeywordorphrase_historicalsearchpinpagelookup_hi",
+        ),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='historicalsitealertbanner',
-            name='history_user',
+            model_name="historicalsitealertbanner",
+            name="history_user",
         ),
         migrations.DeleteModel(
-            name='SiteAlertBanner',
+            name="SiteAlertBanner",
         ),
         migrations.DeleteModel(
-            name='HistoricalSiteAlertBanner',
+            name="HistoricalSiteAlertBanner",
         ),
     ]

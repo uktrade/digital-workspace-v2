@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-
 from django.db import models
 from simple_history.models import HistoricalRecords
 from wagtail.admin.edit_handlers import (

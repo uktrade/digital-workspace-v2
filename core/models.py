@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
-from wagtail.snippets.models import register_snippet
 from django.db import models
 from simple_history.models import HistoricalRecords
+from wagtail.snippets.models import register_snippet
 
 
 @register_snippet
