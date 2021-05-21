@@ -1,0 +1,13 @@
+.site-alert {
+  padding: 12px 0;
+  text-align: center;
+  background-color: $brand-color-primary;
+  p {
+    padding: 0;
+    margin: 0;
+    color: white;
+    a, a:visited, a:link {
+      color: white;
+    }
+  }
+}
