@@ -2,6 +2,7 @@
 {% load render_bundle webpack_static from webpack_loader %}
 {% load static wagtailcore_tags %}
 {% load cookie_banner %}
+{% load site_alert %}
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
     <head>
@@ -52,7 +53,7 @@
         {% include "includes/header.html" %}
         {% include "includes/search_and_profile_bar.html" %}
         {% cookie_banner %}
-
+        {% site_alert %}
         <div class="govuk-width-container">
             <div class="govuk-phase-banner">
                 <p class="govuk-phase-banner__content">
