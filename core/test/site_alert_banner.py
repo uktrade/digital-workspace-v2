@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from content.models import SiteAlertBanner
+from core.models import SiteAlertBanner
 
 
 class SiteAlertBannerTestCase(TestCase):

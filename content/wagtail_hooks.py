@@ -7,7 +7,6 @@ from wagtail.contrib.modeladmin.options import (
 from wagtail.core import hooks
 
 from content.models import (
-    SiteAlertBanner,
     Theme,
 )
 
@@ -26,18 +25,7 @@ class ThemeAdmin(ModelAdmin):
     search_fields = ("title",)
 
 
-class SiteAlertBannerAdmin(ModelAdmin):
-    model = SiteAlertBanner
-    menu_label = "Site alert banner"
-    menu_icon = "warning"
-    menu_order = 200
-    add_to_settings_menu = True
-    exclude_from_explorer = True
-    list_display = ("banner_text", "activated")
-
-
 modeladmin_register(ThemeAdmin)
-modeladmin_register(SiteAlertBannerAdmin)
 
 
 @hooks.register("construct_page_action_menu")
