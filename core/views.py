@@ -25,26 +25,18 @@ def view_400(request, exception):
 def page_problem_found(request):
     message_sent = False
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = PageProblemFoundForm(request.POST)
         if form.is_valid():
             # Check for last viewed
-            last_viewed = request.COOKIES.get("last_viewed")
+            last_viewed = request.COOKIES.get("last_viewed", None)
 
             if not last_viewed:
                 # TODO - handle error
                 pass
 
-            trying_to = form.cleaned_data['trying_to']
-            what_went_wrong = form.cleaned_data['what_went_wrong']
-
-            personalisation = {
-                "user_name": request.user.get_full_name(),
-                "user_email": request.user.email,
-                "page_url": last_viewed,
-                "trying_to": trying_to,
-                "what_went_wrong": what_went_wrong,
-            },
+            trying_to = form.cleaned_data["trying_to"]
+            what_went_wrong = form.cleaned_data["what_went_wrong"]
 
             notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
             message_sent = notification_client.send_email_notification(
@@ -64,8 +56,5 @@ def page_problem_found(request):
     return render(
         request,
         "core/page_problem_found.html",
-        {
-            "form": form,
-            "message_sent": message_sent
-        },
+        {"form": form, "message_sent": message_sent},
     )
