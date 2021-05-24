@@ -149,10 +149,6 @@ django==3.1.8
     #   django-treebeard
     #   djangorestframework
     #   wagtail
-django_log_formatter_ecs==0.0.4
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   -r requirements.in/prod.in
 djangorestframework==3.12.2
     # via
     #   -r requirements.in/../requirements/base.txt
