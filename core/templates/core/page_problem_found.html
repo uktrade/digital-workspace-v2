@@ -5,19 +5,19 @@
              data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                    Message status
+                    Issue status
                 </h2>
             </div>
             <div class="govuk-notification-banner__content">
                 <p class="govuk-notification-banner__heading">
-                    Your message has been sent
+                    Thank you for reporting this issue. We will respond in 5 working days.
                 </p>
             </div>
         </div>
     {% else %}
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">Please provide details of the issue</h1>
+                <h1 class="govuk-fieldset__heading">Provide details of the issue</h1>
             </legend>
             <form novalidate method='post'>
                 {% csrf_token %}
