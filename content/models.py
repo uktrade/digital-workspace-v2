@@ -15,10 +15,9 @@ from wagtail.core.models import Page
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
-from core.forms import PageProblemFoundForm
-
 from content import blocks
 from content.utils import manage_excluded, manage_pinned
+from core.forms import PageProblemFoundForm
 from user.models import User as UserModel
 
 User = get_user_model()

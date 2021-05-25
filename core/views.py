@@ -37,7 +37,7 @@ def page_problem_found(request):
 
             if not last_viewed:
                 logger.error("Could not find last viewed cookie")
-                return redirect('/')
+                return redirect("/")
 
             trying_to = form.cleaned_data["trying_to"]
             what_went_wrong = form.cleaned_data["what_went_wrong"]
