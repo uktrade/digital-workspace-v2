@@ -27,6 +27,9 @@ class ReportPageProblemTest(TestCase):
     def test_page_problem_found_view(self, send_email_notification):
         url = reverse("page_problem_found")
 
+        self.client.cookies.load({
+            "last_viewed": "test"
+        })
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
