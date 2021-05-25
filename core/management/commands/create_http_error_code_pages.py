@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
-
 from wagtail.core.models import Page
 
 from content.models import ContentPage
