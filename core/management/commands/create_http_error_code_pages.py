@@ -18,7 +18,7 @@ class Command(BaseCommand):
         for response_code in response_codes:
             page = ContentPage(
                 title=f"{response_code} Error",
-                slug=f"{response_code}-page",
+                slug=f"{response_code}",
                 live=True,
                 first_published_at=datetime.now(),
                 show_in_menus=False,
