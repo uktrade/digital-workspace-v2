@@ -1,9 +1,13 @@
+import logging
+
 from django.conf import settings
 from django.shortcuts import redirect, render
-
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from core.forms import PageProblemFoundForm
+
+
+logger = logging.getLogger(__name__)
 
 
 def view_404(request, exception):
@@ -32,8 +36,8 @@ def page_problem_found(request):
             last_viewed = request.COOKIES.get("last_viewed", None)
 
             if not last_viewed:
-                # TODO - handle error
-                pass
+                logger.error("Could not find last viewed cookie")
+                return redirect('/')
 
             trying_to = form.cleaned_data["trying_to"]
             what_went_wrong = form.cleaned_data["what_went_wrong"]
