@@ -1,5 +1,4 @@
 from itertools import groupby
-import string
 
 from django.db import models
 from modelcluster.fields import ParentalKey
