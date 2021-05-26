@@ -6,9 +6,6 @@
   </summary>
   <div class="govuk-details__text">
     <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-            <h1 class="govuk-fieldset__heading">Provide details of the issue</h1>
-        </legend>
         <form action="{% url "page_problem_found" %}" novalidate method='post'>
             {% csrf_token %}
             {% include "includes/govt_uk_form.html" with form=page_problem_form %}
