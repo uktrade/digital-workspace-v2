@@ -1,3 +1,6 @@
+from itertools import groupby
+import string
+
 from django.db import models
 from modelcluster.fields import ParentalKey
 from wagtail.admin.edit_handlers import (
@@ -184,36 +187,55 @@ class Policy(PageWithTopics):
     subpage_types = ["working_at_dit.Policy"]
 
 
-class PoliciesAndGuidanceHome(BasePage):
-    subpage_types = [
-        "working_at_dit.PoliciesHome",
-        "working_at_dit.GuidanceHome",
-    ]
-    # model just for use in editor hierarchy
-
-
 class PoliciesHome(BasePage):
-    template = "working_at_dit/section_home.html"
+    template = "working_at_dit/section_home_alpha_order.html"
     subpage_types = [
         "working_at_dit.Policy",
     ]
+    is_creatable = False
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["children"] = Policy.objects.live().public().order_by("title")
+
+        policies = list(Policy.objects.live().public().order_by("title"))
+        context["subpage_groups"] = [
+            list(g) for k, g in groupby(policies, key=lambda x: x.title.lower()[0])
+        ]
 
         return context
 
 
 class GuidanceHome(BasePage):
-    template = "working_at_dit/section_home.html"
-
+    template = "working_at_dit/section_home_alpha_order.html"
     subpage_types = [
         "working_at_dit.Guidance",
     ]
+    is_creatable = False
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["children"] = Guidance.objects.live().public().order_by("title")
+
+        guidance = list(Guidance.objects.live().public().order_by("title"))
+        context["subpage_groups"] = [
+            list(g) for k, g in groupby(guidance, key=lambda x: x.title.lower()[0])
+        ]
+
+        return context
+
+
+class PoliciesAndGuidanceHome(BasePage):
+    template = "working_at_dit/section_home.html"
+    subpage_types = [
+        "working_at_dit.PoliciesHome",
+        "working_at_dit.GuidanceHome",
+    ]
+    is_creatable = False
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["children"] = [
+            PoliciesHome.objects.live().public().first(),
+            GuidanceHome.objects.live().public().first(),
+        ]
 
         return context
