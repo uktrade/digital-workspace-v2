@@ -153,6 +153,10 @@ djangorestframework==3.12.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
+docopt==0.6.2
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   notifications-python-client
 docutils==0.15.2
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -227,6 +231,8 @@ marshmallow==3.6.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   kubi-ecs-logger
+notifications-python-client==6.0.2
+    # via -r requirements.in/../requirements/base.txt
 oauthlib==3.1.0
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -260,7 +266,9 @@ pycparser==2.20
     #   -r requirements.in/../requirements/base.txt
     #   cffi
 pyjwt[crypto]==2.0.1
-    # via -r requirements.in/../requirements/base.txt
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   notifications-python-client
 pyparsing==2.4.7
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -296,6 +304,7 @@ requests-oauthlib==1.3.0
 requests[socks]==2.23.0
     # via
     #   -r requirements.in/../requirements/base.txt
+    #   notifications-python-client
     #   requests-oauthlib
     #   tweepy
     #   wagtail

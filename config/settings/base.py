@@ -387,6 +387,7 @@ TWITTER_PERM_SEC_USER = env("TWITTER_PERM_SEC_USER", default=None)
 GTM_CODE = env("GTM_CODE", default=None)
 GTM_AUTH = env("GTM_AUTH", default=None)
 
+# Perm secretary name
 PERM_SEC_NAME = env("PERM_SEC_NAME", default=None)
 
 # Using https://pypi.org/project/django-settings-export/ for template settings access
@@ -473,3 +474,8 @@ CHUNK_UPLOADER_RAISE_EXCEPTION_ON_VIRUS_FOUND = True
 
 # Set username field to be used in audit log as that's where store SSO email id
 AUDIT_LOG_USER_FIELD = "username"
+
+# Support request email and GOV.UK Notify details
+SUPPORT_REQUEST_EMAIL = env("SUPPORT_REQUEST_EMAIL")
+GOVUK_NOTIFY_API_KEY = env("GOVUK_NOTIFY_API_KEY")
+PAGE_PROBLEM_EMAIL_TEMPLATE_ID = env("PAGE_PROBLEM_EMAIL_TEMPLATE_ID")

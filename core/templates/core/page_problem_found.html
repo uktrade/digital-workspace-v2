@@ -1,0 +1,31 @@
+{% extends "1_col_content.html" %}
+{% block content %}
+    {% if message_sent %}
+        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
+             data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Issue status
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    Thank you for reporting this issue. We will respond in 5 working days.
+                </p>
+            </div>
+        </div>
+    {% else %}
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">Provide details of the issue</h1>
+            </legend>
+            <form novalidate method='post'>
+                {% csrf_token %}
+                {% include "includes/govt_uk_form.html" with form=form %}
+                <input type="submit" value="Submit" class="govuk-button govuk-button" data-module="govuk-button"/>
+            </form>
+        </fieldset>
+    {% endif %}
+{% endblock %}
+
+{% block page_problem %}{% endblock %}
