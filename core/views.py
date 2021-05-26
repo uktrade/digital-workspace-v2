@@ -11,19 +11,39 @@ logger = logging.getLogger(__name__)
 
 
 def view_404(request, exception):
-    return redirect("/404/")
+    return render(
+        request,
+        "core/404.html",
+        {"page_problem_form": PageProblemFoundForm()},
+        status=404,
+    )
 
 
 def view_500(request):
-    return redirect("/500/")
+    return render(
+        request,
+        "core/500.html",
+        {"page_problem_form": PageProblemFoundForm()},
+        status=500,
+    )
 
 
 def view_403(request, exception):
-    return redirect("/403/")
+    return render(
+        request,
+        "core/403.html",
+        {"page_problem_form": PageProblemFoundForm()},
+        status=403,
+    )
 
 
 def view_400(request, exception):
-    return redirect("/400/")
+    return render(
+        request,
+        "core/400.html",
+        {"page_problem_form": PageProblemFoundForm()},
+        status=403,
+    )
 
 
 def page_problem_found(request):
