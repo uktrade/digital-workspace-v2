@@ -46,7 +46,8 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-handler404 = "core.views.view_404"
-handler500 = "core.views.view_500"
-handler403 = "core.views.view_403"
-handler400 = "core.views.view_400"
+# Removed until we find a fix for Wagtail's redirect behaviour
+# handler404 = "core.views.view_404"
+# handler500 = "core.views.view_500"
+# handler403 = "core.views.view_403"
+# handler400 = "core.views.view_400"
