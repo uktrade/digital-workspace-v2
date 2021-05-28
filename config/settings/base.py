@@ -373,6 +373,9 @@ CACHES = {
     }
 }
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
 # Twitter
 TWITTER_ACCESS_TOKEN = env("TWITTER_ACCESS_TOKEN")
 TWITTER_ACCESS_SECRET = env("TWITTER_ACCESS_SECRET")
