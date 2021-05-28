@@ -6,6 +6,7 @@ import environ
 import sentry_sdk
 from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 # Set directories to be used across settings
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
@@ -85,7 +86,7 @@ if env.str("SENTRY_DSN", None):
     sentry_sdk.init(
         dsn=env("SENTRY_DSN"),
         environment=APP_ENV,
-        integrations=[DjangoIntegration()],
+        integrations=[DjangoIntegration(), RedisIntegration()],
         send_default_pii=True,  # Enable associating exceptions to users
     )
 
@@ -372,6 +373,9 @@ CACHES = {
         "KEY_PREFIX": "wp_",
     }
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 # Twitter
 TWITTER_ACCESS_TOKEN = env("TWITTER_ACCESS_TOKEN")
