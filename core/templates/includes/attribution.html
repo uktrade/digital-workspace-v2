@@ -12,10 +12,10 @@
     </p>
     <time class="ws-content-page__metadata-item"
           datetime="{{ page.first_published_at|date:"c" }}">
-        First published {{ page.first_published_at }}
+        First published {{ page.first_published_at|date:"d M Y" }}, {{ page.first_published_at|time:"H:i A"|lower }}
     </time>
     <time class="ws-content-page__metadata-item"
           datetime="{{ page.last_published_at|date:"c" }}">
-        Last updated {{ page.last_published_at }}
+        Last updated {{ page.last_published_at|date:"d M Y" }}, {{ page.last_published_at|time:"H:i A"|lower }}
     </time>
 </div>
