@@ -342,7 +342,7 @@ tablib[xls,xlsx]==3.0.0
     #   wagtail
 tweepy==3.10.0
     # via -r requirements.in/../requirements/base.txt
-urllib3==1.25.9
+urllib3==1.26.5
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
