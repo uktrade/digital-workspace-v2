@@ -23,6 +23,7 @@ from content.models import (
     BasePage,
     ContentPage,
 )
+from core.utils import set_last_viewed_cookie
 from news.forms import (
     CommentForm,
 )
@@ -217,7 +218,10 @@ class NewsPage(PageWithTopics):
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
 
-        return render(request, self.template, context)
+        response = render(request, self.template, context)
+        set_last_viewed_cookie(request, response)
+
+        return response
 
 
 class NewsHome(RoutablePageMixin, BasePage):
@@ -238,22 +242,28 @@ class NewsHome(RoutablePageMixin, BasePage):
         if featured_page:
             context["featured_page"] = featured_page
 
-        return TemplateResponse(
+        response = TemplateResponse(
             request,
             self.get_template(request),
             context,
         )
+        set_last_viewed_cookie(request, response)
+
+        return response
 
     @route(r"^category/(?P<category_slug>[-\w]+)/$", name="news_category")
     def category_home(self, request, category_slug):
         request.is_preview = getattr(request, "is_preview", False)
         context = self.get_context(request, category=category_slug)
 
-        return TemplateResponse(
+        response = TemplateResponse(
             request,
             self.get_template(request),
             context,
         )
+        set_last_viewed_cookie(request, response)
+
+        return response
 
     def get_context(self, request, *args, **kwargs):
         """Adding custom stuff to our context."""
