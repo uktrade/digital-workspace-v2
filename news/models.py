@@ -23,6 +23,7 @@ from content.models import (
     BasePage,
     ContentPage,
 )
+from core.utils import set_last_viewed_cookie
 from news.forms import (
     CommentForm,
 )
@@ -217,7 +218,10 @@ class NewsPage(PageWithTopics):
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
 
-        return render(request, self.template, context)
+        response = render(request, self.template, context)
+        set_last_viewed_cookie(request, response)
+
+        return response
 
 
 class NewsHome(RoutablePageMixin, BasePage):

@@ -18,6 +18,7 @@ from wagtail.snippets.models import register_snippet
 from content import blocks
 from content.utils import manage_excluded, manage_pinned
 from core.forms import PageProblemFoundForm
+from core.utils import set_last_viewed_cookie
 from user.models import User as UserModel
 
 User = get_user_model()
@@ -67,19 +68,7 @@ class BasePage(Page):
 
     def serve(self, request):
         response = super().serve(request)
-
-        if not request.COOKIES.get("seen_cookie_banner"):
-            response.set_cookie(
-                "seen_cookie_banner",
-                1,
-                secure=False,
-            )
-
-        response.set_cookie(
-            "last_viewed",
-            request.build_absolute_uri(),
-            secure=True,
-        )
+        set_last_viewed_cookie(request, response)
 
         return response
 
