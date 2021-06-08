@@ -8,6 +8,9 @@
  *
  * ### `photo-url`
  * URL for the current profile photo.
+ * 
+ * ### `no-photo-url`
+ * URL for the image to use when the profile has no photo.
  *
  * ### `x-name`
  * Name given to the x crop input which will be submitted.
@@ -43,6 +46,7 @@ class ProfilePhoto extends HTMLElement {
     connectedCallback() {
         this.name = this.getAttribute('name');
         this.photoUrl = this.getAttribute('photo-url') || "";
+        this.noPhotoUrl = this.getAttribute('no-photo-url');
         this.cropFieldNames = {
             x: this.getAttribute('x-name'),
             y: this.getAttribute('y-name'),
@@ -50,13 +54,15 @@ class ProfilePhoto extends HTMLElement {
             height: this.getAttribute('height-name'),
         }
 
+        const photoHeadingText = this.photoUrl ? 'Current profile photo' : 'No current profile photo';
+
         this.innerHTML = `
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-one-third">
-                    <h3 class="govuk-heading-s" id="photo-heading">Current profile photo</h3>
+                    <h3 class="govuk-heading-s" id="photo-heading">${photoHeadingText}</h3>
                     <div>
                         <img
-                            src="${this.photoUrl}"
+                            src="${this.photoUrl || this.noPhotoUrl}"
                             id="profile-photo"
                             style="display: block; max-width: 100%;"
                         >
