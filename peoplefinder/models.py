@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 
 
 # TODO: django doesnt support on update cascade and it's possible that a code
@@ -126,6 +127,9 @@ class Person(models.Model):
     )
     do_not_work_for_dit = models.BooleanField(
         "My manager is not listed because I do not work for DIT", default=False
+    )
+    photo = models.ImageField(
+        max_length=255, null=True, blank=True, validators=[validate_virus_check_result]
     )
 
     def __str__(self) -> str:

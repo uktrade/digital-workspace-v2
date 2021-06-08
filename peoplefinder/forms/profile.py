@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import ValidationError
 
 from peoplefinder.models import Person
 
@@ -23,6 +24,7 @@ class ProfileForm(forms.ModelForm):
             "grade",
             "manager",
             "do_not_work_for_dit",
+            "photo",
         ]
         widgets = {"workdays": forms.CheckboxSelectMultiple}
 
@@ -35,6 +37,11 @@ class ProfileForm(forms.ModelForm):
             " organisation you are directly employed by or contracted to."
         ),
     )
+    # photo crop fields
+    x = forms.IntegerField(required=False)
+    y = forms.IntegerField(required=False)
+    width = forms.IntegerField(required=False)
+    height = forms.IntegerField(required=False)
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -87,9 +94,29 @@ class ProfileForm(forms.ModelForm):
         self.fields["do_not_work_for_dit"].widget.attrs.update(
             {"class": "govuk-checkboxes__input"}
         )
+        # Photo is a custom component
 
         self.initial.update(
             first_name=person.user.first_name,
             last_name=person.user.last_name,
             email=person.user.email,
         )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        self.validate_photo(cleaned_data["photo"])
+
+    def validate_photo(self, photo):
+        if not hasattr(photo, "image"):
+            return
+
+        if photo.image.width < 500:
+            self.add_error("photo", ValidationError("Width is less than 500px"))
+
+        if photo.image.height < 500:
+            self.add_error("photo", ValidationError("Height is less than 500px"))
+
+        # 8mb in bytes
+        if photo.size > 1024 * 1024 * 8:
+            self.add_error("photo", ValidationError("File size is greater than 8MB"))

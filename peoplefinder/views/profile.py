@@ -1,3 +1,6 @@
+import io
+import os
+
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
@@ -5,6 +8,7 @@ from django.views.generic.edit import UpdateView
 from peoplefinder.forms.profile import ProfileForm
 from peoplefinder.forms.role import RoleForm
 from peoplefinder.models import Person
+from peoplefinder.services.image import ImageService
 from peoplefinder.services.team import TeamService
 from .base import PeoplefinderView
 
@@ -59,3 +63,39 @@ class ProfileEditView(UserPassesTestMixin, UpdateView, PeoplefinderView):
         context.update(roles=roles, role_forms=role_forms)
 
         return context
+
+    def form_valid(self, form):
+        # saves the form
+        response = super().form_valid(form)
+
+        if "photo" in form.changed_data:
+            self.crop_photo(form)
+
+        return response
+
+    def crop_photo(self, form):
+        profile = self.object
+        photo = form.cleaned_data["photo"]
+
+        photo_name = profile.photo.name
+        _, photo_ext = os.path.splitext(profile.photo.name)
+        # strip leading period
+        photo_ext = photo_ext.lstrip(".")
+
+        # Pillow doesn't like JPG as a file extension ¯\_(ツ)_/¯
+        if photo_ext.upper() == "JPG":
+            photo_ext = "JPEG"
+
+        cropped_photo = ImageService().crop_image(
+            photo,
+            form.cleaned_data["x"],
+            form.cleaned_data["y"],
+            form.cleaned_data["width"],
+            form.cleaned_data["height"],
+        )
+
+        with io.BytesIO() as photo_content:
+            # save the cropped photo to the in-memory file object
+            cropped_photo.save(photo_content, format=photo_ext)
+            # tell django to save the cropped image
+            profile.photo.save(photo_name, content=photo_content)

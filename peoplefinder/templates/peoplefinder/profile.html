@@ -1,9 +1,15 @@
 {% extends 'peoplefinder/page.html' %}
 
+{% load webpack_static from webpack_loader %}
+
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
-        <h2 class="govuk-heading-s">Picture</h2>
+        {% if profile.photo %}
+            <img src="{{ profile.photo.url }}" width="100%">
+        {% else %}
+            <img src="{% webpack_static 'no-photo-large.png' %}" width="100%">
+        {% endif %}
     </div>
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">{{ profile.user.get_full_name }}</h1>
