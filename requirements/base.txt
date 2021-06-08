@@ -22,11 +22,11 @@ billiard==3.6.3.0
     # via celery
 bleach==3.3.0
     # via -r requirements.in/base.in
-boto3==1.14.10
+boto3==1.17.89
     # via
     #   -r requirements.in/base.in
     #   django-chunk-upload-handlers
-botocore==1.17.10
+botocore==1.20.89
     # via
     #   boto3
     #   s3transfer
@@ -60,7 +60,7 @@ defusedxml==0.6.0
     #   atoma
 django-audit-log-middleware==0.0.4
     # via -r requirements.in/base.in
-django-chunk-upload-handlers==0.0.4
+django-chunk-upload-handlers==0.0.10
     # via -r requirements.in/base.in
 django-cogwheels==0.3
     # via wagtailmenus
@@ -116,8 +116,6 @@ djangorestframework==3.12.2
     # via wagtail
 docopt==0.6.2
     # via notifications-python-client
-docutils==0.15.2
-    # via botocore
 draftjs-exporter==2.1.7
     # via wagtail
 elasticsearch-dsl==7.2.1
@@ -220,7 +218,7 @@ requests[socks]==2.25.1
     #   requests-oauthlib
     #   tweepy
     #   wagtail
-s3transfer==0.3.3
+s3transfer==0.4.2
     # via boto3
 sentry-sdk==1.1.0
     # via -r requirements.in/base.in
@@ -245,8 +243,9 @@ tablib[xls,xlsx]==3.0.0
     # via wagtail
 tweepy==3.10.0
     # via -r requirements.in/base.in
-urllib3==1.25.9
+urllib3==1.26.5
     # via
+    #   -r requirements.in/base.in
     #   botocore
     #   elasticsearch
     #   requests

@@ -32,11 +32,11 @@ billiard==3.6.3.0
     #   celery
 bleach==3.3.0
     # via -r requirements.in/../requirements/base.txt
-boto3==1.14.10
+boto3==1.17.89
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-chunk-upload-handlers
-botocore==1.17.10
+botocore==1.20.89
     # via
     #   -r requirements.in/../requirements/base.txt
     #   boto3
@@ -86,7 +86,7 @@ defusedxml==0.6.0
     #   atoma
 django-audit-log-middleware==0.0.4
     # via -r requirements.in/../requirements/base.txt
-django-chunk-upload-handlers==0.0.4
+django-chunk-upload-handlers==0.0.10
     # via -r requirements.in/../requirements/base.txt
 django-cogwheels==0.3
     # via
@@ -157,10 +157,6 @@ docopt==0.6.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   notifications-python-client
-docutils==0.15.2
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   botocore
 draftjs-exporter==2.1.7
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -308,7 +304,7 @@ requests[socks]==2.25.1
     #   requests-oauthlib
     #   tweepy
     #   wagtail
-s3transfer==0.3.3
+s3transfer==0.4.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   boto3
@@ -342,7 +338,7 @@ tablib[xls,xlsx]==3.0.0
     #   wagtail
 tweepy==3.10.0
     # via -r requirements.in/../requirements/base.txt
-urllib3==1.25.9
+urllib3==1.26.5
     # via
     #   -r requirements.in/../requirements/base.txt
     #   botocore
