@@ -39,6 +39,7 @@
         <meta property="og:image" content="{% webpack_static 'govuk-opengraph-image.png' %}">
 
         {% render_bundle 'main' 'css' %}
+        {% block stylesheets %}{% endblock %}
     </head>
 
     <body class="govuk-template__body ">
@@ -79,5 +80,6 @@
         </div>
         {% include "includes/footer.html" %}
         {% render_bundle 'main' 'js' %}
+        {% block scripts %}{% endblock %}
     </body>
 </html>

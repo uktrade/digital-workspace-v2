@@ -3,6 +3,7 @@
   "author": "Department for International Trade",
   "private": true,
   "dependencies": {
+    "cropperjs": "^1.5.11",
     "css-loader": "^5.2.4",
     "extract-loader": "^5.1.0",
     "file-loader": "^6.0.0",

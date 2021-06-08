@@ -7,12 +7,14 @@ module.exports = {
   context: __dirname,
   entry: {
     main: ['./assets/js/application.js', './assets/stylesheets/application.scss'],
-    htmx: ['./assets/js/htmx.js']
+    peoplefinder: ['./assets/js/peoplefinder.js'],
   },
   output: {
     path: path.resolve('./assets/webpack_bundles/'),
     publicPath: '/static/webpack_bundles/',
-    filename: "[name]-[hash].js"
+    filename: "[name]-[hash].js",
+    // Access exports using DW.[entry].[export] format, e.g. `DW.peoplefinder.Cropper`.
+    library: ["DW", "[name]"],
   },
 
   plugins: [
@@ -40,7 +42,7 @@ module.exports = {
 
       // Extract compiled SCSS separately from JS
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.(s[ac]ss|css)$/i,
         use: [
           {
             loader: MiniCssExtractPlugin.loader
