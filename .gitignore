@@ -20,7 +20,7 @@ npm-debug.log*
 webpack-stats.json
 /assets/webpack_bundles
 
-static/*
+/static/
 media/
 
 # Wordpress output
