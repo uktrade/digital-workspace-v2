@@ -24,9 +24,14 @@ class ProfileForm(forms.ModelForm):
             "grade",
             "manager",
             "do_not_work_for_dit",
+            "key_skills",
+            "other_key_skills",
             "photo",
         ]
-        widgets = {"workdays": forms.CheckboxSelectMultiple}
+        widgets = {
+            "workdays": forms.CheckboxSelectMultiple,
+            "key_skills": forms.CheckboxSelectMultiple,
+        }
 
     first_name = forms.CharField()
     last_name = forms.CharField()
@@ -93,6 +98,12 @@ class ProfileForm(forms.ModelForm):
         # Manager is a custom component
         self.fields["do_not_work_for_dit"].widget.attrs.update(
             {"class": "govuk-checkboxes__input"}
+        )
+        self.fields["key_skills"].widget.attrs.update(
+            {"class": "govuk-checkboxes__input"}
+        )
+        self.fields["other_key_skills"].widget.attrs.update(
+            {"class": "govuk-input govuk-!-width-one-half"}
         )
         # Photo is a custom component
 

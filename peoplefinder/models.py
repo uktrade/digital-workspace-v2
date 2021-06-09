@@ -54,6 +54,20 @@ class Grade(models.Model):
         return self.name
 
 
+class KeySkill(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["code"], name="unique_key_skill_code"),
+            models.UniqueConstraint(fields=["name"], name="unique_key_skill_name"),
+        ]
+
+    code = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Person(models.Model):
     user = models.OneToOneField(
         "user.User", models.CASCADE, primary_key=True, related_name="profile"
@@ -72,6 +86,13 @@ class Person(models.Model):
     )
     grade = models.ForeignKey(
         "Grade", models.SET_NULL, null=True, blank=True, related_name="+"
+    )
+    key_skills = models.ManyToManyField(
+        "KeySkill",
+        verbose_name="What are your key skills?",
+        blank=True,
+        related_name="+",
+        help_text="Select all that apply",
     )
 
     pronouns = models.CharField(max_length=16, null=True, blank=True)
@@ -127,6 +148,9 @@ class Person(models.Model):
     )
     do_not_work_for_dit = models.BooleanField(
         "My manager is not listed because I do not work for DIT", default=False
+    )
+    other_key_skills = models.CharField(
+        "What other key skills do you have?", max_length=255, null=True, blank=True
     )
     photo = models.ImageField(
         max_length=255, null=True, blank=True, validators=[validate_virus_check_result]

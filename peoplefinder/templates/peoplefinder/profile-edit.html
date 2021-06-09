@@ -131,6 +131,22 @@
     </fieldset>
 
     <fieldset>
+        <h2 class="govuk-heading-m">Skills, interests and networks</h2>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Add key skills
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                {% include 'peoplefinder/components/checkboxes.html' with field=form.key_skills %}
+                {% include 'peoplefinder/components/input.html' with field=form.other_key_skills %}
+            </div>
+        </details>
+    </fieldset>
+
+    <fieldset>
         <h2 class="govuk-heading-m">Profile photo</h2>
         <profile-photo
             name="photo"
