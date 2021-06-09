@@ -99,17 +99,17 @@
         </div>
     {% endif %}
 
-    {% if profile.workdays %}
+    {% if profile.workdays.exists %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Days I work</dt>
             <dd class="govuk-summary-list__value">{{ profile.workdays.all|join:", " }}</dd>
         </div>
     {% endif %}
 
-    {% if profile.key_skills %}
+    {% if profile.key_skills.exists or profile.other_key_skills %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Key skills</dt>
-            <dd class="govuk-summary-list__value">{{ profile.key_skills.all|join:", " }}{% if profile.other_key_skills %}, {{ profile.other_key_skills }}{% endif %}</dd>
+            <dd class="govuk-summary-list__value">{{ profile.get_all_key_skills|join:", " }}</dd>
         </div>
     {% endif %}
 
