@@ -113,6 +113,20 @@
         </div>
     {% endif %}
 
+    {% if profile.fluent_languages %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Fluent languages</dt>
+            <dd class="govuk-summary-list__value">{{ profile.fluent_languages }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.intermediate_languages %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Intermediate languages</dt>
+            <dd class="govuk-summary-list__value">{{ profile.intermediate_languages }}</dd>
+        </div>
+    {% endif %}
+
     {% if profile.grade %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Grade</dt>

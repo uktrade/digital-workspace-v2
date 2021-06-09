@@ -154,6 +154,20 @@ class Person(models.Model):
     other_key_skills = models.CharField(
         "What other key skills do you have?", max_length=255, null=True, blank=True
     )
+    fluent_languages = models.CharField(
+        "Which languages do you speak fluently?",
+        max_length=100,
+        null=True,
+        blank=True,
+        help_text="Add languages that you are fluent in. Use a comma to separate languages.",
+    )
+    intermediate_languages = models.CharField(
+        "Which other languages do you speak?",
+        max_length=100,
+        null=True,
+        blank=True,
+        help_text="Add languages that you speak but aren't fluent in. Use a comma to separate languages.",
+    )
     photo = models.ImageField(
         max_length=255, null=True, blank=True, validators=[validate_virus_check_result]
     )

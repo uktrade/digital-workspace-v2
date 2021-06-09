@@ -26,6 +26,8 @@ class ProfileForm(forms.ModelForm):
             "do_not_work_for_dit",
             "key_skills",
             "other_key_skills",
+            "fluent_languages",
+            "intermediate_languages",
             "photo",
         ]
         widgets = {
@@ -103,6 +105,12 @@ class ProfileForm(forms.ModelForm):
             {"class": "govuk-checkboxes__input"}
         )
         self.fields["other_key_skills"].widget.attrs.update(
+            {"class": "govuk-input govuk-!-width-one-half"}
+        )
+        self.fields["fluent_languages"].widget.attrs.update(
+            {"class": "govuk-input govuk-!-width-one-half"}
+        )
+        self.fields["intermediate_languages"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
         # Photo is a custom component
