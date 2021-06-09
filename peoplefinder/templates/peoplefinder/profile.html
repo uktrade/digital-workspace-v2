@@ -106,6 +106,13 @@
         </div>
     {% endif %}
 
+    {% if profile.key_skills %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Key skills</dt>
+            <dd class="govuk-summary-list__value">{{ profile.key_skills.all|join:", " }}{% if profile.other_key_skills %}, {{ profile.other_key_skills }}{% endif %}</dd>
+        </div>
+    {% endif %}
+
     {% if profile.grade %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Grade</dt>
