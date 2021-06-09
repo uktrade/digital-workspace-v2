@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from django.db import models
 from django.urls import reverse
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
@@ -161,6 +163,12 @@ class Person(models.Model):
 
     def get_absolute_url(self) -> str:
         return reverse("profile-view", kwargs={"profile_pk": self.pk})
+
+    def get_all_key_skills(self) -> Iterator[str]:
+        yield from self.key_skills.all()
+
+        if self.other_key_skills:
+            yield self.other_key_skills
 
 
 class Team(models.Model):
