@@ -248,7 +248,7 @@ packaging==20.9
     #   bleach
 phpserialize==1.3
     # via -r requirements.in/../requirements/base.txt
-pillow==8.1.2
+pillow==8.2.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
