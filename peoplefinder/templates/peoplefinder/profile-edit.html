@@ -144,6 +144,18 @@
                 {% include 'peoplefinder/components/input.html' with field=form.other_key_skills %}
             </div>
         </details>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Add languages
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                {% include 'peoplefinder/components/input.html' with field=form.fluent_languages %}
+                {% include 'peoplefinder/components/input.html' with field=form.intermediate_languages %}
+            </div>
+        </details>
     </fieldset>
 
     <fieldset>
