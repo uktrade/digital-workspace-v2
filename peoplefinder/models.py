@@ -92,6 +92,21 @@ class LearningInterest(models.Model):
         return self.name
 
 
+class Network(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["code"], name="unique_network_code"),
+            models.UniqueConstraint(fields=["name"], name="unique_network_name"),
+        ]
+        ordering = ["name"]
+
+    code = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Person(models.Model):
     user = models.OneToOneField(
         "user.User", models.CASCADE, primary_key=True, related_name="profile"
@@ -121,6 +136,13 @@ class Person(models.Model):
     learning_interests = models.ManyToManyField(
         "LearningInterest",
         verbose_name="What are your learning and development interests?",
+        blank=True,
+        related_name="+",
+        help_text="Select all that apply",
+    )
+    networks = models.ManyToManyField(
+        "Network",
+        verbose_name="What networks do you belong to?",
         blank=True,
         related_name="+",
         help_text="Select all that apply",
