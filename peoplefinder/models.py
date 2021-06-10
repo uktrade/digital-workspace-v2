@@ -107,6 +107,21 @@ class Network(models.Model):
         return self.name
 
 
+class Profession(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["code"], name="unique_profession_code"),
+            models.UniqueConstraint(fields=["name"], name="unique_profession_name"),
+        ]
+        ordering = ["name"]
+
+    code = models.CharField(max_length=30)
+    name = models.CharField(max_length=60)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Person(models.Model):
     user = models.OneToOneField(
         "user.User", models.CASCADE, primary_key=True, related_name="profile"
@@ -143,6 +158,13 @@ class Person(models.Model):
     networks = models.ManyToManyField(
         "Network",
         verbose_name="What networks do you belong to?",
+        blank=True,
+        related_name="+",
+        help_text="Select all that apply",
+    )
+    professions = models.ManyToManyField(
+        "Profession",
+        verbose_name="What professions do you belong to?",
         blank=True,
         related_name="+",
         help_text="Select all that apply",
