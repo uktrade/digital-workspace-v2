@@ -156,6 +156,18 @@
                 {% include 'peoplefinder/components/input.html' with field=form.intermediate_languages %}
             </div>
         </details>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Add learning and development interests
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                {% include 'peoplefinder/components/checkboxes.html' with field=form.learning_interests %}
+                {% include 'peoplefinder/components/input.html' with field=form.other_learning_interests %}
+            </div>
+        </details>
     </fieldset>
 
     <fieldset>
