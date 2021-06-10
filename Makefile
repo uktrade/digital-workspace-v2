@@ -21,6 +21,9 @@ makemigrations:
 migrations:
 	docker-compose run --rm wagtail python manage.py makemigrations
 
+empty-migration:
+	docker-compose run --rm wagtail python manage.py makemigrations --empty $(app)
+
 migrate:
 	docker-compose run --rm wagtail python manage.py migrate
 

@@ -14,6 +14,7 @@ class Country(models.Model):
             models.UniqueConstraint(fields=["code"], name="unique_country_code"),
             models.UniqueConstraint(fields=["name"], name="unique_country_name"),
         ]
+        ordering = ["name"]
 
     DEFAULT_CODE = "GB"
 
@@ -48,6 +49,7 @@ class Grade(models.Model):
             models.UniqueConstraint(fields=["code"], name="unique_grade_code"),
             models.UniqueConstraint(fields=["name"], name="unique_grade_name"),
         ]
+        ordering = ["name"]
 
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=50)
@@ -62,6 +64,26 @@ class KeySkill(models.Model):
             models.UniqueConstraint(fields=["code"], name="unique_key_skill_code"),
             models.UniqueConstraint(fields=["name"], name="unique_key_skill_name"),
         ]
+        ordering = ["name"]
+
+    code = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class LearningInterest(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["code"], name="unique_learning_interest_code"
+            ),
+            models.UniqueConstraint(
+                fields=["name"], name="unique_learning_interest_name"
+            ),
+        ]
+        ordering = ["name"]
 
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=50)
@@ -92,6 +114,13 @@ class Person(models.Model):
     key_skills = models.ManyToManyField(
         "KeySkill",
         verbose_name="What are your key skills?",
+        blank=True,
+        related_name="+",
+        help_text="Select all that apply",
+    )
+    learning_interests = models.ManyToManyField(
+        "LearningInterest",
+        verbose_name="What are your learning and development interests?",
         blank=True,
         related_name="+",
         help_text="Select all that apply",
@@ -168,6 +197,12 @@ class Person(models.Model):
         blank=True,
         help_text="Add languages that you speak but aren't fluent in. Use a comma to separate languages.",
     )
+    other_learning_interests = models.CharField(
+        "What other learning and development interests do you have?",
+        max_length=255,
+        null=True,
+        blank=True,
+    )
     photo = models.ImageField(
         max_length=255, null=True, blank=True, validators=[validate_virus_check_result]
     )
@@ -183,6 +218,12 @@ class Person(models.Model):
 
         if self.other_key_skills:
             yield self.other_key_skills
+
+    def get_all_learning_interests(self) -> Iterator[str]:
+        yield from self.learning_interests.all()
+
+        if self.other_learning_interests:
+            yield self.other_learning_interests
 
 
 class Team(models.Model):

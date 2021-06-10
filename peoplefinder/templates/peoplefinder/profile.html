@@ -133,5 +133,12 @@
             <dd class="govuk-summary-list__value">{{ profile.grade }}</dd>
         </div>
     {% endif %}
+
+    {% if profile.learning_interests.exists or profile.other_learning_interests %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">My learning and development interests</dt>
+            <dd class="govuk-summary-list__value">{{ profile.get_all_learning_interests|join:", " }}</dd>
+        </div>
+    {% endif %}
 </dl>
 {% endblock %}
