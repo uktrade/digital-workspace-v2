@@ -122,6 +122,25 @@ class Profession(models.Model):
         return self.name
 
 
+class AdditionalRole(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["code"], name="unique_additional_role_code"
+            ),
+            models.UniqueConstraint(
+                fields=["name"], name="unique_additional_role_name"
+            ),
+        ]
+        ordering = ["name"]
+
+    code = models.CharField(max_length=40)
+    name = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Person(models.Model):
     user = models.OneToOneField(
         "user.User", models.CASCADE, primary_key=True, related_name="profile"
@@ -165,6 +184,13 @@ class Person(models.Model):
     professions = models.ManyToManyField(
         "Profession",
         verbose_name="What professions do you belong to?",
+        blank=True,
+        related_name="+",
+        help_text="Select all that apply",
+    )
+    additional_roles = models.ManyToManyField(
+        "AdditionalRole",
+        verbose_name="Do you have any additional roles or responsibilities?",
         blank=True,
         related_name="+",
         help_text="Select all that apply",
@@ -247,6 +273,12 @@ class Person(models.Model):
         null=True,
         blank=True,
     )
+    other_additional_roles = models.CharField(
+        "What other additional roles or responsibilities do you have?",
+        max_length=255,
+        null=True,
+        blank=True,
+    )
     photo = models.ImageField(
         max_length=255, null=True, blank=True, validators=[validate_virus_check_result]
     )
@@ -268,6 +300,12 @@ class Person(models.Model):
 
         if self.other_learning_interests:
             yield self.other_learning_interests
+
+    def get_all_additional_roles(self) -> Iterator[str]:
+        yield from self.additional_roles.all()
+
+        if self.other_additional_roles:
+            yield self.other_additional_roles
 
 
 class Team(models.Model):

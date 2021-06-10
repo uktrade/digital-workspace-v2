@@ -190,6 +190,18 @@
                 {% include 'peoplefinder/components/checkboxes.html' with field=form.professions %}
             </div>
         </details>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Add additional roles and responsibilities
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                {% include 'peoplefinder/components/checkboxes.html' with field=form.additional_roles %}
+                {% include 'peoplefinder/components/input.html' with field=form.other_additional_roles %}
+            </div>
+        </details>
     </fieldset>
 
     <fieldset>
