@@ -30,12 +30,14 @@ class ProfileForm(forms.ModelForm):
             "intermediate_languages",
             "learning_interests",
             "other_learning_interests",
+            "networks",
             "photo",
         ]
         widgets = {
             "workdays": forms.CheckboxSelectMultiple,
             "key_skills": forms.CheckboxSelectMultiple,
             "learning_interests": forms.CheckboxSelectMultiple,
+            "networks": forms.CheckboxSelectMultiple,
         }
 
     first_name = forms.CharField()
@@ -121,6 +123,9 @@ class ProfileForm(forms.ModelForm):
         )
         self.fields["other_learning_interests"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
+        )
+        self.fields["networks"].widget.attrs.update(
+            {"class": "govuk-checkboxes__input"}
         )
         # Photo is a custom component
 
