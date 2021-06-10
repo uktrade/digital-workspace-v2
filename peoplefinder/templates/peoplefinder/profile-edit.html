@@ -202,6 +202,17 @@
                 {% include 'peoplefinder/components/input.html' with field=form.other_additional_roles %}
             </div>
         </details>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Add previous experience
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                {% include 'peoplefinder/components/input.html' with field=form.previous_experience %}
+            </div>
+        </details>
     </fieldset>
 
     <fieldset>

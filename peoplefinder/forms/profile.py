@@ -34,6 +34,7 @@ class ProfileForm(forms.ModelForm):
             "professions",
             "additional_roles",
             "other_additional_roles",
+            "previous_experience",
             "photo",
         ]
         widgets = {
@@ -140,6 +141,9 @@ class ProfileForm(forms.ModelForm):
         )
         self.fields["other_additional_roles"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
+        )
+        self.fields["previous_experience"].widget.attrs.update(
+            {"class": "govuk-textarea", "rows": 5}
         )
         # Photo is a custom component
 
