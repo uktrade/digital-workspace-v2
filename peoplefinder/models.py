@@ -279,6 +279,12 @@ class Person(models.Model):
         null=True,
         blank=True,
     )
+    previous_experience = models.TextField(
+        "Previous positions I have held",
+        null=True,
+        blank=True,
+        help_text="List where you have worked before your current role.",
+    )
     photo = models.ImageField(
         max_length=255, null=True, blank=True, validators=[validate_virus_check_result]
     )

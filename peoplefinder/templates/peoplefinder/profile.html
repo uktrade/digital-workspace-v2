@@ -134,6 +134,13 @@
         </div>
     {% endif %}
 
+    {% if profile.previous_experience %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Previous positions held</dt>
+            <dd class="govuk-summary-list__value">{{ profile.previous_experience|linebreaksbr }}</dd>
+        </div>
+    {% endif %}
+
     {% if profile.learning_interests.exists or profile.other_learning_interests %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">My learning and development interests</dt>
