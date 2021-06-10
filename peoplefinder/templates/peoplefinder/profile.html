@@ -147,5 +147,12 @@
             <dd class="govuk-summary-list__value">{{ profile.networks.all|join:", " }}</dd>
         </div>
     {% endif %}
+
+    {% if profile.professions.exists %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Professions I belong to</dt>
+            <dd class="govuk-summary-list__value">{{ profile.professions.all|join:", " }}</dd>
+        </div>
+    {% endif %}
 </dl>
 {% endblock %}

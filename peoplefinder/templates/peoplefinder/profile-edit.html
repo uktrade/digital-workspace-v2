@@ -179,6 +179,17 @@
                 {% include 'peoplefinder/components/checkboxes.html' with field=form.networks %}
             </div>
         </details>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Add professions I belong to
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                {% include 'peoplefinder/components/checkboxes.html' with field=form.professions %}
+            </div>
+        </details>
     </fieldset>
 
     <fieldset>
