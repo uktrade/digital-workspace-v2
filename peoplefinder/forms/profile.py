@@ -158,6 +158,8 @@ class ProfileForm(forms.ModelForm):
 
         self.validate_photo(cleaned_data["photo"])
 
+        return cleaned_data
+
     def validate_photo(self, photo):
         if not hasattr(photo, "image"):
             return

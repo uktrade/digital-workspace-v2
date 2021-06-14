@@ -53,6 +53,16 @@
     }
 }
 
+// Team member card
+.pf-team-member-card__name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.pf-team-member-card__job-title {
+    font-size: 16px;
+}
+
 // Team select web component styles
 .team-select__teams {
     margin-bottom: 20px;

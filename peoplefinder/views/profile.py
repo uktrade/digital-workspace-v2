@@ -38,6 +38,10 @@ class ProfileDetailView(DetailView, PeoplefinderView):
                 team
             ]
 
+        context["can_edit"] = (
+            profile.user == self.request.user or self.request.user.is_staff
+        )
+
         return context
 
 
@@ -49,8 +53,8 @@ class ProfileEditView(UserPassesTestMixin, UpdateView, PeoplefinderView):
     pk_url_kwarg = "profile_pk"
 
     def test_func(self) -> bool:
-        # The profile must be that of the logged in user.
-        return self.get_object().user == self.request.user
+        # The profile must be that of the logged in user or an admin user.
+        return self.get_object().user == self.request.user or self.request.user.is_staff
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

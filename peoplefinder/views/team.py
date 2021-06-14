@@ -1,6 +1,8 @@
 from django.db.models import Q
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
 
+from peoplefinder.forms.team import TeamForm
 from peoplefinder.models import Person, Team
 from peoplefinder.services.team import TeamService
 from .base import PeoplefinderView
@@ -26,6 +28,23 @@ class TeamDetailView(DetailView, PeoplefinderView):
         # Must be a leaf team.
         if not context["sub_teams"]:
             context["people"] = Person.objects.filter(teams=team)
+
+        return context
+
+
+class TeamEditView(UpdateView, PeoplefinderView):
+    model = Team
+    context_object_name = "team"
+    form_class = TeamForm
+    template_name = "peoplefinder/team-edit.html"
+
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        team = context["team"]
+        team_service = TeamService()
+
+        context["parent_team"] = team_service.get_immediate_parent_team(team)
 
         return context
 
