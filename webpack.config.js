@@ -4,6 +4,7 @@ const BundleTracker = require('webpack-bundle-tracker');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
+  mode: 'production',
   context: __dirname,
   entry: {
     main: ['./assets/js/application.js', './assets/stylesheets/application.scss'],
@@ -12,7 +13,7 @@ module.exports = {
   output: {
     path: path.resolve('./assets/webpack_bundles/'),
     publicPath: '/static/webpack_bundles/',
-    filename: "[name]-[hash].js",
+    filename: "[name]-[contenthash].js",
     // Access exports using DW.[entry].[export] format, e.g. `DW.peoplefinder.Cropper`.
     library: ["DW", "[name]"],
   },
@@ -20,24 +21,20 @@ module.exports = {
   plugins: [
     new BundleTracker({ filename: './webpack-stats.json' }),
     new MiniCssExtractPlugin({
-      filename: '[name]-[hash].css',
-      chunkFilename: '[id]-[hash].css'
+      filename: '[name]-[contenthash].css',
+      chunkFilename: '[id]-[contenthash].css'
     })
   ],
 
   module: {
     rules: [
-      // Use file-loader to handle image assets
+      // Use asset-modules to handle image assets
       {
         test: /\.(png|jpe?g|gif|woff2?|svg|ico)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-            }
-          }
-        ]
+        type: 'asset/resource',
+        generator: {
+          filename: '[name][ext]',
+        },
       },
 
       // Extract compiled SCSS separately from JS
