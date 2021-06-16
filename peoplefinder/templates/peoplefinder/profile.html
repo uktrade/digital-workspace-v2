@@ -32,7 +32,7 @@
             <p class="govuk-body-m"><strong>{{ role.job_title }}</strong> in <a class="govuk-link" href="/teams/{{ role.team.slug }}">{{ role.team.name }}</a></p>
         {% endfor %}
         
-        {% if profile.user == user %}
+        {% if can_edit %}
             <p><a class="govuk-button" href="/people/{{ profile.user.id }}/edit">Edit profile</a></p>
         {% endif %}
     </div>

@@ -274,6 +274,8 @@ lxml==4.6.3
     #   htmllaundry
 mammoth==1.4.13
     # via -r requirements.in/../requirements/base.txt
+markdown==3.3.4
+    # via -r requirements.in/../requirements/base.txt
 marshmallow==3.6.1
     # via
     #   -r requirements.in/../requirements/base.txt

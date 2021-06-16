@@ -319,9 +319,26 @@ class Team(models.Model):
         "Person", through="TeamMember", related_name="teams"
     )
 
-    name = models.CharField(max_length=255, unique=True)
-    abbreviation = models.CharField(max_length=10, null=True, blank=True)
+    name = models.CharField(
+        "Team name (required)",
+        max_length=255,
+        unique=True,
+        help_text="The full name of this team (e.g. Digital, Data and Technology)",
+    )
+    abbreviation = models.CharField(
+        "Team acronym/initials",
+        max_length=10,
+        null=True,
+        blank=True,
+        help_text="A shorter version of the team name (e.g. DDaT)",
+    )
     slug = models.SlugField(max_length=100)
+    description = models.TextField(
+        "Team description",
+        null=True,
+        blank=False,
+        help_text="What does this team do? You can use basic Markdown to add lists or links.",
+    )
 
     def __str__(self) -> str:
         return self.short_name
@@ -337,6 +354,10 @@ class Team(models.Model):
             str: The team's short name.
         """
         return self.abbreviation or self.name
+
+    @property
+    def leaders(self):
+        yield from self.members.filter(head_of_team=True)
 
 
 class TeamMember(models.Model):

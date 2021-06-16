@@ -14,8 +14,8 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
     """A role form view which responds with an updated HTML form response."""
 
     def test_func(self) -> bool:
-        # The profile must be that of the logged in user.
-        return self.profile.user == self.request.user
+        # The profile must be that of the logged in user or an admin user.
+        return self.profile.user == self.request.user or self.request.user.is_staff
 
     def dispatch(self, request, *args, **kwargs):
         self.profile_pk = kwargs["profile_pk"]

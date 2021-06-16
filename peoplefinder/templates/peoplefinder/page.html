@@ -27,10 +27,10 @@
     </ol>
 </div>
 
-<main class="govuk-main-wrapper">
-    {% block content %}
-    {% endblock %}
-</main>
+{% include 'peoplefinder/components/messages.html' %}
+
+{% block content %}
+{% endblock %}
 {% endblock %}
 
 {% block scripts %}

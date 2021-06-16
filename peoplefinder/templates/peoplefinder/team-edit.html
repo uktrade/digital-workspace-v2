@@ -1,0 +1,63 @@
+{% extends 'peoplefinder/page.html' %}
+
+{% load static %}
+{% load classes %}
+
+{% block content %}
+<script src="{% static 'peoplefinder/team-select.js' %}"></script>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        {% if team.abbreviation %}
+            <span class="govuk-caption-l">{{ team.abbreviation }}</span>
+        {% endif %}
+        <h1 class="govuk-heading-l">{{ team.name }}</h1>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% include 'peoplefinder/components/error-summary.html' %}
+
+    {% add_class form.name 'govuk-input' 'govuk-!-width-two-thirds' %}
+    {% include 'peoplefinder/components/input.html' with field=form.name %}
+
+    {% add_class form.abbreviation 'govuk-input' 'govuk-!-width-one-quarter' %}
+    {% include 'peoplefinder/components/input.html' with field=form.abbreviation %}
+
+    {% add_class form.description 'govuk-textarea' 'govuk-!-width-two-thirds' %}
+    {% include 'peoplefinder/components/input.html' with field=form.description %}
+
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                Markdown help
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <h3 class="govuk-heading-s">Lists</h3>
+            <kbd>
+                * list item<br>
+                * another list item<br>
+                &nbsp;&nbsp;* a nested list item<br>
+            </kbd>
+            <h3 class="govuk-heading-s">Links</h3>
+            <kbd>[Link title](https://www.gov.uk)</kbd>
+        </div>
+    </details>
+
+    <team-select
+        name="parent_team"
+        url="{% url 'team-select' %}"
+        current-team-id="{{ parent_team.id }}"
+        editing="true"
+    ></team-select>
+
+    <div>
+        <button class="govuk-button" type="submit">Save team</button>
+        <a class="govuk-button govuk-button--secondary" href="{% url 'team-view' team.slug %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}
