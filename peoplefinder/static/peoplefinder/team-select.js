@@ -23,6 +23,10 @@ const TEAM_SELECT_ACTION = {
  *
  * ### `current-team-id`
  * ID of the currently selected team.
+ * 
+ * ### `editing`
+ * Whether the component is in edit mode.
+ * Valid values are "true" and "false". Default is "false".
  *
  * ## Team select data format
  * ```json
@@ -67,7 +71,6 @@ class TeamSelect extends HTMLElement {
     connectedCallback() {
         this.name = this.getAttribute('name');
         const url = this.getAttribute('url');
-        const currentTeamId = parseInt(this.getAttribute('current-team-id'));
 
         this.innerHTML = `
             <div class="team-select">
@@ -89,13 +92,17 @@ class TeamSelect extends HTMLElement {
         this.teamNameEl = this.querySelector('#team-name');
         this.teamsEl = this.querySelector('#teams');
 
-        this.teamsEl.style.display = 'none';
+        if (!this.editing) {
+            this.teamsEl.style.display = 'none';
+        } else {
+            this.currentTeamEl.style.display = 'none';
+        }
 
         this.getTeamSelectData(url)
             .then(data => {
                 this.teams = data;
                 this.rootTeam = this.teams.find(team => !team.parent_id);
-                this.currentTeam = this.teams.find(team => team.team_id === currentTeamId);
+                this.currentTeam = this.teams.find(team => team.team_id === this.currentTeamId);
 
                 if (!this.currentTeam) {
                     this.currentTeamId = this.rootTeam.team_id;
@@ -236,11 +243,19 @@ class TeamSelect extends HTMLElement {
     }
 
     get currentTeamId() {
-        return this.getAttribute('current-team-id');
+        return parseInt(this.getAttribute('current-team-id'));
     }
 
     set currentTeamId(team_id) {
         this.setAttribute('current-team-id', team_id);
+    }
+
+    get editing() {
+        return (this.getAttribute('editing') || 'false') === 'true' ? true : false;
+    }
+
+    set editing(flag) {
+        this.setAttribute('editing', flag ? 'true' : 'false');
     }
 
     teamHasChildren(parentTeam) {

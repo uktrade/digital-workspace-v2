@@ -1,0 +1,17 @@
+{% load webpack_static from webpack_loader %}
+
+<div class="pf-team-member-card">
+    <a class="govuk-link" href="{% url 'profile-view' member.person.user.id %}">
+        {% if member.person.photo %}
+            <img src="{{ member.person.photo.url }}" width="100%">
+        {% else %}
+            <img src="{% webpack_static 'no-photo-large.png' %}" width="100%">
+        {% endif %}
+    </a>
+    <div class="pf-team-member-card__name">
+        <a class="govuk-link" href="{% url 'profile-view' member.person.user.id %}">{{ member.person.user.get_full_name }}</a>
+    </div>
+    <div class="pf-team-member-card__job-title govuk-body">
+        {{ member.job_title }}
+    </div>
+</div>

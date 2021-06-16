@@ -161,6 +161,8 @@ lxml==4.6.3
     #   htmllaundry
 mammoth==1.4.13
     # via -r requirements.in/base.in
+markdown==3.3.4
+    # via -r requirements.in/base.in
 marshmallow==3.6.1
     # via kubi-ecs-logger
 notifications-python-client==6.0.2
