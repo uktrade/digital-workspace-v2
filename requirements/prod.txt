@@ -361,7 +361,7 @@ vine==5.0.0
     #   kombu
 wagtail-draftail-anchors==0.2.0
     # via -r requirements.in/../requirements/base.txt
-wagtail==2.12.4
+wagtail==2.12.5
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail-draftail-anchors
