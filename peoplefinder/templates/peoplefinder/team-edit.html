@@ -3,6 +3,8 @@
 {% load static %}
 {% load classes %}
 
+{% block title %}Edit {{ team.name }}{% endblock %}
+
 {% block content %}
 <script src="{% static 'peoplefinder/team-select.js' %}"></script>
 
@@ -11,7 +13,7 @@
         {% if team.abbreviation %}
             <span class="govuk-caption-l">{{ team.abbreviation }}</span>
         {% endif %}
-        <h1 class="govuk-heading-l">{{ team.name }}</h1>
+        <h1 class="govuk-heading-l">Edit {{ team.name }}</h1>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     </div>
 </div>
