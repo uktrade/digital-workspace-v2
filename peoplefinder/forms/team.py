@@ -6,6 +6,8 @@ from peoplefinder.services.team import TeamService
 
 
 class TeamForm(forms.ModelForm):
+    use_required_attribute = False
+
     class Meta:
         model = Team
         fields = [
