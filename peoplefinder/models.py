@@ -326,11 +326,11 @@ class Team(models.Model):
         help_text="The full name of this team (e.g. Digital, Data and Technology)",
     )
     abbreviation = models.CharField(
-        "Team acronym/initials",
+        "Team acronym or initials",
         max_length=10,
         null=True,
         blank=True,
-        help_text="A shorter version of the team name (e.g. DDaT)",
+        help_text="A short form of the team name, up to 10 characters. For example DDaT.",
     )
     slug = models.SlugField(max_length=100)
     description = models.TextField(
