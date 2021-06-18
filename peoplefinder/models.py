@@ -337,7 +337,7 @@ class Team(models.Model):
         "Team description",
         null=True,
         blank=False,
-        help_text="What does this team do? You can use basic Markdown to add lists or links.",
+        help_text="What does this team do? Use Markdown to add lists and links. Enter up to 1500 characters.",
     )
 
     def __str__(self) -> str:
