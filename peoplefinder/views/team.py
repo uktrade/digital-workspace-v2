@@ -45,6 +45,7 @@ class TeamEditView(UpdateView, PeoplefinderView):
         team_service = TeamService()
 
         context["parent_team"] = team_service.get_immediate_parent_team(team)
+        context["is_root_team"] = team_service.get_root_team() == team
 
         return context
 
