@@ -50,12 +50,14 @@
         </div>
     </details>
 
-    <team-select
-        name="parent_team"
-        url="{% url 'team-select' %}"
-        current-team-id="{{ parent_team.id }}"
-        editing="true"
-    ></team-select>
+    {% if not is_root_team %}
+        <team-select
+            name="parent_team"
+            url="{% url 'team-select' %}"
+            current-team-id="{{ parent_team.id }}"
+            editing="true"
+        ></team-select>
+    {% endif %}
 
     <div>
         <button class="govuk-button" type="submit">Save team</button>
