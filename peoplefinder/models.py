@@ -314,6 +314,13 @@ class Person(models.Model):
             yield self.other_additional_roles
 
 
+# markdown
+DEFAULT_TEAM_DESCRIPTION = """Find out who is in the team and their contact details.
+
+You can update this description, by [updating your team information](https://workspace.trade.gov.uk/working-at-dit/how-do-i/update-my-team-information-on-people-finder/).
+"""
+
+
 class Team(models.Model):
     people = models.ManyToManyField(
         "Person", through="TeamMember", related_name="teams"
@@ -326,18 +333,19 @@ class Team(models.Model):
         help_text="The full name of this team (e.g. Digital, Data and Technology)",
     )
     abbreviation = models.CharField(
-        "Team acronym/initials",
+        "Team acronym or initials",
         max_length=10,
         null=True,
         blank=True,
-        help_text="A shorter version of the team name (e.g. DDaT)",
+        help_text="A short form of the team name, up to 10 characters. For example DDaT.",
     )
     slug = models.SlugField(max_length=100)
     description = models.TextField(
         "Team description",
-        null=True,
+        null=False,
         blank=False,
-        help_text="What does this team do? You can use basic Markdown to add lists or links.",
+        default=DEFAULT_TEAM_DESCRIPTION,
+        help_text="What does this team do? Use Markdown to add lists and links. Enter up to 1500 characters.",
     )
 
     def __str__(self) -> str:
