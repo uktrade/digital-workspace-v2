@@ -53,7 +53,29 @@
     }
 }
 
-// Team member card
+// Team member cards
+.pf-team-member-cards {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0px;
+    padding: 0px;
+    margin-right: -25px;
+
+    li {
+        list-style: none;
+        padding-right: 25px;
+    }
+}
+
+/* when the browser is wider than 640px */
+@media screen and (min-width: 641px) {
+    .pf-team-member-cards {
+        li {
+            width: 25%;
+        }
+    }
+}
+
 .pf-team-member-card__name {
     font-size: 20px;
     font-weight: bold;

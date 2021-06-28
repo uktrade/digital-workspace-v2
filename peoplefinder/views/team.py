@@ -27,7 +27,7 @@ class TeamDetailView(DetailView, PeoplefinderView):
 
         # Must be a leaf team.
         if not context["sub_teams"]:
-            context["people"] = Person.objects.filter(teams=team)
+            context["members"] = team.members.all()
 
         return context
 
