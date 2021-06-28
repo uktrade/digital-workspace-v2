@@ -85,6 +85,15 @@
     font-size: 16px;
 }
 
+// Pagination
+.pf-pagination__info {
+    text-align: right;
+}
+
+.pf-pagination__page {
+    margin-right: 1em;
+}
+
 // Team select web component styles
 .team-select__teams {
     margin-bottom: 20px;
