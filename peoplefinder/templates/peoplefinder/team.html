@@ -52,9 +52,11 @@
             </ul>
         {% else %}
             <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
-            <ul>
-                {% for profile in people %}
-                    <li><a class="govuk-link" href="/people/{{ profile.user.id }}">{{ profile.user.first_name }} {{ profile.user.last_name }}</a></li>
+            <ul class="pf-team-member-cards">
+                {% for member in members %}
+                    <li>
+                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                    </li>
                 {% endfor %}
             </ul>
         {% endif %}
