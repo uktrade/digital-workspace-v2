@@ -1,9 +1,10 @@
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 
 from peoplefinder.forms.team import TeamForm
-from peoplefinder.models import Person, Team
+from peoplefinder.models import Team, TeamMember
 from peoplefinder.services.team import TeamService
 from .base import PeoplefinderView
 
@@ -74,13 +75,17 @@ class TeamPeopleView(DetailView, PeoplefinderView):
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
 
+        page = self.request.GET.get("page", 1)
+
         team = context["team"]
         team_service = TeamService()
 
         context["parent_teams"] = team_service.get_all_parent_teams(team)
         context["sub_teams"] = team_service.get_all_child_teams(team)
-        context["people"] = Person.objects.filter(
-            Q(teams=team) | Q(teams__in=context["sub_teams"])
-        )
+
+        members = TeamMember.objects.filter(
+            Q(team=team) | Q(team__in=context["sub_teams"])
+        ).order_by("pk")
+        context["members"] = Paginator(members, 40).page(page)
 
         return context

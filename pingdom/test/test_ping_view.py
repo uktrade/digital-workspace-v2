@@ -9,4 +9,4 @@ class PingdomTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         assert "<status>OK</status>" in str(response.content)
-        assert response._headers["content-type"] == ("Content-Type", "text/xml")
+        assert response.headers["content-type"] == "text/xml"
