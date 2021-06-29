@@ -1,5 +1,7 @@
 {% extends 'peoplefinder/page.html' %}
 
+{% block title %}People in {{ team.name }}{% endblock %}
+
 {% block content %}
 <span class="govuk-caption-l">{{ team.short_name }}</span>
 <h1 class="govuk-heading-l">All people</h2>
