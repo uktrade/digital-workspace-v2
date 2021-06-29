@@ -166,7 +166,7 @@ draftjs-exporter==2.1.7
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
-elastic-apm==6.0.0
+elastic-apm==6.2.3
     # via -r requirements.in/prod.in
 elasticsearch-dsl==7.2.1
     # via
