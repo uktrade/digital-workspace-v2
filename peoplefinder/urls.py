@@ -12,6 +12,7 @@ from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.team import (
     TeamDetailView,
     TeamEditView,
+    TeamPeopleOutsideSubteamsView,
     TeamPeopleView,
     TeamTreeView,
 )
@@ -64,6 +65,11 @@ teams_urlpatterns = [
     path("<slug>/edit", TeamEditView.as_view(), name="team-edit"),
     path("<slug>/tree", TeamTreeView.as_view(), name="team-tree"),
     path("<slug>/people", TeamPeopleView.as_view(), name="team-people"),
+    path(
+        "<slug>/people-outside-subteams",
+        TeamPeopleOutsideSubteamsView.as_view(),
+        name="team-people-outside-subteams",
+    ),
 ]
 
 api_urlpatterns = [

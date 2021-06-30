@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 
@@ -29,6 +29,10 @@ class TeamDetailView(DetailView, PeoplefinderView):
         # Must be a leaf team.
         if not context["sub_teams"]:
             context["members"] = team.members.all()
+        else:
+            context["people_outside_subteams_count"] = TeamMember.objects.filter(
+                team=team
+            ).count()
 
         return context
 
@@ -67,10 +71,37 @@ class TeamTreeView(DetailView, PeoplefinderView):
         return context
 
 
-class TeamPeopleView(DetailView, PeoplefinderView):
+class TeamPeopleBaseView(DetailView, PeoplefinderView):
+    """A base view for people in a team.
+
+    Below is a list of attributes that subclasses need to provide.
+
+    Attributes:
+        heading ([str]): Page heading
+    """
+
     model = Team
     context_object_name = "team"
     template_name = "peoplefinder/team-people.html"
+
+    # override in subclass
+    heading = ""
+
+    def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
+        """Return the related team members.
+
+        Subclasses must implement this method and return a queryset of team
+        members. The team members will be available at "team_members" in the
+        view's context data.
+
+        Args:
+            team (Team): The given current team
+            sub_teams (QuerySet[Team]): The sub teams of the current team
+
+        Return:
+            (QuerySet[TeamMember]): A queryset of team members
+        """
+        raise NotImplementedError
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -83,9 +114,25 @@ class TeamPeopleView(DetailView, PeoplefinderView):
         context["parent_teams"] = team_service.get_all_parent_teams(team)
         context["sub_teams"] = team_service.get_all_child_teams(team)
 
-        members = TeamMember.objects.filter(
-            Q(team=team) | Q(team__in=context["sub_teams"])
-        ).order_by("pk")
-        context["members"] = Paginator(members, 40).page(page)
+        members = self.get_team_members(team, context["sub_teams"])
+        context["team_members"] = Paginator(members, 40).page(page)
+
+        context["heading"] = self.heading
 
         return context
+
+
+class TeamPeopleView(TeamPeopleBaseView):
+    heading = "All people"
+
+    def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
+        return TeamMember.objects.filter(Q(team=team) | Q(team__in=sub_teams)).order_by(
+            "pk"
+        )
+
+
+class TeamPeopleOutsideSubteamsView(TeamPeopleBaseView):
+    heading = "People not in a sub-team"
+
+    def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
+        return TeamMember.objects.filter(team=team).order_by("pk")
