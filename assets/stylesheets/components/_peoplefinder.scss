@@ -10,10 +10,6 @@
     }
 }
 
-.align-middle {
-    vertical-align: middle;
-}
-
 .manager-search-results {
     max-height: 450px;
     overflow-y: auto;
@@ -92,6 +88,25 @@
 
 .pf-pagination__page {
     margin-right: 1em;
+}
+
+// Utility
+.align-middle {
+    vertical-align: middle;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.separator {
+    padding-right: 10px;
+    margin-right: 10px;
+    border-right: 1px solid #b1b4b6;
 }
 
 // Team select web component styles
