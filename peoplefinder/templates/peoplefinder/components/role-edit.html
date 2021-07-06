@@ -16,6 +16,7 @@ Context:
     <team-select
         name="team"
         url="{% url 'team-select' %}"
+        selected-team-id="{{ form.instance.team.id }}"
         current-team-id="{{ form.instance.team.id }}"
     ></team-select>
     {% include 'peoplefinder/components/input.html' with field=form.job_title %}

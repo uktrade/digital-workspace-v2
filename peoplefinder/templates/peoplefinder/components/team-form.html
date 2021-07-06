@@ -1,0 +1,44 @@
+{% load static %}
+{% load classes %}
+
+<script src="{% static 'peoplefinder/team-select.js' %}"></script>
+
+{% include 'peoplefinder/components/error-summary.html' %}
+
+{% add_class form.name 'govuk-input' 'govuk-!-width-two-thirds' %}
+{% include 'peoplefinder/components/input.html' with field=form.name %}
+
+{% add_class form.abbreviation 'govuk-input' 'govuk-!-width-one-quarter' %}
+{% include 'peoplefinder/components/input.html' with field=form.abbreviation %}
+
+{% add_class form.description 'govuk-textarea' 'govuk-!-width-two-thirds' %}
+{% include 'peoplefinder/components/input.html' with field=form.description %}
+
+<details class="govuk-details" data-module="govuk-details">
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            Markdown help
+        </span>
+    </summary>
+    <div class="govuk-details__text">
+        <h2 class="govuk-heading-s">Lists</h2>
+        <kbd>
+            * list item<br>
+            * another list item<br>
+            &nbsp;&nbsp;* a nested list item<br>
+        </kbd>
+        <h2 class="govuk-heading-s">Links</h2>
+        <kbd>[Link title](https://www.gov.uk)</kbd>
+    </div>
+</details>
+
+{% if not is_root_team %}
+    <team-select
+        name="parent_team"
+        url="{% url 'team-select' %}"
+        selected-team-id="{{ parent_team.id }}"
+        current-team-id="{{ form.instance.id }}"
+        editing="true"
+        disable-current-team="true"
+    ></team-select>
+{% endif %}

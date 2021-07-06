@@ -1,5 +1,7 @@
+import pytest
+
 from peoplefinder.models import Team
-from peoplefinder.services.team import TeamService
+from peoplefinder.services.team import TeamService, TeamServiceError
 
 
 # TODO: Break up into individual tests.
@@ -115,3 +117,19 @@ def test_team_service(db):
             "parent_name": gti.name,
         },
     ]
+
+    # test `validate_team_parent_update` through `update_team_parent`
+    with pytest.raises(
+        TeamServiceError, match="A team's parent cannot be the team itself"
+    ):
+        team_service.update_team_parent(gti, gti)
+
+    with pytest.raises(
+        TeamServiceError, match="A team's parent cannot be a team's child"
+    ):
+        team_service.update_team_parent(gti, gti_investment)
+
+    with pytest.raises(
+        TeamServiceError, match="Cannot update the parent of the root team"
+    ):
+        team_service.update_team_parent(dit, Team(name="Test"))

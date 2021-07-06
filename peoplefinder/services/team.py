@@ -13,6 +13,10 @@ class TeamSelectDatum(TypedDict):
     parent_name: Optional[str]
 
 
+class TeamServiceError(Exception):
+    pass
+
+
 class TeamService:
     def add_team(self, team: Team, parent: Team) -> None:
         """Add a team into the hierarchy.
@@ -33,6 +37,25 @@ class TeamService:
             ]
         )
 
+    def validate_team_parent_update(self, team: Team, parent: Team) -> None:
+        """Validate that the new parent is valid for the given team.
+
+        Args:
+            team (Team):The team to be updated.
+            parent (Team): The given parent team.
+
+        Raises:
+            TeamServiceError: If team's parent is not a valid parent.
+        """
+        if parent == team:
+            raise TeamServiceError("A team's parent cannot be the team itself")
+
+        if parent in self.get_all_child_teams(team):
+            raise TeamServiceError("A team's parent cannot be a team's child")
+
+        if parent and (team == self.get_root_team()):
+            raise TeamServiceError("Cannot update the parent of the root team")
+
     @transaction.atomic
     def update_team_parent(self, team: Team, parent: Team) -> None:
         """Update a team's parent with the given parent team.
@@ -44,6 +67,8 @@ class TeamService:
             team (Team): The team to be updated.
             parent (Team): The given parent team.
         """
+        self.validate_team_parent_update(team, parent)
+
         TeamTree.objects.filter(
             child__in=Subquery(TeamTree.objects.filter(parent=team).values("child"))
         ).exclude(

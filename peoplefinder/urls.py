@@ -10,6 +10,7 @@ from peoplefinder.views.manager import (
 from peoplefinder.views.profile import ProfileDetailView, ProfileEditView
 from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.team import (
+    TeamAddNewSubteamView,
     TeamDetailView,
     TeamEditView,
     TeamPeopleOutsideSubteamsView,
@@ -69,6 +70,11 @@ teams_urlpatterns = [
         "<slug>/people-outside-subteams",
         TeamPeopleOutsideSubteamsView.as_view(),
         name="team-people-outside-subteams",
+    ),
+    path(
+        "<slug>/add-new-subteam",
+        TeamAddNewSubteamView.as_view(),
+        name="team-add-new-subteam",
     ),
 ]
 

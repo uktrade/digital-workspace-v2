@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.db.models import Q, QuerySet
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import CreateView, UpdateView
 
 from peoplefinder.forms.team import TeamForm
 from peoplefinder.models import Team, TeamMember
@@ -136,3 +136,25 @@ class TeamPeopleOutsideSubteamsView(TeamPeopleBaseView):
 
     def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
         return TeamMember.objects.filter(team=team).order_by("pk")
+
+
+class TeamAddNewSubteamView(CreateView, PeoplefinderView):
+    model = Team
+    form_class = TeamForm
+    template_name = "peoplefinder/team-add-new-subteam.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        self.parent_team = Team.objects.get(slug=self.kwargs["slug"])
+
+    def get_initial(self):
+        return {"parent_team": self.parent_team}
+
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        context["parent_team"] = self.parent_team
+        context["is_root_team"] = False
+
+        return context

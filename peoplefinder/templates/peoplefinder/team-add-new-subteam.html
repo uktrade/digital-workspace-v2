@@ -1,14 +1,12 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% block title %}Edit {{ team.name }}{% endblock %}
+{% block title %}Add new sub-team{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        {% if team.abbreviation %}
-            <span class="govuk-caption-l">{{ team.abbreviation }}</span>
-        {% endif %}
-        <h1 class="govuk-heading-l">Edit {{ team.name }}</h1>
+        <span class="govuk-caption-l">{{ parent_team.short_name }}</span>
+        <h1 class="govuk-heading-l">Add new sub-team</h1>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     </div>
 </div>
@@ -20,7 +18,7 @@
 
     <div>
         <button class="govuk-button" type="submit">Save team</button>
-        <a class="govuk-button govuk-button--secondary" href="{% url 'team-view' team.slug %}">Cancel</a>
+        <a class="govuk-button govuk-button--secondary" href="{% url 'team-view' parent_team.slug %}">Cancel</a>
     </div>
 </form>
 {% endblock %}
