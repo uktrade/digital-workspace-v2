@@ -22,12 +22,23 @@ const TEAM_SELECT_ACTION = {
  * the specification.
  *
  * ### `current-team-id`
+ * ID of the current team.
+ * 
+ * ### `selected-team-id`
  * ID of the currently selected team.
  * 
  * ### `editing`
  * Whether the component is in edit mode.
  * Valid values are "true" and "false". Default is "false".
  *
+ * ### `disable-current-team`
+ * Whether the current team and it's children will be disabled.
+ * 
+ * This is useful to disallow selecting the current team or a child of it when
+ * managing a team, as this would create a cyclic relationship.
+ * 
+ * Valid values are "true" and "false". Default is "false".
+ * 
  * ## Team select data format
  * ```json
  * [
@@ -57,7 +68,9 @@ class TeamSelect extends HTMLElement {
         this.name = null;
         this.teams = [];
         this.rootTeam = null;
+        this.selectedTeam = null;
         this.currentTeam = null;
+        this.disableCurrentTeam = false;
 
         // binding methods
         this.getTeamSelectData = this.getTeamSelectData.bind(this);
@@ -71,6 +84,7 @@ class TeamSelect extends HTMLElement {
     connectedCallback() {
         this.name = this.getAttribute('name');
         const url = this.getAttribute('url');
+        this.disableCurrentTeam = (this.getAttribute('disable-current-team') || 'false') === 'true' ? true : false;
 
         this.innerHTML = `
             <div class="team-select">
@@ -87,7 +101,7 @@ class TeamSelect extends HTMLElement {
             </div>
         `;
 
-        this.currentTeamEl = this.querySelector('#current-team');
+        this.selectedTeamEl = this.querySelector('#current-team');
         this.changeTeamEl = this.querySelector('#change-team');
         this.teamNameEl = this.querySelector('#team-name');
         this.teamsEl = this.querySelector('#teams');
@@ -95,21 +109,25 @@ class TeamSelect extends HTMLElement {
         if (!this.editing) {
             this.teamsEl.style.display = 'none';
         } else {
-            this.currentTeamEl.style.display = 'none';
+            this.selectedTeamEl.style.display = 'none';
         }
 
         this.getTeamSelectData(url)
             .then(data => {
                 this.teams = data;
                 this.rootTeam = this.teams.find(team => !team.parent_id);
-                this.currentTeam = this.teams.find(team => team.team_id === this.currentTeamId);
+                this.selectedTeam = this.teams.find(team => team.team_id === this.selectedTeamId);
 
-                if (!this.currentTeam) {
-                    this.currentTeamId = this.rootTeam.team_id;
-                    this.currentTeam = this.rootTeam;
+                if (this.currentTeamId) {
+                    this.currentTeam = this.teams.find(team => team.team_id === this.currentTeamId);
                 }
 
-                this.teamNameEl.innerHTML = this.currentTeam.team_name;
+                if (!this.selectedTeam) {
+                    this.selectedTeamId = this.rootTeam.team_id;
+                    this.selectedTeam = this.rootTeam;
+                }
+
+                this.teamNameEl.innerHTML = this.selectedTeam.team_name;
 
                 this.updateTeams();
             });
@@ -141,37 +159,43 @@ class TeamSelect extends HTMLElement {
         ul.classList.add('govuk-list');
 
         // back link
-        if (this.parentOfCurrentTeam) {
+        if (this.parentOfSelectedTeam) {
             const parentTeamLi = document.createElement('li');
             parentTeamLi.innerHTML = `
                 <a
                     class="govuk-link govuk-link--no-visited-state team-select__nav-up"
                     href="#"
                     data-action="${TEAM_SELECT_ACTION.NAVIGATE_TO}"
-                    data-team-id="${this.parentOfCurrentTeam.team_id}"
-                >${this.parentOfCurrentTeam.team_name}</a>
+                    data-team-id="${this.parentOfSelectedTeam.team_id}"
+                >${this.parentOfSelectedTeam.team_name}</a>
             `;
 
             ul.append(parentTeamLi);
         }
 
         // select current team
-        ul.append(this.renderTeam(this.currentTeam));
+        ul.append(this.renderTeam(this.selectedTeam));
 
         // rest of the teams
-        ul.append(...this.immediateChildrenOfCurrentTeam.map(this.renderTeam));
+        ul.append(...this.immediateChildrenOfSelectedTeam.map(this.renderTeam));
 
         this.teamsEl.innerHTML = '';
         this.teamsEl.append(ul);
     }
 
     renderTeam(team) {
-        const isCurrentTeam = team.team_id === this.currentTeam.team_id;
+        const isCurrentTeam = this.currentTeam && team.team_id === this.currentTeam.team_id;
+        const isSelectedTeam = team.team_id === this.selectedTeam.team_id;
 
+        
         const li = document.createElement('li');
         li.classList.add('team');
 
-        if (this.teamHasChildren(team) && !isCurrentTeam) {
+        if (isCurrentTeam && this.disableCurrentTeam) {
+            li.classList.add('team-select__leaf-team', 'team-select__current-team');
+
+            li.innerHTML = `${team.team_name}`;
+        } else if (this.teamHasChildren(team) && !isSelectedTeam) {
             li.classList.add('team-select__branch-team');
 
             li.innerHTML = `
@@ -183,7 +207,7 @@ class TeamSelect extends HTMLElement {
                 >${team.team_name}</a>
             `;
         } else {
-            li.classList.add(isCurrentTeam ? 'team-select__current-team' : 'team-select__leaf-team');
+            li.classList.add(isSelectedTeam ? 'team-select__selected-team' : 'team-select__leaf-team');
 
             li.innerHTML = `
                 <label>
@@ -191,7 +215,7 @@ class TeamSelect extends HTMLElement {
                         type="radio"
                         name="${this.name}"
                         value="${team.team_id}"
-                        ${isCurrentTeam ? 'checked' : ''}
+                        ${isSelectedTeam ? 'checked' : ''}
                         data-action="${TEAM_SELECT_ACTION.SELECT_TEAM}"
                         data-team-id=${team.team_id}
                     >
@@ -204,7 +228,7 @@ class TeamSelect extends HTMLElement {
     }
 
     handleChangeTeam(e) {
-        this.currentTeamEl.style.display = 'none';
+        this.selectedTeamEl.style.display = 'none';
         this.teamsEl.style.display = 'block';
     }
 
@@ -215,14 +239,14 @@ class TeamSelect extends HTMLElement {
             case TEAM_SELECT_ACTION.NAVIGATE_TO:
                 e.preventDefault();
 
-                const newCurrentTeamId = parseInt(el.dataset.teamId);
-                this.currentTeamId = newCurrentTeamId;
-                this.currentTeam = this.teams.find(team => team.team_id === newCurrentTeamId);
+                const newSelectedTeamId = parseInt(el.dataset.teamId);
+                this.selectedTeamId = newSelectedTeamId;
+                this.selectedTeam = this.teams.find(team => team.team_id === newSelectedTeamId);
                 this.updateTeams();
 
                 break;
             case TEAM_SELECT_ACTION.SELECT_TEAM:
-                this.currentTeamId = parseInt(el.dataset.teamId);;
+                this.selectedTeamId = parseInt(el.dataset.teamId);;
 
                 break;
             default:
@@ -230,16 +254,16 @@ class TeamSelect extends HTMLElement {
         }
     }
 
-    get parentOfCurrentTeam() {
-        if (!this.currentTeam.parent_id) {
+    get parentOfSelectedTeam() {
+        if (!this.selectedTeam.parent_id) {
             return null;
         }
 
-        return this.teams.find(team => team.team_id === this.currentTeam.parent_id);
+        return this.teams.find(team => team.team_id === this.selectedTeam.parent_id);
     }
 
-    get immediateChildrenOfCurrentTeam() {
-        return this.teams.filter(team => team.parent_id === this.currentTeam.team_id);
+    get immediateChildrenOfSelectedTeam() {
+        return this.teams.filter(team => team.parent_id === this.selectedTeam.team_id);
     }
 
     get currentTeamId() {
@@ -248,6 +272,14 @@ class TeamSelect extends HTMLElement {
 
     set currentTeamId(team_id) {
         this.setAttribute('current-team-id', team_id);
+    }
+
+    get selectedTeamId() {
+        return parseInt(this.getAttribute('selected-team-id'));
+    }
+
+    set selectedTeamId(team_id) {
+        this.setAttribute('selected-team-id', team_id);
     }
 
     get editing() {
