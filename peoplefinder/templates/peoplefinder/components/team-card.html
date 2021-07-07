@@ -1,0 +1,10 @@
+{% load markdown %}
+
+<div class="pf-team-card">
+    <p class="pf-team-card__name">
+        <a class="govuk-link" href="{% url 'team-view' team.id %}">{{ team.name }}</a>
+    </p>
+    <div class="pf-team-member-card__description govuk-body">
+        {{ team.description|markdown|truncatewords_html:25 }}
+    </div>
+</div>
