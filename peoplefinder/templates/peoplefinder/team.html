@@ -51,9 +51,11 @@
                     <a class="govuk-link inline-block" href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
                 </div>
             </div>
-            <ul>
+            <ul class="pf-team-cards">
                 {% for team in sub_teams %}
-                    <li><a class="govuk-link" href="/teams/{{ team.slug }}">{{ team.name }}</a></li>
+                    <li>
+                        {% include 'peoplefinder/components/team-card.html' with team=team %}
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
