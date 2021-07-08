@@ -33,6 +33,9 @@ compilescss:
 test:
 	docker-compose run --rm wagtail pytest $(tests)
 
+coverage:
+	docker-compose run --rm wagtail /bin/bash ./scripts/coverage.sh $(tests)
+
 shell:
 	docker-compose run --rm wagtail python manage.py shell
 
