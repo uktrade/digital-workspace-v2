@@ -29,8 +29,10 @@ python manage.py create_user_profiles
 python manage.py create_test_teams
 ```
 
-You can now access Digital Workspace on [localhost:8000](http://localhost:8000>)
-and the admin interface on [localhost:8000/admin](http://localhost:8000/admin).
+You can now access:
+  - Digital Workspace on http://localhost:8000
+  - Wagtail admin on http://localhost:8000/admin
+  - Django admin on http://localhost:8000/django-admin
 
 If you need a virtualenv with the packages installed please run `./setup-local.sh`.
 This is useful if you are using [vscode](https://code.visualstudio.com/) with the
@@ -61,6 +63,21 @@ pytest --create-db
 ```
 
 The pytest settings can be found in the `pyproject.toml` file.
+
+## Coverage
+
+We use [coverage.py](https://coverage.readthedocs.io) to track our test coverage.
+
+To see a coverage report:
+```bash
+make coverage
+# OR to only run selected tests
+make coverage tests=peoplefinder
+
+# then open ./htmlcov/index.html in a web browser
+# OR on linux
+xdg-open ./htmlcov/index.html
+```
 
 ## Make commands
 
