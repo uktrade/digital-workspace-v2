@@ -22,3 +22,4 @@ factory-boy
 
 # Testing
 pytest-django==4.1.0
+coverage==5.5
