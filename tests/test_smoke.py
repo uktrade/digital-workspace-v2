@@ -1,0 +1,30 @@
+import pytest
+
+from tests.pages.homepage import HomePage
+from tests.utils import login
+
+
+@pytest.mark.selenium
+def test_smoke(django_user_model, live_server, selenium):
+    user, _ = django_user_model.objects.get_or_create(
+        username="testuser",
+        first_name="Test",
+        last_name="User",
+        email="test.user@example.com",
+        legacy_sso_user_id="legacy-test-user-id",
+        is_staff=True,
+        is_superuser=True,
+    )
+    user.set_password("password")
+    user.save()
+
+    login(selenium, user)
+
+    home_page = HomePage(selenium)
+    assert "Home" in selenium.title
+
+    wagtail_admin_page = home_page.goto_wagtail_admin_page()
+    assert "Wagtail" in selenium.title
+
+    home_page = wagtail_admin_page.get_home_page()
+    assert "Home" in selenium.title

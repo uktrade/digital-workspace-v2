@@ -24,7 +24,11 @@ class GetPeoplefinderProfileMiddleware:
         # TODO: Remove once we have migrated to peoplefinder v2 in prod.
         response.context_data["peoplefinder_v2"] = settings.PEOPLEFINDER_V2
 
-        profile = peoplefinder.get_user_profile(request.user.legacy_sso_user_id)
+        profile = None
+
+        if request.user.is_authenticated:
+            profile = peoplefinder.get_user_profile(request.user.legacy_sso_user_id)
+
         response.context_data["peoplefinder_profile"] = profile
 
         return response
