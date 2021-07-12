@@ -1,33 +1,36 @@
 version: 2
 jobs:
-    build:
-        machine:
-            image: ubuntu-2004:202101-01
-        steps:
-            - checkout
-            - run:
-                name: Copy env file
-                command: cp .env.ci .env
-            - run:
-                name: build containers
-                command: make build
-            - run:
-                name: install npm packages
-                command: npm install
-            - run:
-                name: build webpack
-                command: npm run build
-            - run:
-                name: run black (code formatting check)
-                command: make black
-            - run:
-                name: run flake8 (coding standards compliance test)
-                command: make flake8
-            - run:
-                name: run unit tests
-                command: make test
-            - run:
-                name: Publish unit test coverage
-                command: |
-                    wget -O codecov.sh https://codecov.io/bash
-                    bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
+  build:
+    machine:
+      image: ubuntu-2004:202101-01
+    steps:
+      - checkout
+      - run:
+          name: Copy env file
+          command: cp .env.ci .env
+      - run:
+          name: build containers
+          command: make build
+      - run:
+          name: install npm packages
+          command: npm install
+      - run:
+          name: build webpack
+          command: npm run build
+      - run:
+          name: run black (code formatting check)
+          command: make black
+      - run:
+          name: run flake8 (coding standards compliance test)
+          command: make flake8
+      - run:
+          name: run containers
+          command: docker-compose --profile selenium up -d
+      - run:
+          name: run unit tests
+          command: make test-all
+      - run:
+          name: Publish unit test coverage
+          command: |
+            wget -O codecov.sh https://codecov.io/bash
+            bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"

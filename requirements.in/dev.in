@@ -23,3 +23,7 @@ factory-boy
 # Testing
 pytest-django==4.1.0
 coverage==5.5
+
+# Selenium
+selenium==3.141.0
+pytest-selenium==2.0.1

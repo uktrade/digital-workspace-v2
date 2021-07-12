@@ -1,55 +1,66 @@
-version: '3'
+version: "3"
 services:
- db:
-   image: postgres:11
-   ports:
-     - "5432:5432"
-   volumes:
-     - ./setup/init.sql:/docker-entrypoint-initdb.d/init.sql
-   environment:
-     - POSTGRES_PASSWORD=postgres
-   healthcheck:
-     test: ["CMD-SHELL", "pg_isready -U postgres"]
-     interval: 5s
-     timeout: 5s
-     retries: 5
- elasticsearch:
-   image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
-   environment:
-     - discovery.type=single-node
-     - cluster.name=docker-cluster
-     - bootstrap.memory_lock=true
-     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-   ports:
-     - "9200:9200"
-   healthcheck:
-     test: ["CMD", "curl","-s" ,"-f", "http://localhost:9200/_cat/health"]
- wagtail:
-   build:
+  db:
+    image: postgres:11
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./setup/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    healthcheck:
+      test: ["CMD", "curl", "-s", "-f", "http://localhost:9200/_cat/health"]
+  wagtail:
+    build:
       context: .
-   command: python manage.py runserver 0.0.0.0:8000
-   volumes:
-     - ./:/app/
-   ports:
-     - "0.0.0.0:8000:8000"
-   depends_on:
-     - db
-     - redis
-     - elasticsearch
-   environment:
-     - DJANGO_SETTINGS_MODULE=config.settings.local
- celery:
-   build:
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./:/app/
+    ports:
+      - "0.0.0.0:8000:8000"
+    depends_on:
+      - db
+      - redis
+      - elasticsearch
+      - celery
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+  celery:
+    build:
       context: .
-   command: celery -A config worker -l info
-   volumes:
-     - .:/app
-   depends_on:
-     - db
-     - redis
-   environment:
-     - DJANGO_SETTINGS_MODULE=config.settings.local
- redis:
-   image: redis:buster
-   ports:
-     - "6379:6379"
+    command: celery -A config worker -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+  redis:
+    image: redis:buster
+    ports:
+      - "6379:6379"
+  selenium:
+    image: selenium/standalone-chrome:4
+    profiles:
+      - selenium
+    ports:
+      - "4444:4444"
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - wagtail

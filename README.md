@@ -40,9 +40,10 @@ This is useful if you are using [vscode](https://code.visualstudio.com/) with th
 
 ---
 
-## Tests
+## Unit tests
 
-You can write tests using [pytest](https://docs.pytest.org/en/stable/) and [pytest-django](https://pytest-django.readthedocs.io/en/latest/).
+You can write tests using [pytest](https://docs.pytest.org/en/stable/) and
+[pytest-django](https://pytest-django.readthedocs.io/en/latest/).
 
 ```bash
 # Run all tests
@@ -63,6 +64,17 @@ pytest --create-db
 ```
 
 The pytest settings can be found in the `pyproject.toml` file.
+
+## Selenium tests
+
+You can write selenium tests using [selenium](https://selenium-python.readthedocs.io/)
+and [pytest-selenium](https://pytest-selenium.readthedocs.io/en/latest/).
+
+The tests are ran against the latest version of Chrome using the Remote WebDriver.
+
+To run the tests `make test-selenium`.
+
+Don't forget to mark any selenium tests with `@pytest.mark.selenium`.
 
 ## Coverage
 

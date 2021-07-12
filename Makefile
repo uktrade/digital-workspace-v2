@@ -31,7 +31,15 @@ compilescss:
 	docker-compose run --rm wagtail python manage.py compilescss
 
 test:
-	docker-compose run --rm wagtail pytest $(tests)
+	docker-compose run --rm wagtail pytest -m "not selenium" --reuse-db $(tests)
+
+test-selenium:
+	docker-compose run --rm --name liveserver wagtail pytest -m selenium \
+		--driver Remote --selenium-host selenium --capability browserName chrome --liveserver 0.0.0.0:8000 $(tests)
+
+test-all:
+	docker-compose run --rm --name liveserver wagtail pytest \
+		--driver Remote --selenium-host selenium --capability browserName chrome --liveserver 0.0.0.0:8000 $(tests)
 
 coverage:
 	docker-compose run --rm wagtail /bin/bash ./scripts/coverage.sh $(tests)
