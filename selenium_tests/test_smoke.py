@@ -1,11 +1,11 @@
 import pytest
 
-from tests.pages.homepage import HomePage
-from tests.utils import login
+from selenium_tests.pages.homepage import HomePage
+from selenium_tests.utils import login
 
 
 @pytest.mark.selenium
-def test_smoke(django_user_model, live_server, selenium):
+def test_smoke(django_user_model, selenium, live_server):
     user, _ = django_user_model.objects.get_or_create(
         username="testuser",
         first_name="Test",
