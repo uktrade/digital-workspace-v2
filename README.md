@@ -72,7 +72,10 @@ and [pytest-selenium](https://pytest-selenium.readthedocs.io/en/latest/).
 
 The tests are ran against the latest version of Chrome using the Remote WebDriver.
 
-To run the tests `make test-selenium`.
+To run the tests make sure you have started the `selenium` docker-compose service. This
+can be done using the `selenium` docker-compose
+[profile](https://docs.docker.com/compose/profiles/), e.g. `docker-compose --profile
+selenium up`. Then you can use the make command `make test-selenium` to run the tests.
 
 Don't forget to mark any selenium tests with `@pytest.mark.selenium`.
 
