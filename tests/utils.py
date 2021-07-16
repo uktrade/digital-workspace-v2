@@ -12,7 +12,7 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 # The host must match the `--name` value passed to `docker-compose run`.
 # The port must match the port given in the `--liveserver` value.
-URL = "http://liveserver:8000/"
+URL = "http://testrunner:8000/"
 
 
 def login(selenium, user):
