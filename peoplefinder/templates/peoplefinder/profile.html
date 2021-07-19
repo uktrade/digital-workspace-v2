@@ -29,7 +29,7 @@
         </dl>
         
         {% for role in roles %}
-            <p class="govuk-body-m"><strong>{{ role.job_title }}</strong> in <a class="govuk-link" href="/teams/{{ role.team.slug }}">{{ role.team.name }}</a></p>
+            <p class="govuk-body-m" data-test-role><strong>{{ role.job_title }}</strong> in <a class="govuk-link" href="/teams/{{ role.team.slug }}">{{ role.team.name }}</a></p>
         {% endfor %}
         
         {% if can_edit %}
@@ -65,9 +65,9 @@
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Preferred email</dt>
         {% if profile.contact_email %}
-            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.contact_email }}" class="govuk-link">{{ profile.contact_email }}</a></dd>
+            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.contact_email }}" class="govuk-link" data-test-preferred-email>{{ profile.contact_email }}</a></dd>
         {% else %}
-            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.user.email }}" class="govuk-link">{{ profile.user.email }}</a></dd>
+            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.user.email }}" class="govuk-link" data-test-preferred-email>{{ profile.user.email }}</a></dd>
         {% endif %}
     </div>
 

@@ -1,11 +1,15 @@
 [tool.pytest.ini_options]
 minversion = "6.0"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "--disable-warnings --ds=config.settings.test"
+addopts = "--disable-warnings --ds=config.settings.test --driver=Remote --selenium-host=selenium --capability browserName chrome --liveserver=0.0.0.0:8000"
 DJANGO_SETTINGS_MODULE = "config.settings.test"
+markers = [
+    "selenium: Mark the test as using Selenium.",
+]
 
 [tool.coverage.run]
 omit = [
     "*/migrations/*",
     "*/test/*",
+    "selenium_tests/*"
 ]

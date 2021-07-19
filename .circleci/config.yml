@@ -27,7 +27,7 @@ jobs:
           name: run containers
           command: docker-compose --profile selenium up -d
       - run:
-          name: run unit tests
+          name: run all tests
           command: make test-all
       - run:
           name: Publish unit test coverage
