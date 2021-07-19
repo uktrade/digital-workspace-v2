@@ -77,7 +77,19 @@ can be done using the `selenium` docker-compose
 [profile](https://docs.docker.com/compose/profiles/), e.g. `docker-compose --profile
 selenium up`. Then you can use the make command `make test-selenium` to run the tests.
 
-Don't forget to mark any selenium tests with `@pytest.mark.selenium`.
+All selenium based tests must live in `selenium_tests/`. This is necessary because in
+order to get multiple selenium tests to work, the default pytest-django database
+handling has to be overridden. See the module docstring for `selenium_tests/conftest.py`
+for complete details of selenium based tests.
+
+> Note: It is important that any selenium tests are marked appropriately with
+> `@pytest.mark.selenium`.
+
+Please make use of html [data](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes)
+attributes to make your tests more resistant to changes.
+
+This project uses the `data-test-XXX` naming convention for html data attributes which
+are there to support tests.
 
 ## Coverage
 
@@ -86,8 +98,6 @@ We use [coverage.py](https://coverage.readthedocs.io) to track our test coverage
 To see a coverage report:
 ```bash
 make coverage
-# OR to only run selected tests
-make coverage tests=peoplefinder
 
 # then open ./htmlcov/index.html in a web browser
 # OR on linux

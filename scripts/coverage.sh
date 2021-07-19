@@ -2,5 +2,5 @@
 
 set -e
 
-coverage run -m pytest $@
+coverage run -m pytest
 coverage html
