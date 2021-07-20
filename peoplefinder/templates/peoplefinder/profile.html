@@ -48,6 +48,13 @@
         </div>
     {% endif %}
 
+    {% if profile.location_in_building %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Location in building</dt>
+            <dd class="govuk-summary-list__value">{{ profile.location_in_building }}</dd>
+        </div>
+    {% endif %}
+
     {% if profile.town_city_or_region %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Town, city or region</dt>

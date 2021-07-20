@@ -247,6 +247,16 @@ class Person(models.Model):
     international_building = models.CharField(
         "International building or location", max_length=50, null=True, blank=True
     )
+    location_in_building = models.CharField(
+        "Where in the building do you work?",
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text=(
+            "Skip this question if you work in a Foreign and Commonwealth Office (FCO)"
+            " building"
+        ),
+    )
     do_not_work_for_dit = models.BooleanField(
         "My manager is not listed because I do not work for DIT", default=False
     )
