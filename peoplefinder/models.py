@@ -162,7 +162,7 @@ class Person(models.Model):
     )
     key_skills = models.ManyToManyField(
         "KeySkill",
-        verbose_name="What are your key skills?",
+        verbose_name="What are your skills?",
         blank=True,
         related_name="+",
         help_text="Select all that apply",
@@ -251,7 +251,7 @@ class Person(models.Model):
         "My manager is not listed because I do not work for DIT", default=False
     )
     other_key_skills = models.CharField(
-        "What other key skills do you have?", max_length=255, null=True, blank=True
+        "What other skills do you have?", max_length=255, null=True, blank=True
     )
     fluent_languages = models.CharField(
         "Which languages do you speak fluently?",

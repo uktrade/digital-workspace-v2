@@ -108,7 +108,7 @@
 
     {% if profile.key_skills.exists or profile.other_key_skills %}
         <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Key skills</dt>
+            <dt class="govuk-summary-list__key">Skills</dt>
             <dd class="govuk-summary-list__value">{{ profile.get_all_key_skills|join:", " }}</dd>
         </div>
     {% endif %}
