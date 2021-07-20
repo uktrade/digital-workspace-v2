@@ -2,6 +2,7 @@ from typing import Iterator
 
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 
 
@@ -162,7 +163,7 @@ class Person(models.Model):
     )
     key_skills = models.ManyToManyField(
         "KeySkill",
-        verbose_name="What are your key skills?",
+        verbose_name="What are your skills?",
         blank=True,
         related_name="+",
         help_text="Select all that apply",
@@ -195,6 +196,9 @@ class Person(models.Model):
         related_name="+",
         help_text="Select all that apply",
     )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     pronouns = models.CharField(max_length=16, null=True, blank=True)
     contact_email = models.EmailField(
@@ -247,11 +251,21 @@ class Person(models.Model):
     international_building = models.CharField(
         "International building or location", max_length=50, null=True, blank=True
     )
+    location_in_building = models.CharField(
+        "Where in the building do you work?",
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text=(
+            "Skip this question if you work in a Foreign and Commonwealth Office (FCO)"
+            " building"
+        ),
+    )
     do_not_work_for_dit = models.BooleanField(
         "My manager is not listed because I do not work for DIT", default=False
     )
     other_key_skills = models.CharField(
-        "What other key skills do you have?", max_length=255, null=True, blank=True
+        "What other skills do you have?", max_length=255, null=True, blank=True
     )
     fluent_languages = models.CharField(
         "Which languages do you speak fluently?",
@@ -312,6 +326,10 @@ class Person(models.Model):
 
         if self.other_additional_roles:
             yield self.other_additional_roles
+
+    @property
+    def is_stale(self):
+        return (timezone.now() - self.updated_at).days >= 365
 
 
 # markdown

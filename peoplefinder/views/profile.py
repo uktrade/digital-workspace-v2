@@ -2,6 +2,7 @@ import io
 import os
 
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 
@@ -45,12 +46,15 @@ class ProfileDetailView(DetailView, PeoplefinderView):
         return context
 
 
-class ProfileEditView(UserPassesTestMixin, UpdateView, PeoplefinderView):
+class ProfileEditView(
+    SuccessMessageMixin, UserPassesTestMixin, UpdateView, PeoplefinderView
+):
     model = Person
     context_object_name = "profile"
     form_class = ProfileForm
     template_name = "peoplefinder/profile-edit.html"
     pk_url_kwarg = "profile_pk"
+    success_message = "Your profile has been updated"
 
     def test_func(self) -> bool:
         # The profile must be that of the logged in user or an admin user.
