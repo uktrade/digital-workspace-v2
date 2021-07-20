@@ -2,6 +2,7 @@ from typing import Iterator
 
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 
 
@@ -196,6 +197,9 @@ class Person(models.Model):
         help_text="Select all that apply",
     )
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     pronouns = models.CharField(max_length=16, null=True, blank=True)
     contact_email = models.EmailField(
         "Contact email address",
@@ -322,6 +326,10 @@ class Person(models.Model):
 
         if self.other_additional_roles:
             yield self.other_additional_roles
+
+    @property
+    def is_stale(self):
+        return (timezone.now() - self.updated_at).days >= 365
 
 
 # markdown

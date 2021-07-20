@@ -1,5 +1,6 @@
 {% extends 'peoplefinder/page.html' %}
 
+{% load humanize %}
 {% load webpack_static from webpack_loader %}
 
 {% block content %}
@@ -12,7 +13,19 @@
         {% endif %}
     </div>
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">{{ profile.user.get_full_name }}</h1>
+        <h1 class="govuk-heading-l mb-0">{{ profile.user.get_full_name }}</h1>
+
+        {% if profile.is_stale %}
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    This profile was last edited {{ profile.updated_at|naturaltime }}.
+                </strong>
+            </div>
+        {% else %}
+            <p class="govuk-body-s">Last edited {{ profile.updated_at|naturalday:"j F Y" }}</p>
+        {% endif %}
 
         <dl class="ws-profile__primary-contact-list govuk-body-l">
             <dt class="govuk-visually-hidden">Preferred email</dt>
