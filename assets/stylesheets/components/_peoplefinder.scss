@@ -32,6 +32,9 @@
 }
 
 .pf-messages {
+    margin-top: 20px;
+    font-weight: bold;
+
     li {
         padding-left: 15px;
     }
@@ -195,6 +198,10 @@
     padding-right: 10px;
     margin-right: 10px;
     border-right: 1px solid #b1b4b6;
+}
+
+.mb-0 {
+    margin-bottom: 0;
 }
 
 // Team select web component styles

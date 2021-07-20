@@ -20,6 +20,7 @@ class ProfileForm(forms.ModelForm):
             "building",
             "regional_building",
             "international_building",
+            "location_in_building",
             "workdays",
             "grade",
             "manager",
@@ -100,6 +101,9 @@ class ProfileForm(forms.ModelForm):
             {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["international_building"].widget.attrs.update(
+            {"class": "govuk-input govuk-!-width-one-half"}
+        )
+        self.fields["location_in_building"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["workdays"].widget.attrs.update(
