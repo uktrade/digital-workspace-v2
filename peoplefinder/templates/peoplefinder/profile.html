@@ -69,6 +69,20 @@
         </div>
     {% endif %}
 
+    {% if profile.regional_building %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Other - UK regional</dt>
+            <dd class="govuk-summary-list__value">{{ profile.regional_building }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.international_building %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Other - Overseas</dt>
+            <dd class="govuk-summary-list__value">{{ profile.international_building }}</dd>
+        </div>
+    {% endif %}
+
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Preferred email</dt>
         {% if profile.contact_email %}
