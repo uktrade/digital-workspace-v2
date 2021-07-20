@@ -46,8 +46,8 @@
                     <h2 class="govuk-heading-m">Teams within {{ team.short_name }}</h2>
                 </div>
                 <div class="govuk-grid-column-one-half text-right">
-                    <a class="govuk-link inline-block separator" href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
                     <a class="govuk-link inline-block separator" href="{% url 'team-people' team.slug %}">View all people</a>
+                    <a class="govuk-link inline-block separator" href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
                     <a class="govuk-link inline-block" href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
                 </div>
             </div>
