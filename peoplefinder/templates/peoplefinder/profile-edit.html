@@ -9,7 +9,7 @@
 <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
 
 <h1 class="govuk-heading-l">Edit profile</h1>
-<form class="ws-profile-edit-form" method="post" enctype="multipart/form-data">
+<form class="ws-profile-edit-form" method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
 
     {% include 'peoplefinder/components/error-summary.html' with form=form %}
