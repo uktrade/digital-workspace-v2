@@ -1,5 +1,8 @@
 {% extends 'peoplefinder/page.html' %}
+
 {% load sub_teams_tree %}
+
+{% block title %}All sub-teams of {{ team.name }}{% endblock %}
 
 {% block content %}
 <span class="govuk-caption-l">{{ team.short_name }}</span>
