@@ -1,5 +1,6 @@
 from django.conf import settings
 
+from peoplefinder.models import Person
 from .services import peoplefinder
 
 
@@ -27,7 +28,12 @@ class GetPeoplefinderProfileMiddleware:
         profile = None
 
         if request.user.is_authenticated:
-            profile = peoplefinder.get_user_profile(request.user.legacy_sso_user_id)
+            if settings.PEOPLEFINDER_V2:
+                profile = Person.objects.with_profile_completion().get(
+                    pk=request.user.pk
+                )
+            else:
+                profile = peoplefinder.get_user_profile(request.user.legacy_sso_user_id)
 
         response.context_data["peoplefinder_profile"] = profile
 
