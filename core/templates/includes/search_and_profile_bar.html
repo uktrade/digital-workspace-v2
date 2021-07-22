@@ -16,7 +16,13 @@
                 <a class="profile-link" href="/people/{{ user.id }}">
                     <div class="profile-details">
                         Hi, {{ user.first_name|truncatechars:25 }}
-                        <span class="profile-prompt">View your profile</span>
+                        <span class="profile-prompt">
+                            {% if peoplefinder_profile.profile_completion < 100 %}
+                                Set up your profile ({{ peoplefinder_profile.profile_completion|floatformat:0 }}% complete)
+                            {% else %}
+                                View your profile
+                            {% endif %}
+                        </span>
                     </div>
                 </a>
             {% else %}
