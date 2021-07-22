@@ -12,3 +12,10 @@ class AboutUsHome(PageWithTopics):
     is_creatable = False
 
     subpage_types = ["about_us.AboutUs"]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        context["children"] = AboutUs.objects.live().public().order_by("title")
+
+        return context
