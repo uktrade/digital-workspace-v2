@@ -1,10 +1,10 @@
 from django.core.paginator import Paginator
-from django.db.models import Q, QuerySet
+from django.db.models import Avg, Q, QuerySet
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
 from peoplefinder.forms.team import TeamForm
-from peoplefinder.models import Team, TeamMember
+from peoplefinder.models import Person, Team, TeamMember
 from peoplefinder.services.team import TeamService
 from .base import PeoplefinderView
 
@@ -33,6 +33,24 @@ class TeamDetailView(DetailView, PeoplefinderView):
             context["people_outside_subteams_count"] = TeamMember.objects.filter(
                 team=team
             ).count()
+
+            team_avg_profile_completion = {
+                x["teams__id"]: x
+                for x in (
+                    Person.objects.with_profile_completion()
+                    .filter(teams__in=context["sub_teams"])
+                    .values("teams__id")
+                    .annotate(avg_profile_completion=Avg("profile_completion"))
+                )
+            }
+
+            for team in context["sub_teams"]:
+                team.avg_profile_completion = 0
+
+                if team.id in team_avg_profile_completion:
+                    team.avg_profile_completion = team_avg_profile_completion[team.id][
+                        "avg_profile_completion"
+                    ]
 
         return context
 
