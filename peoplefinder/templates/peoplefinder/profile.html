@@ -27,6 +27,16 @@
             <p class="govuk-body-s">Last edited {{ profile.updated_at|naturalday:"j F Y" }}</p>
         {% endif %}
 
+        {% if profile.profile_completion < 100 %}
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    Your profile is only {{ profile.profile_completion|floatformat:0 }} complete.
+                </strong>
+            </div>
+        {% endif %}
+
         <dl class="ws-profile__primary-contact-list govuk-body-l">
             <dt class="govuk-visually-hidden">Preferred email</dt>
             {% if profile.contact_email %}

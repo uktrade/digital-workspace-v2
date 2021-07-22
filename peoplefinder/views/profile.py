@@ -19,6 +19,7 @@ class ProfileDetailView(DetailView, PeoplefinderView):
     context_object_name = "profile"
     template_name = "peoplefinder/profile.html"
     pk_url_kwarg = "profile_pk"
+    queryset = Person.objects.with_profile_completion()
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)

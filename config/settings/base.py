@@ -205,6 +205,8 @@ else:
 
 DATABASES = {"default": env.db()}
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 # Configure authentication and Staff SSO integration
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
