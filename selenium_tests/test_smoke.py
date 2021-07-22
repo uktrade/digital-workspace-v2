@@ -1,4 +1,5 @@
 import pytest
+from django.core.management import call_command
 
 from selenium_tests.pages.homepage import HomePage
 from selenium_tests.utils import login
@@ -17,6 +18,9 @@ def test_smoke(django_user_model, selenium, live_server):
     )
     user.set_password("password")
     user.save()
+
+    call_command("create_test_teams")
+    call_command("create_user_profiles")
 
     login(selenium, user)
 

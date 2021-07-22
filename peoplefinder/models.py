@@ -1,6 +1,7 @@
 from typing import Iterator
 
 from django.db import models
+from django.db.models import Case, Exists, OuterRef, When
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
@@ -140,6 +141,38 @@ class AdditionalRole(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class PersonQuerySet(models.QuerySet):
+    def with_profile_completion(self):
+        # Each statement in this list should return 0 or 1 to represent whether that
+        # field is complete.
+        fields = [
+            Case(When(country__isnull=False, then=1), default=0),
+            Case(When(town_city_or_region__isnull=False, then=1), default=0),
+            Case(When(primary_phone_number__isnull=False, then=1), default=0),
+            Case(When(manager__isnull=False, then=1), default=0),
+            Case(When(photo__isnull=False, then=1), default=0),
+            Case(When(user__email__isnull=False, then=1), default=0),
+            Case(When(user__first_name__isnull=False, then=1), default=0),
+            Case(When(user__last_name__isnull=False, then=1), default=0),
+            Case(
+                When(
+                    Exists(TeamMember.objects.filter(person_id=OuterRef("user_id"))),
+                    then=1,
+                ),
+                default=0,
+            ),
+        ]
+
+        # `sum(fields)` is the same as doing `fields[0] + field[1] + field[2]`.
+        # This will create a SQL query which will add up the completed fields.
+        completed = sum(fields)
+        # We need the `total` as a float so that the SQL calculates the decimal
+        # percentage correctly.
+        total = float(len(fields))
+
+        return self.annotate(profile_completion=(completed / total) * 100)
 
 
 class Person(models.Model):
@@ -302,6 +335,8 @@ class Person(models.Model):
     photo = models.ImageField(
         max_length=255, null=True, blank=True, validators=[validate_virus_check_result]
     )
+
+    objects = PersonQuerySet.as_manager()
 
     def __str__(self) -> str:
         return self.user.get_full_name()
