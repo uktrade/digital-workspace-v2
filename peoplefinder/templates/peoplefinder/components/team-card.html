@@ -2,9 +2,14 @@
 
 <div class="pf-team-card">
     <p class="pf-team-card__name">
-        <a class="govuk-link" href="{% url 'team-view' team.id %}">{{ team.name }}</a>
+        <a class="govuk-link" href="{% url 'team-view' team.slug %}">{{ team.name }}</a>
     </p>
     <div class="pf-team-member-card__description govuk-body">
         {{ team.description|markdown|truncatewords_html:25 }}
     </div>
+    {% if team.avg_profile_completion is not None %}
+        <div class="pf-team-card__metadata govuk-body">
+            {{ team.avg_profile_completion|floatformat:0 }}% average profile completion
+        </div>
+    {% endif %}
 </div>
