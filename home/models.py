@@ -25,6 +25,7 @@ class QuickLink(models.Model):
         on_delete=models.CASCADE,
         related_name="quick_links_pages",
     )
+    result_weighting = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"'{self.title}' which links to the '{self.link_to.title}' page"
@@ -32,6 +33,7 @@ class QuickLink(models.Model):
     panels = [
         FieldPanel("title"),
         PageChooserPanel("link_to"),
+        FieldPanel("result_weighting"),
     ]
 
     class Meta:
@@ -103,7 +105,7 @@ class HomePage(BasePage):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
         # Quick links
-        quick_links = QuickLink.objects.all()
+        quick_links = QuickLink.objects.all().order_by("result_weighting", "title")
         context["quick_links"] = quick_links
 
         # News
