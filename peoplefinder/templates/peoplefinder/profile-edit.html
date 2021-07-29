@@ -5,6 +5,8 @@
 
 {% block title %}Edit profile{% endblock %}
 
+{% block location %}{{ profile.user.get_full_name }}{% endblock %}
+
 {% block content %}
 <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
 

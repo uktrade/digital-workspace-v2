@@ -3,14 +3,17 @@ import os
 
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import reverse
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import FormView, UpdateView
 
-from peoplefinder.forms.profile import ProfileForm
+from peoplefinder.forms.profile import ProfileForm, ProfileLeavingDitForm
 from peoplefinder.forms.role import RoleForm
 from peoplefinder.models import Person
 from peoplefinder.services.image import ImageService
+from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
+
 from .base import PeoplefinderView
 
 
@@ -108,3 +111,38 @@ class ProfileEditView(
             cropped_photo.save(photo_content, format=photo_ext)
             # tell django to save the cropped image
             profile.photo.save(photo_name, content=photo_content)
+
+
+class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
+    template_name = "peoplefinder/profile-leaving-dit.html"
+    form_class = ProfileLeavingDitForm
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        self.profile = Person.objects.get(user_id=self.kwargs["profile_pk"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["profile"] = self.profile
+
+        return context
+
+    def form_valid(self, form):
+        person_service = PersonService()
+
+        person_service.left_dit(
+            request=self.request,
+            person=self.profile,
+            reported_by=self.request.user.profile,
+            comment=form.cleaned_data.get("comment"),
+        )
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("profile-view", kwargs={"profile_pk": self.profile.pk})
+
+    def get_success_message(self, cleaned_data):
+        return f"A deletion request for {self.profile} has been sent to support"

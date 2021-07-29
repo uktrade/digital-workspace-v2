@@ -19,11 +19,9 @@
                 <a class="govuk-link" href="/teams/{{ team.slug }}">{{ team.short_name }}</a>
             </li>
         {% endfor %}
-        {% if title %}
-            <li class="govuk-breadcrumbs__list-item">
-                {{ title }}
-            </li>
-        {% endif %}
+        <li class="govuk-breadcrumbs__list-item">
+            {% block location %}{% endblock %}
+        </li>
     </ol>
 </div>
 
