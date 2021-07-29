@@ -63,6 +63,9 @@ down:
 build:
 	docker-compose build
 
+webpack:
+	npm run dev
+
 elevate:
 	docker-compose run --rm wagtail python manage.py elevate_sso_user_permissions --email=$(email)
 

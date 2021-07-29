@@ -34,23 +34,19 @@ class TeamDetailView(DetailView, PeoplefinderView):
                 team=team
             ).count()
 
-            team_avg_profile_completion = {
-                x["teams__id"]: x
-                for x in (
+            # Warning: Multiple requests per sub-team. This might need optimising in the
+            # future.
+            for sub_team in context["sub_teams"]:
+                sub_team.avg_profile_completion = (
                     Person.objects.with_profile_completion()
-                    .filter(teams__in=context["sub_teams"])
-                    .values("teams__id")
-                    .annotate(avg_profile_completion=Avg("profile_completion"))
+                    .filter(
+                        teams__in=[
+                            sub_team,
+                            *team_service.get_all_child_teams(sub_team),
+                        ]
+                    )
+                    .aggregate(Avg("profile_completion"))["profile_completion__avg"]
                 )
-            }
-
-            for team in context["sub_teams"]:
-                team.avg_profile_completion = 0
-
-                if team.id in team_avg_profile_completion:
-                    team.avg_profile_completion = team_avg_profile_completion[team.id][
-                        "avg_profile_completion"
-                    ]
 
         return context
 
