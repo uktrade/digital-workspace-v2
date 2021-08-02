@@ -20,6 +20,7 @@ if os.path.exists(env_file):
 VCAP_SERVICES = env.json("VCAP_SERVICES", {})
 
 # Set required configuration from environment
+# Should be one of the following: "local", "test", "dev", "staging", "training", "prod"
 APP_ENV = env.str("APP_ENV", "local")
 
 AUTHBROKER_URL = env("AUTHBROKER_URL")
@@ -487,3 +488,9 @@ AUDIT_LOG_USER_FIELD = "username"
 SUPPORT_REQUEST_EMAIL = env("SUPPORT_REQUEST_EMAIL")
 GOVUK_NOTIFY_API_KEY = env("GOVUK_NOTIFY_API_KEY")
 PAGE_PROBLEM_EMAIL_TEMPLATE_ID = env("PAGE_PROBLEM_EMAIL_TEMPLATE_ID")
+
+# Profile left DIT
+PROFILE_DELETION_REQUEST_EMAIL = env("PROFILE_DELETION_REQUEST_EMAIL")
+PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID = env(
+    "PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID"
+)

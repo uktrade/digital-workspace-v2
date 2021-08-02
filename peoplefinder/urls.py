@@ -7,7 +7,11 @@ from peoplefinder.views.manager import (
     ManagerSelect,
     ManagerUpdate,
 )
-from peoplefinder.views.profile import ProfileDetailView, ProfileEditView
+from peoplefinder.views.profile import (
+    ProfileDetailView,
+    ProfileEditView,
+    ProfileLeavingDitView,
+)
 from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.team import (
     TeamAddNewSubteamView,
@@ -57,6 +61,12 @@ people_urlpatterns = [
         "<int:profile_pk>/edit/roles/<int:role_pk>/",
         RoleFormView.as_view(),
         name="role",
+    ),
+    # Leaving DIT
+    path(
+        "<int:profile_pk>/leaving-dit",
+        ProfileLeavingDitView.as_view(),
+        name="profile-leaving-dit",
     ),
 ]
 

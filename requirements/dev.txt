@@ -249,6 +249,8 @@ idna==2.9
     #   requests
 iniconfig==1.1.1
     # via pytest
+isort==5.9.3
+    # via -r requirements.in/dev.in
 jdcal==1.4.1
     # via
     #   -r requirements.in/../requirements/base.txt
