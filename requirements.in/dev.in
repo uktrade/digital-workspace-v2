@@ -19,6 +19,7 @@ pydocstyle
 black
 Faker
 factory-boy
+isort
 
 # Testing
 pytest-django==4.1.0

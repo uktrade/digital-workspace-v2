@@ -13,3 +13,7 @@ omit = [
     "*/test/*",
     "selenium_tests/*"
 ]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3

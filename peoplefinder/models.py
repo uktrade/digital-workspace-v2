@@ -366,6 +366,14 @@ class Person(models.Model):
     def is_stale(self):
         return (timezone.now() - self.updated_at).days >= 365
 
+    @property
+    def full_name(self):
+        return self.user.get_full_name()
+
+    @property
+    def preferred_email(self):
+        return self.contact_email or self.user.email
+
 
 # markdown
 DEFAULT_TEAM_DESCRIPTION = """Find out who is in the team and their contact details.

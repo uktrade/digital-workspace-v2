@@ -177,3 +177,11 @@ class ProfileForm(forms.ModelForm):
         # 8mb in bytes
         if photo.size > 1024 * 1024 * 8:
             self.add_error("photo", ValidationError("File size is greater than 8MB"))
+
+
+class ProfileLeavingDitForm(forms.Form):
+    comment = forms.CharField(
+        label="My comments",
+        help_text="for example, leaving date",
+        widget=forms.Textarea(attrs={"class": "govuk-textarea"}),
+    )
