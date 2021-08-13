@@ -498,4 +498,5 @@ PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID = env(
 # Simple history - prevent revert
 SIMPLE_HISTORY_REVERT_DISABLED = True
 
+# Set a custom user edit form in Wagtail admin
 WAGTAIL_USER_EDIT_FORM = 'core.forms.WagtailUserEditForm'
