@@ -1,5 +1,3 @@
-
-
 def set_last_viewed_cookie(request, response):
     if not request.COOKIES.get("seen_cookie_banner"):
         response.set_cookie(

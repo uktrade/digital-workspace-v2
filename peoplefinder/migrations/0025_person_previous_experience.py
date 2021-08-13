@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0024_additional_roles_data'),
+        ("peoplefinder", "0024_additional_roles_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='previous_experience',
-            field=models.TextField(blank=True, help_text='List where you have worked before your current role.', null=True, verbose_name='Previous positions I have held'),
+            model_name="person",
+            name="previous_experience",
+            field=models.TextField(
+                blank=True,
+                help_text="List where you have worked before your current role.",
+                null=True,
+                verbose_name="Previous positions I have held",
+            ),
         ),
     ]

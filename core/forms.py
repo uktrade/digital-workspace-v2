@@ -1,5 +1,7 @@
 from django import forms
 
+from wagtail.users.forms import UserEditForm
+
 
 class PageProblemFoundForm(forms.Form):
     trying_to = forms.CharField(
@@ -20,3 +22,9 @@ class PageProblemFoundForm(forms.Form):
             }
         ),
     )
+
+
+class WagtailUserEditForm(UserEditForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        del self.fields["is_superuser"]

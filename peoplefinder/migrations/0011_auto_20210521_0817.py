@@ -7,13 +7,21 @@ import django_chunk_upload_handlers.clam_av
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0010_person_photo'),
+        ("peoplefinder", "0010_person_photo"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='person',
-            name='photo',
-            field=models.ImageField(blank=True, max_length=255, null=True, upload_to='', validators=[django_chunk_upload_handlers.clam_av.validate_virus_check_result]),
+            model_name="person",
+            name="photo",
+            field=models.ImageField(
+                blank=True,
+                max_length=255,
+                null=True,
+                upload_to="",
+                validators=[
+                    django_chunk_upload_handlers.clam_av.validate_virus_check_result
+                ],
+            ),
         ),
     ]

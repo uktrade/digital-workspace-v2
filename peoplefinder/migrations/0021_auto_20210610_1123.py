@@ -6,32 +6,50 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0020_networks_data'),
+        ("peoplefinder", "0020_networks_data"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Profession',
+            name="Profession",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=30)),
-                ('name', models.CharField(max_length=60)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=30)),
+                ("name", models.CharField(max_length=60)),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.AddConstraint(
-            model_name='profession',
-            constraint=models.UniqueConstraint(fields=('code',), name='unique_profession_code'),
+            model_name="profession",
+            constraint=models.UniqueConstraint(
+                fields=("code",), name="unique_profession_code"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='profession',
-            constraint=models.UniqueConstraint(fields=('name',), name='unique_profession_name'),
+            model_name="profession",
+            constraint=models.UniqueConstraint(
+                fields=("name",), name="unique_profession_name"
+            ),
         ),
         migrations.AddField(
-            model_name='person',
-            name='professions',
-            field=models.ManyToManyField(blank=True, help_text='Select all that apply', related_name='_person_professions_+', to='peoplefinder.Profession', verbose_name='What professions do you belong to?'),
+            model_name="person",
+            name="professions",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Select all that apply",
+                related_name="_person_professions_+",
+                to="peoplefinder.Profession",
+                verbose_name="What professions do you belong to?",
+            ),
         ),
     ]

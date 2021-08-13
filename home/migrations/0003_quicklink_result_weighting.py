@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0002_create_homepage_19012021_18311'),
+        ("home", "0002_create_homepage_19012021_18311"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='quicklink',
-            name='result_weighting',
+            model_name="quicklink",
+            name="result_weighting",
             field=models.IntegerField(blank=True, null=True),
         ),
     ]

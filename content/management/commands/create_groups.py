@@ -79,6 +79,11 @@ MODERATOR_PERMISSIONS = [
     "view_comment",
     # Add missing choose document permission
     "choose_document",
+    # Users
+    "change_user",
+    # Document and document history
+    "view_historicaldocument",
+    "view_document",
 ]
 
 NEWS_MODERATOR_PERMISSIONS = [
