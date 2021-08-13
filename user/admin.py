@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
 
 from core.admin import admin_site
 
@@ -43,4 +44,5 @@ class SSOUserAdmin(UserAdmin):
     )
 
 
+admin_site.register(Group)
 admin_site.register(User, SSOUserAdmin)
