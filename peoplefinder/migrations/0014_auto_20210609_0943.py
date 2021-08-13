@@ -6,18 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0013_key_skills_data'),
+        ("peoplefinder", "0013_key_skills_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='other_key_skills',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='What other key skills do you have?'),
+            model_name="person",
+            name="other_key_skills",
+            field=models.CharField(
+                blank=True,
+                max_length=255,
+                null=True,
+                verbose_name="What other key skills do you have?",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='key_skills',
-            field=models.ManyToManyField(blank=True, help_text='Select all that apply', related_name='_person_key_skills_+', to='peoplefinder.KeySkill', verbose_name='What are your key skills?'),
+            model_name="person",
+            name="key_skills",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Select all that apply",
+                related_name="_person_key_skills_+",
+                to="peoplefinder.KeySkill",
+                verbose_name="What are your key skills?",
+            ),
         ),
     ]

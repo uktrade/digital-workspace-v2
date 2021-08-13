@@ -7,19 +7,21 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0029_person_location_in_building'),
+        ("peoplefinder", "0029_person_location_in_building"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="person",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='person',
-            name='updated_at',
+            model_name="person",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

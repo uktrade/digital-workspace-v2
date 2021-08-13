@@ -133,7 +133,7 @@ django-redis==4.12.1
     # via -r requirements.in/../requirements/base.txt
 django-settings-export==1.2.1
     # via -r requirements.in/../requirements/base.txt
-django-simple-history==2.12.0
+django-simple-history==3.0.0
     # via -r requirements.in/../requirements/base.txt
 django-staff-sso-client==3.1.0
     # via -r requirements.in/../requirements/base.txt
@@ -434,7 +434,6 @@ six==1.15.0
     #   click-repl
     #   django-elasticsearch-dsl
     #   django-extensions
-    #   django-simple-history
     #   elasticsearch-dsl
     #   flake8-print
     #   html5lib

@@ -6,29 +6,46 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0011_auto_20210521_0817'),
+        ("peoplefinder", "0011_auto_20210521_0817"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='KeySkill',
+            name="KeySkill",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=30)),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=30)),
+                ("name", models.CharField(max_length=50)),
             ],
         ),
         migrations.AddConstraint(
-            model_name='keyskill',
-            constraint=models.UniqueConstraint(fields=('code',), name='unique_key_skill_code'),
+            model_name="keyskill",
+            constraint=models.UniqueConstraint(
+                fields=("code",), name="unique_key_skill_code"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='keyskill',
-            constraint=models.UniqueConstraint(fields=('name',), name='unique_key_skill_name'),
+            model_name="keyskill",
+            constraint=models.UniqueConstraint(
+                fields=("name",), name="unique_key_skill_name"
+            ),
         ),
         migrations.AddField(
-            model_name='person',
-            name='key_skills',
-            field=models.ManyToManyField(blank=True, related_name='_person_key_skills_+', to='peoplefinder.KeySkill', verbose_name='What are your key skills?'),
+            model_name="person",
+            name="key_skills",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="_person_key_skills_+",
+                to="peoplefinder.KeySkill",
+                verbose_name="What are your key skills?",
+            ),
         ),
     ]

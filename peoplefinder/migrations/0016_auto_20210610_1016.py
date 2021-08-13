@@ -6,34 +6,57 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0015_auto_20210609_1519'),
+        ("peoplefinder", "0015_auto_20210609_1519"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='LearningInterest',
+            name="LearningInterest",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=30)),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=30)),
+                ("name", models.CharField(max_length=50)),
             ],
         ),
         migrations.AddField(
-            model_name='person',
-            name='other_learning_interests',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='What other learning and development interests do you have?'),
+            model_name="person",
+            name="other_learning_interests",
+            field=models.CharField(
+                blank=True,
+                max_length=255,
+                null=True,
+                verbose_name="What other learning and development interests do you have?",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='learninginterest',
-            constraint=models.UniqueConstraint(fields=('code',), name='unique_learning_interest_code'),
+            model_name="learninginterest",
+            constraint=models.UniqueConstraint(
+                fields=("code",), name="unique_learning_interest_code"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='learninginterest',
-            constraint=models.UniqueConstraint(fields=('name',), name='unique_learning_interest_name'),
+            model_name="learninginterest",
+            constraint=models.UniqueConstraint(
+                fields=("name",), name="unique_learning_interest_name"
+            ),
         ),
         migrations.AddField(
-            model_name='person',
-            name='learning_interests',
-            field=models.ManyToManyField(blank=True, help_text='Select all that apply', related_name='_person_learning_interests_+', to='peoplefinder.LearningInterest', verbose_name='What are your learning and development interests?'),
+            model_name="person",
+            name="learning_interests",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Select all that apply",
+                related_name="_person_learning_interests_+",
+                to="peoplefinder.LearningInterest",
+                verbose_name="What are your learning and development interests?",
+            ),
         ),
     ]

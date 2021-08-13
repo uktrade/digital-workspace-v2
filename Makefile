@@ -142,3 +142,6 @@ listlinks:
 
 groups:
 	docker-compose run --rm wagtail python manage.py create_groups
+
+create_section_homepages:
+	docker-compose run --rm wagtail python manage.py create_section_homepages
