@@ -16,6 +16,7 @@ class DocumentAdmin(SimpleHistoryAdmin):
             self.readonly_fields = [
                 field.name for field in obj.__class__._meta.fields
             ]
+            self.readonly_fields = self.readonly_fields + ["tags", ]
         return self.readonly_fields
 
     list_display = ["title", "created_at", "uploaded_by_user"]
