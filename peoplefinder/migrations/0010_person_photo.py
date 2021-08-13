@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0009_auto_20210520_1528'),
+        ("peoplefinder", "0009_auto_20210520_1528"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='photo',
-            field=models.ImageField(blank=True, max_length=255, null=True, upload_to=''),
+            model_name="person",
+            name="photo",
+            field=models.ImageField(
+                blank=True, max_length=255, null=True, upload_to=""
+            ),
         ),
     ]

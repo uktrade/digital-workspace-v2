@@ -21,9 +21,7 @@ class SSOUserAdmin(UserAdmin):
     # make everything read only for non-super users
     def get_readonly_fields(self, request, obj=None):
         if obj and not request.user.is_superuser:
-            self.readonly_fields = [
-                field.name for field in obj.__class__._meta.fields
-            ]
+            self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
         return self.readonly_fields
 
     exclude = ("password",)

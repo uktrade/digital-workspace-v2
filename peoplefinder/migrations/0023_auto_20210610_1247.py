@@ -6,37 +6,60 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0022_professions_data'),
+        ("peoplefinder", "0022_professions_data"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AdditionalRole',
+            name="AdditionalRole",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=40)),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=40)),
+                ("name", models.CharField(max_length=50)),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.AddField(
-            model_name='person',
-            name='other_additional_roles',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='What other additional roles or responsibilities do you have?'),
+            model_name="person",
+            name="other_additional_roles",
+            field=models.CharField(
+                blank=True,
+                max_length=255,
+                null=True,
+                verbose_name="What other additional roles or responsibilities do you have?",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='additionalrole',
-            constraint=models.UniqueConstraint(fields=('code',), name='unique_additional_role_code'),
+            model_name="additionalrole",
+            constraint=models.UniqueConstraint(
+                fields=("code",), name="unique_additional_role_code"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='additionalrole',
-            constraint=models.UniqueConstraint(fields=('name',), name='unique_additional_role_name'),
+            model_name="additionalrole",
+            constraint=models.UniqueConstraint(
+                fields=("name",), name="unique_additional_role_name"
+            ),
         ),
         migrations.AddField(
-            model_name='person',
-            name='additional_roles',
-            field=models.ManyToManyField(blank=True, help_text='Select all that apply', related_name='_person_additional_roles_+', to='peoplefinder.AdditionalRole', verbose_name='Do you have any additional roles or responsibilities?'),
+            model_name="person",
+            name="additional_roles",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Select all that apply",
+                related_name="_person_additional_roles_+",
+                to="peoplefinder.AdditionalRole",
+                verbose_name="Do you have any additional roles or responsibilities?",
+            ),
         ),
     ]

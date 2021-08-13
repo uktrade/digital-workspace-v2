@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0028_auto_20210720_0733'),
+        ("peoplefinder", "0028_auto_20210720_0733"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='location_in_building',
-            field=models.CharField(blank=True, help_text='Skip this question if you work in a Foreign and Commonwealth Office (FCO) building', max_length=50, null=True, verbose_name='Where in the building do you work?'),
+            model_name="person",
+            name="location_in_building",
+            field=models.CharField(
+                blank=True,
+                help_text="Skip this question if you work in a Foreign and Commonwealth Office (FCO) building",
+                max_length=50,
+                null=True,
+                verbose_name="Where in the building do you work?",
+            ),
         ),
     ]
