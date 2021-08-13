@@ -1,6 +1,10 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+
+from simple_history import register
 from simple_history.models import HistoricalRecords
+
+from wagtail.documents.models import Document
 from wagtail.snippets.models import register_snippet
 
 
@@ -30,3 +34,6 @@ class SiteAlertBanner(models.Model):
                 "You can only have one active banner at a time. "
                 f"Currently the '{activated_banner}' banner is active"
             )
+
+
+register(Document, app=__package__)
