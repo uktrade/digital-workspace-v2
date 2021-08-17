@@ -2,8 +2,6 @@
 
 A [Wagtail]-based intranet for the Department for International Trade.
 
----
-
 ## Setup
 
 ```bash
@@ -30,15 +28,14 @@ python manage.py create_test_teams
 ```
 
 You can now access:
-  - Digital Workspace on http://localhost:8000
-  - Wagtail admin on http://localhost:8000/admin
-  - Django admin on http://localhost:8000/django-admin
+
+- Digital Workspace on http://localhost:8000
+- Wagtail admin on http://localhost:8000/admin
+- Django admin on http://localhost:8000/django-admin
 
 If you need a virtualenv with the packages installed please run `./setup-local.sh`.
 This is useful if you are using [vscode](https://code.visualstudio.com/) with the
 [python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python).
-
----
 
 ## Unit tests
 
@@ -74,8 +71,8 @@ The tests are ran against the latest version of Chrome using the Remote WebDrive
 
 To run the tests make sure you have started the `selenium` docker-compose service. This
 can be done using the `selenium` docker-compose
-[profile](https://docs.docker.com/compose/profiles/), e.g. `docker-compose --profile
-selenium up`. Then you can use the make command `make test-selenium` to run the tests.
+[profile](https://docs.docker.com/compose/profiles/), e.g. `docker-compose --profile selenium up`.
+Then you can use the make command `make test-selenium` to run the tests.
 
 All selenium based tests must live in `selenium_tests/`. This is necessary because in
 order to get multiple selenium tests to work, the default pytest-django database
@@ -96,6 +93,7 @@ are there to support tests.
 We use [coverage.py](https://coverage.readthedocs.io) to track our test coverage.
 
 To see a coverage report:
+
 ```bash
 make coverage
 
@@ -131,38 +129,41 @@ We achieve this by using both the Python and NodeJS buildpacks, the NodeJS
 buildpack will automatically run the npm `heroku-postbuild` step after
 `npm install`.
 
----
+## Domains
 
-# Domains
+### Dev
 
-## Dev
 workspace.dev.uktrade.digital
 static.workspace.dev.uktrade.digital
 
-## Staging
+### Staging
+
 workspace.staging.uktrade.digital
 static.workspace.staging.uktrade.digital
 
-## Prod
+### Prod
+
 workspace.trade.gov.uk
 static.workspace.trade.gov.uk
 
-[Wagtail]: https://www.wagtail.io
+[wagtail]: https://www.wagtail.io
 
 ## Notable design decisions
+
 We had to artificially increase the length of the varchar in the following tables so they would work with longer S3 keys:
 
- * wagtailimages
- * wagtailmedia
- * wagtaildocs
+- wagtailimages
+- wagtailmedia
+- wagtaildocs
 
 The migration 0010_increase_wagtail_file_field_length_01022021_1252 makes this change
 
 ## Notes in import
+
 When importing we will need to copy the content of the current buckets to their new locations (or possibly leave them where they are and update references to them).
 
-
 ## S3 - transfer of assets and security
+
 The use of the original project bucket will be maintained. This bucket is
 hooked up to the static.workspace.trade.gov.uk asset serving service which
 provides SSO authenticated access to the assets within it.
@@ -181,8 +182,9 @@ the bucket we need to iterate through the bucket content and create the relevant
 I am creating a management command to do the above.
 
 ## Migration process (assumes access to old system is maintained for reference)
+
 Run migrations (5 mins)
-Set length of 
+Set length of
 Run management command to create Wagtail records for files within S3 bucket (4 hrs)
 Run import logic (relies on asset records being in app DB) (1 hr)
 Create manual items - quick links, What's Popular, How to list
@@ -191,5 +193,6 @@ Redirects to create:
 
 /about-us/networks-at-dit/ -> /networks
 
-# SVG icon license info
+## SVG icon license info
+
 https://www.svgrepo.com/page/licensing
