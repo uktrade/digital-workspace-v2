@@ -28,12 +28,9 @@
             })(window,document,'script','dataLayer','{{ settings.GTM_CODE }}');</script>
             <!-- End Google Tag Manager -->
         {% endif %}
-        <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% webpack_static 'favicon.ico' %}" type="image/x-icon"/>
+        <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'core/favicon.ico' %}" type="image/x-icon"/>
         <link rel="mask-icon" href="{% webpack_static 'govuk-mask-icon.svg' %}" color="#0b0c0c">
-        <link rel="apple-touch-icon" sizes="180x180" href="{% webpack_static 'govuk-apple-touch-icon-180x180.png' %}">
-        <link rel="apple-touch-icon" sizes="167x167" href="{% webpack_static 'govuk-apple-touch-icon-167x167.png' %}">
-        <link rel="apple-touch-icon" sizes="152x152" href="{% webpack_static 'govuk-apple-touch-icon-152x152.png' %}">
-        <link rel="apple-touch-icon" href="{% webpack_static 'govuk-apple-touch-icon.png' %}">
+        <link rel="apple-touch-icon" href="{% static 'core/apple-touch-icon.png' %}">
 
         <meta name="robots" content="noindex, nofollow">
         <meta property="og:image" content="{% webpack_static 'govuk-opengraph-image.png' %}">
