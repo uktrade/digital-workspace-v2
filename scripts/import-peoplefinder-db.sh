@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# This script is a WIP and is here as a reminder of how to import a
-# database dump into the digital workspace database.
+# For this script you will need a SQL dump from a legacy peoplefinder database using
+# `pg_dump`. This can come from either a local peoplefinder database or from any of the
+# PaaS environments.
 
 set -ex
 
@@ -13,4 +14,4 @@ DATABASE_NAME="legacy_peoplefinder"
 
 psql -h $POSTGRES_HOST -U $POSTGRES_USER -c "CREATE DATABASE $DATABASE_NAME TEMPLATE template0;"
 
-psql -h $POSTGRES_HOST -U $POSTGRES_USER -f peoplefinder-dev.sql $DATABASE_NAME
+psql -h $POSTGRES_HOST -U $POSTGRES_USER -f $1 $DATABASE_NAME

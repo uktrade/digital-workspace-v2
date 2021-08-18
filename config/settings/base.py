@@ -200,11 +200,37 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 if "postgres" in VCAP_SERVICES:
-    DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
+    # TODO: Revert back after the People Finder migration is complete
+    # DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
+    DATABASE_URL = next(
+        x for x in VCAP_SERVICES["postgres"] if x["name"] != "legacy-pg-peoplefinder"
+    )["credentials"]["uri"]
 else:
     DATABASE_URL = os.getenv("DATABASE_URL")
 
 DATABASES = {"default": env.db()}
+
+# TODO: Remove after the People Finder migration is complete.
+# Legacy People Finder database connection
+if "postgres" in VCAP_SERVICES:
+    # Try to find the service in the list of databases.
+    legacy_pf_service = next(
+        (x for x in VCAP_SERVICES["postgres"] if x["name"] == "legacy-pg-peoplefinder"),
+        None,
+    )
+
+    LEGACY_PEOPLEFINDER_DATABASE_URL = (
+        legacy_pf_service["credentials"]["uri"] if legacy_pf_service else None
+    )
+else:
+    LEGACY_PEOPLEFINDER_DATABASE_URL = os.getenv("LEGACY_PEOPLEFINDER_DATABASE_URL")
+
+if LEGACY_PEOPLEFINDER_DATABASE_URL:
+    DATABASES["legacy_peoplefinder"] = env.db_url_config(
+        LEGACY_PEOPLEFINDER_DATABASE_URL
+    )
+
+DATABASE_ROUTERS = ["peoplefinder.routers.LegacyPeopleFinderRouter"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
