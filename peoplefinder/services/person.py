@@ -6,6 +6,7 @@ from django.shortcuts import reverse
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.models import Person
+from user.models import User
 
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,17 @@ Note: {comment}
 
 
 class PersonService:
+    def create_user_profile(self, user: User) -> None:
+        """Create a profile for the given user if there isn't one.
+
+        Args:
+            user: The given user.
+        """
+        if hasattr(user, "profile"):
+            return
+
+        Person.objects.create(user=user)
+
     def left_dit(
         self, request: HttpRequest, person: Person, reported_by: Person, comment: str
     ) -> None:
