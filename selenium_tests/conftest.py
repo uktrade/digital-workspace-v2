@@ -64,6 +64,11 @@ def django_db_setup(django_db_setup):
     for connection in connections.all():
         connection.close()
 
+    run_sql(f"DROP DATABASE IF EXISTS {test_db_name}", db_settings)
+    run_sql(
+        f"CREATE DATABASE {test_db_name} WITH TEMPLATE {template_db_name}",
+        db_settings,
+    )
     run_sql(f"DROP DATABASE IF EXISTS {template_db_name}", db_settings)
 
 

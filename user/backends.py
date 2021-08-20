@@ -6,6 +6,8 @@ from authbroker_client.utils import (
 )
 from django.contrib.auth import get_user_model
 
+from peoplefinder.services.person import PersonService
+
 
 User = get_user_model()
 
@@ -50,5 +52,7 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
 
         user.set_unusable_password()
         user.save()
+
+        PersonService().create_user_profile(user)
 
         return user

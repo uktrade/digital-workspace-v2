@@ -4,6 +4,13 @@ from simple_history import register
 
 
 class User(AbstractUser):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["legacy_sso_user_id"], name="unique_legacy_sso_user_id"
+            ),
+        ]
+
     sso_contact_email = models.EmailField(
         blank=True,
         null=True,
