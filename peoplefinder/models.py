@@ -432,7 +432,7 @@ class TeamMember(models.Model):
     person = models.ForeignKey("Person", models.CASCADE, related_name="roles")
     team = models.ForeignKey("Team", models.CASCADE, related_name="members")
 
-    job_title = models.CharField(max_length=100, blank=False)
+    job_title = models.CharField(max_length=255)
     head_of_team = models.BooleanField(default=False)
 
     def __str__(self) -> str:
