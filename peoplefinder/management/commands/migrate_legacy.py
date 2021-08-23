@@ -51,7 +51,7 @@ def migrate_people():
         if not user:
             continue
 
-        person = Person.objects.create(user=user)
+        person, created = Person.objects.get_or_create(user=user)
 
         for membership in legacy_person.roles.all():
             team = get_team_for_legacy_group(membership.group)
