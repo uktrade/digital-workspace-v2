@@ -18,6 +18,7 @@ def test_profile(django_user_model, selenium, live_server):
         legacy_sso_user_id="legacy-test-user-id",
         is_staff=True,
         is_superuser=True,
+        is_using_peoplefinder_v2=True,
     )
     user.set_password("password")
     user.save()
