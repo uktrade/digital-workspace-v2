@@ -407,6 +407,8 @@ class Team(models.Model):
         default=DEFAULT_TEAM_DESCRIPTION,
         help_text="What does this team do? Use Markdown to add lists and links. Enter up to 1500 characters.",
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return self.short_name
@@ -434,6 +436,8 @@ class TeamMember(models.Model):
 
     job_title = models.CharField(max_length=255)
     head_of_team = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return f"{self.team} - {self.person}"
