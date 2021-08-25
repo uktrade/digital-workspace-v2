@@ -233,7 +233,7 @@ class Person(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    pronouns = models.CharField(max_length=16, null=True, blank=True)
+    pronouns = models.CharField(max_length=40, null=True, blank=True)
     contact_email = models.EmailField(
         "Contact email address",
         null=True,
@@ -246,10 +246,9 @@ class Person(models.Model):
             " information."
         ),
     )
-    # TODO: Find out what the longest value in live is.
     primary_phone_number = models.CharField(
         "Preferred contact number",
-        max_length=20,
+        max_length=42,
         null=True,
         blank=True,
         help_text=(
@@ -259,7 +258,7 @@ class Person(models.Model):
     )
     secondary_phone_number = models.CharField(
         "Alternative contact number",
-        max_length=20,
+        max_length=56,
         null=True,
         blank=True,
         help_text=(
@@ -267,10 +266,9 @@ class Person(models.Model):
             " dialling code."
         ),
     )
-    # TODO: Find out what the longest value in live is.
     town_city_or_region = models.CharField(
         "Town, city or region",
-        max_length=50,
+        max_length=78,
         null=True,
         blank=True,
         help_text="For example, London",
@@ -279,14 +277,14 @@ class Person(models.Model):
         "Where do you usually work?", max_length=50, null=True, blank=True
     )
     regional_building = models.CharField(
-        "UK regional building or location", max_length=50, null=True, blank=True
+        "UK regional building or location", max_length=130, null=True, blank=True
     )
     international_building = models.CharField(
-        "International building or location", max_length=50, null=True, blank=True
+        "International building or location", max_length=110, null=True, blank=True
     )
     location_in_building = models.CharField(
         "Where in the building do you work?",
-        max_length=50,
+        max_length=100,
         null=True,
         blank=True,
         help_text=(
@@ -298,7 +296,7 @@ class Person(models.Model):
         "My manager is not listed because I do not work for DIT", default=False
     )
     other_key_skills = models.CharField(
-        "What other skills do you have?", max_length=255, null=True, blank=True
+        "What other skills do you have?", max_length=700, null=True, blank=True
     )
     fluent_languages = models.CharField(
         "Which languages do you speak fluently?",
@@ -322,7 +320,7 @@ class Person(models.Model):
     )
     other_additional_roles = models.CharField(
         "What other additional roles or responsibilities do you have?",
-        max_length=255,
+        max_length=400,
         null=True,
         blank=True,
     )
