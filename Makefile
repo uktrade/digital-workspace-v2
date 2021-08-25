@@ -24,6 +24,9 @@ migrations:
 empty-migration:
 	docker-compose run --rm wagtail python manage.py makemigrations --empty $(app)
 
+checkmigrations:
+	docker-compose run --rm --no-deps wagtail python manage.py makemigrations --check
+
 migrate:
 	docker-compose run --rm wagtail python manage.py migrate
 
@@ -46,10 +49,10 @@ shell:
 	docker-compose run --rm wagtail python manage.py shell
 
 flake8:
-	docker-compose run --rm wagtail flake8
+	docker-compose run --rm --no-deps wagtail flake8
 
 black:
-	docker-compose run --rm wagtail black .
+	docker-compose run --rm --no-deps wagtail black .
 
 check-fixme:
 	git --no-pager grep -rni fixme -- ':!./Makefile'

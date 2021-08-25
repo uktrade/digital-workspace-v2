@@ -13,10 +13,13 @@ jobs:
           command: make build
       - run:
           name: install npm packages
-          command: npm install
+          command: npm ci
       - run:
           name: build webpack
           command: npm run build
+      - run:
+          name: check for missing migrations
+          command: make checkmigrations
       - run:
           name: run black (code formatting check)
           command: make black
