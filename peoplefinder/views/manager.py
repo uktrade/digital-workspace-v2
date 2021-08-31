@@ -55,9 +55,15 @@ class ManagerSearch(ManagerBaseView):
         message = None
 
         if name:
-            people = Person.objects.annotate(
-                full_name=Concat("user__first_name", Value(" "), "user__last_name")
-            ).filter(full_name__icontains=name)
+            people = (
+                Person.objects.annotate(
+                    full_name_search=Concat(
+                        "user__first_name", Value(" "), "user__last_name"
+                    )
+                )
+                .filter(full_name_search__icontains=name)
+                .exclude(pk=context["profile"])
+            )
 
             if not people:
                 message = f'No search results for name "{name}"'
