@@ -39,6 +39,8 @@ services:
       - celery
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.local
+    stdin_open: true
+    tty: true
   celery:
     build:
       context: .

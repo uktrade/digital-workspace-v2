@@ -1,7 +1,7 @@
 from typing import Iterator
 
 from django.db import models
-from django.db.models import Case, Exists, OuterRef, When
+from django.db.models import Case, Exists, F, OuterRef, Q, When
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
@@ -176,6 +176,13 @@ class PersonQuerySet(models.QuerySet):
 
 
 class Person(models.Model):
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=~Q(pk=F("manager")), name="manager_cannot_be_self"
+            ),
+        ]
+
     user = models.OneToOneField(
         "user.User", models.CASCADE, primary_key=True, related_name="profile"
     )
