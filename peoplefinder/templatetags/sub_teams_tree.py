@@ -1,7 +1,9 @@
 from django import template
+from django.db.models import OuterRef
 from django.shortcuts import reverse
 from django.utils.html import format_html, mark_safe
 
+from peoplefinder.backports import ArraySubquery
 from peoplefinder.models import Team, TeamTree
 
 register = template.Library()
@@ -9,25 +11,43 @@ register = template.Library()
 
 @register.simple_tag
 def sub_teams_tree(team: Team) -> str:
-    team_tree_query = list(
-        TeamTree.objects.select_related("child")
-        .filter(parent=team)
-        .order_by("child", "depth")
+    # Build a path array that we can use to sort into a depth-first representation of
+    # the team tree.
+    path_subquery = (
+        TeamTree.objects.select_related("parent")
+        .filter(child=OuterRef("pk"))
+        .order_by("-depth")
+        # `distinct` is required to stop the `order_by` being cleared.
+        # https://code.djangoproject.com/ticket/31687
+        .distinct("depth")
+    )
+
+    # NOTE: The array subquery is added twice because of the filter on `path`. It's
+    # possible this might need to be optimised in the future.
+    teams = list(
+        Team.objects.annotate(
+            path=ArraySubquery(path_subquery.values("parent__name")),
+        )
+        .filter(path__contains=[team.name])
+        .order_by("path")
     )
 
     depth = 0
 
     output = ['<ul class="pf-team-tree pf-team-tree--container">']
 
-    for i, team_tree in enumerate(team_tree_query):
+    for i, team in enumerate(teams):
         output.append('<li class="pf-team-tree__child">')
 
-        try:
-            next_team_tree = team_tree_query[i + 1]
-        except IndexError:
-            next_team_tree = None
+        team.depth = len(team.path)
 
-        has_children = next_team_tree and (next_team_tree.depth > team_tree.depth)
+        try:
+            next_team = teams[i + 1]
+            next_team.depth = len(next_team.path)
+        except IndexError:
+            next_team = None
+
+        has_children = next_team and (next_team.depth > team.depth)
 
         if has_children:
             output.append('<strong class="pf-team-tree--with-subgroups">')
@@ -35,8 +55,8 @@ def sub_teams_tree(team: Team) -> str:
         output.append(
             format_html(
                 '<a class="govuk-link" href="{}">{}</a>',  # noqa
-                reverse("team-view", args=[team_tree.child.slug]),
-                team_tree.child.name,
+                reverse("team-view", args=[team.slug]),
+                team.name,
             )
         )
 
@@ -48,29 +68,29 @@ def sub_teams_tree(team: Team) -> str:
                 output.append(
                     format_html(
                         '[<a class="govuk-link" href="{}">Show this section</a>]',  # noqa
-                        reverse("team-tree", args=[team_tree.child.slug]),
+                        reverse("team-tree", args=[team.slug]),
                     )
                 )
 
         # This is the last team.
-        if not next_team_tree:
+        if not next_team:
             output.append("</li>")
         # The current team has children.
         elif has_children:
             output.append('<ul class="pf-team-tree">')
         # The current team has no siblings left.
-        elif next_team_tree.depth < team_tree.depth:
+        elif next_team.depth < team.depth:
             output.append("</li>")
 
             # Unwind back to the depth of the next team.
-            for _ in range(team_tree.depth - next_team_tree.depth):
+            for _ in range(team.depth - next_team.depth):
                 output.append("</ul>")
                 output.append("</li>")
         # The current team has more siblings.
         else:
             output.append("</li>")
 
-        depth = team_tree.depth
+        depth = team.depth
 
     # Unwind back to the root.
     for _ in range(depth):
