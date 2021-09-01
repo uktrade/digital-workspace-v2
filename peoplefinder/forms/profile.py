@@ -17,7 +17,7 @@ class ProfileForm(forms.ModelForm):
             "secondary_phone_number",
             "country",
             "town_city_or_region",
-            "building",
+            "buildings",
             "regional_building",
             "international_building",
             "location_in_building",
@@ -45,6 +45,7 @@ class ProfileForm(forms.ModelForm):
             "networks": forms.CheckboxSelectMultiple,
             "professions": forms.CheckboxSelectMultiple,
             "additional_roles": forms.CheckboxSelectMultiple,
+            "buildings": forms.CheckboxSelectMultiple,
         }
 
     first_name = forms.CharField()
@@ -94,8 +95,8 @@ class ProfileForm(forms.ModelForm):
         self.fields["town_city_or_region"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
-        self.fields["building"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half"}
+        self.fields["buildings"].widget.attrs.update(
+            {"class": "govuk-checkboxes__input"}
         )
         self.fields["regional_building"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}

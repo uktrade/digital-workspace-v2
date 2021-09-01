@@ -74,10 +74,10 @@
 <hr class="govuk-section-break govuk-section-break--visible">
 
 <dl class="govuk-summary-list">
-    {% if profile.building %}
+    {% if profile.buildings %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Place(s) I usually work</dt>
-            <dd class="govuk-summary-list__value">{{ profile.building }}</dd>
+            <dd class="govuk-summary-list__value">{{ profile.buildings.all|join:", " }}</dd>
         </div>
     {% endif %}
 
