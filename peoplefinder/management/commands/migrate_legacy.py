@@ -20,6 +20,7 @@ from django.db.models import Q
 from peoplefinder.legacy_models import Groups, People
 from peoplefinder.models import (
     AdditionalRole,
+    Building,
     Country,
     Grade,
     KeySkill,
@@ -120,6 +121,7 @@ def person_migrator():
     networks = Network.objects.in_bulk(field_name="code")
     professions = Profession.objects.in_bulk(field_name="code")
     additional_roles = AdditionalRole.objects.in_bulk(field_name="code")
+    buildings = Building.objects.in_bulk(field_name="code")
 
     def migrate_person(legacy_person, person):
         # country
@@ -179,6 +181,20 @@ def person_migrator():
             ]
         )
 
+        # buildings
+        new_buildings = set()
+
+        for code in legacy_person.building:
+            if not code:
+                continue
+
+            if code in ["whitehall_55", "whitehall_3", "king_charles"]:
+                code = "old_admiralty"
+
+            new_buildings.add(buildings[code])
+
+        person.buildings.set(new_buildings)
+
         # pronouns
         if legacy_person.pronouns:
             person.pronouns = legacy_person.pronouns
@@ -198,11 +214,6 @@ def person_migrator():
         # town_city_or_region
         if legacy_person.city:
             person.town_city_or_region = legacy_person.city
-
-        # TODO: (PFM-166) Need to map the codes to values.
-        # building
-        if legacy_building := filter(None, legacy_person.building):
-            person.building = ", ".join(legacy_building)
 
         # regional_building
         if legacy_person.other_uk:

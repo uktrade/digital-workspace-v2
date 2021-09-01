@@ -143,6 +143,21 @@ class AdditionalRole(models.Model):
         return self.name
 
 
+class Building(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["code"], name="unique_building_code"),
+            models.UniqueConstraint(fields=["name"], name="unique_building_name"),
+        ]
+        ordering = ["name"]
+
+    code = models.CharField(max_length=30)
+    name = models.CharField(max_length=40)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class PersonQuerySet(models.QuerySet):
     def with_profile_completion(self):
         # Each statement in this list should return 0 or 1 to represent whether that
@@ -236,6 +251,12 @@ class Person(models.Model):
         related_name="+",
         help_text="Select all that apply",
     )
+    buildings = models.ManyToManyField(
+        "Building",
+        verbose_name="Where do you usually work?",
+        blank=True,
+        related_name="+",
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -279,9 +300,6 @@ class Person(models.Model):
         null=True,
         blank=True,
         help_text="For example, London",
-    )
-    building = models.CharField(
-        "Where do you usually work?", max_length=50, null=True, blank=True
     )
     regional_building = models.CharField(
         "UK regional building or location", max_length=130, null=True, blank=True
