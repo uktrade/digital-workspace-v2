@@ -1,3 +1,4 @@
+import uuid
 from typing import Iterator
 
 from django.db import models
@@ -258,6 +259,11 @@ class Person(models.Model):
         related_name="+",
     )
 
+    slug = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    legacy_slug = models.CharField(
+        unique=True, max_length=80, null=True, editable=False
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -365,7 +371,7 @@ class Person(models.Model):
         return self.user.get_full_name()
 
     def get_absolute_url(self) -> str:
-        return reverse("profile-view", kwargs={"profile_pk": self.pk})
+        return reverse("profile-view", kwargs={"profile_slug": self.slug})
 
     def get_all_key_skills(self) -> Iterator[str]:
         yield from self.key_skills.all()

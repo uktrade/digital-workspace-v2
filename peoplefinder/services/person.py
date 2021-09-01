@@ -51,7 +51,7 @@ class PersonService:
         context = {
             "profile_name": person.full_name,
             "profile_url": request.build_absolute_uri(
-                reverse("profile-view", kwargs={"profile_pk": person.user_id})
+                reverse("profile-view", kwargs={"profile_slug": person.slug})
             ),
             "reporter_name": reported_by.full_name,
             "reporter_email": reported_by.preferred_email,

@@ -57,6 +57,8 @@ class ProfileForm(forms.ModelForm):
             " organisation you are directly employed by or contracted to."
         ),
     )
+    # Override manager to avoid using IDs and enforce the use of UUIDs (slugs).
+    manager = forms.UUIDField(required=False)
     # photo crop fields
     x = forms.IntegerField(required=False)
     y = forms.IntegerField(required=False)
@@ -156,7 +158,21 @@ class ProfileForm(forms.ModelForm):
             first_name=person.user.first_name,
             last_name=person.user.last_name,
             email=person.user.email,
+            manager=person.manager and person.manager.slug,
         )
+
+    def clean_manager(self):
+        manager_slug = self.cleaned_data["manager"]
+
+        if not manager_slug:
+            return None
+
+        try:
+            manager = Person.objects.get(slug=manager_slug)
+        except Person.DoesNotExist:
+            raise ValidationError("Manager does not exist")
+
+        return manager
 
     def clean(self):
         cleaned_data = super().clean()
@@ -178,6 +194,14 @@ class ProfileForm(forms.ModelForm):
         # 8mb in bytes
         if photo.size > 1024 * 1024 * 8:
             self.add_error("photo", ValidationError("File size is greater than 8MB"))
+
+    def save(self, commit=True):
+        if "manager" in self.changed_data:
+            self.instance.manager = self.cleaned_data["manager"]
+
+        super().save(commit=commit)
+
+        return self.instance
 
 
 class ProfileLeavingDitForm(forms.Form):

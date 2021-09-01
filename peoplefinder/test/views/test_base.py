@@ -17,17 +17,17 @@ class State:
     user: User
 
 
-@pytest.fixture
+@pytest.fixture()
 def state(db):
     team = TeamFactory()
     user = UserFactory()
-    Person.objects.create(user=user)
+    person = Person.objects.create(user=user)
 
     client = Client()
     client.force_login(user)
 
     paths = [
-        f"/people/{user.id}/",
+        f"/people/{person.slug}/",
         f"/teams/{team.slug}/",
     ]
 

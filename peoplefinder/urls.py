@@ -11,6 +11,7 @@ from peoplefinder.views.profile import (
     ProfileDetailView,
     ProfileEditView,
     ProfileLeavingDitView,
+    ProfileLegacyView,
 )
 from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.team import (
@@ -25,15 +26,20 @@ from peoplefinder.views.team import (
 
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
-    path("<int:profile_pk>/", ProfileDetailView.as_view(), name="profile-view"),
-    path("<int:profile_pk>/edit/", ProfileEditView.as_view(), name="profile-edit"),
+    path("<uuid:profile_slug>/", ProfileDetailView.as_view(), name="profile-view"),
+    path(
+        "<profile_legacy_slug>/",
+        ProfileLegacyView.as_view(),
+        name="profile-legacy-view",
+    ),
+    path("<uuid:profile_slug>/edit/", ProfileEditView.as_view(), name="profile-edit"),
     # Manager component
     path(
-        "<int:profile_pk>/edit/manager/",
+        "<uuid:profile_slug>/edit/manager/",
         include(
             [
                 path(
-                    "select/<int:user_pk>",
+                    "select/<uuid:manager_slug>",
                     ManagerSelect.as_view(),
                     name="profile-edit-manager-select",
                 ),
@@ -56,15 +62,15 @@ people_urlpatterns = [
         ),
     ),
     # Roles
-    path("<int:profile_pk>/edit/roles/", RoleFormView.as_view(), name="roles"),
+    path("<uuid:profile_slug>/edit/roles/", RoleFormView.as_view(), name="roles"),
     path(
-        "<int:profile_pk>/edit/roles/<int:role_pk>/",
+        "<uuid:profile_slug>/edit/roles/<int:role_pk>/",
         RoleFormView.as_view(),
         name="role",
     ),
     # Leaving DIT
     path(
-        "<int:profile_pk>/leaving-dit",
+        "<uuid:profile_slug>/leaving-dit",
         ProfileLeavingDitView.as_view(),
         name="profile-leaving-dit",
     ),

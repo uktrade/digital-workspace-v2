@@ -18,8 +18,8 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
         return self.profile.user == self.request.user or self.request.user.is_staff
 
     def dispatch(self, request, *args, **kwargs):
-        self.profile_pk = kwargs["profile_pk"]
-        self.profile = Person.objects.get(pk=self.profile_pk)
+        self.profile_slug = kwargs["profile_slug"]
+        self.profile = Person.objects.get(slug=self.profile_slug)
 
         self.role_pk = kwargs.get("role_pk")
 
