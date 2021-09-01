@@ -10,7 +10,7 @@
 
 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-{% include 'peoplefinder/components/pagination.html' with page=members page_obj_name='people' %}
+{% include 'peoplefinder/components/pagination.html' with page=team_members page_obj_name='people' %}
 
 <ul class="pf-team-member-cards">
     {% for member in team_members %}
@@ -20,5 +20,5 @@
     {% endfor %}
 </ul>
 
-{% include 'peoplefinder/components/pagination.html' with page=members page_obj_name='people' %}
+{% include 'peoplefinder/components/pagination.html' with page=team_members page_obj_name='people' %}
 {% endblock %}
