@@ -2,6 +2,7 @@ from typing import Iterator, Optional, TypedDict
 
 from django.db import connection, transaction
 from django.db.models import QuerySet, Subquery
+from django.utils.text import slugify
 
 from peoplefinder.models import Team, TeamTree
 
@@ -184,3 +185,32 @@ class TeamService:
                 "parent_id": team_node.parent.id,
                 "parent_name": team_node.parent.name,
             }
+
+    def generate_team_slug(self, team: Team) -> str:
+        """Return a new slug for the given team.
+
+        Args:
+            team (Team): The given team.
+
+        Raises:
+            TeamServiceError: If a unique team slug cannot be generated.
+
+        Returns:
+            str: A new slug for the team.
+        """
+        slug = slugify(team.name)
+
+        duplicate_slugs = Team.objects.filter(slug=slug).exclude(pk=team.pk).exists()
+
+        # If the new slug isn't unique then append the parent team's name to the front.
+        # Note that if the parent team's name changes it won't be reflected here in the
+        # new slug.
+        if duplicate_slugs:
+            parent_team = self.get_immediate_parent_team(team)
+
+            if not parent_team:
+                raise TeamServiceError("Cannot generate unique team slug")
+
+            slug = slugify(f"{parent_team.name} {team.name}")
+
+        return slug

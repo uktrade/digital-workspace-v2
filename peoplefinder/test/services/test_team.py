@@ -18,20 +18,20 @@ def test_team_service(db):
     """
     team_service = TeamService()
 
-    dit = Team.objects.create(name="DIT")
-    coo = Team.objects.create(name="COO")
-    gti = Team.objects.create(name="GTI")
+    dit = Team.objects.create(name="DIT", slug="dit")
+    coo = Team.objects.create(name="COO", slug="coo")
+    gti = Team.objects.create(name="GTI", slug="gti")
     team_service.add_team(team=dit, parent=dit)
     team_service.add_team(team=coo, parent=dit)
     team_service.add_team(team=gti, parent=dit)
 
-    coo_analysis = Team.objects.create(name="Analysis")
-    coo_change = Team.objects.create(name="Change")
+    coo_analysis = Team.objects.create(name="Analysis", slug="analysis")
+    coo_change = Team.objects.create(name="Change", slug="change")
     team_service.add_team(team=coo_analysis, parent=coo)
     team_service.add_team(team=coo_change, parent=coo)
 
-    gti_investment = Team.objects.create(name="Investment")
-    gti_defence = Team.objects.create(name="DEFEND")
+    gti_investment = Team.objects.create(name="Investment", slug="investment")
+    gti_defence = Team.objects.create(name="DEFEND", slug="defend")
     team_service.add_team(team=gti_investment, parent=gti)
     team_service.add_team(team=gti_defence, parent=gti)
 
@@ -133,3 +133,12 @@ def test_team_service(db):
         TeamServiceError, match="Cannot update the parent of the root team"
     ):
         team_service.update_team_parent(dit, Team(name="Test"))
+
+    # test `generate_team_slug`
+    assert team_service.generate_team_slug(coo_analysis) == "analysis"
+
+    coo_analysis.name = "investment"
+
+    assert team_service.generate_team_slug(coo_analysis) == "coo-investment"
+
+    coo_analysis.name = "analysis"

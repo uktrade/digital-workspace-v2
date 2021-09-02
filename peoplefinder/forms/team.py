@@ -1,5 +1,4 @@
 from django import forms
-from django.utils.text import slugify
 
 from peoplefinder.models import Team
 from peoplefinder.services.team import TeamService, TeamServiceError
@@ -68,9 +67,6 @@ class TeamForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        if "name" in self.changed_data:
-            self.instance.slug = slugify(self.cleaned_data["name"])
-
         super().save(commit=commit)
 
         if self.creating:
@@ -78,5 +74,11 @@ class TeamForm(forms.ModelForm):
         # editing and...
         elif "parent_team" in self.changed_data:
             self.team_service.update_team_parent(self.instance, self.new_parent_team)
+
+        # This depends on the team's parent so it has to happen after we update the team
+        # tree.
+        if "name" in self.changed_data:
+            self.instance.slug = self.team_service.generate_team_slug(self.instance)
+            self.instance.save()
 
         return self.instance
