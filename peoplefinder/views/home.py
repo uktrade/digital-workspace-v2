@@ -7,7 +7,9 @@ from .base import PeoplefinderView
 
 class PeopleHome(PeoplefinderView):
     def get(self, request: HttpRequest) -> HttpResponse:
-        return redirect(reverse("profile-view", kwargs={"profile_pk": request.user.id}))
+        return redirect(
+            reverse("profile-view", kwargs={"profile_slug": request.user.profile.slug})
+        )
 
 
 class TeamHome(PeoplefinderView):

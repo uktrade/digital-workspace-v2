@@ -195,6 +195,10 @@ def person_migrator():
 
         person.buildings.set(new_buildings)
 
+        # legacy_slug
+        if legacy_person.slug:
+            person.legacy_slug = legacy_person.slug
+
         # pronouns
         if legacy_person.pronouns:
             person.pronouns = legacy_person.pronouns

@@ -3,7 +3,8 @@ import os
 
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import reverse
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView
 
@@ -17,11 +18,18 @@ from peoplefinder.services.team import TeamService
 from .base import PeoplefinderView
 
 
+class ProfileLegacyView(PeoplefinderView):
+    def get(self, request: HttpRequest, profile_legacy_slug: str) -> HttpResponse:
+        profile = get_object_or_404(Person, legacy_slug=profile_legacy_slug)
+
+        return redirect(reverse("profile-view", kwargs={"profile_slug": profile.slug}))
+
+
 class ProfileDetailView(DetailView, PeoplefinderView):
     model = Person
     context_object_name = "profile"
     template_name = "peoplefinder/profile.html"
-    pk_url_kwarg = "profile_pk"
+    slug_url_kwarg = "profile_slug"
     queryset = Person.objects.with_profile_completion()
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -57,7 +65,7 @@ class ProfileEditView(
     context_object_name = "profile"
     form_class = ProfileForm
     template_name = "peoplefinder/profile-edit.html"
-    pk_url_kwarg = "profile_pk"
+    slug_url_kwarg = "profile_slug"
     success_message = "Your profile has been updated"
 
     def test_func(self) -> bool:
@@ -120,7 +128,7 @@ class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
 
-        self.profile = Person.objects.get(user_id=self.kwargs["profile_pk"])
+        self.profile = Person.objects.get(slug=self.kwargs["profile_slug"])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -142,7 +150,7 @@ class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("profile-view", kwargs={"profile_pk": self.profile.pk})
+        return reverse("profile-view", kwargs={"profile_slug": self.profile.slug})
 
     def get_success_message(self, cleaned_data):
         return f"A deletion request for {self.profile} has been sent to support"

@@ -18,7 +18,7 @@ Context:
 
     <button
         class="govuk-button govuk-button--secondary"
-        hx-get="{% url 'roles' profile.user.id %}"
+        hx-get="{% url 'roles' profile.slug %}"
         hx-target="#roles"
         hx-swap="beforeend"
         data-test-add-role
