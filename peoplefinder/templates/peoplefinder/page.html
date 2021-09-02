@@ -16,7 +16,7 @@
         </li>
         {% for team in parent_teams %}
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-link" href="/teams/{{ team.slug }}">{{ team.short_name }}</a>
+                <a class="govuk-link" href="{% url 'team-view' team.slug %}">{{ team.short_name }}</a>
             </li>
         {% endfor %}
         <li class="govuk-breadcrumbs__list-item">

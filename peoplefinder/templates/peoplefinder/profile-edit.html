@@ -234,7 +234,7 @@
     </fieldset>
 
     <input class="govuk-button" type="submit" value="Save profile" data-test-save-profile>
-    <a class="govuk-button govuk-button--secondary" href="{% url 'profile-view' profile.user.id %}">Cancel and go back</a>
+    <a class="govuk-button govuk-button--secondary" href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
 </form>
 
 <fieldset>

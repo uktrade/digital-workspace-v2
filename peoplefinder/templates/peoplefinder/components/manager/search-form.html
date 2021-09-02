@@ -11,7 +11,7 @@ Context:
         type="text"
         name="name"
         hx-trigger="keyup changed delay:500ms"
-        hx-get="{% url 'profile-edit-manager-search' profile.user.id %}"
+        hx-get="{% url 'profile-edit-manager-search' profile.slug %}"
         hx-target="#manager-component-search-results"
         autofocus
     >
@@ -19,7 +19,7 @@ Context:
     <button
         class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
         type="button"
-        hx-get="{% url 'profile-edit-manager-cancel' profile.user.id %}"
+        hx-get="{% url 'profile-edit-manager-cancel' profile.slug %}"
         hx-target="#manager-component"
         hx-swap="outerHTML"
     >Cancel</button>

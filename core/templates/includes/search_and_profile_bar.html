@@ -15,7 +15,7 @@
             {% if peoplefinder_v2 %}
                 <a
                     class="profile-link"
-                    href="/people/{{ user.id }}"
+                    href="{% url 'profile-view' peoplefinder_profile.slug %}"
                     onclick="gotoLegacyProfile(event);"
                     data-legacy-profile-url="{{ legacy_peoplefinder_profile.profile_url }}"
                     title="Shift-click to goto legacy profile."

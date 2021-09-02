@@ -10,7 +10,7 @@ class ManagerBaseView(TemplateView, PeoplefinderView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        profile = Person.objects.get(user_id=kwargs["profile_pk"])
+        profile = Person.objects.get(slug=kwargs["profile_slug"])
         context["profile"] = profile
 
         return context
@@ -22,7 +22,7 @@ class ManagerSelect(ManagerBaseView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        manager = Person.objects.get(user_id=kwargs["user_pk"])
+        manager = Person.objects.get(slug=kwargs["manager_slug"])
         context["manager"] = manager
 
         return context
