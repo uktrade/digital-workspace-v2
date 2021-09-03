@@ -11,7 +11,7 @@
 <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
 
 <h1 class="govuk-heading-l">Edit profile</h1>
-<form class="ws-profile-edit-form" method="post" enctype="multipart/form-data" novalidate>
+<form id="edit-profile" class="ws-profile-edit-form" method="post" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
 
     {% include 'peoplefinder/components/error-summary.html' with form=form %}
@@ -232,14 +232,13 @@
             height-name="height"
         ></profile-photo>
     </fieldset>
-
-    <input class="govuk-button" type="submit" value="Save profile" data-test-save-profile>
-    <a class="govuk-button govuk-button--secondary" href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
 </form>
 
-<fieldset>
-    <h2 class="govuk-heading-m">Profile photo</h2>
-
+<fieldset class="mb-20">
     {% include 'peoplefinder/components/teams-and-roles.html' with profile=profile role_forms=role_forms %}
 </fieldset>
+
+<input form="edit-profile" class="govuk-button" type="submit" value="Save profile" data-test-save-profile>
+<a class="govuk-button govuk-button--secondary" href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
+
 {% endblock %}
