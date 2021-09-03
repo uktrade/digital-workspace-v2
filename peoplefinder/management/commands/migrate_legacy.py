@@ -303,7 +303,7 @@ def migrate_teams():
                 name=group.name,
                 abbreviation=group.acronym,
                 slug=group.slug,
-                description=group.description,
+                description=group.description and group.description.strip(),
             )
 
             team_service.add_team(team, parent or team)
