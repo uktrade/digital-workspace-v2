@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddConstraint(
             model_name='teammember',
-            constraint=models.UniqueConstraint(fields=('person', 'team', 'job_title'), name='unique_team_member'),
+            constraint=models.UniqueConstraint(fields=('person', 'team', 'job_title', 'head_of_team'), name='unique_team_member'),
         ),
     ]
