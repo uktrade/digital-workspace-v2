@@ -460,6 +460,14 @@ class Team(models.Model):
 
 
 class TeamMember(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["person", "team", "job_title", "head_of_team"],
+                name="unique_team_member",
+            ),
+        ]
+
     person = models.ForeignKey("Person", models.CASCADE, related_name="roles")
     team = models.ForeignKey("Team", models.CASCADE, related_name="members")
 
