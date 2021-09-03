@@ -471,7 +471,9 @@ class TeamMember(models.Model):
     person = models.ForeignKey("Person", models.CASCADE, related_name="roles")
     team = models.ForeignKey("Team", models.CASCADE, related_name="members")
 
-    job_title = models.CharField(max_length=255)
+    job_title = models.CharField(
+        max_length=255, help_text="Enter your role in this team"
+    )
     head_of_team = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
