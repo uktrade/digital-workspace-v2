@@ -79,7 +79,7 @@ def migrate_people():
         for membership in legacy_person.roles.all():
             team = get_team_for_legacy_group(membership.group)
 
-            TeamMember.objects.create(
+            TeamMember.objects.get_or_create(
                 person=person,
                 team=team,
                 job_title=membership.role,
