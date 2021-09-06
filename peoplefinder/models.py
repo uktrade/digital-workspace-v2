@@ -267,6 +267,15 @@ class Person(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=80)
+    email = models.EmailField(
+        "Main work email address",
+        help_text=(
+            "Enter your own official work email address provided by the"
+            " organisation you are directly employed by or contracted to."
+        ),
+    )
     pronouns = models.CharField(max_length=40, null=True, blank=True)
     contact_email = models.EmailField(
         "Contact email address",
@@ -368,7 +377,7 @@ class Person(models.Model):
     objects = PersonQuerySet.as_manager()
 
     def __str__(self) -> str:
-        return self.user.get_full_name()
+        return self.full_name
 
     def get_absolute_url(self) -> str:
         return reverse("profile-view", kwargs={"profile_slug": self.slug})
@@ -397,11 +406,11 @@ class Person(models.Model):
 
     @property
     def full_name(self):
-        return self.user.get_full_name()
+        return f"{self.first_name} {self.last_name}"
 
     @property
     def preferred_email(self):
-        return self.contact_email or self.user.email
+        return self.contact_email or self.email
 
 
 # markdown

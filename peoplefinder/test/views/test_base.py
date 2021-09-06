@@ -4,6 +4,7 @@ from typing import List
 import pytest
 from django.test.client import Client
 
+from peoplefinder.services.person import PersonService
 from peoplefinder.models import Person, Team
 from peoplefinder.test.factories import TeamFactory
 from user.models import User
@@ -21,7 +22,7 @@ class State:
 def state(db):
     team = TeamFactory()
     user = UserFactory()
-    person = Person.objects.create(user=user)
+    person = PersonService().create_user_profile(user)
 
     client = Client()
     client.force_login(user)
