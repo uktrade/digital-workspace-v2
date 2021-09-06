@@ -21,7 +21,7 @@
     {% include 'peoplefinder/components/team-form.html' %}
 
     <div>
-        <button class="govuk-button" type="submit">Save team</button>
+        <button class="govuk-button" type="submit" data-test-save-team>Save team</button>
         <a class="govuk-button govuk-button--secondary" href="{% url 'team-view' team.slug %}">Cancel</a>
     </div>
 </form>
