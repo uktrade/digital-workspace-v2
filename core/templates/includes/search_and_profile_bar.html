@@ -21,7 +21,7 @@
                     title="Shift-click to goto legacy profile."
                 >
                     <div class="profile-details">
-                        Hi, {{ user.first_name|truncatechars:25 }}
+                        Hi, {{ peoplefinder_profile.first_name|truncatechars:25 }}
                         <span class="profile-prompt">
                             {% if peoplefinder_profile.profile_completion < 100 %}
                                 Set up your profile ({{ peoplefinder_profile.profile_completion|floatformat:0 }}% complete)

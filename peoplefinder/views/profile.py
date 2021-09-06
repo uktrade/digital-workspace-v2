@@ -39,7 +39,7 @@ class ProfileDetailView(DetailView, PeoplefinderView):
         roles = profile.roles.select_related("team").all()
 
         context["roles"] = roles
-        context["title"] = profile.user.get_full_name()
+        context["title"] = profile.full_name
 
         if roles:
             # TODO: How do we know which team to select as the main one?

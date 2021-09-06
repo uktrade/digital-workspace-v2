@@ -48,15 +48,6 @@ class ProfileForm(forms.ModelForm):
             "buildings": forms.CheckboxSelectMultiple,
         }
 
-    first_name = forms.CharField()
-    last_name = forms.CharField()
-    email = forms.EmailField(
-        label="Main work email address",
-        help_text=(
-            "Enter your own official work email address provided by the"
-            " organisation you are directly employed by or contracted to."
-        ),
-    )
     # Override manager to avoid using IDs and enforce the use of UUIDs (slugs).
     manager = forms.UUIDField(required=False)
     # photo crop fields
@@ -71,16 +62,16 @@ class ProfileForm(forms.ModelForm):
         person = self.instance
 
         self.fields["first_name"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half", "readonly": "true"}
+            {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["last_name"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half", "readonly": "true"}
+            {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["pronouns"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["email"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half", "readonly": "true"}
+            {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["contact_email"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
@@ -155,9 +146,6 @@ class ProfileForm(forms.ModelForm):
         # Photo is a custom component
 
         self.initial.update(
-            first_name=person.user.first_name,
-            last_name=person.user.last_name,
-            email=person.user.email,
             manager=person.manager and person.manager.slug,
         )
 

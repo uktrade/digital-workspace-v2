@@ -26,16 +26,24 @@ Note: {comment}
 
 
 class PersonService:
-    def create_user_profile(self, user: User) -> None:
+    def create_user_profile(self, user: User) -> Person:
         """Create a profile for the given user if there isn't one.
 
         Args:
             user: The given user.
+
+        Returns:
+            The user's profile.
         """
         if hasattr(user, "profile"):
-            return
+            return user.profile
 
-        Person.objects.create(user=user)
+        return Person.objects.create(
+            user=user,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+        )
 
     def left_dit(
         self, request: HttpRequest, person: Person, reported_by: Person, comment: str
