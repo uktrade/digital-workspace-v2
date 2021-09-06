@@ -32,8 +32,12 @@
             {{ team.description|markdown }}
         </div>
         <div>
-            <a class="govuk-button govuk-button--secondary" href="{% url 'team-edit' team.slug %}" data-test-edit-team>Edit team</a>
-            <a class="govuk-button govuk-button--secondary" href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
+            {% if perms.peoplefinder.change_team %}
+                <a class="govuk-button govuk-button--secondary" href="{% url 'team-edit' team.slug %}" data-test-edit-team>Edit team</a>
+            {% endif %}
+            {% if perms.peoplefinder.add_team %}
+                <a class="govuk-button govuk-button--secondary" href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
+            {% endif %}
         </div>
     </div>
 </div>
