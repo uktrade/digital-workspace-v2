@@ -171,6 +171,7 @@
             <div class="govuk-details__text">
                 {% include 'peoplefinder/components/checkboxes.html' with field=form.learning_interests %}
                 {% include 'peoplefinder/components/input.html' with field=form.other_learning_interests %}
+                <p>Get opportunities to <a class="govuk-link" href="https://workspace.trade.gov.uk/working-at-dit/topics/learning-and-development/">learn and develop</a>.</p>
             </div>
         </details>
 
@@ -182,6 +183,7 @@
             </summary>
             <div class="govuk-details__text">
                 {% include 'peoplefinder/components/checkboxes.html' with field=form.networks %}
+                <p>Join a <a class="govuk-link" href="https://workspace.trade.gov.uk/networks/">network</a>.</p>
             </div>
         </details>
 
@@ -193,6 +195,7 @@
             </summary>
             <div class="govuk-details__text">
                 {% include 'peoplefinder/components/checkboxes.html' with field=form.professions %}
+                <p>Find out about our <a class="govuk-link" href="https://workspace.trade.gov.uk/about-us/professions/">professions</a>.</p>
             </div>
         </details>
 
@@ -237,6 +240,12 @@
 <fieldset class="mb-20">
     {% include 'peoplefinder/components/teams-and-roles.html' with profile=profile role_forms=role_forms %}
 </fieldset>
+
+<p class="govuk-body-s">
+    All the information on your profile will be visible to DIT staff and contractors on
+    Digital Workspace and other internal DIT tools. Occasionally, we may collate this
+    data for departmental insights. This follows our <a href="https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/policies/digital-workspace-privacy-policy/">privacy policy</a>.
+</p>
 
 <input form="edit-profile" class="govuk-button" type="submit" value="Save profile" data-test-save-profile>
 <a class="govuk-button govuk-button--secondary" href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
