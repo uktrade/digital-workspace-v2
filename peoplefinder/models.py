@@ -336,33 +336,39 @@ class Person(models.Model):
         "My manager is not listed because I do not work for DIT", default=False
     )
     other_key_skills = models.CharField(
-        "What other skills do you have?", max_length=700, null=True, blank=True
+        "What other skills do you have?",
+        max_length=700,
+        null=True,
+        blank=True,
+        help_text="Enter your skills. Use a comma to separate them.",
     )
     fluent_languages = models.CharField(
         "Which languages do you speak fluently?",
         max_length=100,
         null=True,
         blank=True,
-        help_text="Add languages that you are fluent in. Use a comma to separate languages.",
+        help_text="Enter languages that you are fluent in. Use a comma to separate them.",
     )
     intermediate_languages = models.CharField(
         "Which other languages do you speak?",
         max_length=100,
         null=True,
         blank=True,
-        help_text="Add languages that you speak but aren't fluent in. Use a comma to separate languages.",
+        help_text="Enter languages that you speak but aren't fluent in. Use a comma to separate them.",
     )
     other_learning_interests = models.CharField(
         "What other learning and development interests do you have?",
         max_length=255,
         null=True,
         blank=True,
+        help_text="Enter your interests. Use a comma to separate them.",
     )
     other_additional_roles = models.CharField(
         "What other additional roles or responsibilities do you have?",
         max_length=400,
         null=True,
         blank=True,
+        help_text="Enter your roles or responsibilities. Use a comma to separate them.",
     )
     previous_experience = models.TextField(
         "Previous positions I have held",
