@@ -3,9 +3,9 @@
 {% load humanize %}
 {% load webpack_static from webpack_loader %}
 
-{% block title %}{{ profile.user.get_full_name }}{% endblock %}
+{% block title %}{{ profile.full_name }}{% endblock %}
 
-{% block location %}{{ profile.user.get_full_name }}{% endblock %}
+{% block location %}{{ profile.full_name }}{% endblock %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -17,7 +17,7 @@
         {% endif %}
     </div>
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l mb-0">{{ profile.user.get_full_name }}</h1>
+        <h1 class="govuk-heading-l mb-0">{{ profile.full_name }}</h1>
 
         {% if profile.is_stale %}
             <div class="govuk-warning-text">
@@ -46,7 +46,7 @@
             {% if profile.contact_email %}
                 <dd><a href="mailto:{{ profile.contact_email }}" class="govuk-link">{{ profile.contact_email }}</a></dd>
             {% else %}
-                <dd><a href="mailto:{{ profile.user.email }}" class="govuk-link">{{ profile.user.email }}</a></dd>
+                <dd><a href="mailto:{{ profile.email }}" class="govuk-link">{{ profile.email }}</a></dd>
             {% endif %}
 
             {% if profile.primary_phone_number %}
@@ -121,7 +121,7 @@
         {% if profile.contact_email %}
             <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.contact_email }}" class="govuk-link" data-test-preferred-email>{{ profile.contact_email }}</a></dd>
         {% else %}
-            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.user.email }}" class="govuk-link" data-test-preferred-email>{{ profile.user.email }}</a></dd>
+            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.email }}" class="govuk-link" data-test-preferred-email>{{ profile.email }}</a></dd>
         {% endif %}
     </div>
 
@@ -142,7 +142,7 @@
     {% if profile.manager %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">My manager</dt>
-            <dd class="govuk-summary-list__value"><a href="{% url 'profile-view' profile.manager.slug %}" class="govuk-link">{{ profile.manager.user.get_full_name }}</a></dd>
+            <dd class="govuk-summary-list__value"><a href="{% url 'profile-view' profile.manager.slug %}" class="govuk-link">{{ profile.manager.full_name }}</a></dd>
         </div>
     {% endif %}
 

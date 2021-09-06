@@ -9,7 +9,7 @@
         {% endif %}
     </a>
     <div class="pf-team-member-card__name">
-        <a class="govuk-link" href="{% url 'profile-view' member.person.slug %}">{{ member.person.user.get_full_name }}</a>
+        <a class="govuk-link" href="{% url 'profile-view' member.person.slug %}">{{ member.person.full_name }}</a>
     </div>
     <div class="pf-team-member-card__job-title govuk-body">
         {{ member.job_title }}

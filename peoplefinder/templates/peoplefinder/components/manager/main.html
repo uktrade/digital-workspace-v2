@@ -7,7 +7,7 @@ Context:
 <div id="manager-component" class="govuk-!-width-one-half">
     <div class="govuk-!-margin-bottom-2">
         {% if manager %}
-            <p class="govuk-body-m">{{ manager.user.get_full_name }}{% if manager.roles.first %} ({{ manager.roles.first.team.name }}, {{ manager.roles.first.job_title }}){% endif %}</p>
+            <p class="govuk-body-m">{{ manager.full_name }}{% if manager.roles.first %} ({{ manager.roles.first.team.name }}, {{ manager.roles.first.job_title }}){% endif %}</p>
         {% else %}
             <p class="govuk-body-m">No manager assigned</p>
         {% endif %}
