@@ -32,9 +32,11 @@ class TeamForm(forms.ModelForm):
         self.editing = not self.creating
 
         if self.editing:
-            self.initial.update(
-                parent_team=self.team_service.get_immediate_parent_team(self.instance)
-            )
+            parent_team = self.team_service.get_immediate_parent_team(self.instance)
+
+            # parent_team will be None if the root team is being edited.
+            if parent_team:
+                self.initial.update(parent_team=parent_team.pk)
 
         self.is_root_team = self.team_service.get_root_team() == self.instance
 
@@ -47,10 +49,11 @@ class TeamForm(forms.ModelForm):
 
         self.new_parent_team = None
 
-        try:
-            self.new_parent_team = Team.objects.get(pk=cleaned_data["parent_team"])
-        except Team.DoesNotExist:
-            self.add_error("parent_team", "Invalid parent team")
+        if cleaned_data["parent_team"]:
+            try:
+                self.new_parent_team = Team.objects.get(pk=cleaned_data["parent_team"])
+            except Team.DoesNotExist:
+                self.add_error("parent_team", "Invalid parent team")
 
         if (
             self.editing
