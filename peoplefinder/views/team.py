@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q, QuerySet
 from django.views.generic.detail import DetailView
@@ -51,11 +52,12 @@ class TeamDetailView(DetailView, PeoplefinderView):
         return context
 
 
-class TeamEditView(UpdateView, PeoplefinderView):
+class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
     model = Team
     context_object_name = "team"
     form_class = TeamForm
     template_name = "peoplefinder/team-edit.html"
+    permission_required = "peoplefinder.change_team"
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -152,10 +154,11 @@ class TeamPeopleOutsideSubteamsView(TeamPeopleBaseView):
         return TeamMember.objects.filter(team=team).order_by("pk")
 
 
-class TeamAddNewSubteamView(CreateView, PeoplefinderView):
+class TeamAddNewSubteamView(PermissionRequiredMixin, CreateView, PeoplefinderView):
     model = Team
     form_class = TeamForm
     template_name = "peoplefinder/team-add-new-subteam.html"
+    permission_required = "peoplefinder.add_team"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
