@@ -1,14 +1,16 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q, QuerySet
+from django.urls import reverse_lazy
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from peoplefinder.forms.team import TeamForm
 from peoplefinder.models import Person, Team, TeamMember
 from peoplefinder.services.team import TeamService
-from .base import PeoplefinderView
 
+from .base import PeoplefinderView
 
 # TODO: Potential to refactor for the common parts.
 
@@ -26,6 +28,12 @@ class TeamDetailView(DetailView, PeoplefinderView):
 
         context["parent_teams"] = team_service.get_all_parent_teams(team)
         context["sub_teams"] = team_service.get_immediate_child_teams(team)
+
+        if self.request.user.has_perm("peoplefinder.delete_team"):
+            (
+                context["can_team_be_deleted"],
+                context["reasons_team_cannot_be_deleted"],
+            ) = team_service.can_team_be_deleted(team)
 
         # Must be a leaf team.
         if not context["sub_teams"]:
@@ -175,3 +183,29 @@ class TeamAddNewSubteamView(PermissionRequiredMixin, CreateView, PeoplefinderVie
         context["is_root_team"] = False
 
         return context
+
+
+class TeamDeleteView(PermissionRequiredMixin, DeleteView, PeoplefinderView):
+    model = Team
+    context_object_name = "team"
+    success_url = reverse_lazy("team-home")
+    template_name = "peoplefinder/team-confirm-delete.html"
+    permission_required = "peoplefinder.delete_team"
+
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        (
+            context["can_team_be_deleted"],
+            context["reasons_team_cannot_be_deleted"],
+        ) = TeamService().can_team_be_deleted(context["team"])
+
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        can_team_be_deleted, _ = TeamService().can_team_be_deleted(self.get_object())
+
+        if not can_team_be_deleted:
+            raise SuspiciousOperation("Team cannot be deleted")
+
+        return super().delete(request, *args, **kwargs)
