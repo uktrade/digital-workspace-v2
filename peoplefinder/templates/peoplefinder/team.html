@@ -39,6 +39,13 @@
                 <a class="govuk-button govuk-button--secondary" href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
             {% endif %}
         </div>
+        {% if perms.peoplefinder.delete_team %}
+            {% if can_team_be_deleted %}
+                <a class="govuk-button govuk-button--warning" href="{% url 'team-delete' team.slug %}">Delete team</a>
+            {% else %}
+                {% include 'peoplefinder/components/bullet-list.html' with introduction='Reasons the team cannot be deleted' list=reasons_team_cannot_be_deleted %}
+            {% endif %}
+        {% endif %}
     </div>
 </div>
 

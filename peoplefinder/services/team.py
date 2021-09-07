@@ -1,10 +1,10 @@
 from typing import Iterator, Optional, TypedDict
 
 from django.db import connection, transaction
-from django.db.models import QuerySet, Subquery
+from django.db.models import Q, QuerySet, Subquery
 from django.utils.text import slugify
 
-from peoplefinder.models import Team, TeamTree
+from peoplefinder.models import Team, TeamMember, TeamTree
 
 
 class TeamSelectDatum(TypedDict):
@@ -214,3 +214,31 @@ class TeamService:
             slug = slugify(f"{parent_team.name} {team.name}")
 
         return slug
+
+    def can_team_be_deleted(self, team: Team) -> tuple[bool, list[str]]:
+        """Check and return whether a team can be deleted.
+
+        Args:
+            team (Team): The team to be deleted.
+
+        Returns:
+            tuple[bool, list[str]]: Whether the team can be deleted and the reasons why.
+        """
+        reasons = []
+
+        sub_teams = self.get_all_child_teams(team)
+
+        if sub_teams:
+            reasons.append("The team has sub-teams")
+
+        has_members = TeamMember.objects.filter(
+            Q(team=team) | Q(team__in=sub_teams)
+        ).exists()
+
+        if has_members:
+            reasons.append("The team has members")
+
+        if reasons:
+            return False, reasons
+
+        return True, []
