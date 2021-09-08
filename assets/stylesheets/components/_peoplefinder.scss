@@ -104,13 +104,14 @@
 /* when the browser is wider than 640px */
 @media screen and (min-width: 641px) {
     .pf-team-cards {
-        li {
+        > li {
             width: 33.333%;
         }
     }
 }
 
 .pf-team-card {
+    height: 100%;
     padding: 22.5px;
     border: 1px solid #b1b4b6;
     box-shadow: 7px 7px 0 #fff, 8px 8px 0 #b1b4b6;
