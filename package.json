@@ -17,9 +17,6 @@
     "y18n": "^4.0.1"
   },
   "version": "0.1.0",
-  "devDependencies": {
-    "webpack-dev-server": "^3.11.2"
-  },
   "scripts": {
     "dev": "webpack --config webpack.config.js --watch",
     "build": "webpack --config webpack.config.js",
