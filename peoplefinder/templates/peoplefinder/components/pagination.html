@@ -1,6 +1,7 @@
 {% comment %}
 Context:
     page (Page): The current page
+    page_numbers (list[str]): List of page numbers from `get_elided_page_range`
     page_obj_name (str): The name of the page object
 {% endcomment %}
 
@@ -12,7 +13,7 @@ Context:
                 <span class="pf-pagination__page"><a class="govuk-link" href="?page={{ page.previous_page_number }}">Previous page</a></span>
             {% endif %}
 
-            {% for num in page.paginator.get_elided_page_range %}
+            {% for num in page_numbers %}
                 {% if num == page.number %}
                     <span class="pf-pagination__page">{{ num }}</span>
                 {% elif num == page.paginator.ELLIPSIS %}

@@ -139,7 +139,9 @@ class TeamPeopleBaseView(DetailView, PeoplefinderView):
         context["sub_teams"] = team_service.get_all_child_teams(team)
 
         members = self.get_team_members(team, context["sub_teams"])
-        context["team_members"] = Paginator(members, 40).page(page)
+        paginator = Paginator(members, 40)
+        context["team_members"] = paginator.page(page)
+        context["page_numbers"] = paginator.get_elided_page_range(page)
 
         context["heading"] = self.heading
 
