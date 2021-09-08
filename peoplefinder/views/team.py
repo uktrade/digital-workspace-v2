@@ -141,7 +141,7 @@ class TeamPeopleBaseView(DetailView, PeoplefinderView):
         members = self.get_team_members(team, context["sub_teams"])
         paginator = Paginator(members, 40)
         context["team_members"] = paginator.page(page)
-        context["page_numbers"] = paginator.get_elided_page_range(page)
+        context["page_numbers"] = list(paginator.get_elided_page_range(page))
 
         context["heading"] = self.heading
 
@@ -153,7 +153,7 @@ class TeamPeopleView(TeamPeopleBaseView):
 
     def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
         return TeamMember.objects.filter(Q(team=team) | Q(team__in=sub_teams)).order_by(
-            "pk"
+            "person__first_name", "person__last_name"
         )
 
 
@@ -161,7 +161,9 @@ class TeamPeopleOutsideSubteamsView(TeamPeopleBaseView):
     heading = "People not in a sub-team"
 
     def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
-        return TeamMember.objects.filter(team=team).order_by("pk")
+        return TeamMember.objects.filter(team=team).order_by(
+            "person__first_name", "person__last_name"
+        )
 
 
 class TeamAddNewSubteamView(PermissionRequiredMixin, CreateView, PeoplefinderView):
