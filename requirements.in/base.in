@@ -39,7 +39,7 @@ celery>=5.1.0
 redis
 tweepy
 atoma
-Pillow>=8.2.0
+pillow>=8.3.2
 defusedxml
 bleach
 urllib3>=1.26.5
