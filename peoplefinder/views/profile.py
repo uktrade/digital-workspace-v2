@@ -1,7 +1,6 @@
 import io
 import os
 
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
@@ -51,26 +50,16 @@ class ProfileDetailView(DetailView, PeoplefinderView):
                 team
             ]
 
-        context["can_edit"] = (
-            profile.user == self.request.user or self.request.user.is_staff
-        )
-
         return context
 
 
-class ProfileEditView(
-    SuccessMessageMixin, UserPassesTestMixin, UpdateView, PeoplefinderView
-):
+class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
     model = Person
     context_object_name = "profile"
     form_class = ProfileForm
     template_name = "peoplefinder/profile-edit.html"
     slug_url_kwarg = "profile_slug"
     success_message = "Your profile has been updated"
-
-    def test_func(self) -> bool:
-        # The profile must be that of the logged in user or an admin user.
-        return self.get_object().user == self.request.user or self.request.user.is_staff
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
