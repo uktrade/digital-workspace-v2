@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from django.conf import settings
 from django.http import HttpRequest
@@ -12,7 +13,7 @@ from user.models import User
 
 logger = logging.getLogger(__name__)
 
-LOG_MESSAGE = """People Finder deletion request: {profile_name}
+LEFT_DIT_LOG_MESSAGE = """People Finder deletion request: {profile_name}
 
 Profile deletion request
 
@@ -23,6 +24,16 @@ Reporter by: {reporter_name}
 Reporter email: {reporter_email}
 
 Note: {comment}
+"""
+
+NOTIFY_ABOUT_CHANGES_LOG_MESSAGE = """Hello {profile_name},
+
+{editor_name} has made changes to your profile on Digital Workspace.
+
+You may want to check your profile to make sure that it is up to date:
+{profile_url}
+
+You can update any profile on Digital Workspace. Find out more at: https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/using-people-finder/
 """
 
 
@@ -72,7 +83,7 @@ class PersonService:
         }
 
         if settings.APP_ENV in ("local", "test"):
-            logger.info(LOG_MESSAGE.format(**context))
+            logger.info(LEFT_DIT_LOG_MESSAGE.format(**context))
 
             return
 
@@ -97,7 +108,9 @@ class PersonService:
         """
         AuditLogService().log(AuditLog.Action.CREATE, created_by, person)
 
-    def profile_updated(self, person: Person, updated_by: User) -> None:
+    def profile_updated(
+        self, request: Optional[HttpRequest], person: Person, updated_by: User
+    ) -> None:
         """A method to be called after a profile has been updated.
 
         Please don't forget to call method this unless you need to bypass it.
@@ -105,11 +118,18 @@ class PersonService:
         This is the main hook for calling out to other processes which need to happen
         after a profile has been updated.
 
+        Only pass `None` for `request` when the action is made outside a web request,
+        i.e, in a management command.
+
         Args:
+            request: The HTTP request related to the action.
             person: The person behind the profile.
             updated_by: The user which updated the profile.
         """
         AuditLogService().log(AuditLog.Action.UPDATE, updated_by, person)
+
+        if request:
+            self.notify_about_changes(request, person)
 
     def profile_deleted(self, person: Person, deleted_by: User) -> None:
         """A method to be called after a profile has been deleted.
@@ -124,3 +144,29 @@ class PersonService:
             deleted_by: The user which deleted the profile.
         """
         raise NotImplementedError
+
+    def notify_about_changes(self, request: HttpRequest, person: Person) -> None:
+        editor = request.user.profile
+
+        if editor == person:
+            return None
+
+        context = {
+            "profile_name": person.full_name,
+            "editor_name": editor.full_name,
+            "profile_url": request.build_absolute_uri(
+                reverse("profile-view", kwargs={"profile_slug": person.slug})
+            ),
+        }
+
+        if settings.APP_ENV in ("local", "test"):
+            logger.info(NOTIFY_ABOUT_CHANGES_LOG_MESSAGE.format(**context))
+
+            return
+
+        notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
+        notification_client.send_email_notification(
+            person.email,
+            settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
+            context,
+        )

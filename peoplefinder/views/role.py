@@ -67,7 +67,7 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
             messages.error(request, "Role not saved - please check form for errors")
 
         if form.has_changed():
-            PersonService().profile_updated(self.profile, request.user)
+            PersonService().profile_updated(request, self.profile, request.user)
 
         context = {
             "profile": self.profile,
@@ -83,7 +83,7 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
         if self.role:
             self.role.delete()
 
-            PersonService().profile_updated(self.profile, request.user)
+            PersonService().profile_updated(request, self.profile, request.user)
 
         # the empty response is for htmx to remove the role from the DOM
         return HttpResponse("")

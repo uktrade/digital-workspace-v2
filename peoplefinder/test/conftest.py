@@ -39,7 +39,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
             job_title="Software Engineer",
         )
 
-        PersonService().profile_updated(user_john_smith.profile, user_john_smith)
+        PersonService().profile_updated(None, user_john_smith.profile, user_john_smith)
 
         # Leave this here to check we have reset the db into a known state.
         assert user_john_smith.profile.audit_log.count() == 2
