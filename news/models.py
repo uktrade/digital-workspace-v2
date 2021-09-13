@@ -23,7 +23,7 @@ from content.models import (
     BasePage,
     ContentPage,
 )
-from core.utils import set_last_viewed_cookie
+from core.utils import set_seen_cookie_banner
 from news.forms import (
     CommentForm,
 )
@@ -219,7 +219,7 @@ class NewsPage(PageWithTopics):
         context["comment_form"] = CommentForm()
 
         response = render(request, self.template, context)
-        set_last_viewed_cookie(request, response)
+        set_seen_cookie_banner(request, response)
 
         return response
 
@@ -247,7 +247,7 @@ class NewsHome(RoutablePageMixin, BasePage):
             self.get_template(request),
             context,
         )
-        set_last_viewed_cookie(request, response)
+        set_seen_cookie_banner(request, response)
 
         return response
 
@@ -261,7 +261,7 @@ class NewsHome(RoutablePageMixin, BasePage):
             self.get_template(request),
             context,
         )
-        set_last_viewed_cookie(request, response)
+        set_seen_cookie_banner(request, response)
 
         return response
 

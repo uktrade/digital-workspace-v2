@@ -15,31 +15,35 @@
 </div>
 {% endif %}
 {% for field in form %}
-    <div class="govuk-form-group{% if field.errors %} govuk-form-group--error{% endif %}">
-    {% if field.field.widget.input_type != 'checkbox' %}
-        <label class="govuk-label" for="{{ field.name }}">
-            {{ field.label }}{% if field.field.required == False %} (optional){% endif %}
-        </label>
-    {% endif %}
-        {% if field.errors %}
-            {% for error in field.errors %}
-                <span id="{{ field.name }}-issued-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span>
-                    {{ error|escape }}
-                </span>
-            {% endfor %}
-        {% endif %}
-    {% if field.field.widget.input_type != 'checkbox' %}
+    {% if field.field.widget.input_type == 'hidden' %}
         {{ field }}
     {% else %}
-        <div class="govuk-checkboxes">
-            <div class="govuk-checkboxes__item">
-                {{ field }}
-                <label class="govuk-label govuk-checkboxes__label" for="{{ field.name }}">
-                {{ field.label }}{% if field.field.required == False %} (optional){% endif %}
+        <div class="govuk-form-group{% if field.errors %} govuk-form-group--error{% endif %}">
+            {% if field.field.widget.input_type != 'checkbox' %}
+                <label class="govuk-label" for="{{ field.name }}">
+                    {{ field.label }}{% if field.field.required == False %} (optional){% endif %}
                 </label>
-            </div>
+            {% endif %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <span id="{{ field.name }}-issued-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        {{ error|escape }}
+                    </span>
+                {% endfor %}
+            {% endif %}
+            {% if field.field.widget.input_type != 'checkbox' %}
+                {{ field }}
+            {% else %}
+                <div class="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        {{ field }}
+                        <label class="govuk-label govuk-checkboxes__label" for="{{ field.name }}">
+                        {{ field.label }}{% if field.field.required == False %} (optional){% endif %}
+                        </label>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     {% endif %}
-    </div>
 {% endfor %}
