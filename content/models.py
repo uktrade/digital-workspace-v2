@@ -6,10 +6,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from simple_history.models import HistoricalRecords
-from wagtail.admin.edit_handlers import (
-    FieldPanel,
-    StreamFieldPanel,
-)
+from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
 from wagtail.core.fields import StreamField
 from wagtail.core.models import Page
 from wagtail.search import index
@@ -17,9 +14,9 @@ from wagtail.snippets.models import register_snippet
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned
-from core.forms import PageProblemFoundForm
-from core.utils import set_last_viewed_cookie
+from core.utils import set_seen_cookie_banner
 from user.models import User as UserModel
+
 
 User = get_user_model()
 
@@ -60,15 +57,9 @@ class BasePage(Page):
 
     promote_panels = []
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        context["page_problem_form"] = PageProblemFoundForm()
-
-        return context
-
     def serve(self, request):
         response = super().serve(request)
-        set_last_viewed_cookie(request, response)
+        set_seen_cookie_banner(request, response)
 
         return response
 

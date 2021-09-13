@@ -189,6 +189,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "wagtailmenus.context_processors.wagtailmenus",
                 "django_settings_export.settings_export",
+                "core.context_processors.page_problem_form",
             ],
             "libraries": {
                 "workspace_navigation": "core.templatetags.workspace_navigation",

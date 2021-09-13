@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from core.forms import PageProblemFoundForm
@@ -51,14 +51,9 @@ def page_problem_found(request):
 
     if request.method == "POST":
         form = PageProblemFoundForm(request.POST)
+
         if form.is_valid():
-            # Check for last viewed
-            last_viewed = request.COOKIES.get("last_viewed", None)
-
-            if not last_viewed:
-                logger.error("Could not find last viewed cookie")
-                return redirect("/")
-
+            page_url = form.cleaned_data["page_url"]
             trying_to = form.cleaned_data["trying_to"]
             what_went_wrong = form.cleaned_data["what_went_wrong"]
 
@@ -69,7 +64,7 @@ def page_problem_found(request):
                 personalisation={
                     "user_name": request.user.get_full_name(),
                     "user_email": request.user.email,
-                    "page_url": last_viewed,
+                    "page_url": page_url,
                     "trying_to": trying_to,
                     "what_went_wrong": what_went_wrong,
                 },
