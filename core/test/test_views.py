@@ -30,13 +30,13 @@ class ReportPageProblemTest(TestCase):
     ):
         url = reverse("page_problem_found")
 
-        self.client.cookies.load({"last_viewed": "test"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
         response = self.client.post(
             url,
             {
+                "page_url": "http://any-url-will-do.com/somewhere/here?answer=42",
                 "trying_to": "test",
                 "what_went_wrong": "test",
             },

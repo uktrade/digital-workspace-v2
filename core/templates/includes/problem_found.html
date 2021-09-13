@@ -8,7 +8,7 @@
     <fieldset class="govuk-fieldset">
         <form action="{% url "page_problem_found" %}" novalidate method='post'>
             {% csrf_token %}
-            {% include "includes/govt_uk_form.html" with form=page_problem_form %}
+            {% include "includes/govt_uk_form.html" with form=PAGE_PROBLEM_FORM %}
             <input type="submit" value="Submit" class="govuk-button govuk-button" data-module="govuk-button"/>
         </form>
     </fieldset>
