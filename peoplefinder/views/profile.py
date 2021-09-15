@@ -2,8 +2,10 @@ import io
 import os
 
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
+from django.utils.decorators import method_decorator
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView
 
@@ -53,6 +55,7 @@ class ProfileDetailView(DetailView, PeoplefinderView):
         return context
 
 
+@method_decorator(transaction.atomic, name="post")
 class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
     model = Person
     context_object_name = "profile"
@@ -79,6 +82,9 @@ class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
 
         if "photo" in form.changed_data:
             self.crop_photo(form)
+
+        if form.has_changed():
+            PersonService().profile_updated(self.object, self.request.user)
 
         return response
 

@@ -1,15 +1,21 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import SuspiciousOperation
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 
 from peoplefinder.forms.role import RoleForm
 from peoplefinder.models import Person, TeamMember
+from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
+
 from .base import PeoplefinderView
 
 
+@method_decorator(transaction.atomic, name="post")
+@method_decorator(transaction.atomic, name="delete")
 class RoleFormView(UserPassesTestMixin, PeoplefinderView):
     """A role form view which responds with an updated HTML form response."""
 
@@ -60,6 +66,9 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
         else:
             messages.error(request, "Role not saved - please check form for errors")
 
+        if form.has_changed():
+            PersonService().profile_updated(self.profile, request.user)
+
         context = {
             "profile": self.profile,
             "role": self.role,
@@ -73,6 +82,8 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
     def delete(self, request, *args, **kwargs):
         if self.role:
             self.role.delete()
+
+            PersonService().profile_updated(self.profile, request.user)
 
         # the empty response is for htmx to remove the role from the DOM
         return HttpResponse("")

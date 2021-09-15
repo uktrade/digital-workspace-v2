@@ -196,3 +196,58 @@ Redirects to create:
 ## SVG icon license info
 
 https://www.svgrepo.com/page/licensing
+
+# People Finder
+
+The DIT's people and team directory. Written as a django application inside of Digital
+Workspace.
+
+## Design decisions
+
+- Make extensive use of many-to-many fields for multiple choice reference data, e.g.
+  country.
+
+## Integrations
+
+- gov.uk notifications
+  - notify users about changes made to their profile
+- zendesk (via email)
+  - left DIT
+- mailchimp
+  - export subscriber list
+
+## APIs
+
+- data workspace
+  - api for people data
+
+## Audit log
+
+**Please remember to use the audit log service after you have made model instance
+changes that you wish to be tracked!**
+
+After evaluating a number of packages, we decided to write our own audit log system. The
+main reason for doing this is because no package would track changes to many-to-many
+fields without us having to make changes to how the app is written. Therefore, we
+decided it was best to keep the implementation of the app simple and write our own audit
+log system.
+
+The audit log system we have written does not make use of django signals. This is
+because that approach has difficulties handling many-to-many fields. Instead, we have a
+simple and explicit approach where you must call the audit log service after you have
+made changes for them to be tracked.
+
+For this approach to work you will need to provide a flat, serialized and denormalized
+"view" of the model you wish to be tracked. This allows us to avoid the complexity of
+tracking many-to-many fields by denormalizing them. This is often achieved using
+`ArrayAgg` which provides an array representation of the many-to-many relationship. For
+an example of this in action, please take a look at the `PersonAuditLogSerializer` class
+in `peoplefinder/services/audit_log.py`.
+
+One downside to this approach is that if you do not call the audit log service after
+making a change, for example modifying a model instance in a shell, then the changes
+will not be tracked.
+
+For more information, please read through the docstrings and code in
+`peoplefinder/services/audit_log.py` and check out an example of how to use the service
+from a view in the `ProfileEditView` class in `peoplefinder/views/profile.py`.

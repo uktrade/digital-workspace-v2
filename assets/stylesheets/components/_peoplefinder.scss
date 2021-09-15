@@ -188,6 +188,25 @@
     }
 }
 
+// Audit log
+.pf-audit-log__diff {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pf-audit-log__diff-item--add {
+    color: govuk-colour("green");
+}
+
+.pf-audit-log__diff-item--change {
+    color: govuk-colour("blue");
+}
+
+.pf-audit-log__diff-item--remove {
+    color: govuk-colour("red");
+}
+
 // Utility
 .align-middle {
     vertical-align: middle;
