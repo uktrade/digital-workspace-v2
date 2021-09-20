@@ -1,6 +1,10 @@
 import uuid
 from typing import Iterator
 
+from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import Case, Exists, F, OuterRef, Q, When
 from django.urls import reverse
@@ -259,6 +263,8 @@ class Person(models.Model):
         related_name="+",
     )
 
+    audit_log = GenericRelation("AuditLog")
+
     slug = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     legacy_slug = models.CharField(
         unique=True, max_length=80, null=True, editable=False
@@ -431,6 +437,8 @@ class Team(models.Model):
         "Person", through="TeamMember", related_name="teams"
     )
 
+    audit_log = GenericRelation("AuditLog")
+
     name = models.CharField(
         "Team name (required)",
         max_length=255,
@@ -508,3 +516,29 @@ class TeamTree(models.Model):
 
     def __str__(self) -> str:
         return f"{self.parent} - {self.child} ({self.depth})"
+
+
+class AuditLog(models.Model):
+    class Meta:
+        ordering = ["timestamp"]
+        get_latest_by = "timestamp"
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    class Action(models.TextChoices):
+        CREATE = "create"
+        UPDATE = "update"
+        DELETE = "delete"
+
+    action = models.CharField(max_length=6, choices=Action.choices)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    object_repr = models.JSONField(encoder=DjangoJSONEncoder)
+    diff = models.JSONField(encoder=DjangoJSONEncoder)
