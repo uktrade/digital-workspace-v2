@@ -16,6 +16,9 @@ def test_team_service(db):
             ├── Investment
             └── DEFEND
     """
+    # We need to start from fresh for these tests.
+    Team.objects.all().delete()
+
     team_service = TeamService()
 
     dit = Team.objects.create(name="DIT", slug="dit")

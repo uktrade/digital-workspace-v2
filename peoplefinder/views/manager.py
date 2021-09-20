@@ -3,6 +3,7 @@ from django.db.models.functions import Concat
 from django.views.generic import TemplateView
 
 from peoplefinder.models import Person
+
 from .base import PeoplefinderView
 
 

@@ -1,0 +1,30 @@
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header">Event at</th>
+            <th class="govuk-table__header">By</th>
+            <th class="govuk-table__header">Changes</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        {% for log in audit_log %}
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ log.timestamp }}</td>
+                <td class="govuk-table__cell">{{ log.actor.get_full_name }}</td>
+                <td class="govuk-table__cell">
+                    <ul class="pf-audit-log__diff">
+                        {% for item in log.diff %}
+                            {% if item.action == 'add' %}
+                                <li class="pf-audit-log__diff-item pf-audit-log__diff-item--add">{{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }}</li>
+                            {% elif item.action == 'change' %}
+                                <li class="pf-audit-log__diff-item pf-audit-log__diff-item--change">{{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }} ➞ {{ item.to_value|stringformat:'r' }}</li>
+                            {% elif item.action == 'remove' %}
+                                <li class="pf-audit-log__diff-item pf-audit-log__diff-item--remove">{{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

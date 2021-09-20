@@ -55,7 +55,7 @@ black:
 	docker-compose run --rm --no-deps wagtail black .
 
 check-fixme:
-	git --no-pager grep -rni fixme -- ':!./Makefile'
+	! git --no-pager grep -rni fixme -- ':!./Makefile' ':!./.circleci/config.yml'
 
 up:
 	docker-compose up
