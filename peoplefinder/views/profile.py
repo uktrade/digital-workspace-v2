@@ -84,7 +84,9 @@ class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
             self.crop_photo(form)
 
         if form.has_changed():
-            PersonService().profile_updated(self.object, self.request.user)
+            PersonService().profile_updated(
+                self.request, self.object, self.request.user
+            )
 
         return response
 
