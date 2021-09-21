@@ -24,7 +24,7 @@ class TestBlockContent(TestCase):
 
 class TestUsers(TestCase):
     def test_users_created(self):
-        self.assertEqual(User.objects.count(), 0)
+        user_count = User.objects.count()
 
         xml_file = os.path.join(
             settings.BASE_DIR,
@@ -32,12 +32,12 @@ class TestUsers(TestCase):
         )
         parse_xml_file(xml_file)
 
-        self.assertEqual(User.objects.count(), 2)
+        self.assertEqual(User.objects.count(), user_count + 2)
 
 
 class TestNewsCategories(TestCase):
     def test_users_created(self):
-        self.assertEqual(User.objects.count(), 0)
+        user_count = User.objects.count()
 
         xml_file = os.path.join(
             settings.BASE_DIR,
@@ -45,4 +45,4 @@ class TestNewsCategories(TestCase):
         )
         parse_xml_file(xml_file)
 
-        self.assertEqual(User.objects.count(), 2)
+        self.assertEqual(User.objects.count(), user_count + 2)

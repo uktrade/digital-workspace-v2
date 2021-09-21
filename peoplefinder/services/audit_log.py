@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Literal, Type, TypedDict, Union
+from typing import Literal, Optional, Type, TypedDict, Union
 
-from django.contrib.postgres.aggregates import ArrayAgg
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import Q, Value
-from django.db.models.functions import Concat
+from django.db.models.query import QuerySet
 
-from peoplefinder.models import AuditLog, Person
+from peoplefinder.models import AuditLog
 from user.models import User
-
 
 ObjectReprKey = str
 # Note that we do not support using a dict as a value.
@@ -47,8 +45,8 @@ class AuditLogSerializer(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def serialize(self, instance) -> ObjectRepr:
-        """Serialize and return an object repr of the model.
+    def serialize(self, instance: models.Model) -> ObjectRepr:
+        """Serialize and return an object repr of the model instance.
 
         Important notes:
             * The result must map cleanly to JSON without any required encoding.
@@ -63,13 +61,21 @@ class AuditLogSerializer(ABC):
                 * Use `list` to represent one-to-many relationships.
                 * Use `ArrayAgg` for many-to-many relationships.
             * Check out `PersonAuditLogSerializer` as an example.
+
+        Args:
+            instance: The instance to be serialized.
+
+        Returns:
+            The object repr of the instance.
         """
         raise NotImplementedError
 
 
 class AuditLogService:
-    @staticmethod
-    def log(action: AuditLog.Action, actor: User, instance: models.Model) -> AuditLog:
+    @classmethod
+    def log(
+        cls, action: AuditLog.Action, actor: Optional[User], instance: models.Model
+    ) -> AuditLog:
         """Insert a log of changes made to the given instance.
 
         Args:
@@ -83,19 +89,24 @@ class AuditLogService:
         serializer = AuditLogSerializer.SERIALIZERS[type(instance)]
 
         try:
-            prev = instance.audit_log.latest()
+            prev = cls.get_audit_log(instance).latest()
         except AuditLog.DoesNotExist:
             prev = None
 
         object_repr: ObjectRepr
         diff: Diff
 
-        if action in (AuditLog.Action.CREATE, AuditLog.Action.DELETE):
+        if action == AuditLog.Action.CREATE:
+            object_repr = serializer().serialize(instance)
+            diff = []
+        elif action == AuditLog.Action.DELETE:
             object_repr = {}
             diff = []
-        else:
+        elif action == AuditLog.Action.UPDATE:
             object_repr = serializer().serialize(instance)
             diff = object_repr_diff(prev.object_repr if prev else {}, object_repr)
+        else:
+            raise ValueError("Unknown audit log action")
 
         return AuditLog.objects.create(
             content_object=instance,
@@ -105,76 +116,12 @@ class AuditLogService:
             diff=diff,
         )
 
-
-class PersonAuditLogSerializer(AuditLogSerializer):
-    model = Person
-
-    # I know this looks strange, but it is here to protect us from forgetting to update
-    # the audit log code when we update the model. The tests will execute this code so
-    # it should fail locally and in CI. If you need to update this number you can call
-    # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 37, (
-        "It looks like you have updated the `Person` model. Please make sure you have"
-        " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
-    )
-
-    def serialize(self, instance) -> ObjectRepr:
-        person = (
-            Person.objects.filter(pk=instance)
-            .values()
-            .annotate(
-                # Note the use of `ArrayAgg` to denormalize and flatten many-to-many
-                # relationships.
-                workdays=ArrayAgg(
-                    "workdays__name",
-                    filter=Q(workdays__name__isnull=False),
-                    distinct=True,
-                ),
-                key_skills=ArrayAgg(
-                    "key_skills__name",
-                    filter=Q(key_skills__name__isnull=False),
-                    distinct=True,
-                ),
-                learning_interests=ArrayAgg(
-                    "learning_interests__name",
-                    filter=Q(learning_interests__name__isnull=False),
-                    distinct=True,
-                ),
-                networks=ArrayAgg(
-                    "networks__name",
-                    filter=Q(networks__name__isnull=False),
-                    distinct=True,
-                ),
-                professions=ArrayAgg(
-                    "professions__name",
-                    filter=Q(professions__name__isnull=False),
-                    distinct=True,
-                ),
-                additional_roles=ArrayAgg(
-                    "additional_roles__name",
-                    filter=Q(additional_roles__name__isnull=False),
-                    distinct=True,
-                ),
-                buildings=ArrayAgg(
-                    "buildings__name",
-                    filter=Q(buildings__name__isnull=False),
-                    distinct=True,
-                ),
-                roles=ArrayAgg(
-                    Concat("roles__job_title", Value(" in "), "roles__team__name"),
-                    filter=Q(roles__isnull=False),
-                    distinct=True,
-                ),
-            )[0]
+    @staticmethod
+    def get_audit_log(instance: models.Model) -> QuerySet:
+        return AuditLog.objects.filter(
+            content_type=ContentType.objects.get_for_model(instance),
+            object_id=instance.pk,
         )
-
-        # Encode the slug from `UUID` to `str` before returning.
-        person["slug"] = str(person["slug"])
-        # Remove unnecessary fields.
-        del person["created_at"]
-        del person["updated_at"]
-
-        return person
 
 
 def object_repr_diff(old: ObjectRepr, new: ObjectRepr) -> Diff:

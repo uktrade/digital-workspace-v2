@@ -4,7 +4,13 @@ from django.db import connection, transaction
 from django.db.models import Q, QuerySet, Subquery
 from django.utils.text import slugify
 
-from peoplefinder.models import Team, TeamMember, TeamTree
+from peoplefinder.models import AuditLog, Team, TeamMember, TeamTree
+from peoplefinder.services.audit_log import (
+    AuditLogSerializer,
+    AuditLogService,
+    ObjectRepr,
+)
+from user.models import User
 
 
 class TeamSelectDatum(TypedDict):
@@ -242,3 +248,56 @@ class TeamService:
             return False, reasons
 
         return True, []
+
+    def team_created(self, team: Team, created_by: Optional[User]) -> None:
+        """A method to be called after a team has been created.
+
+        Always call this after you create a team, unless you need to bypass the hook.
+
+        Args:
+            team: The team that was created.
+            created_by: Who created the team.
+        """
+        AuditLogService.log(AuditLog.Action.CREATE, created_by, team)
+
+    def team_updated(self, team: Team, updated_by: User) -> None:
+        """A method to be called after a team has been updated.
+
+        Always call this after you update a team, unless you need to bypass the hook.
+
+        Args:
+            team: The team that was updated.
+            updated_by: Who updated the team.
+        """
+        AuditLogService.log(AuditLog.Action.UPDATE, updated_by, team)
+
+    def team_deleted(self, team: Team, deleted_by: User) -> None:
+        """A method to be called after a team has been deleted.
+
+        Always call this after you delete a team, unless you need to bypass the hook.
+
+        Args:
+            team: The team that was deleted.
+            deleted_by: Who deleted the team.
+        """
+        AuditLogService.log(AuditLog.Action.DELETE, deleted_by, team)
+
+
+class TeamAuditLogSerializer(AuditLogSerializer):
+    model = Team
+
+    assert len(Team._meta.get_fields()) == 11, (
+        "It looks like you have updated the `Team` model. Please make sure you have"
+        " updated `TeamAuditLogSerializer.serialize` to reflect any field changes."
+    )
+
+    def serialize(self, instance: Team) -> ObjectRepr:
+        team = Team.objects.filter(pk=instance.pk).values()[0]
+
+        if parent := TeamService().get_immediate_parent_team(instance):
+            team["parent"] = parent.name
+
+        del team["created_at"]
+        del team["updated_at"]
+
+        return team

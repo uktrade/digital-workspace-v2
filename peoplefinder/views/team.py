@@ -1,13 +1,16 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.db.models import Avg, Q, QuerySet
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from peoplefinder.forms.team import TeamForm
 from peoplefinder.models import Person, Team, TeamMember
+from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.team import TeamService
 
 from .base import PeoplefinderView
@@ -57,9 +60,13 @@ class TeamDetailView(DetailView, PeoplefinderView):
                     .aggregate(Avg("profile_completion"))["profile_completion__avg"]
                 )
 
+        if self.request.user.has_perm("peoplefinder.view_audit_log"):
+            context["team_audit_log"] = AuditLogService.get_audit_log(team)
+
         return context
 
 
+@method_decorator(transaction.atomic, name="post")
 class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
     model = Team
     context_object_name = "team"
@@ -77,6 +84,14 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
         context["is_root_team"] = team_service.get_root_team() == team
 
         return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        if form.has_changed():
+            TeamService().team_updated(self.object, self.request.user)
+
+        return response
 
 
 class TeamTreeView(DetailView, PeoplefinderView):
@@ -166,6 +181,7 @@ class TeamPeopleOutsideSubteamsView(TeamPeopleBaseView):
         )
 
 
+@method_decorator(transaction.atomic, name="post")
 class TeamAddNewSubteamView(PermissionRequiredMixin, CreateView, PeoplefinderView):
     model = Team
     form_class = TeamForm
@@ -188,7 +204,15 @@ class TeamAddNewSubteamView(PermissionRequiredMixin, CreateView, PeoplefinderVie
 
         return context
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
 
+        TeamService().team_created(self.object, self.request.user)
+
+        return response
+
+
+@method_decorator(transaction.atomic, name="delete")
 class TeamDeleteView(PermissionRequiredMixin, DeleteView, PeoplefinderView):
     model = Team
     context_object_name = "team"
@@ -207,9 +231,13 @@ class TeamDeleteView(PermissionRequiredMixin, DeleteView, PeoplefinderView):
         return context
 
     def delete(self, request, *args, **kwargs):
-        can_team_be_deleted, _ = TeamService().can_team_be_deleted(self.get_object())
+        team = self.get_object()
+
+        can_team_be_deleted, _ = TeamService().can_team_be_deleted(team)
 
         if not can_team_be_deleted:
             raise SuspiciousOperation("Team cannot be deleted")
+
+        TeamService().team_deleted(team, self.request.user)
 
         return super().delete(request, *args, **kwargs)
