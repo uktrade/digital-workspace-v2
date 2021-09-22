@@ -7,6 +7,7 @@ from selenium_tests.utils import URL
 class Page:
     def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
+        self.driver.implicitly_wait(10)
 
     def get_home_page(self):
         self.driver.get(URL)
