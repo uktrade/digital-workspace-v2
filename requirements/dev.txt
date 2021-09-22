@@ -151,7 +151,7 @@ django-treebeard==4.3.1
     #   wagtail
 django-webpack-loader==1.1.0
     # via -r requirements.in/../requirements/base.txt
-django==3.2.4
+django==3.2.5
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
