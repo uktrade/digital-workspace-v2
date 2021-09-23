@@ -32,19 +32,42 @@ def superuser(django_user_model, selenium, live_server):
     return user
 
 
+@pytest.fixture
+def user(django_user_model):
+    user, _ = django_user_model.objects.get_or_create(
+        username="john.smith-1234abcd@digital.trade.gov.uk",
+        first_name="John",
+        last_name="Smith",
+        email="john.smith@digital.trade.gov.uk",
+        legacy_sso_user_id="1234abcd-1234-abcd-1234-abcd1234abcd",
+        is_using_peoplefinder_v2=True,
+    )
+    user.set_password("password")
+    user.save()
+
+    call_command("create_user_profiles")
+
+    return user
+
+
 @pytest.mark.selenium
-def test_profile(superuser, selenium):
+def test_profile(superuser, user, selenium):
     home_page = HomePage(selenium)
     assert "Home" in selenium.title
 
     profile_view_page = home_page.goto_profile_view_page()
     assert "Test User" in selenium.title
+    assert profile_view_page.full_name == "Test User"
     assert profile_view_page.preferred_email == superuser.email
 
     profile_edit_page = profile_view_page.goto_profile_edit_page()
+    profile_edit_page.first_name = "Super"
+    profile_edit_page.manager = "John Smith"
     profile_edit_page.add_role(job_title="CEO", head_of_team=True)
 
     profile_view_page = profile_edit_page.save_profile()
+    assert profile_view_page.full_name == "Super User"
+    assert profile_view_page.manager == "John Smith"
     assert "CEO in SpaceX" in profile_view_page.roles
 
 

@@ -10,6 +10,14 @@ class ProfileViewPage(PeoplefinderPage):
         return ProfileEditPage(self.driver)
 
     @property
+    def full_name(self):
+        return self.find_test_element("full-name").text
+
+    @property
+    def manager(self):
+        return self.find_test_element("manager").text
+
+    @property
     def roles(self):
         return [element.text for element in self.find_test_elements("role")]
 
@@ -19,6 +27,28 @@ class ProfileViewPage(PeoplefinderPage):
 
 
 class ProfileEditPage(PeoplefinderPage):
+    @property
+    def first_name(self):
+        return self.driver.find_element_by_name("first_name").get_attribute("value")
+
+    @first_name.setter
+    def first_name(self, value):
+        first_name_input = self.driver.find_element_by_name("first_name")
+        first_name_input.clear()
+        first_name_input.send_keys(value)
+
+    @property
+    def manager(self):
+        return self.find_test_element("current-manager").text
+
+    @manager.setter
+    def manager(self, value):
+        # TODO: Add support for picking a manager from the search results.
+
+        self.find_test_element("update-manager").click()
+        self.find_test_element("manager-search").send_keys(value)
+        self.find_test_element("select-manager").click()
+
     def add_role(self, job_title: str, head_of_team: bool):
         # TODO: Add support for changing the team.
 
