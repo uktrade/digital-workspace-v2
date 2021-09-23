@@ -23,8 +23,10 @@ class TeamModelAdmin(admin.ModelAdmin):
         if change:
             if current_parent_team != new_parent_team:
                 team_service.update_team_parent(obj, new_parent_team)
+                team_service.team_updated(obj, request.user)
         else:
             team_service.add_team(obj, new_parent_team)
+            team_service.team_created(obj, request.user)
 
 
 admin_site.register(Person, admin.ModelAdmin)

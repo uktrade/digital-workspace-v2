@@ -46,24 +46,31 @@ class Command(BaseCommand):
 
         if spacex_created:
             team_service.add_team(spacex, spacex)
+            team_service.team_created(spacex, created_by=None)
 
         if astronauts_created:
             team_service.add_team(astronauts, spacex)
+            team_service.team_created(astronauts, created_by=None)
 
         if engineering_created:
             team_service.add_team(engineering, spacex)
+            team_service.team_created(engineering, created_by=None)
 
         if software_created:
             team_service.add_team(software, engineering)
+            team_service.team_created(software, created_by=None)
 
         if hr_created:
             team_service.add_team(hr, spacex)
+            team_service.team_created(hr, created_by=None)
 
         if catering_created:
             team_service.add_team(catering, spacex)
+            team_service.team_created(catering, created_by=None)
 
         if bakery_created:
             team_service.add_team(bakery, catering)
+            team_service.team_created(bakery, created_by=None)
 
         self.stdout.write(self.style.SUCCESS("Job completed successfully"))
         self.stdout.write(self.style.SUCCESS(TREE_HELP))

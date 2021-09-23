@@ -242,7 +242,7 @@ For this approach to work you will need to provide a flat, serialized and denorm
 tracking many-to-many fields by denormalizing them. This is often achieved using
 `ArrayAgg` which provides an array representation of the many-to-many relationship. For
 an example of this in action, please take a look at the `PersonAuditLogSerializer` class
-in `peoplefinder/services/audit_log.py`.
+in `peoplefinder/services/person.py`.
 
 One downside to this approach is that if you do not call the audit log service after
 making a change, for example modifying a model instance in a shell, then the changes

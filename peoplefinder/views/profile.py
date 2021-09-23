@@ -12,6 +12,7 @@ from django.views.generic.edit import FormView, UpdateView
 from peoplefinder.forms.profile import ProfileForm, ProfileLeavingDitForm
 from peoplefinder.forms.role import RoleForm
 from peoplefinder.models import Person
+from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.image import ImageService
 from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
@@ -51,6 +52,9 @@ class ProfileDetailView(DetailView, PeoplefinderView):
             context["parent_teams"] = list(TeamService().get_all_parent_teams(team)) + [
                 team
             ]
+
+        if self.request.user.has_perm("peoplefinder.view_audit_log"):
+            context["profile_audit_log"] = AuditLogService.get_audit_log(profile)
 
         return context
 

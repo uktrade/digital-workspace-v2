@@ -2,40 +2,66 @@ import unittest
 
 import pytest
 
-from peoplefinder.models import AuditLog, Person
-from peoplefinder.services.audit_log import (
-    AuditLogService,
-    PersonAuditLogSerializer,
-    object_repr_diff,
-)
+from peoplefinder.models import AuditLog, Person, Team
+from peoplefinder.services.audit_log import AuditLogService, object_repr_diff
+from peoplefinder.services.person import PersonAuditLogSerializer
+from peoplefinder.services.team import TeamAuditLogSerializer
 
 
-def test_audit_log_service_log(db):
-    person = Person.objects.get(user__email="john.smith@example.com")
+class TestAuditLogService:
+    def test_create_log_with_changes(self, db):
+        person = Person.objects.get(user__email="john.smith@example.com")
 
-    person.first_name = "Joe"
-    person.last_name = "Doe"
-    person.save()
+        person.first_name = "Joe"
+        person.last_name = "Doe"
+        person.save()
 
-    log = AuditLogService.log(AuditLog.Action.UPDATE, person.user, person)
+        log = AuditLogService.log(AuditLog.Action.CREATE, person.user, person)
 
-    assert log.content_object == person
-    assert log.actor == person.user
-    assert log.action == AuditLog.Action.UPDATE.value
-    assert log.object_repr["first_name"] == "Joe"
-    assert log.object_repr["last_name"] == "Doe"
-    assert {
-        "action": "change",
-        "key": "first_name",
-        "from_value": "John",
-        "to_value": "Joe",
-    } in log.diff
-    assert {
-        "action": "change",
-        "key": "last_name",
-        "from_value": "Smith",
-        "to_value": "Doe",
-    } in log.diff
+        assert log.object_repr["first_name"] == "Joe"
+        # Even if there is a difference, a create log always has an empty diff.
+        assert log.diff == []
+
+    def test_update_log_with_changes(self, db):
+        person = Person.objects.get(user__email="john.smith@example.com")
+
+        person.first_name = "Joe"
+        person.last_name = "Doe"
+        person.save()
+
+        log = AuditLogService.log(AuditLog.Action.UPDATE, person.user, person)
+
+        assert log.content_object == person
+        assert log.actor == person.user
+        assert log.action == AuditLog.Action.UPDATE.value
+        assert log.object_repr["first_name"] == "Joe"
+        assert log.object_repr["last_name"] == "Doe"
+        assert {
+            "action": "change",
+            "key": "first_name",
+            "from_value": "John",
+            "to_value": "Joe",
+        } in log.diff
+        assert {
+            "action": "change",
+            "key": "last_name",
+            "from_value": "Smith",
+            "to_value": "Doe",
+        } in log.diff
+
+    def test_delete_log_with_changes(self, db):
+        person = Person.objects.get(user__email="john.smith@example.com")
+
+        person.first_name = "Joe"
+        person.last_name = "Doe"
+        person.save()
+
+        log = AuditLogService.log(AuditLog.Action.DELETE, person.user, person)
+
+        # A delete log always has an empty object repr.
+        assert log.object_repr == {}
+        # Even if there is a difference, a delete log always has an empty diff.
+        assert log.diff == []
 
 
 def test_person_audit_log_serializer(db):
@@ -49,6 +75,20 @@ def test_person_audit_log_serializer(db):
     )
 
     assert object_repr["roles"] == ["Software Engineer in Software"]
+
+
+def test_team_audit_log_serializer(db):
+    team = Team.objects.get(name="Software")
+
+    object_repr = TeamAuditLogSerializer().serialize(team)
+
+    assert not any(isinstance(value, dict) for value in object_repr.values()), (
+        "You cannot use a dict as a value. Please see the"
+        " `AuditLogSerializer.serialize` docstring for help."
+    )
+
+    assert object_repr["slug"] == "software"
+    assert object_repr["parent"] == "Engineering"
 
 
 @pytest.mark.parametrize(
