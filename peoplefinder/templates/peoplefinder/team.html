@@ -83,4 +83,17 @@
         {% endif %}
     </div>
 </div>
+
+{% if perms.peoplefinder.view_audit_log %}
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                Audit log
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            {% include 'peoplefinder/components/audit-log.html' with audit_log=team_audit_log.reverse %}
+        </div>
+    </details>
+{% endif %}
 {% endblock %}

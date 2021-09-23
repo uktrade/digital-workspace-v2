@@ -2,12 +2,19 @@ import logging
 from typing import Optional
 
 from django.conf import settings
+from django.contrib.postgres.aggregates import ArrayAgg
+from django.db.models import Q, Value
+from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.models import AuditLog, Person
-from peoplefinder.services.audit_log import AuditLogService
+from peoplefinder.services.audit_log import (
+    AuditLogSerializer,
+    AuditLogService,
+    ObjectRepr,
+)
 from user.models import User
 
 
@@ -170,3 +177,74 @@ class PersonService:
             settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
             context,
         )
+
+
+class PersonAuditLogSerializer(AuditLogSerializer):
+    model = Person
+
+    # I know this looks strange, but it is here to protect us from forgetting to update
+    # the audit log code when we update the model. The tests will execute this code so
+    # it should fail locally and in CI. If you need to update this number you can call
+    # `len(Person._meta.get_fields())` in a shell to get the new value.
+    assert len(Person._meta.get_fields()) == 36, (
+        "It looks like you have updated the `Person` model. Please make sure you have"
+        " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
+    )
+
+    def serialize(self, instance: Person) -> ObjectRepr:
+        person = (
+            Person.objects.filter(pk=instance)
+            .values()
+            .annotate(
+                # Note the use of `ArrayAgg` to denormalize and flatten many-to-many
+                # relationships.
+                workdays=ArrayAgg(
+                    "workdays__name",
+                    filter=Q(workdays__name__isnull=False),
+                    distinct=True,
+                ),
+                key_skills=ArrayAgg(
+                    "key_skills__name",
+                    filter=Q(key_skills__name__isnull=False),
+                    distinct=True,
+                ),
+                learning_interests=ArrayAgg(
+                    "learning_interests__name",
+                    filter=Q(learning_interests__name__isnull=False),
+                    distinct=True,
+                ),
+                networks=ArrayAgg(
+                    "networks__name",
+                    filter=Q(networks__name__isnull=False),
+                    distinct=True,
+                ),
+                professions=ArrayAgg(
+                    "professions__name",
+                    filter=Q(professions__name__isnull=False),
+                    distinct=True,
+                ),
+                additional_roles=ArrayAgg(
+                    "additional_roles__name",
+                    filter=Q(additional_roles__name__isnull=False),
+                    distinct=True,
+                ),
+                buildings=ArrayAgg(
+                    "buildings__name",
+                    filter=Q(buildings__name__isnull=False),
+                    distinct=True,
+                ),
+                roles=ArrayAgg(
+                    Concat("roles__job_title", Value(" in "), "roles__team__name"),
+                    filter=Q(roles__isnull=False),
+                    distinct=True,
+                ),
+            )[0]
+        )
+
+        # Encode the slug from `UUID` to `str` before returning.
+        person["slug"] = str(person["slug"])
+        # Remove unnecessary fields.
+        del person["created_at"]
+        del person["updated_at"]
+
+        return person

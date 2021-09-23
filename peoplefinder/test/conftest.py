@@ -1,9 +1,9 @@
 import pytest
-
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 
-from peoplefinder.models import Person, Team
+from peoplefinder.models import Team
+from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.person import PersonService
 
 
@@ -25,6 +25,9 @@ def django_db_setup(django_db_setup, django_db_blocker):
         )
 
         if hasattr(user_john_smith, "profile"):
+            # We need to delete the profile's audit log separately because the primary
+            # key is always the same when using a one-to-one relationship.
+            AuditLogService.get_audit_log(user_john_smith.profile).delete()
             user_john_smith.profile.delete()
 
         call_command("create_test_teams")
@@ -42,4 +45,4 @@ def django_db_setup(django_db_setup, django_db_blocker):
         PersonService().profile_updated(None, user_john_smith.profile, user_john_smith)
 
         # Leave this here to check we have reset the db into a known state.
-        assert user_john_smith.profile.audit_log.count() == 2
+        assert AuditLogService.get_audit_log(user_john_smith.profile).count() == 2

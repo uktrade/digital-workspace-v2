@@ -2,6 +2,7 @@
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th class="govuk-table__header">Event at</th>
+            <th class="govuk-table__header">Event type</th>
             <th class="govuk-table__header">By</th>
             <th class="govuk-table__header">Changes</th>
         </tr>
@@ -10,6 +11,7 @@
         {% for log in audit_log %}
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ log.timestamp }}</td>
+                <td class="govuk-table__cell">{{ log.action|title }}</td>
                 <td class="govuk-table__cell">{{ log.actor.get_full_name }}</td>
                 <td class="govuk-table__cell">
                     <ul class="pf-audit-log__diff">

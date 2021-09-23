@@ -2,7 +2,7 @@ import uuid
 from typing import Iterator
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -263,8 +263,6 @@ class Person(models.Model):
         related_name="+",
     )
 
-    audit_log = GenericRelation("AuditLog")
-
     slug = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     legacy_slug = models.CharField(
         unique=True, max_length=80, null=True, editable=False
@@ -436,8 +434,6 @@ class Team(models.Model):
     people = models.ManyToManyField(
         "Person", through="TeamMember", related_name="teams"
     )
-
-    audit_log = GenericRelation("AuditLog")
 
     name = models.CharField(
         "Team name (required)",
