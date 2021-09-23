@@ -17,7 +17,7 @@
         {% endif %}
     </div>
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l mb-0">{{ profile.full_name }}</h1>
+        <h1 class="govuk-heading-l mb-0" data-test-full-name>{{ profile.full_name }}</h1>
 
         {% if profile.is_stale %}
             <div class="govuk-warning-text">
@@ -140,7 +140,7 @@
     {% if profile.manager %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">My manager</dt>
-            <dd class="govuk-summary-list__value"><a href="{% url 'profile-view' profile.manager.slug %}" class="govuk-link">{{ profile.manager.full_name }}</a></dd>
+            <dd class="govuk-summary-list__value"><a href="{% url 'profile-view' profile.manager.slug %}" class="govuk-link" data-test-manager>{{ profile.manager.full_name }}</a></dd>
         </div>
     {% endif %}
 
