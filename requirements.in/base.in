@@ -5,7 +5,7 @@ wagtailmenus>=2.8.0
 wagtail-draftail-anchors>=0.2.0
 
 # Django tools
-django>=3.2.4
+django>=3.2.5
 django-environ>=0.4.5,<0.5
 django-webpack-loader>=1.0.0
 psycogreen>=1.0.2,<1.1
