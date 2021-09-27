@@ -20,6 +20,7 @@ from django.db.models import Q
 from peoplefinder.legacy_models import Groups, People
 from peoplefinder.models import (
     AdditionalRole,
+    AuditLog,
     Building,
     Country,
     Grade,
@@ -45,6 +46,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         logger.info("Begin legacy migration!")
 
+        AuditLog.objects.all().delete()
+        logger.info("Deleted audit log")
         # All team members and the team tree will be deleted using cascades.
         Person.objects.all().delete()
         logger.info("Deleted people")
