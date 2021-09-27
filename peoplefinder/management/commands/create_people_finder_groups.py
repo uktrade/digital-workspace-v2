@@ -1,54 +1,48 @@
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
 
-PROFILE_EDITOR_PERMISSION_TYPES = [
-    "edit_profile",
-]
 
-PERSON_EDITOR_PERMISSION_TYPES = [
-    "edit_profile",
-    "delete_profile",
+PERSON_ADMIN_PERMS = [
+    "change_person",
+    "delete_person",
     "view_auditlog",
 ]
 
-TEAM_EDITOR_PERMISSION_TYPES = [
+TEAM_ADMIN_PERMS = [
     "add_team",
     "change_team",
     "delete_team",
-    "view_auditlog_team",
+    "view_auditlog",
 ]
 
 
 class Command(BaseCommand):
-    help = "Create page permissions"
+    help = "Create groups with permissions for peoplefinder"
 
     def handle(self, *args, **options):
-        user_editors, _ = Group.objects.get_or_create(
-            name="Profile Editors",
-        )
+        # TODO: Remove once run on all envs.
+        Group.objects.filter(
+            name__in=["Profile Editors", "Person Editors", "Team Editors"]
+        ).delete()
 
-        user_editor_permissions = Permission.objects.filter(
-            codename__in=PROFILE_EDITOR_PERMISSION_TYPES
+        # Person Admin
+        person_admin, _ = Group.objects.get_or_create(
+            name="Person Admin",
         )
-        user_editors.permissions.add(*user_editor_permissions)
-        user_editors.save()
+        person_admin_perms = Permission.objects.filter(
+            codename__in=PERSON_ADMIN_PERMS,
+            content_type__app_label="peoplefinder",
+        )
+        person_admin.permissions.set(person_admin_perms)
+        person_admin.save()
 
-        person_editors, _ = Group.objects.get_or_create(
-            name="Person Editors",
+        # Team Admin
+        team_admin, _ = Group.objects.get_or_create(
+            name="Team Admin",
         )
-
-        person_editor_permissions = Permission.objects.filter(
-            codename__in=PERSON_EDITOR_PERMISSION_TYPES
+        team_admin_perms = Permission.objects.filter(
+            codename__in=TEAM_ADMIN_PERMS,
+            content_type__app_label="peoplefinder",
         )
-        person_editors.permissions.add(*person_editor_permissions)
-        person_editors.save()
-
-        team_editors, _ = Group.objects.get_or_create(
-            name="Team Editors",
-        )
-
-        team_editor_permissions = Permission.objects.filter(
-            codename__in=TEAM_EDITOR_PERMISSION_TYPES
-        )
-        team_editors.permissions.add(*team_editor_permissions)
-        team_editors.save()
+        team_admin.permissions.set(team_admin_perms)
+        team_admin.save()

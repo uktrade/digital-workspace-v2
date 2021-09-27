@@ -84,7 +84,7 @@
     </div>
 </div>
 
-{% if perms.peoplefinder.view_auditlog_team %}
+{% if perms.peoplefinder.change_team and perms.peoplefinder.view_auditlog %}
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">

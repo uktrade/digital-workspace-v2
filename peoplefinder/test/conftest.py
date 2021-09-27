@@ -32,6 +32,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
         call_command("create_test_teams")
         call_command("create_user_profiles")
+        call_command("create_people_finder_groups")
 
         user_john_smith.refresh_from_db()
 

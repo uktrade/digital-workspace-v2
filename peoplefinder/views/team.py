@@ -60,7 +60,9 @@ class TeamDetailView(DetailView, PeoplefinderView):
                     .aggregate(Avg("profile_completion"))["profile_completion__avg"]
                 )
 
-        if self.request.user.has_perm("peoplefinder.view_auditlog_team"):
+        if self.request.user.has_perms(
+            ["peoplefinder.change_team" "peoplefinder.view_auditlog"]
+        ):
             context["team_audit_log"] = AuditLogService.get_audit_log(team)
 
         return context
