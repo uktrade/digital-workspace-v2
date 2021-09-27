@@ -53,7 +53,9 @@ class ProfileDetailView(DetailView, PeoplefinderView):
                 team
             ]
 
-        if self.request.user.has_perm("peoplefinder.view_audit_log"):
+        if self.request.user == profile.user or self.request.user.has_perm(
+            "peoplefinder.view_auditlog"
+        ):
             context["profile_audit_log"] = AuditLogService.get_audit_log(profile)
 
         return context
