@@ -82,9 +82,9 @@ bash:
 	docker-compose run --rm wagtail bash
 
 all-requirements:
-	docker-compose run --rm wagtail pip-compile --output-file requirements/base.txt requirements.in/base.in
-	docker-compose run --rm wagtail pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-	docker-compose run --rm wagtail pip-compile --output-file requirements/prod.txt requirements.in/prod.in
+	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/base.txt requirements.in/base.in
+	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/dev.txt requirements.in/dev.in
+	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/prod.txt requirements.in/prod.in
 
 upgrade-package:
 	docker-compose run --rm wagtail pip-compile --upgrade-package $(package) --output-file requirements/base.txt requirements.in/base.in

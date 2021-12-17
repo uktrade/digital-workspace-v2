@@ -54,7 +54,7 @@ beautifulsoup4
 elasticsearch-dsl
 django-elasticsearch-dsl
 
-lxml>=4.6.3
+lxml>=4.7.1
 PyYAML>=5.4
 
 # GovUK Notify
