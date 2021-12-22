@@ -1,6 +1,7 @@
 from itertools import groupby
 
 from django.db import models
+from django.db.models import Q
 from modelcluster.fields import ParentalKey
 from wagtail.admin.edit_handlers import (
     FieldPanel,
@@ -42,18 +43,19 @@ class Topic(ContentPage):
             topic=self.contentpage, page__content_type__app_label="news"
         ).order_by("-page__last_published_at")[:5]
 
-        policies_and_guidance = PageTopic.objects.filter(
-            topic=self.contentpage,
-            page__content_type__app_label="working_at_dit",
-        ).order_by("-page__last_published_at")
-
-        policies_and_guidance = policies_and_guidance.filter(
-            page__content_type__model="policy",
-        ) | policies_and_guidance.filter(
-            page__content_type__model="guidance",
+        context["policies_and_guidance"] = (
+            ContentPage.objects.public()
+            .live()
+            .filter(
+                topics__topic=self.contentpage,
+                content_type__app_label="working_at_dit",
+            )
+            .filter(
+                Q(content_type__model="policy")
+                | Q(content_type__model="guidance")
+            )
+            .order_by("-last_published_at")
         )
-
-        context["policies_and_guidance"] = policies_and_guidance
 
         tools = PageTopic.objects.filter(
             topic=self.contentpage, page__content_type__app_label="tools"

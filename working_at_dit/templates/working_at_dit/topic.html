@@ -20,15 +20,15 @@
         {% endif %}
         {% if policies_and_guidance %}
             <h2 class="govuk-heading-m">Policies and Guidance</h2>
-            {% for page_pg in policies_and_guidance %}
+            {% for page in policies_and_guidance %}
                 <ul class="govuk-list">
                     <li>
-                        <a class="govuk-link" href="{{ page_pg.page.url }}">
-                            {{ page_pg.page.title }}
+                        <a class="govuk-link" href="{{ page.url }}">
+                            {{ page.title }}
                         </a>
                         <br />
                         <span class="govuk-body-s ws-secondary-meta">
-                            {{ page_pg.page.last_published_at }}
+                            {{ page.last_published_at }}
                         </span>
                     </li>
                 </ul>
