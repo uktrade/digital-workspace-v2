@@ -9,9 +9,9 @@ from wagtail.admin.edit_handlers import (
     FieldPanel,
     PageChooserPanel,
 )
-from wagtail_adminsortable.models import AdminSortable
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.snippets.models import register_snippet
+from wagtail_adminsortable.models import AdminSortable
 
 from content.models import BasePage
 from home.util import get_tweets
@@ -32,7 +32,7 @@ class HomeNewsOrder(AdminSortable, ClusterableModel):
         return str(self.news_page)
 
     class Meta(AdminSortable.Meta):
-        ordering = ['order']
+        ordering = ["order"]
         verbose_name = "Home page news order"
         verbose_name_plural = "Home page news order"
 
