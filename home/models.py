@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
 from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     PageChooserPanel,
@@ -16,7 +17,6 @@ from content.models import BasePage
 from home.util import get_tweets
 from news.models import NewsPage
 from working_at_dit.models import HowDoI
-from modelcluster.models import ClusterableModel
 
 
 @register_snippet
