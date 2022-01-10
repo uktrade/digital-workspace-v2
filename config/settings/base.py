@@ -145,6 +145,7 @@ WAGTAIL_APPS = [
     "wagtailmedia",
     "wagtailmenus",
     "wagtail_draftail_anchors",
+    "wagtail_adminsortable",
 ]
 
 DJANGO_APPS = [

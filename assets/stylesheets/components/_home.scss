@@ -48,7 +48,7 @@
 
       .quick-links {
         background-color: govuk-colour("light-grey");
-        border-top: 5px solid #cf102d;
+        border-bottom: 5px solid #cf102d;
         padding: 12px;
         margin: 0;
 
@@ -144,22 +144,28 @@
         order: 2;
       }
 
-      .quick-links-wrapper {
-        order: 3;
-        padding: 0;
-        margin: 0 0 24px 0;
-      }
-
+      // D and I
       .news-item-3 {
-        order: 4;
+        order: 3;
+        border-bottom: 5px solid #0064C5;
+        background-color: govuk-colour("light-grey");
+        .home-news-item-text-content {
+          padding: 12px;
+        }
       }
 
       .news-item-4 {
-        order: 5;
+        order: 4;
       }
 
       .news-item-5 {
+        order: 5;
+      }
+
+      .quick-links-wrapper {
         order: 6;
+        padding: 0;
+        margin: 0 0 24px 0;
       }
 
       .news-item-6 {
