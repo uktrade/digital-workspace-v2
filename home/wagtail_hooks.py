@@ -2,11 +2,22 @@ from wagtail.contrib.modeladmin.options import (
     ModelAdmin,
     modeladmin_register,
 )
+from wagtail_adminsortable.admin import SortableAdminMixin
 
 from home.models import (
+    HomeNewsOrder,
     QuickLink,
     WhatsPopular,
 )
+
+
+class HomeNewsOrderAdmin(SortableAdminMixin, ModelAdmin):
+    model = HomeNewsOrder
+    menu_label = "Home news order"
+    menu_icon = "link"
+    menu_order = 200
+    add_to_settings_menu = False
+    exclude_from_explorer = False
 
 
 class QuickLinksAdmin(ModelAdmin):
@@ -27,5 +38,6 @@ class WhatsPopularAdmin(ModelAdmin):
     exclude_from_explorer = False
 
 
+modeladmin_register(HomeNewsOrderAdmin)
 modeladmin_register(QuickLinksAdmin)
 modeladmin_register(WhatsPopularAdmin)

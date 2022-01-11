@@ -4,17 +4,52 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
 from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
 from wagtail.admin.edit_handlers import (
     FieldPanel,
     PageChooserPanel,
 )
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.snippets.models import register_snippet
+from wagtail_adminsortable.models import AdminSortable
 
 from content.models import BasePage
 from home.util import get_tweets
 from news.models import NewsPage
 from working_at_dit.models import HowDoI
+
+
+@register_snippet
+class HomeNewsOrder(AdminSortable, ClusterableModel):
+    order = models.IntegerField(null=True, blank=True)
+    news_page = ParentalKey(
+        "news.NewsPage",
+        on_delete=models.CASCADE,
+        related_name="home_news_order_pages",
+    )
+
+    def __str__(self):
+        return str(self.news_page)
+
+    class Meta(AdminSortable.Meta):
+        ordering = ["order"]
+        verbose_name = "Home page news order"
+        verbose_name_plural = "Home page news order"
+
+    panels = [
+        PageChooserPanel("news_page"),
+    ]
+
+    def clean(self):
+        if not self.id:
+            existing_news_page = HomeNewsOrder.objects.filter(
+                news_page=self.news_page,
+            ).first()
+
+            if existing_news_page:
+                raise ValidationError(
+                    "This news page is already in the list",
+                )
 
 
 @register_snippet
@@ -114,7 +149,7 @@ class HomePage(BasePage):
             .public()
             .order_by(
                 "-pinned_on_home",
-                "result_weighting",
+                "home_news_order_pages__order",
                 "-first_published_at",
             )[:8]
         )
