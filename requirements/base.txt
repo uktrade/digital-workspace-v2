@@ -261,11 +261,14 @@ vine==5.0.0
     #   amqp
     #   celery
     #   kombu
+wagtail-adminsortable==0.1
+    # via -r requirements.in/base.in
 wagtail-draftail-anchors==0.2.0
     # via -r requirements.in/base.in
 wagtail==2.13.2
     # via
     #   -r requirements.in/base.in
+    #   wagtail-adminsortable
     #   wagtail-draftail-anchors
     #   wagtailmedia
 wagtailmedia==0.5.0
