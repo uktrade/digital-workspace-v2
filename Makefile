@@ -84,12 +84,14 @@ bash:
 all-requirements:
 	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/base.txt requirements.in/base.in
 	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/prod.txt requirements.in/prod.in
 
 upgrade-package:
-	docker-compose run --rm wagtail pip-compile --upgrade-package $(package) --output-file requirements/base.txt requirements.in/base.in
-	docker-compose run --rm wagtail pip-compile --upgrade-package $(package) --output-file requirements/dev.txt requirements.in/dev.in
-	docker-compose run --rm wagtail pip-compile --upgrade-package $(package) --output-file requirements/prod.txt requirements.in/prod.in
+	docker-compose run --rm --no-deps wagtail pip-compile --upgrade-package $(package) --output-file requirements/base.txt requirements.in/base.in
+	docker-compose run --rm --no-deps wagtail pip-compile --upgrade-package $(package) --output-file requirements/dev.txt requirements.in/dev.in
+
+upgrade-all-packages:
+	docker-compose run --rm --no-deps wagtail pip-compile --upgrade --output-file requirements/base.txt requirements.in/base.in
+	docker-compose run --rm --no-deps wagtail pip-compile --upgrade --output-file requirements/dev.txt requirements.in/dev.in
 
 superuser:
 	docker-compose run --rm wagtail python manage.py migrate
