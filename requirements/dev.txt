@@ -497,7 +497,7 @@ wagtail-adminsortable==0.1
     # via -r requirements.in/../requirements/base.txt
 wagtail-draftail-anchors==0.2.0
     # via -r requirements.in/../requirements/base.txt
-wagtail==2.13.2
+wagtail==2.15.2
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail-adminsortable
