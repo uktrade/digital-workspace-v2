@@ -11,20 +11,13 @@ make build
 npm install
 npm run build
 
-make migrate
-make superuser
-make up
+make first-use               # ... use make up after this has run
+```
 
-# Optional steps
+## Run front end in watch mode
 
-# Start a bash session
-make bash
-# Create test users
-python manage.py create_test_users
-# Create user profiles
-python manage.py create_user_profiles
-# Create test teams
-python manage.py create_test_teams
+```bash
+make webpack
 ```
 
 You can now access:
@@ -36,6 +29,20 @@ You can now access:
 If you need a virtualenv with the packages installed please run `./setup-local.sh`.
 This is useful if you are using [vscode](https://code.visualstudio.com/) with the
 [python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python).
+
+## Useful commands
+
+```bash
+
+# Start a bash session
+make bash
+# Create test users
+python manage.py create_test_users
+# Create user profiles
+python manage.py create_user_profiles
+# Create test teams
+python manage.py create_test_teams
+```
 
 ## Unit tests
 
@@ -129,22 +136,10 @@ We achieve this by using both the Python and NodeJS buildpacks, the NodeJS
 buildpack will automatically run the npm `heroku-postbuild` step after
 `npm install`.
 
-## Domains
+## Further reading
 
-### Dev
+https://readme.trade.gov.uk/docs/playbooks/workspace.html
 
-workspace.dev.uktrade.digital
-static.workspace.dev.uktrade.digital
-
-### Staging
-
-workspace.staging.uktrade.digital
-static.workspace.staging.uktrade.digital
-
-### Prod
-
-workspace.trade.gov.uk
-static.workspace.trade.gov.uk
 
 [wagtail]: https://www.wagtail.io
 
@@ -157,10 +152,6 @@ We had to artificially increase the length of the varchar in the following table
 - wagtaildocs
 
 The migration 0010_increase_wagtail_file_field_length_01022021_1252 makes this change
-
-## Notes in import
-
-When importing we will need to copy the content of the current buckets to their new locations (or possibly leave them where they are and update references to them).
 
 ## S3 - transfer of assets and security
 
@@ -180,18 +171,6 @@ In order to make Wagtail images, document, video record aware of the content of
 the bucket we need to iterate through the bucket content and create the relevant records.
 
 I am creating a management command to do the above.
-
-## Migration process (assumes access to old system is maintained for reference)
-
-Run migrations (5 mins)
-Set length of
-Run management command to create Wagtail records for files within S3 bucket (4 hrs)
-Run import logic (relies on asset records being in app DB) (1 hr)
-Create manual items - quick links, What's Popular, How to list
-
-Redirects to create:
-
-/about-us/networks-at-dit/ -> /networks
 
 ## SVG icon license info
 
