@@ -1,16 +1,3 @@
-.DEFAULT: help
-
-help:
-	@echo "Workspace Makefile"
-	@echo "------------------"
-	@echo
-	@echo "make lint"
-	@echo "    Runs linters"
-	@echo
-	@echo "make clean"
-	@echo "    Removes compiled artefacts"
-	@echo
-
 clean:
 	npm run clean
 	find . -name '__pycache__' -exec rm -rf {} +
@@ -84,52 +71,17 @@ bash:
 all-requirements:
 	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/base.txt requirements.in/base.in
 	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/prod.txt requirements.in/prod.in
 
 upgrade-package:
-	docker-compose run --rm wagtail pip-compile --upgrade-package $(package) --output-file requirements/base.txt requirements.in/base.in
-	docker-compose run --rm wagtail pip-compile --upgrade-package $(package) --output-file requirements/dev.txt requirements.in/dev.in
-	docker-compose run --rm wagtail pip-compile --upgrade-package $(package) --output-file requirements/prod.txt requirements.in/prod.in
+	docker-compose run --rm --no-deps wagtail pip-compile --upgrade-package $(package) --output-file requirements/base.txt requirements.in/base.in
+	docker-compose run --rm --no-deps wagtail pip-compile --upgrade-package $(package) --output-file requirements/dev.txt requirements.in/dev.in
+
+upgrade-all-packages:
+	docker-compose run --rm --no-deps wagtail pip-compile --upgrade --output-file requirements/base.txt requirements.in/base.in
+	docker-compose run --rm --no-deps wagtail pip-compile --upgrade --output-file requirements/dev.txt requirements.in/dev.in
 
 superuser:
-	docker-compose run --rm wagtail python manage.py migrate
-	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')" | docker-compose run --rm wagtail python manage.py shell
-
-import:
-	docker-compose down
-	docker-compose up -d
-	docker-compose exec wagtail python manage.py migrate
-	docker-compose exec wagtail python manage.py add_s3_bucket_assets_to_wagtail
-	docker-compose exec wagtail python manage.py import_wordpress
-	docker-compose exec wagtail python manage.py create_menus
-	docker-compose run --rm wagtail python manage.py create_groups
-	echo "from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password')" | docker-compose run --rm wagtail python manage.py shell
-	docker-compose stop wagtail
-	docker-compose up
-
-restore_test_db:
-	docker-compose stop db
-	docker-compose up -d db
-	dropdb -h localhost -U postgres digital_workspace
-	createdb -h localhost -U postgres digital_workspace
-	pg_restore -h localhost -U postgres --dbname=digital_workspace --verbose backup_file.backup
-	docker-compose exec wagtail python manage.py migrate
-
-import_test:
-	docker-compose stop db
-	docker-compose up -d db
-	dropdb -h localhost -U postgres digital_workspace
-	createdb -h localhost -U postgres digital_workspace
-	pg_restore -h localhost -U postgres --dbname=digital_workspace --verbose backup_s3_asset_only.backup
-	docker-compose exec wagtail python manage.py migrate
-	#docker-compose exec wagtail python manage.py add_s3_bucket_assets_to_wagtail
-	docker-compose run --rm wagtail python manage.py fixtree
-	docker-compose exec wagtail python manage.py import_wordpress
-	docker-compose exec wagtail python manage.py create_menus
-	docker-compose run --rm wagtail python manage.py create_groups
-
-add_s3_assets:
-	docker-compose exec wagtail python manage.py add_s3_bucket_assets_to_wagtail
+	docker-compose run --rm wagtail python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
 
 fixtree:
 	docker-compose run --rm wagtail python manage.py fixtree
@@ -148,3 +100,12 @@ groups:
 
 create_section_homepages:
 	docker-compose run --rm wagtail python manage.py create_section_homepages
+
+first-use:
+	docker-compose down
+	make migrate
+	make menus
+	make create_section_homepages
+	make groups
+	make superuser
+	docker-compose up
