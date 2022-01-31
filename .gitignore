@@ -54,3 +54,4 @@ htmlcov/
 
 # PII Secret
 .pii-secret-hook
+ner_output_file.txt
