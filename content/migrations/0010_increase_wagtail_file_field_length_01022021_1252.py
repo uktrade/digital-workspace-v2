@@ -5,9 +5,9 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("content", "0009_auto_20210127_0947"),
-        ("wagtailimages", "__latest__"),
-        ("wagtailmedia", "__latest__"),
-        ("wagtaildocs", "__latest__"),
+        ("wagtailimages", "0001_squashed_0021"),
+        ("wagtailmedia", "0003_copy_media_permissions_to_collections"),
+        ("wagtaildocs", "0012_uploadeddocument"),
     ]
 
     operations = [
