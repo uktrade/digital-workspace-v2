@@ -1,0 +1,7 @@
+# Constrain to base requirements
+-r ../requirements/base.txt
+# Support async access using gevent
+greenlet==0.4.16
+gevent==20.6.1
+psycogreen==1.0.2
+elastic-apm==6.2.3

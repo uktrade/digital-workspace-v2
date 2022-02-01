@@ -1,7 +1,4 @@
-FROM python:3.9-buster
-
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
+FROM python:3.9.4-buster
 
 ADD . /app
 WORKDIR /app
