@@ -2,10 +2,10 @@
 -r ../requirements/base.txt
 
 # Development tools
-pip-tools>=6.4.0
+pip-tools>=6.0.1
 
 # Linting & security checking
-flake8>=3.8.3
+flake8>=3.8.3,<4
 flake8-bandit
 flake8-blind-except
 flake8-bugbear
