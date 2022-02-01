@@ -3,7 +3,8 @@ wagtail>=2.15.2
 wagtailmedia>=0.8.0
 wagtailmenus>=3.0.2
 wagtail-draftail-anchors>=0.2.0
-wagtail-adminsortable>=0.1.0
+# wagtail-adminsortable
+https://github.com/uktrade/wagtail-admin-sortable/archive/master.tar.gz
 
 # Django tools
 django>=3.2.10
