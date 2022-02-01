@@ -183,7 +183,7 @@ draftjs-exporter==2.1.7
     #   wagtail
 elastic-apm==6.7.2
     # via -r requirements.in/../requirements/base.txt
-elasticsearch==7.16.3
+elasticsearch==7.13.4
     # via
     #   -r requirements.in/../requirements/base.txt
     #   elasticsearch-dsl
