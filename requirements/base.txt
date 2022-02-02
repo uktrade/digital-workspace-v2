@@ -127,7 +127,7 @@ draftjs-exporter==2.1.7
     # via wagtail
 elastic-apm==6.7.2
     # via -r requirements.in/base.in
-elasticsearch==7.16.3
+elasticsearch==7.13.4
     # via
     #   -r requirements.in/base.in
     #   elasticsearch-dsl
@@ -263,7 +263,7 @@ wagtail==2.15.3
     #   wagtail-adminsortable
     #   wagtail-draftail-anchors
     #   wagtailmedia
-wagtail-adminsortable==0.1
+wagtail-adminsortable @ https://github.com/uktrade/wagtail-admin-sortable/archive/master.tar.gz
     # via -r requirements.in/base.in
 wagtail-draftail-anchors==0.2.0
     # via -r requirements.in/base.in
