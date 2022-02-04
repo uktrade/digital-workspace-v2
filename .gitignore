@@ -51,3 +51,7 @@ backup_file_post_live.backup
 # coverage.py
 .coverage
 htmlcov/
+
+# PII Secret
+.pii-secret-hook
+ner_output_file.txt

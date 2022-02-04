@@ -108,7 +108,7 @@ class WPPage(ABC):
         if not author:
             logger.warning(f"Could not find author: '{self.page_content['creator']}'")
             author = UserModel.objects.filter(
-                email="connect@digital.trade.gov.uk"
+                email="connect@digital.trade.gov.uk"  # /PS-IGNORE
             ).first()
 
         return author
