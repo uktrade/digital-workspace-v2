@@ -22,8 +22,8 @@ from user.test.factories import UserFactory
 @dataclass
 class State:
     client: Client
-    user: User
-    team: Team
+    user: User,
+    team: Team,
     person: Person
 
 
@@ -77,6 +77,17 @@ def check_permission(state, view_url, codename):
 
 
 def test_edit_profile_group(state):
+    team = TeamFactory()
+    user = UserFactory()
+    person = PersonService().create_user_profile(user)
+
+    client = Client()
+    client.force_login(user)
+
+    return State(client=client, person=person,  team=team, user=user)
+
+
+def test_edit_profile_permission(state):
     edit_profile_url = reverse(
         "profile-edit",
         kwargs={
@@ -90,6 +101,15 @@ def test_edit_profile_group(state):
         name='Profile Editors'
     )
     state.user.groups.add(edit_profile_group)
+
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 403
+
+    edit_profile_perm = Permission.objects.get(
+        codename='edit_profile'
+    )
+    state.user.user_permissions.add(edit_profile_perm)
+    state.user.save()
 
     response = state.client.get(edit_profile_url)
     assert response.status_code == 200
@@ -173,3 +193,7 @@ def test_create_sub_team_visible_permission(state):
         }
     )
     check_visible_button(state, view_url, b"Add new sub-team", "add_team")
+
+def test_edit_team_permission(state):
+    # TODO implement
+    pass

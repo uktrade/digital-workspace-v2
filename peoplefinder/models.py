@@ -207,12 +207,6 @@ class Person(models.Model):
             ("delete_profile", "Delete profile"),
         )
 
-    permissions = (
-        ("edit_profile", "Edit profile"),
-        ("delete_profile", "Delete profile"),
-        ("edit_sso_id", "Edit SSO ID"),
-    )
-
     user = models.OneToOneField(
         "user.User", models.CASCADE, primary_key=True, related_name="profile"
     )
@@ -441,12 +435,6 @@ You can update this description, by [updating your team information](https://wor
 
 
 class Team(models.Model):
-    permissions = (
-        ("edit_team", "Edit team"),
-        ("add_subteam", "Add sub-team"),
-        ("delete_team", "Delete team"),
-    )
-
     people = models.ManyToManyField(
         "Person", through="TeamMember", related_name="teams"
     )
