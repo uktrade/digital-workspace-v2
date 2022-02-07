@@ -81,7 +81,7 @@ class ProfileEditView(
 
     def test_func(self):
         if self.request.user.is_superuser or self.request.user.has_perm(
-            "person.edit_profile"
+            "peoplefinder.edit_profile"
         ):
             return True
 
