@@ -5,6 +5,7 @@ from authbroker_client.utils import (
     has_valid_token,
 )
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 
 from peoplefinder.services.person import PersonService
 
@@ -49,6 +50,11 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
                 last_name=profile["last_name"],
                 legacy_sso_user_id=profile["user_id"],
             )
+
+        # TODO - discuss below with SD
+        # Add edit profile permission
+        edit_profile_permission = Permission.objects.get(codename='edit_profile')
+        user.user_permissions.add(edit_profile_permission)
 
         user.set_unusable_password()
         user.save()
