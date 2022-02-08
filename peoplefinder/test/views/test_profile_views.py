@@ -1,8 +1,7 @@
 import pytest
-
 from bs4 import BeautifulSoup
-
 from dataclasses import dataclass
+
 from django.contrib.auth.models import (
     Group,
     Permission,
@@ -22,8 +21,8 @@ from user.test.factories import UserFactory
 @dataclass
 class State:
     client: Client
-    user: User,
-    team: Team,
+    user: User
+    team: Team
     person: Person
 
 
@@ -77,13 +76,15 @@ def check_permission(state, view_url, codename):
 
 
 def test_edit_profile_group(state):
-    team = TeamFactory()
+    team = Team.objects.all().first()
+    if team == None:
+        team = TeamFactory()
     user = UserFactory()
+    user.is_using_peoplefinder_v2 = True
+    user.save()
     person = PersonService().create_user_profile(user)
-
     client = Client()
     client.force_login(user)
-
     return State(client=client, person=person,  team=team, user=user)
 
 
@@ -195,5 +196,21 @@ def test_create_sub_team_visible_permission(state):
     check_visible_button(state, view_url, b"Add new sub-team", "add_team")
 
 def test_edit_team_permission(state):
-    # TODO implement
-    pass
+    edit_url = reverse(
+        "team-edit",
+        kwargs={
+            'slug': state.team.slug,
+        }
+    )
+
+    response = state.client.get(edit_url)
+    assert response.status_code == 403
+
+    edit_team_perm = Permission.objects.get(
+        codename='change_team'
+    )
+    state.user.user_permissions.add(edit_team_perm)
+    state.user.save()
+
+    response = state.client.get(edit_url)
+    assert response.status_code == 200
