@@ -446,6 +446,7 @@ el = e.target
 e.preventDefault
 currentTeamId(team_id
 s3chunkuploader.fields
+<<<<<<< HEAD
 Edit SSO ID
 Team Editors
 b"Add
@@ -471,5 +472,7 @@ wagtail>=2.15.2
 django-environ>=0.4.5
 HAWK_INCOMING_SECRET_KEY
 ^1.4.0
-
-
+edit_sso_id"
+Edit SSO ID
+Team Editors
+b"Add
