@@ -14,8 +14,4 @@ class Migration(migrations.Migration):
             name='person',
             options={'permissions': (('edit_profile', 'Edit profile'), ('delete_profile', 'Delete profile'), ('edit_sso_id', 'Edit SSO ID'))},
         ),
-        migrations.AlterModelOptions(
-            name='team',
-            options={'permissions': (('add_subteam', 'Add sub-team'), ('edit_team_profile', 'Edit team profile'), ('delete_team_profile', 'Delete team profile'))},
-        ),
     ]

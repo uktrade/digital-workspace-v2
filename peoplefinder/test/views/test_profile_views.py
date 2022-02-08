@@ -61,7 +61,7 @@ def check_visible_button(state, test_url, button_title, codename):
     buttons = soup.find_all('a')
     assert len(buttons) == button_len + 1
 
-def check_view_permission(state, view_url, codename):
+def check_permission(state, view_url, codename):
 
     response = state.client.get(view_url)
     assert response.status_code == 403
@@ -76,7 +76,6 @@ def check_view_permission(state, view_url, codename):
     assert response.status_code == 200
 
 
-
 def test_edit_profile_permission(state):
     edit_profile_url = reverse(
         "profile-edit",
@@ -84,18 +83,7 @@ def test_edit_profile_permission(state):
             'profile_slug': state.person.slug,
         }
     )
-
-    response = state.client.get(edit_profile_url)
-    assert response.status_code == 403
-
-    edit_profile_perm = Permission.objects.get(
-        codename='edit_profile'
-    )
-    state.user.user_permissions.add(edit_profile_perm)
-    state.user.save()
-
-    response = state.client.get(edit_profile_url)
-    assert response.status_code == 200
+    check_permission(state, edit_profile_url, 'edit_profile')
 
 
 def test_edit_team_permission(state):
@@ -105,18 +93,27 @@ def test_edit_team_permission(state):
             'slug': state.team.slug,
         }
     )
+    check_permission(state, edit_url, 'change_team')
 
-    response = state.client.get(edit_url)
-    assert response.status_code == 403
 
-    edit_team_perm = Permission.objects.get(
-        codename='change_team'
+def test_add_sub_team_permission(state):
+    add_url = reverse(
+        "team-add-new-subteam",
+        kwargs={
+            'slug': state.team.slug,
+        }
     )
-    state.user.user_permissions.add(edit_team_perm)
-    state.user.save()
+    check_permission(state, add_url, 'add_team')
 
-    response = state.client.get(edit_url)
-    assert response.status_code == 200
+
+def test_delete_team_permission(state):
+    add_url = reverse(
+        "team-delete",
+        kwargs={
+            'slug': state.team.slug,
+        }
+    )
+    check_permission(state, add_url, 'delete_team')
 
 
 def test_edit_profile_visible_permission(state):
