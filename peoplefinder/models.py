@@ -436,12 +436,6 @@ You can update this description, by [updating your team information](https://wor
 
 
 class Team(models.Model):
-    class Meta:
-        permissions = (
-            ("add_subteam", "Add sub-team"),
-            ("edit_team_profile", "Edit team profile"),
-            ("delete_team_profile", "Delete team profile"),
-        )
 
     people = models.ManyToManyField(
         "Person", through="TeamMember", related_name="teams"

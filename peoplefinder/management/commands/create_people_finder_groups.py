@@ -9,9 +9,9 @@ PERSON_EDITOR_PERMISSION_TYPES = [
 ]
 
 TEAM_EDITOR_PERMISSION_TYPES = [
-    "add_subteam",
-    "edit_team_profile",
-    "delete_team_profile",
+    "add_team",
+    "change_team",
+    "delete_team",
 ]
 
 
