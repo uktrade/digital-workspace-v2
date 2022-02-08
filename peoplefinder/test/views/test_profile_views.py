@@ -99,36 +99,6 @@ def check_view_permission(state, view_url, codename):
     response = state.client.get(view_url)
     assert response.status_code == 200
 
-
-
-def test_edit_profile_permission(state):
-    edit_profile_url = reverse(
-        "profile-edit",
-        kwargs={
-            'profile_slug': state.person.slug,
-        }
-    )
-    response = state.client.get(edit_profile_url)
-    assert response.status_code == 403
-    call_command("create_people_finder_groups")
-    edit_profile_group = Group.objects.get(
-        name='Profile Editors'
-    )
-    state.user.groups.add(edit_profile_group)
-
-    response = state.client.get(edit_profile_url)
-    assert response.status_code == 403
-
-    edit_profile_perm = Permission.objects.get(
-        codename='edit_profile'
-    )
-    state.user.user_permissions.add(edit_profile_perm)
-    state.user.save()
-
-    response = state.client.get(edit_profile_url)
-    assert response.status_code == 200
-
-
 def test_edit_profile_permission(state):
     edit_profile_url = reverse(
         "profile-edit",
@@ -137,7 +107,6 @@ def test_edit_profile_permission(state):
         }
     )
     check_permission(state, edit_profile_url, 'edit_profile')
-
 
 def test_edit_team_permission(state):
     edit_url = reverse(
@@ -167,66 +136,6 @@ def test_delete_team_permission(state):
         }
     )
     check_permission(state, add_url, 'delete_team')
-
-
-def test_edit_profile_visible_permission(state):
-    view_url = reverse(
-        "profile-view",
-        kwargs={
-            'profile_slug': state.person.slug,
-        }
-    )
-    check_visible_button(state, view_url, b"Edit profile", "edit_profile")
-
-
-def test_edit_team_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            'slug': state.team.slug,
-        }
-    )
-    check_visible_button(state, view_url, b"Edit team", "change_team")
-
-
-def test_delete_team_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            'slug': state.team.slug,
-        }
-    )
-    check_visible_button(state, view_url, b"Delete team", "delete_team")
-
-
-def test_create_sub_team_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            'slug': state.team.slug,
-        }
-    )
-    check_visible_button(state, view_url, b"Add new sub-team", "add_team")
-
-def test_edit_team_permission(state):
-    edit_url = reverse(
-        "team-edit",
-        kwargs={
-            'slug': state.team.slug,
-        }
-    )
-
-    response = state.client.get(edit_url)
-    assert response.status_code == 403
-
-    edit_team_perm = Permission.objects.get(
-        codename='change_team'
-    )
-    state.user.user_permissions.add(edit_team_perm)
-    state.user.save()
-
-    response = state.client.get(edit_url)
-    assert response.status_code == 200
 
 
 def test_edit_profile_visible_permission(state):
