@@ -5,7 +5,6 @@ from django.core.management.base import BaseCommand
 PERSON_EDITOR_PERMISSION_TYPES = [
     "edit_profile",
     "delete_profile",
-    "edit_sso_id",
 ]
 
 TEAM_EDITOR_PERMISSION_TYPES = [

@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='person',
-            options={'permissions': (('edit_profile', 'Edit profile'), ('delete_profile', 'Delete profile'), ('edit_sso_id', 'Edit SSO ID'))},
+            options={'permissions': (('edit_profile', 'Edit profile'), ('delete_profile', 'Delete profile'))},
         ),
     ]

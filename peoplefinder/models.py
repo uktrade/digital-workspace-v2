@@ -205,7 +205,6 @@ class Person(models.Model):
         permissions = (
             ("edit_profile", "Edit profile"),
             ("delete_profile", "Delete profile"),
-            ("edit_sso_id", "Edit SSO ID"),
         )
 
     user = models.OneToOneField(

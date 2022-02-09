@@ -446,7 +446,6 @@ el = e.target
 e.preventDefault
 currentTeamId(team_id
 s3chunkuploader.fields
-edit_sso_id"
 Edit SSO ID
 Team Editors
 b"Add
