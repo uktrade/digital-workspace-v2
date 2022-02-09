@@ -45,6 +45,14 @@ You can update any profile on Digital Workspace. Find out more at: https://works
 """
 
 
+NOTIFY_ABOUT_DELETION_LOG_MESSAGE = """Hello {profile_name},
+
+{editor_name} has deleted your profile on Digital Workspace.
+
+You can update any profile on Digital Workspace. Find out more at: https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/using-people-finder/
+"""
+
+
 class PersonService:
     def create_user_profile(self, user: User) -> Person:
         """Create a profile for the given user if there isn't one.
@@ -139,7 +147,16 @@ class PersonService:
         if request:
             self.notify_about_changes(request, person)
 
-    def profile_deleted(self, person: Person, deleted_by: User) -> None:
+    def profile_deletion_initiated(self, request: Optional[HttpRequest], person: Person, initiated_by: User) -> None:
+        """
+        Args:
+            person: The person behind the profile.
+            initiated_by: The user which initiated the deletion.
+        """
+        
+        self.notify_about_deletion(request, person)
+
+    def profile_deleted(self, request: Optional[HttpRequest], person: Person, deleted_by: User) -> None:
         """A method to be called after a profile has been deleted.
 
         Please don't forget to call method this unless you need to bypass it.
@@ -151,7 +168,13 @@ class PersonService:
             person: The person behind the profile.
             deleted_by: The user which deleted the profile.
         """
-        raise NotImplementedError
+        person.is_active = False
+        person.save()
+
+        AuditLogService().log(AuditLog.Action.DELETE, deleted_by, person)
+        
+        if request:
+            self.notify_about_deletion(request, person)
 
     def notify_about_changes(self, request: HttpRequest, person: Person) -> None:
         editor = request.user.profile
@@ -179,6 +202,27 @@ class PersonService:
             context,
         )
 
+    def notify_about_deletion(self, request: HttpRequest, person: Person, deleted_by: User) -> None:
+        if deleted_by == person:
+            return None
+
+        context = {
+            "profile_name": person.full_name,
+            "editor_name": deleted_by.full_name,
+        }
+
+        if settings.APP_ENV in ("local", "test"):
+            logger.info(NOTIFY_ABOUT_DELETION_LOG_MESSAGE.format(**context))
+
+            return
+
+        notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
+        notification_client.send_email_notification(
+            settings.PROFILE_DELETION_REQUEST_EMAIL,
+            settings.PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID,
+            context,
+        )
+
 
 class PersonAuditLogSerializer(AuditLogSerializer):
     model = Person
@@ -187,7 +231,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 36, (
+    assert len(Person._meta.get_fields()) == 37, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )

@@ -5,9 +5,10 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
+from django.urls.utils import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 
 from peoplefinder.forms.profile import ProfileForm, ProfileLeavingDitForm
 from peoplefinder.forms.role import RoleForm
@@ -157,3 +158,19 @@ class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
 
     def get_success_message(self, cleaned_data):
         return f"A deletion request for {self.profile} has been sent to support"
+
+
+@method_decorator(transaction.atomic, name="post")
+class ProfileDeleteView(DeleteView, PeoplefinderView):
+    model = Person
+    success_url = reverse_lazy("people-home")
+
+    def delete(self, request, *args, **kwargs):
+
+        person = self.get_object()
+
+        PersonService().profile_deleted(
+            self.request, person, self.request.user
+        )
+
+        # TODO: What do we need to return at this point? (success_url)

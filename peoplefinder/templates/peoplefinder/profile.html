@@ -59,7 +59,12 @@
             <p class="govuk-body-m" data-test-role><strong>{{ role.job_title }}</strong> in <a class="govuk-link" href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a></p>
         {% endfor %}
         
-        <p><a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a></p>
+        <p>
+            <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
+            {% if perms.person.delete_profile %}
+                <a onclick="javascript:return confirm('Are you sure? This cannot be undone.')" class="govuk-button govuk-button--warning" href="{% url 'profile-delete' profile.slug %}">Delete profile</a>
+            {% endif %}
+        </p>
 
         {% if request.user == profile.user %}
             <p class="govuk-body-s">Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DIT</a>.</p>
