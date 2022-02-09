@@ -61,8 +61,8 @@ def check_visible_button(state, test_url, button_title, codename):
     buttons = soup.find_all('a')
     assert len(buttons) == button_len + 1
 
-def check_permission(state, view_url, codename):
 
+def check_permission(state, view_url, codename):
     response = state.client.get(view_url)
     assert response.status_code == 403
 
