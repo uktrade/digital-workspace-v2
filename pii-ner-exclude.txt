@@ -478,3 +478,5 @@ Edit SSO ID
 Team Editors
 b"Add
 Delete
+Profile Editors"
+
