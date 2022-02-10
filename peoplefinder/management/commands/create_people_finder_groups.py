@@ -2,6 +2,10 @@ from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
 
 
+PROFILE_EDITOR_PERMISSION_TYPES = [
+    "edit_profile",
+]
+
 PERSON_EDITOR_PERMISSION_TYPES = [
     "edit_profile",
     "delete_profile",
@@ -18,6 +22,16 @@ class Command(BaseCommand):
     help = "Create page permissions"
 
     def handle(self, *args, **options):
+        user_editors, _ = Group.objects.get_or_create(
+            name="Profile Editors",
+        )
+
+        user_editor_permissions = Permission.objects.filter(
+            codename__in=PROFILE_EDITOR_PERMISSION_TYPES
+        )
+        user_editors.permissions.add(*user_editor_permissions)
+        user_editors.save()
+
         person_editors, _ = Group.objects.get_or_create(
             name="Person Editors",
         )
