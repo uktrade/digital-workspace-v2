@@ -62,7 +62,7 @@
         <p>
             <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
             {% if perms.person.delete_profile %}
-                <a onclick="javascript:return confirm('Are you sure? This cannot be undone.')" class="govuk-button govuk-button--warning" href="{% url 'profile-delete' profile.slug %}">Delete profile</a>
+                <a onclick="javascript:return confirm('Are you sure? This cannot be undone.')" class="govuk-button govuk-button--warning" id="delete-profile" href="{% url 'profile-delete' profile.slug %}">Delete profile</a>
             {% endif %}
         </p>
 

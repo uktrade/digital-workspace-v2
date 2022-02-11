@@ -218,8 +218,7 @@ class PersonService:
 
         notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
         notification_client.send_email_notification(
-            settings.PROFILE_DELETION_REQUEST_EMAIL,
-            settings.PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID,
+            settings.PROFILE_DELETED_EMAIL_TEMPLATE_ID,
             context,
         )
 

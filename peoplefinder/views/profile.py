@@ -3,9 +3,9 @@ import os
 
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, reverse
-from django.urls.utils import reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
@@ -164,6 +164,7 @@ class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
 class ProfileDeleteView(DeleteView, PeoplefinderView):
     model = Person
     success_url = reverse_lazy("people-home")
+    slug_url_kwarg = "profile_slug"
 
     def delete(self, request, *args, **kwargs):
 
@@ -173,4 +174,4 @@ class ProfileDeleteView(DeleteView, PeoplefinderView):
             self.request, person, self.request.user
         )
 
-        # TODO: What do we need to return at this point? (success_url)
+        return HttpResponseRedirect(self.success_url)
