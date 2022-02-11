@@ -464,5 +464,7 @@ Server-Authorization'
 Content-Type'
 wagtail>=2.15.2
 django-environ>=0.4.5
+HAWK_INCOMING_SECRET_KEY
+^1.4.0
 
 
