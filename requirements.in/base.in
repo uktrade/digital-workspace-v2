@@ -24,7 +24,7 @@ requests>=2.25.1
 boto3>=1.17.88
 htmllaundry
 mammoth
-mohawk
+https://github.com/uktrade/django-hawk/archive/master.tar.gz
 
 # DIT dependencies
 django-staff-sso-client>=3.1.0
