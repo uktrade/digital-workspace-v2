@@ -1,6 +1,3 @@
-from mohawk import Receiver
-from mohawk.exc import HawkFail
-
 import requests
 from mohawk import Sender
 
@@ -13,12 +10,12 @@ content = ""
 
 sender = Sender(
     {
-        'id': ID,
-        'key': SECRET,
-        'algorithm': 'sha256'
+        "id": ID,
+        "key": SECRET,
+        "algorithm": "sha256",
     },
     URL,
-    'GET',
+    "GET",
     content=content,
     content_type=content_type,
 )
@@ -29,8 +26,8 @@ response = requests.get(
     URL,
     data=content,
     headers={
-        'Authorization': sender.request_header,
-        'Content-Type': content_type
+        "Authorization": sender.request_header,
+        "Content-Type": content_type
     }
 )
 
