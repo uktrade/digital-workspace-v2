@@ -34,6 +34,7 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # Feature flag to enable the new peoplefinder v2
 # TODO: Remove feature flag once we have migrated to v2 in prod
 PEOPLEFINDER_V2 = env.bool("PEOPLEFINDER_V2", False)
+
 PEOPLEFINDER_PROFILE_API_PRIVATE_KEY = b64decode(  # /PS-IGNORE
     env("PEOPLEFINDER_PROFILE_API_PRIVATE_KEY"), validate=True
 )

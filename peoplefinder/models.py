@@ -209,6 +209,10 @@ class Person(models.Model):
                 check=~Q(pk=F("manager")), name="manager_cannot_be_self"
             ),
         ]
+        permissions = (
+            ("edit_profile", "Edit profile"),
+            ("delete_profile", "Delete profile"),
+        )
 
     user = models.OneToOneField(
         "user.User", models.CASCADE, primary_key=True, related_name="profile"
@@ -439,6 +443,7 @@ You can update this description, by [updating your team information](https://wor
 
 
 class Team(models.Model):
+
     people = models.ManyToManyField(
         "Person", through="TeamMember", related_name="teams"
     )

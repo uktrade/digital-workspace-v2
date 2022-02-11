@@ -1,6 +1,7 @@
 import io
 import os
 
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -63,13 +64,19 @@ class ProfileDetailView(DetailView, PeoplefinderView):
 
 
 @method_decorator(transaction.atomic, name="post")
-class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
+class ProfileEditView(
+    PermissionRequiredMixin,
+    SuccessMessageMixin,
+    UpdateView,
+    PeoplefinderView,
+):
     model = Person
     context_object_name = "profile"
     form_class = ProfileForm
     template_name = "peoplefinder/profile-edit.html"
     slug_url_kwarg = "profile_slug"
     success_message = "Your profile has been updated"
+    permission_required = "peoplefinder.edit_profile"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -446,3 +446,9 @@ el = e.target
 e.preventDefault
 currentTeamId(team_id
 s3chunkuploader.fields
+Edit SSO ID
+Team Editors
+b"Add
+Delete
+Profile Editors"
+
