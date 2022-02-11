@@ -17,6 +17,7 @@ django-extensions
 django_redis
 django-settings-export
 django-simple-history==3.0.0
+djangorestframework==3.13.1
 
 # Other libraries
 pyjwt[crypto]==2.0.1
@@ -24,13 +25,13 @@ requests>=2.25.1
 boto3>=1.17.88
 htmllaundry
 mammoth
-https://github.com/uktrade/django-hawk/archive/master.tar.gz
 
 # DIT dependencies
 django-staff-sso-client>=3.1.0
 django_log_formatter_ecs~=0.0.5
 django-chunk-upload-handlers==0.0.10
 django-audit-log-middleware==0.0.4
+https://github.com/uktrade/django-hawk/archive/master.tar.gz
 
 # Operational dependencies
 waitress>=2.0.0

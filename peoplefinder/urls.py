@@ -1,5 +1,7 @@
 from django.urls import include, path
 
+from rest_framework import serializers, viewsets, routers
+
 from peoplefinder.views.home import PeopleHome, TeamHome
 from peoplefinder.views.manager import (
     ManagerCancel,
@@ -23,6 +25,7 @@ from peoplefinder.views.team import (
     TeamPeopleView,
     TeamTreeView,
 )
+from peoplefinder.views.activity_stream import ActivityStreamViewSet
 
 
 people_urlpatterns = [
@@ -96,6 +99,10 @@ teams_urlpatterns = [
     ),
 ]
 
+router = routers.DefaultRouter()
+router.register("activity-stream", ActivityStreamViewSet, basename="activity-stream-people")
+
 api_urlpatterns = [
+    path('', include(router.urls)),
     path("team-select", TeamSelectView.as_view(), name="team-select"),
 ]

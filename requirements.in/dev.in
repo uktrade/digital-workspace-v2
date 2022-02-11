@@ -2,7 +2,7 @@
 -r ../requirements/base.txt
 
 # Development tools
-pip-tools>=6.4.0
+pip-tools>=6.5.1
 
 # Linting & security checking
 flake8>=3.8.3

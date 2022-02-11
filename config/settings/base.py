@@ -122,6 +122,7 @@ THIRD_PARTY_APPS = [
     "simple_history",
     "django_chunk_upload_handlers",
     "django_audit_log_middleware",
+    "rest_framework",
 ]
 
 WAGTAIL_APPS = [
@@ -482,6 +483,7 @@ LOGGING = {
 
 AUTHBROKER_ANONYMOUS_PATHS = [
     "/pingdom/ping.xml",
+    "/peoplefinder/api/activity-stream/",
 ]
 
 # Parser settings (remove after import)
@@ -531,3 +533,9 @@ SIMPLE_HISTORY_REVERT_DISABLED = True
 
 # Set a custom user edit form in Wagtail admin
 WAGTAIL_USER_EDIT_FORM = "core.forms.WagtailUserEditForm"
+
+# Hawk authentication
+DJANGO_HAWK = {
+    "HAWK_INCOMING_ACCESS_KEY": env("HAWK_INCOMING_ACCESS_KEY"),
+    "HAWK_INCOMING_SECRET_KEY": env("HAWK_INCOMING_SECRET_KEY"),
+}
