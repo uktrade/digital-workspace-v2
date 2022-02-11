@@ -24,6 +24,7 @@ requests>=2.25.1
 boto3>=1.17.88
 htmllaundry
 mammoth
+mohawk
 
 # DIT dependencies
 django-staff-sso-client>=3.1.0
