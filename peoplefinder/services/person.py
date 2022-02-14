@@ -154,7 +154,7 @@ class PersonService:
             initiated_by: The user which initiated the deletion.
         """
         
-        self.notify_about_deletion(request, person)
+        self.notify_about_deletion(person, initiated_by)
 
     def profile_deleted(self, request: Optional[HttpRequest], person: Person, deleted_by: User) -> None:
         """A method to be called after a profile has been deleted.
@@ -174,7 +174,7 @@ class PersonService:
         AuditLogService().log(AuditLog.Action.DELETE, deleted_by, person)
         
         if request:
-            self.notify_about_deletion(request, person)
+            self.notify_about_deletion(person, deleted_by)
 
     def notify_about_changes(self, request: HttpRequest, person: Person) -> None:
         editor = request.user.profile
@@ -202,13 +202,13 @@ class PersonService:
             context,
         )
 
-    def notify_about_deletion(self, request: HttpRequest, person: Person, deleted_by: User) -> None:
+    def notify_about_deletion(self, person: Person, deleted_by: User) -> None:
         if deleted_by == person:
             return None
 
         context = {
             "profile_name": person.full_name,
-            "editor_name": deleted_by.full_name,
+            "editor_name": deleted_by.get_full_name(),
         }
 
         if settings.APP_ENV in ("local", "test"):

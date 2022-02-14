@@ -41,30 +41,57 @@ def state(db):
     return State(client=client, person=person,  team=team, user=user)
 
 
-def check_button_is_visible(content, button_title) -> bool:
-    breakpoint()
+def button_is_visible(content, id) -> bool:
     soup = BeautifulSoup(content, features="html.parser")
 
-    # Find all anchors with GDS 'buttons'
-    buttons = soup.find_all("a", class_="govuk-button")
-
-    assert button_title in str(buttons)
+    # Find delete 'button'
+    return bool(soup.find("input", {"id": id}))
 
 
-def test_delete_profile_permission(state):
-    view_url = reverse(
+def test_delete_profile_with_permission(state):
+    profile_url = reverse(
         "profile-view",
         kwargs={
             'profile_slug': state.person.slug,
         }
     )
 
-    edit_team_perm = Permission.objects.get(
+    delete_profile_perm = Permission.objects.get(
         codename="delete_profile"
     )
-    state.user.user_permissions.add(edit_team_perm)
+    state.user.user_permissions.add(delete_profile_perm)
 
-    response = state.client.get(view_url)
+    response = state.client.get(profile_url)
     assert response.status_code == 200
 
-    check_button_is_visible(response.content, "Delete profile")
+    assert button_is_visible(response.content, "delete-profile")
+
+
+def test_delete_profile_no_permission(state):
+    profile_url = reverse(
+        "profile-view",
+        kwargs={
+            'profile_slug': state.person.slug,
+        }
+    )
+
+    response = state.client.get(profile_url)
+    assert response.status_code == 200
+
+    assert not button_is_visible(response.content, "delete-profile")
+
+
+def test_delete_profile_view(state):
+    profile_url = reverse(
+        "profile-delete",
+        kwargs={
+            'profile_slug': state.person.slug,
+        }
+    )
+
+    assert Person.objects.filter(pk=state.person.pk).exists()
+
+    response = state.client.post(profile_url)
+    assert response.status_code == 302
+
+    assert not Person.objects.filter(pk=state.person.pk).exists()

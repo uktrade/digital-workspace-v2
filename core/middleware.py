@@ -33,9 +33,8 @@ class GetPeoplefinderProfileMiddleware:
 
         if request.user.is_authenticated:
             if use_peoplefinder_v2:
-                profile = Person.objects.with_profile_completion().get(
-                    pk=request.user.pk
-                )
+                profile = Person.objects.filter(pk=request.user.pk)
+                profile = profile.with_profile_completion().first()
                 legacy_profile = peoplefinder.get_user_profile(
                     request.user.legacy_sso_user_id
                 )

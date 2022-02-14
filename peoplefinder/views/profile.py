@@ -171,8 +171,11 @@ class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
 class ProfileDeleteView(DeleteView, PeoplefinderView):
     model = Person
     success_url = reverse_lazy("people-home")
-    slug_url_kwarg = "profile_slug"
-    template_name = None
+    # slug_url_kwarg = "profile_slug"
+    # template_name = None
+
+    def get_object(self, queryset=None):
+        return Person.objects.get(slug=self.kwargs["profile_slug"])
 
     def delete(self, request, *args, **kwargs):
 
