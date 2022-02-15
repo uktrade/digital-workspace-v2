@@ -237,8 +237,8 @@ def test_self_profile_log_visible_permission(state):
 
 def test_profile_log_visible_permission(state):
     other_user = UserFactory(
-        username="aa",
-        legacy_sso_user_id = "aa"
+        username="other_user",
+        legacy_sso_user_id = "other_user"
     )
     other_user.is_using_peoplefinder_v2 = True
     other_user.save()
