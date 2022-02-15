@@ -85,7 +85,7 @@ def test_edit_profile_group(state):
     )
     response = state.client.get(edit_profile_url)
     assert response.status_code == 403
-    # call_command("create_people_finder_groups")
+    call_command("create_people_finder_groups")
     edit_profile_group = Group.objects.get(
         name='Profile Editors'
     )
