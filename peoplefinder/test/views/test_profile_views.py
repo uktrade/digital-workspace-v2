@@ -1,8 +1,7 @@
 import pytest
-
 from bs4 import BeautifulSoup
-
 from dataclasses import dataclass
+
 from django.contrib.auth.models import (
     Group,
     Permission,
@@ -77,6 +76,37 @@ def check_permission(state, view_url, codename):
 
 
 def test_edit_profile_group(state):
+    edit_profile_url = reverse(
+        "profile-edit",
+        kwargs={
+            'profile_slug': state.person.slug,
+        }
+    )
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 403
+    call_command("create_people_finder_groups")
+    edit_profile_group = Group.objects.get(
+        name='Profile Editors'
+    )
+    state.user.groups.add(edit_profile_group)
+
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 200
+
+
+def check_view_permission(state, view_url, codename):
+    response = state.client.get(view_url)
+    assert response.status_code == 403
+
+    edit_profile_perm = Permission.objects.get(
+        codename=codename
+    )
+    state.user.user_permissions.add(edit_profile_perm)
+    state.user.save()
+
+    response = state.client.get(view_url)
+    assert response.status_code == 200
+
     edit_profile_url = reverse(
         "profile-edit",
         kwargs={
@@ -173,3 +203,82 @@ def test_create_sub_team_visible_permission(state):
         }
     )
     check_visible_button(state, view_url, b"Add new sub-team", "add_team")
+
+
+def test_team_log_visible_permission(state):
+    view_url = reverse(
+        "team-view",
+        kwargs={
+            'slug': state.team.slug,
+        }
+    )
+    response = state.client.get(view_url)
+    assert response.status_code == 200
+    title = b"Audit log"
+    assert title not in response.content
+    soup = BeautifulSoup(response.content, features="html.parser")
+
+    log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
+    log_detail_len = len(log_detail)
+
+    view_log_perm = Permission.objects.get(
+        codename="view_auditlog_team"
+    )
+    state.user.user_permissions.add(view_log_perm)
+
+    response = state.client.get(view_url)
+    assert response.status_code == 200
+    assert title in response.content
+    soup = BeautifulSoup(response.content, features="html.parser")
+    log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
+    assert len(log_detail) == log_detail_len + 1
+
+
+def test_self_profile_log_visible_permission(state):
+    view_url = reverse(
+        "profile-view",
+        kwargs={
+            'profile_slug': state.person.slug,
+        }
+    )
+    response = state.client.get(view_url)
+    assert response.status_code == 200
+    title = b"Audit log"
+    assert title in response.content
+
+
+def test_profile_log_visible_permission(state):
+    other_user = UserFactory(
+        username="other_user",
+        legacy_sso_user_id = "other_user"
+    )
+    other_user.is_using_peoplefinder_v2 = True
+    other_user.save()
+    other_person = PersonService().create_user_profile(other_user)
+
+    view_url = reverse(
+        "profile-view",
+        kwargs={
+            'profile_slug': other_person.slug,
+        }
+    )
+    response = state.client.get(view_url)
+    assert response.status_code == 200
+    title = b"Audit log"
+    assert title not in response.content
+    soup = BeautifulSoup(response.content, features="html.parser")
+
+    log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
+    log_detail_len = len(log_detail)
+
+    view_log_perm = Permission.objects.get(
+        codename="view_auditlog"
+    )
+    state.user.user_permissions.add(view_log_perm)
+
+    response = state.client.get(view_url)
+    assert response.status_code == 200
+    assert title in response.content
+    soup = BeautifulSoup(response.content, features="html.parser")
+    log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
+    assert len(log_detail) == log_detail_len + 1

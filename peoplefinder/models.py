@@ -435,7 +435,6 @@ You can update this description, by [updating your team information](https://wor
 
 
 class Team(models.Model):
-
     people = models.ManyToManyField(
         "Person", through="TeamMember", related_name="teams"
     )
@@ -523,6 +522,8 @@ class AuditLog(models.Model):
     class Meta:
         ordering = ["timestamp"]
         get_latest_by = "timestamp"
+
+        permissions = (("view_auditlog_team", "View Team Audit Log"),)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
