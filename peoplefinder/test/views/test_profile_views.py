@@ -39,6 +39,7 @@ def state(db):
     client.force_login(user)
     return State(client=client, person=person,  team=team, user=user)
 
+
 def check_visible_button(state, test_url, button_title, codename):
     response = state.client.get(test_url)
     assert response.status_code == 200
@@ -59,6 +60,7 @@ def check_visible_button(state, test_url, button_title, codename):
     buttons = soup.find_all('a')
     assert len(buttons) == button_len + 1
 
+
 def check_permission(state, view_url, codename):
     response = state.client.get(view_url)
     assert response.status_code == 403
@@ -72,17 +74,25 @@ def check_permission(state, view_url, codename):
     response = state.client.get(view_url)
     assert response.status_code == 200
 
+
 def test_edit_profile_group(state):
-    team = Team.objects.all().first()
-    if team == None:
-        team = TeamFactory()
-    user = UserFactory()
-    user.is_using_peoplefinder_v2 = True
-    user.save()
-    person = PersonService().create_user_profile(user)
-    client = Client()
-    client.force_login(user)
-    return State(client=client, person=person,  team=team, user=user)
+    edit_profile_url = reverse(
+        "profile-edit",
+        kwargs={
+            'profile_slug': state.person.slug,
+        }
+    )
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 403
+    call_command("create_people_finder_groups")
+    edit_profile_group = Group.objects.get(
+        name='Profile Editors'
+    )
+    state.user.groups.add(edit_profile_group)
+
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 200
+
 
 def check_view_permission(state, view_url, codename):
     response = state.client.get(view_url)
@@ -114,6 +124,7 @@ def check_view_permission(state, view_url, codename):
     response = state.client.get(edit_profile_url)
     assert response.status_code == 200
 
+
 def test_edit_profile_permission(state):
     edit_profile_url = reverse(
         "profile-edit",
@@ -122,6 +133,7 @@ def test_edit_profile_permission(state):
         }
     )
     check_permission(state, edit_profile_url, 'edit_profile')
+
 
 def test_edit_team_permission(state):
     edit_url = reverse(
