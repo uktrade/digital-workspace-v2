@@ -1,6 +1,6 @@
 import uuid
 
-from django.conf import settings
+from django.core.management import call_command
 from django.test import TestCase
 
 from user.backends import CustomAuthbrokerBackend
@@ -10,6 +10,8 @@ from user.test.factories import UserFactory
 
 class TestSSOUserProfile(TestCase):
     def setUp(self):
+        call_command("create_people_finder_groups")
+
         self.sso_profile = {
             "email_user_id": "sso_test-1111111@example.com",
             "email": "sso.test@example.com",

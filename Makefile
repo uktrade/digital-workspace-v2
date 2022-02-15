@@ -95,8 +95,11 @@ index:
 listlinks:
 	docker-compose run --rm wagtail python manage.py list_links
 
-groups:
+wagtail-groups:
 	docker-compose run --rm wagtail python manage.py create_groups
+
+pf-groups:
+	docker-compose run --rm wagtail python manage.py create_people_finder_groups
 
 create_section_homepages:
 	docker-compose run --rm wagtail python manage.py create_section_homepages
@@ -106,6 +109,7 @@ first-use:
 	make migrate
 	make menus
 	make create_section_homepages
-	make groups
+	make wagtail-groups
+	make pf-groups
 	make superuser
 	docker-compose up

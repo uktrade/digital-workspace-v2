@@ -58,8 +58,10 @@
         {% for role in roles %}
             <p class="govuk-body-m" data-test-role><strong>{{ role.job_title }}</strong> in <a class="govuk-link" href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a></p>
         {% endfor %}
-        
-        <p><a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a></p>
+
+        {% if perms.peoplefinder.edit_profile %}
+            <p><a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a></p>
+        {% endif %}
 
         {% if request.user == profile.user %}
             <p class="govuk-body-s">Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DIT</a>.</p>
