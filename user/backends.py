@@ -5,6 +5,7 @@ from authbroker_client.utils import (
     has_valid_token,
 )
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 from peoplefinder.services.person import PersonService
 
@@ -49,9 +50,12 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
                 last_name=profile["last_name"],
                 legacy_sso_user_id=profile["user_id"],
             )
-
         user.set_unusable_password()
         user.save()
+
+        # Add group with edit profile permission
+        edit_profile_group = Group.objects.get(name="Profile Editors")
+        user.groups.add(edit_profile_group)
 
         PersonService().create_user_profile(user)
 
