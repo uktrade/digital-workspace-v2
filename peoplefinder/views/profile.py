@@ -66,7 +66,6 @@ class ProfileDetailView(DetailView, PeoplefinderView):
 @method_decorator(transaction.atomic, name="post")
 class ProfileEditView(
     PermissionRequiredMixin,
-    UserPassesTestMixin,
     SuccessMessageMixin,
     UpdateView,
     PeoplefinderView,
@@ -78,14 +77,6 @@ class ProfileEditView(
     slug_url_kwarg = "profile_slug"
     success_message = "Your profile has been updated"
     permission_required = "peoplefinder.edit_profile"
-
-    def test_func(self):
-        if self.request.user.is_superuser or self.request.user.has_perm(
-            "peoplefinder.edit_profile"
-        ):
-            return True
-
-        return False
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

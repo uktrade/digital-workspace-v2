@@ -446,13 +446,6 @@ el = e.target
 e.preventDefault
 currentTeamId(team_id
 s3chunkuploader.fields
-<<<<<<< HEAD
-<<<<<<< HEAD
-Edit SSO ID
-Team Editors
-b"Add
-Delete
-Profile Editors"
 Raises
 HawkFail
 HAWK_INCOMING_ACCESS_KEY
