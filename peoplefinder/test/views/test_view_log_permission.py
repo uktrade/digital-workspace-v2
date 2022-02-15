@@ -1,26 +1,14 @@
-# govuk-details__summary-text
-
-import pytest
-
 from bs4 import BeautifulSoup
 
-from dataclasses import dataclass
 from django.contrib.auth.models import (
-    Group,
     Permission,
 )
-from django.core.management import call_command
-from django.test.client import Client
 from django.urls import reverse
 
-from peoplefinder.models import Person, Team
 from peoplefinder.services.person import PersonService
-from peoplefinder.test.factories import TeamFactory
 
-from user.models import User
 from user.test.factories import UserFactory
 
-from peoplefinder.test.views.test_profile_views import state
 
 def test_team_log_visible_permission(state):
     view_url = reverse(
