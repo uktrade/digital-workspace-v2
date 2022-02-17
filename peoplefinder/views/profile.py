@@ -8,6 +8,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 
@@ -170,7 +171,7 @@ class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
 @method_decorator(transaction.atomic, name="post")
 class ProfileDeleteView(DeleteView, PeoplefinderView):
     model = Person
-    success_url = reverse_lazy("people-home")
+    success_url = reverse_lazy("delete-confirmation")
     # slug_url_kwarg = "profile_slug"
     # template_name = None
 
@@ -185,4 +186,23 @@ class ProfileDeleteView(DeleteView, PeoplefinderView):
             self.request, person, self.request.user
         )
 
+        session["profile_name"] = person.full_name
+
         return HttpResponseRedirect(self.success_url)
+
+
+class DeleteConfirmationView(TemplateView):
+    template_name = 'delete-confirmation.html'
+
+    def dispatch(request, *args, **kwargs):
+        profile_name = request.session.get("profile_name", None)
+
+        if not profile_name:
+            redirect("people-home")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["profile_name"] = self.request.session.get("profile_name", None)
+
+        return context

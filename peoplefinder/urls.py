@@ -13,6 +13,7 @@ from peoplefinder.views.profile import (
     ProfileLeavingDitView,
     ProfileLegacyView,
     ProfileDeleteView,
+    DeleteConfirmationView,
 )
 from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.team import (
@@ -79,7 +80,13 @@ people_urlpatterns = [
     path(
         "<uuid:profile_slug>/delete/", 
         ProfileDeleteView.as_view(), 
-        name="profile-delete"),
+        name="profile-delete"
+    ),
+    path(
+        "delete-confirmation",
+        DeleteConfirmationView.as_view(),
+        name="delete-confirmation"
+    ),
 ]
 
 teams_urlpatterns = [
