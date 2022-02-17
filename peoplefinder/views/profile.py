@@ -181,12 +181,11 @@ class ProfileDeleteView(DeleteView, PeoplefinderView):
     def delete(self, request, *args, **kwargs):
 
         person = self.get_object()
+        self.request.session["profile_name"] = person.full_name
 
         PersonService().profile_deleted(
             self.request, person, self.request.user
         )
-
-        session["profile_name"] = person.full_name
 
         return HttpResponseRedirect(self.success_url)
 
@@ -194,8 +193,8 @@ class ProfileDeleteView(DeleteView, PeoplefinderView):
 class DeleteConfirmationView(TemplateView):
     template_name = 'delete-confirmation.html'
 
-    def dispatch(request, *args, **kwargs):
-        profile_name = request.session.get("profile_name", None)
+    def dispatch(self, request, *args, **kwargs):
+        profile_name = self.request.session.get("profile_name", None)
 
         if not profile_name:
             redirect("people-home")

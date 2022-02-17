@@ -54,8 +54,8 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
         user.save()
 
         # Add group with edit profile permission
-        edit_profile_group = Group.objects.get(name="Profile Editors")
-        user.groups.add(edit_profile_group)
+        # edit_profile_group = Group.objects.get(name="Profile Editors")
+        # user.groups.add(edit_profile_group)
 
         PersonService().create_user_profile(user)
 

@@ -8,12 +8,12 @@ from peoplefinder.views.manager import (
     ManagerUpdate,
 )
 from peoplefinder.views.profile import (
+    DeleteConfirmationView,
     ProfileDetailView,
     ProfileEditView,
     ProfileLeavingDitView,
     ProfileLegacyView,
     ProfileDeleteView,
-    DeleteConfirmationView,
 )
 from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.team import (
@@ -83,7 +83,7 @@ people_urlpatterns = [
         name="profile-delete"
     ),
     path(
-        "delete-confirmation",
+        "delete-confirmation/",
         DeleteConfirmationView.as_view(),
         name="delete-confirmation"
     ),
