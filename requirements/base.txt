@@ -64,7 +64,7 @@ defusedxml==0.7.1
     #   atoma
 deprecated==1.2.13
     # via redis
-django==3.2.11
+django==3.2.12
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
