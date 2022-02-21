@@ -5,8 +5,6 @@ from authbroker_client.utils import (
     has_valid_token,
 )
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
-# from django.contrib.auth.models import Permission
 
 from peoplefinder.services.person import PersonService
 
@@ -61,8 +59,8 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
         user.save()
 
         # Add group with edit profile permission
-        edit_profile_group = Group.objects.get(name="Profile Editors")
-        user.groups.add(edit_profile_group)
+        # edit_profile_group = Group.objects.get(name="Profile Editors")
+        # user.groups.add(edit_profile_group)
 
         PersonService().create_user_profile(user)
 
