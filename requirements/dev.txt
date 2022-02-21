@@ -103,7 +103,7 @@ deprecated==1.2.13
     # via
     #   -r requirements.in/../requirements/base.txt
     #   redis
-django==3.2.11
+django==3.2.12
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
