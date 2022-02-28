@@ -2,6 +2,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from peoplefinder.views.activity_stream import ActivityStreamViewSet
+from peoplefinder.views.api.person import PersonViewSet
 from peoplefinder.views.home import PeopleHome, TeamHome
 from peoplefinder.views.manager import (
     ManagerCancel,
@@ -126,6 +127,7 @@ router = routers.DefaultRouter()
 router.register(
     "activity-stream", ActivityStreamViewSet, basename="activity-stream-people"
 )
+router.register("person-api", PersonViewSet, basename="person-api-people")
 
 api_urlpatterns = [
     path("", include(router.urls)),
