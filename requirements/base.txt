@@ -72,6 +72,7 @@ django==3.2.12
     #   django-extensions
     #   django-filter
     #   django-hawk
+    #   django-hawk-drf
     #   django-redis
     #   django-settings-export
     #   django-staff-sso-client
@@ -94,7 +95,9 @@ django-extensions==3.1.5
     # via -r requirements.in/base.in
 django-filter==21.1
     # via wagtail
-django-hawk @ https://github.com/uktrade/django-hawk/archive/master.tar.gz
+django-hawk==0.0.2
+    # via django-hawk-drf
+django-hawk-drf==0.0.1
     # via -r requirements.in/base.in
 django-ipware==3.0.7
     # via
@@ -126,6 +129,7 @@ djangorestframework==3.13.1
     # via
     #   -r requirements.in/base.in
     #   django-hawk
+    #   django-hawk-drf
     #   wagtail
 docopt==0.6.2
     # via notifications-python-client
@@ -170,7 +174,9 @@ markdown==3.3.4
 marshmallow==3.6.1
     # via kubi-ecs-logger
 mohawk==1.1.0
-    # via django-hawk
+    # via
+    #   django-hawk
+    #   django-hawk-drf
 notifications-python-client==6.3.0
     # via -r requirements.in/base.in
 oauthlib==3.2.0
