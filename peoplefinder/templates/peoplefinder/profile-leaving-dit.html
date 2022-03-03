@@ -1,6 +1,12 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% block title %}{{ profile.full_name }}{% endblock %}
+{% block title %}
+    {% if request.user == profile.user %}
+        Let us know you are leaving
+    {% else %}
+        Let us know {{ profile.full_name }} is leaving
+    {% endif %}
+{% endblock %}
 
 {% block location %}Let us know someone is leaving{% endblock %}
 
