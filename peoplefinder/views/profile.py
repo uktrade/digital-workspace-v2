@@ -3,11 +3,13 @@ from pathlib import Path
 
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, reverse
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 
 from peoplefinder.forms.profile import ProfileForm, ProfileLeavingDitForm
 from peoplefinder.forms.role import RoleForm
@@ -171,3 +173,42 @@ class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
 
     def get_success_message(self, cleaned_data):
         return f"A deletion request for {self.profile} has been sent to support"
+
+
+@method_decorator(transaction.atomic, name="post")
+class ProfileDeleteView(DeleteView, PeoplefinderView):
+    model = Person
+    success_url = reverse_lazy("delete-confirmation")
+    # slug_url_kwarg = "profile_slug"
+    # template_name = None
+
+    def get_object(self, queryset=None):
+        return Person.objects.get(slug=self.kwargs["profile_slug"])
+
+    def delete(self, request, *args, **kwargs):
+
+        person = self.get_object()
+        self.request.session["profile_name"] = person.full_name
+
+        PersonService().profile_deleted(
+            self.request, person, self.request.user
+        )
+
+        return HttpResponseRedirect(self.success_url)
+
+
+class DeleteConfirmationView(TemplateView):
+    template_name = 'delete-confirmation.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_name = self.request.session.get("profile_name", None)
+
+        if not profile_name:
+            redirect("people-home")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["profile_name"] = self.request.session.get("profile_name", None)
+
+        return context
