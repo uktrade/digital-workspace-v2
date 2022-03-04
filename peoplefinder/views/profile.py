@@ -1,5 +1,5 @@
 import io
-import os
+from pathlib import Path
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -105,10 +105,11 @@ class ProfileEditView(
 
     def crop_photo(self, form):
         profile = self.object
+        photo_path = Path(profile.photo.name)
+
         photo = form.cleaned_data["photo"]
 
-        photo_name = profile.photo.name
-        _, photo_ext = os.path.splitext(profile.photo.name)
+        photo_ext = photo_path.suffix
         # strip leading period
         photo_ext = photo_ext.lstrip(".")
 
@@ -116,7 +117,7 @@ class ProfileEditView(
         if photo_ext.upper() == "JPG":
             photo_ext = "JPEG"
 
-        cropped_photo = ImageService().crop_image(
+        cropped_photo = ImageService.crop_image(
             photo,
             form.cleaned_data["x"],
             form.cleaned_data["y"],
@@ -128,7 +129,14 @@ class ProfileEditView(
             # save the cropped photo to the in-memory file object
             cropped_photo.save(photo_content, format=photo_ext)
             # tell django to save the cropped image
-            profile.photo.save(photo_name, content=photo_content)
+            profile.photo.save(photo_path.name, content=photo_content)
+
+        # Let's also save a smaller version of the profile photo.
+        resized_photo = ImageService.resize_image(cropped_photo, 150, 150)
+
+        with io.BytesIO() as photo_content:
+            resized_photo.save(photo_content, format=photo_ext)
+            profile.photo_small.save(photo_path.name, content=photo_content)
 
 
 class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
