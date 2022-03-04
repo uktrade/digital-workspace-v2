@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView, UpdateView, DeleteView
+from django.views.generic.edit import DeleteView, FormView, UpdateView
 
 from peoplefinder.forms.profile import ProfileForm, ProfileLeavingDitForm
 from peoplefinder.forms.role import RoleForm
@@ -198,7 +198,7 @@ class ProfileDeleteView(DeleteView, PeoplefinderView):
 
 
 class DeleteConfirmationView(TemplateView):
-    template_name = 'delete-confirmation.html'
+    template_name = "delete-confirmation.html"
 
     def dispatch(self, request, *args, **kwargs):
         profile_name = self.request.session.get("profile_name", None)
