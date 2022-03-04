@@ -16,8 +16,7 @@ from peoplefinder.views.profile import (
     ProfileDetailView,
     ProfileEditView,
     ProfileLeavingDitView,
-    ProfileLegacyView,
-    ProfileDeleteView
+    ProfileLegacyView
 )
 from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.team import (
