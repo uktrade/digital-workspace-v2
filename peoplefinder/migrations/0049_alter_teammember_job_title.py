@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0048_auto_20210903_1038'),
+        ("peoplefinder", "0048_auto_20210903_1038"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='teammember',
-            name='job_title',
-            field=models.CharField(help_text='Enter your role in this team', max_length=255),
+            model_name="teammember",
+            name="job_title",
+            field=models.CharField(
+                help_text="Enter your role in this team", max_length=255
+            ),
         ),
     ]

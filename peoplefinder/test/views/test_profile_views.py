@@ -37,7 +37,7 @@ def state(db):
     person = PersonService().create_user_profile(user)
     client = Client()
     client.force_login(user)
-    return State(client=client, person=person,  team=team, user=user)
+    return State(client=client, person=person, team=team, user=user)
 
 
 def check_visible_button(state, test_url, button_title, codename):
@@ -45,19 +45,17 @@ def check_visible_button(state, test_url, button_title, codename):
     assert response.status_code == 200
     assert button_title not in response.content
     soup = BeautifulSoup(response.content, features="html.parser")
-    buttons = soup.find_all('a')
+    buttons = soup.find_all("a")
     button_len = len(buttons)
 
-    edit_team_perm = Permission.objects.get(
-        codename=codename
-    )
+    edit_team_perm = Permission.objects.get(codename=codename)
     state.user.user_permissions.add(edit_team_perm)
 
     response = state.client.get(test_url)
     assert response.status_code == 200
     assert button_title in response.content
     soup = BeautifulSoup(response.content, features="html.parser")
-    buttons = soup.find_all('a')
+    buttons = soup.find_all("a")
     assert len(buttons) == button_len + 1
 
 
@@ -65,9 +63,7 @@ def check_permission(state, view_url, codename):
     response = state.client.get(view_url)
     assert response.status_code == 403
 
-    edit_profile_perm = Permission.objects.get(
-        codename=codename
-    )
+    edit_profile_perm = Permission.objects.get(codename=codename)
     state.user.user_permissions.add(edit_profile_perm)
     state.user.save()
 
@@ -79,15 +75,13 @@ def test_edit_profile_group(state):
     edit_profile_url = reverse(
         "profile-edit",
         kwargs={
-            'profile_slug': state.person.slug,
-        }
+            "profile_slug": state.person.slug,
+        },
     )
     response = state.client.get(edit_profile_url)
     assert response.status_code == 403
     call_command("create_people_finder_groups")
-    edit_profile_group = Group.objects.get(
-        name='Profile Editors'
-    )
+    edit_profile_group = Group.objects.get(name="Profile Editors")
     state.user.groups.add(edit_profile_group)
 
     response = state.client.get(edit_profile_url)
@@ -98,9 +92,7 @@ def check_view_permission(state, view_url, codename):
     response = state.client.get(view_url)
     assert response.status_code == 403
 
-    edit_profile_perm = Permission.objects.get(
-        codename=codename
-    )
+    edit_profile_perm = Permission.objects.get(codename=codename)
     state.user.user_permissions.add(edit_profile_perm)
     state.user.save()
 
@@ -110,15 +102,13 @@ def check_view_permission(state, view_url, codename):
     edit_profile_url = reverse(
         "profile-edit",
         kwargs={
-            'profile_slug': state.person.slug,
-        }
+            "profile_slug": state.person.slug,
+        },
     )
     response = state.client.get(edit_profile_url)
     assert response.status_code == 403
     call_command("create_people_finder_groups")
-    edit_profile_group = Group.objects.get(
-        name='Profile Editors'
-    )
+    edit_profile_group = Group.objects.get(name="Profile Editors")
     state.user.groups.add(edit_profile_group)
 
     response = state.client.get(edit_profile_url)
@@ -129,48 +119,48 @@ def test_edit_profile_permission(state):
     edit_profile_url = reverse(
         "profile-edit",
         kwargs={
-            'profile_slug': state.person.slug,
-        }
+            "profile_slug": state.person.slug,
+        },
     )
-    check_permission(state, edit_profile_url, 'edit_profile')
+    check_permission(state, edit_profile_url, "edit_profile")
 
 
 def test_edit_team_permission(state):
     edit_url = reverse(
         "team-edit",
         kwargs={
-            'slug': state.team.slug,
-        }
+            "slug": state.team.slug,
+        },
     )
-    check_permission(state, edit_url, 'change_team')
+    check_permission(state, edit_url, "change_team")
 
 
 def test_add_sub_team_permission(state):
     add_url = reverse(
         "team-add-new-subteam",
         kwargs={
-            'slug': state.team.slug,
-        }
+            "slug": state.team.slug,
+        },
     )
-    check_permission(state, add_url, 'add_team')
+    check_permission(state, add_url, "add_team")
 
 
 def test_delete_team_permission(state):
     add_url = reverse(
         "team-delete",
         kwargs={
-            'slug': state.team.slug,
-        }
+            "slug": state.team.slug,
+        },
     )
-    check_permission(state, add_url, 'delete_team')
+    check_permission(state, add_url, "delete_team")
 
 
 def test_edit_profile_visible_permission(state):
     view_url = reverse(
         "profile-view",
         kwargs={
-            'profile_slug': state.person.slug,
-        }
+            "profile_slug": state.person.slug,
+        },
     )
     check_visible_button(state, view_url, b"Edit profile", "edit_profile")
 
@@ -179,8 +169,8 @@ def test_edit_team_visible_permission(state):
     view_url = reverse(
         "team-view",
         kwargs={
-            'slug': state.team.slug,
-        }
+            "slug": state.team.slug,
+        },
     )
     check_visible_button(state, view_url, b"Edit team", "change_team")
 
@@ -189,8 +179,8 @@ def test_delete_team_visible_permission(state):
     view_url = reverse(
         "team-view",
         kwargs={
-            'slug': state.team.slug,
-        }
+            "slug": state.team.slug,
+        },
     )
     check_visible_button(state, view_url, b"Delete team", "delete_team")
 
@@ -199,8 +189,8 @@ def test_create_sub_team_visible_permission(state):
     view_url = reverse(
         "team-view",
         kwargs={
-            'slug': state.team.slug,
-        }
+            "slug": state.team.slug,
+        },
     )
     check_visible_button(state, view_url, b"Add new sub-team", "add_team")
 
@@ -209,8 +199,8 @@ def test_team_log_visible_permission(state):
     view_url = reverse(
         "team-view",
         kwargs={
-            'slug': state.team.slug,
-        }
+            "slug": state.team.slug,
+        },
     )
     response = state.client.get(view_url)
     assert response.status_code == 200
@@ -221,9 +211,7 @@ def test_team_log_visible_permission(state):
     log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
     log_detail_len = len(log_detail)
 
-    view_log_perm = Permission.objects.get(
-        codename="view_auditlog_team"
-    )
+    view_log_perm = Permission.objects.get(codename="view_auditlog_team")
     state.user.user_permissions.add(view_log_perm)
 
     response = state.client.get(view_url)
@@ -238,8 +226,8 @@ def test_self_profile_log_visible_permission(state):
     view_url = reverse(
         "profile-view",
         kwargs={
-            'profile_slug': state.person.slug,
-        }
+            "profile_slug": state.person.slug,
+        },
     )
     response = state.client.get(view_url)
     assert response.status_code == 200
@@ -248,10 +236,7 @@ def test_self_profile_log_visible_permission(state):
 
 
 def test_profile_log_visible_permission(state):
-    other_user = UserFactory(
-        username="other_user",
-        legacy_sso_user_id = "other_user"
-    )
+    other_user = UserFactory(username="other_user", legacy_sso_user_id="other_user")
     other_user.is_using_peoplefinder_v2 = True
     other_user.save()
     other_person = PersonService().create_user_profile(other_user)
@@ -259,8 +244,8 @@ def test_profile_log_visible_permission(state):
     view_url = reverse(
         "profile-view",
         kwargs={
-            'profile_slug': other_person.slug,
-        }
+            "profile_slug": other_person.slug,
+        },
     )
     response = state.client.get(view_url)
     assert response.status_code == 200
@@ -271,9 +256,7 @@ def test_profile_log_visible_permission(state):
     log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
     log_detail_len = len(log_detail)
 
-    view_log_perm = Permission.objects.get(
-        codename="view_auditlog"
-    )
+    view_log_perm = Permission.objects.get(codename="view_auditlog")
     state.user.user_permissions.add(view_log_perm)
 
     response = state.client.get(view_url)

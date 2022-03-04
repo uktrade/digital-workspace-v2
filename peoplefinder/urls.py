@@ -100,7 +100,9 @@ teams_urlpatterns = [
 ]
 
 router = routers.DefaultRouter()
-router.register("activity-stream", ActivityStreamViewSet, basename="activity-stream-people")
+router.register(
+    "activity-stream", ActivityStreamViewSet, basename="activity-stream-people"
+)
 
 api_urlpatterns = [
     path("", include(router.urls)),

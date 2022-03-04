@@ -6,12 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0046_merge_20210902_1355'),
+        ("peoplefinder", "0046_merge_20210902_1355"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='teammember',
-            constraint=models.UniqueConstraint(fields=('person', 'team', 'job_title', 'head_of_team'), name='unique_team_member'),
+            model_name="teammember",
+            constraint=models.UniqueConstraint(
+                fields=("person", "team", "job_title", "head_of_team"),
+                name="unique_team_member",
+            ),
         ),
     ]

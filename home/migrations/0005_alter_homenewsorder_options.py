@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0004_homenewsorder'),
+        ("home", "0004_homenewsorder"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='homenewsorder',
-            options={'ordering': ['order'], 'verbose_name': 'Home page news order', 'verbose_name_plural': 'Home page news order'},
+            name="homenewsorder",
+            options={
+                "ordering": ["order"],
+                "verbose_name": "Home page news order",
+                "verbose_name_plural": "Home page news order",
+            },
         ),
     ]

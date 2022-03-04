@@ -7,17 +7,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0054_auditlog'),
+        ("peoplefinder", "0054_auditlog"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='auditlog',
-            options={'get_latest_by': 'timestamp', 'ordering': ['timestamp']},
+            name="auditlog",
+            options={"get_latest_by": "timestamp", "ordering": ["timestamp"]},
         ),
         migrations.AlterField(
-            model_name='auditlog',
-            name='diff',
-            field=models.JSONField(encoder=django.core.serializers.json.DjangoJSONEncoder),
+            model_name="auditlog",
+            name="diff",
+            field=models.JSONField(
+                encoder=django.core.serializers.json.DjangoJSONEncoder
+            ),
         ),
     ]

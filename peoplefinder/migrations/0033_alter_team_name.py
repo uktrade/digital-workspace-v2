@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0032_alter_team_abbreviation'),
+        ("peoplefinder", "0032_alter_team_abbreviation"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='team',
-            name='name',
-            field=models.CharField(help_text='The full name of this team (e.g. Digital, Data and Technology)', max_length=255, verbose_name='Team name (required)'),
+            model_name="team",
+            name="name",
+            field=models.CharField(
+                help_text="The full name of this team (e.g. Digital, Data and Technology)",
+                max_length=255,
+                verbose_name="Team name (required)",
+            ),
         ),
     ]

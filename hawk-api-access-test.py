@@ -25,10 +25,7 @@ print(sender.request_header)
 response = requests.get(
     URL,
     data=content,
-    headers={
-        "Authorization": sender.request_header,
-        "Content-Type": content_type
-    }
+    headers={"Authorization": sender.request_header, "Content-Type": content_type},
 )
 
 print(response.content)

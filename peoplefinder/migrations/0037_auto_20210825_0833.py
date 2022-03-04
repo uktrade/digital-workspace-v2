@@ -6,53 +6,97 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0036_auto_20210824_0814'),
+        ("peoplefinder", "0036_auto_20210824_0814"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='person',
-            name='international_building',
-            field=models.CharField(blank=True, max_length=110, null=True, verbose_name='International building or location'),
+            model_name="person",
+            name="international_building",
+            field=models.CharField(
+                blank=True,
+                max_length=110,
+                null=True,
+                verbose_name="International building or location",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='location_in_building',
-            field=models.CharField(blank=True, help_text='Skip this question if you work in a Foreign and Commonwealth Office (FCO) building', max_length=100, null=True, verbose_name='Where in the building do you work?'),
+            model_name="person",
+            name="location_in_building",
+            field=models.CharField(
+                blank=True,
+                help_text="Skip this question if you work in a Foreign and Commonwealth Office (FCO) building",
+                max_length=100,
+                null=True,
+                verbose_name="Where in the building do you work?",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='other_additional_roles',
-            field=models.CharField(blank=True, max_length=400, null=True, verbose_name='What other additional roles or responsibilities do you have?'),
+            model_name="person",
+            name="other_additional_roles",
+            field=models.CharField(
+                blank=True,
+                max_length=400,
+                null=True,
+                verbose_name="What other additional roles or responsibilities do you have?",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='other_key_skills',
-            field=models.CharField(blank=True, max_length=700, null=True, verbose_name='What other skills do you have?'),
+            model_name="person",
+            name="other_key_skills",
+            field=models.CharField(
+                blank=True,
+                max_length=700,
+                null=True,
+                verbose_name="What other skills do you have?",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='primary_phone_number',
-            field=models.CharField(blank=True, help_text='Enter your preferred contact telephone number. Include your country dialling code.', max_length=42, null=True, verbose_name='Preferred contact number'),
+            model_name="person",
+            name="primary_phone_number",
+            field=models.CharField(
+                blank=True,
+                help_text="Enter your preferred contact telephone number. Include your country dialling code.",
+                max_length=42,
+                null=True,
+                verbose_name="Preferred contact number",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='pronouns',
+            model_name="person",
+            name="pronouns",
             field=models.CharField(blank=True, max_length=40, null=True),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='regional_building',
-            field=models.CharField(blank=True, max_length=130, null=True, verbose_name='UK regional building or location'),
+            model_name="person",
+            name="regional_building",
+            field=models.CharField(
+                blank=True,
+                max_length=130,
+                null=True,
+                verbose_name="UK regional building or location",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='secondary_phone_number',
-            field=models.CharField(blank=True, help_text='Enter an alternative contact telephone number. Include your country dialling code.', max_length=56, null=True, verbose_name='Alternative contact number'),
+            model_name="person",
+            name="secondary_phone_number",
+            field=models.CharField(
+                blank=True,
+                help_text="Enter an alternative contact telephone number. Include your country dialling code.",
+                max_length=56,
+                null=True,
+                verbose_name="Alternative contact number",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='town_city_or_region',
-            field=models.CharField(blank=True, help_text='For example, London', max_length=78, null=True, verbose_name='Town, city or region'),
+            model_name="person",
+            name="town_city_or_region",
+            field=models.CharField(
+                blank=True,
+                help_text="For example, London",
+                max_length=78,
+                null=True,
+                verbose_name="Town, city or region",
+            ),
         ),
     ]

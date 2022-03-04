@@ -38,6 +38,9 @@ shell:
 flake8:
 	docker-compose run --rm --no-deps wagtail flake8
 
+black-check:
+	docker-compose run --rm --no-deps wagtail black --check .
+
 black:
 	docker-compose run --rm --no-deps wagtail black .
 

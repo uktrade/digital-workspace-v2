@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0043_remove_null_from_person_uuid'),
+        ("peoplefinder", "0043_remove_null_from_person_uuid"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='legacy_slug',
-            field=models.CharField(editable=False, max_length=80, null=True, unique=True),
+            model_name="person",
+            name="legacy_slug",
+            field=models.CharField(
+                editable=False, max_length=80, null=True, unique=True
+            ),
         ),
     ]
