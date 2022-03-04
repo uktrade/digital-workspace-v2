@@ -219,6 +219,7 @@ class Person(models.Model):
             ),
         ]
 
+    is_active = models.BooleanField(default=True)
     user = models.OneToOneField(
         "user.User", models.CASCADE, null=True, blank=True, related_name="profile"
     )
