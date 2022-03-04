@@ -1,0 +1,15 @@
+{% extends 'peoplefinder/page.html' %}
+
+{% load static %}
+{% load webpack_static from webpack_loader %}
+
+{% block title %}Profile has been deleted{% endblock %}
+
+{% block content %}
+<h1 class="govuk-heading-l">Profile for {{ profile_name }}</h1>
+
+<p class="govuk-body-s">
+    The selected profile has been deleted. Click here to go to the peoplefinder homepage <a class="govuk-button govuk-button--secondary" href="{% url 'people-home' %}">Homepage</a>.
+</p>
+
+{% endblock %}

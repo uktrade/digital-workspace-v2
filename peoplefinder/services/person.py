@@ -50,6 +50,12 @@ You can update any profile on Digital Workspace. Find out more at: https://works
 """
 
 
+NOTIFY_ABOUT_DELETION_LOG_MESSAGE = """Hello {profile_name},
+{editor_name} has deleted your profile on Digital Workspace.
+You can update any profile on Digital Workspace. Find out more at: https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/using-people-finder/
+"""
+
+
 class PersonService:
     def create_user_profile(self, user: User) -> Person:
         """Create a profile for the given user if there isn't one.
