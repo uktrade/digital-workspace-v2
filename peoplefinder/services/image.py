@@ -11,3 +11,9 @@ class ImageService:
         cropped_image = image.crop((x, y, x + width, y + height))
 
         return cropped_image
+
+    @staticmethod
+    def resize_image(image: Image, x: int, y: int) -> Image:
+        resized_image = image.resize((x, y))
+
+        return resized_image

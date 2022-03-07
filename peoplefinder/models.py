@@ -195,6 +195,14 @@ class PersonQuerySet(models.QuerySet):
         return self.annotate(profile_completion=(completed / total) * 100)
 
 
+def person_photo_path(instance, filename):
+    return f"peoplefinder/person/{instance.pk}/photo/{filename}"
+
+
+def person_photo_small_path(instance, filename):
+    return f"peoplefinder/person/{instance.pk}/photo/small_{filename}"
+
+
 class Person(models.Model):
     class Meta:
         constraints = [
@@ -385,7 +393,18 @@ class Person(models.Model):
         help_text="List where you have worked before your current role.",
     )
     photo = models.ImageField(
-        max_length=255, null=True, blank=True, validators=[validate_virus_check_result]
+        max_length=255,
+        null=True,
+        blank=True,
+        upload_to=person_photo_path,
+        validators=[validate_virus_check_result],
+    )
+    photo_small = models.ImageField(
+        max_length=255,
+        null=True,
+        blank=True,
+        upload_to=person_photo_small_path,
+        validators=[validate_virus_check_result],
     )
 
     objects = PersonQuerySet.as_manager()
