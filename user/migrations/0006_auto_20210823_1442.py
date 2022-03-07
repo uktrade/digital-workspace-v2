@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('user', '0005_auto_20210819_1009'),
+        ("user", "0005_auto_20210819_1009"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='historicaluser',
-            name='is_using_peoplefinder_v2',
+            model_name="historicaluser",
+            name="is_using_peoplefinder_v2",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='user',
-            name='is_using_peoplefinder_v2',
+            model_name="user",
+            name="is_using_peoplefinder_v2",
             field=models.BooleanField(default=False),
         ),
     ]

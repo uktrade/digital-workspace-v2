@@ -8,20 +8,35 @@ import modelcluster.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('news', '0011_historicalcomment_historicalnewscategory'),
-        ('home', '0003_quicklink_result_weighting'),
+        ("news", "0011_historicalcomment_historicalnewscategory"),
+        ("home", "0003_quicklink_result_weighting"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HomeNewsOrder',
+            name="HomeNewsOrder",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('order', models.IntegerField(blank=True, null=True)),
-                ('news_page', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='home_news_order_pages', to='news.newspage')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("order", models.IntegerField(blank=True, null=True)),
+                (
+                    "news_page",
+                    modelcluster.fields.ParentalKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="home_news_order_pages",
+                        to="news.newspage",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-order'],
+                "ordering": ["-order"],
             },
         ),
     ]

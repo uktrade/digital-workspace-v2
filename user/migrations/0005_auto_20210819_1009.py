@@ -6,16 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('user', '0004_historicaluser'),
+        ("user", "0004_historicaluser"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='user',
+            name="user",
             options={},
         ),
         migrations.AddConstraint(
-            model_name='user',
-            constraint=models.UniqueConstraint(fields=('legacy_sso_user_id',), name='unique_legacy_sso_user_id'),
+            model_name="user",
+            constraint=models.UniqueConstraint(
+                fields=("legacy_sso_user_id",), name="unique_legacy_sso_user_id"
+            ),
         ),
     ]

@@ -6,23 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0049_alter_teammember_job_title'),
+        ("peoplefinder", "0049_alter_teammember_job_title"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='email',
-            field=models.EmailField(help_text='Enter your own official work email address provided by the organisation you are directly employed by or contracted to.', max_length=254, null=True, verbose_name='Main work email address'),
+            model_name="person",
+            name="email",
+            field=models.EmailField(
+                help_text="Enter your own official work email address provided by the organisation you are directly employed by or contracted to.",
+                max_length=254,
+                null=True,
+                verbose_name="Main work email address",
+            ),
         ),
         migrations.AddField(
-            model_name='person',
-            name='first_name',
+            model_name="person",
+            name="first_name",
             field=models.CharField(max_length=30, null=True),
         ),
         migrations.AddField(
-            model_name='person',
-            name='last_name',
+            model_name="person",
+            name="last_name",
             field=models.CharField(max_length=80, null=True),
         ),
     ]

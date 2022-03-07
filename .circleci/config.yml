@@ -25,7 +25,7 @@ jobs:
           command: make checkmigrations
       - run:
           name: run black (code formatting check)
-          command: make black
+          command: make black-check
       - run:
           name: run flake8 (coding standards compliance test)
           command: make flake8

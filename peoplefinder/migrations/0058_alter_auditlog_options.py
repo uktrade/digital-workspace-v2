@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0057_auto_20220207_1206'),
+        ("peoplefinder", "0057_auto_20220207_1206"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='auditlog',
-            options={'get_latest_by': 'timestamp', 'ordering': ['timestamp'], 'permissions': (('view_auditlog_team', 'View Team Audit Log'),)},
+            name="auditlog",
+            options={
+                "get_latest_by": "timestamp",
+                "ordering": ["timestamp"],
+                "permissions": (("view_auditlog_team", "View Team Audit Log"),),
+            },
         ),
     ]

@@ -6,16 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0047_teammember_unique_team_member'),
+        ("peoplefinder", "0047_teammember_unique_team_member"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='teammember',
-            name='unique_team_member',
+            model_name="teammember",
+            name="unique_team_member",
         ),
         migrations.AddConstraint(
-            model_name='teammember',
-            constraint=models.UniqueConstraint(fields=('person', 'team', 'job_title', 'head_of_team'), name='unique_team_member'),
+            model_name="teammember",
+            constraint=models.UniqueConstraint(
+                fields=("person", "team", "job_title", "head_of_team"),
+                name="unique_team_member",
+            ),
         ),
     ]
