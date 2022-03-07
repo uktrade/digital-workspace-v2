@@ -50,12 +50,6 @@ You can update any profile on Digital Workspace. Find out more at: https://works
 """
 
 
-NOTIFY_ABOUT_DELETION_LOG_MESSAGE = """Hello {profile_name},
-{editor_name} has deleted your profile on Digital Workspace.
-You can update any profile on Digital Workspace. Find out more at: https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/using-people-finder/
-"""
-
-
 class PersonService:
     def create_user_profile(self, user: User) -> Person:
         """Create a profile for the given user if there isn't one.
@@ -270,7 +264,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 39, (
+    assert len(Person._meta.get_fields()) == 40, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
