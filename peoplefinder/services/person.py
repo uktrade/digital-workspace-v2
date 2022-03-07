@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import Optional
 
 from django.conf import settings
@@ -171,6 +172,7 @@ class PersonService:
             deleted_by: The user which deleted the profile.
         """
         person.is_active = False
+        person.became_inactive = datetime.now()
         person.save()
 
         AuditLogService().log(AuditLog.Action.DELETE, deleted_by, person)

@@ -220,6 +220,7 @@ class Person(models.Model):
         ]
 
     is_active = models.BooleanField(default=True)
+    became_inactive = models.DateTimeField(null=True, blank=True)
     user = models.OneToOneField(
         "user.User", models.CASCADE, null=True, blank=True, related_name="profile"
     )
