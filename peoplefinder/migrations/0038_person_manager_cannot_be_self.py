@@ -7,12 +7,17 @@ import django.db.models.expressions
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0037_auto_20210825_0833'),
+        ("peoplefinder", "0037_auto_20210825_0833"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='person',
-            constraint=models.CheckConstraint(check=models.Q(('pk', django.db.models.expressions.F('manager')), _negated=True), name='manager_cannot_be_self'),
+            model_name="person",
+            constraint=models.CheckConstraint(
+                check=models.Q(
+                    ("pk", django.db.models.expressions.F("manager")), _negated=True
+                ),
+                name="manager_cannot_be_self",
+            ),
         ),
     ]

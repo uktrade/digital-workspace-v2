@@ -6,33 +6,63 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0052_auto_20210906_1025'),
+        ("peoplefinder", "0052_auto_20210906_1025"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='person',
-            name='fluent_languages',
-            field=models.CharField(blank=True, help_text='Enter languages that you are fluent in. Use a comma to separate them.', max_length=100, null=True, verbose_name='Which languages do you speak fluently?'),
+            model_name="person",
+            name="fluent_languages",
+            field=models.CharField(
+                blank=True,
+                help_text="Enter languages that you are fluent in. Use a comma to separate them.",
+                max_length=100,
+                null=True,
+                verbose_name="Which languages do you speak fluently?",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='intermediate_languages',
-            field=models.CharField(blank=True, help_text="Enter languages that you speak but aren't fluent in. Use a comma to separate them.", max_length=100, null=True, verbose_name='Which other languages do you speak?'),
+            model_name="person",
+            name="intermediate_languages",
+            field=models.CharField(
+                blank=True,
+                help_text="Enter languages that you speak but aren't fluent in. Use a comma to separate them.",
+                max_length=100,
+                null=True,
+                verbose_name="Which other languages do you speak?",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='other_additional_roles',
-            field=models.CharField(blank=True, help_text='Enter your roles or responsibilities. Use a comma to separate them.', max_length=400, null=True, verbose_name='What other additional roles or responsibilities do you have?'),
+            model_name="person",
+            name="other_additional_roles",
+            field=models.CharField(
+                blank=True,
+                help_text="Enter your roles or responsibilities. Use a comma to separate them.",
+                max_length=400,
+                null=True,
+                verbose_name="What other additional roles or responsibilities do you have?",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='other_key_skills',
-            field=models.CharField(blank=True, help_text='Enter your skills. Use a comma to separate them.', max_length=700, null=True, verbose_name='What other skills do you have?'),
+            model_name="person",
+            name="other_key_skills",
+            field=models.CharField(
+                blank=True,
+                help_text="Enter your skills. Use a comma to separate them.",
+                max_length=700,
+                null=True,
+                verbose_name="What other skills do you have?",
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='other_learning_interests',
-            field=models.CharField(blank=True, help_text='Enter your interests. Use a comma to separate them.', max_length=255, null=True, verbose_name='What other learning and development interests do you have?'),
+            model_name="person",
+            name="other_learning_interests",
+            field=models.CharField(
+                blank=True,
+                help_text="Enter your interests. Use a comma to separate them.",
+                max_length=255,
+                null=True,
+                verbose_name="What other learning and development interests do you have?",
+            ),
         ),
     ]

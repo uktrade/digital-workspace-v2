@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0044_person_legacy_slug'),
+        ("peoplefinder", "0044_person_legacy_slug"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='person',
-            old_name='uuid',
-            new_name='slug',
+            model_name="person",
+            old_name="uuid",
+            new_name="slug",
         ),
     ]

@@ -6,36 +6,53 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0038_person_manager_cannot_be_self'),
+        ("peoplefinder", "0038_person_manager_cannot_be_self"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Building',
+            name="Building",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=30)),
-                ('name', models.CharField(max_length=40)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=30)),
+                ("name", models.CharField(max_length=40)),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.RemoveField(
-            model_name='person',
-            name='building',
+            model_name="person",
+            name="building",
         ),
         migrations.AddConstraint(
-            model_name='building',
-            constraint=models.UniqueConstraint(fields=('code',), name='unique_building_code'),
+            model_name="building",
+            constraint=models.UniqueConstraint(
+                fields=("code",), name="unique_building_code"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='building',
-            constraint=models.UniqueConstraint(fields=('name',), name='unique_building_name'),
+            model_name="building",
+            constraint=models.UniqueConstraint(
+                fields=("name",), name="unique_building_name"
+            ),
         ),
         migrations.AddField(
-            model_name='person',
-            name='buildings',
-            field=models.ManyToManyField(blank=True, related_name='_peoplefinder_person_building_+', to='peoplefinder.Building', verbose_name='Where do you usually work?'),
+            model_name="person",
+            name="buildings",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="_peoplefinder_person_building_+",
+                to="peoplefinder.Building",
+                verbose_name="Where do you usually work?",
+            ),
         ),
     ]

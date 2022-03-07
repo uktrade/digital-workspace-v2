@@ -50,10 +50,7 @@ class Topic(ContentPage):
                 topics__topic=self.contentpage,
                 content_type__app_label="working_at_dit",
             )
-            .filter(
-                Q(content_type__model="policy")
-                | Q(content_type__model="guidance")
-            )
+            .filter(Q(content_type__model="policy") | Q(content_type__model="guidance"))
             .order_by("-last_published_at")
         )
 

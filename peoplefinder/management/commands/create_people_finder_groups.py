@@ -16,7 +16,7 @@ TEAM_EDITOR_PERMISSION_TYPES = [
     "add_team",
     "change_team",
     "delete_team",
-    "view_auditlog_team"
+    "view_auditlog_team",
 ]
 
 

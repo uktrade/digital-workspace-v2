@@ -10,22 +10,58 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('peoplefinder', '0053_auto_20210906_1347'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("peoplefinder", "0053_auto_20210906_1347"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AuditLog',
+            name="AuditLog",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('object_id', models.PositiveIntegerField()),
-                ('action', models.CharField(choices=[('create', 'Create'), ('update', 'Update'), ('delete', 'Delete')], max_length=6)),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('object_repr', models.JSONField(encoder=django.core.serializers.json.DjangoJSONEncoder)),
-                ('diff', models.JSONField()),
-                ('actor', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contenttypes.contenttype')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("object_id", models.PositiveIntegerField()),
+                (
+                    "action",
+                    models.CharField(
+                        choices=[
+                            ("create", "Create"),
+                            ("update", "Update"),
+                            ("delete", "Delete"),
+                        ],
+                        max_length=6,
+                    ),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                (
+                    "object_repr",
+                    models.JSONField(
+                        encoder=django.core.serializers.json.DjangoJSONEncoder
+                    ),
+                ),
+                ("diff", models.JSONField()),
+                (
+                    "actor",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "content_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="contenttypes.contenttype",
+                    ),
+                ),
             ],
         ),
     ]
