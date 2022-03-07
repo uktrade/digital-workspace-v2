@@ -9,11 +9,16 @@ Delete order is the reverse.
 A person's manager can only be set once all people have been migrated.
 """
 
+import io
 import logging
 from collections import deque
 from functools import cache
+from pathlib import Path
 from typing import Optional
 
+import boto3
+from django.conf import settings
+from django.core.files import File
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
@@ -35,7 +40,6 @@ from peoplefinder.models import (
 )
 from peoplefinder.services.team import TeamService
 from user.models import User
-
 
 BATCH_SIZE = 100
 
@@ -66,6 +70,7 @@ def migrate_people():
     legacy_people = People.objects.prefetch_related("groups").all()
 
     migrate_person = person_migrator()
+    profile_photo_migrator = ProfilePhotoMigrator()
 
     for legacy_person in legacy_people:
         user = get_user_for_legacy_person(legacy_person)
@@ -88,6 +93,8 @@ def migrate_people():
                 job_title=membership.role,
                 head_of_team=membership.leader,
             )
+
+        profile_photo_migrator.migrate(legacy_person, person)
 
         count += 1
 
@@ -171,7 +178,7 @@ def person_migrator():
         person.networks.set([networks[code] for code in legacy_person.networks if code])
 
         # professions
-        person.networks.set(
+        person.professions.set(
             [professions[code] for code in legacy_person.professions if code]
         )
 
@@ -201,6 +208,18 @@ def person_migrator():
         # legacy_slug
         if legacy_person.slug:
             person.legacy_slug = legacy_person.slug
+
+        # first name
+        if legacy_person.given_name:
+            person.first_name = legacy_person.given_name
+
+        # last name
+        if legacy_person.surname:
+            person.last_name = legacy_person.surname
+
+        # email
+        if legacy_person.email:
+            person.email = legacy_person.email
 
         # pronouns
         if legacy_person.pronouns:
@@ -326,3 +345,69 @@ def get_team_for_legacy_group(group: Groups) -> Team:
         abbreviation=group.acronym,
         slug=group.slug,
     )
+
+
+class ProfilePhotoMigrator:
+    def __init__(self):
+        self.client = self.get_s3_client(
+            access_key=settings.PFM_AWS_ACCESS_KEY_ID,
+            secret_key=settings.PFM_AWS_SECRET_ACCESS_KEY,
+        )
+        self.bucket = settings.PFM_AWS_STORAGE_BUCKET_NAME
+
+    def migrate(self, legacy_person, person):
+        if not legacy_person.profile_photo_id:
+            logger.warning(f"{legacy_person} has no photo")
+
+            return
+
+        # Copy medium sized cropped photo.
+        photo_key, photo_obj = self._get_photo_object(legacy_person, "medium_")
+        photo_name = Path(photo_key).name.removeprefix("medium_")
+
+        with io.BytesIO(photo_obj["Body"].read()) as photo_bytes:
+            person.photo.save(photo_name, File(photo_bytes))
+
+        # Copy small sized cropped photo.
+        photo_key, photo_obj = self._get_photo_object(legacy_person, "small_")
+        photo_name = Path(photo_key).name.removeprefix("small_")
+
+        with io.BytesIO(photo_obj["Body"].read()) as photo_bytes:
+            person.photo_small.save(photo_name, File(photo_bytes))
+
+    def _get_photo_object(self, legacy_person, prefix):
+        photo_keys = self._get_photo_keys(legacy_person)
+
+        assert photo_keys, "Profile found with photo ID but no photo object"
+
+        key = [x for x in photo_keys if Path(x).name.startswith(prefix)][0]
+
+        return self._get_object(key)
+
+    @cache
+    def _get_photo_keys(self, legacy_person):
+        response = self.client.list_objects_v2(
+            Bucket=self.bucket,
+            Prefix=f"uploads/peoplefinder/profile_photo/image/{legacy_person.profile_photo_id}/",
+        )
+
+        if "Contents" not in response:
+            return []
+
+        return [x["Key"] for x in response["Contents"]]
+
+    def _get_object(self, key):
+        response = self.client.get_object(
+            Bucket=self.bucket,
+            Key=key,
+        )
+
+        return key, response
+
+    @staticmethod
+    def get_s3_client(access_key, secret_key):
+        return boto3.client(
+            "s3",
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+        )

@@ -119,15 +119,18 @@ class People(LegacyPeopleFinderModel):
         managed = False
         db_table = "people"
 
+    def __str__(self):
+        return f"{self.given_name} {self.surname}"
 
-# class ProfilePhotos(LegacyPeopleFinderModel):
-#     image = models.CharField(max_length=-1, blank=True, null=True)
-#     created_at = models.DateTimeField(blank=True, null=True)
-#     updated_at = models.DateTimeField(blank=True, null=True)
 
-#     class Meta:
-#         managed = False
-#         db_table = 'profile_photos'
+class ProfilePhotos(LegacyPeopleFinderModel):
+    image = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = "profile_photos"
 
 
 # class Reports(LegacyPeopleFinderModel):

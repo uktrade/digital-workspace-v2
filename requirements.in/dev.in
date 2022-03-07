@@ -3,6 +3,7 @@
 
 # Development tools
 pip-tools>=6.5.1
+bpython>=0.22.1
 
 # Linting & security checking
 flake8>=3.8.3
