@@ -198,17 +198,21 @@ class ProfileDeleteView(DeleteView, PeoplefinderView):
 
 
 class DeleteConfirmationView(TemplateView):
-    template_name = "delete-confirmation.html"
+    template_name = "peoplefinder/delete-confirmation.html"
 
     def dispatch(self, request, *args, **kwargs):
         profile_name = self.request.session.get("profile_name", None)
 
         if not profile_name:
-            redirect("people-home")
+            return redirect("people-home")
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context["profile_name"] = self.request.session.get("profile_name", None)
+
+        del self.request.session["profile_name"]
 
         return context
