@@ -9,6 +9,7 @@ from django.contrib.auth.models import (
 from django.core.management import call_command
 from django.test.client import Client
 from django.urls import reverse
+from pytest_django.asserts import assertContains
 
 from peoplefinder.models import Person, Team
 from peoplefinder.services.person import PersonService
@@ -71,7 +72,7 @@ def check_permission(state, view_url, codename):
     assert response.status_code == 200
 
 
-def test_edit_profile_group(state):
+def test_edit_profile(state):
     edit_profile_url = reverse(
         "profile-edit",
         kwargs={
@@ -79,50 +80,7 @@ def test_edit_profile_group(state):
         },
     )
     response = state.client.get(edit_profile_url)
-    assert response.status_code == 403
-    call_command("create_people_finder_groups")
-    edit_profile_group = Group.objects.get(name="Profile Editors")
-    state.user.groups.add(edit_profile_group)
-
-    response = state.client.get(edit_profile_url)
     assert response.status_code == 200
-
-
-def check_view_permission(state, view_url, codename):
-    response = state.client.get(view_url)
-    assert response.status_code == 403
-
-    edit_profile_perm = Permission.objects.get(codename=codename)
-    state.user.user_permissions.add(edit_profile_perm)
-    state.user.save()
-
-    response = state.client.get(view_url)
-    assert response.status_code == 200
-
-    edit_profile_url = reverse(
-        "profile-edit",
-        kwargs={
-            "profile_slug": state.person.slug,
-        },
-    )
-    response = state.client.get(edit_profile_url)
-    assert response.status_code == 403
-    call_command("create_people_finder_groups")
-    edit_profile_group = Group.objects.get(name="Profile Editors")
-    state.user.groups.add(edit_profile_group)
-
-    response = state.client.get(edit_profile_url)
-    assert response.status_code == 200
-
-
-def test_edit_profile_permission(state):
-    edit_profile_url = reverse(
-        "profile-edit",
-        kwargs={
-            "profile_slug": state.person.slug,
-        },
-    )
-    check_permission(state, edit_profile_url, "edit_profile")
 
 
 def test_edit_team_permission(state):
@@ -155,14 +113,15 @@ def test_delete_team_permission(state):
     check_permission(state, add_url, "delete_team")
 
 
-def test_edit_profile_visible_permission(state):
+def test_edit_profile_visible(state):
     view_url = reverse(
         "profile-view",
         kwargs={
             "profile_slug": state.person.slug,
         },
     )
-    check_visible_button(state, view_url, b"Edit profile", "edit_profile")
+    response = state.client.get(view_url)
+    assertContains(response, "Edit profile", html=True)
 
 
 def test_edit_team_visible_permission(state):
@@ -211,8 +170,8 @@ def test_team_log_visible_permission(state):
     log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
     log_detail_len = len(log_detail)
 
-    view_log_perm = Permission.objects.get(codename="view_auditlog_team")
-    state.user.user_permissions.add(view_log_perm)
+    team_admin_group = Group.objects.get(name="Team Admin")
+    state.user.groups.add(team_admin_group)
 
     response = state.client.get(view_url)
     assert response.status_code == 200
@@ -264,4 +223,4 @@ def test_profile_log_visible_permission(state):
     assert title in response.content
     soup = BeautifulSoup(response.content, features="html.parser")
     log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
-    assert len(log_detail) == log_detail_len + 1
+    assert len(log_detail) == log_detail_len + 2

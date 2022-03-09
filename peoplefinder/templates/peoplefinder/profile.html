@@ -59,9 +59,7 @@
             <p class="govuk-body-m" data-test-role><strong>{{ role.job_title }}</strong> in <a class="govuk-link" href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a></p>
         {% endfor %}
 
-        {% if perms.peoplefinder.edit_profile %}
-            <p><a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a></p>
-        {% endif %}
+        <p><a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a></p>
 
         {% if request.user == profile.user %}
             <p class="govuk-body-s">Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DIT</a>.</p>
@@ -223,6 +221,60 @@
         </div>
     {% endif %}
 </dl>
+
+{% if perms.peoplefinder.view_auditlog %}
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                Internal user details
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Staff SSO user ID</dt>
+                    <dd class="govuk-summary-list__value">{{ profile.user.username }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Legacy staff SSO user ID</dt>
+                    <dd class="govuk-summary-list__value">{{ profile.user.legacy_sso_user_id }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Internal user ID</dt>
+                    <dd class="govuk-summary-list__value">{{ profile.user_id }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Groups</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% include 'peoplefinder/components/bullet-list.html' with list=profile.user.groups.all %}
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">User permissions</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% include 'peoplefinder/components/bullet-list.html' with list=profile.user.user_permissions.all %}
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Is staff</dt>
+                    <dd class="govuk-summary-list__value">{{ profile.user.is_staff }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Is superuser</dt>
+                    <dd class="govuk-summary-list__value">{{ profile.user.is_superuser }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Profile created at</dt>
+                    <dd class="govuk-summary-list__value">{{ profile.created_at }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Profile updated at</dt>
+                    <dd class="govuk-summary-list__value">{{ profile.updated_at }}</dd>
+                </div>
+            </dl>
+        </div>
+    </details>
+{% endif %}
 
 {% if request.user == profile.user or perms.peoplefinder.view_auditlog %}
     <details class="govuk-details" data-module="govuk-details">

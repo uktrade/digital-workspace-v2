@@ -1,4 +1,6 @@
-<p class="govuk-body">{{ introduction }}:</p>
+{% if introduction %}
+    <p class="govuk-body">{{ introduction }}:</p>
+{% endif %}
 <ul class="govuk-list govuk-list--bullet">
     {% for item in list %}
         <li>{{ item }}</li>

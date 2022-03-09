@@ -50,17 +50,8 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
                 legacy_sso_user_id=profile["user_id"],
             )
 
-        # TODO - discuss below with SD
-        # Add edit profile permission
-        # edit_profile_permission = Permission.objects.get(codename='edit_profile')
-        # user.user_permissions.add(edit_profile_permission)
-
         user.set_unusable_password()
         user.save()
-
-        # Add group with edit profile permission
-        # edit_profile_group = Group.objects.get(name="Profile Editors")
-        # user.groups.add(edit_profile_group)
 
         PersonService().create_user_profile(user)
 

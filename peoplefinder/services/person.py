@@ -249,6 +249,16 @@ class PersonAuditLogSerializer(AuditLogSerializer):
                     filter=Q(roles__isnull=False),
                     distinct=True,
                 ),
+                groups=ArrayAgg(
+                    "user__groups__name",
+                    filter=Q(user__groups__name__isnull=False),
+                    distinct=True,
+                ),
+                user_permissions=ArrayAgg(
+                    "user__user_permissions__name",
+                    filter=Q(user__user_permissions__name__isnull=False),
+                    distinct=True,
+                ),
             )[0]
         )
 
