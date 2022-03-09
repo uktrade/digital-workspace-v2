@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Q, Value
 from django.db.models.expressions import Case, When
@@ -10,6 +11,10 @@ from django.http import HttpRequest
 from django.shortcuts import reverse
 from notifications_python_client.notifications import NotificationsAPIClient
 
+from peoplefinder.management.commands.create_people_finder_groups import (
+    PERSON_ADMIN_GROUP_NAME,
+    TEAM_ADMIN_GROUP_NAME,
+)
 from peoplefinder.models import AuditLog, Person
 from peoplefinder.services.audit_log import (
     AuditLogSerializer,
@@ -17,7 +22,6 @@ from peoplefinder.services.audit_log import (
     ObjectRepr,
 )
 from user.models import User
-
 
 logger = logging.getLogger(__name__)
 
@@ -178,6 +182,37 @@ class PersonService:
             settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
             context,
         )
+
+    @staticmethod
+    def update_groups_and_permissions(
+        person: Person, is_person_admin: bool, is_team_admin: bool, is_superuser: bool
+    ) -> Person:
+        """Update the groups and permissions of a given person.
+
+        Note that this method does call save on the `person.user` instance.
+
+        Args:
+            person: The given person.
+            is_person_admin: Whether the user should be a person admin.
+            is_team_admin: Whether the user should be a team admin.
+            is_superuser: Whether the user should be a superuser.
+
+        Returns:
+            Person: The given person.
+        """
+        groups = []
+
+        if is_person_admin:
+            groups.append(Group.objects.get(name=PERSON_ADMIN_GROUP_NAME))
+
+        if is_team_admin:
+            groups.append(Group.objects.get(name=TEAM_ADMIN_GROUP_NAME))
+
+        person.user.groups.set(groups)
+        person.user.is_superuser = is_superuser
+        person.user.save()
+
+        return person
 
 
 class PersonAuditLogSerializer(AuditLogSerializer):

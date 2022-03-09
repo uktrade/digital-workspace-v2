@@ -2,12 +2,14 @@ from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
 
 
+PERSON_ADMIN_GROUP_NAME = "Person Admin"
 PERSON_ADMIN_PERMS = [
     "change_person",
     "delete_person",
     "view_auditlog",
 ]
 
+TEAM_ADMIN_GROUP_NAME = "Team Admin"
 TEAM_ADMIN_PERMS = [
     "add_team",
     "change_team",
@@ -27,7 +29,7 @@ class Command(BaseCommand):
 
         # Person Admin
         person_admin, _ = Group.objects.get_or_create(
-            name="Person Admin",
+            name=PERSON_ADMIN_GROUP_NAME,
         )
         person_admin_perms = Permission.objects.filter(
             codename__in=PERSON_ADMIN_PERMS,
@@ -38,7 +40,7 @@ class Command(BaseCommand):
 
         # Team Admin
         team_admin, _ = Group.objects.get_or_create(
-            name="Team Admin",
+            name=TEAM_ADMIN_GROUP_NAME,
         )
         team_admin_perms = Permission.objects.filter(
             codename__in=TEAM_ADMIN_PERMS,

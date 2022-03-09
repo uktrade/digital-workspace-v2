@@ -42,6 +42,7 @@ from peoplefinder.models import (
     TeamMember,
     Workday,
 )
+from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
 from user.models import User
 
@@ -91,6 +92,13 @@ def migrate_people():
         migrate_person(legacy_person, person)
 
         person.save()
+
+        PersonService.update_groups_and_permissions(
+            person=person,
+            is_person_admin=legacy_person.role_people_editor,
+            is_team_admin=legacy_person.role_groups_editor,
+            is_superuser=legacy_person.role_administrator,
+        )
 
         for membership in legacy_person.roles.all():
             team = get_team_for_legacy_group(membership.group)
@@ -292,8 +300,6 @@ def person_migrator():
         # previous_experience
         if legacy_person.previous_positions:
             person.previous_experience = legacy_person.previous_positions
-
-        # TODO: (PFM-165) Migrate photos.
 
     return migrate_person
 
