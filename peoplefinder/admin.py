@@ -2,8 +2,23 @@ from django.contrib import admin
 
 from core.admin import admin_site
 from peoplefinder.forms.admin import TeamModelForm
-from peoplefinder.models import Person, Team, TeamMember
+from peoplefinder.models import LegacyAuditLog, Person, Team, TeamMember
 from peoplefinder.services.team import TeamService
+
+
+class LegacyAuditLogModelAdmin(admin.ModelAdmin):
+    """Admin page for the LegacyAuditLog model."""
+
+    list_display = ["actor", "action", "content_type", "content_object"]
+    list_filter = [
+        "action",
+        ("content_type", admin.RelatedOnlyFieldListFilter),
+    ]
+    search_fields = [
+        "actor__first_name",
+        "actor__last_name",
+        "actor__email",
+    ]
 
 
 class TeamModelAdmin(admin.ModelAdmin):
@@ -29,6 +44,7 @@ class TeamModelAdmin(admin.ModelAdmin):
             team_service.team_created(obj, request.user)
 
 
+admin_site.register(LegacyAuditLog, LegacyAuditLogModelAdmin)
 admin_site.register(Person, admin.ModelAdmin)
 admin_site.register(Team, TeamModelAdmin)
 admin_site.register(TeamMember, admin.ModelAdmin)

@@ -154,17 +154,19 @@ class ProfilePhotos(LegacyPeopleFinderModel):
 #         db_table = 'schema_migrations'
 
 
-# class Versions(LegacyPeopleFinderModel):
-#     item_type = models.TextField()
-#     item_id = models.IntegerField()
-#     event = models.TextField()
-#     whodunnit = models.TextField(blank=True, null=True)
-#     object = models.TextField(blank=True, null=True)
-#     created_at = models.DateTimeField(blank=True, null=True)
-#     object_changes = models.TextField(blank=True, null=True)
-#     ip_address = models.CharField(max_length=-1, blank=True, null=True)
-#     user_agent = models.CharField(max_length=-1, blank=True, null=True)
+class Versions(LegacyPeopleFinderModel):
+    item_type = models.TextField()
+    item_id = models.IntegerField()
+    event = models.TextField()
+    whodunnit = models.TextField(blank=True, null=True)
+    object = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    object_changes = models.TextField(blank=True, null=True)
 
-#     class Meta:
-#         managed = False
-#         db_table = 'versions'
+    # NOTE: For now I have decided that we don't need to store this information.
+    # ip_address = models.CharField(max_length=-1, blank=True, null=True)
+    # user_agent = models.CharField(max_length=-1, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = "versions"
