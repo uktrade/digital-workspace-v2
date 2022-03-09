@@ -1,7 +1,6 @@
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
 
-
 PROFILE_EDITOR_PERMISSION_TYPES = [
     "edit_profile",
 ]

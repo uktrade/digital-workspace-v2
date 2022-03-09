@@ -563,3 +563,35 @@ class AuditLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     object_repr = models.JSONField(encoder=DjangoJSONEncoder)
     diff = models.JSONField(encoder=DjangoJSONEncoder)
+
+
+# NOTE: This model is read-only!
+class LegacyAuditLog(models.Model):
+    class Meta:
+        ordering = ["timestamp"]
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    class Action(models.TextChoices):
+        CREATE = "create"
+        UPDATE = "update"
+        DELETE = "delete"
+
+    action = models.CharField(max_length=6, choices=Action.choices)
+    timestamp = models.DateTimeField()
+    object = models.TextField(null=True)
+    object_changes = models.TextField(null=True)
+
+    def save(self, *args, **kwargs):
+        return
+
+    def delete(self, *args, **kwargs):
+        return

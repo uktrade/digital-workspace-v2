@@ -3,6 +3,7 @@ Order of table migrations:
   1. Groups -> Team
   2. People -> Person
     3. Memberships -> TeamMember (for each person)
+  4. Versions -> LegacyAuditLog
 
 Delete order is the reverse.
 
@@ -14,15 +15,17 @@ import logging
 from collections import deque
 from functools import cache
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional, Union
 
 import boto3
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
 from django.core.management.base import BaseCommand
 from django.db.models import Q
+from django.utils.timezone import make_aware
 
-from peoplefinder.legacy_models import Groups, People
+from peoplefinder.legacy_models import Groups, Memberships, People, Versions
 from peoplefinder.models import (
     AdditionalRole,
     AuditLog,
@@ -31,6 +34,7 @@ from peoplefinder.models import (
     Grade,
     KeySkill,
     LearningInterest,
+    LegacyAuditLog,
     Network,
     Person,
     Profession,
@@ -50,6 +54,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         logger.info("Begin legacy migration!")
 
+        LegacyAuditLog.objects.all().delete()
+        logger.info("Deleted legacy audit log")
         AuditLog.objects.all().delete()
         logger.info("Deleted audit log")
         # All team members and the team tree will be deleted using cascades.
@@ -62,6 +68,8 @@ class Command(BaseCommand):
         logger.info("Migrated teams")
         migrate_people()
         logger.info("Migrated people")
+        migrate_audit_log()
+        logger.info("Migrated legacy audit log")
 
 
 def migrate_people():
@@ -411,3 +419,119 @@ class ProfilePhotoMigrator:
             aws_access_key_id=access_key,
             aws_secret_access_key=secret_key,
         )
+
+
+def migrate_audit_log() -> None:
+    migrate = audit_log_migrator()
+
+    objs = []
+    count = 0
+
+    for version in Versions.objects.all():
+        obj = migrate(version)
+
+        if not obj:
+            continue
+
+        objs.append(obj)
+
+        count += 1
+
+        if count % 100 == 0:
+            LegacyAuditLog.objects.bulk_create(objs)
+            objs = []
+            logger.info("Created 100 audit logs")
+
+    LegacyAuditLog.objects.bulk_create(objs)
+    logger.info(f"Created {count} audit logs in total")
+
+
+def audit_log_migrator() -> Callable[[Versions], Optional[LegacyAuditLog]]:
+    people = People.objects.in_bulk(field_name="id")
+    groups = Groups.objects.in_bulk(field_name="id")
+    memberships = People.objects.in_bulk(field_name="id")
+
+    item_type_to_lookup = {
+        "Person": people,
+        "Group": groups,
+        "Membership": memberships,
+    }
+
+    event_to_action = {
+        "create": "create",
+        "update": "update",
+        "destroy": "delete",
+    }
+
+    def get_related_obj(version) -> Optional[Union[People, Groups, Memberships]]:
+        lookup = item_type_to_lookup[version.item_type]
+
+        return lookup.get(version.item_id)
+
+    def get_actor(version: Versions) -> Optional[Person]:
+        if not version.whodunnit:
+            return None
+
+        legacy_person = people.get(int(version.whodunnit))
+
+        if not legacy_person:
+            return None
+
+        user = get_user_for_legacy_person(legacy_person)
+
+        return user
+
+    def migrate(version: Versions) -> Optional[LegacyAuditLog]:
+        related_obj = get_related_obj(version)
+
+        if not related_obj:
+            return None
+
+        content_obj = get_content_obj(related_obj)
+
+        if not content_obj:
+            return None
+
+        actor = get_actor(version)
+
+        return LegacyAuditLog(
+            content_object=content_obj,
+            actor=actor,
+            action=event_to_action[version.event],
+            timestamp=make_aware(version.created_at),
+            object=version.object,
+            object_changes=version.object_changes,
+        )
+
+    return migrate
+
+
+def get_content_obj(
+    related_obj: Union[People, Groups, Memberships]
+) -> Optional[Union[Person, Team, TeamMember]]:
+    if isinstance(related_obj, People):
+        user = get_user_for_legacy_person(related_obj)
+
+        if not user:
+            return None
+
+        return user.profile
+    elif isinstance(related_obj, Groups):
+        try:
+            return get_team_for_legacy_group(related_obj)
+        except ObjectDoesNotExist:
+            return None
+    elif isinstance(related_obj, Memberships):
+        user = get_user_for_legacy_person(related_obj.person)
+
+        if not user:
+            return None
+
+        try:
+            team = get_team_for_legacy_group(related_obj.group)
+        except ObjectDoesNotExist:
+            return None
+
+        return TeamMember.objects.get(person=user.profile, team=team)
+    else:
+        raise ValueError(f"Invalid related_obj {related_obj!r}")
