@@ -5,13 +5,12 @@ from django.core.management import call_command
 from peoplefinder.models import Team
 from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.person import PersonService
+from user.models import User
 
 
 @pytest.fixture(scope="package")
 def django_db_setup(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
-        User = get_user_model()
-
         # John Smith - normal user
         user_john_smith, _ = User.objects.get_or_create(
             username="johnsmith",
@@ -47,3 +46,8 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
         # Leave this here to check we have reset the db into a known state.
         assert AuditLogService.get_audit_log(user_john_smith.profile).count() == 2
+
+
+@pytest.fixture
+def normal_user(db):
+    return User.objects.get(username="johnsmith")
