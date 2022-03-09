@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0061_legacyauditlog'),
+        ("peoplefinder", "0061_legacyauditlog"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='legacyauditlog',
-            options={'ordering': ['timestamp']},
+            name="legacyauditlog",
+            options={"ordering": ["timestamp"]},
         ),
     ]

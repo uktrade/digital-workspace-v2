@@ -210,10 +210,6 @@ class Person(models.Model):
                 check=~Q(pk=F("manager")), name="manager_cannot_be_self"
             ),
         ]
-        permissions = (
-            ("edit_profile", "Edit profile"),
-            ("delete_profile", "Delete profile"),
-        )
 
     user = models.OneToOneField(
         "user.User", models.CASCADE, primary_key=True, related_name="profile"
@@ -541,8 +537,6 @@ class AuditLog(models.Model):
     class Meta:
         ordering = ["timestamp"]
         get_latest_by = "timestamp"
-
-        permissions = (("view_auditlog_team", "View Team Audit Log"),)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
