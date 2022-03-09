@@ -44,6 +44,12 @@ black-check:
 black:
 	docker-compose run --rm --no-deps wagtail black .
 
+isort-check:
+	docker-compose run --rm --no-deps wagtail isort --check .
+
+isort:
+	docker-compose run --rm --no-deps wagtail isort .
+
 check-fixme:
 	! git --no-pager grep -rni fixme -- ':!./Makefile' ':!./.circleci/config.yml'
 
