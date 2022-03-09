@@ -22,6 +22,10 @@ from peoplefinder.services.team import TeamService
 from .base import PeoplefinderView
 
 
+class CannotDeleteOwnProfileError(Exception):
+    pass
+
+
 class ProfileLegacyView(PeoplefinderView):
     def get(self, request: HttpRequest, profile_legacy_slug: str) -> HttpResponse:
         profile = get_object_or_404(Person, legacy_slug=profile_legacy_slug)
@@ -186,8 +190,10 @@ class ProfileDeleteView(DeleteView, PeoplefinderView):
         return Person.objects.get(slug=self.kwargs["profile_slug"])
 
     def delete(self, request, *args, **kwargs):
-
         person = self.get_object()
+        if request.user == person.user:
+            raise CannotDeleteOwnProfileError()
+
         self.request.session["profile_name"] = person.full_name
 
         PersonService().profile_deleted(

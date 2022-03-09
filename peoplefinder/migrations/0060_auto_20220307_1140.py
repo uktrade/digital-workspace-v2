@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0058_alter_auditlog_options'),
+        ('peoplefinder', '0059_auto_20220304_1226'),
     ]
 
     operations = [
