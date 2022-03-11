@@ -237,6 +237,7 @@ def test_profile_detail_view(state):
     response = state.client.get(view_url)
     assert response.status_code == 200
 
+
 def test_profile_edit_view(state):
     perm = Permission.objects.get(codename="edit_profile")
     state.user.user_permissions.add(perm)
@@ -247,6 +248,7 @@ def test_profile_edit_view(state):
             "profile_slug": state.person.slug,
         },
     )
+    
     response = state.client.get(view_url)
 
     assert response.status_code == 200
@@ -255,7 +257,7 @@ def test_profile_edit_view(state):
     form = ProfileForm({"primary_phone_number": "07000"}, instance=state.person)
     form.is_valid()
 
-    # Need to remove items with no value with cleaned data in order that POST will work
+    # Need to remove items with no value with cleaned data in order that "POST" will work
     payload = {}
     for key, value in form.cleaned_data.items():
         if value:
@@ -265,13 +267,3 @@ def test_profile_edit_view(state):
 
     assert response.status_code == 200
     assert state.person.primary_phone_number == "07000"
-
-def test_delete_confirmation_view(state):
-    pass
-    # Test no session variable view redirects
-    # Test with session variable gives 200 response
-
-def test_delete_view(state):
-    pass
-    # Test that CannotDeleteOwnProfileError is raised when user attempts to delete own profile
-    # Test that delete profile works

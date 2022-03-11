@@ -37,20 +37,4 @@ class Command(BaseCommand):
             is_using_peoplefinder_v2=True,
         )
         
-
-        # TODO: Do I need the following if statement (from conftext.py)??? If so, then you will need one for each of the users above.
-        # TODO: If not required, then you probably won't need the variabe names above either - you can create users without assigning them to (named) variables.
-        if hasattr(user_jane, "profile"):
-            # We need to delete the profile's audit log separately because the primary
-            # key is always the same when using a one-to-one relationship.
-            AuditLogService.get_audit_log(user_jane.profile).delete()
-            user_jane.profile.delete()
-
-        # TODO: Check with Ross, but I don't think I need to call_command in this file. Therefore the next couple of executable lines don't need to be here.
-        # teams
-        call_command("create_test_teams")
-
-        # profiles
-        call_command("create_user_profiles")
-
         self.stdout.write(self.style.SUCCESS("Job completed successfully"))
