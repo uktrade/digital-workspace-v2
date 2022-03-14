@@ -196,11 +196,11 @@ class PersonQuerySet(models.QuerySet):
 
 
 def person_photo_path(instance, filename):
-    return f"peoplefinder/person/{instance.pk}/photo/{filename}"
+    return f"peoplefinder/person/{instance.slug}/photo/{filename}"
 
 
 def person_photo_small_path(instance, filename):
-    return f"peoplefinder/person/{instance.pk}/photo/small_{filename}"
+    return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
 class Person(models.Model):
