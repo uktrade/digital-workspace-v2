@@ -152,12 +152,17 @@ def delete_subscribers_missing_locally(mailChimp_list):
 
 
 def run_batch_operation(mailChimp, payload: dict, operation_type: str):
+    response = ""
     try:
+        # import pdb;
+        # pdb.set_trace()
+
         response = mailChimp.batches.start(payload)
         batch_id = response["id"]
+        print(response)
     except ApiClientError as api_error:
-        raise MailchimpBulkUpdateError(
-            f"Error perfroming {operation_type}",
+         raise MailchimpBulkUpdateError(
+            f"Error performing {operation_type}",
             response=response,
         ) from api_error
 
@@ -222,8 +227,7 @@ def create_or_update_subscriber_for_all_people():
         }
         operations.append(operation)
         # Create the tag operation at thewsame time, to avoid looping aroud the twice
-        tag_operation = {}
-        tag_operations = {
+        tag_operation = {
             "method": "POST",
             "path": f"/lists/{list_id}/members/{subscriber_hash}/tags",
             "operation_id": person.user_id,
