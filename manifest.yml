@@ -1,5 +1,10 @@
 ---
 applications:
-- buildpacks:
-  - https://github.com/cloudfoundry/nodejs-buildpack.git#v1.7.21
-  - https://github.com/cloudfoundry/python-buildpack.git
+  - name: digital-workspace-v2
+    buildpacks:
+      - https://github.com/cloudfoundry/nodejs-buildpack.git#v1.7.21
+      - https://github.com/cloudfoundry/python-buildpack.git
+    services:
+      - pg-digital-workspace
+      - redis5-digital-workspace-v2
+      - es-digital-workspace-v2
