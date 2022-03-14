@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class MailchimpConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'mailchimp'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "mailchimp"

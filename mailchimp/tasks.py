@@ -9,12 +9,12 @@ from mailchimp.services import (
     mailchimp_handle_person,
     mailchimp_get_current_subscribers,
     delete_subscribers_missing_locally,
-    create_or_update_subscriber_for_all_people
+    create_or_update_subscriber_for_all_people,
 )
 
 
 @shared_task
-def person_created_updated_to_mailchimp_task(person:Person):
+def person_created_updated_to_mailchimp_task(person: Person):
     notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
     try:
         mailchimp_handle_person(person)
@@ -24,7 +24,7 @@ def person_created_updated_to_mailchimp_task(person:Person):
             template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
             personalisation={
                 "message": f"MailChimp create_update failed: {create_update_error}"
-                           f"for email f{person.contact_email}"
+                f"for email f{person.contact_email}"
             },
         )
         raise create_update_error
@@ -35,12 +35,13 @@ def person_created_updated_to_mailchimp_task(person:Person):
             template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
             personalisation={
                 "message": f"MailChimp create_update successful"
-                           f"for email f{person.contact_email}"
+                f"for email f{person.contact_email}"
             },
         )
 
+
 @shared_task
-def person_deleted_to_mailchimp_task(person:Person):
+def person_deleted_to_mailchimp_task(person: Person):
     notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
     try:
         mailchimp_delete_person(person.contact_email)
@@ -50,7 +51,7 @@ def person_deleted_to_mailchimp_task(person:Person):
             template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
             personalisation={
                 "message": f"MailChimp delete failed: {delete_error}"
-                           f"for email f{person.contact_email}"
+                f"for email f{person.contact_email}"
             },
         )
         raise delete_error
@@ -61,7 +62,7 @@ def person_deleted_to_mailchimp_task(person:Person):
             template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
             personalisation={
                 "message": f"MailChimp delete_error successful"
-                           f"for email f{person.contact_email}"
+                f"for email f{person.contact_email}"
             },
         )
 
@@ -81,16 +82,12 @@ def bulk_sync_task():
             notification_client.send_email_notification(
                 email_address=settings.SUPPORT_REQUEST_EMAIL,
                 template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
-                personalisation={
-                    "message": "MailChimp bulk update successful"
-                },
+                personalisation={"message": "MailChimp bulk update successful"},
             )
     except Exception as bulk_error:
         notification_client.send_email_notification(
             email_address=settings.SUPPORT_REQUEST_EMAIL,
             template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
-            personalisation={
-                "message": f"MailChimp bulk update failed: {bulk_error}"
-            },
+            personalisation={"message": f"MailChimp bulk update failed: {bulk_error}"},
         )
         raise bulk_error
