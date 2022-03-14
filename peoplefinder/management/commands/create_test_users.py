@@ -14,9 +14,9 @@ class Command(BaseCommand):
         person_service = PersonService()
 
         # create users
-        user_jane = UserFactory()
+        UserFactory()
 
-        user_fred = UserFactory(
+        UserFactory(
             first_name="Fred",
             last_name="Carter",
             email="fred.carter@test.com",
@@ -25,7 +25,7 @@ class Command(BaseCommand):
             sso_contact_email="fred.carter@test.com",
         )
 
-        user_victor = UserFactory(
+        UserFactory(
             first_name="Victor",
             last_name="McDaid",
             email="victor.mcdaid@test.com",
