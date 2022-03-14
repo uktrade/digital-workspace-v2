@@ -19,201 +19,180 @@ from user.models import User
 from user.test.factories import UserFactory
 
 
-@dataclass
-class State:
-    client: Client
-    user: User
-    team: Team
-    person: Person
+class TestDeleteProfile:
+    @dataclass
+    class State:
+        client: Client
+        user: User
+        team: Team
+        person: Person
 
+    @pytest.fixture()
+    def state(self, db):
+        team = Team.objects.all().last()
+        if team == None:
+            team = TeamFactory()
+        user = UserFactory()
+        user.is_using_peoplefinder_v2 = True
+        user.save()
+        person = PersonService().create_user_profile(user)
+        client = Client()
+        client.force_login(user)
+        return self.State(client=client, person=person, team=team, user=user)
 
-@pytest.fixture()
-def state(db):
-    team = Team.objects.all().last()
-    if team == None:
-        team = TeamFactory()
-    user = UserFactory()
-    user.is_using_peoplefinder_v2 = True
-    user.save()
-    person = PersonService().create_user_profile(user)
-    client = Client()
-    client.force_login(user)
-    return State(client=client, person=person, team=team, user=user)
+    def button_is_visible(self, content, id) -> bool:
+        soup = BeautifulSoup(content, features="html.parser")
 
+        # Find delete 'button'
+        return bool(soup.find("input", {"id": id}))
 
-def button_is_visible(content, id) -> bool:
-    soup = BeautifulSoup(content, features="html.parser")
+    # TODO: *** SHOULD THIS FUNCTION BE REMOVED? ***
+    # TODO: Re-instate this testcase if users are able to delete their own profile
+    # def test_delete_profile_with_permission(state):
+    #     profile_url = reverse(
+    #         "profile-view",
+    #         kwargs={
+    #             'profile_slug': state.person.slug,
+    #         }
+    #     )
 
-    # Find delete 'button'
-    return bool(soup.find("input", {"id": id}))
+    #     delete_profile_perm = Permission.objects.get(
+    #         codename="delete_profile"
+    #     )
+    #     state.user.user_permissions.add(delete_profile_perm)
 
+    #     response = state.client.get(profile_url)
+    #     assert response.status_code == 200
 
-# TODO: *** SHOULD THIS FUNCTION BE REMOVED? ***
-# TODO: Re-instate this testcase if users are able to delete their own profile
-# def test_delete_profile_with_permission(state):
-#     profile_url = reverse(
-#         "profile-view",
-#         kwargs={
-#             'profile_slug': state.person.slug,
-#         }
-#     )
+    #     assert button_is_visible(response.content, "delete-profile")
 
-#     delete_profile_perm = Permission.objects.get(
-#         codename="delete_profile"
-#     )
-#     state.user.user_permissions.add(delete_profile_perm)
+    def test_delete_other_user_profile_with_permission(self, state):
+        other_user = UserFactory(
+            first_name="Fred",
+            last_name="Carter",
+            email="fred.carter@test.com",
+            legacy_sso_user_id=None,
+            username="fred.carter@-1111111@id.test.gov.uk",
+            sso_contact_email="fred.carter@test.com",
+            is_using_peoplefinder_v2=True,
+        )
+        other_user.save()
+        other_person = PersonService().create_user_profile(other_user)
 
-#     response = state.client.get(profile_url)
-#     assert response.status_code == 200
+        profile_url = reverse(
+            "profile-view",
+            kwargs={
+                "profile_slug": other_person.slug,
+            },
+        )
 
-#     assert button_is_visible(response.content, "delete-profile")
+        delete_profile_perm = Permission.objects.get(codename="delete_profile")
+        state.user.user_permissions.add(delete_profile_perm)
 
+        response = state.client.get(profile_url)
+        assert response.status_code == 200
 
-def test_delete_other_user_profile_with_permission(state):
-    other_user = UserFactory(
-        first_name="Fred",
-        last_name="Carter",
-        email="fred.carter@test.com",
-        legacy_sso_user_id=None,
-        username="fred.carter@-1111111@id.test.gov.uk",
-        sso_contact_email="fred.carter@test.com",
-        is_using_peoplefinder_v2=True,
-    )
-    other_user.save()
-    other_person = PersonService().create_user_profile(other_user)
+        assert self.button_is_visible(response.content, "delete-profile")
 
-    profile_url = reverse(
-        "profile-view",
-        kwargs={
-            "profile_slug": other_person.slug,
-        },
-    )
+    def test_delete_profile_no_permission(self, state):
+        profile_url = reverse(
+            "profile-view",
+            kwargs={
+                "profile_slug": state.person.slug,
+            },
+        )
 
-    delete_profile_perm = Permission.objects.get(codename="delete_profile")
-    state.user.user_permissions.add(delete_profile_perm)
+        response = state.client.get(profile_url)
+        assert response.status_code == 200
 
-    response = state.client.get(profile_url)
-    assert response.status_code == 200
+        assert not self.button_is_visible(response.content, "delete-profile")
 
-    assert button_is_visible(response.content, "delete-profile")
+    # TODO: *** SHOULD THIS FUNCTION BE REMOVED? ***
+    # TODO: Re-instate this testcase if users are able to delete their own profile
+    # def test_delete_profile_view(state):
+    #     profile_url = reverse(
+    #         "profile-delete",
+    #         kwargs={
+    #             'profile_slug': state.person.slug,
+    #         }
+    #     )
 
+    #     assert Person.objects.filter(pk=state.person.pk).exists()
 
-def test_delete_profile_no_permission(state):
-    profile_url = reverse(
-        "profile-view",
-        kwargs={
-            "profile_slug": state.person.slug,
-        },
-    )
+    #     response = state.client.post(profile_url)
+    #     assert response.status_code == 302
 
-    response = state.client.get(profile_url)
-    assert response.status_code == 200
+    #     assert not Person.objects.filter(pk=state.person.pk).exists()
 
-    assert not button_is_visible(response.content, "delete-profile")
+    def test_delete_confirmation_view(self, state):
+        view_url = reverse(
+            "delete-confirmation",
+        )
 
+        # Test with no session variable view redirects
+        response = state.client.get(view_url)  # status_code is 302
 
-# TODO: *** SHOULD THIS FUNCTION BE REMOVED? ***
-# TODO: Re-instate this testcase if users are able to delete their own profile
-# def test_delete_profile_view(state):
-#     profile_url = reverse(
-#         "profile-delete",
-#         kwargs={
-#             'profile_slug': state.person.slug,
-#         }
-#     )
+        assert response.status_code == 302
 
-#     assert Person.objects.filter(pk=state.person.pk).exists()
+        # TODO: Use the test above or the test below (with changes, using response.redirect_chain to check something?)
 
-#     response = state.client.post(profile_url)
-#     assert response.status_code == 302
+        # Test with no session variable view redirects
+        response = state.client.get(view_url, follow=True)
 
-#     assert not Person.objects.filter(pk=state.person.pk).exists()
+        assert response.status_code == 200
 
+        # Test with session variable gives 200 response
+        session = state.client.session
+        session["profile_name"] = state.person.full_name
+        session.save()
+        response = state.client.get(view_url)
 
-def test_delete_confirmation_view(state):
-    view_url = reverse(
-        "delete-confirmation",
-    )
+        assert response.status_code == 200
 
-    # Test with no session variable view redirects
-    response = state.client.get(view_url)  # status_code is 302
+        # Check confirmation message
+        full_name = session["profile_name"]
+        soup = BeautifulSoup(response.content, features="html.parser")
+        confirmation = f"Profile for { full_name } deleted"
 
-    assert response.status_code == 302
+        assert bool(
+            confirmation in soup.find(class_="govuk-notification-banner__heading").text
+        )
 
-    # TODO: Use the test above or the test below (with changes???)
+    def test_delete_view(self, state):
+        perm = Permission.objects.get(codename="delete_profile")
+        state.user.user_permissions.add(perm)
 
-    # Test with no session variable view redirects
-    response = state.client.get(
-        view_url, follow=True
-    )  # status_code is 200, the 302s can be found in response.redirect_chain
+        view_url = reverse(
+            "profile-delete",
+            kwargs={
+                "profile_slug": state.person.slug,
+            },
+        )
 
-    assert response.status_code == 200
+        # Test that CannotDeleteOwnProfileError is raised when user attempts to delete own profile
+        with TestCase.assertRaises(self, CannotDeleteOwnProfileError):
+            response = state.client.post(view_url)
 
-    # Test with session variable gives 200 response
-    session = state.client.session
-    session["profile_name"] = state.person.full_name
-    session.save()
-    response = state.client.get(view_url)
+        # Test that delete other user's profile works
+        # create other user
+        other_user = UserFactory(
+            first_name="Victor",
+            last_name="McDaid",
+            email="victor.mcdaid@test.com",
+            legacy_sso_user_id=None,
+            username="victor.macdaid@-1111111@id.test.gov.uk",
+            sso_contact_email="victor.mcdaid@test.com",
+            is_using_peoplefinder_v2=True,
+        )
+        other_user.save()
+        other_person = PersonService().create_user_profile(other_user)
 
-    assert response.status_code == 200
-
-    # Check confirmation message
-    full_name = session["profile_name"]
-    soup = BeautifulSoup(response.content, features="html.parser")
-    confirmation = f"Profile for { full_name } deleted"
-
-    assert bool(
-        confirmation in soup.find(class_="govuk-notification-banner__heading").text
-    )
-
-
-def test_delete_view(state):
-    perm = Permission.objects.get(codename="delete_profile")
-    state.user.user_permissions.add(perm)
-
-    view_url = reverse(
-        "profile-delete",
-        kwargs={
-            "profile_slug": state.person.slug,
-        },
-    )
-
-    # Test that CannotDeleteOwnProfileError is raised when user attempts to delete own profile
-
-    # TODO: Should the following be a delete request?
-    # response = state.client.delete(view_url)
-    # response = state.client.post(view_url)
-
-    # TODO: Use the try-except or the assertRaises???
-    # try:
-    #     response = state.client.post(view_url)
-    # except CannotDeleteOwnProfileError:
-    #     print("WE CAUGHT THE EXCEPTION")
-
-    with TestCase.assertRaises("", CannotDeleteOwnProfileError):
+        view_url = reverse(
+            "profile-delete",
+            kwargs={
+                "profile_slug": other_person.slug,
+            },
+        )
         response = state.client.post(view_url)
 
-    # Test that delete profile works - deleting a different user
-
-    # create different user
-    other_user = UserFactory(
-        first_name="Victor",
-        last_name="McDaid",
-        email="victor.mcdaid@test.com",
-        legacy_sso_user_id=None,
-        username="victor.macdaid@-1111111@id.test.gov.uk",
-        sso_contact_email="victor.mcdaid@test.com",
-        is_using_peoplefinder_v2=True,
-    )
-    other_user.save()
-    other_person = PersonService().create_user_profile(other_user)
-
-    view_url = reverse(
-        "profile-delete",
-        kwargs={
-            "profile_slug": other_person.slug,
-        },
-    )
-    response = state.client.post(view_url)
-
-    assert response.status_code == 302
+        assert response.status_code == 302
