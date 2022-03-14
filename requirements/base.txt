@@ -36,6 +36,7 @@ certifi==2021.10.8
     # via
     #   elastic-apm
     #   elasticsearch
+    #   mailchimp-marketing
     #   requests
     #   sentry-sdk
 cffi==1.15.0
@@ -167,6 +168,8 @@ lxml==4.7.1
     # via
     #   -r requirements.in/base.in
     #   htmllaundry
+mailchimp-marketing==3.0.74
+    # via -r requirements.in/base.in
 mammoth==1.4.18
     # via -r requirements.in/base.in
 markdown==3.3.4
@@ -210,6 +213,7 @@ python-dateutil==2.8.2
     #   atoma
     #   botocore
     #   elasticsearch-dsl
+    #   mailchimp-marketing
 pytz==2021.3
     # via
     #   celery
@@ -226,6 +230,7 @@ redis==4.1.2
 requests==2.27.1
     # via
     #   -r requirements.in/base.in
+    #   mailchimp-marketing
     #   notifications-python-client
     #   requests-oauthlib
     #   tweepy
@@ -247,6 +252,7 @@ six==1.16.0
     #   html5lib
     #   htmllaundry
     #   l18n
+    #   mailchimp-marketing
     #   mohawk
     #   python-dateutil
 soupsieve==2.3.1
@@ -265,6 +271,7 @@ urllib3==1.26.8
     #   botocore
     #   elastic-apm
     #   elasticsearch
+    #   mailchimp-marketing
     #   requests
     #   sentry-sdk
 vine==5.0.0

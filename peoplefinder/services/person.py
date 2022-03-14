@@ -10,6 +10,12 @@ from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
+
+from mailchimp.tasks import (
+    person_created_updated_to_mailchimp_task,
+    person_deleted_to_mailchimp_task,
+)
+
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.management.commands.create_people_finder_groups import (
@@ -119,6 +125,8 @@ class PersonService:
             person: The person behind the profile.
             created_by: The user which created the profile.
         """
+        person_created_updated_to_mailchimp_task.delay(person)
+
         AuditLogService().log(AuditLog.Action.CREATE, created_by, person)
 
     def profile_updated(
@@ -140,7 +148,7 @@ class PersonService:
             updated_by: The user which updated the profile.
         """
         AuditLogService().log(AuditLog.Action.UPDATE, updated_by, person)
-
+        person_created_updated_to_mailchimp_task.delay(person)
         if request:
             self.notify_about_changes(request, person)
 
