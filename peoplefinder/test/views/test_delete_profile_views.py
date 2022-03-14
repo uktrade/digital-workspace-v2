@@ -51,13 +51,11 @@ def test_user_cannot_view_own_profile_delete_button_with_permission(state):
     profile_url = reverse(
         "profile-view",
         kwargs={
-            'profile_slug': state.person.slug,
-        }
+            "profile_slug": state.person.slug,
+        },
     )
 
-    delete_profile_perm = Permission.objects.get(
-        codename="delete_profile"
-    )
+    delete_profile_perm = Permission.objects.get(codename="delete_profile")
     state.user.user_permissions.add(delete_profile_perm)
 
     response = state.client.get(profile_url)
@@ -115,7 +113,7 @@ def test_delete_confirmation_view(state):
     )
 
     # Test with no session variable view redirects
-    response = state.client.get(view_url, follow=True) 
+    response = state.client.get(view_url, follow=True)
     next_url, status_code = response.redirect_chain[0]
 
     assert status_code == 302
@@ -153,7 +151,7 @@ def test_own_profile_delete_view(state):
 
     # CannotDeleteOwnProfileError is raised when user attempts to delete own profile
     with pytest.raises(CannotDeleteOwnProfileError):
-        response = state.client.post(view_url)        
+        response = state.client.post(view_url)
 
 
 def test_other_user_profile_delete_view(state):
