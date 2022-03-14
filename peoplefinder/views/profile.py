@@ -196,9 +196,7 @@ class ProfileDeleteView(DeleteView, PeoplefinderView):
 
         self.request.session["profile_name"] = person.full_name
 
-        PersonService().profile_deleted(
-            self.request, person, self.request.user
-        )
+        PersonService().profile_deleted(self.request, person, self.request.user)
 
         return HttpResponseRedirect(self.success_url)
 

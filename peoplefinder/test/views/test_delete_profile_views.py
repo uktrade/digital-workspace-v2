@@ -38,7 +38,7 @@ def state(db):
     person = PersonService().create_user_profile(user)
     client = Client()
     client.force_login(user)
-    return State(client=client, person=person,  team=team, user=user)
+    return State(client=client, person=person, team=team, user=user)
 
 
 def button_is_visible(content, id) -> bool:
@@ -71,27 +71,25 @@ def button_is_visible(content, id) -> bool:
 
 def test_delete_other_user_profile_with_permission(state):
     other_user = UserFactory(
-            first_name = "Fred",
-            last_name = "Carter",
-            email = "fred.carter@test.com",
-            legacy_sso_user_id = None,
-            username = "fred.carter@-1111111@id.test.gov.uk",
-            sso_contact_email = "fred.carter@test.com",
-            is_using_peoplefinder_v2=True,
-        )
+        first_name="Fred",
+        last_name="Carter",
+        email="fred.carter@test.com",
+        legacy_sso_user_id=None,
+        username="fred.carter@-1111111@id.test.gov.uk",
+        sso_contact_email="fred.carter@test.com",
+        is_using_peoplefinder_v2=True,
+    )
     other_user.save()
     other_person = PersonService().create_user_profile(other_user)
 
     profile_url = reverse(
         "profile-view",
         kwargs={
-            'profile_slug': other_person.slug,
-        }
+            "profile_slug": other_person.slug,
+        },
     )
 
-    delete_profile_perm = Permission.objects.get(
-        codename="delete_profile"
-    )
+    delete_profile_perm = Permission.objects.get(codename="delete_profile")
     state.user.user_permissions.add(delete_profile_perm)
 
     response = state.client.get(profile_url)
@@ -104,8 +102,8 @@ def test_delete_profile_no_permission(state):
     profile_url = reverse(
         "profile-view",
         kwargs={
-            'profile_slug': state.person.slug,
-        }
+            "profile_slug": state.person.slug,
+        },
     )
 
     response = state.client.get(profile_url)
@@ -136,8 +134,8 @@ def test_delete_confirmation_view(state):
     view_url = reverse(
         "delete-confirmation",
     )
-    
-    # Test with no session variable view redirects 
+
+    # Test with no session variable view redirects
     response = state.client.get(view_url)  # status_code is 302
 
     assert response.status_code == 302
@@ -145,17 +143,18 @@ def test_delete_confirmation_view(state):
     # TODO: Use the test above or the test below (with changes???)
 
     # Test with no session variable view redirects
-    response = state.client.get(view_url, follow=True)  # status_code is 200, the 302s can be found in response.redirect_chain
+    response = state.client.get(
+        view_url, follow=True
+    )  # status_code is 200, the 302s can be found in response.redirect_chain
 
     assert response.status_code == 200
-
 
     # Test with session variable gives 200 response
     session = state.client.session
     session["profile_name"] = state.person.full_name
     session.save()
     response = state.client.get(view_url)
-    
+
     assert response.status_code == 200
 
     # Check confirmation message
@@ -163,7 +162,9 @@ def test_delete_confirmation_view(state):
     soup = BeautifulSoup(response.content, features="html.parser")
     confirmation = f"Profile for { full_name } deleted"
 
-    assert bool(confirmation in soup.find(class_="govuk-notification-banner__heading").text)
+    assert bool(
+        confirmation in soup.find(class_="govuk-notification-banner__heading").text
+    )
 
 
 def test_delete_view(state):
@@ -176,7 +177,7 @@ def test_delete_view(state):
             "profile_slug": state.person.slug,
         },
     )
-    
+
     # Test that CannotDeleteOwnProfileError is raised when user attempts to delete own profile
 
     # TODO: Should the following be a delete request?
@@ -189,22 +190,21 @@ def test_delete_view(state):
     # except CannotDeleteOwnProfileError:
     #     print("WE CAUGHT THE EXCEPTION")
 
-    with TestCase.assertRaises("", CannotDeleteOwnProfileError): 
+    with TestCase.assertRaises("", CannotDeleteOwnProfileError):
         response = state.client.post(view_url)
-    
 
     # Test that delete profile works - deleting a different user
 
     # create different user
     other_user = UserFactory(
-            first_name = "Victor",
-            last_name = "McDaid",
-            email = "victor.mcdaid@test.com",
-            legacy_sso_user_id = None,
-            username = "victor.macdaid@-1111111@id.test.gov.uk",
-            sso_contact_email = "victor.mcdaid@test.com",
-            is_using_peoplefinder_v2=True,
-        )
+        first_name="Victor",
+        last_name="McDaid",
+        email="victor.mcdaid@test.com",
+        legacy_sso_user_id=None,
+        username="victor.macdaid@-1111111@id.test.gov.uk",
+        sso_contact_email="victor.mcdaid@test.com",
+        is_using_peoplefinder_v2=True,
+    )
     other_user.save()
     other_person = PersonService().create_user_profile(other_user)
 

@@ -6,17 +6,17 @@ from django.core.management import call_command
 from peoplefinder.models import Person
 from peoplefinder.services.person import PersonService
 
-from user.models import User 
+from user.models import User
 
 
 class Command(BaseCommand):
     help = """Create user profiles for local testing purposes"""
 
     def add_arguments(self, parser):
-        parser.add_argument('email', type=str)
+        parser.add_argument("email", type=str)
 
     def handle(self, *args, **options):
-        email = options['email']
+        email = options["email"]
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -27,4 +27,6 @@ class Command(BaseCommand):
         user.user_permissions.add(Permission.objects.get(codename="edit_profile"))
         user.save()
 
-        self.stdout.write(self.style.SUCCESS("User profile set to use PF v2 successfully"))
+        self.stdout.write(
+            self.style.SUCCESS("User profile set to use PF v2 successfully")
+        )

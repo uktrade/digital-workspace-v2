@@ -150,7 +150,9 @@ class PersonService:
         if request:
             self.notify_about_changes(request, person)
 
-    def profile_deletion_initiated(self, request: Optional[HttpRequest], person: Person, initiated_by: User) -> None:
+    def profile_deletion_initiated(
+        self, request: Optional[HttpRequest], person: Person, initiated_by: User
+    ) -> None:
         """
         Args:
             person: The person behind the profile.
@@ -159,7 +161,9 @@ class PersonService:
 
         self.notify_about_deletion(person, initiated_by)
 
-    def profile_deleted(self, request: Optional[HttpRequest], person: Person, deleted_by: User) -> None:
+    def profile_deleted(
+        self, request: Optional[HttpRequest], person: Person, deleted_by: User
+    ) -> None:
         """A method to be called after a profile has been deleted.
 
         Please don't forget to call method this unless you need to bypass it.

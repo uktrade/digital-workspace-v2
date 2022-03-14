@@ -17,24 +17,24 @@ class Command(BaseCommand):
         user_jane = UserFactory()
 
         user_fred = UserFactory(
-            first_name = "Fred",
-            last_name = "Carter",
-            email = "fred.carter@test.com",
-            legacy_sso_user_id = None,
-            username = "fred.carter@-1111111@id.test.gov.uk",
-            sso_contact_email = "fred.carter@test.com",
+            first_name="Fred",
+            last_name="Carter",
+            email="fred.carter@test.com",
+            legacy_sso_user_id=None,
+            username="fred.carter@-1111111@id.test.gov.uk",
+            sso_contact_email="fred.carter@test.com",
         )
 
         user_victor = UserFactory(
-            first_name = "Victor",
-            last_name = "McDaid",
-            email = "victor.mcdaid@test.com",
-            legacy_sso_user_id = None,
-            username = "victor.macdaid@-1111111@id.test.gov.uk",
-            sso_contact_email = "victor.mcdaid@test.com",
+            first_name="Victor",
+            last_name="McDaid",
+            email="victor.mcdaid@test.com",
+            legacy_sso_user_id=None,
+            username="victor.macdaid@-1111111@id.test.gov.uk",
+            sso_contact_email="victor.mcdaid@test.com",
             is_staff=False,
             is_superuser=False,
             is_using_peoplefinder_v2=True,
         )
-        
+
         self.stdout.write(self.style.SUCCESS("Job completed successfully"))

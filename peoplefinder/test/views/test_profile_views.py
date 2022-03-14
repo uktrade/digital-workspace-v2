@@ -227,6 +227,7 @@ def test_profile_log_visible_permission(state):
 
     assert len(log_detail) == log_detail_len + 2
 
+
 def test_profile_detail_view(state):
     view_url = reverse(
         "profile-view",
@@ -248,7 +249,7 @@ def test_profile_edit_view(state):
             "profile_slug": state.person.slug,
         },
     )
-    
+
     response = state.client.get(view_url)
 
     assert response.status_code == 200

@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('peoplefinder', '0059_auto_20220304_1226'),
+        ("peoplefinder", "0059_auto_20220304_1226"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='became_inactive',
+            model_name="person",
+            name="became_inactive",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='person',
-            name='is_active',
+            model_name="person",
+            name="is_active",
             field=models.BooleanField(default=True),
         ),
     ]
