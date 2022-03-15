@@ -7,7 +7,6 @@ class Command(BaseCommand):
     help = """Create user profiles for local testing purposes"""
 
     def handle(self, *args, **options):
-        # create users
         test_user = UserFactory(
             first_name="Test",
             last_name="User",

@@ -50,12 +50,6 @@ You can update any profile on Digital Workspace. Find out more at: https://works
 """
 
 
-NOTIFY_ABOUT_DELETION_LOG_MESSAGE = """Hello {profile_name},
-{editor_name} has deleted your profile on Digital Workspace.
-You can update any profile on Digital Workspace. Find out more at: https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/using-people-finder/
-"""
-
-
 class PersonService:
     def create_user_profile(self, user: User) -> Person:
         """Create a profile for the given user if there isn't one.
@@ -155,6 +149,7 @@ class PersonService:
     ) -> None:
         """
         Args:
+            request: The HTTP request related to the action.
             person: The person behind the profile.
             initiated_by: The user which initiated the deletion.
         """
@@ -164,14 +159,13 @@ class PersonService:
     def profile_deleted(
         self, request: Optional[HttpRequest], person: Person, deleted_by: User
     ) -> None:
-        """A method to be called after a profile has been deleted.
-
-        Please don't forget to call method this unless you need to bypass it.
-
-        This is the main hook for calling out to other processes which need to happen
-        after a profile has been deleted.
+        """
+        This is the main hook for calling out to other processes which need to
+        happen after a profile has been deleted. Please don't forget to call this
+        method unless you need to bypass it.
 
         Args:
+            request: The HTTP request related to the action.
             person: The person behind the profile.
             deleted_by: The user which deleted the profile.
         """
@@ -251,14 +245,15 @@ class PersonService:
         }
 
         if settings.APP_ENV in ("local", "test"):
-            logger.info(NOTIFY_ABOUT_DELETION_LOG_MESSAGE.format(**context))
+            logger.info(f"{person.full_name}'s profile was deleted")
 
             return
 
         notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
         notification_client.send_email_notification(
-            settings.PROFILE_DELETED_EMAIL_TEMPLATE_ID,
-            context,
+            email=person.user.email,
+            template_id=settings.PROFILE_DELETED_EMAIL_TEMPLATE_ID,
+            personalisation=context,
         )
 
 

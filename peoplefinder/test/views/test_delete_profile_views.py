@@ -43,7 +43,7 @@ def state(db):
 def button_is_visible(content, id) -> bool:
     soup = BeautifulSoup(content, features="html.parser")
 
-    # Find delete 'button'
+    # Find 'button'
     return bool(soup.find("input", {"id": id}))
 
 
@@ -59,8 +59,8 @@ def test_user_cannot_view_own_profile_delete_button_with_permission(state):
     state.user.user_permissions.add(delete_profile_perm)
 
     response = state.client.get(profile_url)
-    assert response.status_code == 200
 
+    assert response.status_code == 200
     assert not button_is_visible(response.content, "delete-profile")
 
 
@@ -88,8 +88,8 @@ def test_profile_delete_button_visible_with_permission(state):
     state.user.user_permissions.add(delete_profile_perm)
 
     response = state.client.get(profile_url)
-    assert response.status_code == 200
 
+    assert response.status_code == 200
     assert button_is_visible(response.content, "delete-profile")
 
 
@@ -102,8 +102,8 @@ def test_profile_delete_button_not_visible_no_permission(state):
     )
 
     response = state.client.get(profile_url)
-    assert response.status_code == 200
 
+    assert response.status_code == 200
     assert not button_is_visible(response.content, "delete-profile")
 
 
@@ -119,7 +119,7 @@ def test_delete_confirmation_view(state):
     assert status_code == 302
     assert next_url == reverse("people-home")
 
-    # Test with session variable gives 200 response - no redirection
+    # Test user with session variable gives 200 response - no redirection
     session = state.client.session
     session["profile_name"] = state.person.full_name
     session.save()
@@ -154,7 +154,7 @@ def test_own_profile_delete_view(state):
         response = state.client.post(view_url)
 
 
-def test_other_user_profile_delete_view(state):
+def test_delete_view_using_other_users_profile(state):
     other_user = UserFactory(
         first_name="Other",
         last_name="User",
