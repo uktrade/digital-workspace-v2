@@ -11,10 +11,10 @@ class Command(BaseCommand):
         test_user = UserFactory(
             first_name="Test",
             last_name="User",
-            email="test.user@test.com",
+            email="test.user@test.com",  # /PS-IGNORE
             legacy_sso_user_id=None,
-            username="test.user@-1111111@id.test.gov.uk",
-            sso_contact_email="test.user@test.com",
+            username="test.user@-1111111@id.test.gov.uk",  # /PS-IGNORE
+            sso_contact_email="test.user@test.com",  # /PS-IGNORE
         )
 
         self.stdout.write(
@@ -26,10 +26,10 @@ class Command(BaseCommand):
         another_user = UserFactory(
             first_name="Another",
             last_name="User",
-            email="another.user@test.com",
+            email="another.user@test.com",  # /PS-IGNORE
             legacy_sso_user_id=None,
-            username="another.user@-1111111@id.test.gov.uk",
-            sso_contact_email="another.user@test.com",
+            username="another.user@-1111111@id.test.gov.uk",  # /PS-IGNORE
+            sso_contact_email="another.user@test.com",  # /PS-IGNORE
             is_staff=False,
             is_superuser=False,
             is_using_peoplefinder_v2=True,
