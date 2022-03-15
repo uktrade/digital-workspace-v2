@@ -1,8 +1,4 @@
 from django.core.management.base import BaseCommand
-from django.core.management import call_command
-
-from peoplefinder.models import Person
-from peoplefinder.services.person import PersonService
 
 from user.test.factories import UserFactory
 
@@ -11,8 +7,6 @@ class Command(BaseCommand):
     help = """Create user profiles for local testing purposes"""
 
     def handle(self, *args, **options):
-        person_service = PersonService()
-
         # create users
         UserFactory()
 

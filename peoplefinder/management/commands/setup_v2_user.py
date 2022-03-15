@@ -1,10 +1,5 @@
-import email
 from django.contrib.auth.models import Permission
 from django.core.management.base import BaseCommand, CommandError
-from django.core.management import call_command
-
-from peoplefinder.models import Person
-from peoplefinder.services.person import PersonService
 
 from user.models import User
 
