@@ -52,6 +52,9 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument("--skip-photos", action="store_true")
+
     def handle(self, *args, **options):
         logger.info("Begin legacy migration!")
 
@@ -67,13 +70,13 @@ class Command(BaseCommand):
 
         migrate_teams()
         logger.info("Migrated teams")
-        migrate_people()
+        migrate_people(**options)
         logger.info("Migrated people")
         migrate_audit_log()
         logger.info("Migrated legacy audit log")
 
 
-def migrate_people():
+def migrate_people(**options):
     count = 0
 
     legacy_people = People.objects.prefetch_related("groups").all()
@@ -110,7 +113,8 @@ def migrate_people():
                 head_of_team=membership.leader,
             )
 
-        profile_photo_migrator.migrate(legacy_person, person)
+        if not options["skip_photos"]:
+            profile_photo_migrator.migrate(legacy_person, person)
 
         count += 1
 
@@ -293,8 +297,14 @@ def person_migrator():
 
         # other_additional_roles
         if legacy_person.other_additional_responsibilities:
+            if len(legacy_person.other_additional_responsibilities) > 400:
+                logger.warn(
+                    f"{legacy_person} other_additional_responsibilities length is > 400"
+                    " and will be truncated"
+                )
+
             person.other_additional_roles = (
-                legacy_person.other_additional_responsibilities
+                legacy_person.other_additional_responsibilities[:400]
             )
 
         # previous_experience
@@ -375,6 +385,11 @@ class ProfilePhotoMigrator:
 
             return
 
+        if not self._get_photo_keys(legacy_person):
+            logger.warning(f"{legacy_person} has no photos")
+
+            return
+
         # Copy medium sized cropped photo.
         photo_key, photo_obj = self._get_photo_object(legacy_person, "medium_")
         photo_name = Path(photo_key).name.removeprefix("medium_")
@@ -391,8 +406,6 @@ class ProfilePhotoMigrator:
 
     def _get_photo_object(self, legacy_person, prefix):
         photo_keys = self._get_photo_keys(legacy_person)
-
-        assert photo_keys, "Profile found with photo ID but no photo object"
 
         key = [x for x in photo_keys if Path(x).name.startswith(prefix)][0]
 
@@ -478,7 +491,10 @@ def audit_log_migrator() -> Callable[[Versions], Optional[LegacyAuditLog]]:
         if not version.whodunnit:
             return None
 
-        legacy_person = people.get(int(version.whodunnit))
+        try:
+            legacy_person = people.get(int(version.whodunnit))
+        except ValueError:
+            legacy_person = None
 
         if not legacy_person:
             return None
@@ -500,9 +516,16 @@ def audit_log_migrator() -> Callable[[Versions], Optional[LegacyAuditLog]]:
 
         actor = get_actor(version)
 
+        automated = (
+            version.whodunnit.startswith("Automated task")
+            if version.whodunnit
+            else False
+        )
+
         return LegacyAuditLog(
             content_object=content_obj,
             actor=actor,
+            automated=automated,
             action=event_to_action[version.event],
             timestamp=make_aware(version.created_at),
             object=version.object,
