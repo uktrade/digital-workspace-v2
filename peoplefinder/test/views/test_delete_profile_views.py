@@ -66,12 +66,12 @@ def test_user_cannot_view_own_profile_delete_button_with_permission(state):
 
 def test_profile_delete_button_visible_with_permission(state):
     other_user = UserFactory(
-        first_name="Fred",
-        last_name="Carter",
-        email="fred.carter@test.com",
+        first_name="Other",
+        last_name="User",
+        email="other.user@test.com",
         legacy_sso_user_id=None,
-        username="fred.carter@-1111111@id.test.gov.uk",
-        sso_contact_email="fred.carter@test.com",
+        username="other.user@-1111111@id.test.gov.uk",
+        sso_contact_email="other.user@test.com",
         is_using_peoplefinder_v2=True,
     )
     other_user.save()
@@ -156,12 +156,12 @@ def test_own_profile_delete_view(state):
 
 def test_other_user_profile_delete_view(state):
     other_user = UserFactory(
-        first_name="Victor",
-        last_name="McDaid",
-        email="victor.mcdaid@test.com",
+        first_name="Other",
+        last_name="User",
+        email="other.user@test.com",
         legacy_sso_user_id=None,
-        username="victor.macdaid@-1111111@id.test.gov.uk",
-        sso_contact_email="victor.mcdaid@test.com",
+        username="other.user@-1111111@id.test.gov.uk",
+        sso_contact_email="other.user@test.com",
         is_using_peoplefinder_v2=True,
     )
     other_user.save()

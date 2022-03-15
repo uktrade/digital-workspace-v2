@@ -8,27 +8,35 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # create users
-        UserFactory()
-
-        UserFactory(
-            first_name="Fred",
-            last_name="Carter",
-            email="fred.carter@test.com",
+        test_user = UserFactory(
+            first_name="Test",
+            last_name="User",
+            email="test.user@test.com",
             legacy_sso_user_id=None,
-            username="fred.carter@-1111111@id.test.gov.uk",
-            sso_contact_email="fred.carter@test.com",
+            username="test.user@-1111111@id.test.gov.uk",
+            sso_contact_email="test.user@test.com",
         )
 
-        UserFactory(
-            first_name="Victor",
-            last_name="McDaid",
-            email="victor.mcdaid@test.com",
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"{test_user.first_name} {test_user.last_name} ({test_user.email}) was created"
+            )
+        )
+
+        another_user = UserFactory(
+            first_name="Another",
+            last_name="User",
+            email="another.user@test.com",
             legacy_sso_user_id=None,
-            username="victor.macdaid@-1111111@id.test.gov.uk",
-            sso_contact_email="victor.mcdaid@test.com",
+            username="another.user@-1111111@id.test.gov.uk",
+            sso_contact_email="another.user@test.com",
             is_staff=False,
             is_superuser=False,
             is_using_peoplefinder_v2=True,
         )
 
-        self.stdout.write(self.style.SUCCESS("Job completed successfully"))
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"{another_user.first_name} {another_user.last_name} ({another_user.email}) was created"
+            )
+        )
