@@ -1,1 +1,2 @@
 web: python manage.py migrate --noinput && python manage.py collectstatic --noinput && waitress-serve --port=$PORT config.wsgi:application
+celery-beat: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler

@@ -1,4 +1,12 @@
-version: "3"
+version: "3.9"
+
+x-app-base: &app-base
+  build: .
+  volumes:
+    - .:/app
+  environment:
+    DJANGO_SETTINGS_MODULE: config.settings.local
+
 services:
   db:
     image: postgres:11
@@ -9,10 +17,16 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
+  celery-beat:
+    <<: *app-base
+    command: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    links:
+      - db
+      - redis
   opensearch:
     image: opensearchproject/opensearch:1.2.3
     ports:
@@ -55,6 +69,7 @@ services:
       - redis
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.local
+      test: [ "CMD", "curl", "-s", "-f", "http://localhost:9200/_cat/health" ]
   redis:
     image: redis:buster
     ports:

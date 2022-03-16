@@ -18,6 +18,7 @@ django_redis
 django-settings-export
 django-simple-history==3.0.0
 djangorestframework==3.13.1
+django-celery-beat
 
 # Other libraries
 pyjwt[crypto]==2.0.1

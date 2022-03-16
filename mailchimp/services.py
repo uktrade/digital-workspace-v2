@@ -168,12 +168,15 @@ def run_batch_operation(mailChimp, payload: dict, operation_type: str):
         ) from api_error
     start_time = datetime.datetime.now()
     while True:
-        sleep(0.05)
-        response = mailChimp.batches.status(batch_id)
-        status = response["status"]
-        print(f"Status === {status}")
-        if status == "finished":
-            break
+        try:
+            sleep(0.05)
+            response = mailChimp.batches.status(batch_id)
+            status = response["status"]
+            # print(f"Status === {status}")
+            if status == "finished":
+                break
+        except Exception as e:
+            raise Exception
 
     elapsed_time = datetime.datetime.now() - start_time
     print(f"Elapsed time : {elapsed_time}")

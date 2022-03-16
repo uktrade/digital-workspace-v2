@@ -124,6 +124,7 @@ THIRD_PARTY_APPS = [
     "django_chunk_upload_handlers",
     "django_audit_log_middleware",
     "rest_framework",
+    "django_celery_beat",
 ]
 
 WAGTAIL_APPS = [
