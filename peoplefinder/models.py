@@ -313,7 +313,7 @@ class Person(models.Model):
     )
     secondary_phone_number = models.CharField(
         "Alternative contact number",
-        max_length=56,
+        max_length=160,
         null=True,
         blank=True,
         help_text=(
@@ -336,7 +336,7 @@ class Person(models.Model):
     )
     location_in_building = models.CharField(
         "Where in the building do you work?",
-        max_length=100,
+        max_length=130,
         null=True,
         blank=True,
         help_text=(
@@ -363,7 +363,7 @@ class Person(models.Model):
     )
     intermediate_languages = models.CharField(
         "Which other languages do you speak?",
-        max_length=100,
+        max_length=130,
         null=True,
         blank=True,
         help_text="Enter languages that you speak but aren't fluent in. Use a comma to separate them.",
@@ -580,6 +580,7 @@ class LegacyAuditLog(models.Model):
         DELETE = "delete"
 
     action = models.CharField(max_length=6, choices=Action.choices)
+    automated = models.BooleanField()
     timestamp = models.DateTimeField()
     object = models.TextField(null=True)
     object_changes = models.TextField(null=True)
