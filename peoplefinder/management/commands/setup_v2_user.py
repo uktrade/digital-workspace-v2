@@ -1,6 +1,7 @@
-from django.contrib.auth.models import Permission
 from django.core.management.base import BaseCommand, CommandError
 
+from peoplefinder.models import Person
+from peoplefinder.services.person import PersonService
 from user.models import User
 
 
@@ -18,9 +19,16 @@ class Command(BaseCommand):
             raise CommandError(f"User with email {email} does not exist")
 
         user.is_using_peoplefinder_v2 = True
-        user.user_permissions.add(Permission.objects.get(codename="delete_profile"))
-        user.user_permissions.add(Permission.objects.get(codename="edit_profile"))
         user.save()
+
+        person, _ = Person.objects.get_or_create(user=user)
+
+        PersonService.update_groups_and_permissions(
+            person=person,
+            is_person_admin=True,
+            is_team_admin=True,
+            is_superuser=True,
+        )
 
         self.stdout.write(
             self.style.SUCCESS(

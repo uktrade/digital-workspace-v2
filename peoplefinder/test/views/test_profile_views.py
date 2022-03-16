@@ -171,7 +171,7 @@ def test_team_log_visible_permission(state):
     log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
     log_detail_len = len(log_detail)
 
-    team_admin_group = Group.objects.get(name="Team Admin")
+    team_admin_group = Group.objects.get(name="Team Admin")  # /PS-IGNORE
     state.user.groups.add(team_admin_group)
 
     response = state.client.get(view_url)
@@ -240,9 +240,6 @@ def test_profile_detail_view(state):
 
 
 def test_profile_edit_view(state):
-    perm = Permission.objects.get(codename="edit_profile")
-    state.user.user_permissions.add(perm)
-
     view_url = reverse(
         "profile-edit",
         kwargs={

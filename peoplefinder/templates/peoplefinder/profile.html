@@ -61,10 +61,8 @@
 
         <div class="govuk-button-group">
             <p>
-                {% if perms.peoplefinder.edit_profile %}
-                    <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
-                {% endif %}
-                {% if perms.peoplefinder.delete_profile and request.user != profile.user %}
+                <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
+                {% if perms.peoplefinder.delete_person and request.user != profile.user %}
                     <form action="{% url 'profile-delete' profile.slug %}" method="post" onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
                         {% csrf_token %}
                         <input type="submit" class="govuk-button govuk-button--warning" id="delete-profile" value="Delete profile" />

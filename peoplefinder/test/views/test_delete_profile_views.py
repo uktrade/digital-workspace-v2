@@ -55,8 +55,8 @@ def test_user_cannot_view_own_profile_delete_button_with_permission(state):
         },
     )
 
-    delete_profile_perm = Permission.objects.get(codename="delete_profile")
-    state.user.user_permissions.add(delete_profile_perm)
+    delete_person_perm = Permission.objects.get(codename="delete_person")
+    state.user.user_permissions.add(delete_person_perm)
 
     response = state.client.get(profile_url)
 
@@ -84,8 +84,8 @@ def test_profile_delete_button_visible_with_permission(state):
         },
     )
 
-    delete_profile_perm = Permission.objects.get(codename="delete_profile")
-    state.user.user_permissions.add(delete_profile_perm)
+    delete_person_perm = Permission.objects.get(codename="delete_person")
+    state.user.user_permissions.add(delete_person_perm)
 
     response = state.client.get(profile_url)
 
@@ -133,13 +133,11 @@ def test_delete_confirmation_view(state):
     soup = BeautifulSoup(response.content, features="html.parser")
     confirmation = f"Profile for { full_name } deleted"
 
-    assert bool(
-        confirmation in soup.find(class_="govuk-notification-banner__heading").text
-    )
+    assert confirmation in soup.find(class_="govuk-notification-banner__heading").text
 
 
 def test_own_profile_delete_view(state):
-    perm = Permission.objects.get(codename="delete_profile")
+    perm = Permission.objects.get(codename="delete_person")
     state.user.user_permissions.add(perm)
 
     view_url = reverse(
@@ -154,7 +152,7 @@ def test_own_profile_delete_view(state):
         response = state.client.post(view_url)
 
 
-def test_delete_view_using_other_users_profile(state):
+def test_delete_view_with_other_users_profile(state):
     other_user = UserFactory(
         first_name="Other",
         last_name="User",

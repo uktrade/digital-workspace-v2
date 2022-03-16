@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 from typing import Optional
 
 from django.conf import settings
@@ -10,6 +9,7 @@ from django.db.models.expressions import Case, When
 from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
+from django.utils import timezone
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.management.commands.create_people_finder_groups import (
@@ -170,7 +170,7 @@ class PersonService:
             deleted_by: The user which deleted the profile.
         """
         person.is_active = False
-        person.became_inactive = datetime.now()
+        person.became_inactive = timezone.now()
         person.save()
 
         AuditLogService().log(AuditLog.Action.DELETE, deleted_by, person)
