@@ -5,9 +5,9 @@ from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.models import Person
 from mailchimp.services import (
-    mailchimp_delete_person,
-    mailchimp_handle_person,
-    mailchimp_get_current_subscribers,
+    mailChimp_delete_person,
+    mailChimp_handle_person,
+    mailChimp_get_current_subscribers,
     delete_subscribers_missing_locally,
     create_or_update_subscriber_for_all_people,
 )
@@ -17,7 +17,7 @@ from mailchimp.services import (
 def person_created_updated_to_mailchimp_task(person: Person):
     notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
     try:
-        mailchimp_handle_person(person)
+        mailChimp_handle_person(person)
     except Exception as create_update_error:
         notification_client.send_email_notification(
             email_address=settings.SUPPORT_REQUEST_EMAIL,
@@ -44,7 +44,7 @@ def person_created_updated_to_mailchimp_task(person: Person):
 def person_deleted_to_mailchimp_task(person: Person):
     notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
     try:
-        mailchimp_delete_person(person.contact_email)
+        mailChimp_delete_person(person.contact_email)
     except Exception as delete_error:
         notification_client.send_email_notification(
             email_address=settings.SUPPORT_REQUEST_EMAIL,
@@ -74,7 +74,7 @@ def bulk_sync_task():
         # Bulk update Mailchimp with current People Finder data
         # We update Mailchimp at the relevant points in the `Person` model lifecycle, but this serves
         # as another line of defence against sync issues.
-        current_list = mailchimp_get_current_subscribers()
+        current_list = mailChimp_get_current_subscribers()
         delete_subscribers_missing_locally(current_list)
         create_or_update_subscriber_for_all_people()
 

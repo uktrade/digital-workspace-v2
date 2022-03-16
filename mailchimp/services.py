@@ -1,5 +1,6 @@
 import hashlib
 import json
+import datetime
 
 from time import sleep
 
@@ -110,7 +111,7 @@ def mailChimp_delete_person(email: str):
         raise MailchimpApiResponseError from api_error
 
 
-def mailchimp_handle_person(person: Person):
+def mailChimp_handle_person(person: Person):
     mailChimp, list_id = get_mail_chimp_client_list()
     subscriber_hash = get_subscriber_hash(person.email)
     try:
@@ -165,20 +166,26 @@ def run_batch_operation(mailChimp, payload: dict, operation_type: str):
             f"Error performing {operation_type}",
             response=response,
         ) from api_error
-
+    start_time = datetime.datetime.now()
     while True:
         sleep(0.05)
         response = mailChimp.batches.status(batch_id)
         status = response["status"]
+        print(f"Status === {status}")
         if status == "finished":
             break
 
-    if response["errored_operations"]:
-        # Read the failed list, and send an email
-        response_body_url = response["response_body_url"]
-        errors = find_errors(response_body_url)
+    elapsed_time = datetime.datetime.now() - start_time
+    print(f"Elapsed time : {elapsed_time}")
+    # elapsed time = 0:02:00.120633 for 4000 records
+    print(response)
+    # if response["errored_operations"] == 0:
+    #     print(response)
+    #     # # Read the failed list, and send an email
+    #     # response_body_url = response["response_body_url"]
+    #     # errors = find_errors(response_body_url)
 
-    return response, errors
+    return response, ""
 
 
 def find_errors(response_body_url):
@@ -222,7 +229,7 @@ def create_or_update_subscriber_for_all_people():
         operation = {
             "method": "PUT",
             "path": f"/lists/{list_id}/members/{subscriber_hash}",
-            "operation_id": person.user_id,
+            "operation_id": f"fields{person.user_id}",
             "body": json.dumps(create_member_info(person)),
         }
         operations.append(operation)
@@ -230,7 +237,7 @@ def create_or_update_subscriber_for_all_people():
         tag_operation = {
             "method": "POST",
             "path": f"/lists/{list_id}/members/{subscriber_hash}/tags",
-            "operation_id": person.user_id,
+            "operation_id": f"tags{person.user_id}",
             "body": json.dumps(
                 {"tags": create_tags(person, full_building_list, person.building_list)}
             ),
