@@ -1,26 +1,23 @@
 from celery import shared_task
-
 from django.conf import settings
+from mailchimp.services import (
+    MailchimpProcessingError,
+    create_or_update_subscriber_for_all_people,
+    delete_subscribers_missing_locally,
+    mailchimp_delete_person,
+    mailchimp_get_current_subscribers,
+    mailchimp_handle_person,
+)
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.models import Person
-from mailchimp.services import (
-    MailchimpApiResponseError,
-    MailchimpProcessingError,
-    MailchimpDeletePersonError,
-    mailChimp_delete_person,
-    mailChimp_handle_person,
-    mailChimp_get_current_subscribers,
-    delete_subscribers_missing_locally,
-    create_or_update_subscriber_for_all_people,
-)
 
 
 @shared_task
 def person_created_updated_to_mailchimp_task(person: Person):
     notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
     try:
-        mailChimp_handle_person(person)
+        mailchimp_handle_person(person)
     except Exception as create_update_error:
         notification_client.send_email_notification(
             email_address=settings.SUPPORT_REQUEST_EMAIL,
@@ -47,7 +44,7 @@ def person_created_updated_to_mailchimp_task(person: Person):
 def person_deleted_to_mailchimp_task(person: Person):
     notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
     try:
-        mailChimp_delete_person(person.contact_email)
+        mailchimp_delete_person(person.contact_email)
     except Exception as delete_error:
         notification_client.send_email_notification(
             email_address=settings.SUPPORT_REQUEST_EMAIL,
@@ -83,14 +80,16 @@ def bulk_sync_task():
             message = create_or_update_subscriber_for_all_people()
         except MailchimpProcessingError:
             partial_error = True
-        current_list = mailChimp_get_current_subscribers()
+        current_list = mailchimp_get_current_subscribers()
         delete_message = delete_subscribers_missing_locally(current_list)
 
     except Exception as bulk_error:
         notification_client.send_email_notification(
             email_address=settings.SUPPORT_REQUEST_EMAIL,
             template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
-            personalisation={"message": f"MailChimp bulk update failed: {bulk_error}; {message}; {delete_message}"},
+            personalisation={
+                "message": f"MailChimp bulk update failed: {bulk_error}; {message}; {delete_message}"
+            },
         )
         raise bulk_error
 
@@ -98,6 +97,7 @@ def bulk_sync_task():
         notification_client.send_email_notification(
             email_address=settings.SUPPORT_REQUEST_EMAIL,
             template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
-            personalisation={"message":
-                                 f"MailChimp bulk update result: {message}; {delete_message}"},
+            personalisation={
+                "message": f"MailChimp bulk update result: {message}; {delete_message}"
+            },
         )
