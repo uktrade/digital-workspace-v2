@@ -236,7 +236,7 @@ class PersonService:
         return person
 
     def notify_about_deletion(self, person: Person, deleted_by: User) -> None:
-        if deleted_by == person:
+        if deleted_by == person.user:
             return None
 
         context = {
