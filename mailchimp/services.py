@@ -1,6 +1,8 @@
 import hashlib
 import json
-import datetime
+import logging
+
+from datetime import timedelta, datetime
 
 from time import sleep
 
@@ -16,6 +18,8 @@ from mailchimp_marketing.api_client import ApiClientError
 
 from mailchimp.utils import create_tags, create_person_tags, create_member_info
 
+
+logger = logging.getLogger(__name__)
 
 MAX_CONTACTS_NUMBER = 1000
 
@@ -45,6 +49,14 @@ class MailchimpApiResponseError(Exception):
     pass
 
 
+class MailchimpTimeOutError(Exception):
+    pass
+
+
+class MailchimpProcessingError(Exception):
+    pass
+
+
 def get_subscriber_hash(email):
     return hashlib.md5(email.encode("utf-8")).hexdigest()
 
@@ -68,7 +80,7 @@ def mailChimp_get_current_subscribers() -> list:
         list, include_total_contacts=True, fields=["stats.member_count"]
     )
 
-    # The response format is {'stats': {'member_count': 2}}
+    # The response format is {'stats': {'member_count': <contact_numbers>}}
     member_count = response["stats"]["member_count"]
     offset = 0
     total_read = 0
@@ -79,10 +91,12 @@ def mailChimp_get_current_subscribers() -> list:
         # {'members': [{'email_address': 'email1'},
         # {'email_address': 'email2'},
         # {'email_address': 'email3'}]}
-        response = client.lists.get_list_members_info(
-            list_id, fields=["members.email_address"], count=howmany, offset=offset
-        )
-
+        try:
+            response = client.lists.get_list_members_info(
+                list_id, fields=["members.email_address"], count=howmany, offset=offset
+            )
+        except ApiClientError as api_error:
+            raise MailchimpApiResponseError from api_error
         address_dict = response["members"]
         # Transform the list of dictionaries to a list of email addresses
         temp_list = {v for d in address_dict for v in d.values()}
@@ -104,7 +118,7 @@ def mailChimp_delete_person(email: str):
         )
         if response.status != 200:
             raise MailchimpDeletePersonError(
-                "Error non 200 response from Mailchimp update tags", response=response
+                "Error non 200 response from Mailchimp delete", response=response
             )
 
     except ApiClientError as api_error:
@@ -136,7 +150,8 @@ def mailChimp_handle_person(person: Person):
         )
         if response.status != 200:
             raise MailchimpUpdatePersonError(
-                f"Error non 200 response from Mailchimp update tags: f{person.contact_email}",
+                f"Error non 200 response "
+                f"from Mailchimp update tags: f{person.contact_email}",
                 response=response,
             )
 
@@ -147,9 +162,48 @@ def mailChimp_handle_person(person: Person):
 
 def delete_subscribers_missing_locally(mailChimp_list):
     people_finder_list = Person.objects.values_list("contact_email", flat=True)
+    deleted_counter = 0
+    deletion_errors = 0
     for person_email in mailChimp_list:
         if person_email not in people_finder_list:
-            mailChimp_delete_person(person_email)
+            try:
+                mailChimp_delete_person(person_email)
+                deleted_counter += 1
+            except (MailchimpDeletePersonError, MailchimpApiResponseError):
+                deletion_errors += 1
+                logger.error(f"Bulk delete: {person_email} failed to delete.")
+
+    return f"{deleted_counter} contacts deleted. {deletion_errors} errors."
+
+
+def wait_for_completion(mailChimp, batch_id: str, operation_type: str):
+    start_time = datetime.now()
+    timeout_at = start_time + timedelta(minutes=settings.MAILCHIMP_TIMEOUT)
+
+    while True:
+        try:
+            sleep(settings.MAILCHIMP_SLEEP_INTERVAL)
+
+            if datetime.now() > timeout_at:
+                msg = f"Timeout error from {operation_type}."
+                logger.error(msg)
+                raise MailchimpTimeOutError(msg)
+
+            response = mailChimp.batches.status(batch_id)
+            if response.status != 200:
+                msg = f"Non 200 MailChip response from {operation_type}."
+                logger.error(msg)
+                raise MailchimpBulkUpdateError(msg, response)
+
+            elif response["status"] == "finished":
+                break
+
+        except Exception as e:
+            raise MailchimpBulkUpdateError("Generic error", "") from e
+
+    elapsed_time = (datetime.datetime.now() - start_time).total_seconds()
+    print(f"Elapsed time : {elapsed_time}")
+    return elapsed_time
 
 
 def run_batch_operation(mailChimp, payload: dict, operation_type: str):
@@ -166,47 +220,18 @@ def run_batch_operation(mailChimp, payload: dict, operation_type: str):
             f"Error performing {operation_type}",
             response=response,
         ) from api_error
-    start_time = datetime.datetime.now()
-    while True:
-        try:
-            sleep(0.05)
-            response = mailChimp.batches.status(batch_id)
-            status = response["status"]
-            # print(f"Status === {status}")
-            if status == "finished":
-                break
-        except Exception as e:
-            raise Exception
 
-    elapsed_time = datetime.datetime.now() - start_time
-    print(f"Elapsed time : {elapsed_time}")
-    # elapsed time = 0:02:00.120633 for 4000 records
-    print(response)
-    # if response["errored_operations"] == 0:
-    #     print(response)
-    #     # # Read the failed list, and send an email
-    #     # response_body_url = response["response_body_url"]
-    #     # errors = find_errors(response_body_url)
+    elapsed_time, response = wait_for_completion(mailChimp, batch_id, operation_type)
 
-    return response, ""
+    total_operation = response["errored_operations"]
+    error_count = response["errored_operations"]
 
-
-def find_errors(response_body_url):
-    import urllib.request
-
-    response_body_url = "RESPONSE_BODY_URL_FROM_PREVIOUS_STEPS"
-    data = ""
-    with urllib.request.urlopen(response_body_url) as response:
-        data = response.read()
-
-    # get data from gzipped archive, return as JSON array
-    # results = process_batch_archive(data)
-    # for result in results:
-    #     user = fakeDB.findUser(result["operation_id"])
-    #     fakeDB.updateUser(user, {
-    #         "mailchimp_web_id": result["response"]["web_id"]
-    #     }
-    #
+    msg = f"{operation_type} processed {total_operation} in {elapsed_time}"
+    if error_count:
+        msg = f"{msg} with {error_count} errors."
+    else:
+        msg = f"{msg} with no errors."
+    return msg, error_count
 
 
 def create_or_update_subscriber_for_all_people():
@@ -236,7 +261,7 @@ def create_or_update_subscriber_for_all_people():
             "body": json.dumps(create_member_info(person)),
         }
         operations.append(operation)
-        # Create the tag operation at thewsame time, to avoid looping aroud the twice
+        # Create the tag operation at the same time, to avoid looping twice
         tag_operation = {
             "method": "POST",
             "path": f"/lists/{list_id}/members/{subscriber_hash}/tags",
@@ -248,6 +273,18 @@ def create_or_update_subscriber_for_all_people():
         tag_operations.append(tag_operation)
 
     payload = {"operations": operations}
-    response, message = run_batch_operation(mailChimp, payload, "Update contacts")
+
+    # Wait for the update contact operation to complete,
+    # before running the update tags operation.
+    # This is to avoid creating tags for a non yet existing contact
+    completion_message,  error_count = \
+        run_batch_operation(mailChimp, payload, "Update contacts")
+
     payload = {"operations": tag_operations}
-    response,  message = run_batch_operation(mailChimp, payload, "Update tags")
+    completion_message_tags, error_count_tags = \
+        run_batch_operation(mailChimp, payload, "Update tags")
+    message = f"{completion_message}{completion_message_tags}"
+    if error_count or error_count_tags:
+        raise MailchimpProcessingError(message)
+    else:
+        return message

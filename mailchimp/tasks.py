@@ -5,6 +5,9 @@ from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.models import Person
 from mailchimp.services import (
+    MailchimpApiResponseError,
+    MailchimpProcessingError,
+    MailchimpDeletePersonError,
     mailChimp_delete_person,
     mailChimp_handle_person,
     mailChimp_get_current_subscribers,
@@ -69,25 +72,32 @@ def person_deleted_to_mailchimp_task(person: Person):
 
 @shared_task
 def bulk_sync_task():
+    partial_error = False
     notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
     try:
         # Bulk update Mailchimp with current People Finder data
         # We update Mailchimp at the relevant points in the `Person` model lifecycle, but this serves
         # as another line of defence against sync issues.
-        current_list = mailChimp_get_current_subscribers()
-        delete_subscribers_missing_locally(current_list)
-        create_or_update_subscriber_for_all_people()
 
-        if settings.NOTIFY_MAILCHIMP_BULK_SUCCESS:
-            notification_client.send_email_notification(
-                email_address=settings.SUPPORT_REQUEST_EMAIL,
-                template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
-                personalisation={"message": "MailChimp bulk update successful"},
-            )
+        try:
+            message = create_or_update_subscriber_for_all_people()
+        except MailchimpProcessingError:
+            partial_error = True
+        current_list = mailChimp_get_current_subscribers()
+        delete_message = delete_subscribers_missing_locally(current_list)
+
     except Exception as bulk_error:
         notification_client.send_email_notification(
             email_address=settings.SUPPORT_REQUEST_EMAIL,
             template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
-            personalisation={"message": f"MailChimp bulk update failed: {bulk_error}"},
+            personalisation={"message": f"MailChimp bulk update failed: {bulk_error}; {message}; {delete_message}"},
         )
         raise bulk_error
+
+    if partial_error or settings.NOTIFY_MAILCHIMP_BULK_SUCCESS:
+        notification_client.send_email_notification(
+            email_address=settings.SUPPORT_REQUEST_EMAIL,
+            template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
+            personalisation={"message":
+                                 f"MailChimp bulk update result: {message}; {delete_message}"},
+        )
