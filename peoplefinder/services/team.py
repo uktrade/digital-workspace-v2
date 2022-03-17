@@ -235,14 +235,14 @@ class TeamService:
         sub_teams = self.get_all_child_teams(team)
 
         if sub_teams:
-            reasons.append("The team has sub-teams")
+            reasons.append("sub-teams")
 
         has_members = TeamMember.objects.filter(
             Q(team=team) | Q(team__in=sub_teams)
         ).exists()
 
         if has_members:
-            reasons.append("The team has members")
+            reasons.append("members")
 
         if reasons:
             return False, reasons

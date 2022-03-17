@@ -13,7 +13,7 @@
     {% if can_team_be_deleted %}
         <p class="govuk-body">Are you sure you want to delete the team {{ team }}?</p>
     {% else %}
-        {% include 'peoplefinder/components/bullet-list.html' with introduction='Reasons the team cannot be deleted' list=reasons_team_cannot_be_deleted %}
+        {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
     {% endif %}
 
     {% if can_team_be_deleted %}
