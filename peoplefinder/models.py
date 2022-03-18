@@ -207,7 +207,7 @@ class Person(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=~Q(user=F("manager")), name="manager_cannot_be_self"
+                check=~Q(pk=F("manager")), name="manager_cannot_be_self"
             ),
         ]
 
