@@ -207,12 +207,12 @@ class Person(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=~Q(pk=F("manager")), name="manager_cannot_be_self"
+                check=~Q(user=F("manager")), name="manager_cannot_be_self"
             ),
         ]
 
     user = models.OneToOneField(
-        "user.User", models.CASCADE, primary_key=True, related_name="profile"
+        "user.User", models.CASCADE, null=True, blank=True, related_name="profile"
     )
     manager = models.ForeignKey(
         "Person", models.SET_NULL, null=True, blank=True, related_name="+"

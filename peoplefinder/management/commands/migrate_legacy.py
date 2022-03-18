@@ -87,21 +87,19 @@ def migrate_people(**options):
     for legacy_person in legacy_people:
         user = get_user_for_legacy_person(legacy_person)
 
-        if not user:
-            continue
-
-        person, created = Person.objects.get_or_create(user=user)
+        person = Person.objects.create(user=user)
 
         migrate_person(legacy_person, person)
 
         person.save()
 
-        PersonService.update_groups_and_permissions(
-            person=person,
-            is_person_admin=legacy_person.role_people_editor,
-            is_team_admin=legacy_person.role_groups_editor,
-            is_superuser=legacy_person.role_administrator,
-        )
+        if user:
+            PersonService.update_groups_and_permissions(
+                person=person,
+                is_person_admin=legacy_person.role_people_editor,
+                is_team_admin=legacy_person.role_groups_editor,
+                is_superuser=legacy_person.role_administrator,
+            )
 
         for membership in legacy_person.roles.all():
             team = get_team_for_legacy_group(membership.group)

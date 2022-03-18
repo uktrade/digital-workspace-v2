@@ -63,7 +63,7 @@ class ManagerSearch(ManagerBaseView):
                     )
                 )
                 .filter(full_name_search__icontains=name)
-                .exclude(pk=context["profile"])
+                .exclude(pk=context["profile"].pk)
             )
 
             if not people:

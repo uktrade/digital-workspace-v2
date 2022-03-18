@@ -4,7 +4,7 @@ from typing import Optional
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import ArrayAgg
-from django.db.models import Q, Value
+from django.db.models import F, Q, Value
 from django.db.models.expressions import Case, When
 from django.db.models.functions import Concat
 from django.http import HttpRequest
@@ -222,14 +222,14 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 37, (
+    assert len(Person._meta.get_fields()) == 38, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
 
     def serialize(self, instance: Person) -> ObjectRepr:
         person = (
-            Person.objects.filter(pk=instance)
+            Person.objects.filter(pk=instance.pk)
             .values()
             .annotate(
                 # Note the use of `ArrayAgg` to denormalize and flatten many-to-many
@@ -294,13 +294,12 @@ class PersonAuditLogSerializer(AuditLogSerializer):
                     filter=Q(user__user_permissions__name__isnull=False),
                     distinct=True,
                 ),
+                user__username=F("user__username"),
+                manager__slug=F("manager__slug"),
             )[0]
         )
 
         # Encode the slug from `UUID` to `str` before returning.
         person["slug"] = str(person["slug"])
-        # Remove unnecessary fields.
-        del person["created_at"]
-        del person["updated_at"]
 
         return person
