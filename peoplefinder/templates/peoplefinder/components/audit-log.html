@@ -16,12 +16,14 @@
                 <td class="govuk-table__cell">
                     <ul class="pf-audit-log__diff">
                         {% for item in log.diff %}
-                            {% if item.action == 'add' %}
-                                <li class="pf-audit-log__diff-item pf-audit-log__diff-item--add">{{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }}</li>
-                            {% elif item.action == 'change' %}
-                                <li class="pf-audit-log__diff-item pf-audit-log__diff-item--change">{{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }} ➞ {{ item.to_value|stringformat:'r' }}</li>
-                            {% elif item.action == 'remove' %}
-                                <li class="pf-audit-log__diff-item pf-audit-log__diff-item--remove">{{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }}</li>
+                            {% if not excluded_keys or item.key not in excluded_keys %}
+                                {% if item.action == 'add' %}
+                                    <li class="pf-audit-log__diff-item pf-audit-log__diff-item--add">{{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }}</li>
+                                {% elif item.action == 'change' %}
+                                    <li class="pf-audit-log__diff-item pf-audit-log__diff-item--change">{{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }} ➞ {{ item.to_value|stringformat:'r' }}</li>
+                                {% elif item.action == 'remove' %}
+                                    <li class="pf-audit-log__diff-item pf-audit-log__diff-item--remove">{{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }}</li>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </ul>
