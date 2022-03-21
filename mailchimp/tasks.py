@@ -75,7 +75,6 @@ def bulk_sync_task():
         # Bulk update Mailchimp with current People Finder data
         # We update Mailchimp at the relevant points in the `Person` model lifecycle, but this serves
         # as another line of defence against sync issues.
-
         try:
             message = create_or_update_subscriber_for_all_people()
         except MailchimpProcessingError:

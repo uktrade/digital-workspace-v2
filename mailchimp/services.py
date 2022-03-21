@@ -11,6 +11,7 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Q
 
 import mailchimp_marketing as MailchimpMarketing  # noqa N812
+from mailchimp_marketing.api_client import ApiClientError
 
 from mailchimp.utils import create_member_info, create_person_tags, create_tags
 
@@ -59,7 +60,7 @@ def get_subscriber_hash(email):
     return hashlib.md5(email.encode("utf-8")).hexdigest()  # noqa S303
 
 
-def get_mailchimp_client_list():
+def get_mailchimp_client_list() -> MailchimpMarketing.Client:
     mailchimp = MailchimpMarketing.Client()
     mailchimp.set_config(
         {
@@ -73,15 +74,18 @@ def get_mailchimp_client_list():
 def mailchimp_get_current_subscribers() -> list:
     client, list_id = get_mailchimp_client_list
     # find howmnay contacts there are.
-    # There is a maximum number of contact that can be return in one call
     response = client.lists.get_list(
         list, include_total_contacts=True, fields=["stats.member_count"]
     )
-
     # The response format is {'stats': {'member_count': <contact_numbers>}}
     member_count = response["stats"]["member_count"]
+
+    # There is a maximum number of contact that can be return in one call
+    # So do N calls, until all the contacts have been returned, and merge
+    # the lists in one list.
     offset = 0
     total_read = 0
+    # No error if you ask to read more contacts than the contact in the list
     howmany = MAX_CONTACTS_NUMBER
     email_list = []
     while True:
@@ -93,7 +97,7 @@ def mailchimp_get_current_subscribers() -> list:
             response = client.lists.get_list_members_info(
                 list_id, fields=["members.email_address"], count=howmany, offset=offset
             )
-        except MailchimpMarketing.ApiClientError as api_error:
+        except ApiClientError as api_error:
             raise MailchimpApiResponseError from api_error
         address_dict = response["members"]
         # Transform the list of dictionaries to a list of email addresses
@@ -119,11 +123,15 @@ def mailchimp_delete_person(email: str):
                 "Error non 200 response from Mailchimp delete", response=response
             )
 
-    except MailchimpMarketing.ApiClientError as api_error:
+    except ApiClientError as api_error:
         raise MailchimpApiResponseError from api_error
 
 
 def mailchimp_handle_person(person: Person):
+    # There are two sets of information in a contact:
+    # the mail merge fields
+    # and the tags.
+    # The two sets are updated using different api.
     mailchimp, list_id = get_mailchimp_client_list()
     subscriber_hash = get_subscriber_hash(person.email)
     try:
@@ -131,14 +139,14 @@ def mailchimp_handle_person(person: Person):
         response = mailchimp.lists.set_list_member(
             list_id, subscriber_hash, member_info
         )
-        # Check status codes
         if response.status != 200:
             raise MailchimpUpdatePersonError(
-                f"Error non 200 response from Mailchimp update list member: f{person.contact_email}",
+                f"Error non 200 response from Mailchimp "
+                f"update list member: f{person.contact_email}",
                 response=response,
             )
 
-    except MailchimpMarketing.ApiClientError as api_error:
+    except ApiClientError as api_error:
         raise MailchimpApiResponseError from api_error
 
     try:
@@ -154,11 +162,18 @@ def mailchimp_handle_person(person: Person):
             )
 
         raise MailchimpUpdatePersonError
-    except MailchimpMarketing.ApiClientError as api_error:
+    except ApiClientError as api_error:
         raise MailchimpApiResponseError from api_error
 
 
 def delete_subscribers_missing_locally(mailchimp_list):
+    # Checks the list of contacts returned from mailchimp against the list
+    # of persons in Peoplefinder.
+    # Anyone in Mailchimp but not in peoplefinder gets deleted.
+    # The contacts are deleted one by one. If there is an error,
+    # the deletion continues, but add a note to the log.
+    # It could be better to do the delete as a batch job, but as there are not
+    # many people deleted every day, it should be ok to do delete them individually.
     people_finder_list = Person.objects.values_list("contact_email", flat=True)
     deleted_counter = 0
     deletion_errors = 0
@@ -174,41 +189,53 @@ def delete_subscribers_missing_locally(mailchimp_list):
     return f"{deleted_counter} contacts deleted. {deletion_errors} errors."
 
 
-def wait_for_completion(mailchimp, batch_id: str, operation_type: str):
+valid_statuses = ["pending", "preprocessing", "started", "finalizing","finished"]
+
+
+def wait_for_completion(mailchimp: MailchimpMarketing.Client, batch_id: str, operation_type: str):
+    # This routine is called after starting a batch job,
+    # and keep checking the status of the job until finished or
+    # until there is a timeout.
+    # Used to make sure the batch job is completed before starting the next operation.
     start_time = datetime.now()
     timeout_at = start_time + timedelta(minutes=settings.MAILCHIMP_TIMEOUT)
-
     while True:
         try:
             sleep(settings.MAILCHIMP_SLEEP_INTERVAL)
+            response = mailchimp.batches.status(batch_id)
+            status_returned= response["status"]
+            if status_returned == "finished":
+                break
+            if status_returned not in valid_statuses:
+                msg = f"Not valid status returned: " \
+                      f" '{status_returned}' " \
+                      f"while performing {operation_type}."
+                logger.error(msg)
+                raise MailchimpBulkUpdateError(msg, response)
 
             if datetime.now() > timeout_at:
                 msg = f"Timeout error from {operation_type}."
                 logger.error(msg)
                 raise MailchimpTimeOutError(msg)
 
-            response = mailchimp.batches.status(batch_id)
-            if response.status != 200:
-                msg = f"Non 200 MailChip response from {operation_type}."
-                logger.error(msg)
-                raise MailchimpBulkUpdateError(msg, response)
+        except ApiClientError as api_error:
+            raise MailchimpBulkUpdateError(
+                f"Error performing {operation_type}",
+                response=response,
+            ) from api_error
 
-            elif response["status"] == "finished":
-                break
-
-        except Exception as e:
-            raise MailchimpBulkUpdateError("Generic error", "") from e
-
-    elapsed_time = (datetime.datetime.now() - start_time).total_seconds()
-    return elapsed_time
+    elapsed_time = (datetime.now() - start_time).total_seconds()
+    return elapsed_time, response
 
 
-def run_batch_operation(mailchimp, payload: dict, operation_type: str):
+def run_batch_operation(mailchimp: MailchimpMarketing.Client, payload: dict, operation_type: str):
+    # This run a batch job. The payload contains the correct set of data
+    # for the operation, and the operation type is used for messages.
     response = ""
     try:
         response = mailchimp.batches.start(payload)
         batch_id = response["id"]
-    except MailchimpMarketing.ApiClientError as api_error:
+    except ApiClientError as api_error:
         raise MailchimpBulkUpdateError(
             f"Error performing {operation_type}",
             response=response,
@@ -228,6 +255,7 @@ def run_batch_operation(mailchimp, payload: dict, operation_type: str):
 
 
 def create_or_update_subscriber_for_all_people():
+    # full update of mailchimp, using the person data in peoplefinder.
     mailchimp, list_id = get_mailchimp_client_list()
     persons = (
         Person.objects.all()
@@ -243,6 +271,8 @@ def create_or_update_subscriber_for_all_people():
     )
     operations = []
     tag_operations = []
+    # The tags used in mailchimp are related to the buildings.
+    # Create the full list of buildings in the system, so the tags can be updated
     full_building_list = Building.objects.all().values_list("code", flat=True)
 
     for person in persons:
