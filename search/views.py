@@ -82,7 +82,7 @@ def search(request):
             Search(index="wagtail__wagtailcore_page")
             .using(
                 Elasticsearch(
-                    settings.ELASTIC_SEARCH_URL,
+                    settings.OPENSEARCH_URL,
                 )
             )
             .query(
