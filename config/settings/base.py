@@ -303,14 +303,14 @@ with open(stop_words_file) as stop_words_file:
             continue
         stop_words.append(line.strip())
 
-if "elasticsearch" in VCAP_SERVICES:
-    ELASTIC_SEARCH_URL = VCAP_SERVICES["elasticsearch"][0]["credentials"]["uri"]
+if "opensearch" in VCAP_SERVICES:
+    OPENSEARCH_URL = VCAP_SERVICES["opensearch"][0]["credentials"]["uri"]
 else:
-    ELASTIC_SEARCH_URL = env("ELASTIC_SEARCH_URL")
+    OPENSEARCH_URL = env("OPENSEARCH_URL")
 
 ELASTICSEARCH_DSL = {
     "default": {
-        "hosts": ELASTIC_SEARCH_URL,
+        "hosts": OPENSEARCH_URL,
     },
 }
 
@@ -319,7 +319,7 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.search.backends.elasticsearch7",
         "AUTO_UPDATE": True,
         "ATOMIC_REBUILD": True,
-        "URLS": [ELASTIC_SEARCH_URL],
+        "URLS": [OPENSEARCH_URL],
         "INDEX": "wagtail",
         "TIMEOUT": 60,
         "OPTIONS": {},
