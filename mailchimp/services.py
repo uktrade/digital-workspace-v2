@@ -12,10 +12,10 @@ from django.conf import settings
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Q
 
+from mailchimp.utils import create_member_info, create_person_tags, create_tags
+
 import mailchimp_marketing as MailchimpMarketing  # noqa N812
 from mailchimp_marketing.api_client import ApiClientError
-
-from mailchimp.utils import create_member_info, create_person_tags, create_tags
 
 from peoplefinder.models import Building, Person
 
@@ -117,9 +117,7 @@ def mailchimp_delete_person(email: str):
     try:
         # Don't use delete_list_member_permanently.
         # It prevents the same email to be added again in the future
-        response = mailchimp.lists.delete_list_member(
-            list_id, subscriber_hash
-        )
+        response = mailchimp.lists.delete_list_member(list_id, subscriber_hash)
 
         if response.status_code != 204:
             raise MailchimpDeletePersonError(
@@ -127,7 +125,9 @@ def mailchimp_delete_person(email: str):
             )
 
     except ApiClientError as api_error:
-        raise MailchimpApiResponseError(f"API error from Mailchimp delete: {api_error.text}")
+        raise MailchimpApiResponseError(
+            f"API error from Mailchimp delete: {api_error.text}"
+        )
 
 
 def mailchimp_handle_person(person: Person):
@@ -193,10 +193,12 @@ def delete_subscribers_missing_locally(mailchimp_list: list):
     return f"{deleted_counter} contacts deleted. {deletion_errors} errors."
 
 
-valid_statuses = ["pending", "preprocessing", "started", "finalizing","finished"]
+valid_statuses = ["pending", "preprocessing", "started", "finalizing", "finished"]
 
 
-def wait_for_completion(mailchimp: MailchimpMarketing.Client, batch_id: str, operation_type: str):
+def wait_for_completion(
+    mailchimp: MailchimpMarketing.Client, batch_id: str, operation_type: str
+):
     # This routine is called after starting a batch job,
     # and keep checking the status of the job until finished or
     # until there is a timeout.
@@ -207,13 +209,15 @@ def wait_for_completion(mailchimp: MailchimpMarketing.Client, batch_id: str, ope
         try:
             sleep(settings.MAILCHIMP_SLEEP_INTERVAL)
             response = mailchimp.batches.status(batch_id)
-            status_returned= response["status"]
+            status_returned = response["status"]
             if status_returned == "finished":
                 break
             if status_returned not in valid_statuses:
-                msg = f"Not valid status returned: " \
-                      f" '{status_returned}' " \
-                      f"while performing {operation_type}."
+                msg = (
+                    f"Not valid status returned: "
+                    f" '{status_returned}' "
+                    f"while performing {operation_type}."
+                )
                 logger.error(msg)
                 raise MailchimpBulkUpdateError(msg, response)
 
@@ -232,7 +236,9 @@ def wait_for_completion(mailchimp: MailchimpMarketing.Client, batch_id: str, ope
     return elapsed_time, response
 
 
-def run_batch_operation(mailchimp: MailchimpMarketing.Client, payload: dict, operation_type: str):
+def run_batch_operation(
+    mailchimp: MailchimpMarketing.Client, payload: dict, operation_type: str
+):
     # This run a batch job. The payload contains the correct set of data
     # for the operation, and the operation type is used for messages.
     response = ""

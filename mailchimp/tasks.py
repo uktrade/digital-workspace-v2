@@ -87,6 +87,7 @@ def bulk_sync_task():
         # )
         raise bulk_error
 
+
     # if settings.NOTIFY_MAILCHIMP_BULK_SUCCESS:
     #     notification_client.send_email_notification(
     #         email_address=settings.SUPPORT_REQUEST_EMAIL,
