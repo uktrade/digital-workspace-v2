@@ -1,6 +1,7 @@
 from celery import shared_task
 from django.conf import settings
 from mailchimp.services import (
+    MailchimpProcessingError,
     create_or_update_subscriber_for_all_people,
     delete_subscribers_missing_locally,
     mailchimp_delete_person,
@@ -10,6 +11,10 @@ from mailchimp.services import (
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.models import Person
+
+
+class MailchimpPartialError(Exception):
+    pass
 
 
 @shared_task
@@ -78,21 +83,26 @@ def bulk_sync_task():
         delete_message = delete_subscribers_missing_locally(current_list)
 
     except Exception as bulk_error:
-        # notification_client.send_email_notification(
-        #     email_address=settings.SUPPORT_REQUEST_EMAIL,
-        #     template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
-        #     personalisation={
-        #         "message": f"MailChimp bulk update failed: {bulk_error}."
-        #     },
-        # )
-        raise bulk_error
+        notification_client.send_email_notification(
+            email_address=settings.SUPPORT_REQUEST_EMAIL,
+            template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
+            personalisation={
+                "message": f"MailChimp bulk update failed: {bulk_error} Check sentry for more details"
+            },
+        )
+        if isinstance(bulk_error, MailchimpProcessingError):
+            msg = f"{bulk_error}, " \
+                  f"update person response: {bulk_error.response}, " \
+                  f"update tag response: {bulk_error.response_tag}"
+            raise MailchimpPartialError(msg)
+        else:
+            raise bulk_error
 
-
-    # if settings.NOTIFY_MAILCHIMP_BULK_SUCCESS:
-    #     notification_client.send_email_notification(
-    #         email_address=settings.SUPPORT_REQUEST_EMAIL,
-    #         template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
-    #         personalisation={
-    #             "message": f"MailChimp bulk update result: {message}; {delete_message}"
-    #         },
-    #     )
+    if settings.NOTIFY_MAILCHIMP_BULK_SUCCESS:
+        notification_client.send_email_notification(
+            email_address=settings.SUPPORT_REQUEST_EMAIL,
+            template_id=settings.MERGE_MAILCHIMP_RESULT_TEMPLATE_ID,
+            personalisation={
+                "message": f"MailChimp bulk update result: {message}; {delete_message}"
+            },
+        )

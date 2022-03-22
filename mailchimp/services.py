@@ -52,7 +52,10 @@ class MailchimpTimeOutError(Exception):
 
 
 class MailchimpProcessingError(Exception):
-    pass
+    def __init__(self, message, response, response_tag):
+        super().__init__(message)
+        self.response = response
+        self.response_tag = response_tag
 
 
 def get_subscriber_hash(email):
@@ -258,10 +261,10 @@ def run_batch_operation(
 
     msg = f"{operation_type} processed {total_operation} in {elapsed_time}"
     if error_count:
-        msg = f"{msg} with {error_count} errors. response = {response}"
+        msg = f"{msg} with {error_count} errors."
     else:
         msg = f"{msg} with no errors."
-    return msg, error_count
+    return msg, error_count, response
 
 
 def create_or_update_subscriber_for_all_people():
@@ -310,17 +313,16 @@ def create_or_update_subscriber_for_all_people():
     # Wait for the update contact operation to complete,
     # before running the update tags operation.
     # This is to avoid creating tags for a non yet existing contact
-    completion_message, error_count = run_batch_operation(
+    completion_message, error_count, response = run_batch_operation(
         mailchimp, payload, "Update contacts"
     )
-    completion_message_tags = ""
-    error_count_tags = 0
-    # payload = {"operations": tag_operations}
-    # completion_message_tags, error_count_tags = run_batch_operation(
-    #     mailchimp, payload, "Update tags"
-    # )
+
+    payload = {"operations": tag_operations}
+    completion_message_tags, error_count_tags, response_tags = run_batch_operation(
+        mailchimp, payload, "Update tags"
+    )
     message = f"{completion_message}{completion_message_tags}"
     if error_count or error_count_tags:
-        raise MailchimpProcessingError(message)
+        raise MailchimpProcessingError(message, response, response_tags)
     else:
         return message
