@@ -181,6 +181,8 @@ class PersonService:
         person.became_inactive = timezone.now()
         person.save()
 
+        person_deleted_to_mailchimp_task.delay(person)
+
         AuditLogService().log(AuditLog.Action.DELETE, deleted_by, person)
 
         if request:

@@ -1,4 +1,4 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 import pytest
 
 from mailchimp.services import MailchimpBulkUpdateError, MailchimpTimeOutError, wait_for_completion
@@ -20,7 +20,7 @@ def test_wait_for_completion_several_passes():
         wait_for_completion(instance, "test", "test")
 
 
-def test_wait_for_completion_error():
+def test_wait_for_completion_status_error():
     with patch ("mailchimp_marketing.Client") as mock_client:
         instance = mock_client.return_value
         return_value = {"status":"unknown"}
@@ -36,3 +36,5 @@ def test_wait_for_completion_time_out_error():
         instance.batches.status.return_value = return_value
         with pytest.raises(MailchimpTimeOutError):
             wait_for_completion(instance, "test", "test")
+
+

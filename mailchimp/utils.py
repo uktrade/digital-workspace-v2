@@ -16,7 +16,7 @@ def create_tags(
     email = person.email
     tags = [{"name": "pf_imported", "status": "active"}]
     one_dit_status = "inactive"
-    if email:
+    if email and "@" in email:
         domain = email.split("@")[1]
         if domain in GROUP_ONE_DIT_DOMAINS:
             one_dit_status = "active"
