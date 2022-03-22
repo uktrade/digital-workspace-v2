@@ -91,9 +91,11 @@ def bulk_sync_task():
             },
         )
         if isinstance(bulk_error, MailchimpProcessingError):
-            msg = f"{bulk_error}, " \
-                  f"update person response: {bulk_error.response}, " \
-                  f"update tag response: {bulk_error.response_tag}"
+            msg = (
+                f"{bulk_error}, "
+                f"update person response: {bulk_error.response}, "
+                f"update tag response: {bulk_error.response_tag}"
+            )
             raise MailchimpPartialError(msg)
         else:
             raise bulk_error
