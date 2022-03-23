@@ -65,7 +65,7 @@ class ProfileDetailView(DetailView, PeoplefinderView):
             context["profile_audit_log"] = AuditLogService.get_audit_log(profile)
             context["profile_audit_log_excluded_keys"] = [
                 "user_id",
-                "manager_id",
+                "manager_id",  # /PS-IGNORE
                 "created_at",
                 "updated_at",
             ]
@@ -97,6 +97,13 @@ class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
     def form_valid(self, form):
         # saves the form
         response = super().form_valid(form)
+
+        PersonService.update_groups_and_permissions(
+            person=self.object,
+            is_person_admin=form.cleaned_data["is_person_admin"],
+            is_team_admin=form.cleaned_data["is_team_admin"],
+            is_superuser=form.cleaned_data["is_superuser"],
+        )
 
         if "photo" in form.changed_data:
             self.crop_photo(form)
