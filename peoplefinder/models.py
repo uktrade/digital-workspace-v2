@@ -163,6 +163,14 @@ class Building(models.Model):
         return self.name
 
 
+# We have excluded any person with is_active=False, as this means that
+# they have left the organisation. If we ever require a queryset with
+# inactive users, refactoring will be necessary.
+class PersonManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(is_active=False)
+
+
 class PersonQuerySet(models.QuerySet):
     def with_profile_completion(self):
         # Each statement in this list should return 0 or 1 to represent whether that
@@ -211,6 +219,8 @@ class Person(models.Model):
             ),
         ]
 
+    is_active = models.BooleanField(default=True)
+    became_inactive = models.DateTimeField(null=True, blank=True)
     user = models.OneToOneField(
         "user.User", models.CASCADE, null=True, blank=True, related_name="profile"
     )
@@ -403,7 +413,7 @@ class Person(models.Model):
         validators=[validate_virus_check_result],
     )
 
-    objects = PersonQuerySet.as_manager()
+    objects = PersonManager.from_queryset(PersonQuerySet)()
 
     def __str__(self) -> str:
         return self.full_name
