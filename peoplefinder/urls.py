@@ -11,6 +11,8 @@ from peoplefinder.views.manager import (
     ManagerUpdate,
 )
 from peoplefinder.views.profile import (
+    DeleteConfirmationView,
+    ProfileDeleteView,
     ProfileDetailView,
     ProfileEditView,
     ProfileLeavingDitView,
@@ -30,6 +32,11 @@ from peoplefinder.views.team import (
 
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
+    path(
+        "delete-confirmation/",
+        DeleteConfirmationView.as_view(),
+        name="delete-confirmation",
+    ),
     path("<uuid:profile_slug>/", ProfileDetailView.as_view(), name="profile-view"),
     path(
         "<profile_legacy_slug>/",
@@ -77,6 +84,11 @@ people_urlpatterns = [
         "<uuid:profile_slug>/leaving-dit",
         ProfileLeavingDitView.as_view(),
         name="profile-leaving-dit",
+    ),
+    path(
+        "<uuid:profile_slug>/delete/",
+        ProfileDeleteView.as_view(),
+        name="profile-delete",
     ),
 ]
 

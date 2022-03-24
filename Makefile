@@ -21,7 +21,7 @@ compilescss:
 	docker-compose run --rm wagtail python manage.py compilescss
 
 test:
-	docker-compose run --rm --name testrunner wagtail pytest --ignore=selenium_tests --reuse-db $(tests)
+	docker-compose run --rm --name testrunner wagtail pytest --ignore=selenium_tests -ra --reuse-db $(tests) 
 
 test-selenium:
 	docker-compose run --rm --name testrunner wagtail pytest selenium_tests
@@ -122,3 +122,6 @@ first-use:
 	make pf-groups
 	make superuser
 	docker-compose up
+
+setup_v2_user:
+	docker-compose run --rm wagtail python manage.py setup_v2_user $(email)

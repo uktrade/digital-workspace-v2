@@ -11,6 +11,7 @@ from django.test.client import Client
 from django.urls import reverse
 from pytest_django.asserts import assertContains
 
+from peoplefinder.forms.profile import ProfileForm
 from peoplefinder.models import Person, Team
 from peoplefinder.services.person import PersonService
 from peoplefinder.test.factories import TeamFactory
@@ -170,7 +171,7 @@ def test_team_log_visible_permission(state):
     log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
     log_detail_len = len(log_detail)
 
-    team_admin_group = Group.objects.get(name="Team Admin")
+    team_admin_group = Group.objects.get(name="Team Admin")  # /PS-IGNORE
     state.user.groups.add(team_admin_group)
 
     response = state.client.get(view_url)
@@ -223,4 +224,44 @@ def test_profile_log_visible_permission(state):
     assert title in response.content
     soup = BeautifulSoup(response.content, features="html.parser")
     log_detail = soup.find_all(attrs={"data-module": "govuk-details"})
+
     assert len(log_detail) == log_detail_len + 2
+
+
+def test_profile_detail_view(state):
+    view_url = reverse(
+        "profile-view",
+        kwargs={
+            "profile_slug": state.person.slug,
+        },
+    )
+    response = state.client.get(view_url)
+    assert response.status_code == 200
+
+
+def test_profile_edit_view(state):
+    view_url = reverse(
+        "profile-edit",
+        kwargs={
+            "profile_slug": state.person.slug,
+        },
+    )
+
+    response = state.client.get(view_url)
+
+    assert response.status_code == 200
+    assert state.person.primary_phone_number is None
+
+    form = ProfileForm({"primary_phone_number": "07000"}, instance=state.person)
+    form.is_valid()
+
+    # Need to remove items with no value with cleaned data in order that "POST" will work
+    payload = {}
+    for key, value in form.cleaned_data.items():
+        if value:
+            payload[key] = value
+
+    response = state.client.post(view_url, payload)
+
+    assert response.status_code == 200
+    assert state.person.primary_phone_number == "07000"

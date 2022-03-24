@@ -9,6 +9,7 @@ from django.db.models.expressions import Case, When
 from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
+from django.utils import timezone
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.management.commands.create_people_finder_groups import (
@@ -143,19 +144,39 @@ class PersonService:
         if request:
             self.notify_about_changes(request, person)
 
-    def profile_deleted(self, person: Person, deleted_by: User) -> None:
-        """A method to be called after a profile has been deleted.
+    def profile_deletion_initiated(
+        self, request: Optional[HttpRequest], person: Person, initiated_by: User
+    ) -> None:
+        """
+        Args:
+            request: The HTTP request related to the action.
+            person: The person behind the profile.
+            initiated_by: The user which initiated the deletion.
+        """
 
-        Please don't forget to call method this unless you need to bypass it.
+        self.notify_about_deletion(person, initiated_by)
 
-        This is the main hook for calling out to other processes which need to happen
-        after a profile has been deleted.
+    def profile_deleted(
+        self, request: Optional[HttpRequest], person: Person, deleted_by: User
+    ) -> None:
+        """
+        This is the main hook for calling out to other processes which need to
+        happen after a profile has been deleted. Please don't forget to call this
+        method unless you need to bypass it.
 
         Args:
+            request: The HTTP request related to the action.
             person: The person behind the profile.
             deleted_by: The user which deleted the profile.
         """
-        raise NotImplementedError
+        person.is_active = False
+        person.became_inactive = timezone.now()
+        person.save()
+
+        AuditLogService().log(AuditLog.Action.DELETE, deleted_by, person)
+
+        if request:
+            self.notify_about_deletion(person, deleted_by)
 
     def notify_about_changes(self, request: HttpRequest, person: Person) -> None:
         editor = request.user.profile
@@ -214,6 +235,27 @@ class PersonService:
 
         return person
 
+    def notify_about_deletion(self, person: Person, deleted_by: User) -> None:
+        if deleted_by == person.user:
+            return None
+
+        context = {
+            "profile_name": person.full_name,
+            "editor_name": deleted_by.get_full_name(),
+        }
+
+        if settings.APP_ENV in ("local", "test"):
+            logger.info(f"{person.full_name}'s profile was deleted")
+
+            return
+
+        notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
+        notification_client.send_email_notification(
+            email=person.user.email,
+            template_id=settings.PROFILE_DELETED_EMAIL_TEMPLATE_ID,
+            personalisation=context,
+        )
+
 
 class PersonAuditLogSerializer(AuditLogSerializer):
     model = Person
@@ -222,7 +264,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 38, (
+    assert len(Person._meta.get_fields()) == 40, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
