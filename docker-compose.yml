@@ -21,12 +21,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  celery-beat:
-    <<: *app-base
-    command: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    links:
-      - db
-      - redis
   opensearch:
     image: opensearchproject/opensearch:1.2.3
     ports:
@@ -40,13 +34,10 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-s", "-f", "http://localhost:9200/_cat/health"]
   wagtail:
-    build:
-      context: .
+    <<: *app-base
     command: python manage.py runserver 0.0.0.0:8000
     # mimics production
     # command: waitress-serve --port=8000 config.wsgi:application
-    volumes:
-      - ./:/app/
     ports:
       - "0.0.0.0:8000:8000"
     depends_on:
@@ -54,22 +45,22 @@ services:
       - redis
       - opensearch
       - celery
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.local
     stdin_open: true
     tty: true
   celery:
-    build:
-      context: .
+    <<: *app-base
     command: celery -A config worker -l info
-    volumes:
-      - .:/app
     depends_on:
       - db
       - redis
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.local
+    healthcheck:
       test: [ "CMD", "curl", "-s", "-f", "http://localhost:9200/_cat/health" ]
+  celery-beat:
+    <<: *app-base
+    command: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    links:
+      - db
+      - redis
   redis:
     image: redis:buster
     ports:
