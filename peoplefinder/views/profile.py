@@ -65,7 +65,7 @@ class ProfileDetailView(DetailView, PeoplefinderView):
             context["profile_audit_log"] = AuditLogService.get_audit_log(profile)
             context["profile_audit_log_excluded_keys"] = [
                 "user_id",
-                "manager_id",  # /PS-IGNORE
+                "manager_id",
                 "created_at",
                 "updated_at",
             ]
