@@ -12,8 +12,8 @@ from django.shortcuts import reverse
 from django.utils import timezone
 
 from mailchimp.tasks import (
-    person_created_updated_to_mailchimp_task,
-    person_deleted_to_mailchimp_task,
+    person_created_or_updated,
+    person_deleted,
 )
 
 from notifications_python_client.notifications import NotificationsAPIClient
@@ -125,7 +125,7 @@ class PersonService:
             person: The person behind the profile.
             created_by: The user which created the profile.
         """
-        person_created_updated_to_mailchimp_task.delay(person)
+        person_created_or_updated.delay(person.id)
 
         AuditLogService().log(AuditLog.Action.CREATE, created_by, person)
 
@@ -148,7 +148,7 @@ class PersonService:
             updated_by: The user which updated the profile.
         """
         AuditLogService().log(AuditLog.Action.UPDATE, updated_by, person)
-        person_created_updated_to_mailchimp_task.delay(person)
+        person_created_or_updated.delay(person.id)
         if request:
             self.notify_about_changes(request, person)
 
@@ -181,7 +181,7 @@ class PersonService:
         person.became_inactive = timezone.now()
         person.save()
 
-        person_deleted_to_mailchimp_task.delay(person)
+        person_deleted.delay(person.id)
 
         AuditLogService().log(AuditLog.Action.DELETE, deleted_by, person)
 

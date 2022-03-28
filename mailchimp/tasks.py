@@ -13,13 +13,18 @@ from notifications_python_client.notifications import NotificationsAPIClient
 from peoplefinder.models import Person
 
 
-class MailchimpPartialError(Exception):
+class MailChimpPartialError(Exception):
     pass
 
 
 @shared_task
-def person_created_updated_to_mailchimp_task(person: Person):
+def person_created_or_updated(id: int):
+    if not settings.MAILCHIMP_UPDATE:
+        return
+
+    person = Person.objects.get(pk=id)
     notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
+
     try:
         mailchimp_handle_person(person)
     except Exception as create_update_error:
@@ -45,8 +50,13 @@ def person_created_updated_to_mailchimp_task(person: Person):
 
 
 @shared_task
-def person_deleted_to_mailchimp_task(person: Person):
+def person_deleted(id: int):
+    if not settings.MAILCHIMP_UPDATE:
+        return
+
+    person = Person.objects.get(pk=id)
     notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
+
     try:
         mailchimp_delete_person(person.email)
     except Exception as delete_error:
@@ -96,7 +106,7 @@ def bulk_sync_task():
                 f"update person response: {bulk_error.response}, "
                 f"update tag response: {bulk_error.response_tag}"
             )
-            raise MailchimpPartialError(msg)
+            raise MailChimpPartialError(msg)
         else:
             raise bulk_error
 
