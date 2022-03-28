@@ -98,6 +98,13 @@ class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
         # saves the form
         response = super().form_valid(form)
 
+        PersonService.update_groups_and_permissions(
+            person=self.object,
+            is_person_admin=form.cleaned_data["is_person_admin"],
+            is_team_admin=form.cleaned_data["is_team_admin"],
+            is_superuser=form.cleaned_data["is_superuser"],
+        )
+
         if "photo" in form.changed_data:
             self.crop_photo(form)
 

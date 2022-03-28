@@ -265,3 +265,72 @@ def test_profile_edit_view(state):
 
     assert response.status_code == 200
     assert state.person.primary_phone_number == "07000"
+
+
+def test_user_admin_no_superuser(state):
+    PersonService.update_groups_and_permissions(
+        person=state.person,
+        is_person_admin=False,
+        is_team_admin=False,
+        is_superuser=False,
+    )
+    view_url = reverse(
+        "profile-edit",
+        kwargs={
+            "profile_slug": state.person.slug,
+        },
+    )
+
+    response = state.client.get(view_url)
+
+    assert response.status_code == 200
+
+    soup = BeautifulSoup(response.content, features="html.parser")
+
+    assert not soup.find(lambda tag: tag.name == "span" and "Permissions" in tag.text)
+
+
+def test_user_admin_with_superuser(state):
+    PersonService.update_groups_and_permissions(
+        person=state.person,
+        is_person_admin=False,
+        is_team_admin=False,
+        is_superuser=True,
+    )
+    view_url = reverse(
+        "profile-edit",
+        kwargs={
+            "profile_slug": state.person.slug,
+        },
+    )
+
+    response = state.client.get(view_url)
+
+    assert response.status_code == 200
+
+    soup = BeautifulSoup(response.content, features="html.parser")
+
+    assert soup.find(lambda tag: tag.name == "span" and "Permissions" in tag.text)
+
+
+def test_user_admin_no_superuser_but_team_person_admin(state):
+    PersonService.update_groups_and_permissions(
+        person=state.person,
+        is_person_admin=True,
+        is_team_admin=True,
+        is_superuser=False,
+    )
+    view_url = reverse(
+        "profile-edit",
+        kwargs={
+            "profile_slug": state.person.slug,
+        },
+    )
+
+    response = state.client.get(view_url)
+
+    assert response.status_code == 200
+
+    soup = BeautifulSoup(response.content, features="html.parser")
+
+    assert not soup.find(lambda tag: tag.name == "span" and "Permissions" in tag.text)
