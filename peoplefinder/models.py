@@ -10,6 +10,7 @@ from django.db.models import Case, Exists, F, OuterRef, Q, When
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
+from wagtail.search import index
 
 
 # TODO: django doesnt support on update cascade and it's possible that a code
@@ -211,7 +212,7 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
-class Person(models.Model):
+class Person(index.Indexed, models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -416,6 +417,12 @@ class Person(models.Model):
 
     objects = PersonManager.from_queryset(PersonQuerySet)()
 
+    search_fields = [
+        index.SearchField("first_name", partial_match=True, boost=10),
+        index.SearchField("last_name", partial_match=True, boost=10),
+        index.FilterField("is_active"),
+    ]
+
     def __str__(self) -> str:
         return self.full_name
 
@@ -445,12 +452,18 @@ class Person(models.Model):
         return (timezone.now() - self.edited_or_confirmed_at).days >= 365
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
     @property
-    def preferred_email(self):
+    def preferred_email(self) -> str:
         return self.contact_email or self.email
+
+    @property
+    def all_languages(self) -> str:
+        return ", ".join(
+            filter(None, [self.fluent_languages, self.intermediate_languages])
+        )
 
 
 # markdown
@@ -460,7 +473,7 @@ You can update this description, by [updating your team information](https://wor
 """
 
 
-class Team(models.Model):
+class Team(index.Indexed, models.Model):
     people = models.ManyToManyField(
         "Person", through="TeamMember", related_name="teams"
     )
@@ -487,6 +500,12 @@ class Team(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # TODO: PFM-239 - boost doesn't work https://github.com/wagtail/wagtail/issues/5422
+    search_fields = [
+        index.SearchField("name", partial_match=True, boost=10),
+        index.SearchField("abbreviation", boost=20),
+    ]
 
     def __str__(self) -> str:
         return self.short_name

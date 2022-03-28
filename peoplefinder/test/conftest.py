@@ -47,6 +47,8 @@ def django_db_setup(django_db_setup, django_db_blocker):
         # Leave this here to check we have reset the db into a known state.
         assert AuditLogService.get_audit_log(user_john_smith.profile).count() == 2
 
+        call_command("update_index")
+
 
 @pytest.fixture
 def normal_user(db):
