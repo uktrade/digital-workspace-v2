@@ -56,6 +56,16 @@ class ProfileForm(forms.ModelForm):
     width = forms.IntegerField(required=False)
     height = forms.IntegerField(required=False)
 
+    is_superuser = forms.BooleanField(
+        required=False, label="Allow this person to administrate People Finder"
+    )
+    is_team_admin = forms.BooleanField(
+        required=False, label="Allow this person to manage teams"
+    )
+    is_person_admin = forms.BooleanField(
+        required=False, label="Allow this person to manage people"
+    )
+
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -144,9 +154,25 @@ class ProfileForm(forms.ModelForm):
             {"class": "govuk-textarea", "rows": 5}
         )
         # Photo is a custom component
+        self.fields["is_superuser"].widget.attrs.update(
+            {"class": "govuk-checkboxes__input", "form": "edit-profile"}
+        )
+        self.fields["is_team_admin"].widget.attrs.update(
+            {"class": "govuk-checkboxes__input", "form": "edit-profile"}
+        )
+        self.fields["is_person_admin"].widget.attrs.update(
+            {"class": "govuk-checkboxes__input", "form": "edit-profile"}
+        )
 
         self.initial.update(
             manager=person.manager and person.manager.slug,
+            is_superuser=person.user.is_superuser,
+            is_team_admin=person.user.groups.filter(
+                name="Team Admin"  # /PS-IGNORE
+            ).exists(),
+            is_person_admin=person.user.groups.filter(
+                name="Person Admin"  # /PS-IGNORE
+            ).exists(),
         )
 
     def clean_manager(self):

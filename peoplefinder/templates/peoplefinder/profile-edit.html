@@ -241,6 +241,29 @@
     {% include 'peoplefinder/components/teams-and-roles.html' with profile=profile role_forms=role_forms %}
 </fieldset>
 
+{% if request.user.is_superuser %}
+    <fieldset>
+        <h2 class="govuk-heading-m">Administrative options</h2>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Permissions
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <div class="govuk-hint">
+                    Administrators on People Finder can view global audit trails, reports, and debugging
+                    information as well as perform all groups and people management functions.
+                </div>
+                {% include 'peoplefinder/components/checkbox.html' with field=form.is_superuser %}
+                {% include 'peoplefinder/components/checkbox.html' with field=form.is_team_admin %}
+                {% include 'peoplefinder/components/checkbox.html' with field=form.is_person_admin %}
+            </div>
+        </details>
+    </fieldset>
+{% endif %}
+
 <p class="govuk-body-s">
     All the information on your profile will be visible to DIT staff and contractors on
     Digital Workspace and other internal DIT tools. Occasionally, we may collate this
