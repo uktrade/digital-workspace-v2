@@ -189,7 +189,7 @@ packaging==21.3
     #   redis
 phpserialize==1.3
     # via -r requirements.in/base.in
-pillow==9.0.0
+pillow==9.0.1
     # via
     #   -r requirements.in/base.in
     #   wagtail
@@ -286,7 +286,7 @@ wagtailmedia==0.8.0
     # via -r requirements.in/base.in
 wagtailmenus==3.0.2
     # via -r requirements.in/base.in
-waitress==2.0.0
+waitress==2.1.1
     # via -r requirements.in/base.in
 wcwidth==0.2.5
     # via prompt-toolkit
