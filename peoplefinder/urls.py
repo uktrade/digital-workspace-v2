@@ -1,5 +1,4 @@
 from django.urls import include, path
-
 from rest_framework import routers
 
 from peoplefinder.views.activity_stream import ActivityStreamViewSet
@@ -12,6 +11,7 @@ from peoplefinder.views.manager import (
 )
 from peoplefinder.views.profile import (
     DeleteConfirmationView,
+    ProfileConfirmDetailsView,
     ProfileDeleteView,
     ProfileDetailView,
     ProfileEditView,
@@ -89,6 +89,12 @@ people_urlpatterns = [
         "<uuid:profile_slug>/delete/",
         ProfileDeleteView.as_view(),
         name="profile-delete",
+    ),
+    # Confirm details
+    path(
+        "<uuid:profile_slug>/confirm-details/",
+        ProfileConfirmDetailsView.as_view(),
+        name="profile-confirm-details",
     ),
 ]
 

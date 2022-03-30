@@ -24,11 +24,11 @@
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                 <strong class="govuk-warning-text__text">
                     <span class="govuk-warning-text__assistive">Warning</span>
-                    This profile was last edited {{ profile.updated_at|naturaltime }}.
+                    This profile was last edited {{ profile.edited_or_confirmed_at|naturaltime }}.
                 </strong>
             </div>
         {% else %}
-            <p class="govuk-body-s">Last edited {{ profile.updated_at|naturalday:"j F Y" }}</p>
+            <p class="govuk-body-s">Last edited {{ profile.edited_or_confirmed_at|naturalday:"j F Y" }}</p>
         {% endif %}
 
         {% if profile.profile_completion < 100 %}
@@ -62,6 +62,15 @@
         <div class="govuk-button-group">
             <p>
                 <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
+                {% if profile.is_stale and request.user == profile.user %}
+                    <button
+                        class="govuk-button govuk-button--secondary"
+                        hx-post="{% url 'profile-confirm-details' profile.slug %}"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                    >
+                        Confirm my details are still correct
+                    </button>
+                {% endif %}
                 {% if perms.peoplefinder.delete_person and request.user != profile.user %}
                     <form action="{% url 'profile-delete' profile.slug %}" method="post" onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
                         {% csrf_token %}
@@ -280,6 +289,10 @@
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Profile updated at</dt>
                     <dd class="govuk-summary-list__value">{{ profile.updated_at }}</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Profile edited or confirmed at</dt>
+                    <dd class="govuk-summary-list__value">{{ profile.edited_or_confirmed_at }}</dd>
                 </div>
             </dl>
         </div>

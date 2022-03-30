@@ -1,11 +1,14 @@
 import io
 from pathlib import Path
 
+from django.contrib import messages
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
@@ -68,6 +71,7 @@ class ProfileDetailView(DetailView, PeoplefinderView):
                 "manager_id",
                 "created_at",
                 "updated_at",
+                "edited_or_confirmed_at",
             ]
 
         return context
@@ -225,3 +229,22 @@ class DeleteConfirmationView(TemplateView):
         del self.request.session["profile_name"]
 
         return context
+
+
+class ProfileConfirmDetailsView(UserPassesTestMixin, PeoplefinderView):
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        self.person = Person.objects.get(slug=self.kwargs["profile_slug"])
+
+    def test_func(self):
+        return self.request.user == self.person.user
+
+    def post(self, request, profile_slug, *args, **kwargs):
+        self.person.edited_or_confirmed_at = timezone.now()
+        self.person.save()
+
+        messages.success(request, "Your details have been successfully confirmed.")
+
+        # Tell HTMX to refresh the page.
+        return HttpResponse(headers={"HX-Refresh": "true"})
