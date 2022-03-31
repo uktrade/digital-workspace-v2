@@ -288,6 +288,7 @@ class Person(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    edited_or_confirmed_at = models.DateTimeField(default=timezone.now)
 
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=80)
@@ -441,7 +442,7 @@ class Person(models.Model):
 
     @property
     def is_stale(self):
-        return (timezone.now() - self.updated_at).days >= 365
+        return (timezone.now() - self.edited_or_confirmed_at).days >= 365
 
     @property
     def full_name(self):

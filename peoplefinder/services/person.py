@@ -142,6 +142,7 @@ class PersonService:
         AuditLogService().log(AuditLog.Action.UPDATE, updated_by, person)
 
         if request:
+            person.edited_or_confirmed_at = timezone.now()
             self.notify_about_changes(request, person)
 
     def profile_deletion_initiated(
@@ -264,7 +265,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 40, (
+    assert len(Person._meta.get_fields()) == 41, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
