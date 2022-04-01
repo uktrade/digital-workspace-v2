@@ -346,7 +346,7 @@ def migrate_teams():
         for group in groups:
             team = Team.objects.create(
                 name=group.name,
-                abbreviation=group.acronym,
+                abbreviation=group.acronym if group.acronym else None,
                 slug=group.slug,
                 description=group.description and group.description.strip(),
             )
@@ -365,7 +365,7 @@ def migrate_teams():
 def get_team_for_legacy_group(group: Groups) -> Team:
     return Team.objects.get(
         name=group.name,
-        abbreviation=group.acronym,
+        abbreviation=group.acronym if group.acronym else None,
         slug=group.slug,
     )
 
