@@ -6,6 +6,17 @@ from peoplefinder.models import LegacyAuditLog, Person, Team, TeamMember
 from peoplefinder.services.team import TeamService
 
 
+class PersonModelAdmin(admin.ModelAdmin):
+    """Admin page for the Person model."""
+
+    list_display = ["full_name", "email"]
+    search_fields = [
+        "first_name",
+        "last_name",
+        "email",
+    ]
+
+
 class LegacyAuditLogModelAdmin(admin.ModelAdmin):
     """Admin page for the LegacyAuditLog model."""
 
@@ -45,6 +56,6 @@ class TeamModelAdmin(admin.ModelAdmin):
 
 
 admin_site.register(LegacyAuditLog, LegacyAuditLogModelAdmin)
-admin_site.register(Person, admin.ModelAdmin)
+admin_site.register(Person, PersonModelAdmin)
 admin_site.register(Team, TeamModelAdmin)
 admin_site.register(TeamMember, admin.ModelAdmin)
