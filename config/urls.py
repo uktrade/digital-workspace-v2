@@ -9,7 +9,12 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from core.admin import admin_site
 from core.urls import urlpatterns as core_urlpatterns
-from peoplefinder.urls import api_urlpatterns, people_urlpatterns, teams_urlpatterns
+from peoplefinder.urls import (
+    api_urlpatterns,
+    people_and_teams_urlpatterns,
+    people_urlpatterns,
+    teams_urlpatterns,
+)
 from search import views as search_views
 
 
@@ -32,6 +37,7 @@ urlpatterns = [
     # Peoplefinder
     path("people/", include(people_urlpatterns)),
     path("teams/", include(teams_urlpatterns)),
+    path("people-and-teams/", include(people_and_teams_urlpatterns)),
     path("peoplefinder/api/", include(api_urlpatterns)),
     # Wagtail
     path("", include(wagtail_urls)),
