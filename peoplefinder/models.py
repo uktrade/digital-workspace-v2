@@ -4,9 +4,10 @@ from typing import Iterator
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import Case, Exists, F, OuterRef, Q, When
+from django.db.models import Case, Exists, F, Func, JSONField, OuterRef, Q, Value, When
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
@@ -466,6 +467,30 @@ class Person(index.Indexed, models.Model):
         )
 
 
+class TeamQuerySet(models.QuerySet):
+    def with_all_parents(self):
+        return self.values("pk").annotate(
+            all_parents=ArrayAgg(
+                Func(
+                    Value("slug"),
+                    "children__parent__slug",
+                    Value("short_name"),
+                    # Replicate `Team.short_name` behaviour.
+                    Case(
+                        When(
+                            children__parent__abbreviation__isnull=False,
+                            then=F("children__parent__abbreviation"),
+                        ),
+                        default=F("children__parent__name"),
+                    ),
+                    function="jsonb_build_object",
+                    output_field=JSONField(),
+                ),
+                ordering="-children__depth",
+            ),
+        )
+
+
 # markdown
 DEFAULT_TEAM_DESCRIPTION = """Find out who is in the team and their contact details.
 
@@ -500,6 +525,8 @@ class Team(index.Indexed, models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = TeamQuerySet.as_manager()
 
     # TODO: PFM-239 - boost doesn't work https://github.com/wagtail/wagtail/issues/5422
     search_fields = [
