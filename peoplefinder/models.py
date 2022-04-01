@@ -181,12 +181,12 @@ class PersonQuerySet(models.QuerySet):
             Case(When(primary_phone_number__isnull=False, then=1), default=0),
             Case(When(manager__isnull=False, then=1), default=0),
             Case(When(photo__isnull=False, then=1), default=0),
-            Case(When(user__email__isnull=False, then=1), default=0),
-            Case(When(user__first_name__isnull=False, then=1), default=0),
-            Case(When(user__last_name__isnull=False, then=1), default=0),
+            Case(When(email__isnull=False, then=1), default=0),
+            Case(When(first_name__isnull=False, then=1), default=0),
+            Case(When(last_name__isnull=False, then=1), default=0),
             Case(
                 When(
-                    Exists(TeamMember.objects.filter(person_id=OuterRef("user_id"))),
+                    Exists(TeamMember.objects.filter(person_id=OuterRef("pk"))),
                     then=1,
                 ),
                 default=0,
