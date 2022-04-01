@@ -19,6 +19,7 @@ from peoplefinder.views.profile import (
     ProfileLegacyView,
 )
 from peoplefinder.views.role import RoleFormView, TeamSelectView
+from peoplefinder.views.search import search_view
 from peoplefinder.views.team import (
     TeamAddNewSubteamView,
     TeamDeleteView,
@@ -115,6 +116,10 @@ teams_urlpatterns = [
         TeamAddNewSubteamView.as_view(),
         name="team-add-new-subteam",
     ),
+]
+
+people_and_teams_urlpatterns = [
+    path("search/", search_view, name="people-and-teams-search"),
 ]
 
 router = routers.DefaultRouter()
