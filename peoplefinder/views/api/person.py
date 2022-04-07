@@ -55,7 +55,7 @@ class PersonSerializer(serializers.ModelSerializer):
     language_intermediate = serializers.CharField(source="intermediate_languages")
     last_edited_or_confirmed_at = serializers.DateTimeField(source="updated_at")
     people_finder_id = serializers.CharField(source="slug")
-    staff_sso_id = serializers.CharField(source="user.legacy_sso_user_id")
+    staff_sso_id = serializers.CharField(source="user.legacy_sso_user_id", default=None)
     location_other_uk = serializers.CharField(source="regional_building")
     location_other_overseas = serializers.CharField(source="international_building")
     formatted_buildings = serializers.CharField()
@@ -70,7 +70,7 @@ class PersonSerializer(serializers.ModelSerializer):
     legacy_people_finder_id = serializers.CharField(source="legacy_slug")
 
     def get_last_login_at(self, obj):
-        return obj.user.last_login
+        return obj.user and obj.user.last_login
 
     def get_grade(self, obj):
         if obj.grade:
@@ -299,7 +299,7 @@ class PersonViewSet(ReadOnlyModelViewSet):
                 )
             )
             .with_profile_completion()
-            .defer("photo", "do_not_work_for_dit", "created_at")
+            .defer("photo", "do_not_work_for_dit")
             .order_by("-created_at")
         )
         return queryset
