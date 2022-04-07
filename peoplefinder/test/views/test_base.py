@@ -4,8 +4,8 @@ from typing import List
 import pytest
 from django.test.client import Client
 
-from peoplefinder.services.person import PersonService
 from peoplefinder.models import Person, Team
+from peoplefinder.services.person import PersonService
 from peoplefinder.test.factories import TeamFactory
 from user.models import User
 from user.test.factories import UserFactory

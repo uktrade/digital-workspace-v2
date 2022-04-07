@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.conf import settings
 
+
 namespaces = settings.NAMESPACES
 
 

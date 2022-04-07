@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.contrib.auth import get_user_model
 from django.db import migrations
 
-from django.contrib.auth import get_user_model
 
 UserModel = get_user_model()
 

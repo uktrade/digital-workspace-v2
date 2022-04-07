@@ -6,6 +6,7 @@ from django.utils.html import format_html, mark_safe
 from peoplefinder.backports import ArraySubquery
 from peoplefinder.models import Team, TeamTree
 
+
 register = template.Library()
 
 

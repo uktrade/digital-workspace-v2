@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 KEY_SKILLS = (
     ("asset_management", "Asset management"),
     ("assurance", "Assurance"),

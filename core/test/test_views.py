@@ -1,12 +1,9 @@
 from unittest import mock
 
-from django.contrib.auth import get_user_model
-from django.test import (
-    TestCase,
-)
-from django.urls import reverse
-
 import pytest
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
 
 
 @pytest.mark.django_db

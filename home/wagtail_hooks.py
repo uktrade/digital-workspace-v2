@@ -1,14 +1,7 @@
-from wagtail.contrib.modeladmin.options import (
-    ModelAdmin,
-    modeladmin_register,
-)
+from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail_adminsortable.admin import SortableAdminMixin
 
-from home.models import (
-    HomeNewsOrder,
-    QuickLink,
-    WhatsPopular,
-)
+from home.models import HomeNewsOrder, QuickLink, WhatsPopular
 
 
 class HomeNewsOrderAdmin(SortableAdminMixin, ModelAdmin):

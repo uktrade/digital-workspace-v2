@@ -24,6 +24,7 @@ from peoplefinder.services.audit_log import (
 )
 from user.models import User
 
+
 logger = logging.getLogger(__name__)
 
 LEFT_DIT_LOG_MESSAGE = """People Finder deletion request: {profile_name}

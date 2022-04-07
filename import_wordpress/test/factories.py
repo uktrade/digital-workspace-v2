@@ -1,5 +1,4 @@
 import factory
-
 from wagtail.images.models import Image as WagtailImage
 
 

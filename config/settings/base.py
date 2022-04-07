@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
+
 # Set directories to be used across settings
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 

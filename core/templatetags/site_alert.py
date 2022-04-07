@@ -2,6 +2,7 @@ from django import template
 
 from core.models import SiteAlertBanner
 
+
 register = template.Library()
 
 

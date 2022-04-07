@@ -2,6 +2,7 @@ from django.http import HttpResponse
 
 from .services import services_to_check
 
+
 PINGDOM_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
 <pingdom_http_custom_check>
     <status>{status}</status>
