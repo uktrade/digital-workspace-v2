@@ -31,4 +31,4 @@ response = requests.get(
     headers={"Authorization": sender.request_header, "Content-Type": content_type},
 )
 
-print(response.content)
+print(response.json())
