@@ -1,6 +1,4 @@
-from django.test import (
-    TestCase,
-)
+from django.test import TestCase
 
 from import_wordpress.parser.block_content import parse_into_blocks
 from import_wordpress.test.factories import WagtailImageFactory

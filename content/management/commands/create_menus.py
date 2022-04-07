@@ -2,9 +2,7 @@ from django.core.management.base import BaseCommand
 from wagtailmenus.models import MainMenu, Site
 
 from about_us.models import AboutUsHome
-from news.models import (
-    NewsHome,
-)
+from news.models import NewsHome
 from tools.models import ToolsHome
 from transition.models import TransitionHome
 from working_at_dit.models import WorkingAtDITHome

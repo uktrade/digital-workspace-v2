@@ -27,6 +27,9 @@ jobs:
           name: run black (code formatting check)
           command: make black-check
       - run:
+          name: run isort
+          command: make isort-check
+      - run:
           name: run flake8 (coding standards compliance test)
           command: make flake8
       - run:

@@ -7,11 +7,7 @@ from django.shortcuts import render
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
-from content.models import ContentPage
-from content.models import (
-    SearchExclusionPageLookUp,
-    SearchPinPageLookUp,
-)
+from content.models import ContentPage, SearchExclusionPageLookUp, SearchPinPageLookUp
 
 
 logger = logging.getLogger(__name__)

@@ -5,12 +5,7 @@ from django.template.defaultfilters import slugify
 from wagtail.core.models import Page
 
 from import_wordpress.parser.wagtail_content.page import WPPage
-from news.models import (
-    Comment,
-    NewsCategory,
-    NewsPage,
-    NewsPageNewsCategory,
-)
+from news.models import Comment, NewsCategory, NewsPage, NewsPageNewsCategory
 
 
 logger = logging.getLogger(__name__)

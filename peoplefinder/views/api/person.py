@@ -1,14 +1,9 @@
 from django.conf import settings
 from django.contrib.postgres.aggregates import ArrayAgg, StringAgg
-
 from django.utils.decorators import decorator_from_middleware
-
 from django_hawk.middleware import HawkResponseMiddleware
 from django_hawk_drf.authentication import HawkAuthentication
-
-
 from rest_framework import pagination, serializers
-
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from peoplefinder.models import Person, TeamMember

@@ -4,8 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 def remove_orphan_keyword_and_phrases():
     from content.models import (
         SearchExclusionPageLookUp,
-        SearchPinPageLookUp,
         SearchKeywordOrPhrase,
+        SearchPinPageLookUp,
     )
 
     # Remove all search exclusions not associated with a page
@@ -25,10 +25,7 @@ def manage_pinned(obj, pinned_phrases_string):
     if not pinned_phrases_string:
         return
 
-    from content.models import (
-        SearchKeywordOrPhrase,
-        SearchPinPageLookUp,
-    )
+    from content.models import SearchKeywordOrPhrase, SearchPinPageLookUp
 
     # Delete existing pins for this page
     SearchPinPageLookUp.objects.filter(
@@ -76,10 +73,7 @@ def manage_excluded(obj, excluded_phrases_string):
     if not excluded_phrases_string:
         return
 
-    from content.models import (
-        SearchExclusionPageLookUp,
-        SearchKeywordOrPhrase,
-    )
+    from content.models import SearchExclusionPageLookUp, SearchKeywordOrPhrase
 
     # Delete existing exclusions for this page
     SearchExclusionPageLookUp.objects.filter(

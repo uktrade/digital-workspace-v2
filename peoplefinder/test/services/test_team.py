@@ -1,5 +1,6 @@
-import pytest
 import unittest
+
+import pytest
 
 from peoplefinder.models import Team
 from peoplefinder.services.team import TeamService, TeamServiceError

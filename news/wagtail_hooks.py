@@ -1,12 +1,6 @@
-from wagtail.contrib.modeladmin.options import (
-    ModelAdmin,
-    modeladmin_register,
-)
+from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 
-from news.models import (
-    Comment,
-    NewsCategory,
-)
+from news.models import Comment, NewsCategory
 
 
 class CommentAdmin(ModelAdmin):

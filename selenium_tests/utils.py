@@ -1,11 +1,8 @@
 from importlib import import_module
 
 from django.conf import settings
-from django.contrib.auth import (
-    BACKEND_SESSION_KEY,
-    HASH_SESSION_KEY,
-    SESSION_KEY,
-)
+from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
+
 
 # https://docs.djangoproject.com/en/3.2/topics/http/sessions/#using-sessions-out-of-views
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore

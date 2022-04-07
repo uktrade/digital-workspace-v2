@@ -8,25 +8,16 @@ from django.template.response import TemplateResponse
 from django.utils.text import slugify
 from modelcluster.fields import ParentalKey
 from simple_history.models import HistoricalRecords
-from wagtail.admin.edit_handlers import (
-    FieldPanel,
-    InlinePanel,
-    PageChooserPanel,
-)
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, PageChooserPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
-from content.models import (
-    BasePage,
-    ContentPage,
-)
+from content.models import BasePage, ContentPage
 from core.utils import set_seen_cookie_banner
-from news.forms import (
-    CommentForm,
-)
+from news.forms import CommentForm
 from working_at_dit.models import PageWithTopics
 
 
