@@ -1,18 +1,9 @@
 import logging
 
-from about_us.models import (
-    AboutUs,
-    AboutUsHome,
-)
+from about_us.models import AboutUs, AboutUsHome
 from content.models import ContentPage
-from import_wordpress.parser.wagtail_content.page import (
-    SectionHomepage,
-    StandardPage,
-)
-from networks.models import (
-    Network,
-    NetworksHome,
-)
+from import_wordpress.parser.wagtail_content.page import SectionHomepage, StandardPage
+from networks.models import Network, NetworksHome
 from tools.models import Tool, ToolsHome
 from transition.models import Transition, TransitionHome
 

@@ -1,11 +1,8 @@
-import pytest
-
-from bs4 import BeautifulSoup
-
 from dataclasses import dataclass
-from django.contrib.auth.models import (
-    Permission,
-)
+
+import pytest
+from bs4 import BeautifulSoup
+from django.contrib.auth.models import Permission
 from django.test.client import Client
 from django.urls import reverse
 
@@ -13,7 +10,6 @@ from peoplefinder.models import Person, Team
 from peoplefinder.services.person import PersonService
 from peoplefinder.test.factories import TeamFactory
 from peoplefinder.views.profile import CannotDeleteOwnProfileError
-
 from user.models import User
 from user.test.factories import UserFactory
 

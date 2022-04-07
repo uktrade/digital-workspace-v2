@@ -8,6 +8,7 @@ from django.db.models.query import QuerySet
 from peoplefinder.models import AuditLog
 from user.models import User
 
+
 ObjectReprKey = str
 # Note that we do not support using a dict as a value.
 ObjectReprValue = Union[None, bool, str, int, float, list]

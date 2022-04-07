@@ -1,14 +1,9 @@
 from django.templatetags.static import static
 from django.utils.html import format_html
-from wagtail.contrib.modeladmin.options import (
-    ModelAdmin,
-    modeladmin_register,
-)
+from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.core import hooks
 
-from content.models import (
-    Theme,
-)
+from content.models import Theme
 
 
 class ThemeAdmin(ModelAdmin):

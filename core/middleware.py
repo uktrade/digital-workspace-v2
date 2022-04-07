@@ -1,6 +1,7 @@
 from django.conf import settings
 
 from peoplefinder.models import Person
+
 from .services import peoplefinder
 
 

@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 
 from user.models import User
 
+
 # first name, last name
 USERS: List[Tuple[str, str]] = [
     ("John", "Smith"),

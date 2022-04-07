@@ -17,10 +17,7 @@ from import_wordpress.parser.wagtail_content.policy_or_guidance import (
 )
 from import_wordpress.parser.wagtail_content.theme import create_theme
 from import_wordpress.parser.wagtail_content.topic import TopicPage
-from import_wordpress.utils.orphans import (
-    orphan_guidance,
-    orphan_policy,
-)
+from import_wordpress.utils.orphans import orphan_guidance, orphan_policy
 from import_wordpress.utils.page import populate_page
 from import_wordpress.utils.page_hierarchy import create_section_homepages
 

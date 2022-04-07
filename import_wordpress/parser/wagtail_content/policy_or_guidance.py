@@ -2,16 +2,8 @@ from django.template.defaultfilters import slugify
 from wagtail.contrib.redirects.models import Redirect
 
 from import_wordpress.parser.wagtail_content.page import WPPage
-from import_wordpress.utils.orphans import (
-    orphan_guidance,
-    orphan_policy,
-)
-from working_at_dit.models import (
-    Guidance,
-    GuidanceHome,
-    PoliciesHome,
-    Policy,
-)
+from import_wordpress.utils.orphans import orphan_guidance, orphan_policy
+from working_at_dit.models import Guidance, GuidanceHome, PoliciesHome, Policy
 
 
 class PolicyOrGuidancePage(WPPage):

@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 GRADES = (
     ("fco_s1", "FCO S1"),
     ("fco_s2", "FCO S2"),

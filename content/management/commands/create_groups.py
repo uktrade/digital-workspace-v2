@@ -18,6 +18,7 @@ from working_at_dit.models import (
     WorkingAtDITHome,
 )
 
+
 TOP_LEVEL_PAGE_TYPES = [
     AboutUsHome,
     HowDoIHome,

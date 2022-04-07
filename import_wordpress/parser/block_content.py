@@ -12,6 +12,7 @@ from import_wordpress.utils.block_content import (
     update_href,
 )
 
+
 wp_attachments = None
 
 current_parent_tags = []
