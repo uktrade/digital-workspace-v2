@@ -415,6 +415,7 @@ class Person(index.Indexed, models.Model):
         upload_to=person_photo_small_path,
         validators=[validate_virus_check_result],
     )
+    login_count = models.IntegerField(default=0)
 
     objects = PersonManager.from_queryset(PersonQuerySet)()
 

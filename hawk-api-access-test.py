@@ -1,7 +1,9 @@
 import requests
 from mohawk import Sender
 
-URL = "http://localhost:8000/peoplefinder/api/activity-stream/"
+# URL = "http://localhost:8000/peoplefinder/api/activity-stream/"
+URL = "http://localhost:8000/peoplefinder/api/person-api/"
+
 ID = "xxx"
 SECRET = "xxx"
 

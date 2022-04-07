@@ -485,6 +485,7 @@ LOGGING = {
 AUTHBROKER_ANONYMOUS_PATHS = [
     "/pingdom/ping.xml",
     "/peoplefinder/api/activity-stream/",
+    "/peoplefinder/api/person-api/",
 ]
 
 # Parser settings (remove after import)
@@ -549,3 +550,7 @@ PFM_AWS_STORAGE_BUCKET_NAME = env("PFM_AWS_STORAGE_BUCKET_NAME")
 PFM_AWS_ACCESS_KEY_ID = env("PFM_AWS_ACCESS_KEY_ID")
 PFM_AWS_SECRET_ACCESS_KEY = env("PFM_AWS_SECRET_ACCESS_KEY")
 PFM_REGION = env("PFM_REGION")
+
+# Data workspace page sizes
+PAGINATION_PAGE_SIZE = env.int("PAGINATION_PAGE_SIZE", 100)
+PAGINATION_MAX_PAGE_SIZE = env.int("PAGINATION_MAX_PAGE_SIZE", 100)
