@@ -479,3 +479,10 @@ OPENSEARCH_JAVA_OPTS
 OPENSEARCH_JAVA_OPTS=-Xms512
 0064_auto_20220315_1622
 manager_id
+SerializerMethodField
+HawkAuthentication
+key_skill_codes
+manager_id
+John Smith
+
+
