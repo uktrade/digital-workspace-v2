@@ -19,7 +19,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
-        <h2 class="govuk-heading-s">Team leader</h2>
+        <h2 class="govuk-heading-s">Team leader{{ team.leaders|length|pluralize }}</h2>
         <div>
             {% for member in team.leaders %}
                 {% include 'peoplefinder/components/team-member-card.html' with member=member %}

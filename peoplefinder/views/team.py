@@ -86,6 +86,15 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
         context["parent_team"] = team_service.get_immediate_parent_team(team)
         context["is_root_team"] = team_service.get_root_team() == team
 
+        members = [
+            {"pk": member.pk, "name": member.person.full_name}
+            for member in team.leaders
+        ]
+        context["team_leaders_order_component"] = {
+            "ordering": team.leaders_ordering,
+            "members": members,
+        }
+
         return context
 
     def form_valid(self, form):
@@ -93,6 +102,20 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
 
         if form.has_changed():
             TeamService().team_updated(self.object, self.request.user)
+
+        # Update the order of the team leaders.
+        if (
+            self.object.leaders_ordering == Team.LeadersOrdering.ALPHABETICAL
+            or not form.cleaned_data["leaders_positions"]
+        ):
+            for member in self.object.members.all():
+                member.leaders_position = None
+                member.save()
+        elif self.object.leaders_ordering == Team.LeadersOrdering.CUSTOM:
+            for i, member_pk in enumerate(form.cleaned_data["leaders_positions"]):
+                member = TeamMember.objects.get(pk=member_pk)
+                member.leaders_position = i
+                member.save()
 
         return response
 

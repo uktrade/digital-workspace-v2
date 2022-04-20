@@ -14,9 +14,12 @@ class TeamForm(forms.ModelForm):
             "abbreviation",
             "description",
             "parent_team",
+            "leaders_ordering",
+            "leaders_positions",
         ]
 
     parent_team = forms.IntegerField()
+    leaders_positions = forms.CharField(required=False, empty_value=None)
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -43,6 +46,14 @@ class TeamForm(forms.ModelForm):
         # parent_team is not required if we are editing the root team
         if self.is_root_team:
             self.fields["parent_team"].required = False
+
+    def clean_leaders_positions(self):
+        leaders_positions = self.cleaned_data["leaders_positions"]
+
+        if not leaders_positions:
+            return None
+
+        return list(map(int, leaders_positions.split(",")))
 
     def clean(self):
         cleaned_data = super().clean()

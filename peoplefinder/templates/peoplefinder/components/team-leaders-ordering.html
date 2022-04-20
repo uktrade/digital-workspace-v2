@@ -1,0 +1,78 @@
+{{ team_leaders_order_component|json_script:'team-leaders-order-component' }}
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('team_leaders_order_component', () => ({
+            // Data
+            ...JSON.parse(document.getElementById('team-leaders-order-component').textContent),
+            // Getters
+            get count() {
+                return this.members.length;
+            },
+            get order() {
+                return this.members.map((member) => member.pk).join(',');
+            },
+            get isCustomOrdering() {
+                return this.ordering === 'custom';
+            },
+            // Methods
+            up(index) {
+                const member = this.members[index];
+                this.members.splice(index, 1);
+                this.members.splice(index - 1, 0, member);
+            },
+            down(index) {
+                const member = this.members[index];
+                this.members.splice(index, 1);
+                this.members.splice(index + 1, 0, member);
+            },
+        }))
+    })
+</script>
+
+<div class="mb-20" x-data="team_leaders_order_component">
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h1 class="govuk-fieldset__heading">Team leader display order</h1>
+        </legend>
+        <div class="govuk-hint">
+            Allows you to change the order of team leaders on the team page.
+        </div>
+
+        {# How they should be ordered. #}
+        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="leaders-ordering-alphabetical" name="leaders_ordering" type="radio" value="alphabetical" x-model="ordering">
+                <label class="govuk-label govuk-radios__label" for="leaders-ordering-alphabetical">
+                    Default (alphabetical)
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="leaders-ordering-custom" name="leaders_ordering" type="radio" value="custom" x-model="ordering">
+                <label class="govuk-label govuk-radios__label" for="leaders-ordering-custom">
+                    Custom (move up / down and save team)
+                </label>
+            </div>
+        </div>
+
+        {# What is the custom ordering? #}
+        <template x-for="(member, index) in members" :key="member.pk">
+            <div class="flex align-items-center govuk-body gds-border-bottom-1-grey mb-0 pt-10 pb-10">
+                <div class="mr-10" x-text="(index + 1) + ':'"></div>
+                <div x-text="member.name"></div>
+
+                <div style="margin-left: auto;">
+                    <template x-if="index !== 0">
+                        <button class="govuk-button govuk-button--secondary mb-0" type="button" @click="up(index)" :disabled="!isCustomOrdering">Move up</button>
+                    </template>
+    
+                    <template x-if="index !== count - 1">
+                        <button class="govuk-button govuk-button--secondary mb-0" type="button" @click="down(index)" :disabled="!isCustomOrdering">Move down</button>
+                    </template>
+                </div>
+            </div>
+        </template>
+        
+        <input type="hidden" name="leaders_positions" x-model="order">
+    </fieldset>
+</div>
