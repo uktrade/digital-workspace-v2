@@ -22,9 +22,6 @@ def remove_orphan_keyword_and_phrases():
 
 
 def manage_pinned(obj, pinned_phrases_string):
-    if not pinned_phrases_string:
-        return
-
     from content.models import SearchKeywordOrPhrase, SearchPinPageLookUp
 
     # Delete existing pins for this page
@@ -32,6 +29,9 @@ def manage_pinned(obj, pinned_phrases_string):
         object_id=obj.pk,
         content_type=ContentType.objects.get_for_model(obj),
     ).delete()
+
+    if not pinned_phrases_string:
+        return
 
     pinned_phrases = pinned_phrases_string.split(",")
 
