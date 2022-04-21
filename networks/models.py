@@ -1,4 +1,5 @@
 from django.db import models
+from wagtail.admin.edit_handlers import FieldPanel
 
 from content.models import ContentPage
 
@@ -23,3 +24,5 @@ class Network(ContentPage):
         "networks.Network",
     ]
     subpage_types = ["networks.Network"]
+
+    content_panels = ContentPage.content_panels + [FieldPanel("excerpt")]
