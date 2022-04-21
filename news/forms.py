@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 class CommentForm(forms.Form):
     comment = forms.CharField(
         label="Comment",
-        max_length=255,
+        max_length=500,
         required=True,
         widget=forms.Textarea(attrs={"class": "govuk-textarea"}),
     )
