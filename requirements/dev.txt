@@ -378,6 +378,7 @@ pyparsing==3.0.7
     #   packaging
 pytest==6.2.5
     # via
+    #   -r requirements.in/dev.in
     #   pytest-base-url
     #   pytest-django
     #   pytest-html
@@ -386,13 +387,13 @@ pytest==6.2.5
     #   pytest-variables
 pytest-base-url==1.4.2
     # via pytest-selenium
-pytest-django==4.1.0
+pytest-django==4.5.2
     # via -r requirements.in/dev.in
 pytest-html==3.1.1
     # via pytest-selenium
 pytest-metadata==1.11.0
     # via pytest-html
-pytest-selenium==2.0.1
+pytest-selenium==3.0.0
     # via -r requirements.in/dev.in
 pytest-variables==1.9.0
     # via pytest-selenium

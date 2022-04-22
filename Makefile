@@ -2,26 +2,32 @@ clean:
 	npm run clean
 	find . -name '__pycache__' -exec rm -rf {} +
 
+wagtail = docker-compose run --rm wagtail
+chown = $(wagtail) chown $(shell id -u):$(shell id -g)
+
 makemigrations:
-	docker-compose run --rm wagtail python manage.py makemigrations
+	$(wagtail) python manage.py makemigrations
+	$(chown) */migrations/*
 
 migrations:
-	docker-compose run --rm wagtail python manage.py makemigrations
+	$(wagtail) python manage.py makemigrations
+	$(chown) */migrations/*
 
 empty-migration:
-	docker-compose run --rm wagtail python manage.py makemigrations --empty $(app)
+	$(wagtail) python manage.py makemigrations --empty $(app)
+	$(chown) */migrations/*
 
 checkmigrations:
 	docker-compose run --rm --no-deps wagtail python manage.py makemigrations --check
 
 migrate:
-	docker-compose run --rm wagtail python manage.py migrate
+	$(wagtail) python manage.py migrate
 
 compilescss:
 	docker-compose run --rm wagtail python manage.py compilescss
 
 test:
-	docker-compose run --rm --name testrunner wagtail pytest --ignore=selenium_tests -ra --reuse-db $(tests) 
+	docker-compose run --rm --name testrunner wagtail pytest --ignore=selenium_tests --reuse-db $(tests) 
 
 test-selenium:
 	docker-compose run --rm --name testrunner wagtail pytest selenium_tests

@@ -70,6 +70,7 @@ class ProfileForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         person = self.instance
+        user = person.user
 
         self.fields["first_name"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
@@ -166,13 +167,9 @@ class ProfileForm(forms.ModelForm):
 
         self.initial.update(
             manager=person.manager and person.manager.slug,
-            is_superuser=person.user.is_superuser,
-            is_team_admin=person.user.groups.filter(
-                name="Team Admin"  # /PS-IGNORE
-            ).exists(),
-            is_person_admin=person.user.groups.filter(
-                name="Person Admin"  # /PS-IGNORE
-            ).exists(),
+            is_superuser=user and user.is_superuser,
+            is_team_admin=user and user.groups.filter(name="Team Admin").exists(),
+            is_person_admin=user and user.groups.filter(name="Person Admin").exists(),
         )
 
     def clean_manager(self):

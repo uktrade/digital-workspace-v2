@@ -1,7 +1,10 @@
 import pytest
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.core.management import call_command
 
+from peoplefinder.management.commands.create_people_finder_groups import (
+    TEAM_ADMIN_GROUP_NAME,
+)
 from peoplefinder.models import Team
 from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.person import PersonService
@@ -53,3 +56,17 @@ def django_db_setup(django_db_setup, django_db_blocker):
 @pytest.fixture
 def normal_user(db):
     return User.objects.get(username="johnsmith")
+
+
+@pytest.fixture
+def team_admin_user(normal_user):
+    normal_user.groups.add(Group.objects.get(name=TEAM_ADMIN_GROUP_NAME))
+    normal_user.is_staff = True
+    normal_user.save()
+
+    return normal_user
+
+
+@pytest.fixture
+def software_team(db):
+    return Team.objects.get(slug="software")
