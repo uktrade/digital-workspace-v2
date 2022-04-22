@@ -518,6 +518,10 @@ You can update this description, by [updating your team information](https://wor
 
 
 class Team(index.Indexed, models.Model):
+    class LeadersOrdering(models.TextChoices):
+        ALPHABETICAL = "alphabetical", "Alphabetical"
+        CUSTOM = "custom", "Custom"
+
     people = models.ManyToManyField(
         "Person", through="TeamMember", related_name="teams"
     )
@@ -541,6 +545,11 @@ class Team(index.Indexed, models.Model):
         blank=False,
         default=DEFAULT_TEAM_DESCRIPTION,
         help_text="What does this team do? Use Markdown to add lists and links. Enter up to 1500 characters.",
+    )
+    leaders_ordering = models.CharField(
+        max_length=12,
+        choices=LeadersOrdering.choices,
+        default=LeadersOrdering.ALPHABETICAL,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -570,7 +579,14 @@ class Team(index.Indexed, models.Model):
 
     @property
     def leaders(self):
-        yield from self.members.filter(head_of_team=True)
+        order_by = []
+
+        if self.leaders_ordering == self.LeadersOrdering.CUSTOM:
+            order_by.append("leaders_position")
+
+        order_by += ["person__last_name", "person__first_name"]
+
+        yield from self.members.filter(head_of_team=True).order_by(*order_by)
 
 
 class TeamMember(models.Model):
@@ -589,6 +605,7 @@ class TeamMember(models.Model):
         max_length=255, help_text="Enter your role in this team"
     )
     head_of_team = models.BooleanField(default=False)
+    leaders_position = models.SmallIntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -22,9 +22,10 @@ factory-boy
 isort
 
 # Testing
-pytest-django==4.1.0
+pytest==6.2.5
+pytest-django==4.5.2
 coverage==5.5
 
 # Selenium
 selenium==3.141.0
-pytest-selenium==2.0.1
+pytest-selenium==3.0.0

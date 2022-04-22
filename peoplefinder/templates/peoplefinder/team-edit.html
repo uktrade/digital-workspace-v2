@@ -1,5 +1,10 @@
 {% extends 'peoplefinder/page.html' %}
 
+{% block libraries %}
+{{ block.super }}
+<script src="//unpkg.com/alpinejs" defer></script>
+{% endblock %}
+
 {% block title %}Edit {{ team.name }}{% endblock %}
 
 {% block location %}{{ team.name }}{% endblock %}
@@ -19,6 +24,8 @@
     {% csrf_token %}
 
     {% include 'peoplefinder/components/team-form.html' %}
+
+    {% include 'peoplefinder/components/team-leaders-ordering.html' %}
 
     <div>
         <button class="govuk-button" type="submit" data-test-save-team>Save team</button>
