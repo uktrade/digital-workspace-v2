@@ -7,7 +7,7 @@ wagtail-draftail-anchors>=0.2.0
 https://github.com/uktrade/wagtail-admin-sortable/archive/master.tar.gz
 
 # Django tools
-django>=3.2.12
+django>=3.2.13
 django-environ>=0.4.5
 django-webpack-loader>=1.0.0
 psycopg2>=2.8.5
