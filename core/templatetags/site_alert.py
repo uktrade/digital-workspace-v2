@@ -1,5 +1,4 @@
 from django import template
-from django.conf import settings
 
 from core.models import SiteAlertBanner
 
@@ -16,7 +15,6 @@ def site_alert():
     if active_site_alert:
         return {
             "active_site_alert": active_site_alert,
-            "should_track_click_event": bool(settings.GTM_CODE),
         }
 
     return

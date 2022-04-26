@@ -13,12 +13,3 @@
         </div>
     </div>
 {% endif %}
-
-{% if should_track_click_event %}
-<script>
-    document.getElementById('site-alert-banner-link').addEventListener('click', (e) => {
-        const siteAlertBannerText = '{{ active_site_alert.banner_text|escapejs }}';
-        ga('send', 'event', 'SiteAlertBanner', 'click', siteAlertBannerText);
-    })
-</script>
-{% endif %}
