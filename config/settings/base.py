@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
+
 # Set directories to be used across settings
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -485,6 +486,7 @@ LOGGING = {
 AUTHBROKER_ANONYMOUS_PATHS = [
     "/pingdom/ping.xml",
     "/peoplefinder/api/activity-stream/",
+    "/peoplefinder/api/person-api/",
 ]
 
 # Parser settings (remove after import)
@@ -549,3 +551,7 @@ PFM_AWS_STORAGE_BUCKET_NAME = env("PFM_AWS_STORAGE_BUCKET_NAME")
 PFM_AWS_ACCESS_KEY_ID = env("PFM_AWS_ACCESS_KEY_ID")
 PFM_AWS_SECRET_ACCESS_KEY = env("PFM_AWS_SECRET_ACCESS_KEY")
 PFM_REGION = env("PFM_REGION")
+
+# Data workspace page sizes
+PAGINATION_PAGE_SIZE = env.int("PAGINATION_PAGE_SIZE", 100)
+PAGINATION_MAX_PAGE_SIZE = env.int("PAGINATION_MAX_PAGE_SIZE", 100)

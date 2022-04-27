@@ -1,7 +1,10 @@
 import requests
 from mohawk import Sender
 
-URL = "http://localhost:8000/peoplefinder/api/activity-stream/"
+
+# URL = "http://localhost:8000/peoplefinder/api/activity-stream/"
+URL = "http://localhost:8000/peoplefinder/api/person-api/"
+
 ID = "xxx"
 SECRET = "xxx"
 
@@ -28,4 +31,4 @@ response = requests.get(
     headers={"Authorization": sender.request_header, "Content-Type": content_type},
 )
 
-print(response.content)
+print(response.json())

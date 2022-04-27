@@ -2,6 +2,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, reverse
 
 from peoplefinder.services.team import TeamService
+
 from .base import PeoplefinderView
 
 

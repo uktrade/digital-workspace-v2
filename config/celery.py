@@ -2,6 +2,7 @@ import os
 
 from celery import Celery
 
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.prod")
 
 celery_app = Celery("DjangoCelery")

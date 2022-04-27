@@ -11,9 +11,7 @@ from wagtail.core.models import Page
 from wagtail.documents.models import Document as WagtailDocument
 from wagtail.images.models import Image as WagtailImage
 
-from import_wordpress.parser.block_content import (
-    parse_into_blocks,
-)
+from import_wordpress.parser.block_content import parse_into_blocks
 from working_at_dit.models import PageTopic, Topic
 
 

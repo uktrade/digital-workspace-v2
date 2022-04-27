@@ -5,11 +5,11 @@ from datetime import date, datetime
 from io import BytesIO
 
 import boto3
-from PIL import Image
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import connection
+from PIL import Image
 from wagtail.core.models import Collection
 from wagtail.documents.models import Document as WagtailDocument
 from wagtail.images.models import Image as WagtailImage

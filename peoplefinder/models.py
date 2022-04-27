@@ -4,12 +4,14 @@ from typing import Iterator
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import Case, Exists, F, OuterRef, Q, When
+from django.db.models import Case, Exists, F, Func, JSONField, OuterRef, Q, Value, When
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
+from wagtail.search import index
 
 
 # TODO: django doesnt support on update cascade and it's possible that a code
@@ -181,12 +183,12 @@ class PersonQuerySet(models.QuerySet):
             Case(When(primary_phone_number__isnull=False, then=1), default=0),
             Case(When(manager__isnull=False, then=1), default=0),
             Case(When(photo__isnull=False, then=1), default=0),
-            Case(When(user__email__isnull=False, then=1), default=0),
-            Case(When(user__first_name__isnull=False, then=1), default=0),
-            Case(When(user__last_name__isnull=False, then=1), default=0),
+            Case(When(email__isnull=False, then=1), default=0),
+            Case(When(first_name__isnull=False, then=1), default=0),
+            Case(When(last_name__isnull=False, then=1), default=0),
             Case(
                 When(
-                    Exists(TeamMember.objects.filter(person_id=OuterRef("user_id"))),
+                    Exists(TeamMember.objects.filter(person_id=OuterRef("pk"))),
                     then=1,
                 ),
                 default=0,
@@ -211,7 +213,7 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
-class Person(models.Model):
+class Person(index.Indexed, models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -288,6 +290,7 @@ class Person(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    edited_or_confirmed_at = models.DateTimeField(default=timezone.now)
 
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=80)
@@ -412,8 +415,33 @@ class Person(models.Model):
         upload_to=person_photo_small_path,
         validators=[validate_virus_check_result],
     )
+    login_count = models.IntegerField(default=0)
 
     objects = PersonManager.from_queryset(PersonQuerySet)()
+
+    search_fields = [
+        index.SearchField("first_name", partial_match=True, boost=10),
+        index.SearchField("last_name", partial_match=True, boost=10),
+        index.RelatedFields("roles", [index.SearchField("job_title")]),
+        index.SearchField("email"),
+        index.SearchField("contact_email"),
+        index.SearchField("primary_phone_number"),
+        index.SearchField("secondary_phone_number"),
+        index.SearchField("fluent_languages"),
+        index.SearchField("intermediate_languages"),
+        index.SearchField("town_city_or_region"),
+        index.SearchField("regional_building"),
+        index.SearchField("international_building"),
+        index.SearchField("location_in_building"),
+        index.RelatedFields("key_skills", [index.SearchField("name")]),
+        index.SearchField("other_key_skills"),
+        index.RelatedFields("learning_interests", [index.SearchField("name")]),
+        index.SearchField("other_learning_interests"),
+        index.RelatedFields("additional_roles", [index.SearchField("name")]),
+        index.SearchField("other_additional_roles"),
+        index.RelatedFields("networks", [index.SearchField("name")]),
+        index.FilterField("is_active"),
+    ]
 
     def __str__(self) -> str:
         return self.full_name
@@ -441,15 +469,45 @@ class Person(models.Model):
 
     @property
     def is_stale(self):
-        return (timezone.now() - self.updated_at).days >= 365
+        return (timezone.now() - self.edited_or_confirmed_at).days >= 365
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
     @property
-    def preferred_email(self):
+    def preferred_email(self) -> str:
         return self.contact_email or self.email
+
+    @property
+    def all_languages(self) -> str:
+        return ", ".join(
+            filter(None, [self.fluent_languages, self.intermediate_languages])
+        )
+
+
+class TeamQuerySet(models.QuerySet):
+    def with_all_parents(self):
+        return self.values("pk").annotate(
+            all_parents=ArrayAgg(
+                Func(
+                    Value("slug"),
+                    "children__parent__slug",
+                    Value("short_name"),
+                    # Replicate `Team.short_name` behaviour.
+                    Case(
+                        When(
+                            children__parent__abbreviation__isnull=False,
+                            then=F("children__parent__abbreviation"),
+                        ),
+                        default=F("children__parent__name"),
+                    ),
+                    function="jsonb_build_object",
+                    output_field=JSONField(),
+                ),
+                ordering="-children__depth",
+            ),
+        )
 
 
 # markdown
@@ -459,7 +517,11 @@ You can update this description, by [updating your team information](https://wor
 """
 
 
-class Team(models.Model):
+class Team(index.Indexed, models.Model):
+    class LeadersOrdering(models.TextChoices):
+        ALPHABETICAL = "alphabetical", "Alphabetical"
+        CUSTOM = "custom", "Custom"
+
     people = models.ManyToManyField(
         "Person", through="TeamMember", related_name="teams"
     )
@@ -484,8 +546,21 @@ class Team(models.Model):
         default=DEFAULT_TEAM_DESCRIPTION,
         help_text="What does this team do? Use Markdown to add lists and links. Enter up to 1500 characters.",
     )
+    leaders_ordering = models.CharField(
+        max_length=12,
+        choices=LeadersOrdering.choices,
+        default=LeadersOrdering.ALPHABETICAL,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = TeamQuerySet.as_manager()
+
+    # TODO: PFM-239 - boost doesn't work https://github.com/wagtail/wagtail/issues/5422
+    search_fields = [
+        index.SearchField("name", partial_match=True, boost=10),
+        index.SearchField("abbreviation", boost=20),
+    ]
 
     def __str__(self) -> str:
         return self.short_name
@@ -504,7 +579,14 @@ class Team(models.Model):
 
     @property
     def leaders(self):
-        yield from self.members.filter(head_of_team=True)
+        order_by = []
+
+        if self.leaders_ordering == self.LeadersOrdering.CUSTOM:
+            order_by.append("leaders_position")
+
+        order_by += ["person__last_name", "person__first_name"]
+
+        yield from self.members.filter(head_of_team=True).order_by(*order_by)
 
 
 class TeamMember(models.Model):
@@ -523,6 +605,7 @@ class TeamMember(models.Model):
         max_length=255, help_text="Enter your role in this team"
     )
     head_of_team = models.BooleanField(default=False)
+    leaders_position = models.SmallIntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -1,285 +1,357 @@
+// Utility
+.flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.align-middle {
+  vertical-align: middle;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.separator {
+  padding-right: 10px;
+  margin-right: 10px;
+  border-right: 1px solid #b1b4b6;
+}
+
+.p-0 {
+  padding: 0;
+}
+
+.pt-10 {
+  padding-top: 10px;
+}
+
+.pb-10 {
+  padding-bottom: 10px;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mr-10 {
+  margin-right: 10px;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}
+
+.gds-border-bottom-1-grey {
+  border-bottom: 1px solid #b1b4b6;
+}
+
+// Components
 .ws-profile__primary-contact-list {
-    dd {
-        margin-left: 0;
-    }
+  dd {
+    margin-left: 0;
+  }
 }
 
 .ws-profile-edit-form {
-    fieldset {
-        margin-bottom: 20px;
-    }
+  fieldset {
+    margin-bottom: 20px;
+  }
 }
 
 .manager-search-results {
-    max-height: 450px;
-    overflow-y: auto;
+  max-height: 450px;
+  overflow-y: auto;
 }
 
 .pf-roles {
-    button {
-        margin-bottom: 0;
-    }
+  button {
+    margin-bottom: 0;
+  }
 }
 
 .pf-role-form {
-    padding: 20px;
-    border: 1px solid #b1b4b6;
-    margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #b1b4b6;
+  margin-bottom: 20px;
 
-    button {
-        margin-bottom: 0;
-    }
+  button {
+    margin-bottom: 0;
+  }
 }
 
 .pf-messages {
-    margin-top: 20px;
-    font-weight: bold;
+  margin-top: 20px;
+  font-weight: bold;
 
-    li {
-        padding-left: 15px;
-    }
+  li {
+    padding-left: 15px;
+  }
 
-    .success {
-        border-left: 5px solid green;
-    }
+  .success {
+    border-left: 5px solid green;
+  }
 
-    .warning {
-        border-left: 5px solid orange;
-    }
+  .warning {
+    border-left: 5px solid orange;
+  }
 
-    .error {
-        border-left: 5px solid #d4351c;
-    }
+  .error {
+    border-left: 5px solid #d4351c;
+  }
 }
 
 // Team member cards
 .pf-team-member-cards {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0px;
-    padding: 0px;
-    margin-right: -25px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  padding: 0px;
+  margin-right: -25px;
 
-    li {
-        list-style: none;
-        padding-right: 25px;
-    }
+  li {
+    list-style: none;
+    padding-right: 25px;
+  }
 }
 
 /* when the browser is wider than 640px */
 @media screen and (min-width: 641px) {
-    .pf-team-member-cards {
-        li {
-            width: 25%;
-        }
+  .pf-team-member-cards {
+    li {
+      width: 25%;
     }
+  }
 }
 
 .pf-team-member-card__name {
-    font-size: 20px;
-    font-weight: bold;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .pf-team-member-card__job-title {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 // Team cards
 .pf-team-cards {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0px;
-    padding: 0px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-right: -25px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+  padding: 0px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right: -25px;
 
-    > li {
-        list-style: none;
-        padding-right: 25px;
-        padding-bottom: 25px;
-    }
+  > li {
+    list-style: none;
+    padding-right: 25px;
+    padding-bottom: 25px;
+  }
 }
 
 /* when the browser is wider than 640px */
 @media screen and (min-width: 641px) {
-    .pf-team-cards {
-        > li {
-            width: 33.333%;
-        }
+  .pf-team-cards {
+    > li {
+      width: 33.333%;
     }
+  }
 }
 
 .pf-team-card {
-    height: 100%;
-    padding: 22.5px;
-    border: 1px solid #b1b4b6;
-    box-shadow: 7px 7px 0 #fff, 8px 8px 0 #b1b4b6;
+  height: 100%;
+  padding: 22.5px;
+  border: 1px solid #b1b4b6;
+  box-shadow: 7px 7px 0 #fff, 8px 8px 0 #b1b4b6;
 }
 
 .pf-team-card__name {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 0px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 0px;
 }
 
 .pf-team-card__description {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .pf-team-card__metadata {
-    font-size: 14px;
-    color: #505a5f;
-    margin-bottom: 0;
+  font-size: 14px;
+  color: #505a5f;
+  margin-bottom: 0;
 }
 
 // Pagination
 .pf-pagination__info {
-    text-align: right;
+  text-align: right;
 }
 
 .pf-pagination__page {
-    margin-right: 1em;
+  margin-right: 1em;
 }
 
 // Team tree
 // These styles were copied from the original peoplefinder project.
 .pf-team-tree {
-    margin: 0 0 0 1em;
-    padding: 0;
-    list-style: none;
-    @include govuk-font(19);
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+  @include govuk-font(19);
 
-    a {
-        @extend %govuk-link;
-    }
+  a {
+    @extend %govuk-link;
+  }
 }
 
 .pf-team-tree--container {
-    margin-bottom: 1em;
+  margin-bottom: 1em;
 }
 
 .pf-team-tree--with-subgroups {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .pf-team-tree__child {
-    margin-bottom: 0;
-    margin-left: 0.35em;
-    line-height: 1.6;
+  margin-bottom: 0;
+  margin-left: 0.35em;
+  line-height: 1.6;
+  border-left: thin solid #000;
+
+  &:last-child {
+    border-left: none;
+  }
+
+  &:before {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.6em;
+    margin-right: 0.1em;
+    vertical-align: top;
+    border-bottom: thin solid #000;
+    content: "";
+  }
+
+  &:last-child:before {
     border-left: thin solid #000;
-
-    &:last-child {
-        border-left: none;
-    }
-
-    &:before {
-        display: inline-block;
-        width: 0.9em;
-        height: 0.6em;
-        margin-right: 0.1em;
-        vertical-align: top;
-        border-bottom: thin solid #000;
-        content: "";
-    }
-
-    &:last-child:before {
-      border-left: thin solid #000;
-    }
+  }
 }
 
 // Audit log
 .pf-audit-log__diff {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .pf-audit-log__diff-item--add {
-    color: govuk-colour("green");
+  color: govuk-colour("green");
 }
 
 .pf-audit-log__diff-item--change {
-    color: govuk-colour("blue");
+  color: govuk-colour("blue");
 }
 
 .pf-audit-log__diff-item--remove {
-    color: govuk-colour("red");
-}
-
-// Utility
-.align-middle {
-    vertical-align: middle;
-}
-
-.text-right {
-    text-align: right;
-}
-
-.inline-block {
-    display: inline-block;
-}
-
-.separator {
-    padding-right: 10px;
-    margin-right: 10px;
-    border-right: 1px solid #b1b4b6;
-}
-
-.mb-0 {
-    margin-bottom: 0;
-}
-
-.mb-20 {
-    margin-bottom: 20px;
+  color: govuk-colour("red");
 }
 
 // Team select web component styles
 .team-select__teams {
-    margin-bottom: 20px;
-    border: 2px solid black;
+  margin-bottom: 20px;
+  border: 2px solid black;
 
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #f3f2f1;
     }
+  }
 
-    li {
-        padding-top: 10px;
-        padding-bottom: 10px;
-
-        &:not(:last-child) {
-            border-bottom: 1px solid #f3f2f1;
-        }
-    }
-
-    a {
-        text-decoration: none;
-    }
+  a {
+    text-decoration: none;
+  }
 }
 
 .team-select__branch-team {
-    padding-left: 2rem;
+  padding-left: 2rem;
 }
 
 .team-select__leaf-team {
-    padding-left: 2rem;
+  padding-left: 2rem;
 }
 
 .team-select__current-team {
-    color: #505a5f;
-    text-decoration: line-through;
+  color: #505a5f;
+  text-decoration: line-through;
 }
 
 .team-select__nav-up {
-    padding-left: 5px;
+  padding-left: 5px;
 
-    &::before {
-        content: "‹ ";
-    }
+  &::before {
+    content: "‹ ";
+  }
 }
 
 .team-select__nav-down::after {
-    content: " ›";
+  content: " ›";
+}
+
+// Search results
+.pf-person-search-result {
+  display: flex;
+
+  &__picture {
+    margin-right: 15px;
+
+    img {
+      width: 200px;
+    }
+  }
+
+  &__details {
+    &__item {
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.pf-team-search-results {
+  @extend .pf-team-cards;
+
+  > li {
+    width: 50%;
+  }
 }

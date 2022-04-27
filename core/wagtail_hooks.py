@@ -1,11 +1,6 @@
-from wagtail.contrib.modeladmin.options import (
-    ModelAdmin,
-    modeladmin_register,
-)
+from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 
-from core.models import (
-    SiteAlertBanner,
-)
+from core.models import SiteAlertBanner
 
 
 class SiteAlertBannerAdmin(ModelAdmin):

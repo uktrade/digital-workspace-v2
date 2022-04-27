@@ -1,5 +1,5 @@
-from PIL import Image, ImageOps
 from django.core.files.uploadedfile import UploadedFile
+from PIL import Image, ImageOps
 
 
 class ImageService:

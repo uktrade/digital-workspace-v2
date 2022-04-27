@@ -1,8 +1,8 @@
 from django.urls import include, path
-
 from rest_framework import routers
 
 from peoplefinder.views.activity_stream import ActivityStreamViewSet
+from peoplefinder.views.api.person import PersonViewSet
 from peoplefinder.views.home import PeopleHome, TeamHome
 from peoplefinder.views.manager import (
     ManagerCancel,
@@ -12,6 +12,7 @@ from peoplefinder.views.manager import (
 )
 from peoplefinder.views.profile import (
     DeleteConfirmationView,
+    ProfileConfirmDetailsView,
     ProfileDeleteView,
     ProfileDetailView,
     ProfileEditView,
@@ -19,6 +20,7 @@ from peoplefinder.views.profile import (
     ProfileLegacyView,
 )
 from peoplefinder.views.role import RoleFormView, TeamSelectView
+from peoplefinder.views.search import search_view
 from peoplefinder.views.team import (
     TeamAddNewSubteamView,
     TeamDeleteView,
@@ -90,6 +92,12 @@ people_urlpatterns = [
         ProfileDeleteView.as_view(),
         name="profile-delete",
     ),
+    # Confirm details
+    path(
+        "<uuid:profile_slug>/confirm-details/",
+        ProfileConfirmDetailsView.as_view(),
+        name="profile-confirm-details",
+    ),
 ]
 
 teams_urlpatterns = [
@@ -111,10 +119,15 @@ teams_urlpatterns = [
     ),
 ]
 
+people_and_teams_urlpatterns = [
+    path("search/", search_view, name="people-and-teams-search"),
+]
+
 router = routers.DefaultRouter()
 router.register(
     "activity-stream", ActivityStreamViewSet, basename="activity-stream-people"
 )
+router.register("person-api", PersonViewSet, basename="person-api-people")
 
 api_urlpatterns = [
     path("", include(router.urls)),

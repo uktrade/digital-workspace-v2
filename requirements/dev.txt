@@ -113,7 +113,7 @@ deprecated==1.2.13
     # via
     #   -r requirements.in/../requirements/base.txt
     #   redis
-django==3.2.12
+django==3.2.13
     # via
     #   -r requirements.in/../requirements/base.txt
     #   django-audit-log-middleware
@@ -240,8 +240,6 @@ flake8-bugbear==22.1.11
     # via -r requirements.in/dev.in
 flake8-debugger==4.0.0
     # via -r requirements.in/dev.in
-flake8-import-order==0.18.1
-    # via -r requirements.in/dev.in
 flake8-polyfill==1.0.2
     # via
     #   flake8-bandit
@@ -336,7 +334,7 @@ pep8-naming==0.12.1
     # via -r requirements.in/dev.in
 phpserialize==1.3
     # via -r requirements.in/../requirements/base.txt
-pillow==9.0.0
+pillow==9.0.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
@@ -359,7 +357,6 @@ pycodestyle==2.8.0
     #   flake8
     #   flake8-bandit
     #   flake8-debugger
-    #   flake8-import-order
     #   flake8-print
 pycparser==2.21
     # via
@@ -381,6 +378,7 @@ pyparsing==3.0.7
     #   packaging
 pytest==6.2.5
     # via
+    #   -r requirements.in/dev.in
     #   pytest-base-url
     #   pytest-django
     #   pytest-html
@@ -389,13 +387,13 @@ pytest==6.2.5
     #   pytest-variables
 pytest-base-url==1.4.2
     # via pytest-selenium
-pytest-django==4.1.0
+pytest-django==4.5.2
     # via -r requirements.in/dev.in
 pytest-html==3.1.1
     # via pytest-selenium
 pytest-metadata==1.11.0
     # via pytest-html
-pytest-selenium==2.0.1
+pytest-selenium==3.0.0
     # via -r requirements.in/dev.in
 pytest-variables==1.9.0
     # via pytest-selenium
@@ -532,7 +530,7 @@ wagtailmedia==0.8.0
     # via -r requirements.in/../requirements/base.txt
 wagtailmenus==3.0.2
     # via -r requirements.in/../requirements/base.txt
-waitress==2.0.0
+waitress==2.1.1
     # via -r requirements.in/../requirements/base.txt
 wcwidth==0.2.5
     # via

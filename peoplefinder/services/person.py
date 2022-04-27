@@ -24,6 +24,7 @@ from peoplefinder.services.audit_log import (
 )
 from user.models import User
 
+
 logger = logging.getLogger(__name__)
 
 LEFT_DIT_LOG_MESSAGE = """People Finder deletion request: {profile_name}
@@ -61,6 +62,8 @@ class PersonService:
             The user's profile.
         """
         if hasattr(user, "profile"):
+            user.profile.login_count += 1
+            user.profile.save()
             return user.profile
 
         person = Person.objects.create(
@@ -68,6 +71,7 @@ class PersonService:
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
+            login_count=1,
         )
 
         self.profile_created(person, user)
@@ -142,6 +146,7 @@ class PersonService:
         AuditLogService().log(AuditLog.Action.UPDATE, updated_by, person)
 
         if request:
+            person.edited_or_confirmed_at = timezone.now()
             self.notify_about_changes(request, person)
 
     def profile_deletion_initiated(
@@ -264,7 +269,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 40, (
+    assert len(Person._meta.get_fields()) == 43, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
@@ -343,5 +348,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
 
         # Encode the slug from `UUID` to `str` before returning.
         person["slug"] = str(person["slug"])
+
+        del person["login_count"]
 
         return person

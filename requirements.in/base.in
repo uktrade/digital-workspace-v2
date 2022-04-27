@@ -7,7 +7,7 @@ wagtail-draftail-anchors>=0.2.0
 https://github.com/uktrade/wagtail-admin-sortable/archive/master.tar.gz
 
 # Django tools
-django>=3.2.12
+django>=3.2.13
 django-environ>=0.4.5
 django-webpack-loader>=1.0.0
 psycopg2>=2.8.5
@@ -34,14 +34,14 @@ django-audit-log-middleware==0.0.4
 django-hawk-drf==0.0.1
 
 # Operational dependencies
-waitress>=2.0.0
+waitress>=2.1.1
 sentry-sdk>=1.1.0
 elasticsearch<7.14.0
 celery>=5.2.2
 redis
 tweepy
 atoma
-pillow>=8.3.2
+pillow>=9.0.1
 defusedxml
 bleach
 urllib3>=1.26.5

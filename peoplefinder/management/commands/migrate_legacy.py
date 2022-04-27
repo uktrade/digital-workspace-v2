@@ -46,6 +46,7 @@ from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
 from user.models import User
 
+
 BATCH_SIZE = 100
 
 logger = logging.getLogger(__name__)
@@ -124,18 +125,14 @@ def migrate_people(**options):
         if not legacy_person.line_manager_id:
             continue
 
-        user = get_user_for_legacy_person(legacy_person)
+        person = get_person_for_legacy_person(legacy_person)
 
-        if not user:
-            continue
-
-        manager = get_user_for_legacy_person(
-            People.objects.get(pk=legacy_person.line_manager_id)
-        )
+        legacy_manager = People.objects.get(pk=legacy_person.line_manager_id)
+        manager = get_person_for_legacy_person(legacy_manager)
 
         if manager:
-            user.profile.manager = manager.profile
-            user.profile.save()
+            person.manager = manager
+            person.save()
 
     logger.info(f"Created {count} people in total")
 
@@ -322,6 +319,11 @@ def get_user_for_legacy_person(person: People) -> Optional[User]:
     return user
 
 
+@cache
+def get_person_for_legacy_person(legacy_person: People) -> Person:
+    return Person.objects.get(legacy_slug=legacy_person.slug)
+
+
 def migrate_teams():
     team_service = TeamService()
 
@@ -345,7 +347,7 @@ def migrate_teams():
         for group in groups:
             team = Team.objects.create(
                 name=group.name,
-                abbreviation=group.acronym,
+                abbreviation=group.acronym if group.acronym else None,
                 slug=group.slug,
                 description=group.description and group.description.strip(),
             )
@@ -364,7 +366,7 @@ def migrate_teams():
 def get_team_for_legacy_group(group: Groups) -> Team:
     return Team.objects.get(
         name=group.name,
-        abbreviation=group.acronym,
+        abbreviation=group.acronym if group.acronym else None,
         slug=group.slug,
     )
 

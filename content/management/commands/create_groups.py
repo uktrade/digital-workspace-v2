@@ -18,6 +18,7 @@ from working_at_dit.models import (
     WorkingAtDITHome,
 )
 
+
 TOP_LEVEL_PAGE_TYPES = [
     AboutUsHome,
     HowDoIHome,
@@ -92,6 +93,14 @@ NEWS_MODERATOR_PERMISSIONS = [
     "change_newscategory",
     "delete_newscategory",
     "view_newscategory",
+]
+
+SITE_ALERT_BANNER_ADMIN_GROUP_NAME = "Site Alert Banner Admin"
+SITE_ALERT_BANNER_ADMIN_PERMISSIONS = [
+    "add_sitealertbanner",
+    "change_sitealertbanner",
+    "delete_sitealertbanner",
+    "view_sitealertbanner",
 ]
 
 
@@ -172,3 +181,13 @@ class Command(BaseCommand):
         )
         news_moderators.permissions.add(*news_moderator_permissions)
         news_moderators.save()
+
+        site_alert_banner_admin_group, _ = Group.objects.get_or_create(
+            name=SITE_ALERT_BANNER_ADMIN_GROUP_NAME
+        )
+        site_alert_banner_admin_group.permissions.set(
+            Permission.objects.filter(
+                codename__in=SITE_ALERT_BANNER_ADMIN_PERMISSIONS,
+                content_type__app_label="core",
+            )
+        )
