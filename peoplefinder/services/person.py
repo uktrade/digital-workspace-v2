@@ -343,6 +343,9 @@ class PersonAuditLogSerializer(AuditLogSerializer):
                 ),
                 user__username=F("user__username"),
                 manager__slug=F("manager__slug"),
+                manager__full_name=(
+                    Concat("manager__first_name", Value(" "), "manager__last_name")
+                ),
             )[0]
         )
 
