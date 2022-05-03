@@ -348,6 +348,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
 
         # Encode the slug from `UUID` to `str` before returning.
         person["slug"] = str(person["slug"])
+        person["manager__slug"] = str(person["manager__slug"])
 
         del person["login_count"]
 
