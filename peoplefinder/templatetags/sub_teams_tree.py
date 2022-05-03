@@ -27,9 +27,9 @@ def sub_teams_tree(team: Team) -> str:
     # possible this might need to be optimised in the future.
     teams = list(
         Team.objects.annotate(
-            path=ArraySubquery(path_subquery.values("parent__name")),
+            path=ArraySubquery(path_subquery.values("parent__pk")),
         )
-        .filter(path__contains=[team.name])
+        .filter(path__contains=[team.pk])
         .order_by("path")
     )
 
