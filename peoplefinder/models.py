@@ -38,6 +38,13 @@ class Country(models.Model):
         return Country.objects.get(code=cls.DEFAULT_CODE).id
 
 
+class WorkdayQuerySet(models.QuerySet):
+    def all_mon_to_sun(self):
+        codes = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+        return sorted(self.all(), key=lambda x: codes.index(x.code))
+
+
 class Workday(models.Model):
     class Meta:
         constraints = [
@@ -47,6 +54,8 @@ class Workday(models.Model):
 
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=9)
+
+    objects = WorkdayQuerySet.as_manager()
 
     def __str__(self) -> str:
         return self.name
@@ -484,6 +493,19 @@ class Person(index.Indexed, models.Model):
         return ", ".join(
             filter(None, [self.fluent_languages, self.intermediate_languages])
         )
+
+    def get_workdays_display(self) -> str:
+        workdays = self.workdays.all_mon_to_sun()
+
+        workday_codes = [x.code for x in workdays]
+        mon_to_fri_codes = ["mon", "tue", "wed", "thu", "fri"]
+
+        # "Monday to Friday"
+        if workday_codes == mon_to_fri_codes:
+            return f"{workdays[0]} to {workdays[-1]}"
+
+        # "Monday, Tuesday, Wednesday, ..."
+        return ", ".join(map(str, workdays))
 
 
 class TeamQuerySet(models.QuerySet):
