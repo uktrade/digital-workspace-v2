@@ -173,7 +173,7 @@
     {% if profile.workdays.exists %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Days I work</dt>
-            <dd class="govuk-summary-list__value">{{ profile.workdays.all|join:", " }}</dd>
+            <dd class="govuk-summary-list__value">{{ profile.get_workdays_display }}</dd>
         </div>
     {% endif %}
 
