@@ -378,14 +378,14 @@ class Person(index.Indexed, models.Model):
     )
     fluent_languages = models.CharField(
         "Which languages do you speak fluently?",
-        max_length=100,
+        max_length=200,
         null=True,
         blank=True,
         help_text="Enter languages that you are fluent in. Use a comma to separate them.",
     )
     intermediate_languages = models.CharField(
         "Which other languages do you speak?",
-        max_length=130,
+        max_length=200,
         null=True,
         blank=True,
         help_text="Enter languages that you speak but aren't fluent in. Use a comma to separate them.",
