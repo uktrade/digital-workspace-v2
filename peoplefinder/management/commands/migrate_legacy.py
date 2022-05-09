@@ -88,7 +88,11 @@ def migrate_people(**options):
     for legacy_person in legacy_people:
         user = get_user_for_legacy_person(legacy_person)
 
-        person = Person.objects.create(user=user)
+        person = (
+            Person.objects.get_or_create(user=user)
+            if user
+            else Person.objects.create(user=user)
+        )
 
         migrate_person(legacy_person, person)
 
