@@ -452,6 +452,9 @@ class Person(index.Indexed, models.Model):
         index.FilterField("is_active"),
     ]
 
+    # TODO: Enable after migration
+    search_auto_update = False
+
     def __str__(self) -> str:
         return self.full_name
 
@@ -583,6 +586,9 @@ class Team(index.Indexed, models.Model):
         index.SearchField("name", partial_match=True, boost=10),
         index.SearchField("abbreviation", boost=20),
     ]
+
+    # TODO: Enable after migration
+    search_auto_update = False
 
     def __str__(self) -> str:
         return self.short_name
