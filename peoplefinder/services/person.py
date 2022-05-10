@@ -226,17 +226,22 @@ class PersonService:
         Returns:
             Person: The given person.
         """
-        groups = []
+        user = person.user
+        person_admin_group = Group.objects.get(name=PERSON_ADMIN_GROUP_NAME)
+        team_admin_group = Group.objects.get(name=TEAM_ADMIN_GROUP_NAME)
 
         if is_person_admin:
-            groups.append(Group.objects.get(name=PERSON_ADMIN_GROUP_NAME))
+            user.groups.add(person_admin_group)
+        else:
+            user.groups.remove(person_admin_group)
 
         if is_team_admin:
-            groups.append(Group.objects.get(name=TEAM_ADMIN_GROUP_NAME))
+            user.groups.add(team_admin_group)
+        else:
+            user.groups.remove(team_admin_group)
 
-        person.user.groups.set(groups)
-        person.user.is_superuser = is_superuser
-        person.user.save()
+        user.is_superuser = is_superuser
+        user.save()
 
         return person
 
