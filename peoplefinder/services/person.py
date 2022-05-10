@@ -108,7 +108,7 @@ class PersonService:
         notification_client.send_email_notification(
             settings.PROFILE_DELETION_REQUEST_EMAIL,
             settings.PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID,
-            context,
+            personalisation=context,
         )
 
     def profile_created(self, person: Person, created_by: User) -> None:
@@ -206,7 +206,7 @@ class PersonService:
         notification_client.send_email_notification(
             person.email,
             settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
-            context,
+            personalisation=context,
         )
 
     @staticmethod
@@ -261,8 +261,8 @@ class PersonService:
 
         notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
         notification_client.send_email_notification(
-            email=person.user.email,
-            template_id=settings.PROFILE_DELETED_EMAIL_TEMPLATE_ID,
+            person.user.email,
+            settings.PROFILE_DELETED_EMAIL_TEMPLATE_ID,
             personalisation=context,
         )
 
