@@ -61,13 +61,43 @@ class PersonService:
         Returns:
             The user's profile.
         """
+        # The user already has a profile.
         if hasattr(user, "profile"):
             user.profile.login_count += 1
             user.profile.save()
+
             return user.profile
 
+        # The user doesn't have a profile, so let's try and find a matching one.
+        get_queries = [
+            # First see if we can match on the legacy SSO ID.
+            Q(legacy_sso_user_id=user.legacy_sso_user_id),
+            # Next see if we can match on the email.
+            Q(email=user.email),
+            # Finally try and match on the first and last name.
+            Q(first_name=user.first_name, last_name=user.last_name),
+        ]
+
+        for query in get_queries:
+            try:
+                person = Person.objects.get(Q(user__isnull=True) & query)
+            except (Person.DoesNotExist, Person.MultipleObjectsReturned):
+                person = None
+            else:
+                break
+
+        # If we found a matching profile, update and return it.
+        if person:
+            person.user = user
+            person.login_count += 1
+            person.save()
+
+            return person
+
+        # We couldn't find a matching one so let's create one for them.
         person = Person.objects.create(
             user=user,
+            legacy_sso_user_id=user.legacy_sso_user_id,
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
@@ -274,7 +304,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 43, (
+    assert len(Person._meta.get_fields()) == 44, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
