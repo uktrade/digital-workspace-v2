@@ -296,6 +296,8 @@ class Person(index.Indexed, models.Model):
     legacy_slug = models.CharField(
         unique=True, max_length=80, null=True, editable=False
     )
+    # Used for matching new users with existing profiles.
+    legacy_sso_user_id = models.CharField(max_length=255, null=True, editable=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
