@@ -227,6 +227,9 @@ def person_migrator():
         if legacy_person.slug:
             person.legacy_slug = legacy_person.slug
 
+        if legacy_person.ditsso_user_id:
+            person.legacy_sso_user_id = legacy_person.ditsso_user_id
+
         # first name
         if legacy_person.given_name:
             person.first_name = legacy_person.given_name
