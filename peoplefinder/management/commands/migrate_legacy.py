@@ -309,8 +309,7 @@ def person_migrator():
             )
 
         # previous_experience
-        if legacy_person.previous_positions:
-            person.previous_experience = legacy_person.previous_positions
+        person.previous_experience = legacy_person.previous_positions or ""
 
     return migrate_person
 
