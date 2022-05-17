@@ -62,7 +62,7 @@ class TeamDetailView(DetailView, PeoplefinderView):
                 )
 
         if self.request.user.has_perms(
-            ["peoplefinder.change_team" "peoplefinder.view_auditlog"]
+            ["peoplefinder.change_team", "peoplefinder.view_auditlog"]
         ):
             context["team_audit_log"] = AuditLogService.get_audit_log(team)
 
@@ -76,6 +76,14 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
     form_class = TeamForm
     template_name = "peoplefinder/team-edit.html"
     permission_required = "peoplefinder.change_team"
+
+    def get_initial(self):
+        leaders_positions = None
+
+        if leaders := list(self.object.leaders):
+            leaders_positions = ",".join([str(member.pk) for member in leaders])
+
+        return {"leaders_positions": leaders_positions}
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -100,9 +108,6 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        if form.has_changed():
-            TeamService().team_updated(self.object, self.request.user)
-
         # Update the order of the team leaders.
         if (
             self.object.leaders_ordering == Team.LeadersOrdering.ALPHABETICAL
@@ -116,6 +121,9 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
                 member = TeamMember.objects.get(pk=member_pk)
                 member.leaders_position = i
                 member.save()
+
+        if form.has_changed():
+            TeamService().team_updated(self.object, self.request.user)
 
         return response
 
