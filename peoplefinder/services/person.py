@@ -141,7 +141,7 @@ class PersonService:
             personalisation=context,
         )
 
-    def profile_created(self, person: Person, created_by: User) -> None:
+    def profile_created(self, person: Person, created_by: Optional[User]) -> None:
         """A method to be called after a profile has been created.
 
         Please don't forget to call method this unless you need to bypass it.

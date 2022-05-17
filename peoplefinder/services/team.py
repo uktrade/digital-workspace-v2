@@ -1,7 +1,9 @@
 from typing import Iterator, Optional, TypedDict
 
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.db import connection, transaction
-from django.db.models import Q, QuerySet, Subquery
+from django.db.models import CharField, F, Q, QuerySet, Subquery, Value
+from django.db.models.functions import Concat
 from django.utils.text import slugify
 
 from peoplefinder.models import AuditLog, Team, TeamMember, TeamTree
@@ -292,7 +294,28 @@ class TeamAuditLogSerializer(AuditLogSerializer):
     )
 
     def serialize(self, instance: Team) -> ObjectRepr:
-        team = Team.objects.filter(pk=instance.pk).values()[0]
+        team = (
+            Team.objects.filter(pk=instance.pk)
+            .values()
+            .annotate(
+                # TODO: Move to a team query set manager method.
+                leaders_positions=ArrayAgg(
+                    Concat(
+                        F("members__leaders_position") + 1,
+                        Value(": "),
+                        "members__person__first_name",
+                        Value(" "),
+                        "members__person__last_name",
+                        output_field=CharField(),
+                    ),
+                    filter=(
+                        Q(leaders_ordering=Team.LeadersOrdering.CUSTOM)
+                        & Q(members__head_of_team=True)
+                    ),
+                    ordering="members__leaders_position",
+                )
+            )[0]
+        )
 
         if parent := TeamService().get_immediate_parent_team(instance):
             team["parent"] = parent.name
