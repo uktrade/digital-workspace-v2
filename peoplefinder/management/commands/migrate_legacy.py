@@ -73,7 +73,9 @@ class Command(BaseCommand):
         logger.info("Migrated teams")
         migrate_people(**options)
         logger.info("Migrated people")
-        migrate_audit_log()
+        create_audit_log()
+        logger.info("Created audit log")
+        migrate_legacy_audit_log()
         logger.info("Migrated legacy audit log")
 
 
@@ -445,7 +447,19 @@ class ProfilePhotoMigrator:
         )
 
 
-def migrate_audit_log() -> None:
+def create_audit_log() -> None:
+    team_service = TeamService()
+
+    for team in Team.objects.all():
+        team_service.team_created(team, created_by=None)
+
+    person_service = PersonService()
+
+    for person in Person.objects.all():
+        person_service.profile_created(person, created_by=None)
+
+
+def migrate_legacy_audit_log() -> None:
     migrate = audit_log_migrator()
 
     objs = []
