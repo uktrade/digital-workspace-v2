@@ -63,11 +63,11 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
                 messages.success(request, "Role created successfully")
             else:
                 messages.success(request, "Role updated successfully")
+
+            if form.has_changed():
+                PersonService().profile_updated(request, self.profile, request.user)
         else:
             messages.error(request, "Role not saved - please check form for errors")
-
-        if form.has_changed():
-            PersonService().profile_updated(request, self.profile, request.user)
 
         context = {
             "profile": self.profile,
