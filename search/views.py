@@ -3,7 +3,7 @@ import math
 import shlex
 
 from django.conf import settings
-from django.shortcuts import render
+from django.template.response import TemplateResponse
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
@@ -153,7 +153,7 @@ def search(request):
             if page > 1:
                 previous_page = page - 1
 
-    return render(
+    return TemplateResponse(
         request,
         "search/search.html",
         {

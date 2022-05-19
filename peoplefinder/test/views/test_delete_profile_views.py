@@ -28,7 +28,6 @@ def state(db):
     if team == None:
         team = TeamFactory()
     user = UserFactory()
-    user.is_using_peoplefinder_v2 = True
     user.save()
     person = PersonService().create_user_profile(user)
     client = Client()
@@ -68,7 +67,6 @@ def test_profile_delete_button_visible_with_permission(state):
         legacy_sso_user_id=None,
         username="other.user@-1111111@id.test.gov.uk",  # /PS-IGNORE
         sso_contact_email="other.user@test.com",  # /PS-IGNORE
-        is_using_peoplefinder_v2=True,
     )
     other_user.save()
     other_person = PersonService().create_user_profile(other_user)
@@ -156,7 +154,6 @@ def test_delete_view_with_other_users_profile(state):
         legacy_sso_user_id=None,
         username="other.user@-1111111@id.test.gov.uk",  # /PS-IGNORE
         sso_contact_email="other.user@test.com",  # /PS-IGNORE
-        is_using_peoplefinder_v2=True,
     )
     other_user.save()
     other_person = PersonService().create_user_profile(other_user)

@@ -36,8 +36,6 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
             user.first_name = profile["first_name"]  # might change over time
             user.last_name = profile["last_name"]  # might change over time
             user.legacy_sso_user_id = profile["user_id"]
-            # TODO: PFM-261
-            user.is_using_peoplefinder_v2 = True
         else:
             user = User(
                 username=profile["email_user_id"],
@@ -46,8 +44,6 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
                 first_name=profile["first_name"],
                 last_name=profile["last_name"],
                 legacy_sso_user_id=profile["user_id"],
-                # TODO: PFM-261
-                is_using_peoplefinder_v2=True,
             )
 
         user.set_unusable_password()

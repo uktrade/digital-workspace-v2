@@ -23,7 +23,6 @@ def django_db_setup(django_db_setup, django_db_blocker):
             legacy_sso_user_id="john-smith-sso-user-id",
             is_staff=False,
             is_superuser=False,
-            is_using_peoplefinder_v2=True,
         )
 
         if hasattr(user_john_smith, "profile"):

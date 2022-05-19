@@ -1,6 +1,5 @@
 import os
 import sys
-from base64 import b64decode  # /PS-IGNORE
 
 import environ
 import sentry_sdk
@@ -31,16 +30,6 @@ AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET")
 BASE_URL = env("WAGTAIL_BASE_URL")
 
 DEBUG = env.bool("DJANGO_DEBUG", False)
-
-# Feature flag to enable the new peoplefinder v2
-# TODO: Remove feature flag once we have migrated to v2 in prod
-PEOPLEFINDER_V2 = env.bool("PEOPLEFINDER_V2", False)
-
-PEOPLEFINDER_PROFILE_API_PRIVATE_KEY = b64decode(  # /PS-IGNORE
-    env("PEOPLEFINDER_PROFILE_API_PRIVATE_KEY"), validate=True
-)
-PEOPLEFINDER_PROFILE_API_URL = env("PEOPLEFINDER_PROFILE_API_URL")
-PEOPLEFINDER_URL = env("PEOPLEFINDER_URL")
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
