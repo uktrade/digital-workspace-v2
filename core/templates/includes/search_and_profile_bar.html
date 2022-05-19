@@ -2,33 +2,21 @@
 
 <div class="search-and-profile-bar">
     <div class="govuk-width-container">
-        {% if peoplefinder_v2 %}
-            <form class="search-form" method="GET" action="{% url 'people-and-teams-search' %}">
-                <label for="search-main" class="govuk-visually-hidden">
-                    Search people, teams and skills
-                </label>
-                <input class="govuk-input" type="search" name="query" value="{{ people_and_teams_search_query|default:'' }}" title="Search people, teams and skills" aria-controls="" placeholder="Search people, teams and skills">
-                {% if people_and_teams_search_filters %}
-                    {% for filter in people_and_teams_search_filters %}
-                        <input type="hidden" name="filters" value="{{ filter }}">
-                    {% endfor %}
-                {% else %}
-                    <input type="hidden" name="filters" value="teams">
-                    <input type="hidden" name="filters" value="people">
-                {% endif %}
-                <button type="submit">Search</button>
-            </form>
-        {% else %}
-            <form class="search-form" method="GET" action="https://people.trade.gov.uk/search">
-                <label for="search-main" class="govuk-visually-hidden">
-                    Search people, teams and skills
-                </label>
-                <input name="search[filters][]" type="hidden" value="people">
-                <input name="search[filters][]" type="hidden" value="groups">
-                <input class="govuk-input" type="search" name="search[query]" title="Search people, teams and skills" aria-controls="" placeholder="Search people, teams and skills">
-                <button type="submit">Search</button>
-            </form>
-        {% endif %}
+        <form class="search-form" method="GET" action="{% url 'people-and-teams-search' %}">
+            <label for="search-main" class="govuk-visually-hidden">
+                Search people, teams and skills
+            </label>
+            <input class="govuk-input" type="search" name="query" value="{{ people_and_teams_search_query|default:'' }}" title="Search people, teams and skills" aria-controls="" placeholder="Search people, teams and skills">
+            {% if people_and_teams_search_filters %}
+                {% for filter in people_and_teams_search_filters %}
+                    <input type="hidden" name="filters" value="{{ filter }}">
+                {% endfor %}
+            {% else %}
+                <input type="hidden" name="filters" value="teams">
+                <input type="hidden" name="filters" value="people">
+            {% endif %}
+            <button type="submit">Search</button>
+        </form>
         <div class="people-finder-panel">
             {% if peoplefinder_profile %}
                 <a
