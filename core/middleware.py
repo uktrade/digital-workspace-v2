@@ -2,8 +2,6 @@ from django.conf import settings
 
 from peoplefinder.models import Person
 
-from .services import peoplefinder
-
 
 class GetPeoplefinderProfileMiddleware:
     """Inject current user details from People Finder into view context
@@ -33,16 +31,7 @@ class GetPeoplefinderProfileMiddleware:
         profile = None
 
         if request.user.is_authenticated:
-            if use_peoplefinder_v2:
-                profile = Person.objects.with_profile_completion().get(
-                    user=request.user
-                )
-                legacy_profile = peoplefinder.get_user_profile(
-                    request.user.legacy_sso_user_id
-                )
-                response.context_data["legacy_peoplefinder_profile"] = legacy_profile
-            else:
-                profile = peoplefinder.get_user_profile(request.user.legacy_sso_user_id)
+            profile = Person.objects.with_profile_completion().get(user=request.user)
 
         response.context_data["peoplefinder_profile"] = profile
 
