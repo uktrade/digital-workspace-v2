@@ -91,16 +91,6 @@
                 <a class="next govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ next_page }}">Next page</a>
             {% endif %}
         </div>
-
-{#        {% if search_results.has_previous %}#}
-{#            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>#}
-{#        {% endif %}#}
-{#        {% if search_results.has_next %}#}
-{#            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>#}
-{#        {% endif %}#}
-    {% endif %}
-    {% if not pinned_results and not search_query %}
-        No results found
     {% endif %}
 {% endblock %}
 </div>
