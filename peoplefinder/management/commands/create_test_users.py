@@ -31,7 +31,6 @@ class Command(BaseCommand):
             sso_contact_email="another.user@test.com",  # /PS-IGNORE
             is_staff=False,
             is_superuser=False,
-            is_using_peoplefinder_v2=True,
         )
 
         self.stdout.write(

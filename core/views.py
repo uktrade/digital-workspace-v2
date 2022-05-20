@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from django.shortcuts import render
+from django.template.response import TemplateResponse
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from core.forms import PageProblemFoundForm
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def view_404(request, exception):
-    return render(
+    return TemplateResponse(
         request,
         "core/404.html",
         {"page_problem_form": PageProblemFoundForm()},
@@ -20,7 +20,7 @@ def view_404(request, exception):
 
 
 def view_500(request):
-    return render(
+    return TemplateResponse(
         request,
         "core/500.html",
         {"page_problem_form": PageProblemFoundForm()},
@@ -29,7 +29,7 @@ def view_500(request):
 
 
 def view_403(request, exception):
-    return render(
+    return TemplateResponse(
         request,
         "core/403.html",
         {"page_problem_form": PageProblemFoundForm()},
@@ -38,7 +38,7 @@ def view_403(request, exception):
 
 
 def view_400(request, exception):
-    return render(
+    return TemplateResponse(
         request,
         "core/400.html",
         {"page_problem_form": PageProblemFoundForm()},
@@ -72,7 +72,7 @@ def page_problem_found(request):
     else:
         form = PageProblemFoundForm()
 
-    return render(
+    return TemplateResponse(
         request,
         "core/page_problem_found.html",
         {"form": form, "message_sent": message_sent},

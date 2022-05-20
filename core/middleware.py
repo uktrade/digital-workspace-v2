@@ -1,5 +1,3 @@
-from django.conf import settings
-
 from peoplefinder.models import Person
 
 
@@ -20,13 +18,6 @@ class GetPeoplefinderProfileMiddleware:
     def process_template_response(self, request, response):
         if not response.context_data:
             return response
-
-        use_peoplefinder_v2 = (
-            settings.PEOPLEFINDER_V2 and request.user.is_using_peoplefinder_v2
-        )
-
-        # TODO: Remove once we have migrated to peoplefinder v2 in prod.
-        response.context_data["peoplefinder_v2"] = use_peoplefinder_v2
 
         profile = None
 

@@ -18,7 +18,6 @@ class Command(BaseCommand):
         except User.DoesNotExist:
             raise CommandError(f"User with email {email} does not exist")
 
-        user.is_using_peoplefinder_v2 = True
         user.save()
 
         person, _ = Person.objects.get_or_create(user=user)

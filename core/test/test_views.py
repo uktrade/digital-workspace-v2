@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from peoplefinder.services.person import PersonService
+
 
 @pytest.mark.django_db
 class ReportPageProblemTest(TestCase):
@@ -18,6 +20,7 @@ class ReportPageProblemTest(TestCase):
         )
         self.test_user.set_password(self.test_password)
         self.test_user.save()
+        PersonService().create_user_profile(self.test_user)
         self.client.force_login(self.test_user)
 
     @mock.patch("core.views.NotificationsAPIClient.send_email_notification")

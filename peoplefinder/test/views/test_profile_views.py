@@ -30,7 +30,6 @@ def state(db):
     if team == None:
         team = TeamFactory()
     user = UserFactory()
-    user.is_using_peoplefinder_v2 = True
     user.save()
     person = PersonService().create_user_profile(user)
     client = Client()
@@ -193,7 +192,6 @@ def test_self_profile_log_visible_permission(state):
 
 def test_profile_log_visible_permission(state):
     other_user = UserFactory(username="other_user", legacy_sso_user_id="other_user")
-    other_user.is_using_peoplefinder_v2 = True
     other_user.save()
     other_person = PersonService().create_user_profile(other_user)
 
