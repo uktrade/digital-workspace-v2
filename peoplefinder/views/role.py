@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import SuspiciousOperation
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 
 from peoplefinder.forms.role import RoleForm
@@ -43,7 +43,7 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
             "form": RoleForm(initial={"person": self.profile}),
         }
 
-        return render(
+        return TemplateResponse(
             request, "peoplefinder/components/role-edit.html", context=context
         )
 
@@ -75,7 +75,7 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
             "form": form,
         }
 
-        return render(
+        return TemplateResponse(
             request, "peoplefinder/components/role-edit.html", context=context
         )
 

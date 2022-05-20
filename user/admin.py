@@ -36,7 +36,6 @@ class SSOUserAdmin(UserAdmin):
                     "is_superuser",
                     "groups",
                     "user_permissions",
-                    "is_using_peoplefinder_v2",
                 )
             },
         ),

@@ -20,8 +20,6 @@ class User(AbstractUser):
         null=True,
         blank=True,
     )
-    # TODO: Remove once people finder v2 migration is complete.
-    is_using_peoplefinder_v2 = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
