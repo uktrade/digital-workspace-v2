@@ -201,8 +201,10 @@ class TeamPeopleView(TeamPeopleBaseView):
     heading = "All people"
 
     def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
-        return TeamMember.objects.filter(Q(team=team) | Q(team__in=sub_teams)).order_by(
-            "person__first_name", "person__last_name"
+        return (
+            TeamMember.objects.filter(Q(team=team) | Q(team__in=sub_teams))
+            .order_by("person__first_name", "person__last_name")
+            .distinct("person", "person__first_name", "person__last_name")
         )
 
 
@@ -210,8 +212,10 @@ class TeamPeopleOutsideSubteamsView(TeamPeopleBaseView):
     heading = "People not in a sub-team"
 
     def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
-        return TeamMember.objects.filter(team=team).order_by(
-            "person__first_name", "person__last_name"
+        return (
+            TeamMember.objects.filter(team=team)
+            .order_by("person__first_name", "person__last_name")
+            .distinct("person", "person__first_name", "person__last_name")
         )
 
 
