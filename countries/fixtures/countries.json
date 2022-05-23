@@ -1009,6 +1009,20 @@
   },
   {
     "model": "countries.Country",
+    "pk": "CTHMTC00109",
+    "fields": {
+      "name": "Hong Kong",
+      "type": "territory",
+      "iso_1_code": "344",
+      "iso_2_code": "HK",
+      "iso_3_code": "HKG",
+      "overseas_region": "China and Hong Kong",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
     "pk": "CTHMTC00111",
     "fields": {
       "name": "Hungary",
@@ -2361,6 +2375,20 @@
       "iso_2_code": "SY",
       "iso_3_code": "SYR",
       "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00240",
+    "fields": {
+      "name": "Taiwan",
+      "type": "territory",
+      "iso_1_code": "158",
+      "iso_2_code": "TW",
+      "iso_3_code": "TWN",
+      "overseas_region": "Asia Pacific",
       "start_date": null,
       "end_date": null
     }
