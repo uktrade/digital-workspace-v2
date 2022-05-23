@@ -122,6 +122,7 @@ create_section_homepages:
 first-use:
 	docker-compose down
 	make migrate
+	make data-countries
 	make menus
 	make create_section_homepages
 	make wagtail-groups
@@ -131,3 +132,7 @@ first-use:
 
 setup_v2_user:
 	docker-compose run --rm wagtail python manage.py setup_v2_user $(email)
+
+# Data
+data-countries:
+	$(wagtail) python manage.py loaddata countries.json
