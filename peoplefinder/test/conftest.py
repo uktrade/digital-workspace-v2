@@ -31,6 +31,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
             AuditLogService.get_audit_log(user_john_smith.profile).delete()
             user_john_smith.profile.delete()
 
+        call_command("loaddata", "countries.json")
         call_command("create_test_teams")
         call_command("create_user_profiles")
         call_command("create_people_finder_groups")
