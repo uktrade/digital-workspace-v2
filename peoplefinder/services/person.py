@@ -242,7 +242,7 @@ class PersonService:
     @staticmethod
     def update_groups_and_permissions(
         person: Person, is_person_admin: bool, is_team_admin: bool, is_superuser: bool
-    ) -> Person:
+    ) -> Optional[Person]:
         """Update the groups and permissions of a given person.
 
         Note that this method does call save on the `person.user` instance.
@@ -254,9 +254,13 @@ class PersonService:
             is_superuser: Whether the user should be a superuser.
 
         Returns:
-            Person: The given person.
+            Optional[Person]: The given person or None.
         """
+        if not person.user:
+            return None
+
         user = person.user
+
         person_admin_group = Group.objects.get(name=PERSON_ADMIN_GROUP_NAME)
         team_admin_group = Group.objects.get(name=TEAM_ADMIN_GROUP_NAME)
 
