@@ -624,6 +624,11 @@ class Team(index.Indexed, models.Model):
         yield from self.members.filter(head_of_team=True).order_by(*order_by)
 
 
+class TeamMemberManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(person__is_active=False)
+
+
 class TeamMember(models.Model):
     class Meta:
         constraints = [
@@ -643,6 +648,8 @@ class TeamMember(models.Model):
     leaders_position = models.SmallIntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = TeamMemberManager()
 
     def __str__(self) -> str:
         return f"{self.team} - {self.person}"
