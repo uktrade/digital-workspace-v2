@@ -574,6 +574,7 @@ class Team(index.Indexed, models.Model):
         max_length=12,
         choices=LeadersOrdering.choices,
         default=LeadersOrdering.ALPHABETICAL,
+        blank=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
