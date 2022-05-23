@@ -110,7 +110,7 @@ class PersonSerializer(serializers.ModelSerializer):
     )
     formatted_buildings = serializers.CharField()
     city = serializers.CharField(source="town_city_or_region")
-    country = serializers.SlugRelatedField(read_only=True, slug_field="code")
+    country = serializers.SlugRelatedField(read_only=True, slug_field="iso_2_code")
     country_name = serializers.StringRelatedField(read_only=True, source="country")
     grade = serializers.SlugRelatedField(read_only=True, slug_field="code")
     formatted_grade = serializers.StringRelatedField(read_only=True, source="grade")
