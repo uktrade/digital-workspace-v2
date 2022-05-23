@@ -318,6 +318,8 @@ class PersonAuditLogSerializer(AuditLogSerializer):
             Person.objects.filter(pk=instance.pk)
             .values()
             .annotate(
+                country_code=F("country__iso_2_code"),
+                country_name=F("country__name"),
                 # Note the use of `ArrayAgg` to denormalize and flatten many-to-many
                 # relationships.
                 workdays=ArrayAgg(
@@ -393,5 +395,6 @@ class PersonAuditLogSerializer(AuditLogSerializer):
         person["manager__slug"] = str(person["manager__slug"])
 
         del person["login_count"]
+        del person["old_country_id"]
 
         return person
