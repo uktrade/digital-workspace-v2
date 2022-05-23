@@ -140,18 +140,19 @@ class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
             form.cleaned_data["width"],
             form.cleaned_data["height"],
         )
+        resized_photo = ImageService.resize_image(cropped_photo, 512, 512)
 
         with io.BytesIO() as photo_content:
             # save the cropped photo to the in-memory file object
-            cropped_photo.save(photo_content, format=photo_ext)
+            resized_photo.save(photo_content, format=photo_ext)
             # tell django to save the cropped image
             profile.photo.save(photo_path.name, content=photo_content)
 
         # Let's also save a smaller version of the profile photo.
-        resized_photo = ImageService.resize_image(cropped_photo, 150, 150)
+        resized_photo_small = ImageService.resize_image(resized_photo, 150, 150)
 
         with io.BytesIO() as photo_content:
-            resized_photo.save(photo_content, format=photo_ext)
+            resized_photo_small.save(photo_content, format=photo_ext)
             profile.photo_small.save(photo_path.name, content=photo_content)
 
 
