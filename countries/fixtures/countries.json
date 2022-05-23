@@ -1,0 +1,2732 @@
+[
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00002",
+    "fields": {
+      "name": "Afghanistan",
+      "type": "country",
+      "iso_1_code": "004",
+      "iso_2_code": "AF",
+      "iso_3_code": "AFG",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00006",
+    "fields": {
+      "name": "Albania",
+      "type": "country",
+      "iso_1_code": "008",
+      "iso_2_code": "AL",
+      "iso_3_code": "ALB",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00007",
+    "fields": {
+      "name": "Algeria",
+      "type": "country",
+      "iso_1_code": "012",
+      "iso_2_code": "DZ",
+      "iso_3_code": "DZA",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00009",
+    "fields": {
+      "name": "Andorra",
+      "type": "country",
+      "iso_1_code": "020",
+      "iso_2_code": "AD",
+      "iso_3_code": "AND",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00010",
+    "fields": {
+      "name": "Angola",
+      "type": "country",
+      "iso_1_code": "024",
+      "iso_2_code": "AO",
+      "iso_3_code": "AGO",
+      "overseas_region": "Africa",
+      "start_date": "1975-11-11",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00013",
+    "fields": {
+      "name": "Antigua and Barbuda",
+      "type": "country",
+      "iso_1_code": "028",
+      "iso_2_code": "AG",
+      "iso_3_code": "ATG",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": "1981-11-01",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00014",
+    "fields": {
+      "name": "Argentina",
+      "type": "country",
+      "iso_1_code": "032",
+      "iso_2_code": "AR",
+      "iso_3_code": "ARG",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00015",
+    "fields": {
+      "name": "Armenia",
+      "type": "country",
+      "iso_1_code": "051",
+      "iso_2_code": "AM",
+      "iso_3_code": "ARM",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-09-21",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00018",
+    "fields": {
+      "name": "Australia",
+      "type": "country",
+      "iso_1_code": "036",
+      "iso_2_code": "AU",
+      "iso_3_code": "AUS",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00019",
+    "fields": {
+      "name": "Austria",
+      "type": "country",
+      "iso_1_code": "040",
+      "iso_2_code": "AT",
+      "iso_3_code": "AUT",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00020",
+    "fields": {
+      "name": "Azerbaijan",
+      "type": "country",
+      "iso_1_code": "031",
+      "iso_2_code": "AZ",
+      "iso_3_code": "AZE",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-08-30",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00021",
+    "fields": {
+      "name": "Bahrain",
+      "type": "country",
+      "iso_1_code": "048",
+      "iso_2_code": "BH",
+      "iso_3_code": "BHR",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00023",
+    "fields": {
+      "name": "Bangladesh",
+      "type": "country",
+      "iso_1_code": "050",
+      "iso_2_code": "BD",
+      "iso_3_code": "BGD",
+      "overseas_region": "South Asia",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00024",
+    "fields": {
+      "name": "Barbados",
+      "type": "country",
+      "iso_1_code": "052",
+      "iso_2_code": "BB",
+      "iso_3_code": "BRB",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00025",
+    "fields": {
+      "name": "Belarus",
+      "type": "country",
+      "iso_1_code": "112",
+      "iso_2_code": "BY",
+      "iso_3_code": "BLR",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-08-25",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00026",
+    "fields": {
+      "name": "Belgium",
+      "type": "country",
+      "iso_1_code": "056",
+      "iso_2_code": "BE",
+      "iso_3_code": "BEL",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00027",
+    "fields": {
+      "name": "Belize",
+      "type": "country",
+      "iso_1_code": "084",
+      "iso_2_code": "BZ",
+      "iso_3_code": "BLZ",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": "1981-09-21",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00028",
+    "fields": {
+      "name": "Benin",
+      "type": "country",
+      "iso_1_code": "204",
+      "iso_2_code": "BJ",
+      "iso_3_code": "BEN",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00030",
+    "fields": {
+      "name": "Bhutan",
+      "type": "country",
+      "iso_1_code": "064",
+      "iso_2_code": "BT",
+      "iso_3_code": "BTN",
+      "overseas_region": "South Asia",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00031",
+    "fields": {
+      "name": "Bolivia",
+      "type": "country",
+      "iso_1_code": "068",
+      "iso_2_code": "BO",
+      "iso_3_code": "BOL",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00033",
+    "fields": {
+      "name": "Bosnia and Herzegovina",
+      "type": "country",
+      "iso_1_code": "070",
+      "iso_2_code": "BA",
+      "iso_3_code": "BIH",
+      "overseas_region": "Europe",
+      "start_date": "1992-03-03",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00034",
+    "fields": {
+      "name": "Botswana",
+      "type": "country",
+      "iso_1_code": "072",
+      "iso_2_code": "BW",
+      "iso_3_code": "BWA",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00036",
+    "fields": {
+      "name": "Brazil",
+      "type": "country",
+      "iso_1_code": "076",
+      "iso_2_code": "BR",
+      "iso_3_code": "BRA",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00040",
+    "fields": {
+      "name": "Brunei",
+      "type": "country",
+      "iso_1_code": "096",
+      "iso_2_code": "BN",
+      "iso_3_code": "BRN",
+      "overseas_region": "Asia Pacific",
+      "start_date": "1984-01-01",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00041",
+    "fields": {
+      "name": "Bulgaria",
+      "type": "country",
+      "iso_1_code": "100",
+      "iso_2_code": "BG",
+      "iso_3_code": "BGR",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00042",
+    "fields": {
+      "name": "Burkina Faso",
+      "type": "country",
+      "iso_1_code": "854",
+      "iso_2_code": "BF",
+      "iso_3_code": "BFA",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00043",
+    "fields": {
+      "name": "Burundi",
+      "type": "country",
+      "iso_1_code": "108",
+      "iso_2_code": "BI",
+      "iso_3_code": "BDI",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00044",
+    "fields": {
+      "name": "Cambodia",
+      "type": "country",
+      "iso_1_code": "116",
+      "iso_2_code": "KH",
+      "iso_3_code": "KHM",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00045",
+    "fields": {
+      "name": "Cameroon",
+      "type": "country",
+      "iso_1_code": "120",
+      "iso_2_code": "CM",
+      "iso_3_code": "CMR",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00046",
+    "fields": {
+      "name": "Canada",
+      "type": "country",
+      "iso_1_code": "124",
+      "iso_2_code": "CA",
+      "iso_3_code": "CAN",
+      "overseas_region": "North America",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00047",
+    "fields": {
+      "name": "Cape Verde",
+      "type": "country",
+      "iso_1_code": "132",
+      "iso_2_code": "CV",
+      "iso_3_code": "CPV",
+      "overseas_region": "Africa",
+      "start_date": "1975-07-05",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00049",
+    "fields": {
+      "name": "Central African Republic",
+      "type": "country",
+      "iso_1_code": "140",
+      "iso_2_code": "CF",
+      "iso_3_code": "CAF",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00051",
+    "fields": {
+      "name": "Chad",
+      "type": "country",
+      "iso_1_code": "148",
+      "iso_2_code": "TD",
+      "iso_3_code": "TCD",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00052",
+    "fields": {
+      "name": "Chile",
+      "type": "country",
+      "iso_1_code": "152",
+      "iso_2_code": "CL",
+      "iso_3_code": "CHL",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00053",
+    "fields": {
+      "name": "China",
+      "type": "country",
+      "iso_1_code": "156",
+      "iso_2_code": "CN",
+      "iso_3_code": "CHN",
+      "overseas_region": "China and Hong Kong",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00056",
+    "fields": {
+      "name": "Colombia",
+      "type": "country",
+      "iso_1_code": "170",
+      "iso_2_code": "CO",
+      "iso_3_code": "COL",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00057",
+    "fields": {
+      "name": "Comoros",
+      "type": "country",
+      "iso_1_code": "174",
+      "iso_2_code": "KM",
+      "iso_3_code": "COM",
+      "overseas_region": "Africa",
+      "start_date": "1975-07-06",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00058",
+    "fields": {
+      "name": "Congo",
+      "type": "country",
+      "iso_1_code": "178",
+      "iso_2_code": "CG",
+      "iso_3_code": "COG",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00059",
+    "fields": {
+      "name": "Congo (Democratic Republic)",
+      "type": "country",
+      "iso_1_code": "180",
+      "iso_2_code": "CD",
+      "iso_3_code": "COD",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00061",
+    "fields": {
+      "name": "Costa Rica",
+      "type": "country",
+      "iso_1_code": "188",
+      "iso_2_code": "CR",
+      "iso_3_code": "CRI",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00062",
+    "fields": {
+      "name": "Croatia",
+      "type": "country",
+      "iso_1_code": "191",
+      "iso_2_code": "HR",
+      "iso_3_code": "HRV",
+      "overseas_region": "Europe",
+      "start_date": "1991-06-25",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00063",
+    "fields": {
+      "name": "Cuba",
+      "type": "country",
+      "iso_1_code": "192",
+      "iso_2_code": "CU",
+      "iso_3_code": "CUB",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00065",
+    "fields": {
+      "name": "Cyprus",
+      "type": "country",
+      "iso_1_code": "196",
+      "iso_2_code": "CY",
+      "iso_3_code": "CYP",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00066",
+    "fields": {
+      "name": "Czechia",
+      "type": "country",
+      "iso_1_code": "203",
+      "iso_2_code": "CZ",
+      "iso_3_code": "CZE",
+      "overseas_region": "Europe",
+      "start_date": "1993-01-01",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00067",
+    "fields": {
+      "name": "Denmark",
+      "type": "country",
+      "iso_1_code": "208",
+      "iso_2_code": "DK",
+      "iso_3_code": "DNK",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00069",
+    "fields": {
+      "name": "Djibouti",
+      "type": "country",
+      "iso_1_code": "262",
+      "iso_2_code": "DJ",
+      "iso_3_code": "DJI",
+      "overseas_region": "Africa",
+      "start_date": "1977-06-27",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00070",
+    "fields": {
+      "name": "Dominica",
+      "type": "country",
+      "iso_1_code": "212",
+      "iso_2_code": "DM",
+      "iso_3_code": "DMA",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": "1978-11-03",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00071",
+    "fields": {
+      "name": "Dominican Republic",
+      "type": "country",
+      "iso_1_code": "214",
+      "iso_2_code": "DO",
+      "iso_3_code": "DOM",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00073",
+    "fields": {
+      "name": "East Timor",
+      "type": "country",
+      "iso_1_code": "626",
+      "iso_2_code": "TL",
+      "iso_3_code": "TLS",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00074",
+    "fields": {
+      "name": "Ecuador",
+      "type": "country",
+      "iso_1_code": "218",
+      "iso_2_code": "EC",
+      "iso_3_code": "ECU",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00075",
+    "fields": {
+      "name": "Egypt",
+      "type": "country",
+      "iso_1_code": "818",
+      "iso_2_code": "EG",
+      "iso_3_code": "EGY",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00076",
+    "fields": {
+      "name": "El Salvador",
+      "type": "country",
+      "iso_1_code": "222",
+      "iso_2_code": "SV",
+      "iso_3_code": "SLV",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00077",
+    "fields": {
+      "name": "Equatorial Guinea",
+      "type": "country",
+      "iso_1_code": "226",
+      "iso_2_code": "GQ",
+      "iso_3_code": "GNQ",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00078",
+    "fields": {
+      "name": "Eritrea",
+      "type": "country",
+      "iso_1_code": "232",
+      "iso_2_code": "ER",
+      "iso_3_code": "ERI",
+      "overseas_region": "Africa",
+      "start_date": "1993-05-24",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00079",
+    "fields": {
+      "name": "Estonia",
+      "type": "country",
+      "iso_1_code": "233",
+      "iso_2_code": "EE",
+      "iso_3_code": "EST",
+      "overseas_region": "Europe",
+      "start_date": "1991-08-20",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00080",
+    "fields": {
+      "name": "Eswatini",
+      "type": "country",
+      "iso_1_code": "748",
+      "iso_2_code": "SZ",
+      "iso_3_code": "SWZ",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00081",
+    "fields": {
+      "name": "Ethiopia",
+      "type": "country",
+      "iso_1_code": "231",
+      "iso_2_code": "ET",
+      "iso_3_code": "ETH",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00084",
+    "fields": {
+      "name": "Fiji",
+      "type": "country",
+      "iso_1_code": "242",
+      "iso_2_code": "FJ",
+      "iso_3_code": "FJI",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00085",
+    "fields": {
+      "name": "Finland",
+      "type": "country",
+      "iso_1_code": "246",
+      "iso_2_code": "FI",
+      "iso_3_code": "FIN",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00086",
+    "fields": {
+      "name": "France",
+      "type": "country",
+      "iso_1_code": "250",
+      "iso_2_code": "FR",
+      "iso_3_code": "FRA",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00091",
+    "fields": {
+      "name": "Gabon",
+      "type": "country",
+      "iso_1_code": "266",
+      "iso_2_code": "GA",
+      "iso_3_code": "GAB",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00092",
+    "fields": {
+      "name": "Georgia",
+      "type": "country",
+      "iso_1_code": "268",
+      "iso_2_code": "GE",
+      "iso_3_code": "GEO",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-04-09",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00093",
+    "fields": {
+      "name": "Germany",
+      "type": "country",
+      "iso_1_code": "276",
+      "iso_2_code": "DE",
+      "iso_3_code": "DEU",
+      "overseas_region": "Europe",
+      "start_date": "1990-10-03",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00094",
+    "fields": {
+      "name": "Ghana",
+      "type": "country",
+      "iso_1_code": "288",
+      "iso_2_code": "GH",
+      "iso_3_code": "GHA",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00096",
+    "fields": {
+      "name": "Greece",
+      "type": "country",
+      "iso_1_code": "300",
+      "iso_2_code": "GR",
+      "iso_3_code": "GRC",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00098",
+    "fields": {
+      "name": "Grenada",
+      "type": "country",
+      "iso_1_code": "308",
+      "iso_2_code": "GD",
+      "iso_3_code": "GRD",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": "1974-02-07",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00101",
+    "fields": {
+      "name": "Guatemala",
+      "type": "country",
+      "iso_1_code": "320",
+      "iso_2_code": "GT",
+      "iso_3_code": "GTM",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00103",
+    "fields": {
+      "name": "Guinea",
+      "type": "country",
+      "iso_1_code": "324",
+      "iso_2_code": "GN",
+      "iso_3_code": "GIN",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00104",
+    "fields": {
+      "name": "Guinea-Bissau",
+      "type": "country",
+      "iso_1_code": "624",
+      "iso_2_code": "GW",
+      "iso_3_code": "GNB",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00105",
+    "fields": {
+      "name": "Guyana",
+      "type": "country",
+      "iso_1_code": "328",
+      "iso_2_code": "GY",
+      "iso_3_code": "GUY",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00106",
+    "fields": {
+      "name": "Haiti",
+      "type": "country",
+      "iso_1_code": "332",
+      "iso_2_code": "HT",
+      "iso_3_code": "HTI",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00108",
+    "fields": {
+      "name": "Honduras",
+      "type": "country",
+      "iso_1_code": "340",
+      "iso_2_code": "HN",
+      "iso_3_code": "HND",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00111",
+    "fields": {
+      "name": "Hungary",
+      "type": "country",
+      "iso_1_code": "348",
+      "iso_2_code": "HU",
+      "iso_3_code": "HUN",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00112",
+    "fields": {
+      "name": "Iceland",
+      "type": "country",
+      "iso_1_code": "352",
+      "iso_2_code": "IS",
+      "iso_3_code": "ISL",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00113",
+    "fields": {
+      "name": "India",
+      "type": "country",
+      "iso_1_code": "356",
+      "iso_2_code": "IN",
+      "iso_3_code": "IND",
+      "overseas_region": "South Asia",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00114",
+    "fields": {
+      "name": "Indonesia",
+      "type": "country",
+      "iso_1_code": "360",
+      "iso_2_code": "ID",
+      "iso_3_code": "IDN",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00115",
+    "fields": {
+      "name": "Iran",
+      "type": "country",
+      "iso_1_code": "364",
+      "iso_2_code": "IR",
+      "iso_3_code": "IRN",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00116",
+    "fields": {
+      "name": "Iraq",
+      "type": "country",
+      "iso_1_code": "368",
+      "iso_2_code": "IQ",
+      "iso_3_code": "IRQ",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00117",
+    "fields": {
+      "name": "Ireland",
+      "type": "country",
+      "iso_1_code": "372",
+      "iso_2_code": "IE",
+      "iso_3_code": "IRL",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00119",
+    "fields": {
+      "name": "Israel",
+      "type": "country",
+      "iso_1_code": "376",
+      "iso_2_code": "IL",
+      "iso_3_code": "ISR",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00120",
+    "fields": {
+      "name": "Italy",
+      "type": "country",
+      "iso_1_code": "380",
+      "iso_2_code": "IT",
+      "iso_3_code": "ITA",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00121",
+    "fields": {
+      "name": "Ivory Coast",
+      "type": "country",
+      "iso_1_code": "384",
+      "iso_2_code": "CI",
+      "iso_3_code": "CIV",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00122",
+    "fields": {
+      "name": "Jamaica",
+      "type": "country",
+      "iso_1_code": "388",
+      "iso_2_code": "JM",
+      "iso_3_code": "JAM",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00123",
+    "fields": {
+      "name": "Japan",
+      "type": "country",
+      "iso_1_code": "392",
+      "iso_2_code": "JP",
+      "iso_3_code": "JPN",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00127",
+    "fields": {
+      "name": "Jordan",
+      "type": "country",
+      "iso_1_code": "400",
+      "iso_2_code": "JO",
+      "iso_3_code": "JOR",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00128",
+    "fields": {
+      "name": "Kazakhstan",
+      "type": "country",
+      "iso_1_code": "398",
+      "iso_2_code": "KZ",
+      "iso_3_code": "KAZ",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-12-16",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00129",
+    "fields": {
+      "name": "Kenya",
+      "type": "country",
+      "iso_1_code": "404",
+      "iso_2_code": "KE",
+      "iso_3_code": "KEN",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00131",
+    "fields": {
+      "name": "Kiribati",
+      "type": "country",
+      "iso_1_code": "296",
+      "iso_2_code": "KI",
+      "iso_3_code": "KIR",
+      "overseas_region": "Asia Pacific",
+      "start_date": "1979-07-12",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00132",
+    "fields": {
+      "name": "Kosovo",
+      "type": "country",
+      "iso_1_code": "",
+      "iso_2_code": "XK",
+      "iso_3_code": "",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00133",
+    "fields": {
+      "name": "Kuwait",
+      "type": "country",
+      "iso_1_code": "414",
+      "iso_2_code": "KW",
+      "iso_3_code": "KWT",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00134",
+    "fields": {
+      "name": "Kyrgyzstan",
+      "type": "country",
+      "iso_1_code": "417",
+      "iso_2_code": "KG",
+      "iso_3_code": "KGZ",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-08-31",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00135",
+    "fields": {
+      "name": "Laos",
+      "type": "country",
+      "iso_1_code": "418",
+      "iso_2_code": "LA",
+      "iso_3_code": "LAO",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00136",
+    "fields": {
+      "name": "Latvia",
+      "type": "country",
+      "iso_1_code": "428",
+      "iso_2_code": "LV",
+      "iso_3_code": "LVA",
+      "overseas_region": "Europe",
+      "start_date": "1990-05-04",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00137",
+    "fields": {
+      "name": "Lebanon",
+      "type": "country",
+      "iso_1_code": "422",
+      "iso_2_code": "LB",
+      "iso_3_code": "LBN",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00138",
+    "fields": {
+      "name": "Lesotho",
+      "type": "country",
+      "iso_1_code": "426",
+      "iso_2_code": "LS",
+      "iso_3_code": "LSO",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00139",
+    "fields": {
+      "name": "Liberia",
+      "type": "country",
+      "iso_1_code": "430",
+      "iso_2_code": "LR",
+      "iso_3_code": "LBR",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00140",
+    "fields": {
+      "name": "Libya",
+      "type": "country",
+      "iso_1_code": "434",
+      "iso_2_code": "LY",
+      "iso_3_code": "LBY",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00141",
+    "fields": {
+      "name": "Liechtenstein",
+      "type": "country",
+      "iso_1_code": "438",
+      "iso_2_code": "LI",
+      "iso_3_code": "LIE",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00142",
+    "fields": {
+      "name": "Lithuania",
+      "type": "country",
+      "iso_1_code": "440",
+      "iso_2_code": "LT",
+      "iso_3_code": "LTU",
+      "overseas_region": "Europe",
+      "start_date": "1990-03-11",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00143",
+    "fields": {
+      "name": "Luxembourg",
+      "type": "country",
+      "iso_1_code": "442",
+      "iso_2_code": "LU",
+      "iso_3_code": "LUX",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00145",
+    "fields": {
+      "name": "Madagascar",
+      "type": "country",
+      "iso_1_code": "450",
+      "iso_2_code": "MG",
+      "iso_3_code": "MDG",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00146",
+    "fields": {
+      "name": "Malawi",
+      "type": "country",
+      "iso_1_code": "454",
+      "iso_2_code": "MW",
+      "iso_3_code": "MWI",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00147",
+    "fields": {
+      "name": "Malaysia",
+      "type": "country",
+      "iso_1_code": "458",
+      "iso_2_code": "MY",
+      "iso_3_code": "MYS",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00148",
+    "fields": {
+      "name": "Maldives",
+      "type": "country",
+      "iso_1_code": "462",
+      "iso_2_code": "MV",
+      "iso_3_code": "MDV",
+      "overseas_region": "South Asia",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00149",
+    "fields": {
+      "name": "Mali",
+      "type": "country",
+      "iso_1_code": "466",
+      "iso_2_code": "ML",
+      "iso_3_code": "MLI",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00150",
+    "fields": {
+      "name": "Malta",
+      "type": "country",
+      "iso_1_code": "470",
+      "iso_2_code": "MT",
+      "iso_3_code": "MLT",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00151",
+    "fields": {
+      "name": "Marshall Islands",
+      "type": "country",
+      "iso_1_code": "584",
+      "iso_2_code": "MH",
+      "iso_3_code": "MHL",
+      "overseas_region": "Asia Pacific",
+      "start_date": "1986-10-21",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00153",
+    "fields": {
+      "name": "Mauritania",
+      "type": "country",
+      "iso_1_code": "478",
+      "iso_2_code": "MR",
+      "iso_3_code": "MRT",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00154",
+    "fields": {
+      "name": "Mauritius",
+      "type": "country",
+      "iso_1_code": "480",
+      "iso_2_code": "MU",
+      "iso_3_code": "MUS",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00157",
+    "fields": {
+      "name": "Mexico",
+      "type": "country",
+      "iso_1_code": "484",
+      "iso_2_code": "MX",
+      "iso_3_code": "MEX",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00158",
+    "fields": {
+      "name": "Micronesia",
+      "type": "country",
+      "iso_1_code": "583",
+      "iso_2_code": "FM",
+      "iso_3_code": "FSM",
+      "overseas_region": "Asia Pacific",
+      "start_date": "1986-11-03",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00160",
+    "fields": {
+      "name": "Moldova",
+      "type": "country",
+      "iso_1_code": "498",
+      "iso_2_code": "MD",
+      "iso_3_code": "MDA",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-08-27",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00161",
+    "fields": {
+      "name": "Monaco",
+      "type": "country",
+      "iso_1_code": "492",
+      "iso_2_code": "MC",
+      "iso_3_code": "MCO",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00162",
+    "fields": {
+      "name": "Mongolia",
+      "type": "country",
+      "iso_1_code": "496",
+      "iso_2_code": "MN",
+      "iso_3_code": "MNG",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00163",
+    "fields": {
+      "name": "Montenegro",
+      "type": "country",
+      "iso_1_code": "499",
+      "iso_2_code": "ME",
+      "iso_3_code": "MNE",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00165",
+    "fields": {
+      "name": "Morocco",
+      "type": "country",
+      "iso_1_code": "504",
+      "iso_2_code": "MA",
+      "iso_3_code": "MAR",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00166",
+    "fields": {
+      "name": "Mozambique",
+      "type": "country",
+      "iso_1_code": "508",
+      "iso_2_code": "MZ",
+      "iso_3_code": "MOZ",
+      "overseas_region": "Africa",
+      "start_date": "1975-06-25",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00167",
+    "fields": {
+      "name": "Myanmar (Burma)",
+      "type": "country",
+      "iso_1_code": "104",
+      "iso_2_code": "MM",
+      "iso_3_code": "MMR",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00168",
+    "fields": {
+      "name": "Namibia",
+      "type": "country",
+      "iso_1_code": "516",
+      "iso_2_code": "NA",
+      "iso_3_code": "NAM",
+      "overseas_region": "Africa",
+      "start_date": "1980-03-21",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00169",
+    "fields": {
+      "name": "Nauru",
+      "type": "country",
+      "iso_1_code": "520",
+      "iso_2_code": "NR",
+      "iso_3_code": "NRU",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00171",
+    "fields": {
+      "name": "Nepal",
+      "type": "country",
+      "iso_1_code": "524",
+      "iso_2_code": "NP",
+      "iso_3_code": "NPL",
+      "overseas_region": "South Asia",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00172",
+    "fields": {
+      "name": "Netherlands",
+      "type": "country",
+      "iso_1_code": "528",
+      "iso_2_code": "NL",
+      "iso_3_code": "NLD",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00174",
+    "fields": {
+      "name": "New Zealand",
+      "type": "country",
+      "iso_1_code": "554",
+      "iso_2_code": "NZ",
+      "iso_3_code": "NZL",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00175",
+    "fields": {
+      "name": "Nicaragua",
+      "type": "country",
+      "iso_1_code": "558",
+      "iso_2_code": "NI",
+      "iso_3_code": "NIC",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00176",
+    "fields": {
+      "name": "Niger",
+      "type": "country",
+      "iso_1_code": "562",
+      "iso_2_code": "NE",
+      "iso_3_code": "NER",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00177",
+    "fields": {
+      "name": "Nigeria",
+      "type": "country",
+      "iso_1_code": "566",
+      "iso_2_code": "NG",
+      "iso_3_code": "NGA",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00180",
+    "fields": {
+      "name": "North Korea",
+      "type": "country",
+      "iso_1_code": "408",
+      "iso_2_code": "KP",
+      "iso_3_code": "PRK",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00181",
+    "fields": {
+      "name": "North Macedonia",
+      "type": "country",
+      "iso_1_code": "807",
+      "iso_2_code": "MK",
+      "iso_3_code": "MKD",
+      "overseas_region": "Europe",
+      "start_date": "1991-09-08",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00183",
+    "fields": {
+      "name": "Norway",
+      "type": "country",
+      "iso_1_code": "578",
+      "iso_2_code": "NO",
+      "iso_3_code": "NOR",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00185",
+    "fields": {
+      "name": "Oman",
+      "type": "country",
+      "iso_1_code": "512",
+      "iso_2_code": "OM",
+      "iso_3_code": "OMN",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00186",
+    "fields": {
+      "name": "Pakistan",
+      "type": "country",
+      "iso_1_code": "586",
+      "iso_2_code": "PK",
+      "iso_3_code": "PAK",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00187",
+    "fields": {
+      "name": "Palau",
+      "type": "country",
+      "iso_1_code": "585",
+      "iso_2_code": "PW",
+      "iso_3_code": "PLW",
+      "overseas_region": "Asia Pacific",
+      "start_date": "1994-10-01",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00189",
+    "fields": {
+      "name": "Panama",
+      "type": "country",
+      "iso_1_code": "591",
+      "iso_2_code": "PA",
+      "iso_3_code": "PAN",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00190",
+    "fields": {
+      "name": "Papua New Guinea",
+      "type": "country",
+      "iso_1_code": "598",
+      "iso_2_code": "PG",
+      "iso_3_code": "PNG",
+      "overseas_region": "Asia Pacific",
+      "start_date": "1975-09-16",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00191",
+    "fields": {
+      "name": "Paraguay",
+      "type": "country",
+      "iso_1_code": "600",
+      "iso_2_code": "PY",
+      "iso_3_code": "PRY",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00192",
+    "fields": {
+      "name": "Peru",
+      "type": "country",
+      "iso_1_code": "604",
+      "iso_2_code": "PE",
+      "iso_3_code": "PER",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00193",
+    "fields": {
+      "name": "Philippines",
+      "type": "country",
+      "iso_1_code": "608",
+      "iso_2_code": "PH",
+      "iso_3_code": "PHL",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00195",
+    "fields": {
+      "name": "Poland",
+      "type": "country",
+      "iso_1_code": "616",
+      "iso_2_code": "PL",
+      "iso_3_code": "POL",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00196",
+    "fields": {
+      "name": "Portugal",
+      "type": "country",
+      "iso_1_code": "620",
+      "iso_2_code": "PT",
+      "iso_3_code": "PRT",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00198",
+    "fields": {
+      "name": "Qatar",
+      "type": "country",
+      "iso_1_code": "634",
+      "iso_2_code": "QA",
+      "iso_3_code": "QAT",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00201",
+    "fields": {
+      "name": "Romania",
+      "type": "country",
+      "iso_1_code": "642",
+      "iso_2_code": "RO",
+      "iso_3_code": "ROU",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00202",
+    "fields": {
+      "name": "Russia",
+      "type": "country",
+      "iso_1_code": "643",
+      "iso_2_code": "RU",
+      "iso_3_code": "RUS",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-12-25",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00203",
+    "fields": {
+      "name": "Rwanda",
+      "type": "country",
+      "iso_1_code": "646",
+      "iso_2_code": "RW",
+      "iso_3_code": "RWA",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00209",
+    "fields": {
+      "name": "Samoa",
+      "type": "country",
+      "iso_1_code": "882",
+      "iso_2_code": "WS",
+      "iso_3_code": "WSM",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00210",
+    "fields": {
+      "name": "San Marino",
+      "type": "country",
+      "iso_1_code": "674",
+      "iso_2_code": "SM",
+      "iso_3_code": "SMR",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00211",
+    "fields": {
+      "name": "Sao Tome and Principe",
+      "type": "country",
+      "iso_1_code": "678",
+      "iso_2_code": "ST",
+      "iso_3_code": "STP",
+      "overseas_region": "Africa",
+      "start_date": "1975-07-12",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00212",
+    "fields": {
+      "name": "Saudi Arabia",
+      "type": "country",
+      "iso_1_code": "682",
+      "iso_2_code": "SA",
+      "iso_3_code": "SAU",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00213",
+    "fields": {
+      "name": "Senegal",
+      "type": "country",
+      "iso_1_code": "686",
+      "iso_2_code": "SN",
+      "iso_3_code": "SEN",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00214",
+    "fields": {
+      "name": "Serbia",
+      "type": "country",
+      "iso_1_code": "688",
+      "iso_2_code": "RS",
+      "iso_3_code": "SRB",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00215",
+    "fields": {
+      "name": "Seychelles",
+      "type": "country",
+      "iso_1_code": "690",
+      "iso_2_code": "SC",
+      "iso_3_code": "SYC",
+      "overseas_region": "Africa",
+      "start_date": "1976-06-29",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00217",
+    "fields": {
+      "name": "Sierra Leone",
+      "type": "country",
+      "iso_1_code": "694",
+      "iso_2_code": "SL",
+      "iso_3_code": "SLE",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00218",
+    "fields": {
+      "name": "Singapore",
+      "type": "country",
+      "iso_1_code": "702",
+      "iso_2_code": "SG",
+      "iso_3_code": "SGP",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00221",
+    "fields": {
+      "name": "Slovakia",
+      "type": "country",
+      "iso_1_code": "703",
+      "iso_2_code": "SK",
+      "iso_3_code": "SVK",
+      "overseas_region": "Europe",
+      "start_date": "1993-01-01",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00222",
+    "fields": {
+      "name": "Slovenia",
+      "type": "country",
+      "iso_1_code": "705",
+      "iso_2_code": "SI",
+      "iso_3_code": "SVN",
+      "overseas_region": "Europe",
+      "start_date": "1991-06-25",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00223",
+    "fields": {
+      "name": "Solomon Islands",
+      "type": "country",
+      "iso_1_code": "090",
+      "iso_2_code": "SB",
+      "iso_3_code": "SLB",
+      "overseas_region": "Asia Pacific",
+      "start_date": "1978-07-07",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00224",
+    "fields": {
+      "name": "Somalia",
+      "type": "country",
+      "iso_1_code": "706",
+      "iso_2_code": "SO",
+      "iso_3_code": "SOM",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00225",
+    "fields": {
+      "name": "South Africa",
+      "type": "country",
+      "iso_1_code": "710",
+      "iso_2_code": "ZA",
+      "iso_3_code": "ZAF",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00227",
+    "fields": {
+      "name": "South Korea",
+      "type": "country",
+      "iso_1_code": "410",
+      "iso_2_code": "KR",
+      "iso_3_code": "KOR",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00228",
+    "fields": {
+      "name": "South Sudan",
+      "type": "country",
+      "iso_1_code": "728",
+      "iso_2_code": "SS",
+      "iso_3_code": "SSD",
+      "overseas_region": "Africa",
+      "start_date": "2011-07-09",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00229",
+    "fields": {
+      "name": "Spain",
+      "type": "country",
+      "iso_1_code": "724",
+      "iso_2_code": "ES",
+      "iso_3_code": "ESP",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00230",
+    "fields": {
+      "name": "Sri Lanka",
+      "type": "country",
+      "iso_1_code": "144",
+      "iso_2_code": "LK",
+      "iso_3_code": "LKA",
+      "overseas_region": "South Asia",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00231",
+    "fields": {
+      "name": "St Kitts and Nevis",
+      "type": "country",
+      "iso_1_code": "659",
+      "iso_2_code": "KN",
+      "iso_3_code": "KNA",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": "1983-09-19",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00232",
+    "fields": {
+      "name": "St Lucia",
+      "type": "country",
+      "iso_1_code": "662",
+      "iso_2_code": "LC",
+      "iso_3_code": "LCA",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": "1979-02-22",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00233",
+    "fields": {
+      "name": "St Vincent",
+      "type": "country",
+      "iso_1_code": "670",
+      "iso_2_code": "VC",
+      "iso_3_code": "VCT",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": "1979-10-27",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00234",
+    "fields": {
+      "name": "Sudan",
+      "type": "country",
+      "iso_1_code": "729",
+      "iso_2_code": "SD",
+      "iso_3_code": "SDN",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00235",
+    "fields": {
+      "name": "Suriname",
+      "type": "country",
+      "iso_1_code": "740",
+      "iso_2_code": "SR",
+      "iso_3_code": "SUR",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": "1975-11-25",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00237",
+    "fields": {
+      "name": "Sweden",
+      "type": "country",
+      "iso_1_code": "752",
+      "iso_2_code": "SE",
+      "iso_3_code": "SWE",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00238",
+    "fields": {
+      "name": "Switzerland",
+      "type": "country",
+      "iso_1_code": "756",
+      "iso_2_code": "CH",
+      "iso_3_code": "CHE",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00239",
+    "fields": {
+      "name": "Syria",
+      "type": "country",
+      "iso_1_code": "760",
+      "iso_2_code": "SY",
+      "iso_3_code": "SYR",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00241",
+    "fields": {
+      "name": "Tajikistan",
+      "type": "country",
+      "iso_1_code": "762",
+      "iso_2_code": "TJ",
+      "iso_3_code": "TJK",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-09-09",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00242",
+    "fields": {
+      "name": "Tanzania",
+      "type": "country",
+      "iso_1_code": "834",
+      "iso_2_code": "TZ",
+      "iso_3_code": "TZA",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00243",
+    "fields": {
+      "name": "Thailand",
+      "type": "country",
+      "iso_1_code": "764",
+      "iso_2_code": "TH",
+      "iso_3_code": "THA",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00244",
+    "fields": {
+      "name": "The Bahamas",
+      "type": "country",
+      "iso_1_code": "044",
+      "iso_2_code": "BS",
+      "iso_3_code": "BHS",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00245",
+    "fields": {
+      "name": "The Gambia",
+      "type": "country",
+      "iso_1_code": "270",
+      "iso_2_code": "GM",
+      "iso_3_code": "GMB",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00246",
+    "fields": {
+      "name": "Togo",
+      "type": "country",
+      "iso_1_code": "768",
+      "iso_2_code": "TG",
+      "iso_3_code": "TGO",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00248",
+    "fields": {
+      "name": "Tonga",
+      "type": "country",
+      "iso_1_code": "776",
+      "iso_2_code": "TO",
+      "iso_3_code": "TON",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00249",
+    "fields": {
+      "name": "Trinidad and Tobago",
+      "type": "country",
+      "iso_1_code": "780",
+      "iso_2_code": "TT",
+      "iso_3_code": "TTO",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00251",
+    "fields": {
+      "name": "Tunisia",
+      "type": "country",
+      "iso_1_code": "788",
+      "iso_2_code": "TN",
+      "iso_3_code": "TUN",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00252",
+    "fields": {
+      "name": "Turkey",
+      "type": "country",
+      "iso_1_code": "792",
+      "iso_2_code": "TR",
+      "iso_3_code": "TUR",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00253",
+    "fields": {
+      "name": "Turkmenistan",
+      "type": "country",
+      "iso_1_code": "795",
+      "iso_2_code": "TM",
+      "iso_3_code": "TKM",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-10-27",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00255",
+    "fields": {
+      "name": "Tuvalu",
+      "type": "country",
+      "iso_1_code": "798",
+      "iso_2_code": "TV",
+      "iso_3_code": "TUV",
+      "overseas_region": "Asia Pacific",
+      "start_date": "1978-10-01",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00256",
+    "fields": {
+      "name": "Uganda",
+      "type": "country",
+      "iso_1_code": "800",
+      "iso_2_code": "UG",
+      "iso_3_code": "UGA",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00257",
+    "fields": {
+      "name": "Ukraine",
+      "type": "country",
+      "iso_1_code": "804",
+      "iso_2_code": "UA",
+      "iso_3_code": "UKR",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-08-24",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00259",
+    "fields": {
+      "name": "United Arab Emirates",
+      "type": "country",
+      "iso_1_code": "784",
+      "iso_2_code": "AE",
+      "iso_3_code": "ARE",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00260",
+    "fields": {
+      "name": "United Kingdom",
+      "type": "country",
+      "iso_1_code": "826",
+      "iso_2_code": "GB",
+      "iso_3_code": "GBR",
+      "overseas_region": null,
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00261",
+    "fields": {
+      "name": "United States",
+      "type": "country",
+      "iso_1_code": "840",
+      "iso_2_code": "US",
+      "iso_3_code": "USA",
+      "overseas_region": "North America",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00263",
+    "fields": {
+      "name": "Uruguay",
+      "type": "country",
+      "iso_1_code": "858",
+      "iso_2_code": "UY",
+      "iso_3_code": "URY",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00264",
+    "fields": {
+      "name": "Uzbekistan",
+      "type": "country",
+      "iso_1_code": "860",
+      "iso_2_code": "UZ",
+      "iso_3_code": "UZB",
+      "overseas_region": "Eastern Europe and Central Asia",
+      "start_date": "1991-09-01",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00265",
+    "fields": {
+      "name": "Vanuatu",
+      "type": "country",
+      "iso_1_code": "548",
+      "iso_2_code": "VU",
+      "iso_3_code": "VUT",
+      "overseas_region": "Asia Pacific",
+      "start_date": "1980-07-30",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00266",
+    "fields": {
+      "name": "Vatican City",
+      "type": "country",
+      "iso_1_code": "336",
+      "iso_2_code": "VA",
+      "iso_3_code": "VAT",
+      "overseas_region": "Europe",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00267",
+    "fields": {
+      "name": "Venezuela",
+      "type": "country",
+      "iso_1_code": "862",
+      "iso_2_code": "VE",
+      "iso_3_code": "VEN",
+      "overseas_region": "Latin America and Caribbean",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00268",
+    "fields": {
+      "name": "Vietnam",
+      "type": "country",
+      "iso_1_code": "704",
+      "iso_2_code": "VN",
+      "iso_3_code": "VNM",
+      "overseas_region": "Asia Pacific",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00272",
+    "fields": {
+      "name": "Yemen",
+      "type": "country",
+      "iso_1_code": "887",
+      "iso_2_code": "YE",
+      "iso_3_code": "YEM",
+      "overseas_region": "Middle East, Afghanistan and Pakistan",
+      "start_date": "1990-05-22",
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00273",
+    "fields": {
+      "name": "Zambia",
+      "type": "country",
+      "iso_1_code": "894",
+      "iso_2_code": "ZM",
+      "iso_3_code": "ZMB",
+      "overseas_region": "Africa",
+      "start_date": null,
+      "end_date": null
+    }
+  },
+  {
+    "model": "countries.Country",
+    "pk": "CTHMTC00274",
+    "fields": {
+      "name": "Zimbabwe",
+      "type": "country",
+      "iso_1_code": "716",
+      "iso_2_code": "ZW",
+      "iso_3_code": "ZWE",
+      "overseas_region": "Africa",
+      "start_date": "1980-04-18",
+      "end_date": null
+    }
+  }
+]
