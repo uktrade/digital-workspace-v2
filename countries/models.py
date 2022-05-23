@@ -31,4 +31,4 @@ class Country(models.Model):
     end_date = models.DateField(null=True)
 
     def __str__(self):
-        return f"{self.name} ({self.iso_2_code})"
+        return self.name

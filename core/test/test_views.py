@@ -2,6 +2,7 @@ from unittest import mock
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
@@ -20,6 +21,7 @@ class ReportPageProblemTest(TestCase):
         )
         self.test_user.set_password(self.test_password)
         self.test_user.save()
+        call_command("loaddata", "countries.json")
         PersonService().create_user_profile(self.test_user)
         self.client.force_login(self.test_user)
 

@@ -14,6 +14,10 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search import index
 
 
+# United Kingdom
+DEFAULT_COUNTRY_PK = "CTHMTC00260"
+
+
 # TODO: django doesnt support on update cascade and it's possible that a code
 # might change in the future so we should probably change this to use an id
 # column.
@@ -238,8 +242,14 @@ class Person(index.Indexed, models.Model):
     manager = models.ForeignKey(
         "Person", models.SET_NULL, null=True, blank=True, related_name="+"
     )
-    country = models.ForeignKey(
+    old_country = models.ForeignKey(
         "Country", models.SET_DEFAULT, default=Country.get_default_id, related_name="+"
+    )
+    country = models.ForeignKey(
+        "countries.Country",
+        models.PROTECT,
+        default=DEFAULT_COUNTRY_PK,
+        related_name="+",
     )
     workdays = models.ManyToManyField(
         "Workday",
