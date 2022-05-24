@@ -177,6 +177,8 @@ class PersonService:
 
         if request:
             person.edited_or_confirmed_at = timezone.now()
+            person.save()
+
             self.notify_about_changes(request, person)
 
     def profile_deletion_initiated(
