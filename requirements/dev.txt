@@ -51,7 +51,7 @@ botocore==1.23.46
     #   s3transfer
 bpython==0.22.1
     # via -r requirements.in/dev.in
-celery==5.2.3
+celery==5.2.6
     # via -r requirements.in/../requirements/base.txt
 certifi==2021.10.8
     # via
@@ -68,7 +68,7 @@ charset-normalizer==2.0.11
     # via
     #   -r requirements.in/../requirements/base.txt
     #   requests
-click==8.0.3
+click==8.1.3
     # via
     #   -r requirements.in/../requirements/base.txt
     #   black
@@ -89,10 +89,6 @@ click-repl==0.2.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   celery
-cobble==0.1.3
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   mammoth
 coverage==5.5
     # via -r requirements.in/dev.in
 cryptography==3.4.8
@@ -260,8 +256,6 @@ html5lib==1.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
-htmllaundry==2.2
-    # via -r requirements.in/../requirements/base.txt
 idna==3.3
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -288,10 +282,6 @@ l18n==2021.3
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
 lxml==4.7.1
-    # via
-    #   -r requirements.in/../requirements/base.txt
-    #   htmllaundry
-mammoth==1.4.18
     # via -r requirements.in/../requirements/base.txt
 markdown==3.3.4
     # via -r requirements.in/../requirements/base.txt
@@ -306,6 +296,7 @@ mohawk==1.1.0
     #   -r requirements.in/../requirements/base.txt
     #   django-hawk
     #   django-hawk-drf
+    #   requests-hawk
 mypy-extensions==0.4.3
     # via black
 notifications-python-client==6.3.0
@@ -332,13 +323,11 @@ pep517==0.12.0
     # via pip-tools
 pep8-naming==0.12.1
     # via -r requirements.in/dev.in
-phpserialize==1.3
-    # via -r requirements.in/../requirements/base.txt
 pillow==9.0.1
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
-pip-tools==6.5.1
+pip-tools==6.6.2
     # via -r requirements.in/dev.in
 platformdirs==2.4.1
     # via black
@@ -429,9 +418,12 @@ requests==2.27.1
     #   notifications-python-client
     #   pytest-base-url
     #   pytest-selenium
+    #   requests-hawk
     #   requests-oauthlib
     #   tweepy
     #   wagtail
+requests-hawk==1.1.1
+    # via -r requirements.in/../requirements/base.txt
 requests-oauthlib==1.3.1
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -458,7 +450,6 @@ six==1.16.0
     #   flake8-debugger
     #   flake8-print
     #   html5lib
-    #   htmllaundry
     #   l18n
     #   mohawk
     #   python-dateutil
