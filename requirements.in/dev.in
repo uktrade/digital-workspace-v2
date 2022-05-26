@@ -16,7 +16,7 @@ flake8-quotes
 flake8-string-format
 pep8-naming
 pydocstyle
-black
+black>=22.3.0
 Faker
 factory-boy
 isort
