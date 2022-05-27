@@ -484,5 +484,5 @@ HawkAuthentication
 key_skill_codes
 manager_id
 John Smith
-
-
+CountriesConfig
+pytest-django==4.5.2
