@@ -20,11 +20,9 @@ django-simple-history==3.0.0
 djangorestframework==3.13.1
 
 # Other libraries
-pyjwt[crypto]==2.0.1
+pyjwt[crypto]>=2.4.0
 requests>=2.25.1
 boto3>=1.17.88
-htmllaundry
-mammoth
 
 # DIT dependencies
 django-staff-sso-client>=3.1.0
@@ -37,21 +35,14 @@ django-hawk-drf==0.0.1
 waitress>=2.1.1
 sentry-sdk>=1.1.0
 elasticsearch<7.14.0
-celery>=5.2.2
+celery>=5.2.6
 redis
 tweepy
 atoma
 pillow>=9.0.1
-defusedxml
 bleach
 urllib3>=1.26.5
 elastic-apm>=6.2.3
-
-# PHP unserialise
-phpserialize
-
-# Beautiful Soup
-beautifulsoup4
 
 # Elastic Search
 elasticsearch-dsl
