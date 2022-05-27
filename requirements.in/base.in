@@ -20,6 +20,7 @@ django-simple-history==3.0.0
 djangorestframework==3.13.1
 
 # Other libraries
+pyjwt[crypto]>=2.4.0
 requests>=2.25.1
 boto3>=1.17.88
 

@@ -60,6 +60,10 @@ certifi==2021.10.8
     #   elasticsearch
     #   requests
     #   sentry-sdk
+cffi==1.15.0
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   cryptography
 charset-normalizer==2.0.11
     # via
     #   -r requirements.in/../requirements/base.txt
@@ -87,6 +91,10 @@ click-repl==0.2.0
     #   celery
 coverage==5.5
     # via -r requirements.in/dev.in
+cryptography==37.0.2
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   pyjwt
 curtsies==0.3.10
     # via bpython
 cwcwidth==0.1.6
@@ -338,13 +346,17 @@ pycodestyle==2.8.0
     #   flake8-bandit
     #   flake8-debugger
     #   flake8-print
+pycparser==2.21
+    # via
+    #   -r requirements.in/../requirements/base.txt
+    #   cffi
 pydocstyle==6.1.1
     # via -r requirements.in/dev.in
 pyflakes==2.4.0
     # via flake8
 pygments==2.11.2
     # via bpython
-pyjwt==2.0.1
+pyjwt[crypto]==2.4.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   notifications-python-client
