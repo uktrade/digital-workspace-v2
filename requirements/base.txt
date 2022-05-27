@@ -36,8 +36,6 @@ certifi==2021.10.8
     #   elasticsearch
     #   requests
     #   sentry-sdk
-cffi==1.15.0
-    # via cryptography
 charset-normalizer==2.0.11
     # via requests
 click==8.1.3
@@ -52,8 +50,6 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.2.0
     # via celery
-cryptography==3.4.8
-    # via pyjwt
 defusedxml==0.7.1
     # via atoma
 deprecated==1.2.13
@@ -165,7 +161,6 @@ mohawk==1.1.0
     # via
     #   django-hawk
     #   django-hawk-drf
-    #   requests-hawk
 notifications-python-client==6.3.0
     # via -r requirements.in/base.in
 oauthlib==3.2.0
@@ -184,12 +179,8 @@ prompt-toolkit==3.0.26
     # via click-repl
 psycopg2==2.9.3
     # via -r requirements.in/base.in
-pycparser==2.21
-    # via cffi
-pyjwt[crypto]==2.0.1
-    # via
-    #   -r requirements.in/base.in
-    #   notifications-python-client
+pyjwt==2.0.1
+    # via notifications-python-client
 pyparsing==3.0.7
     # via packaging
 python-dateutil==2.8.2
@@ -214,12 +205,9 @@ requests==2.27.1
     # via
     #   -r requirements.in/base.in
     #   notifications-python-client
-    #   requests-hawk
     #   requests-oauthlib
     #   tweepy
     #   wagtail
-requests-hawk==1.1.1
-    # via -r requirements.in/base.in
 requests-oauthlib==1.3.1
     # via
     #   django-staff-sso-client
