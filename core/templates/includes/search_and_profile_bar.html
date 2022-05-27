@@ -2,41 +2,26 @@
 
 <div class="search-and-profile-bar">
     <div class="govuk-width-container">
-        {% if peoplefinder_v2 %}
-            <form class="search-form" method="GET" action="{% url 'people-and-teams-search' %}">
-                <label for="search-main" class="govuk-visually-hidden">
-                    Search people, teams and skills
-                </label>
-                <input class="govuk-input" type="search" name="query" value="{{ people_and_teams_search_query|default:'' }}" title="Search people, teams and skills" aria-controls="" placeholder="Search people, teams and skills">
-                {% if people_and_teams_search_filters %}
-                    {% for filter in people_and_teams_search_filters %}
-                        <input type="hidden" name="filters" value="{{ filter }}">
-                    {% endfor %}
-                {% else %}
-                    <input type="hidden" name="filters" value="teams">
-                    <input type="hidden" name="filters" value="people">
-                {% endif %}
-                <button type="submit">Search</button>
-            </form>
-        {% else %}
-            <form class="search-form" method="GET" action="https://people.trade.gov.uk/search">
-                <label for="search-main" class="govuk-visually-hidden">
-                    Search people, teams and skills
-                </label>
-                <input name="search[filters][]" type="hidden" value="people">
-                <input name="search[filters][]" type="hidden" value="groups">
-                <input class="govuk-input" type="search" name="search[query]" title="Search people, teams and skills" aria-controls="" placeholder="Search people, teams and skills">
-                <button type="submit">Search</button>
-            </form>
-        {% endif %}
+        <form class="search-form" method="GET" action="{% url 'people-and-teams-search' %}">
+            <label for="search-main" class="govuk-visually-hidden">
+                Search people, teams and skills
+            </label>
+            <input class="govuk-input" type="search" name="query" value="{{ people_and_teams_search_query|default:'' }}" title="Search people, teams and skills" aria-controls="" placeholder="Search people, teams and skills">
+            {% if people_and_teams_search_filters %}
+                {% for filter in people_and_teams_search_filters %}
+                    <input type="hidden" name="filters" value="{{ filter }}">
+                {% endfor %}
+            {% else %}
+                <input type="hidden" name="filters" value="teams">
+                <input type="hidden" name="filters" value="people">
+            {% endif %}
+            <button type="submit">Search</button>
+        </form>
         <div class="people-finder-panel">
-            {% if peoplefinder_v2 %}
+            {% if peoplefinder_profile %}
                 <a
                     class="profile-link"
                     href="{% url 'profile-view' peoplefinder_profile.slug %}"
-                    onclick="gotoLegacyProfile(event);"
-                    data-legacy-profile-url="{{ legacy_peoplefinder_profile.profile_url }}"
-                    title="Shift-click to goto legacy profile."
                 >
                     <div class="profile-details">
                         Hi, {{ peoplefinder_profile.first_name|truncatechars:25 }}
@@ -54,52 +39,7 @@
                         <img src="{% webpack_static 'no-photo.png' %}" alt="No photo" class="profile-image">
                     {% endif %}
                 </a>
-            {% else %}
-                {% if peoplefinder_profile.is_blank %}
-                    <a class="profile-link" href="{{ peoplefinder_profile.setup_profile_url }}">
-                        <div class="profile-details">
-                            Please set up your profile
-                            <span class="profile-prompt">
-                            Set up your profile now
-                            </span>
-                        </div>
-                    </a>
-                {% elif peoplefinder_profile %}
-                    <a class="profile-link" href="{{ peoplefinder_profile.profile_url }}">
-                        <div class="profile-details">
-                            Hi, {{ peoplefinder_profile.first_name|truncatechars:25 }}
-                            <span class="profile-prompt">
-                                {% if peoplefinder_profile.is_complete %}
-                                    View your profile
-                                {% else %}
-                                    Set up your profile ({{ peoplefinder_profile.completion_percentage }}% complete)
-                                {% endif %}
-                            </span>
-                        </div>
-                        {% if peoplefinder_profile.profile_image_url %}
-                        <img src="{{ peoplefinder_profile.profile_image_url }}"
-                                alt="Profile image of {{ peoplefinder_profile.name }}"
-                                class="profile-image">
-                        {% else %}
-                        <img src="{% webpack_static 'no-photo.png' %}"
-                                alt="No photo"
-                                class="profile-image">
-                        {% endif %}
-                    </a>
-                {% endif %}
             {% endif %}
         </div>
     </div>
 </div>
-
-<script>
-    function gotoLegacyProfile(event) {
-        if (!event.shiftKey) {
-            return
-        }
-
-        event.preventDefault();
-
-        location.href = event.currentTarget.dataset.legacyProfileUrl;
-    }
-</script>

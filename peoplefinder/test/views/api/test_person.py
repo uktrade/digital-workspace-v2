@@ -101,7 +101,7 @@ class PersonTests(TestCase):
         person_returned = response.json()["results"][0]
 
         assert person_returned["full_name"] == "John Smith"
-        assert person_returned["formatted_roles"] == "['Software']"
+        assert person_returned["formatted_roles"] == ["Software Engineer in Software"]
         roles = person_returned["roles"]
         assert type(roles) is list
         assert len(roles) == 1

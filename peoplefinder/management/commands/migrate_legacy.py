@@ -73,7 +73,9 @@ class Command(BaseCommand):
         logger.info("Migrated teams")
         migrate_people(**options)
         logger.info("Migrated people")
-        migrate_audit_log()
+        create_audit_log()
+        logger.info("Created audit log")
+        migrate_legacy_audit_log()
         logger.info("Migrated legacy audit log")
 
 
@@ -88,7 +90,10 @@ def migrate_people(**options):
     for legacy_person in legacy_people:
         user = get_user_for_legacy_person(legacy_person)
 
-        person = Person.objects.create(user=user)
+        if user:
+            person, _ = Person.objects.get_or_create(user=user)
+        else:
+            person = Person.objects.create(user=user)
 
         migrate_person(legacy_person, person)
 
@@ -224,6 +229,9 @@ def person_migrator():
         if legacy_person.slug:
             person.legacy_slug = legacy_person.slug
 
+        if legacy_person.ditsso_user_id:
+            person.legacy_sso_user_id = legacy_person.ditsso_user_id
+
         # first name
         if legacy_person.given_name:
             person.first_name = legacy_person.given_name
@@ -303,8 +311,7 @@ def person_migrator():
             )
 
         # previous_experience
-        if legacy_person.previous_positions:
-            person.previous_experience = legacy_person.previous_positions
+        person.previous_experience = legacy_person.previous_positions or ""
 
     return migrate_person
 
@@ -440,7 +447,19 @@ class ProfilePhotoMigrator:
         )
 
 
-def migrate_audit_log() -> None:
+def create_audit_log() -> None:
+    team_service = TeamService()
+
+    for team in Team.objects.all():
+        team_service.team_created(team, created_by=None)
+
+    person_service = PersonService()
+
+    for person in Person.objects.all():
+        person_service.profile_created(person, created_by=None)
+
+
+def migrate_legacy_audit_log() -> None:
     migrate = audit_log_migrator()
 
     objs = []

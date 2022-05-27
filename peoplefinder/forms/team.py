@@ -19,6 +19,7 @@ class TeamForm(forms.ModelForm):
         ]
 
     parent_team = forms.IntegerField()
+    # Example: "23,56,34"
     leaders_positions = forms.CharField(required=False, empty_value=None)
 
     def __init__(self, *args, **kwargs) -> None:

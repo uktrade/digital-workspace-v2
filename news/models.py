@@ -3,7 +3,6 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
-from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils.text import slugify
 from modelcluster.fields import ParentalKey
@@ -203,7 +202,7 @@ class NewsPage(PageWithTopics):
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
 
-        response = render(request, self.template, context)
+        response = TemplateResponse(request, self.template, context)
         set_seen_cookie_banner(request, response)
 
         return response

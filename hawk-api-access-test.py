@@ -1,3 +1,5 @@
+import json
+
 import requests
 from mohawk import Sender
 
@@ -23,7 +25,7 @@ sender = Sender(
     content_type=content_type,
 )
 
-print(sender.request_header)
+# print(sender.request_header)
 
 response = requests.get(
     URL,
@@ -31,4 +33,4 @@ response = requests.get(
     headers={"Authorization": sender.request_header, "Content-Type": content_type},
 )
 
-print(response.json())
+print(json.dumps(response.json()))

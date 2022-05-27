@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import SuspiciousOperation
 from django.db import transaction
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 
 from peoplefinder.forms.role import RoleForm
@@ -43,7 +43,7 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
             "form": RoleForm(initial={"person": self.profile}),
         }
 
-        return render(
+        return TemplateResponse(
             request, "peoplefinder/components/role-edit.html", context=context
         )
 
@@ -63,11 +63,11 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
                 messages.success(request, "Role created successfully")
             else:
                 messages.success(request, "Role updated successfully")
+
+            if form.has_changed():
+                PersonService().profile_updated(request, self.profile, request.user)
         else:
             messages.error(request, "Role not saved - please check form for errors")
-
-        if form.has_changed():
-            PersonService().profile_updated(request, self.profile, request.user)
 
         context = {
             "profile": self.profile,
@@ -75,7 +75,7 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
             "form": form,
         }
 
-        return render(
+        return TemplateResponse(
             request, "peoplefinder/components/role-edit.html", context=context
         )
 

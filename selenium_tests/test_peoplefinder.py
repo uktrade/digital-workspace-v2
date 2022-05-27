@@ -19,7 +19,6 @@ def superuser(django_user_model, selenium, live_server):
         legacy_sso_user_id="legacy-test-user-id",
         is_staff=True,
         is_superuser=True,
-        is_using_peoplefinder_v2=True,
     )
     user.set_password("password")
     user.save()
@@ -40,7 +39,6 @@ def user(django_user_model):
         last_name="Smith",
         email="john.smith@digital.trade.gov.uk",
         legacy_sso_user_id="1234abcd-1234-abcd-1234-abcd1234abcd",
-        is_using_peoplefinder_v2=True,
     )
     user.set_password("password")
     user.save()

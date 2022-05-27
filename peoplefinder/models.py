@@ -14,6 +14,10 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search import index
 
 
+# United Kingdom
+DEFAULT_COUNTRY_PK = "CTHMTC00260"
+
+
 # TODO: django doesnt support on update cascade and it's possible that a code
 # might change in the future so we should probably change this to use an id
 # column.
@@ -38,6 +42,13 @@ class Country(models.Model):
         return Country.objects.get(code=cls.DEFAULT_CODE).id
 
 
+class WorkdayQuerySet(models.QuerySet):
+    def all_mon_to_sun(self):
+        codes = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+        return sorted(self.all(), key=lambda x: codes.index(x.code))
+
+
 class Workday(models.Model):
     class Meta:
         constraints = [
@@ -47,6 +58,8 @@ class Workday(models.Model):
 
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=9)
+
+    objects = WorkdayQuerySet.as_manager()
 
     def __str__(self) -> str:
         return self.name
@@ -229,8 +242,14 @@ class Person(index.Indexed, models.Model):
     manager = models.ForeignKey(
         "Person", models.SET_NULL, null=True, blank=True, related_name="+"
     )
-    country = models.ForeignKey(
+    old_country = models.ForeignKey(
         "Country", models.SET_DEFAULT, default=Country.get_default_id, related_name="+"
+    )
+    country = models.ForeignKey(
+        "countries.Country",
+        models.PROTECT,
+        default=DEFAULT_COUNTRY_PK,
+        related_name="+",
     )
     workdays = models.ManyToManyField(
         "Workday",
@@ -287,6 +306,8 @@ class Person(index.Indexed, models.Model):
     legacy_slug = models.CharField(
         unique=True, max_length=80, null=True, editable=False
     )
+    # Used for matching new users with existing profiles.
+    legacy_sso_user_id = models.CharField(max_length=255, null=True, editable=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -369,14 +390,14 @@ class Person(index.Indexed, models.Model):
     )
     fluent_languages = models.CharField(
         "Which languages do you speak fluently?",
-        max_length=100,
+        max_length=200,
         null=True,
         blank=True,
         help_text="Enter languages that you are fluent in. Use a comma to separate them.",
     )
     intermediate_languages = models.CharField(
         "Which other languages do you speak?",
-        max_length=130,
+        max_length=200,
         null=True,
         blank=True,
         help_text="Enter languages that you speak but aren't fluent in. Use a comma to separate them.",
@@ -485,6 +506,19 @@ class Person(index.Indexed, models.Model):
             filter(None, [self.fluent_languages, self.intermediate_languages])
         )
 
+    def get_workdays_display(self) -> str:
+        workdays = self.workdays.all_mon_to_sun()
+
+        workday_codes = [x.code for x in workdays]
+        mon_to_fri_codes = ["mon", "tue", "wed", "thu", "fri"]
+
+        # "Monday to Friday"
+        if workday_codes == mon_to_fri_codes:
+            return f"{workdays[0]} to {workdays[-1]}"
+
+        # "Monday, Tuesday, Wednesday, ..."
+        return ", ".join(map(str, workdays))
+
 
 class TeamQuerySet(models.QuerySet):
     def with_all_parents(self):
@@ -550,6 +584,7 @@ class Team(index.Indexed, models.Model):
         max_length=12,
         choices=LeadersOrdering.choices,
         default=LeadersOrdering.ALPHABETICAL,
+        blank=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -589,6 +624,11 @@ class Team(index.Indexed, models.Model):
         yield from self.members.filter(head_of_team=True).order_by(*order_by)
 
 
+class TeamMemberManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(person__is_active=False)
+
+
 class TeamMember(models.Model):
     class Meta:
         constraints = [
@@ -608,6 +648,8 @@ class TeamMember(models.Model):
     leaders_position = models.SmallIntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = TeamMemberManager()
 
     def __str__(self) -> str:
         return f"{self.team} - {self.person}"

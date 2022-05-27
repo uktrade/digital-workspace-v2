@@ -1,6 +1,5 @@
 import os
 import sys
-from base64 import b64decode  # /PS-IGNORE
 
 import environ
 import sentry_sdk
@@ -31,16 +30,6 @@ AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET")
 BASE_URL = env("WAGTAIL_BASE_URL")
 
 DEBUG = env.bool("DJANGO_DEBUG", False)
-
-# Feature flag to enable the new peoplefinder v2
-# TODO: Remove feature flag once we have migrated to v2 in prod
-PEOPLEFINDER_V2 = env.bool("PEOPLEFINDER_V2", False)
-
-PEOPLEFINDER_PROFILE_API_PRIVATE_KEY = b64decode(  # /PS-IGNORE
-    env("PEOPLEFINDER_PROFILE_API_PRIVATE_KEY"), validate=True
-)
-PEOPLEFINDER_PROFILE_API_URL = env("PEOPLEFINDER_PROFILE_API_URL")
-PEOPLEFINDER_URL = env("PEOPLEFINDER_URL")
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
@@ -110,10 +99,10 @@ LOCAL_APPS = [
     "transition",
     "networks",
     "country_fact_sheet",
-    "import_wordpress",
     "user.apps.UserConfig",
     "pingdom.apps.PingdomConfig",
     "peoplefinder.apps.PeoplefinderConfig",
+    "countries.apps.CountriesConfig",
 ]
 
 THIRD_PARTY_APPS = [
@@ -489,14 +478,6 @@ AUTHBROKER_ANONYMOUS_PATHS = [
     "/peoplefinder/api/person-api/",
 ]
 
-# Parser settings (remove after import)
-IMPORT_USER_PWD = env("IMPORT_USER_PWD", default=None)
-
-OLD_ASSET_PATHS = env.list("OLD_ASSET_PATHS", default=[])
-
-AUTHOR_TO_BE_SUBSTITUTED = env("AUTHOR_TO_BE_SUBSTITUTED", default=None)
-AUTHOR_SUBSTITUTED = env("AUTHOR_SUBSTITUTED", default=None)
-
 NAMESPACES = {
     "excerpt": "http://wordpress.org/export/1.2/excerpt/",
     "content": "http://purl.org/rss/1.0/modules/content/",
@@ -504,12 +485,6 @@ NAMESPACES = {
     "dc": "http://purl.org/dc/elements/1.1/",
     "wp": "http://wordpress.org/export/1.2/",
 }
-
-SKIP_LIST = env.list("SKIP_LIST", default=[])
-
-ORPHAN_PAGES = env.dict("ORPHAN_PAGES", default={})
-
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
 # Set file uploads to throw exception when virus found
 CHUNK_UPLOADER_RAISE_EXCEPTION_ON_VIRUS_FOUND = True

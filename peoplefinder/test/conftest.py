@@ -23,7 +23,6 @@ def django_db_setup(django_db_setup, django_db_blocker):
             legacy_sso_user_id="john-smith-sso-user-id",
             is_staff=False,
             is_superuser=False,
-            is_using_peoplefinder_v2=True,
         )
 
         if hasattr(user_john_smith, "profile"):
@@ -32,6 +31,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
             AuditLogService.get_audit_log(user_john_smith.profile).delete()
             user_john_smith.profile.delete()
 
+        call_command("loaddata", "countries.json")
         call_command("create_test_teams")
         call_command("create_user_profiles")
         call_command("create_people_finder_groups")
@@ -50,7 +50,11 @@ def django_db_setup(django_db_setup, django_db_blocker):
         # Leave this here to check we have reset the db into a known state.
         assert AuditLogService.get_audit_log(user_john_smith.profile).count() == 2
 
-        call_command("update_index")
+        # We aren't testing search at the moment as the tests share the same opensearch
+        # instance as the local environment. Therefore I'm disabling this for the time
+        # being as it messes with my local env.
+
+        # call_command("update_index")
 
 
 @pytest.fixture

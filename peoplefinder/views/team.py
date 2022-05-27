@@ -41,7 +41,9 @@ class TeamDetailView(DetailView, PeoplefinderView):
 
         # Must be a leaf team.
         if not context["sub_teams"]:
-            context["members"] = team.members.all()
+            context["members"] = team.members.all().order_by(
+                "person__first_name", "person__last_name"
+            )
         else:
             context["people_outside_subteams_count"] = TeamMember.objects.filter(
                 team=team
@@ -62,7 +64,7 @@ class TeamDetailView(DetailView, PeoplefinderView):
                 )
 
         if self.request.user.has_perms(
-            ["peoplefinder.change_team" "peoplefinder.view_auditlog"]
+            ["peoplefinder.change_team", "peoplefinder.view_auditlog"]
         ):
             context["team_audit_log"] = AuditLogService.get_audit_log(team)
 
@@ -76,6 +78,14 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
     form_class = TeamForm
     template_name = "peoplefinder/team-edit.html"
     permission_required = "peoplefinder.change_team"
+
+    def get_initial(self):
+        leaders_positions = None
+
+        if leaders := list(self.object.leaders):
+            leaders_positions = ",".join([str(member.pk) for member in leaders])
+
+        return {"leaders_positions": leaders_positions}
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -100,9 +110,6 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        if form.has_changed():
-            TeamService().team_updated(self.object, self.request.user)
-
         # Update the order of the team leaders.
         if (
             self.object.leaders_ordering == Team.LeadersOrdering.ALPHABETICAL
@@ -116,6 +123,9 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
                 member = TeamMember.objects.get(pk=member_pk)
                 member.leaders_position = i
                 member.save()
+
+        if form.has_changed():
+            TeamService().team_updated(self.object, self.request.user)
 
         return response
 
@@ -193,8 +203,10 @@ class TeamPeopleView(TeamPeopleBaseView):
     heading = "All people"
 
     def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
-        return TeamMember.objects.filter(Q(team=team) | Q(team__in=sub_teams)).order_by(
-            "person__first_name", "person__last_name"
+        return (
+            TeamMember.objects.filter(Q(team=team) | Q(team__in=sub_teams))
+            .order_by("person__first_name", "person__last_name")
+            .distinct("person", "person__first_name", "person__last_name")
         )
 
 
@@ -202,8 +214,10 @@ class TeamPeopleOutsideSubteamsView(TeamPeopleBaseView):
     heading = "People not in a sub-team"
 
     def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
-        return TeamMember.objects.filter(team=team).order_by(
-            "person__first_name", "person__last_name"
+        return (
+            TeamMember.objects.filter(team=team)
+            .order_by("person__first_name", "person__last_name")
+            .distinct("person", "person__first_name", "person__last_name")
         )
 
 

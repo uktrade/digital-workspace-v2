@@ -58,12 +58,10 @@ class ManagerSearch(ManagerBaseView):
         if name:
             people = (
                 Person.objects.annotate(
-                    full_name_search=Concat(
-                        "user__first_name", Value(" "), "user__last_name"
-                    )
+                    full_name_search=Concat("first_name", Value(" "), "last_name")
                 )
                 .filter(full_name_search__icontains=name)
-                .exclude(pk=context["profile"].pk)
+                .exclude(pk=context["profile"].pk)[:10]
             )
 
             if not people:

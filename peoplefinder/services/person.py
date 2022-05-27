@@ -61,13 +61,43 @@ class PersonService:
         Returns:
             The user's profile.
         """
+        # The user already has a profile.
         if hasattr(user, "profile"):
             user.profile.login_count += 1
             user.profile.save()
+
             return user.profile
 
+        # The user doesn't have a profile, so let's try and find a matching one.
+        get_queries = [
+            # First see if we can match on the legacy SSO ID.
+            Q(legacy_sso_user_id=user.legacy_sso_user_id),
+            # Next see if we can match on the email.
+            Q(email=user.email),
+            # Finally try and match on the first and last name.
+            Q(first_name=user.first_name, last_name=user.last_name),
+        ]
+
+        for query in get_queries:
+            try:
+                person = Person.objects.get(Q(user__isnull=True) & query)
+            except (Person.DoesNotExist, Person.MultipleObjectsReturned):
+                person = None
+            else:
+                break
+
+        # If we found a matching profile, update and return it.
+        if person:
+            person.user = user
+            person.login_count += 1
+            person.save()
+
+            return person
+
+        # We couldn't find a matching one so let's create one for them.
         person = Person.objects.create(
             user=user,
+            legacy_sso_user_id=user.legacy_sso_user_id,
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
@@ -108,10 +138,10 @@ class PersonService:
         notification_client.send_email_notification(
             settings.PROFILE_DELETION_REQUEST_EMAIL,
             settings.PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID,
-            context,
+            personalisation=context,
         )
 
-    def profile_created(self, person: Person, created_by: User) -> None:
+    def profile_created(self, person: Person, created_by: Optional[User]) -> None:
         """A method to be called after a profile has been created.
 
         Please don't forget to call method this unless you need to bypass it.
@@ -147,6 +177,8 @@ class PersonService:
 
         if request:
             person.edited_or_confirmed_at = timezone.now()
+            person.save()
+
             self.notify_about_changes(request, person)
 
     def profile_deletion_initiated(
@@ -206,13 +238,13 @@ class PersonService:
         notification_client.send_email_notification(
             person.email,
             settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
-            context,
+            personalisation=context,
         )
 
     @staticmethod
     def update_groups_and_permissions(
         person: Person, is_person_admin: bool, is_team_admin: bool, is_superuser: bool
-    ) -> Person:
+    ) -> Optional[Person]:
         """Update the groups and permissions of a given person.
 
         Note that this method does call save on the `person.user` instance.
@@ -224,19 +256,28 @@ class PersonService:
             is_superuser: Whether the user should be a superuser.
 
         Returns:
-            Person: The given person.
+            Optional[Person]: The given person or None.
         """
-        groups = []
+        if not person.user:
+            return None
+
+        user = person.user
+
+        person_admin_group = Group.objects.get(name=PERSON_ADMIN_GROUP_NAME)
+        team_admin_group = Group.objects.get(name=TEAM_ADMIN_GROUP_NAME)
 
         if is_person_admin:
-            groups.append(Group.objects.get(name=PERSON_ADMIN_GROUP_NAME))
+            user.groups.add(person_admin_group)
+        else:
+            user.groups.remove(person_admin_group)
 
         if is_team_admin:
-            groups.append(Group.objects.get(name=TEAM_ADMIN_GROUP_NAME))
+            user.groups.add(team_admin_group)
+        else:
+            user.groups.remove(team_admin_group)
 
-        person.user.groups.set(groups)
-        person.user.is_superuser = is_superuser
-        person.user.save()
+        user.is_superuser = is_superuser
+        user.save()
 
         return person
 
@@ -256,8 +297,8 @@ class PersonService:
 
         notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
         notification_client.send_email_notification(
-            email=person.user.email,
-            template_id=settings.PROFILE_DELETED_EMAIL_TEMPLATE_ID,
+            person.user.email,
+            settings.PROFILE_DELETED_EMAIL_TEMPLATE_ID,
             personalisation=context,
         )
 
@@ -269,7 +310,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 43, (
+    assert len(Person._meta.get_fields()) == 45, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
@@ -279,6 +320,8 @@ class PersonAuditLogSerializer(AuditLogSerializer):
             Person.objects.filter(pk=instance.pk)
             .values()
             .annotate(
+                country_code=F("country__iso_2_code"),
+                country_name=F("country__name"),
                 # Note the use of `ArrayAgg` to denormalize and flatten many-to-many
                 # relationships.
                 workdays=ArrayAgg(
@@ -343,12 +386,17 @@ class PersonAuditLogSerializer(AuditLogSerializer):
                 ),
                 user__username=F("user__username"),
                 manager__slug=F("manager__slug"),
+                manager__full_name=(
+                    Concat("manager__first_name", Value(" "), "manager__last_name")
+                ),
             )[0]
         )
 
         # Encode the slug from `UUID` to `str` before returning.
         person["slug"] = str(person["slug"])
+        person["manager__slug"] = str(person["manager__slug"])
 
         del person["login_count"]
+        del person["old_country_id"]
 
         return person

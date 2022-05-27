@@ -1,8 +1,4 @@
-from django.conf import settings
-
 from peoplefinder.models import Person
-
-from .services import peoplefinder
 
 
 class GetPeoplefinderProfileMiddleware:
@@ -23,26 +19,10 @@ class GetPeoplefinderProfileMiddleware:
         if not response.context_data:
             return response
 
-        use_peoplefinder_v2 = (
-            settings.PEOPLEFINDER_V2 and request.user.is_using_peoplefinder_v2
-        )
-
-        # TODO: Remove once we have migrated to peoplefinder v2 in prod.
-        response.context_data["peoplefinder_v2"] = use_peoplefinder_v2
-
         profile = None
 
         if request.user.is_authenticated:
-            if use_peoplefinder_v2:
-                profile = Person.objects.with_profile_completion().get(
-                    user=request.user
-                )
-                legacy_profile = peoplefinder.get_user_profile(
-                    request.user.legacy_sso_user_id
-                )
-                response.context_data["legacy_peoplefinder_profile"] = legacy_profile
-            else:
-                profile = peoplefinder.get_user_profile(request.user.legacy_sso_user_id)
+            profile = Person.objects.with_profile_completion().get(user=request.user)
 
         response.context_data["peoplefinder_profile"] = profile
 
