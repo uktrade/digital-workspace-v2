@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-
 from import_wordpress.utils.page_hierarchy import create_section_homepages
 
 
