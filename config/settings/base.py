@@ -486,6 +486,9 @@ NAMESPACES = {
     "wp": "http://wordpress.org/export/1.2/",
 }
 
+# There are some big pages with lots of content that need to send many fields.
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
+
 # Set file uploads to throw exception when virus found
 CHUNK_UPLOADER_RAISE_EXCEPTION_ON_VIRUS_FOUND = True
 
