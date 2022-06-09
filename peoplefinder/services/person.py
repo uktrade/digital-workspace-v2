@@ -4,7 +4,7 @@ from typing import Optional
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import ArrayAgg
-from django.db.models import F, Q, Value
+from django.db.models import Case, F, Q, Value, When
 from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
@@ -327,6 +327,21 @@ class PersonAuditLogSerializer(AuditLogSerializer):
                 workdays=ArrayAgg(
                     "workdays__name",
                     filter=Q(workdays__name__isnull=False),
+                    distinct=True,
+                ),
+                roles=ArrayAgg(
+                    Concat(
+                        "roles__job_title",
+                        Value(" in "),
+                        "roles__team__name",
+                        Case(
+                            When(
+                                roles__head_of_team=True, then=Value(" (head of team)")
+                            ),
+                            default=Value(""),
+                        ),
+                    ),
+                    filter=Q(roles__isnull=False),
                     distinct=True,
                 ),
                 groups=ArrayAgg(
