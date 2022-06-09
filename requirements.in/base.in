@@ -56,3 +56,4 @@ notifications-python-client
 
 # Peoplefinder
 markdown==3.3.4
+requests-hawk

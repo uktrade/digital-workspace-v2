@@ -4,10 +4,11 @@ from typing import Iterator
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.aggregates import ArrayAgg
+from django.contrib.postgres.aggregates import ArrayAgg, StringAgg
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import Case, Exists, F, Func, JSONField, OuterRef, Q, Value, When
+from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
@@ -185,6 +186,67 @@ class PersonManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().exclude(is_active=False)
 
+    def get_annotated(self):
+        return super().get_queryset().exclude(
+            is_active=False
+        ).annotate(
+            formatted_roles=ArrayAgg(
+                Concat(
+                    "roles__job_title",
+                    Value(" in "),
+                    "roles__team__name",
+                    Case(
+                        When(
+                            roles__head_of_team=True, then=Value(" (head of team)")
+                        ),
+                        default=Value(""),
+                    ),
+                ),
+                filter=Q(roles__isnull=False),
+                distinct=True,
+            ),
+        ).annotate(
+            formatted_buildings=StringAgg(
+                "buildings__name",
+                delimiter=", ",
+                distinct=True,
+            )
+        ).annotate(
+            formatted_networks=StringAgg(
+                "networks__name",
+                delimiter=", ",
+                distinct=True,
+            )
+        ).annotate(
+            formatted_additional_responsibilities=StringAgg(
+                "additional_roles__name",
+                delimiter=", ",
+                distinct=True,
+            )
+        ).annotate(
+            formatted_key_skills=StringAgg(
+                "key_skills__name",
+                delimiter=", ",
+                distinct=True,
+            )
+        ).annotate(
+            formatted_learning_and_development=StringAgg(
+                "learning_interests__name",
+                delimiter=", ",
+                distinct=True,
+            )
+        ).annotate(
+            formatted_professions=StringAgg(
+                "professions__name",
+                delimiter=", ",
+                distinct=True,
+            )
+        ).annotate(
+            workday_list=ArrayAgg(
+                "workdays__code",
+                distinct=True,
+            )
+        )
 
 class PersonQuerySet(models.QuerySet):
     def with_profile_completion(self):

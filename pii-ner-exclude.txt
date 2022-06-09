@@ -486,3 +486,7 @@ manager_id
 John Smith
 CountriesConfig
 pytest-django==4.5.2
+workdays[-1
+JML Hawk
+JML_HAWK_ID
+JML_HAWK_KEY

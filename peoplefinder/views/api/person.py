@@ -207,12 +207,16 @@ class PersonPagination(pagination.CursorPagination):
     page_size_query_param = "page_size"
     ordering = "-created_at"
 
-
 class PersonViewSet(ReadOnlyModelViewSet):
     authentication_classes = (HawkAuthentication,)
     permission_classes = ()
     serializer_class = PersonSerializer
     pagination_class = PersonPagination
+    lookup_field = 'legacy_sso_user_id'
+
+    @decorator_from_middleware(HawkResponseMiddleware)
+    def retrieve(self, request, legacy_sso_user_id=None):
+        return super().retrieve(self, request, legacy_sso_user_id)
 
     @decorator_from_middleware(HawkResponseMiddleware)
     def list(self, request):
@@ -220,76 +224,9 @@ class PersonViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = (
-            Person.objects.all()
+            Person.objects.get_annotated()
             .select_related("country", "grade", "user", "manager")
             .prefetch_related("roles", "roles__team")
-            # TODO: Most of these annotations are duplicates with the audit log person
-            # serializer query. We should refactor them into a queryset manager method.
-            .annotate(
-                formatted_roles=ArrayAgg(
-                    Concat(
-                        "roles__job_title",
-                        Value(" in "),
-                        "roles__team__name",
-                        Case(
-                            When(
-                                roles__head_of_team=True, then=Value(" (head of team)")
-                            ),
-                            default=Value(""),
-                        ),
-                    ),
-                    filter=Q(roles__isnull=False),
-                    distinct=True,
-                ),
-            )
-            .annotate(
-                formatted_buildings=StringAgg(
-                    "buildings__name",
-                    delimiter=", ",
-                    distinct=True,
-                )
-            )
-            .annotate(
-                formatted_networks=StringAgg(
-                    "networks__name",
-                    delimiter=", ",
-                    distinct=True,
-                )
-            )
-            .annotate(
-                formatted_additional_responsibilities=StringAgg(
-                    "additional_roles__name",
-                    delimiter=", ",
-                    distinct=True,
-                )
-            )
-            .annotate(
-                formatted_key_skills=StringAgg(
-                    "key_skills__name",
-                    delimiter=", ",
-                    distinct=True,
-                )
-            )
-            .annotate(
-                formatted_learning_and_development=StringAgg(
-                    "learning_interests__name",
-                    delimiter=", ",
-                    distinct=True,
-                )
-            )
-            .annotate(
-                formatted_professions=StringAgg(
-                    "professions__name",
-                    delimiter=", ",
-                    distinct=True,
-                )
-            )
-            .annotate(
-                workday_list=ArrayAgg(
-                    "workdays__code",
-                    distinct=True,
-                )
-            )
             .with_profile_completion()
             .defer("photo", "do_not_work_for_dit")
             .order_by("-created_at")
