@@ -1,8 +1,7 @@
-from celery import shared_task
 import requests
-from requests_hawk import HawkAuth
-
+from celery import shared_task
 from django.conf import settings
+from requests_hawk import HawkAuth
 
 from peoplefinder.models import Person
 from peoplefinder.views.api.person import PersonSerializer
