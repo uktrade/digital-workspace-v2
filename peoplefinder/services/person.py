@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import F, Q, Value
-from django.db.models.expressions import Case, When
 from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
@@ -317,7 +316,8 @@ class PersonAuditLogSerializer(AuditLogSerializer):
 
     def serialize(self, instance: Person) -> ObjectRepr:
         person = (
-            Person.objects.get_annotated().filter(pk=instance.pk)
+            Person.objects.get_annotated()
+            .filter(pk=instance.pk)
             .values()
             .annotate(
                 country_code=F("country__iso_2_code"),

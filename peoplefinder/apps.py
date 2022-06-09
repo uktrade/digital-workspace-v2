@@ -5,4 +5,4 @@ class PeoplefinderConfig(AppConfig):
     name = "peoplefinder"
 
     def ready(self):
-        from . import signals
+        from . import signals  # noqa F401

@@ -1,11 +1,8 @@
-import logging
-
 from celery import shared_task
 import requests
 from requests_hawk import HawkAuth
 
 from django.conf import settings
-from django.dispatch import receiver
 
 from peoplefinder.models import Person
 from peoplefinder.views.api.person import PersonSerializer
@@ -16,13 +13,15 @@ def jml_person_update(person_id):
     if not settings.JML_PERSON_UPDATE_WEBHOOK:
         return
 
-    person = Person.objects.get_annotated().select_related(
-        "country", "grade", "user", "manager",
-    ).prefetch_related(
-        "roles", "roles__team",
-    ).with_profile_completion().defer(
-        "photo", "do_not_work_for_dit",
-    ).get(pk=person_id)
+    person = (
+        Person.objects.get_annotated()
+        .with_profile_completion()
+        .defer(
+            "photo",
+            "do_not_work_for_dit",
+        )
+        .get(pk=person_id)
+    )
 
     serializer = PersonSerializer(person)
 

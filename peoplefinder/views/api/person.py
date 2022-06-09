@@ -1,8 +1,4 @@
 from django.conf import settings
-from django.contrib.postgres.aggregates import ArrayAgg, StringAgg
-from django.db.models import Q, Value
-from django.db.models.expressions import Case, When
-from django.db.models.functions import Concat
 from django.utils.decorators import decorator_from_middleware
 from django_hawk.middleware import HawkResponseMiddleware
 from django_hawk_drf.authentication import HawkAuthentication
@@ -207,12 +203,13 @@ class PersonPagination(pagination.CursorPagination):
     page_size_query_param = "page_size"
     ordering = "-created_at"
 
+
 class PersonViewSet(ReadOnlyModelViewSet):
     authentication_classes = (HawkAuthentication,)
     permission_classes = ()
     serializer_class = PersonSerializer
     pagination_class = PersonPagination
-    lookup_field = 'legacy_sso_user_id'
+    lookup_field = "legacy_sso_user_id"
 
     @decorator_from_middleware(HawkResponseMiddleware)
     def retrieve(self, request, legacy_sso_user_id=None):

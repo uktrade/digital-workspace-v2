@@ -187,66 +187,77 @@ class PersonManager(models.Manager):
         return super().get_queryset().exclude(is_active=False)
 
     def get_annotated(self):
-        return super().get_queryset().exclude(
-            is_active=False
-        ).annotate(
-            formatted_roles=ArrayAgg(
-                Concat(
-                    "roles__job_title",
-                    Value(" in "),
-                    "roles__team__name",
-                    Case(
-                        When(
-                            roles__head_of_team=True, then=Value(" (head of team)")
+        return (
+            super()
+            .get_queryset()
+            .exclude(is_active=False)
+            .annotate(
+                formatted_roles=ArrayAgg(
+                    Concat(
+                        "roles__job_title",
+                        Value(" in "),
+                        "roles__team__name",
+                        Case(
+                            When(
+                                roles__head_of_team=True, then=Value(" (head of team)")
+                            ),
+                            default=Value(""),
                         ),
-                        default=Value(""),
                     ),
+                    filter=Q(roles__isnull=False),
+                    distinct=True,
                 ),
-                filter=Q(roles__isnull=False),
-                distinct=True,
-            ),
-        ).annotate(
-            formatted_buildings=StringAgg(
-                "buildings__name",
-                delimiter=", ",
-                distinct=True,
             )
-        ).annotate(
-            formatted_networks=StringAgg(
-                "networks__name",
-                delimiter=", ",
-                distinct=True,
+            .annotate(
+                formatted_buildings=StringAgg(
+                    "buildings__name",
+                    delimiter=", ",
+                    distinct=True,
+                )
             )
-        ).annotate(
-            formatted_additional_responsibilities=StringAgg(
-                "additional_roles__name",
-                delimiter=", ",
-                distinct=True,
+            .annotate(
+                formatted_networks=StringAgg(
+                    "networks__name",
+                    delimiter=", ",
+                    distinct=True,
+                )
             )
-        ).annotate(
-            formatted_key_skills=StringAgg(
-                "key_skills__name",
-                delimiter=", ",
-                distinct=True,
+            .annotate(
+                formatted_additional_responsibilities=StringAgg(
+                    "additional_roles__name",
+                    delimiter=", ",
+                    distinct=True,
+                )
             )
-        ).annotate(
-            formatted_learning_and_development=StringAgg(
-                "learning_interests__name",
-                delimiter=", ",
-                distinct=True,
+            .annotate(
+                formatted_key_skills=StringAgg(
+                    "key_skills__name",
+                    delimiter=", ",
+                    distinct=True,
+                )
             )
-        ).annotate(
-            formatted_professions=StringAgg(
-                "professions__name",
-                delimiter=", ",
-                distinct=True,
+            .annotate(
+                formatted_learning_and_development=StringAgg(
+                    "learning_interests__name",
+                    delimiter=", ",
+                    distinct=True,
+                )
             )
-        ).annotate(
-            workday_list=ArrayAgg(
-                "workdays__code",
-                distinct=True,
+            .annotate(
+                formatted_professions=StringAgg(
+                    "professions__name",
+                    delimiter=", ",
+                    distinct=True,
+                )
+            )
+            .annotate(
+                workday_list=ArrayAgg(
+                    "workdays__code",
+                    distinct=True,
+                )
             )
         )
+
 
 class PersonQuerySet(models.QuerySet):
     def with_profile_completion(self):
