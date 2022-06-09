@@ -13,6 +13,9 @@ from peoplefinder.views.api.person import PersonSerializer
 
 @shared_task
 def jml_person_update(person_id):
+    if not settings.JML_PERSON_UPDATE_WEBHOOK:
+        return
+
     person = Person.objects.get_annotated().select_related(
         "country", "grade", "user", "manager",
     ).prefetch_related(
