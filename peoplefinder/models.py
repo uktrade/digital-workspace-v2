@@ -240,7 +240,7 @@ class PersonManager(models.Manager):
                 workday_list=ArrayAgg(
                     "workdays__code",
                     distinct=True,
-                )
+                ),
             )
         )
 
