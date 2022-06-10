@@ -4,8 +4,7 @@ from typing import Optional
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import ArrayAgg
-from django.db.models import F, Q, Value
-from django.db.models.expressions import Case, When
+from django.db.models import Case, F, Q, Value, When
 from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
@@ -74,7 +73,7 @@ class PersonService:
             Q(legacy_sso_user_id=user.legacy_sso_user_id),
             # Next see if we can match on the email.
             Q(email=user.email),
-            # Finally try and match on the first and last name.
+            # Finally try and match on the first and last name. # /PS-IGNORE
             Q(first_name=user.first_name, last_name=user.last_name),
         ]
 
@@ -317,7 +316,8 @@ class PersonAuditLogSerializer(AuditLogSerializer):
 
     def serialize(self, instance: Person) -> ObjectRepr:
         person = (
-            Person.objects.filter(pk=instance.pk)
+            Person.objects.get_annotated()
+            .filter(pk=instance.pk)
             .values()
             .annotate(
                 country_code=F("country__iso_2_code"),
@@ -327,36 +327,6 @@ class PersonAuditLogSerializer(AuditLogSerializer):
                 workdays=ArrayAgg(
                     "workdays__name",
                     filter=Q(workdays__name__isnull=False),
-                    distinct=True,
-                ),
-                key_skills=ArrayAgg(
-                    "key_skills__name",
-                    filter=Q(key_skills__name__isnull=False),
-                    distinct=True,
-                ),
-                learning_interests=ArrayAgg(
-                    "learning_interests__name",
-                    filter=Q(learning_interests__name__isnull=False),
-                    distinct=True,
-                ),
-                networks=ArrayAgg(
-                    "networks__name",
-                    filter=Q(networks__name__isnull=False),
-                    distinct=True,
-                ),
-                professions=ArrayAgg(
-                    "professions__name",
-                    filter=Q(professions__name__isnull=False),
-                    distinct=True,
-                ),
-                additional_roles=ArrayAgg(
-                    "additional_roles__name",
-                    filter=Q(additional_roles__name__isnull=False),
-                    distinct=True,
-                ),
-                buildings=ArrayAgg(
-                    "buildings__name",
-                    filter=Q(buildings__name__isnull=False),
                     distinct=True,
                 ),
                 roles=ArrayAgg(
