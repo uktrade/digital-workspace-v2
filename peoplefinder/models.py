@@ -207,50 +207,36 @@ class PersonManager(models.Manager):
                     filter=Q(roles__isnull=False),
                     distinct=True,
                 ),
-            )
-            .annotate(
                 formatted_buildings=StringAgg(
                     "buildings__name",
                     delimiter=", ",
                     distinct=True,
-                )
-            )
-            .annotate(
+                ),
                 formatted_networks=StringAgg(
                     "networks__name",
                     delimiter=", ",
                     distinct=True,
-                )
-            )
-            .annotate(
+                ),
                 formatted_additional_responsibilities=StringAgg(
                     "additional_roles__name",
                     delimiter=", ",
                     distinct=True,
-                )
-            )
-            .annotate(
+                ),
                 formatted_key_skills=StringAgg(
                     "key_skills__name",
                     delimiter=", ",
                     distinct=True,
-                )
-            )
-            .annotate(
+                ),
                 formatted_learning_and_development=StringAgg(
                     "learning_interests__name",
                     delimiter=", ",
                     distinct=True,
-                )
-            )
-            .annotate(
+                ),
                 formatted_professions=StringAgg(
                     "professions__name",
                     delimiter=", ",
                     distinct=True,
-                )
-            )
-            .annotate(
+                ),
                 workday_list=ArrayAgg(
                     "workdays__code",
                     distinct=True,
