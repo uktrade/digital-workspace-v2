@@ -32,7 +32,7 @@ django-audit-log-middleware==0.0.4
 django-hawk-drf==0.0.1
 
 # Operational dependencies
-waitress>=2.1.1
+waitress>=2.1.2
 sentry-sdk>=1.1.0
 elasticsearch<7.14.0
 celery>=5.2.6
