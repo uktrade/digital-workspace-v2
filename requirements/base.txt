@@ -275,7 +275,7 @@ wagtailmedia==0.8.0
     # via -r requirements.in/base.in
 wagtailmenus==3.0.2
     # via -r requirements.in/base.in
-waitress==2.1.1
+waitress==2.1.2
     # via -r requirements.in/base.in
 wcwidth==0.2.5
     # via prompt-toolkit
