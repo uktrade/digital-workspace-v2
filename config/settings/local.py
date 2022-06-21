@@ -1,6 +1,5 @@
 from .base import *  # noqa
 
-
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
 # Set to True if you need to upload documents and you are not running

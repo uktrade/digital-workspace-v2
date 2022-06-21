@@ -488,3 +488,4 @@ CountriesConfig
 pytest-django==4.5.2
 workdays[-1
 F401
+Celery
