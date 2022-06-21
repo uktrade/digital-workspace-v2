@@ -21,7 +21,7 @@ from peoplefinder.services.audit_log import (
     AuditLogService,
     ObjectRepr,
 )
-from peoplefinder.tasks import jml_person_update
+from peoplefinder.tasks import person_update_notifier
 from user.models import User
 
 
@@ -178,10 +178,11 @@ class PersonService:
         if request:
             person.edited_or_confirmed_at = timezone.now()
             person.save()
-            # Notify external service
-            jml_person_update.delay(person.id)
 
             self.notify_about_changes(request, person)
+
+        # Notify external service
+        person_update_notifier.delay(person.id)
 
     def profile_deletion_initiated(
         self, request: Optional[HttpRequest], person: Person, initiated_by: User

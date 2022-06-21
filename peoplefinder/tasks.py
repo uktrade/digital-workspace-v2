@@ -8,8 +8,8 @@ from peoplefinder.views.api.person import PersonSerializer
 
 
 @shared_task
-def jml_person_update(person_id):
-    if not settings.JML_PERSON_UPDATE_WEBHOOK:
+def person_update_notifier(person_id):
+    if not settings.PERSON_UPDATE_WEBHOOK_URL:
         return
 
     person = (
@@ -25,11 +25,11 @@ def jml_person_update(person_id):
     serializer = PersonSerializer(person)
 
     hawk_auth = HawkAuth(
-        id=settings.JML_HAWK_ID,
-        key=settings.JML_HAWK_KEY,
+        id=settings.PERSON_UPDATE_HAWK_ID,
+        key=settings.PERSON_UPDATE_HAWK_KEY,
     )
     requests.post(
-        settings.JML_PERSON_UPDATE_WEBHOOK,
+        settings.PERSON_UPDATE_WEBHOOK_URL,
         auth=hawk_auth,
         data=serializer.data,
     )
