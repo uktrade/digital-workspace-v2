@@ -21,6 +21,7 @@ from peoplefinder.services.audit_log import (
     AuditLogService,
     ObjectRepr,
 )
+from peoplefinder.tasks import jml_person_update
 from user.models import User
 
 
@@ -177,6 +178,8 @@ class PersonService:
         if request:
             person.edited_or_confirmed_at = timezone.now()
             person.save()
+            # Notify external service
+            jml_person_update.delay(person.id)
 
             self.notify_about_changes(request, person)
 
