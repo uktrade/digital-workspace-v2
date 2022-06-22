@@ -181,7 +181,7 @@ class PersonService:
 
             self.notify_about_changes(request, person)
 
-        # Notify external service
+        # Notify external services
         person_update_notifier.delay(person.id)
 
     def profile_deletion_initiated(
