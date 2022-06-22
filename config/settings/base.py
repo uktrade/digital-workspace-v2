@@ -472,19 +472,13 @@ LOGGING = {
     },
 }
 
-AUTHBROKER_ANONYMOUS_PATHS = [
+# Remove SSO protection from health check and Hawk authed URLs
+AUTHBROKER_ANONYMOUS_PATHS = (
     "/pingdom/ping.xml",
     "/peoplefinder/api/activity-stream/",
     "/peoplefinder/api/person-api/",
-]
-
-NAMESPACES = {
-    "excerpt": "http://wordpress.org/export/1.2/excerpt/",
-    "content": "http://purl.org/rss/1.0/modules/content/",
-    "wfw": "http://wellformedweb.org/CommentAPI/",
-    "dc": "http://purl.org/dc/elements/1.1/",
-    "wp": "http://wordpress.org/export/1.2/",
-}
+)
+AUTHBROKER_ANONYMOUS_URL_NAMES = ("person-api-people", )
 
 # There are some big pages with lots of content that need to send many fields.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
