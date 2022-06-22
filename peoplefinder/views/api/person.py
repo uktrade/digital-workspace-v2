@@ -81,9 +81,12 @@ class PersonSerializer(serializers.ModelSerializer):
             "login_count",
             "last_login_at",
             # New fields
+            "legacy_sso_user_id",
             "slug",
             "manager_slug",
             "legacy_people_finder_slug",
+            "photo",
+            "photo_small",
         ]
 
     people_finder_id = serializers.IntegerField(source="pk")
