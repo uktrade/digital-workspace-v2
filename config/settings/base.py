@@ -476,9 +476,8 @@ LOGGING = {
 AUTHBROKER_ANONYMOUS_PATHS = (
     "/pingdom/ping.xml",
     "/peoplefinder/api/activity-stream/",
-    "/peoplefinder/api/person-api/",
 )
-AUTHBROKER_ANONYMOUS_URL_NAMES = ("person-api-people", )
+AUTHBROKER_ANONYMOUS_URL_NAMES = ("person-api-people",)
 
 # There are some big pages with lots of content that need to send many fields.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
