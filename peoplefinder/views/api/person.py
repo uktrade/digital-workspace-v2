@@ -29,7 +29,6 @@ class PersonSerializer(serializers.ModelSerializer):
         model = Person
         fields = [
             "people_finder_id",
-            "legacy_sso_user_id",
             "staff_sso_id",
             "email",
             "contact_email",
@@ -82,6 +81,7 @@ class PersonSerializer(serializers.ModelSerializer):
             "login_count",
             "last_login_at",
             # New fields
+            "legacy_sso_user_id",
             "slug",
             "manager_slug",
             "legacy_people_finder_slug",
