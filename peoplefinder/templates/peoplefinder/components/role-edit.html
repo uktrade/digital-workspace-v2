@@ -19,6 +19,7 @@ Context:
         url="{% url 'team-select' %}"
         selected-team-id="{{ form.instance.team.id }}"
         current-team-id="{{ form.instance.team.id }}"
+        editing="{% if role %}false{% else %}true{% endif %}"
     ></team-select>
     {% include 'peoplefinder/components/input.html' with field=form.job_title %}
     {% include 'peoplefinder/components/checkbox.html' with field=form.head_of_team %}
