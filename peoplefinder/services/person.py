@@ -288,6 +288,15 @@ class PersonService:
         if deleted_by == person.user:
             return None
 
+        # Find a the most suitable email.
+        email = (
+            (person.user and person.user.email) or person.contact_email or person.email
+        )
+
+        # If we can't find one, return.
+        if not email:
+            return None
+
         context = {
             "profile_name": person.full_name,
             "editor_name": deleted_by.get_full_name(),
@@ -300,7 +309,7 @@ class PersonService:
 
         notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
         notification_client.send_email_notification(
-            person.user.email,
+            email,
             settings.PROFILE_DELETED_EMAIL_TEMPLATE_ID,
             personalisation=context,
         )
