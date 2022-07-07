@@ -1,3 +1,6 @@
+from django.shortcuts import redirect
+from django.urls import resolve
+
 from peoplefinder.models import Person
 
 
@@ -12,17 +15,28 @@ class GetPeoplefinderProfileMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        if (
+            hasattr(request.user, "profile")
+            and not request.user.profile.is_active
+            and resolve(request.path).url_name != "deactivated"
+        ):
+            return redirect("deactivated")
+
         response = self.get_response(request)
+
         return response
 
     def process_template_response(self, request, response):
         if not response.context_data:
             return response
 
-        profile = None
-
         if request.user.is_authenticated:
-            profile = Person.objects.with_profile_completion().get(user=request.user)
+            try:
+                profile = Person.objects.with_profile_completion().get(
+                    user=request.user
+                )
+            except Person.DoesNotExist:
+                profile = None
 
         response.context_data["peoplefinder_profile"] = profile
 

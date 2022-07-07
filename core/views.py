@@ -10,6 +10,10 @@ from core.forms import PageProblemFoundForm
 logger = logging.getLogger(__name__)
 
 
+def deactivated(request):
+    return TemplateResponse(request, "core/deactivated.html", {}, status=403)
+
+
 def view_404(request, exception):
     return TemplateResponse(
         request,
