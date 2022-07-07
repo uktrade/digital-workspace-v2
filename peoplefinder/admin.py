@@ -10,11 +10,28 @@ class PersonModelAdmin(admin.ModelAdmin):
     """Admin page for the Person model."""
 
     list_display = ["full_name", "email"]
+    list_filter = ["is_active"]
     search_fields = [
         "first_name",
         "last_name",
         "email",
     ]
+    actions = ["make_active"]
+
+    @admin.action(description="Mark selected people as active")
+    def make_active(self, request, queryset):
+        queryset.filter(is_active=False).update(is_active=True, became_inactive=None)
+
+    def get_queryset(self, request):
+        # This is a reimplementation to get around the overridden `get_queryset` on the
+        # `Person.objects` manager.
+        qs = self.model._base_manager.get_queryset()
+
+        ordering = self.get_ordering(request)
+        if ordering:
+            qs = qs.order_by(*ordering)
+
+        return qs
 
 
 class LegacyAuditLogModelAdmin(admin.ModelAdmin):
