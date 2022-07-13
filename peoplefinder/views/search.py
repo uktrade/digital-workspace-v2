@@ -21,7 +21,7 @@ def search_view(request):
         form = SearchForm(data=request.GET)
         form.is_valid()
 
-        team_matches, person_matches = search(**form.cleaned_data)
+        team_matches, person_matches = search(request, **form.cleaned_data)
 
         if team_matches:
             team_parents = {

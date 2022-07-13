@@ -179,73 +179,15 @@ class Building(models.Model):
         return self.name
 
 
-# We have excluded any person with is_active=False, as this means that
-# they have left the organisation. If we ever require a queryset with
-# inactive users, refactoring will be necessary.
-class PersonManager(models.Manager):
+class ActivePeopleManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().exclude(is_active=False)
 
-    def get_annotated(self):
-        return (
-            super()
-            .get_queryset()
-            .exclude(is_active=False)
-            .annotate(
-                formatted_roles=ArrayAgg(
-                    Concat(
-                        "roles__job_title",
-                        Value(" in "),
-                        "roles__team__name",
-                        Case(
-                            When(
-                                roles__head_of_team=True, then=Value(" (head of team)")
-                            ),
-                            default=Value(""),
-                        ),
-                    ),
-                    filter=Q(roles__isnull=False),
-                    distinct=True,
-                ),
-                formatted_buildings=StringAgg(
-                    "buildings__name",
-                    delimiter=", ",
-                    distinct=True,
-                ),
-                formatted_networks=StringAgg(
-                    "networks__name",
-                    delimiter=", ",
-                    distinct=True,
-                ),
-                formatted_additional_responsibilities=StringAgg(
-                    "additional_roles__name",
-                    delimiter=", ",
-                    distinct=True,
-                ),
-                formatted_key_skills=StringAgg(
-                    "key_skills__name",
-                    delimiter=", ",
-                    distinct=True,
-                ),
-                formatted_learning_and_development=StringAgg(
-                    "learning_interests__name",
-                    delimiter=", ",
-                    distinct=True,
-                ),
-                formatted_professions=StringAgg(
-                    "professions__name",
-                    delimiter=", ",
-                    distinct=True,
-                ),
-                workday_list=ArrayAgg(
-                    "workdays__code",
-                    distinct=True,
-                ),
-            )
-        )
-
 
 class PersonQuerySet(models.QuerySet):
+    def active(self):
+        return self.exclude(is_active=False)
+
     def with_profile_completion(self):
         # Each statement in this list should return 0 or 1 to represent whether that
         # field is complete.
@@ -275,6 +217,57 @@ class PersonQuerySet(models.QuerySet):
         total = float(len(fields))
 
         return self.annotate(profile_completion=(completed / total) * 100)
+
+    def get_annotated(self):
+        return self.annotate(
+            formatted_roles=ArrayAgg(
+                Concat(
+                    "roles__job_title",
+                    Value(" in "),
+                    "roles__team__name",
+                    Case(
+                        When(roles__head_of_team=True, then=Value(" (head of team)")),
+                        default=Value(""),
+                    ),
+                ),
+                filter=Q(roles__isnull=False),
+                distinct=True,
+            ),
+            formatted_buildings=StringAgg(
+                "buildings__name",
+                delimiter=", ",
+                distinct=True,
+            ),
+            formatted_networks=StringAgg(
+                "networks__name",
+                delimiter=", ",
+                distinct=True,
+            ),
+            formatted_additional_responsibilities=StringAgg(
+                "additional_roles__name",
+                delimiter=", ",
+                distinct=True,
+            ),
+            formatted_key_skills=StringAgg(
+                "key_skills__name",
+                delimiter=", ",
+                distinct=True,
+            ),
+            formatted_learning_and_development=StringAgg(
+                "learning_interests__name",
+                delimiter=", ",
+                distinct=True,
+            ),
+            formatted_professions=StringAgg(
+                "professions__name",
+                delimiter=", ",
+                distinct=True,
+            ),
+            workday_list=ArrayAgg(
+                "workdays__code",
+                distinct=True,
+            ),
+        )
 
 
 def person_photo_path(instance, filename):
@@ -497,7 +490,8 @@ class Person(index.Indexed, models.Model):
     )
     login_count = models.IntegerField(default=0)
 
-    objects = PersonManager.from_queryset(PersonQuerySet)()
+    objects = models.Manager.from_queryset(PersonQuerySet)()
+    active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
     search_fields = [
         index.SearchField("first_name", partial_match=True, boost=10),
@@ -680,12 +674,17 @@ class Team(index.Indexed, models.Model):
 
         order_by += ["person__last_name", "person__first_name"]
 
-        yield from self.members.filter(head_of_team=True).order_by(*order_by)
+        yield from self.members.active().filter(head_of_team=True).order_by(*order_by)
 
 
-class TeamMemberManager(models.Manager):
+class ActiveTeamMemberManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().exclude(person__is_active=False)
+
+
+class TeamMemberQuerySet(models.QuerySet):
+    def active(self):
+        return self.exclude(person__is_active=False)
 
 
 class TeamMember(models.Model):
@@ -708,7 +707,8 @@ class TeamMember(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    objects = TeamMemberManager()
+    objects = models.Manager.from_queryset(TeamMemberQuerySet)()
+    active = ActiveTeamMemberManager.from_queryset(TeamMemberQuerySet)()
 
     def __str__(self) -> str:
         return f"{self.team} - {self.person}"

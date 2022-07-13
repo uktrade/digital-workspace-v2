@@ -12,6 +12,7 @@ from peoplefinder.views.manager import (
 )
 from peoplefinder.views.profile import (
     DeleteConfirmationView,
+    ProfileActivateAction,
     ProfileConfirmDetailsView,
     ProfileDeleteView,
     ProfileDetailView,
@@ -97,6 +98,12 @@ people_urlpatterns = [
         "<uuid:profile_slug>/confirm-details/",
         ProfileConfirmDetailsView.as_view(),
         name="profile-confirm-details",
+    ),
+    # Activate
+    path(
+        "<uuid:profile_slug>/activate/",
+        ProfileActivateAction.as_view(),
+        name="profile-activate",
     ),
 ]
 

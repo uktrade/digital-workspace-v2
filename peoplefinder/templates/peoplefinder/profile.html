@@ -19,6 +19,16 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l mb-0" data-test-full-name>{{ profile.full_name }}</h1>
 
+        {% if not profile.is_active %}
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    This profile is inactive since {{ profile.became_inactive|naturaltime }}.
+                </strong>
+            </div>
+        {% endif %}
+
         {% if profile.is_stale %}
             <div class="govuk-warning-text">
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -68,21 +78,34 @@
 
         <div class="govuk-button-group">
             <p>
-                <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
-                {% if profile.is_stale and request.user == profile.user %}
+                {% if profile.is_active %}
+                    <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
+
+                    {% if profile.is_stale and request.user == profile.user %}
+                        <button
+                            class="govuk-button govuk-button--secondary"
+                            hx-post="{% url 'profile-confirm-details' profile.slug %}"
+                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        >
+                            Confirm my details are still correct
+                        </button>
+                    {% endif %}
+
+                    {% if perms.peoplefinder.delete_person and request.user != profile.user %}
+                        <form action="{% url 'profile-delete' profile.slug %}" method="post" onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
+                            {% csrf_token %}
+                            <input type="submit" class="govuk-button govuk-button--warning" id="delete-profile" value="Delete profile" />
+                        </form>
+                    {% endif %}
+                {% elif perms.peoplefinder.delete_person %}
                     <button
-                        class="govuk-button govuk-button--secondary"
-                        hx-post="{% url 'profile-confirm-details' profile.slug %}"
+                        class="govuk-button"
+                        hx-post="{% url 'profile-activate' profile.slug %}"
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-confirm="Are you sure you want to activate this profile?"
                     >
-                        Confirm my details are still correct
+                        Activate profile
                     </button>
-                {% endif %}
-                {% if perms.peoplefinder.delete_person and request.user != profile.user %}
-                    <form action="{% url 'profile-delete' profile.slug %}" method="post" onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
-                        {% csrf_token %}
-                        <input type="submit" class="govuk-button govuk-button--warning" id="delete-profile" value="Delete profile" />
-                    </form>
                 {% endif %}
             </p>
         </div>

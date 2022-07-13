@@ -2,7 +2,7 @@ import io
 from pathlib import Path
 
 from django.contrib import messages
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -29,19 +29,31 @@ class CannotDeleteOwnProfileError(Exception):
     pass
 
 
-class ProfileLegacyView(PeoplefinderView):
+class ProfileView(PeoplefinderView):
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        if not self.request.user.has_perm("peoplefinder.delete_person"):
+            qs = qs.active()
+
+        return qs
+
+
+class ProfileLegacyView(ProfileView):
     def get(self, request: HttpRequest, profile_legacy_slug: str) -> HttpResponse:
         profile = get_object_or_404(Person, legacy_slug=profile_legacy_slug)
 
         return redirect(reverse("profile-view", kwargs={"profile_slug": profile.slug}))
 
 
-class ProfileDetailView(DetailView, PeoplefinderView):
+class ProfileDetailView(ProfileView, DetailView):
     model = Person
     context_object_name = "profile"
     template_name = "peoplefinder/profile.html"
     slug_url_kwarg = "profile_slug"
-    queryset = Person.objects.with_profile_completion()
+
+    def get_queryset(self):
+        return super().get_queryset().with_profile_completion()
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -78,7 +90,7 @@ class ProfileDetailView(DetailView, PeoplefinderView):
 
 
 @method_decorator(transaction.atomic, name="post")
-class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
+class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
     model = Person
     context_object_name = "profile"
     form_class = ProfileForm
@@ -156,14 +168,14 @@ class ProfileEditView(SuccessMessageMixin, UpdateView, PeoplefinderView):
             profile.photo_small.save(photo_path.name, content=photo_content)
 
 
-class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
+class ProfileLeavingDitView(SuccessMessageMixin, ProfileView, FormView):
     template_name = "peoplefinder/profile-leaving-dit.html"
     form_class = ProfileLeavingDitForm
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
 
-        self.profile = Person.objects.get(slug=self.kwargs["profile_slug"])
+        self.profile = Person.active.get(slug=self.kwargs["profile_slug"])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -192,15 +204,14 @@ class ProfileLeavingDitView(SuccessMessageMixin, FormView, PeoplefinderView):
 
 
 @method_decorator(transaction.atomic, name="post")
-class ProfileDeleteView(DeleteView, PeoplefinderView):
+class ProfileDeleteView(ProfileView, DeleteView):
     model = Person
+    slug_url_kwarg = "profile_slug"
     success_url = reverse_lazy("delete-confirmation")
-
-    def get_object(self, queryset=None):
-        return Person.objects.get(slug=self.kwargs["profile_slug"])
 
     def delete(self, request, *args, **kwargs):
         person = self.get_object()
+
         if request.user == person.user:
             raise CannotDeleteOwnProfileError()
 
@@ -232,20 +243,49 @@ class DeleteConfirmationView(TemplateView):
         return context
 
 
-class ProfileConfirmDetailsView(UserPassesTestMixin, PeoplefinderView):
+class ProfileHtmxActionView(ProfileView):
+    success_message = ""
+
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
 
         self.person = Person.objects.get(slug=self.kwargs["profile_slug"])
 
-    def test_func(self):
-        return self.request.user == self.person.user
-
     def post(self, request, profile_slug, *args, **kwargs):
-        self.person.edited_or_confirmed_at = timezone.now()
-        self.person.save()
+        self.action()
 
-        messages.success(request, "Your details have been successfully confirmed.")
+        if self.success_message:
+            messages.success(request, self.success_message)
 
         # Tell HTMX to refresh the page.
         return HttpResponse(headers={"HX-Refresh": "true"})
+
+    def action(self):
+        raise NotImplementedError
+
+
+class ProfileConfirmDetailsView(UserPassesTestMixin, ProfileHtmxActionView):
+    success_message = "Your details have been successfully confirmed."
+
+    def test_func(self):
+        return self.request.user == self.person.user
+
+    def action(self):
+        self.person.edited_or_confirmed_at = timezone.now()
+        self.person.save()
+
+
+class ProfileActivateAction(
+    UserPassesTestMixin, PermissionRequiredMixin, ProfileHtmxActionView
+):
+    success_message = "This profile has been activated."
+    permission_required = "peoplefinder.delete_person"
+    permission_denied_message = "You do not have permission to activate this profile."
+
+    def test_func(self):
+        return self.request.user != self.person.user
+
+    def action(self):
+        self.person.is_active = True
+        self.person.became_inactive = None
+        self.person.save()
