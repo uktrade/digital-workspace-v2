@@ -1,7 +1,11 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.core.validators import ValidationError
 
 from peoplefinder.models import Person
+
+
+User = get_user_model()
 
 
 class ProfileForm(forms.ModelForm):
@@ -221,3 +225,31 @@ class ProfileLeavingDitForm(forms.Form):
         help_text="for example, leaving date",
         widget=forms.Textarea(attrs={"class": "govuk-textarea"}),
     )
+
+
+class ProfileUpdateUserForm(forms.Form):
+    username = forms.CharField(required=True)
+
+    def __init__(self, *args, profile, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.profile = profile
+
+        self.fields["username"].widget.attrs.update(
+            {"class": "govuk-input govuk-!-width-one-half"}
+        )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get("username")
+
+        if username:
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                raise ValidationError("User does not exist")
+
+            if user == self.profile.user:
+                raise ValidationError("User is already associated to this profile")
+
+        return cleaned_data

@@ -19,6 +19,7 @@ from peoplefinder.views.profile import (
     ProfileEditView,
     ProfileLeavingDitView,
     ProfileLegacyView,
+    ProfileUpdateUserView,
 )
 from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.search import search_view
@@ -104,6 +105,12 @@ people_urlpatterns = [
         "<uuid:profile_slug>/activate/",
         ProfileActivateAction.as_view(),
         name="profile-activate",
+    ),
+    # Update profile user
+    path(
+        "<uuid:profile_slug>/update-user/",
+        ProfileUpdateUserView.as_view(),
+        name="profile-update-user",
     ),
 ]
 
