@@ -130,6 +130,14 @@ class Network(models.Model):
         return self.name
 
 
+class NewNetwork(models.Model):
+    page = models.OneToOneField("networks.Network", models.PROTECT)
+    old_network = models.OneToOneField("Network", models.PROTECT, null=True, blank=True)
+
+    def __str__(self) -> str:
+        return str(self.page)
+
+
 class Profession(models.Model):
     class Meta:
         constraints = [

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from core.admin import admin_site
 from peoplefinder.forms.admin import TeamModelForm
-from peoplefinder.models import LegacyAuditLog, Person, Team, TeamMember
+from peoplefinder.models import LegacyAuditLog, NewNetwork, Person, Team, TeamMember
 from peoplefinder.services.team import TeamService
 
 
@@ -59,6 +59,11 @@ class TeamModelAdmin(admin.ModelAdmin):
         else:
             team_service.add_team(obj, new_parent_team)
             team_service.team_created(obj, request.user)
+
+
+@admin.register(NewNetwork, site=admin_site)
+class NewNetworkAdmin(admin.ModelAdmin):
+    list_display = ["page", "old_network"]
 
 
 admin_site.register(LegacyAuditLog, LegacyAuditLogModelAdmin)
