@@ -11,7 +11,7 @@ class ManagerBaseView(TemplateView, PeoplefinderView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        profile = Person.objects.get(slug=kwargs["profile_slug"])
+        profile = Person.active.get(slug=kwargs["profile_slug"])
         context["profile"] = profile
 
         return context
@@ -23,7 +23,7 @@ class ManagerSelect(ManagerBaseView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        manager = Person.objects.get(slug=kwargs["manager_slug"])
+        manager = Person.active.get(slug=kwargs["manager_slug"])
         context["manager"] = manager
 
         return context
@@ -57,7 +57,7 @@ class ManagerSearch(ManagerBaseView):
 
         if name:
             people = (
-                Person.objects.annotate(
+                Person.active.annotate(
                     full_name_search=Concat("first_name", Value(" "), "last_name")
                 )
                 .filter(full_name_search__icontains=name)

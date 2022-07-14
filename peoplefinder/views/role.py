@@ -25,14 +25,14 @@ class RoleFormView(UserPassesTestMixin, PeoplefinderView):
 
     def dispatch(self, request, *args, **kwargs):
         self.profile_slug = kwargs["profile_slug"]
-        self.profile = Person.objects.get(slug=self.profile_slug)
+        self.profile = Person.active.get(slug=self.profile_slug)
 
         self.role_pk = kwargs.get("role_pk")
 
         self.role = None
 
         if self.role_pk:
-            self.role = TeamMember.objects.get(pk=self.role_pk)
+            self.role = TeamMember.active.get(pk=self.role_pk)
 
         return super().dispatch(request, *args, **kwargs)
 

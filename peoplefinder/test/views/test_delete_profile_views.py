@@ -158,7 +158,7 @@ def test_delete_view_with_other_users_profile(state):
     other_user.save()
     other_person = PersonService().create_user_profile(other_user)
 
-    assert Person.objects.filter(pk=other_person.pk).exists()
+    assert Person.active.filter(pk=other_person.pk).exists()
 
     view_url = reverse(
         "profile-delete",
@@ -171,4 +171,4 @@ def test_delete_view_with_other_users_profile(state):
 
     assert status_code == 302
     assert next_url == reverse("delete-confirmation")
-    assert not Person.objects.filter(pk=other_person.pk).exists()
+    assert not Person.active.filter(pk=other_person.pk).exists()

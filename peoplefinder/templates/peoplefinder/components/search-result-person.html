@@ -1,7 +1,7 @@
 {% load webpack_static from webpack_loader %}
 
 <div class="pf-person-search-result">
-    <div class="pf-person-search-result__picture">
+    <div class="pf-person-search-result__picture {{ person.is_active|yesno:',inactive-profile' }}">
         <a href="{% url 'profile-view' person.slug %}">
             {% if person.photo %}
                 <img src="{{ person.photo.url }}">
@@ -11,6 +11,11 @@
         </a>
     </div>
     <div class="pf-person-search-result__details">
+        {% if not person.is_active %}
+            <div class="pf-person-search-result__details__item">
+                <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
+            </div>
+        {% endif %}
         <div class="pf-person-search-result__details__item">
             <a class="govuk-link govuk-body govuk-!-font-weight-bold" href="{% url 'profile-view' person.slug %}">
                 {{ person.full_name }}

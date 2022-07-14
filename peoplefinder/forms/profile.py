@@ -179,7 +179,7 @@ class ProfileForm(forms.ModelForm):
             return None
 
         try:
-            manager = Person.objects.get(slug=manager_slug)
+            manager = Person.active.get(slug=manager_slug)
         except Person.DoesNotExist:
             raise ValidationError("Manager does not exist")
 
