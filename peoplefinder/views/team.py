@@ -41,11 +41,13 @@ class TeamDetailView(DetailView, PeoplefinderView):
 
         # Must be a leaf team.
         if not context["sub_teams"]:
-            context["members"] = team.members.all().order_by(
-                "person__first_name", "person__last_name"
+            context["members"] = (
+                team.members.all()
+                .active()
+                .order_by("person__first_name", "person__last_name")
             )
         else:
-            context["people_outside_subteams_count"] = TeamMember.objects.filter(
+            context["people_outside_subteams_count"] = TeamMember.active.filter(
                 team=team
             ).count()
 
@@ -53,7 +55,7 @@ class TeamDetailView(DetailView, PeoplefinderView):
             # future.
             for sub_team in context["sub_teams"]:
                 sub_team.avg_profile_completion = (
-                    Person.objects.with_profile_completion()
+                    Person.active.with_profile_completion()
                     .filter(
                         teams__in=[
                             sub_team,
@@ -115,12 +117,12 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
             self.object.leaders_ordering == Team.LeadersOrdering.ALPHABETICAL
             or not form.cleaned_data["leaders_positions"]
         ):
-            for member in self.object.members.all():
+            for member in self.object.members.all().active():
                 member.leaders_position = None
                 member.save()
         elif self.object.leaders_ordering == Team.LeadersOrdering.CUSTOM:
             for i, member_pk in enumerate(form.cleaned_data["leaders_positions"]):
-                member = TeamMember.objects.get(pk=member_pk)
+                member = TeamMember.active.get(pk=member_pk)
                 member.leaders_position = i
                 member.save()
 
@@ -204,7 +206,7 @@ class TeamPeopleView(TeamPeopleBaseView):
 
     def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
         return (
-            TeamMember.objects.filter(Q(team=team) | Q(team__in=sub_teams))
+            TeamMember.active.filter(Q(team=team) | Q(team__in=sub_teams))
             .order_by("person__first_name", "person__last_name")
             .distinct("person", "person__first_name", "person__last_name")
         )
@@ -215,7 +217,7 @@ class TeamPeopleOutsideSubteamsView(TeamPeopleBaseView):
 
     def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
         return (
-            TeamMember.objects.filter(team=team)
+            TeamMember.active.filter(team=team)
             .order_by("person__first_name", "person__last_name")
             .distinct("person", "person__first_name", "person__last_name")
         )

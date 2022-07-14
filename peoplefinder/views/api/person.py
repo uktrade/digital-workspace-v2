@@ -224,7 +224,7 @@ class PersonViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = (
-            Person.objects.get_annotated()
+            Person.active.get_annotated()
             .select_related("country", "grade", "user", "manager")
             .prefetch_related("roles", "roles__team")
             .with_profile_completion()

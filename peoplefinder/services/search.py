@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from wagtail.search.backends import get_search_backend
 from wagtail.search.utils import parse_query_string
 
@@ -8,7 +9,7 @@ from peoplefinder.models import Person, Team
 SearchResult = tuple[list[Team], list[Person]]
 
 
-def search(query: str, filters: list[str]) -> SearchResult:
+def search(request: HttpRequest, query: str, filters: list[str]) -> SearchResult:
     s = get_search_backend()
 
     _, query = parse_query_string(query, operator="and")
@@ -20,9 +21,13 @@ def search(query: str, filters: list[str]) -> SearchResult:
         team_results = s.search(query, Team)[:50]
 
     if PEOPLE_FILTER in filters:
-        person_results = s.search(
-            query,
-            Person.objects.prefetch_related("key_skills", "additional_roles", "teams"),
-        )[:50]
+        qs = Person.objects.all()
+
+        if not request.user.has_perm("peoplefinder.delete_person"):
+            qs = qs.active()
+
+        qs = qs.prefetch_related("key_skills", "additional_roles", "teams")
+
+        person_results = s.search(query, qs)[:50]
 
     return list(team_results), list(person_results)

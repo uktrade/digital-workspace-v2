@@ -23,7 +23,7 @@
   display: inline-block;
 }
 
-.separator {
+.separated > *:not(:last-child) {
   padding-right: 10px;
   margin-right: 10px;
   border-right: 1px solid #b1b4b6;
@@ -338,6 +338,12 @@
 
     img {
       width: 200px;
+    }
+
+    &.inactive-profile {
+      img {
+        filter: grayscale(100%) opacity(50%);
+      }
     }
   }
 

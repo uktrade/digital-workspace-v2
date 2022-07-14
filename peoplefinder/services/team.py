@@ -239,7 +239,7 @@ class TeamService:
         if sub_teams:
             reasons.append("sub-teams")
 
-        has_members = TeamMember.objects.filter(
+        has_members = TeamMember.active.filter(
             Q(team=team) | Q(team__in=sub_teams)
         ).exists()
 
