@@ -2,6 +2,7 @@ import io
 from pathlib import Path
 
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
@@ -14,7 +15,11 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView, UpdateView
 
-from peoplefinder.forms.profile import ProfileForm, ProfileLeavingDitForm
+from peoplefinder.forms.profile import (
+    ProfileForm,
+    ProfileLeavingDitForm,
+    ProfileUpdateUserForm,
+)
 from peoplefinder.forms.role import RoleForm
 from peoplefinder.models import Person
 from peoplefinder.services.audit_log import AuditLogService
@@ -22,7 +27,10 @@ from peoplefinder.services.image import ImageService
 from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
 
-from .base import PeoplefinderView
+from .base import HtmxFormView, PeoplefinderView
+
+
+User = get_user_model()
 
 
 class CannotDeleteOwnProfileError(Exception):
@@ -106,7 +114,16 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
 
         role_forms = [RoleForm(instance=role) for role in roles]
 
-        context.update(roles=roles, role_forms=role_forms)
+        update_user_form = ProfileUpdateUserForm(
+            initial={"username": profile.user and profile.user.username},
+            profile=profile,
+        )
+
+        context.update(
+            roles=roles,
+            role_forms=role_forms,
+            update_user_form=update_user_form,
+        )
 
         return context
 
@@ -243,7 +260,7 @@ class DeleteConfirmationView(TemplateView):
         return context
 
 
-class ProfileHtmxActionView(ProfileView):
+class ProfileHtmxActionView(PeoplefinderView):
     success_message = ""
 
     def setup(self, request, *args, **kwargs):
@@ -289,3 +306,38 @@ class ProfileActivateAction(
         self.person.is_active = True
         self.person.became_inactive = None
         self.person.save()
+
+
+class ProfileUpdateUserView(SuccessMessageMixin, HtmxFormView):
+    template_name = "peoplefinder/components/update-user-form.html"
+    form_class = ProfileUpdateUserForm
+    success_message = "User has been updated"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        self.person = Person.objects.get(slug=self.kwargs["profile_slug"])
+
+    def get_context_data(self, **kwargs):
+        context = {"profile": self.person}
+
+        return super().get_context_data(**kwargs) | context
+
+    def get_form_kwargs(self):
+        return super().get_form_kwargs() | {"profile": self.person}
+
+    def get_initial(self):
+        return {"username": self.person.user and self.person.user.username}
+
+    def form_valid(self, form):
+        user = User.objects.get(username=form.cleaned_data["username"])
+
+        if hasattr(user, "profile"):
+            old_profile = user.profile
+            old_profile.user = None
+            old_profile.save()
+
+        self.person.user = user
+        self.person.save()
+
+        return super().form_valid(form)

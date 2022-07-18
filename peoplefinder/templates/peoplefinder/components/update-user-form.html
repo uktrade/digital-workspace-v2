@@ -1,0 +1,18 @@
+{% extends 'peoplefinder/components/htmx-form.html' %}
+
+{% block form %}
+<p class="govuk-body">
+    Enter the SSO username of the user you want to be associated to this profile. If
+    that user is already associated to another profile, they will be removed from that
+    one associated with this one.
+</p>
+
+{% include 'peoplefinder/components/input.html' with field=form.username %}
+
+<button
+    class="govuk-button"
+    hx-post="{% url 'profile-update-user' profile.slug %}"
+>
+    Update user
+</button>
+{% endblock %}
