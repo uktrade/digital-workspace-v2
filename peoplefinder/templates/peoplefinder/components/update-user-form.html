@@ -12,6 +12,7 @@
 <button
     class="govuk-button"
     hx-post="{% url 'profile-update-user' profile.slug %}"
+    hx-confirm="Are you sure you want to update the user associated with this profile?"
 >
     Update user
 </button>
