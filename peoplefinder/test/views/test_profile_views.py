@@ -328,3 +328,27 @@ def test_user_admin_no_superuser_but_team_person_admin(state):
     soup = BeautifulSoup(response.content, features="html.parser")
 
     assert not soup.find(lambda tag: tag.name == "span" and "Permissions" in tag.text)
+
+
+class TestProfileUpdateUserView:
+    def _update_user(self, client, profile, new_user):
+        return client.post(
+            reverse("profile-update-user", kwargs={"profile_slug": profile.slug}),
+            {"username": new_user.username},
+        )
+
+    def test_swap_user(self, normal_user, state):
+        john = normal_user
+        john_profile = john.profile
+        jane = state.user
+        jane_profile = jane.profile
+
+        assert john.profile == john_profile
+
+        self._update_user(state.client, jane.profile, john)
+
+        john.refresh_from_db()
+        jane.refresh_from_db()
+
+        assert john.profile == jane_profile
+        assert not hasattr(jane, "profile")
