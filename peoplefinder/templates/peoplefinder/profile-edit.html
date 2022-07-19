@@ -241,7 +241,7 @@
     {% include 'peoplefinder/components/teams-and-roles.html' with profile=profile role_forms=role_forms %}
 </fieldset>
 
-{% if perms.peoplefinder.delete_profile %}
+{% if perms.peoplefinder.delete_person %}
     <fieldset class="mb-20">
         <h2 class="govuk-heading-m">SSO user</h2>
         {% include 'peoplefinder/components/update-user-form.html' with profile=profile form=update_user_form %}
