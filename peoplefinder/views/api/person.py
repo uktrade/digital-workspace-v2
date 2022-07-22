@@ -2,10 +2,12 @@ from django.conf import settings
 from django.utils.decorators import decorator_from_middleware
 from django_hawk.middleware import HawkResponseMiddleware
 from django_hawk_drf.authentication import HawkAuthentication
-from rest_framework import pagination, serializers
+from rest_framework import serializers
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from peoplefinder.models import Person, TeamMember
+
+from .base import ApiPagination
 
 
 class TeamMemberSerialiser(serializers.ModelSerializer):
@@ -213,10 +215,7 @@ class PersonSerializer(serializers.ModelSerializer):
 PERSON_ORDERING = "-pk"
 
 
-class PersonPagination(pagination.CursorPagination):
-    page_size = settings.PAGINATION_PAGE_SIZE
-    max_page_size = settings.PAGINATION_MAX_PAGE_SIZE
-    page_size_query_param = "page_size"
+class PersonPagination(ApiPagination):
     ordering = PERSON_ORDERING
 
 
