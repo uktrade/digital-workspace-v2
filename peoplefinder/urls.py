@@ -3,6 +3,7 @@ from rest_framework import routers
 
 from peoplefinder.views.activity_stream import ActivityStreamViewSet
 from peoplefinder.views.api.person import PersonViewSet
+from peoplefinder.views.api.team import TeamView
 from peoplefinder.views.home import PeopleHome, TeamHome
 from peoplefinder.views.manager import (
     ManagerCancel,
@@ -148,6 +149,7 @@ router.register(
     "activity-stream", ActivityStreamViewSet, basename="activity-stream-people"
 )
 router.register("person-api", PersonViewSet, basename="person-api-people")
+router.register("team-api", TeamView, basename="team-api-teams")
 
 api_urlpatterns = [
     path("", include(router.urls)),

@@ -577,6 +577,35 @@ class TeamQuerySet(models.QuerySet):
             ),
         )
 
+    def with_parents(self, parent_field: str = "pk"):
+        """Annotate the queryset with an array of parent values.
+
+        Notes:
+            - annotated field is `ancestry`
+            - array will include the value from the team itself
+            - values are determined by the `parent_field` argument
+
+        Examples:
+            With the default `parent_field`:
+            >>> team = Team.objects.with_parents().get(slug="software")
+            >>> team.ancestry
+            [1, 3, 4]
+
+            With a specified `parent_field`:
+            >>> team = Team.objects.with_parents(parent_field="slug").get(slug="software")
+            >>> team.ancestry
+            ["spacex", "engineering", "software"]
+
+        Args:
+            parent_field: The parent field to populate the array with.
+        """
+        return self.annotate(
+            ancestry=ArrayAgg(
+                f"children__parent__{parent_field}",
+                ordering="-children__depth",
+            )
+        )
+
 
 # markdown
 DEFAULT_TEAM_DESCRIPTION = """Find out who is in the team and their contact details.
