@@ -19,30 +19,6 @@ from wagtail.search import index
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
 
 
-# TODO: django doesnt support on update cascade and it's possible that a code
-# might change in the future so we should probably change this to use an id
-# column.
-class Country(models.Model):
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["code"], name="unique_country_code"),
-            models.UniqueConstraint(fields=["name"], name="unique_country_name"),
-        ]
-        ordering = ["name"]
-
-    DEFAULT_CODE = "GB"
-
-    code = models.CharField(max_length=2)
-    name = models.CharField(max_length=255)
-
-    def __str__(self) -> str:
-        return self.name
-
-    @classmethod
-    def get_default_id(cls):
-        return Country.objects.get(code=cls.DEFAULT_CODE).id
-
-
 class WorkdayQuerySet(models.QuerySet):
     def all_mon_to_sun(self):
         codes = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
@@ -301,9 +277,6 @@ class Person(index.Indexed, models.Model):
     )
     manager = models.ForeignKey(
         "Person", models.SET_NULL, null=True, blank=True, related_name="+"
-    )
-    old_country = models.ForeignKey(
-        "Country", models.SET_DEFAULT, default=Country.get_default_id, related_name="+"
     )
     country = models.ForeignKey(
         "countries.Country",
