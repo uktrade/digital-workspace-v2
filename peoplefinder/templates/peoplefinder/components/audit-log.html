@@ -12,7 +12,9 @@
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ log.timestamp }}</td>
                 <td class="govuk-table__cell">{{ log.action|title }}</td>
-                <td class="govuk-table__cell">{{ log.actor.get_full_name }}</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="{{ log.actor.profile.get_absolute_url }}">{{ log.actor.get_full_name }}</a>
+                </td>
                 <td class="govuk-table__cell">
                     <ul class="pf-audit-log__diff">
                         {% for item in log.diff %}
