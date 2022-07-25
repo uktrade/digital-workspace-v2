@@ -322,7 +322,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 45, (
+    assert len(Person._meta.get_fields()) == 44, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
@@ -409,6 +409,5 @@ class PersonAuditLogSerializer(AuditLogSerializer):
         person["manager__slug"] = str(person["manager__slug"])
 
         del person["login_count"]
-        del person["old_country_id"]
 
         return person

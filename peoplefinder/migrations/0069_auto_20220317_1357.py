@@ -234,7 +234,7 @@ class Migration(migrations.Migration):
                 (
                     "country",
                     models.ForeignKey(
-                        default=peoplefinder.models.Country.get_default_id,
+                        # default=peoplefinder.models.Country.get_default_id,
                         on_delete=django.db.models.deletion.SET_DEFAULT,
                         related_name="+",
                         to="peoplefinder.country",
