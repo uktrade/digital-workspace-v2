@@ -45,6 +45,7 @@ class TeamDetailView(DetailView, PeoplefinderView):
                 team.members.all()
                 .active()
                 .order_by("person__first_name", "person__last_name")
+                .distinct("person", "person__first_name", "person__last_name")
             )
         else:
             context["people_outside_subteams_count"] = TeamMember.active.filter(
