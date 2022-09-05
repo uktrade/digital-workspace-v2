@@ -6,6 +6,7 @@ from peoplefinder.views.api.person import PersonViewSet
 from peoplefinder.views.home import PeopleHome, TeamHome
 from peoplefinder.views.manager import (
     ManagerCancel,
+    ManagerClear,
     ManagerSearch,
     ManagerSelect,
     ManagerUpdate,
@@ -57,6 +58,11 @@ people_urlpatterns = [
                     "select/<uuid:manager_slug>",
                     ManagerSelect.as_view(),
                     name="profile-edit-manager-select",
+                ),
+                path(
+                    "clear/",
+                    ManagerClear.as_view(),
+                    name="profile-edit-manager-clear",
                 ),
                 path(
                     "update",
