@@ -29,6 +29,17 @@ class ManagerSelect(ManagerBaseView):
         return context
 
 
+class ManagerClear(ManagerBaseView):
+    template_name = "peoplefinder/components/manager/main.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["manager"] = None
+
+        return context
+
+
 class ManagerUpdate(ManagerBaseView):
     template_name = "peoplefinder/components/manager/search-form.html"
 
