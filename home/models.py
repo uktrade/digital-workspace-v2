@@ -1,5 +1,6 @@
 import atoma
 import requests
+from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -189,5 +190,7 @@ class HomePage(BasePage):
             )
 
         context["govuk_feed"] = cache.get("homepage_govuk_news")
+
+        context["hide_news"] = settings.HIDE_NEWS
 
         return context
