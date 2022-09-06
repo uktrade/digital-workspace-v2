@@ -23,7 +23,10 @@
  * 
  * ### `height-name`
  * Name given to the height crop input which will be submitted.
- *
+ * 
+ * ### `remove-photo-name`
+ * Name given to the remove photo checkbox input which will be submitted.
+ * 
  * ## Notes
  * - does not use a shadow dom
  *   - so we can use GDS styles
@@ -39,6 +42,7 @@ class ProfilePhoto extends HTMLElement {
 
         // binding methods
         this.handleChangePhoto = this.handleChangePhoto.bind(this);
+        this.handleClearImage = this.handleClearImage.bind(this);
         this.setErrors = this.setErrors.bind(this);
         this.clearErrors = this.clearErrors.bind(this);
     }
@@ -53,6 +57,7 @@ class ProfilePhoto extends HTMLElement {
             width: this.getAttribute('width-name'),
             height: this.getAttribute('height-name'),
         }
+        this.removePhotoName = this.getAttribute('remove-photo-name');
 
         const photoHeadingText = this.photoUrl ? 'Current profile photo' : 'No current profile photo';
 
@@ -85,6 +90,15 @@ class ProfilePhoto extends HTMLElement {
                             name="${this.name}"
                             id="photo"
                         >
+                        <button type="button" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" id="clear-image" style="display: none;">Clear image</button>
+                        <div class="govuk-checkboxes govuk-checkboxes--small" id="remove-photo" style="display: none;">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="remove-photo" name="${this.removePhotoName}" type="checkbox" value="True">
+                                <label class="govuk-label govuk-checkboxes__label" for="remove-photo">
+                                    Remove photo
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,12 +115,19 @@ class ProfilePhoto extends HTMLElement {
         this.photoFormGroupEl = this.querySelector('#photo-form-group');
         this.photoErrorsEl = this.querySelector('#photo-errors');
         this.photoInputEl = this.querySelector('#photo');
+        this.clearImageEl = this.querySelector('#clear-image');
+        this.removePhotoEl = this.querySelector('#remove-photo');
         this.xEl = this.querySelector(`[name="${this.cropFieldNames.x}"]`);
         this.yEl = this.querySelector(`[name="${this.cropFieldNames.y}"]`);
         this.widthEl = this.querySelector(`[name="${this.cropFieldNames.width}"]`);
         this.heightEl = this.querySelector(`[name="${this.cropFieldNames.height}"]`);
 
+        if (this.photoUrl) {
+            this.removePhotoEl.style.display = 'block';
+        }
+
         this.photoInputEl.addEventListener('change', this.handleChangePhoto);
+        this.clearImageEl.addEventListener('click', this.handleClearImage);
     }
 
     handleChangePhoto(e) {
@@ -192,6 +213,26 @@ class ProfilePhoto extends HTMLElement {
         reader.readAsDataURL(file);
 
         this.photoHeadingEl.innerHTML = 'Crop new profile photo';
+        this.clearImageEl.style.display = 'inline';
+    }
+
+    handleClearImage(e) {
+        if (this.cropper) {
+            this.cropper.destroy();
+            this.cropper = null;
+        }
+
+        this.clearErrors();
+
+        this.photoInputEl.value = null;
+        // We must reset the supporting inputs or else the form will think something has
+        // changed.
+        this.xEl.value = '';
+        this.yEl.value = '';
+        this.widthEl.value = '';
+        this.heightEl.value = '';
+        this.photoImgEl.src = this.photoUrl || this.noPhotoUrl;
+        this.clearImageEl.style.display = 'none';
     }
 
     setErrors(errors) {

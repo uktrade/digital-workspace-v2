@@ -59,6 +59,7 @@ class ProfileForm(forms.ModelForm):
     y = forms.IntegerField(required=False)
     width = forms.IntegerField(required=False)
     height = forms.IntegerField(required=False)
+    remove_photo = forms.BooleanField(required=False)
 
     is_superuser = forms.BooleanField(
         required=False, label="Allow this person to administrate People Finder"
@@ -213,6 +214,10 @@ class ProfileForm(forms.ModelForm):
     def save(self, commit=True):
         if "manager" in self.changed_data:
             self.instance.manager = self.cleaned_data["manager"]
+
+        if self.cleaned_data["remove_photo"]:
+            self.instance.photo = None
+            self.instance.photo_small = None
 
         super().save(commit=commit)
 
