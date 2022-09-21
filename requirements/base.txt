@@ -168,7 +168,7 @@ mohawk==1.1.0
     #   requests-hawk
 notifications-python-client==6.3.0
     # via -r requirements.in/base.in
-oauthlib==3.2.0
+oauthlib==3.2.1
     # via requests-oauthlib
 openpyxl==3.0.9
     # via tablib
