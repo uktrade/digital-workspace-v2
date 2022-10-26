@@ -450,6 +450,7 @@ LOGGING = {
 AUTHBROKER_ANONYMOUS_PATHS = (
     "/pingdom/ping.xml",
     "/peoplefinder/api/activity-stream/",
+    "/peoplefinder/api/person-api/",
 )
 AUTHBROKER_ANONYMOUS_URL_NAMES = (
     "person-api-people-list",
