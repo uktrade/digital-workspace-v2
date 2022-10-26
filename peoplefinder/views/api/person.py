@@ -204,7 +204,7 @@ class PersonPagination(pagination.CursorPagination):
     page_size = settings.PAGINATION_PAGE_SIZE
     max_page_size = settings.PAGINATION_MAX_PAGE_SIZE
     page_size_query_param = "page_size"
-    ordering = "-created_at"
+    ordering = "-pk"
 
 
 class PersonViewSet(ReadOnlyModelViewSet):
