@@ -238,7 +238,6 @@ class PersonViewSet(ReadOnlyModelViewSet):
             )
             .with_profile_completion()
             .defer("do_not_work_for_dit")
-            .order_by("-created_at")
         )
 
         return queryset
