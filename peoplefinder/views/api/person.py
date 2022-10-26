@@ -226,9 +226,18 @@ class PersonViewSet(ReadOnlyModelViewSet):
         queryset = (
             Person.active.get_annotated()
             .select_related("country", "grade", "user", "manager")
-            .prefetch_related("roles", "roles__team")
+            .prefetch_related(
+                "roles__team",
+                "key_skills",
+                "workdays",
+                "learning_interests",
+                "networks",
+                "professions",
+                "additional_roles",
+                "buildings",
+            )
             .with_profile_completion()
-            .defer("photo", "do_not_work_for_dit")
+            .defer("do_not_work_for_dit")
             .order_by("-created_at")
         )
 
