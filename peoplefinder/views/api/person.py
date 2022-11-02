@@ -24,6 +24,12 @@ class TeamMemberSerialiser(serializers.ModelSerializer):
         ]
 
 
+class PersonPkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Person
+        fields = ["pk"]
+
+
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
@@ -200,18 +206,24 @@ class PersonSerializer(serializers.ModelSerializer):
         return settings.BASE_URL + obj.get_absolute_url()
 
 
+# WARNING: We need PersonPagination and PersonViewSet.get_full_queryset to have the same
+# ordering for the performance optimisations to work.
+PERSON_ORDERING = "-pk"
+
+
 class PersonPagination(pagination.CursorPagination):
     page_size = settings.PAGINATION_PAGE_SIZE
     max_page_size = settings.PAGINATION_MAX_PAGE_SIZE
     page_size_query_param = "page_size"
-    ordering = "-pk"
+    ordering = PERSON_ORDERING
 
 
 class PersonViewSet(ReadOnlyModelViewSet):
     authentication_classes = (HawkAuthentication,)
     permission_classes = ()
-    serializer_class = PersonSerializer
     pagination_class = PersonPagination
+    serializer_class = PersonPkSerializer
+    queryset = Person.active.only("pk").all()
     lookup_field = "legacy_sso_user_id"
 
     @decorator_from_middleware(HawkResponseMiddleware)
@@ -220,10 +232,33 @@ class PersonViewSet(ReadOnlyModelViewSet):
 
     @decorator_from_middleware(HawkResponseMiddleware)
     def list(self, request):
-        return super().list(self, request)
+        # The following code is here to optimise the large and complex queries that are
+        # behind this API endpoint.
 
-    def get_queryset(self):
-        queryset = (
+        # The combination of many joins and a limit clause applied by the pagination had
+        # very slow performance. To fix this, we will perform a slim query to get the
+        # rows that are in the page, and then use the PKs from those rows as a filter to
+        # the full query. This avoids the need for a limit clause on the full query and
+        # speed up the query significantly. Some local testing indicates that the
+        # performance increase is 10x.
+
+        # this first call to list will use the slim queryset and serializer
+        response = super().list(self, request)
+
+        # we use that response to get a list of all the PKs in the paged results
+        pks = [x["pk"] for x in response.data.get("results", [])]
+
+        # then pass those PKs to the full queryset and serializer
+        serializer = PersonSerializer(self.get_full_queryset(pks), many=True)
+
+        # then replace the results with the full data
+        response.data["results"] = serializer.data
+
+        # and finally return the modified response
+        return response
+
+    def get_full_queryset(self, pks):
+        return (
             Person.active.get_annotated()
             .select_related("country", "grade", "user", "manager")
             .prefetch_related(
@@ -238,6 +273,6 @@ class PersonViewSet(ReadOnlyModelViewSet):
             )
             .with_profile_completion()
             .defer("do_not_work_for_dit")
+            .filter(pk__in=pks)
+            .order_by(PERSON_ORDERING)
         )
-
-        return queryset
