@@ -155,7 +155,7 @@ class PersonSerializer(serializers.ModelSerializer):
     )
     last_login_at = serializers.SerializerMethodField()
     # New fields
-    sso_user_id = serializers.CharField(source="user.username")
+    sso_user_id = serializers.CharField(source="user.username", default=None)
     slug = serializers.CharField()
     manager_slug = serializers.SlugRelatedField(
         read_only=True, source="manager", slug_field="slug"
