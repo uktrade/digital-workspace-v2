@@ -103,6 +103,9 @@ class PersonTests(TestCase):
         assert person_returned["full_name"] == "John Smith"
         assert person_returned["formatted_roles"] == ["Software Engineer in Software"]
         roles = person_returned["roles"]
-        assert type(roles) is list
+        assert isinstance(roles, list)
         assert len(roles) == 1
         assert roles[0]["role"] == "Software Engineer"
+
+        # sso_user_id = user.username = new format staff sso id
+        assert person_returned["sso_user_id"] == "johnsmith"
