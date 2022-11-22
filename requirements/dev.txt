@@ -91,7 +91,7 @@ click-repl==0.2.0
     #   celery
 coverage==5.5
     # via -r requirements.in/dev.in
-cryptography==37.0.2
+cryptography==38.0.3
     # via
     #   -r requirements.in/../requirements/base.txt
     #   pyjwt
