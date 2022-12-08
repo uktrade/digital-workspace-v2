@@ -341,3 +341,9 @@ class ProfileUpdateUserView(SuccessMessageMixin, HtmxFormView):
         self.person.save()
 
         return super().form_valid(form)
+
+
+def get_profile_by_staff_sso_id(request, staff_sso_id):
+    person = get_object_or_404(Person, user__username=staff_sso_id)
+
+    return redirect(person)
