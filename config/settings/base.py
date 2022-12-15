@@ -193,6 +193,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+DB_CONFIG_KEY = env("DB_CONFIG_KEY", default=None)
+
+# DB_CONFIG_KEY env var points to the copilot RDS secret env var
+# If the key is set, then we overwrite the DATABASE_URL env var
+# so that dj-database-url picks up the correct connection details
+if DB_CONFIG_KEY:
+    db_config = env.json(DB_CONFIG_KEY)
+    db_url = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(**db_config)
+    os.environ["DATABASE_URL"] = 
+
 if "postgres" in VCAP_SERVICES:
     DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
 else:
