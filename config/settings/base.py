@@ -201,7 +201,7 @@ DB_CONFIG_KEY = env("DB_CONFIG_KEY", default=None)
 if DB_CONFIG_KEY:
     db_config = env.json(DB_CONFIG_KEY)
     db_url = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(**db_config)
-    os.environ["DATABASE_URL"] = 
+    os.environ["DATABASE_URL"] = db_url
 
 if "postgres" in VCAP_SERVICES:
     DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
@@ -373,6 +373,10 @@ if "redis" in VCAP_SERVICES:
     )
 else:
     CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
+
+# COPILOT configuration
+if not CELERY_BROKER_URL:
+    CELERY_BROKER_URL = "redis://" + env("REDIS_ENDPOINT")
 
 CACHES = {
     "default": {

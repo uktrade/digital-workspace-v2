@@ -19,9 +19,9 @@ http:
     success_codes: '302'
     healthy_threshold: 3
     unhealthy_threshold: 2
-    interval: 15s
-    timeout: 10s
-    grace_period: 60s
+    interval: 35s
+    timeout: 30s
+    grace_period: 90s
 
 # Configuration for your containers and service.
 image:
@@ -30,7 +30,7 @@ image:
   port: 8080
 
 cpu: 256       # Number of CPU units for the task.
-memory: 512    # Amount of memory in MiB used by the task.
+memory: 1024 # Amount of memory in MiB used by the task.
 count: 1       # Number of tasks that should be running in your service.
 exec: true     # Enable running commands in your container.
 network:
@@ -45,9 +45,10 @@ variables:                    # Pass environment variables as key value pairs.
   PORT: 8080
   DB_CONFIG_KEY: WEBDB_SECRET
   APP_ENV: dev
-  DJANGO_DEBUG: True
+  DJANGO_DEBUG: False
   GUNICORN_ENABLE_ASYNC_PSYCOPG2: truew
   ELASTIC_APM_SERVER_TIMEOUT: 20s
+  OPENSEARCH_URL: http://temporary-var
 
 
 secrets:                      # Pass secrets from AWS Systems Manager (SSM) Parameter Store.

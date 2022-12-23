@@ -9,28 +9,31 @@ AWS_QUERYSTRING_AUTH = False
 
 SESSION_COOKIE_AGE = 60 * 60
 
-SECURE_BROWSER_XSS_FILTER = True
-X_FRAME_OPTIONS = "DENY"
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_HSTS_SECONDS = 15768000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_SSL_REDIRECT = True
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# COPILOT - env vars editted out to get container running
+
+# SECURE_BROWSER_XSS_FILTER = True
+# X_FRAME_OPTIONS = "DENY"
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+# SECURE_HSTS_SECONDS = 15768000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SECURE_SSL_REDIRECT = False
+# CSRF_COOKIE_SECURE = False
+# SESSION_COOKIE_SECURE = False
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 INSTALLED_APPS += [  # noqa F405
-    "elasticapm.contrib.django",
+    # "elasticapm.contrib.django",
 ]
 
-ELASTIC_APM = {
-    "SERVICE_NAME": "Digital Workspace",
-    "SECRET_TOKEN": env("ELASTIC_APM_SECRET_TOKEN"),  # noqa F405
-    "SERVER_URL": env("ELASTIC_APM_SERVER_URL"),  # noqa F405
-    "ENVIRONMENT": env("APP_ENV"),  # noqa F405
-    "SERVER_TIMEOUT": env("ELASTIC_APM_SERVER_TIMEOUT", default="20s"),  # noqa F405
-}
+# NOTE: We are migrating to x-ray
+# ELASTIC_APM = {
+#     "SERVICE_NAME": "Digital Workspace",
+#     "SECRET_TOKEN": env("ELASTIC_APM_SECRET_TOKEN"),  # noqa F405
+#     "SERVER_URL": env("ELASTIC_APM_SERVER_URL"),  # noqa F405
+#     "ENVIRONMENT": env("APP_ENV"),  # noqa F405
+#     "SERVER_TIMEOUT": env("ELASTIC_APM_SERVER_TIMEOUT", default="20s"),  # noqa F405
+# }
 
 LOGGING = {
     "version": 1,
