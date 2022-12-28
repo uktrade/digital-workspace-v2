@@ -6,8 +6,8 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      #python: 3.9
-      #nodejs: 18
+      python: 3.10
+      nodejs: 16
 
   build:
     commands:
