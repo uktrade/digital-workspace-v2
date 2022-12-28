@@ -25,7 +25,8 @@ http:
 
 # Configuration for your containers and service.
 image:
-  location: public.ecr.aws/e9f6t9n0/digital-workspace:latest
+  #location: public.ecr.aws/e9f6t9n0/digital-workspace:latest
+  location: public.ecr.aws/h0i0h2o7/uktrade/digital-workspace-v2:latest 
   # Port exposed through your container to route traffic to it.
   port: 8080
 
