@@ -57,7 +57,7 @@ isort:
 	docker-compose run --rm --no-deps wagtail isort .
 
 check-fixme:
-	! git --no-pager grep -rni fixme -- ':!./Makefile' ':!./.circleci/config.yml'
+	! git --no-pager grep -rni fixme -- ':!./Makefile' ':!./.circleci/config.yml' ':!./copilot/web/buildspec.yml'
 
 up:
 	docker-compose up
