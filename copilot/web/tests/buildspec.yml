@@ -1,0 +1,18 @@
+version: 0.2
+
+# env:
+#   variables:
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+      nodejs: 18
+
+  build:
+    commands:
+      - make check-fixme
+
+  #post_build:
+  #  commands:
+  #    - command
