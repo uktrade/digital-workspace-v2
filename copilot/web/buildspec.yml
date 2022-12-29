@@ -12,7 +12,7 @@ phases:
   pre_build:
     commands:
       - make check-fixme
-      #- codebuild-breakpoint
+      - codebuild-breakpoint
 
   build:
     commands:
