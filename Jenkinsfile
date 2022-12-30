@@ -19,7 +19,7 @@ pipeline {
                     service_name=$(copilot svc ls --app $APP_NAME --json | jq .services[0].name| tr -d '"')
                     environment_name=$(copilot env ls --app $APP_NAME --json | jq .environments[0].name | tr -d '"')
                     
-                    Deploying $service_name for $APP_NAME in $environment_name
+                    echo "Deploying $service_name for $APP_NAME in $environment_name"
                     
                     copilot deploy --name $service_name --app $APP_NAME --env $environment_name
                 '''
