@@ -16,8 +16,8 @@ pipeline {
         stage('Deploy'){
             steps {
                 sh '''
-                    service_name=$(copilot svc ls --app $APP_NAME --json | jq .services[0].name| tr -d " | tr -d \n)
-                    environment_name=$(copilot env ls --app $APP_NAME --json | jq .environments[0].name | tr -d " | tr -d \n )
+                    service_name=$(copilot svc ls --app $APP_NAME --json | jq .services[0].name| tr -d '"')
+                    environment_name=$(copilot env ls --app $APP_NAME --json | jq .environments[0].name | tr -d '"')
                     
                     Deploying $service_name for $APP_NAME in $environment_name
                     
