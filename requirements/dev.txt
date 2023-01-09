@@ -248,7 +248,7 @@ flake8-string-format==0.3.0
     # via -r requirements.in/dev.in
 gitdb==4.0.9
     # via gitpython
-gitpython==3.1.26
+gitpython==3.1.30
     # via bandit
 greenlet==1.1.2
     # via bpython
