@@ -376,7 +376,8 @@ else:
 
 # COPILOT configuration
 if not CELERY_BROKER_URL:
-    CELERY_BROKER_URL = "redis://" + env("REDIS_ENDPOINT")
+    redis_endpoint = env(env("REDIS_CONFIG_KEY"))
+    CELERY_BROKER_URL = f"redis://{redis_endpoint}"
 
 CACHES = {
     "default": {
