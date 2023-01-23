@@ -19,6 +19,8 @@ if os.path.exists(env_file):
 
 VCAP_SERVICES = env.json("VCAP_SERVICES", {})
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Set required configuration from environment
 # Should be one of the following: "local", "test", "dev", "staging", "training", "prod"
 APP_ENV = env.str("APP_ENV", "local")
