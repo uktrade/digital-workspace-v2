@@ -282,7 +282,12 @@ with open(stop_words_file) as stop_words_file:
 if "opensearch" in VCAP_SERVICES:
     OPENSEARCH_URL = VCAP_SERVICES["opensearch"][0]["credentials"]["uri"]
 else:
-    OPENSEARCH_URL = env("OPENSEARCH_URL")
+    OPENSEARCH_URL = env("OPENSEARCH_URL", defaut="")
+
+# Copilot config
+if not OPENSEARCH_URL:
+    OPENSEARCH_URL = "https://" + env(env("OPENSEARCH_CONFIG_KEY"))
+
 
 ELASTICSEARCH_DSL = {
     "default": {
