@@ -2,10 +2,14 @@
 
 set -ex
 
-virtualenv --python=python3 .venv
+# python
+python3 -m venv .venv
 
 source .venv/bin/activate
 
 pip install -r requirements/dev.txt
 
 deactivate
+
+# node
+npm install
