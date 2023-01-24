@@ -286,7 +286,7 @@ else:
 
 # Copilot config
 if not OPENSEARCH_URL:
-    OPENSEARCH_URL = "https://" + env(env("OPENSEARCH_CONFIG_KEY"))
+    OPENSEARCH_URL = "https://" + env(env("OPENSEARCH_CONFIG_KEY")) + ":443"
 
 
 ELASTICSEARCH_DSL = {
