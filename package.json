@@ -5,7 +5,6 @@
   "dependencies": {
     "cropperjs": "^1.5.12",
     "css-loader": "^5.2.7",
-    "extract-loader": "^5.1.0",
     "govuk-frontend": "^3.14.0",
     "htmx.org": "^1.7.0",
     "mini-css-extract-plugin": "^1.6.2",
