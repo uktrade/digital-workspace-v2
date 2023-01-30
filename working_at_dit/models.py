@@ -64,6 +64,7 @@ class Topic(ContentPage):
             topic=self.contentpage,
             page__content_type__app_label="working_at_dit",
             page__content_type__model="howdoi",
+            page__live=True,
         ).order_by("page__last_published_at")
 
         context["how_do_is"] = how_do_is
