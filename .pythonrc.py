@@ -13,4 +13,4 @@ def make_superuser(email):
 
 
 def get_user(email):
-    return User.objects.get(email=email)
+    return User.objects.get(email__startswith=email)

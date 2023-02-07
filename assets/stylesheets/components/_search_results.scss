@@ -1,17 +1,32 @@
-
 .search-results-wrapper {
-  margin-top:10px;
+  margin-top: 10px;
+
   .search-results {
     list-style: none;
     padding: 0;
     margin: 0;
+
     em {
       font-weight: bold;
     }
   }
+
   .pinned {
     background-color: govuk-colour("light-grey");
     margin-bottom: 20px;
   }
 }
 
+.v2-search-results {
+  &__category {
+    padding-top: 20px;
+    margin-bottom: 20px;
+
+    border: 1px solid $govuk-border-colour;
+  }
+
+  ul {
+    padding-left: 0px;
+    list-style: none;
+  }
+}
