@@ -1,0 +1,11 @@
+{% load wagtailcore_tags formatting %}
+
+<ul>
+    {% for result in results %}
+        <li>
+            <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}">{{ result.title }}</a></h3>
+
+            <p class="govuk-body">{{ result.preview_text }}</p>
+        </li>
+    {% endfor %}
+</ul>
