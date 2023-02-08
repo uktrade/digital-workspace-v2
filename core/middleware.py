@@ -38,6 +38,6 @@ class GetPeoplefinderProfileMiddleware:
             except Person.DoesNotExist:
                 profile = None
 
-        response.context_data["peoplefinder_profile"] = profile
+            response.context_data["peoplefinder_profile"] = profile
 
         return response
