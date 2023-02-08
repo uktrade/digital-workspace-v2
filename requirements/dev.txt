@@ -51,9 +51,11 @@ botocore==1.23.46
     #   s3transfer
 bpython==0.22.1
     # via -r requirements.in/dev.in
+build==0.9.0
+    # via pip-tools
 celery==5.2.6
     # via -r requirements.in/../requirements/base.txt
-certifi==2021.10.8
+certifi==2022.12.07
     # via
     #   -r requirements.in/../requirements/base.txt
     #   elastic-apm
@@ -248,7 +250,7 @@ flake8-string-format==0.3.0
     # via -r requirements.in/dev.in
 gitdb==4.0.9
     # via gitpython
-gitpython==3.1.26
+gitpython==3.1.30
     # via bandit
 greenlet==1.1.2
     # via bpython
@@ -313,6 +315,7 @@ packaging==21.3
     # via
     #   -r requirements.in/../requirements/base.txt
     #   bleach
+    #   build
     #   pytest
     #   redis
 pathspec==0.9.0
@@ -320,14 +323,14 @@ pathspec==0.9.0
 pbr==5.8.0
     # via stevedore
 pep517==0.12.0
-    # via pip-tools
+    # via build
 pep8-naming==0.12.1
     # via -r requirements.in/dev.in
 pillow==9.3.0
     # via
     #   -r requirements.in/../requirements/base.txt
     #   wagtail
-pip-tools==6.6.2
+pip-tools==6.12.1
     # via -r requirements.in/dev.in
 platformdirs==2.4.1
     # via black
@@ -485,6 +488,7 @@ toml==0.10.2
 tomli==2.0.0
     # via
     #   black
+    #   build
     #   pep517
 tweepy==4.5.0
     # via -r requirements.in/../requirements/base.txt
@@ -532,7 +536,7 @@ webencodings==0.5.1
     #   -r requirements.in/../requirements/base.txt
     #   bleach
     #   html5lib
-wheel==0.37.1
+wheel==0.38.1
     # via pip-tools
 whitenoise==5.3.0
     # via -r requirements.in/../requirements/base.txt

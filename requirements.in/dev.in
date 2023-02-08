@@ -2,7 +2,7 @@
 -r ../requirements/base.txt
 
 # Development tools
-pip-tools>=6.6.2
+pip-tools>=6.6.2,<7.0.0
 bpython>=0.22.1
 
 # Linting & security checking

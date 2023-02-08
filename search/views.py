@@ -1,13 +1,20 @@
 import logging
 import math
 import shlex
+from typing import Optional, TypedDict
 
+from django import forms
 from django.conf import settings
+from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
+from django.views.decorators.http import require_http_methods
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
 from content.models import ContentPage, SearchExclusionPageLookUp, SearchPinPageLookUp
+
+from .forms import SearchCategory, SearchForm
+from .search import search_all
 
 
 logger = logging.getLogger(__name__)
@@ -168,3 +175,83 @@ def search(request):
             "show_total": show_total,
         },
     )
+
+
+class V2SearchContext(TypedDict):
+    search_query: Optional[str]
+    search_category: Optional[str]
+    search_categories: type[SearchCategory]
+    page_results: list
+    team_results: list
+    people_results: list
+    results: list
+    results_template: Optional[str]
+    total_matches: int
+    # Must be provided before passing to the response.
+    form: Optional[forms.Form]
+
+
+@require_http_methods(["GET"])
+def v2_search(request: HttpRequest) -> HttpResponse:
+    query = request.GET.get("query")
+    category = request.GET.get("category")
+
+    if category:
+        category = category if category in SearchCategory else None
+
+    context: V2SearchContext = {
+        "search_query": query,
+        "search_category": category,
+        "search_categories": SearchCategory,
+        "page_results": [],
+        "team_results": [],
+        "people_results": [],
+        "results": [],
+        "results_template": None,
+        "total_matches": 0,
+        "form": None,
+    }
+
+    if query:
+        form = SearchForm(data=request.GET)
+        form.is_valid()
+
+        (
+            context["page_results"],
+            context["team_results"],
+            context["people_results"],
+        ) = search_all(request, query, category)
+    else:
+        form = SearchForm()
+
+    if category == "pages":
+        context["results"] = context["page_results"]
+        context["results_template"] = "search/partials/page_results.html"
+    elif category == "teams":
+        context["results"] = context["team_results"]
+        context["results_template"] = "search/partials/team_results.html"
+    elif category == "people":
+        context["results"] = context["people_results"]
+        context["results_template"] = "search/partials/people_results.html"
+
+    if category:
+        context["total_matches"] = len(context["results"])
+    else:
+        context["total_matches"] = sum(
+            [
+                len(x)
+                for x in [
+                    context["page_results"],
+                    context["team_results"],
+                    context["people_results"],
+                ]
+            ]
+        )
+
+    context["form"] = form
+
+    assert context["form"], "The form must be provided before passing to the response"
+
+    # We must return a `TemplateResponse` because there is middleware which uses the
+    # `process_template_response` hook.
+    return TemplateResponse(request, "search/v2_search.html", context=context)

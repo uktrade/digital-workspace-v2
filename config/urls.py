@@ -33,6 +33,7 @@ urlpatterns = [
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search_views.search, name="search"),
+    path("v2-search/", search_views.v2_search, name="v2-search"),
     path("pingdom/", include("pingdom.urls")),
     # Peoplefinder
     path("people/", include(people_urlpatterns)),

@@ -1,0 +1,60 @@
+{% extends "1_col_content.html" %}
+
+{% block title %}Search results for '{{ form.cleaned_data.search_query }}'{% endblock %}
+
+{% block location %}Search results{% endblock %}
+
+{% block content %}
+    {% if total_matches %}
+        <h1 class="govuk-heading-l">{{ total_matches }} search results for '{{ search_query }}'</h1>
+    {% else %}
+        <h1 class="govuk-heading-l">No search results for '{{ search_query }}'</h1>
+        <p class="govuk-body-l">Check your spelling or try another search.</p>
+    {% endif %}
+
+    {% include 'peoplefinder/components/error-summary.html' %}
+
+    <div class="govuk-grid-row mb-20">
+        <!-- Search results -->
+        <div class="govuk-grid-column-full v2-search-results">
+            {% if not search_category %}
+                <!-- Category: Pages -->
+                <div class="v2-search-results__category">
+                    <div class="govuk-!-padding-left-2 govuk-!-padding-right-2">
+                        <h2 class="govuk-heading-m">Pages</h2>
+                        {% include 'search/partials/page_results.html' with results=page_results|slice:":3" %}
+                    </div>
+                    {% include 'search/partials/see_all_results_form.html' with category='pages' category_text='page' %}
+                </div>
+
+                <!-- Category: Teams -->
+                <div class="v2-search-results__category">
+                    <div class="govuk-!-padding-left-2 govuk-!-padding-right-2">
+                        <h2 class="govuk-heading-m">Teams</h2>
+                        {% include 'search/partials/team_results.html' with results=team_results|slice:":3" %}
+                    </div>
+                    {% include 'search/partials/see_all_results_form.html' with category='teams' category_text='team' %}
+                </div>
+
+                <!-- Category: People -->
+                <div class="v2-search-results__category">
+                    <div class="govuk-!-padding-left-2 govuk-!-padding-right-2">
+                        <h2 class="govuk-heading-m">People</h2>
+                        {% include 'search/partials/people_results.html' with results=people_results|slice:":3" %}
+                    </div>
+                    {% include 'search/partials/see_all_results_form.html' with category='people' %}
+                </div>
+            {% else %}
+                <div class="v2-search-results__list">
+                    {% include 'search/partials/see_all_results_form.html' %}
+                    <h2 class="govuk-heading-m">{{ search_category|title }}</h2>
+                    {% if results %}
+                        {% include results_template %}
+                    {% else %}
+                        No results
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
