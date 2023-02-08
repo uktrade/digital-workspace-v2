@@ -9,6 +9,3 @@ SKIP_CLAM_AV_FILE_UPLOAD = False
 
 if SKIP_CLAM_AV_FILE_UPLOAD:
     FILE_UPLOAD_HANDLERS = ("django_chunk_upload_handlers.s3.S3FileUploadHandler",)
-
-# Required for tests to bypass SSO.
-MIDDLEWARE.remove("authbroker_client.middleware.ProtectAllViewsMiddleware")  # noqa

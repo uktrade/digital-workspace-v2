@@ -5,7 +5,7 @@ A [Wagtail]-based intranet for the Department for International Trade.
 ## Setup
 
 ```bash
-cp .env.example .env               # ... and set variables as appropriate
+cp .env.example .env         # ... and set variables as appropriate *
 
 make build
 npm install
@@ -13,6 +13,8 @@ npm run build
 
 make first-use               # ... use make up after this has run
 ```
+
+\* You will need SSO auth details to allow the project to run, but there are a lot of other details that would help make the experience better; ask another dev for their .env so that you can get a headstart
 
 ## Run front end in watch mode
 
