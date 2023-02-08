@@ -44,6 +44,10 @@ python manage.py create_test_users
 python manage.py create_user_profiles
 # Create test teams
 python manage.py create_test_teams
+exit # leave the container's bash shell
+
+# Rebuild the search index
+make index
 ```
 
 ## Unit tests
