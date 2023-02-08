@@ -75,6 +75,7 @@
             </ul>
         </section>
 
+        {% if tweets|length > 0 %}
         <section>
             <h2 class="govuk-heading-m">Latest tweets</h2>
             <ul class="tweets">
@@ -97,6 +98,7 @@
                 {% endfor %}
             </ul>
         </section>
+        {% endif %}
         {% endif %}
     </article>
 {% endblock main_content %}
