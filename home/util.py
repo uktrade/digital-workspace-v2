@@ -22,15 +22,18 @@ def get_tweets():
 
     tweets = []
 
-    for twitter_user in twitter_users:
-        if not twitter_user:
-            continue
-        for status in tweepy.Cursor(
-            api.user_timeline,
-            screen_name=twitter_user,
-            include_rts=False,
-            exclude_replies=True,
-        ).items(5):
-            tweets.append(status)
+    try:
+        for twitter_user in twitter_users:
+            if not twitter_user:
+                continue
+            for status in tweepy.Cursor(
+                api.user_timeline,
+                screen_name=twitter_user,
+                include_rts=False,
+                exclude_replies=True,
+            ).items(5):
+                tweets.append(status)
+    except tweepy.errors.NotFound:
+        pass
 
     return tweets
