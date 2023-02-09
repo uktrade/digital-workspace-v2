@@ -4,6 +4,7 @@ from django.conf.urls import include
 from django.urls import path
 from django.views.generic import RedirectView
 from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
@@ -40,6 +41,7 @@ urlpatterns = [
     path("teams/", include(teams_urlpatterns)),
     path("people-and-teams/", include(people_and_teams_urlpatterns)),
     path("peoplefinder/api/", include(api_urlpatterns)),
+    path("sitemap.xml", sitemap),
     # Wagtail
     path("", include(wagtail_urls)),
 ]
