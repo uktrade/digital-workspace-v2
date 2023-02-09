@@ -26,7 +26,7 @@ migrate:
 	$(wagtail) python manage.py migrate
 
 compilescss:
-	docker-compose run --rm wagtail python manage.py compilescss
+	$(wagtail) python manage.py compilescss
 
 test:
 	docker-compose run --rm --name testrunner wagtail pytest --ignore=selenium_tests --reuse-db $(tests) 
@@ -41,7 +41,7 @@ coverage:
 	docker-compose run --rm --name testrunner wagtail ./scripts/coverage.sh
 
 shell:
-	docker-compose run --rm wagtail python manage.py shell
+	$(wagtail) python manage.py shell
 
 flake8:
 	docker-compose run --rm --no-deps wagtail flake8
@@ -74,52 +74,43 @@ webpack:
 	npm run dev
 
 elevate:
-	docker-compose run --rm wagtail python manage.py elevate_sso_user_permissions --email=$(email)
+	$(wagtail) python manage.py elevate_sso_user_permissions --email=$(email)
 
 collectstatic:
-	docker-compose run --rm wagtail python manage.py collectstatic
+	$(wagtail) python manage.py collectstatic
 
 findstatic:
-	docker-compose run --rm wagtail python manage.py findstatic $(app)
+	$(wagtail) python manage.py findstatic $(app)
 
 bash:
-	docker-compose run --rm wagtail bash
+	$(wagtail) bash
 
-all-requirements:
-	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/base.txt requirements.in/base.in
-	docker-compose run --rm --no-deps wagtail pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-
-upgrade-package:
-	docker-compose run --rm --no-deps wagtail pip-compile --upgrade-package $(package) --output-file requirements/base.txt requirements.in/base.in
-	docker-compose run --rm --no-deps wagtail pip-compile --upgrade-package $(package) --output-file requirements/dev.txt requirements.in/dev.in
-
-upgrade-all-packages:
-	docker-compose run --rm --no-deps wagtail pip-compile --upgrade --output-file requirements/base.txt requirements.in/base.in
-	docker-compose run --rm --no-deps wagtail pip-compile --upgrade --output-file requirements/dev.txt requirements.in/dev.in
+requirements:
+	$(wagtail) poetry export --without-hashes --output requirements.txt
 
 superuser:
-	docker-compose run --rm wagtail python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
+	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
 
 fixtree:
-	docker-compose run --rm wagtail python manage.py fixtree
+	$(wagtail) python manage.py fixtree
 
 menus:
-	docker-compose run --rm wagtail python manage.py create_menus
+	$(wagtail) python manage.py create_menus
 
 index:
-	docker-compose run --rm wagtail python manage.py update_index
+	$(wagtail) python manage.py update_index
 
 listlinks:
-	docker-compose run --rm wagtail python manage.py list_links
+	$(wagtail) python manage.py list_links
 
 wagtail-groups:
-	docker-compose run --rm wagtail python manage.py create_groups
+	$(wagtail) python manage.py create_groups
 
 pf-groups:
-	docker-compose run --rm wagtail python manage.py create_people_finder_groups
+	$(wagtail) python manage.py create_people_finder_groups
 
 create_section_homepages:
-	docker-compose run --rm wagtail python manage.py create_section_homepages
+	$(wagtail) python manage.py create_section_homepages
 
 first-use:
 	docker-compose down
@@ -133,8 +124,12 @@ first-use:
 	docker-compose up
 
 setup_v2_user:
-	docker-compose run --rm wagtail python manage.py setup_v2_user $(email)
+	$(wagtail) python manage.py setup_v2_user $(email)
 
 # Data
 data-countries:
 	$(wagtail) python manage.py loaddata countries.json
+
+local-setup:
+	poetry install
+	npm install

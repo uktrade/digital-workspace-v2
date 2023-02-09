@@ -418,7 +418,7 @@ class ProfilePhotoMigrator:
 
         return self._get_object(key)
 
-    @cache
+    @cache  # noqa
     def _get_photo_keys(self, legacy_person):
         response = self.client.list_objects_v2(
             Bucket=self.bucket,
