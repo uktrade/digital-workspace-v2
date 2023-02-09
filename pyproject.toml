@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "digital-workspace-v2"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
 authors = ["Live Services <live.services@digital.trade.gov.uk>"]
 license = "MIT"
@@ -31,7 +31,7 @@ wagtailmenus = "^3.0.2"
 wagtail-draftail-anchors = "^0.2.0"
 wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag="v0.2.0" }
 # OpenSearch
-elasticsearch = "^7.13.4"
+elasticsearch = "7.13.4"
 elasticsearch-dsl = "^7.4.0"
 django-elasticsearch-dsl = "^7.2.2"
 # GOV.UK Notify
@@ -51,10 +51,10 @@ atoma = "^0.0.17"
 pillow = "^9.3.0"
 bleach = "^4.1.0"
 elastic-apm = "^6.7.2"
-pyjwt = { version = "^2.4.0", extras = ["crypto"] }
 requests = "^2.27.1"
 boto3 = "^1.20.46"
 # TODO: Are these packages used directly?
+pyjwt = { version = "^2.4.0", extras = ["crypto"] }
 # urllib3>=1.26.5
 # lxml>=4.9.1
 # PyYAML>=5.4
@@ -97,6 +97,7 @@ addopts = "--disable-warnings --ds=config.settings.test --driver=Remote --seleni
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 markers = [
     "selenium: Mark the test as using Selenium.",
+    "opensearch: Mark the test as using OpenSearch.",
 ]
 
 [tool.coverage.run]
