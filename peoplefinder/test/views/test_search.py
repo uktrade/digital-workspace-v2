@@ -1,4 +1,5 @@
 import pytest
+from django.core.management import call_command
 from django.urls import reverse
 
 from peoplefinder.models import Team
@@ -9,6 +10,8 @@ class TestSearchView:
     def _setup(self, db, client, normal_user):
         self.client = client
         self.client.force_login(normal_user)
+
+        call_command("update_index")
 
     def _search(self, query, teams=True, people=True):
         filters = []
@@ -28,10 +31,23 @@ class TestSearchView:
 
         return r
 
-    # Search is tricky to test because OpenSearch is being shared between tests and
-    # local. The database creates it's own test database, but we don't have the same
-    # mechanism with OpenSearch.
-    @pytest.mark.skip(reason="Testing search is currently flaky")
+    @pytest.mark.opensearch
+    def test_updated_profile(self, normal_user):
+        r = self._search("john")
+        assert r.context["person_matches"] == [normal_user.profile]
+
+        normal_user.profile.first_name = "Tim"
+        normal_user.profile.save()
+
+        call_command("update_index")
+
+        r = self._search("john")
+        assert r.context["person_matches"] == []
+
+        r = self._search("tim")
+        assert r.context["person_matches"] == [normal_user.profile]
+
+    @pytest.mark.opensearch
     def test_search_for_person(self, normal_user):
         r = self._search("john")
 
@@ -39,15 +55,16 @@ class TestSearchView:
         assert r.context["team_matches"] == []
         assert r.context["total_matches"] == 1
 
-    @pytest.mark.skip(reason="Testing search is currently flaky")
-    def test_search_for_team(self):
+    @pytest.mark.opensearch
+    def test_search_for_team(self, normal_user):
         r = self._search("software")
 
-        assert r.context["person_matches"] == []
+        # The normal_user is in the Software team.
+        assert r.context["person_matches"] == [normal_user.profile]
         assert r.context["team_matches"] == [Team.objects.get(name="Software")]
-        assert r.context["total_matches"] == 1
+        assert r.context["total_matches"] == 2
 
-    @pytest.mark.skip(reason="Testing search is currently flaky")
+    @pytest.mark.opensearch
     def test_search_for_multiple_teams(self):
         r = self._search("S", people=False)
 

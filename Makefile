@@ -29,10 +29,10 @@ compilescss:
 	$(wagtail) python manage.py compilescss
 
 test:
-	docker-compose run --rm --name testrunner wagtail pytest --ignore=selenium_tests --reuse-db $(tests) 
+	docker-compose run --rm --name testrunner wagtail pytest -m "not selenium" --reuse-db $(tests) 
 
 test-selenium:
-	docker-compose run --rm --name testrunner wagtail pytest selenium_tests
+	docker-compose run --rm --name testrunner wagtail pytest -m "selenium"
 
 test-all:
 	docker-compose run --rm --name testrunner wagtail pytest

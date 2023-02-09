@@ -50,11 +50,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
         # Leave this here to check we have reset the db into a known state.
         assert AuditLogService.get_audit_log(user_john_smith.profile).count() == 2
 
-        # We aren't testing search at the moment as the tests share the same opensearch
-        # instance as the local environment. Therefore I'm disabling this for the time
-        # being as it messes with my local env.
-
-        # call_command("update_index")
+        call_command("update_index")
 
 
 @pytest.fixture
