@@ -1,0 +1,31 @@
+# Constrain to base requirements
+-r ../requirements/base.txt
+
+# Development tools
+pip-tools>=6.6.2,<7.0.0
+bpython>=0.22.1
+
+# Linting & security checking
+flake8>=3.8.3
+flake8-bandit
+flake8-blind-except
+flake8-bugbear
+flake8-debugger
+flake8-print
+flake8-quotes
+flake8-string-format
+pep8-naming
+pydocstyle
+black>=22.3.0
+Faker
+factory-boy
+isort
+
+# Testing
+pytest==6.2.5
+pytest-django==4.5.2
+coverage==5.5
+
+# Selenium
+selenium==3.141.0
+pytest-selenium==3.0.0
