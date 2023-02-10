@@ -1,6 +1,6 @@
 from django.db import models
 from django.shortcuts import redirect
-from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.admin.panels import FieldPanel
 
 from content.models import ContentPage
 from working_at_dit.models import PageWithTopics

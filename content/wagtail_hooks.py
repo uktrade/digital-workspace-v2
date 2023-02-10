@@ -1,7 +1,5 @@
-from django.templatetags.static import static
-from django.utils.html import format_html
+from wagtail import hooks
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.core import hooks
 
 from content.models import Theme
 
@@ -28,11 +26,3 @@ def remove_submit_to_moderator_option(menu_items, request, context):
     # TODO - remove delete page item
 
     menu_items[:] = [item for item in menu_items if item.name != "action-submit"]
-
-
-@hooks.register("insert_global_admin_css")
-def global_admin_css():
-    static_path = static("wagtail_admin_augmentation.css")
-    return format_html(
-        f'<link rel="stylesheet" href="{static_path}">',
-    )

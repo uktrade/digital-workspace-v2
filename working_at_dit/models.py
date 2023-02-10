@@ -3,13 +3,7 @@ from itertools import groupby
 from django.db import models
 from django.db.models import Q
 from modelcluster.fields import ParentalKey
-from wagtail.admin.edit_handlers import (
-    FieldPanel,
-    InlinePanel,
-    PageChooserPanel,
-    StreamFieldPanel,
-)
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel
 
 from content.models import BasePage, ContentPage, Theme
 
@@ -17,7 +11,7 @@ from content.models import BasePage, ContentPage, Theme
 class WorkingAtDITHome(ContentPage):
     panels = [
         FieldPanel("name"),
-        StreamFieldPanel("body"),
+        FieldPanel("body"),
     ]
 
     subpage_types = [
@@ -101,7 +95,7 @@ class TopicTheme(models.Model):
     )
 
     panels = [
-        SnippetChooserPanel("theme"),
+        FieldPanel("theme"),
     ]
 
     class Meta:
@@ -123,7 +117,7 @@ class PageTopic(models.Model):
     )
 
     panels = [
-        PageChooserPanel("topic"),
+        FieldPanel("topic"),
     ]
 
     class Meta:

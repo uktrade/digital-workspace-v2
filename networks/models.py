@@ -1,7 +1,7 @@
 from django import forms
 from django.db import models
-from wagtail.admin.edit_handlers import FieldPanel
 from wagtail.admin.forms import WagtailAdminPageForm
+from wagtail.admin.panels import FieldPanel
 
 import peoplefinder.models as pf_models
 from content.models import ContentPage

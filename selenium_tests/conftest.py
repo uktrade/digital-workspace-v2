@@ -45,6 +45,18 @@ def run_sql(sql: str, db_settings: dict[str, Any]) -> None:
 
 @pytest.fixture(scope="package")
 def django_db_setup(django_db_setup):
+    # TODO: There needs to be a one-time top-level project setup for tests.
+    # with django_db_blocker.unblock():
+    #     # digital-workspace setup
+    #     call_command("create_menus")
+    #     call_command("create_section_homepages")
+    #     call_command("create_groups")
+    #     # peoplefinder setup
+    #     call_command("loaddata", "countries.json")
+    #     call_command("create_people_finder_groups")
+    #     # common setup
+    #     call_command("update_index")
+
     db_settings = settings.DATABASES["default"]
 
     test_db_name = db_settings["NAME"]
