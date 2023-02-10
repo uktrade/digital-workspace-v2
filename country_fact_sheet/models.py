@@ -2,12 +2,7 @@ import logging
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from wagtail.admin.edit_handlers import (
-    FieldPanel,
-    MultiFieldPanel,
-    ObjectList,
-    TabbedInterface,
-)
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.documents.models import Document
 
 from content.models import ContentPage
@@ -17,28 +12,6 @@ UserModel = get_user_model()
 
 
 logger = logging.getLogger(__name__)
-
-
-class CustomTabbedInterface(TabbedInterface):
-    def get_form_class(self):
-        form_class = super().get_form_class()
-        request = self.request
-        if request:
-            # check request is available to ensure this instance has been bound to it
-            user = self.request.user
-
-            def initiate_class(*args, **kwargs):
-                # instead of returning the class, return a function that returns the instantiated class
-                # here we can inject a kwarg `initial` into the generated form
-                # important: this gets called for edit view also and initial will override the instance data
-                # kwarg['instance'] will be the `Page` instance and can be inspected as needed
-                kwargs["initial"] = {"user": user}
-
-                return form_class(*args, **kwargs)
-
-            return initiate_class
-
-        return form_class
 
 
 class CountryFactSheetHome(ContentPage):
@@ -96,22 +69,6 @@ class CountryFactSheetHome(ContentPage):
         ),
     ]
 
-    edit_handler = CustomTabbedInterface(
-        [
-            ObjectList(content_panels, heading="Content"),
-            ObjectList(ContentPage.promote_panels, heading="Promote"),
-            ObjectList(
-                ContentPage.settings_panels, heading="Settings", classname="settings"
-            ),
-        ]
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def form_valid(self, form, *args, **kwargs):
-        return super().form_valid(form, *args, **kwargs)
-
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
@@ -126,9 +83,3 @@ class CountryFactSheetHome(ContentPage):
             ).order_by("title")
 
         return context
-
-    def get_form_class(self):
-        return super().get_form_class()
-
-    def on_request_bound(self):
-        return super().on_request_bound()

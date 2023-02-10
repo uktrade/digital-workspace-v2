@@ -7,11 +7,9 @@ from django.template.response import TemplateResponse
 from django.utils.text import slugify
 from modelcluster.fields import ParentalKey
 from simple_history.models import HistoricalRecords
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, PageChooserPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.search import index
-from wagtail.snippets.edit_handlers import SnippetChooserPanel
 from wagtail.snippets.models import register_snippet
 
 from content.models import BasePage, ContentPage
@@ -85,7 +83,7 @@ class NewsCategory(models.Model):
 
     panels = [
         FieldPanel("category"),
-        PageChooserPanel("lead_story"),
+        FieldPanel("lead_story"),
     ]
 
 
@@ -103,7 +101,7 @@ class NewsPageNewsCategory(models.Model):
     )
 
     panels = [
-        SnippetChooserPanel("news_category"),
+        FieldPanel("news_category"),
     ]
 
     class Meta:
@@ -148,7 +146,7 @@ class NewsPage(PageWithTopics):
     ]
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504
-        ImageChooserPanel("preview_image"),
+        FieldPanel("preview_image"),
         InlinePanel("news_categories", label="News categories"),
         FieldPanel("allow_comments"),
         FieldPanel("perm_sec_as_author"),

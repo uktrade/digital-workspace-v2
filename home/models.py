@@ -6,8 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel
-from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
 
@@ -35,7 +34,7 @@ class HomeNewsOrder(AdminSortable, ClusterableModel):
         verbose_name_plural = "Home page news order"
 
     panels = [
-        PageChooserPanel("news_page"),
+        FieldPanel("news_page"),
     ]
 
     def clean(self):
@@ -65,7 +64,7 @@ class QuickLink(models.Model):
 
     panels = [
         FieldPanel("title"),
-        PageChooserPanel("link_to"),
+        FieldPanel("link_to"),
         FieldPanel("result_weighting"),
     ]
 
@@ -97,8 +96,8 @@ class WhatsPopular(models.Model):
 
     panels = [
         FieldPanel("title"),
-        ImageChooserPanel("preview_image"),
-        PageChooserPanel("link_to"),
+        FieldPanel("preview_image"),
+        FieldPanel("link_to"),
         FieldPanel("external_url"),
     ]
 

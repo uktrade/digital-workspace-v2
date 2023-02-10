@@ -2,9 +2,9 @@
 
 import django.db.models.deletion
 import modelcluster.fields
-import wagtail.core.blocks
-import wagtail.core.fields
+import wagtail.blocks
 import wagtail.embeds.blocks
+import wagtail.fields
 import wagtail.images.blocks
 from django.db import migrations, models
 
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="contentpage",
             name="body",
-            field=wagtail.core.fields.StreamField(
+            field=wagtail.fields.StreamField(
                 [
                     ("heading2", content.blocks.Heading2Block()),
                     ("heading3", content.blocks.Heading3Block()),
@@ -48,12 +48,12 @@ class Migration(migrations.Migration):
                     ),
                     (
                         "image",
-                        wagtail.core.blocks.StructBlock(
+                        wagtail.blocks.StructBlock(
                             [
                                 ("image", wagtail.images.blocks.ImageChooserBlock()),
                                 (
                                     "isdecorative",
-                                    wagtail.core.blocks.BooleanBlock(
+                                    wagtail.blocks.BooleanBlock(
                                         help_text="\n        Tick if this image is entirely decorative and does not include\n        important content. This will hide the image from users using\n        screen readers.\n        ",
                                         label="Is this a decorative image?",
                                         required=False,
@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                                 ),
                                 (
                                     "alt",
-                                    wagtail.core.blocks.CharBlock(
+                                    wagtail.blocks.CharBlock(
                                         help_text="\n        Read out by screen readers or displayed if an image does not load\n        or if images have been switched off.\n\n        Unless this is a decorative image, it MUST have alt text that\n        tells people what information the image provides, describes its\n        content and function, and is specific, meaningful and concise.\n        ",
                                         label="Alt text",
                                         required=False,
@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
                                 ),
                                 (
                                     "caption",
-                                    wagtail.core.blocks.CharBlock(
+                                    wagtail.blocks.CharBlock(
                                         help_text="\n        Optional text displayed under the image on the page to provide\n        context.\n        ",
                                         required=False,
                                     ),
@@ -79,13 +79,13 @@ class Migration(migrations.Migration):
                     ),
                     (
                         "internal_media",
-                        wagtail.core.blocks.StructBlock(
+                        wagtail.blocks.StructBlock(
                             [("media_file", content.blocks.MediaChooserBlock())]
                         ),
                     ),
                     (
                         "video",
-                        wagtail.core.blocks.StructBlock(
+                        wagtail.blocks.StructBlock(
                             [("video", wagtail.embeds.blocks.EmbedBlock())],
                             help_text="Video embedding",
                         ),
