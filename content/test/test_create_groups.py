@@ -47,7 +47,7 @@ class CreateGroupsTestCase(TestCase):
 
         # `specific_deferred` returns the most specific subclassed form of the
         # page which matches what we get back for `top_level_pages`
-        # https://docs.wagtail.io/en/stable/reference/pages/model_reference.html#wagtail.core.models.Page.get_specific
+        # https://docs.wagtail.io/en/stable/reference/pages/model_reference.html#wagtail.models.Page.get_specific
         editors_pages = [
             x.page.specific_deferred for x in self.editors.page_permissions.all()
         ]

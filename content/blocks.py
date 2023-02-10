@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
+from wagtail import blocks
 from wagtail.contrib.table_block.blocks import TableBlock
-from wagtail.core import blocks
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock

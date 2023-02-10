@@ -207,7 +207,7 @@ class PersonSerializer(serializers.ModelSerializer):
         return ", ".join(filter(None, parts))
 
     def get_profile_url(self, obj):
-        return settings.BASE_URL + obj.get_absolute_url()
+        return settings.WAGTAILADMIN_BASE_URL + obj.get_absolute_url()
 
 
 # WARNING: We need PersonPagination and PersonViewSet.get_full_queryset to have the same

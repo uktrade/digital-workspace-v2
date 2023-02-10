@@ -27,7 +27,7 @@ AUTHBROKER_URL = env("AUTHBROKER_URL")
 AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID")
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET")
 
-BASE_URL = env("WAGTAIL_BASE_URL")
+WAGTAILADMIN_BASE_URL = env("WAGTAIL_BASE_URL")
 
 DEBUG = env.bool("DJANGO_DEBUG", False)
 
@@ -131,7 +131,7 @@ WAGTAIL_APPS = [
     "wagtail.images",
     "wagtail.search",
     "wagtail.admin",
-    "wagtail.core",
+    "wagtail",
     "wagtail.contrib.routable_page",
     "wagtail.contrib.modeladmin",
     "wagtailmedia",

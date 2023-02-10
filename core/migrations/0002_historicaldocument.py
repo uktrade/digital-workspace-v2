@@ -2,7 +2,7 @@
 
 import django.db.models.deletion
 import simple_history.models
-import wagtail.core.models
+import wagtail.models
 from django.conf import settings
 from django.db import migrations, models
 
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         blank=True,
                         db_constraint=False,
-                        default=wagtail.core.models.get_root_collection_id,
+                        default=wagtail.models.get_root_collection_id,
                         null=True,
                         on_delete=django.db.models.deletion.DO_NOTHING,
                         related_name="+",

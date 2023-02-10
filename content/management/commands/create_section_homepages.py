@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
-from wagtail.core.models import Page
+from wagtail.models import Page
 
 from about_us.models import AboutUsHome
 from content.models import ContentPage, PrivacyPolicyHome

@@ -1,10 +1,6 @@
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
-from wagtail.core.models import (
-    Collection,
-    GroupCollectionPermission,
-    GroupPagePermission,
-)
+from wagtail.models import Collection, GroupCollectionPermission, GroupPagePermission
 
 from about_us.models import AboutUsHome
 from networks.models import NetworksHome
