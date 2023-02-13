@@ -1,6 +1,6 @@
 {
   "name": "workspace",
-  "author": "Department for International Trade",
+  "author": "Department for Business and Trade",
   "private": true,
   "dependencies": {
     "cropperjs": "^1.5.12",

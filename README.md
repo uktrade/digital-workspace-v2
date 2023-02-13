@@ -28,14 +28,17 @@ You can now access:
 - Wagtail admin on http://localhost:8000/admin
 - Django admin on http://localhost:8000/django-admin
 
-If you need a virtualenv with the packages installed please run `./setup-local.sh`.
+If you would like a virtualenv with the packages installed then:
+
+- make sure you have [Poetry](https://python-poetry.org/docs/#installation) installed
+- run `make local-setup`
+
 This is useful if you are using [vscode](https://code.visualstudio.com/) with the
 [python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python).
 
 ## Useful commands
 
 ```bash
-
 # Start a bash session
 make bash
 # Create test users
@@ -48,6 +51,29 @@ exit # leave the container's bash shell
 
 # Rebuild the search index
 make index
+```
+
+## Managing Python dependencies
+
+This project uses [Poetry](https://python-poetry.org) for dependency management.
+
+We recommend reading through the [docs](https://python-poetry.org/docs/), in particular
+the sections on the [CLI](https://python-poetry.org/docs/cli/) and [Dependency
+specification](https://python-poetry.org/docs/dependency-specification/).
+
+Below is an example of how to use Poetry to handle the dependencies in this project.
+
+```bash
+# Start a bash session
+make bash
+# Update all packages (respects the version constraints in pyproject.toml)
+poetry update
+# Update selected packages (respects the version constraints in pyproject.toml)
+poetry update django wagtail
+# Update a package to a version outside it's constraints
+poetry add django@^4.0.0
+# Don't forget to regenerate the requirements.txt file
+make requirements
 ```
 
 ## Unit tests
@@ -115,17 +141,6 @@ make coverage
 xdg-open ./htmlcov/index.html
 ```
 
-## Make commands
-
-### upgrade-package
-
-Upgrade a single pip package.
-
-Takes a single required argument `package` which is the name of the package you
-want to upgade.
-
-Example: `make upgrade-package package=pillow`
-
 ## Assets
 
 Assets are handled via Webpack and `django-webpack-loader`. A number of npm
@@ -135,7 +150,7 @@ tasks are provided for development:
 - `npm run dev` watches the asset folder and recompiles on changes
 - `npm run clean` cleans the compiled assets in `assets/webpack_bundles`
 
-### Deployment
+## Deployment
 
 On deployment, assets need to be compiled on CI before `collectstatic` is run.
 We achieve this by using both the Python and NodeJS buildpacks, the NodeJS

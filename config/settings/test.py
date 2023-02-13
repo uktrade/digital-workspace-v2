@@ -8,3 +8,8 @@ MIDDLEWARE.remove("authbroker_client.middleware.ProtectAllViewsMiddleware")  # n
 
 # Turn off Celery
 CELERY_ALWAYS_EAGER = True
+
+WAGTAILSEARCH_BACKENDS["default"] |= {  # noqa
+    "INDEX": "test_wagtail",
+    "AUTO_UPDATE": False,
+}

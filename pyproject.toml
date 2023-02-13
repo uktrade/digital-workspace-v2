@@ -1,3 +1,95 @@
+[tool.poetry]
+name = "digital-workspace-v2"
+version = "1.0.0"
+description = ""
+authors = ["Live Services <live.services@digital.trade.gov.uk>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+# Django
+django = "^3.2.16"
+django-environ = "^0.8.1"
+django-webpack-loader = "^1.4.1"
+django-storages = "^1.11.1"
+django-extensions = "^3.1.5"
+django_redis = "^5.2.0"
+django-settings-export = "^1.2.1"
+django-simple-history = "^3.0.0"
+djangorestframework = "^3.13.1"
+# DIT Django
+django-staff-sso-client = "^4.0.1"
+django_log_formatter_ecs = "^0.0.5"
+django-chunk-upload-handlers = "^0.0.10"
+django-audit-log-middleware = "^0.0.4"
+django-hawk-drf = "^0.0.1"
+# Wagtail
+wagtail = "^2.15.3"
+wagtailmedia = "^0.8.0"
+wagtailmenus = "^3.0.2"
+wagtail-draftail-anchors = "^0.2.0"
+wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag="v0.2.0" }
+# OpenSearch
+elasticsearch = "7.13.4"
+elasticsearch-dsl = "^7.4.0"
+django-elasticsearch-dsl = "^7.2.2"
+# GOV.UK Notify
+notifications-python-client = "^6.3.0"
+# Peoplefinder
+markdown = "^3.3.4"
+requests-hawk = "^1.1.1"
+# Operational
+waitress = "^2.1.2"
+sentry-sdk = "^1.5.4"
+psycopg2 = "^2.9.3"
+whitenoise = "^5.3.0"
+celery = "^5.2.6"
+redis = "^4.1.2"
+tweepy = "^4.5.0"
+atoma = "^0.0.17"
+pillow = "^9.3.0"
+bleach = "^4.1.0"
+elastic-apm = "^6.7.2"
+requests = "^2.27.1"
+boto3 = "^1.20.46"
+# TODO: Are these packages used directly?
+pyjwt = { version = "^2.4.0", extras = ["crypto"] }
+# urllib3>=1.26.5
+# lxml>=4.9.1
+# PyYAML>=5.4
+
+[tool.poetry.group.dev.dependencies]
+poetry = "^1.3.2"
+# Linters
+black = "^22.3.0"
+isort = "^5.10.1"
+flake8 = "^6.0.0"
+flake8-bandit = "^4.1.1"
+flake8-bugbear = "^23.1.20"
+# TODO: Do these flake8 plugins provide much value?
+# flake8-blind-except
+# flake8-debugger
+# flake8-print
+# flake8-quotes
+# flake8-string-format
+# pep8-naming
+pydocstyle = "^6.1.1"
+# Testing
+pytest = "^6.2.5"
+pytest-django = "^4.5.2"
+coverage = "^5.5"
+selenium = "^3.141.0"
+pytest-selenium = "^3.0.0"
+faker = "^11.3.0"
+factory-boy = "^3.2.1"
+# Util
+bpython = "^0.22.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.pytest.ini_options]
 minversion = "6.0"
 python_files = "tests.py test_*.py *_tests.py"
@@ -5,6 +97,7 @@ addopts = "--disable-warnings --ds=config.settings.test --driver=Remote --seleni
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 markers = [
     "selenium: Mark the test as using Selenium.",
+    "opensearch: Mark the test as using OpenSearch.",
 ]
 
 [tool.coverage.run]
