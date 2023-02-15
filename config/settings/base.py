@@ -282,10 +282,6 @@ if "opensearch" in VCAP_SERVICES:
 else:
     OPENSEARCH_URL = env("OPENSEARCH_URL", default="")
 
-# Copilot config
-if not OPENSEARCH_URL:
-    OPENSEARCH_URL = "https://unused:unused@" + env(env("OPENSEARCH_CONFIG_KEY")) + ":443"
-
 
 ELASTICSEARCH_DSL = {
     "default": {
