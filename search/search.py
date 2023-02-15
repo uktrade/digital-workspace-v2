@@ -2,6 +2,7 @@ from typing import Any, Optional
 
 from django.db.models import QuerySet
 from django.http import HttpRequest
+import re
 from wagtail.search.backends import get_search_backend
 from wagtail.search.utils import parse_query_string
 
@@ -51,3 +52,10 @@ def _person_query(request: HttpRequest) -> QuerySet:
 
 def _team_query(request: HttpRequest) -> QuerySet:
     return Team.objects.all()
+
+
+def sanitize_search_query(query: str) -> str:
+    if query is None:
+        return ""
+
+    return re.sub('[^a-zA-Z0-9-.~_\s]', "", query)
