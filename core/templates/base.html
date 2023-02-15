@@ -3,6 +3,7 @@
 {% load static wagtailcore_tags %}
 {% load cookie_banner %}
 {% load site_alert %}
+{% load git_info %}
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
     <head>
@@ -79,5 +80,6 @@
         {% include "includes/footer.html" %}
         {% render_bundle 'main' 'js' %}
         {% block scripts %}{% endblock %}
+        {% git_info %}
     </body>
 </html>
