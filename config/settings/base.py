@@ -197,7 +197,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Copilot env key.  IF set, we turn the supplied json into a DB connection string
 # that can be consumed by dj-database-url
-DATABASE_CREDS = env.json("DATABASE_CREDS", default={}})
+DATABASE_CREDS = env.json("DATABASE_CREDS", default={})
 
 if DATABASE_CREDS:
     db_url = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(**DATABASE_CREDS)
