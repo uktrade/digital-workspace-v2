@@ -195,14 +195,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-DB_CONFIG_KEY = env("DB_CONFIG_KEY", default=None)
+# Copilot env key.  IF set, we turn the supplied json into a DB connection string
+# that can be consumed by dj-database-url
+DATABASE_CREDS = env.json("DATABASE_CREDS", default={}})
 
-# DB_CONFIG_KEY env var points to the copilot RDS secret env var
-# If the key is set, then we overwrite the DATABASE_URL env var
-# so that dj-database-url picks up the correct connection details
-if DB_CONFIG_KEY:
-    db_config = env.json(DB_CONFIG_KEY)
-    db_url = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(**db_config)
+if DATABASE_CREDS:
+    db_url = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(**DATABASE_CREDS)
     os.environ["DATABASE_URL"] = db_url
 
 if "postgres" in VCAP_SERVICES:
@@ -286,7 +284,7 @@ else:
 
 # Copilot config
 if not OPENSEARCH_URL:
-    OPENSEARCH_URL = "https://" + env(env("OPENSEARCH_CONFIG_KEY")) + ":443"
+    OPENSEARCH_URL = "https://unused:unused@" + env(env("OPENSEARCH_CONFIG_KEY")) + ":443"
 
 
 ELASTICSEARCH_DSL = {
