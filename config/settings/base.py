@@ -319,11 +319,6 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
-
-# Allow images, media and docs to get an expensive "usage" page in the admin
-# https://docs.wagtail.org/en/v2.8.1/reference/settings.html#usage-for-images-documents-and-snippets
-WAGTAIL_USAGE_COUNT_ENABLED = True
-
 # Add a custom provider
 # Your custom provider must support oEmbed for this to work. You should be
 # able to find these details in the provider's documentation.
