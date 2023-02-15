@@ -29,7 +29,7 @@ compilescss:
 	$(wagtail) python manage.py compilescss
 
 test:
-	docker-compose run --rm --name testrunner wagtail pytest -m "not selenium" --reuse-db $(tests) 
+	docker-compose run --rm --name testrunner wagtail pytest -m "not selenium" --reuse-db $(tests)
 
 test-selenium:
 	docker-compose run --rm --name testrunner wagtail pytest -m "selenium"
@@ -41,7 +41,7 @@ coverage:
 	docker-compose run --rm --name testrunner wagtail ./scripts/coverage.sh
 
 shell:
-	$(wagtail) python manage.py shell
+	$(wagtail) python manage.py shell_plus
 
 flake8:
 	docker-compose run --rm --no-deps wagtail flake8

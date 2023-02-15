@@ -9,7 +9,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -24,11 +24,18 @@ services:
       - "DISABLE_INSTALL_DEMO_CONFIG=true"
       - "DISABLE_SECURITY_PLUGIN=true"
     healthcheck:
-      test: ["CMD", "curl", "-s", "-f", "http://localhost:9200/_cat/health"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-s",
+          "-f",
+          "http://localhost:9200/_cat/health"
+        ]
   wagtail:
     build:
       context: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver_plus 0.0.0.0:8000
     # mimics production
     # command: waitress-serve --port=8000 config.wsgi:application
     volumes:
