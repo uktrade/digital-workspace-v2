@@ -1,4 +1,5 @@
 from typing import Any, Optional
+import unicodedata
 
 from django.db.models import QuerySet
 from django.http import HttpRequest
@@ -54,8 +55,12 @@ def _team_query(request: HttpRequest) -> QuerySet:
     return Team.objects.all()
 
 
-def sanitize_search_query(query: Optional[str]) -> str:
+def sanitize_search_query(query: Optional[str] = None) -> str:
     if query is None:
         return ""
 
-    return re.sub('[^a-zA-Z0-9-.~_\s]', "", query)
+    output = re.sub('[^a-zA-Z0-9-.~_\s]', "", query)
+    if not unicodedata.is_normalized("NFKD", output):
+        output = unicodedata.normalize("NFKD", output)
+
+    return output
