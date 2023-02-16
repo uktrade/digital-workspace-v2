@@ -13,6 +13,6 @@ def git_info():
     GIT_BRANCH = os.environ.get("GIT_BRANCH", "-")
     GIT_COMMIT = os.environ.get("GIT_COMMIT", "-")
     return mark_safe(  # noqa S703 S308
-        f"<!-- env:{APP_ENV} // git_branch:{GIT_BRANCH} // "
-        f"git_commit:{GIT_COMMIT} -->"
+        f"<!-- env: {APP_ENV} // git_branch: {GIT_BRANCH} // "
+        f"git_commit: {GIT_COMMIT} -->"
     )
