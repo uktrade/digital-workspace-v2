@@ -9,3 +9,7 @@ SKIP_CLAM_AV_FILE_UPLOAD = False
 
 if SKIP_CLAM_AV_FILE_UPLOAD:
     FILE_UPLOAD_HANDLERS = ("django_chunk_upload_handlers.s3.S3FileUploadHandler",)
+
+INSTALLED_APPS += [  # noqa F405
+    "django_extensions",
+]
