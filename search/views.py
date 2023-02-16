@@ -5,7 +5,7 @@ from typing import Optional, TypedDict
 
 from django import forms
 from django.conf import settings
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
 from django.views.decorators.http import require_http_methods
 from elasticsearch import Elasticsearch
@@ -194,6 +194,9 @@ class V2SearchContext(TypedDict):
 
 @require_http_methods(["GET"])
 def v2_search(request: HttpRequest) -> HttpResponse:
+    if not request.user.enable_v2_search:
+        raise Http404
+
     query = request.GET.get("query")
     category = request.GET.get("category")
 
