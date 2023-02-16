@@ -54,7 +54,7 @@ def _team_query(request: HttpRequest) -> QuerySet:
     return Team.objects.all()
 
 
-def sanitize_search_query(query: str) -> str:
+def sanitize_search_query(query: Optional[str]) -> str:
     if query is None:
         return ""
 
