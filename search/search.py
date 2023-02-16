@@ -1,9 +1,9 @@
-from typing import Any, Optional
+import re
 import unicodedata
+from typing import Any, Optional
 
 from django.db.models import QuerySet
 from django.http import HttpRequest
-import re
 from wagtail.search.backends import get_search_backend
 from wagtail.search.utils import parse_query_string
 
@@ -59,7 +59,7 @@ def sanitize_search_query(query: Optional[str] = None) -> str:
     if query is None:
         return ""
 
-    output = re.sub('[^a-zA-Z0-9-.~_\s]', "", query)
+    output = re.sub(r"[^a-zA-Z0-9-.~_\s]", "", query)
     if not unicodedata.is_normalized("NFKD", output):
         output = unicodedata.normalize("NFKD", output)
 

@@ -33,8 +33,6 @@ def search(request):
 
     # OR based search apart from anything quoted
     sanitized_search_query = sanitize_search_query(search_query)
-    print("*************************")
-    print(sanitized_search_query)
 
     query_parts = shlex.split(sanitized_search_query.lower())
     search_terms = ""
