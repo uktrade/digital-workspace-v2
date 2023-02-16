@@ -79,7 +79,7 @@ if env.str("SENTRY_DSN", None):
     sentry_sdk.init(
         dsn=env("SENTRY_DSN"),
         environment=APP_ENV,
-        release={GIT_COMMIT},
+        release=GIT_COMMIT,
         integrations=[DjangoIntegration(), RedisIntegration()],
         send_default_pii=True,  # Enable associating exceptions to users
     )
