@@ -22,6 +22,7 @@ VCAP_SERVICES = env.json("VCAP_SERVICES", {})
 # Set required configuration from environment
 # Should be one of the following: "local", "test", "dev", "staging", "training", "prod"
 APP_ENV = env.str("APP_ENV", "local")
+GIT_COMMIT = env.str("GIT_COMMIT", None)
 
 AUTHBROKER_URL = env("AUTHBROKER_URL")
 AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID")
@@ -78,6 +79,7 @@ if env.str("SENTRY_DSN", None):
     sentry_sdk.init(
         dsn=env("SENTRY_DSN"),
         environment=APP_ENV,
+        release=GIT_COMMIT,
         integrations=[DjangoIntegration(), RedisIntegration()],
         send_default_pii=True,  # Enable associating exceptions to users
     )
