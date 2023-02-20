@@ -55,12 +55,29 @@ def _team_query(request: HttpRequest) -> QuerySet:
     return Team.objects.all()
 
 
-def sanitize_search_query(query: Optional[str] = None) -> str:
+def sanitize_search_query(query = None) -> str:
     if query is None:
         return ""
-
-    output = re.sub(r"[^a-zA-Z0-9-.~_\s]", "", query)
+    # find all properly quoted substrings with matching opening and closing "|'
+    matches = re.split(r"([\"'])(.*?)(\1)", query)
+    output = ""
+    quote_next_match = False
+    valid_quotes = ["\"", "'"]
+    for match in matches:
+        if match == "":
+            continue
+        if match in valid_quotes and not quote_next_match:
+            quote_next_match = True  # opening quote found
+            continue
+        if match in valid_quotes and quote_next_match:
+            quote_next_match = False  # closing quote found
+            continue
+        if quote_next_match:
+            output += "'"
+        # replace all url-unsafe chars
+        output += re.sub(r"[^a-zA-Z0-9-.~_\s]", "", match)
+        if quote_next_match:
+            output += "'"
     if not unicodedata.is_normalized("NFKD", output):
         output = unicodedata.normalize("NFKD", output)
-
     return output
