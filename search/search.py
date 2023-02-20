@@ -60,6 +60,7 @@ def sanitize_search_query(query: Optional[str] = None) -> str:
         return ""
 
     # find all properly quoted substrings with matching opening and closing "|'
+    # re.split returns both matches and unmatched parts so we process everything
     matches = re.split(r"([\"'])(.*?)(\1)", query)
 
     output = ""
@@ -74,12 +75,13 @@ def sanitize_search_query(query: Optional[str] = None) -> str:
         if match in valid_quotes and quote_next_match:
             quote_next_match = False  # closing quote found
             continue
-        if quote_next_match:
-            output += "'"
+
         # replace all url-unsafe chars
-        output += re.sub(r"[^a-zA-Z0-9-.~_\s]", "", match)
+        cleaned_match = re.sub(r"[^a-zA-Z0-9-.~_\s]", "", match)
         if quote_next_match:
-            output += "'"
+            cleaned_match = f"'{cleaned_match}'"
+
+        output += cleaned_match
 
     if not unicodedata.is_normalized("NFKD", output):
         output = unicodedata.normalize("NFKD", output)
