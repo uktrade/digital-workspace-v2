@@ -14,7 +14,7 @@ from elasticsearch_dsl import Search
 from content.models import ContentPage, SearchExclusionPageLookUp, SearchPinPageLookUp
 
 from .forms import SearchCategory, SearchForm
-from .search import search_all
+from .search import sanitize_search_query, search_all
 
 
 logger = logging.getLogger(__name__)
@@ -32,8 +32,9 @@ def search(request):
     total_shown = 10
 
     # OR based search apart from anything quoted
+    sanitized_search_query = sanitize_search_query(search_query)
 
-    query_parts = shlex.split(search_query.lower())
+    query_parts = shlex.split(sanitized_search_query.lower())
     search_terms = ""
 
     for query_part in query_parts:
