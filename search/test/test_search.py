@@ -2,6 +2,7 @@ from django.test import Client, TestCase
 
 from search.search import sanitize_search_query
 
+
 class TestSearchUtils(TestCase):
     def test_sanitize_asciifolds_accented_chars(self):
         query = "Gôod morninç øæå"
@@ -33,7 +34,6 @@ class TestSearchUtils(TestCase):
         result = sanitize_search_query(query)
         self.assertEqual(result, "C C")
 
-
     def test_sanitize_returns_str_containing_only_safe_chars(self):
         query = None
         result = sanitize_search_query(query)
@@ -46,7 +46,6 @@ class TestSearchUtils(TestCase):
         query = "!/(^&*)\\+{[@]}"
         result = sanitize_search_query(query)
         self.assertEqual(result, "")
-
 
     def test_sanitize_preserves_query_terms_and_phrases(self):
         query = "query"
@@ -68,8 +67,9 @@ class TestSearchUtils(TestCase):
         # only preserve single level deep
         query = "a 'very complex' query with '\"multiple nested\" phrases'"
         result = sanitize_search_query(query)
-        self.assertEqual(result, "a 'very complex' query with 'multiple nested phrases'")
-
+        self.assertEqual(
+            result, "a 'very complex' query with 'multiple nested phrases'"
+        )
 
     def test_sanitize_rationalises_valid_quotes(self):
         query = "a 'phrased' query"
