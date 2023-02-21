@@ -1,5 +1,4 @@
 import pytest
-from django.test import Client, TestCase
 
 from search.search import sanitize_search_query
 
