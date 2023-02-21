@@ -76,14 +76,14 @@ def sanitize_search_query(query: Optional[str] = None) -> str:
             quote_next_match = False  # closing quote found
             continue
 
-        # replace all url-unsafe chars
+        # ascii-fold all chars that can be folded
+        match = unicodedata.normalize("NFKD", match)
+
+        # replace all remaining url-unsafe chars
         cleaned_match = re.sub(r"[^a-zA-Z0-9-.~_\s]", "", match)
         if quote_next_match:
             cleaned_match = f"'{cleaned_match}'"
 
         output += cleaned_match
-
-    if not unicodedata.is_normalized("NFKD", output):
-        output = unicodedata.normalize("NFKD", output)
 
     return output
