@@ -26,7 +26,7 @@
         <div class="v2-search-results__category">
             <div class="govuk-!-padding-left-2 govuk-!-padding-right-2">
                 <h2 class="govuk-heading-m">Pages</h2>
-                {% include 'search/partials/page_results.html' with results=page_results|slice:":3" %}
+                {% include 'search/partials/page_results.html' with results=page_results|slice:":3" num_prev_results='0' %}
             </div>
             {% include 'search/partials/see_all_results_form.html' with category='pages' category_text='page' %}
         </div>
