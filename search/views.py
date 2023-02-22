@@ -232,9 +232,9 @@ def v2_search(request: HttpRequest) -> HttpResponse:
             context["team_results"],
             context["people_results"],
         ) = search_all(request, query, category)
-        context['num_page_results'] = len(context['page_results'])
-        context['num_team_results'] = len(context['team_results'])
-        context['num_people_results'] = len(context['people_results'])
+        context["num_page_results"] = len(context["page_results"])
+        context["num_team_results"] = len(context["team_results"])
+        context["num_people_results"] = len(context["people_results"])
     else:
         form = SearchForm()
 
