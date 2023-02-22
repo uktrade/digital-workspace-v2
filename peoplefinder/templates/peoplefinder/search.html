@@ -64,10 +64,11 @@
 <script lang="javascript">
     document.onload = dataLayer.push({
         'search_version': 'v1',
-        'search_query': '{{ search_query }}',
-        'search_results_page_type': 'pages',
-        'search_results_count_total': '{{ show_total }}',
-        'search_results_count_pages_type': '{{ show_total }}'
+        'search_query': '{{ form.cleaned_data.query }}',
+        'search_results_page_type': 'peoplefinder',
+        'search_results_count_total': '{{ total_matches }}',
+        'search_results_count_people_type': '{{ person_matches|length }}',
+        'search_results_count_teams_type': '{{ team_matches|length }}'
     });
 </script>
 {% endblock %}
