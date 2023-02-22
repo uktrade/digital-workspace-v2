@@ -39,21 +39,27 @@
 
     </form>
     <p class="govuk-body">{{ show_total }} {% if show_total == 1 %}result{% else %}results{% endif %} found</p>
+    {% with page_result_counter=1 %}
     {% if pinned_results and page == 1 %}
         <ul class="search-results pinned">
+            {% with section_result_counter=1 %}
             {% for result in pinned_results %}
                 <li>
-                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}">{{ result }}</a></h3>
+                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}" onclick="dataLayer.push({'search_result_section': 'content_pinned', 'search_result_number_page': {{ page_result_counter }}, 'search_result_number_section': {{ section_result_counter }},})">{{ result }}</a></h3>
                     <p class="govuk-body">{{ result.preview_text }}</p>
                 </li>
+                <!-- {{ section_result_counter|add:'1' }}
+                {{ page_result_counter|add:'1' }} -->
             {% endfor %}
+            {% endwith %}
         </ul>
     {% endif %}
     {% if search_results %}
         <ul class="search-results">
+            {% with section_result_counter=1 %}
             {% for result in search_results %}
                 <li>
-                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% slugurl result.slug_filter %}">{{ result.title }}</a></h3>
+                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% slugurl result.slug_filter %}" onclick="dataLayer.push({'search_result_section': 'content', 'search_result_number_page': {{ page_result_counter }}, 'search_result_number_section': {{ section_result_counter }},})">{{ result.title }}</a></h3>
 
                     {% if result.meta.highlight.title %}
                         {% for item in result.meta.highlight.title %}
@@ -71,28 +77,41 @@
                         <p class="govuk-body">{{ result.content_contentpage__body_no_html|preview }}....</p>
                     {% endif %}
                 </li>
+                <!-- {{ section_result_counter|add:'1' }}
+                {{ page_result_counter|add:'1' }} -->
             {% endfor %}
+            {% endwith %}
         </ul>
 
         <div class="pagination">
             {% if previous_page %}
-                <a class="previous govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ previous_page }}">Previous page</a>
+                <a class="previous govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ previous_page }}" onclick="dataLayer.push({'search_ui': 'pagination_prev'})">Previous page</a>
             {% endif %}
             <ul class="page-links">
                 {% for i in pagination_range %}
                     {% if page == i %}
                         <li class="active govuk-body"><span>{{ i }} </span></li>
                     {% else %}
-                        <li><a class="govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ i }}">{{ i }}</a></li>
+                        <li><a class="govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ i }}" onclick="dataLayer.push({'search_ui': 'pagination_{{ i }}'})">{{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
             {% if next_page %}
-                <a class="next govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ next_page }}">Next page</a>
+                <a class="next govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ next_page }}" onclick="dataLayer.push({'search_ui': 'pagination_next'})">Next page</a>
             {% endif %}
         </div>
     {% endif %}
+    {% endwith %}
+</div>
+</div>
+</div>
+<script lang="javascript">
+    document.onload = dataLayer.push({
+        'search_version': 'v1',
+        'search_query': '{{ search_query }}',
+        'search_results_page_type': 'content',
+        'search_results_count_total': {{ show_total }},
+        'search_results_count_content': {{ show_total }},
+    });
+</script>
 {% endblock %}
-</div>
-</div>
-</div>
