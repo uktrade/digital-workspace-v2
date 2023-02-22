@@ -40,30 +40,24 @@
 
             </form>
             <p class="govuk-body">{{ show_total }} {% if show_total == 1 %}result{% else %}results{% endif %} found</p>
-            {% with page_result_counter=1 %}
             {% if pinned_results and page == 1 %}
             <ul class="search-results pinned">
-                {% with section_result_counter=1 %}
                 {% for result in pinned_results %}
                 <li>
                     <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}"
-                            onclick="dataLayer.push({'search_result_section': 'content_pinned', 'search_result_number_page': {{ page_result_counter }}, 'search_result_number_section': {{ section_result_counter }},})">{{ result }}</a>
+                            onclick="dataLayer.push({'search_result_selected_section': 'content_pinned', 'search_result_selected_number_overall': {{ forloop.counter }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }}})">{{ result }}</a>
                     </h3>
                     <p class="govuk-body">{{ result.preview_text }}</p>
                 </li>
-                <!-- {{ section_result_counter|add:'1' }}
-                {{ page_result_counter|add:'1' }} -->
                 {% endfor %}
-                {% endwith %}
             </ul>
             {% endif %}
             {% if search_results %}
             <ul class="search-results">
-                {% with section_result_counter=1 %}
                 {% for result in search_results %}
                 <li>
                     <h3 class="govuk-heading-m"><a class="govuk-link" href="{% slugurl result.slug_filter %}"
-                            onclick="dataLayer.push({'search_result_section': 'content', 'search_result_number_page': {{ page_result_counter }}, 'search_result_number_section': {{ section_result_counter }},})">{{ result.title }}</a>
+                            onclick="dataLayer.push({'search_result_selected_section': 'pages', 'search_result_selected_number_overall': {{ forloop.counter|add:num_pinned_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }}})">{{ result.title }}</a>
                     </h3>
 
                     {% if result.meta.highlight.title %}
@@ -82,10 +76,7 @@
                     <p class="govuk-body">{{ result.content_contentpage__body_no_html|preview }}....</p>
                     {% endif %}
                 </li>
-                <!-- {{ section_result_counter|add:'1' }}
-                {{ page_result_counter|add:'1' }} -->
                 {% endfor %}
-                {% endwith %}
             </ul>
 
             <div class="pagination">
@@ -112,7 +103,6 @@
                 {% endif %}
             </div>
             {% endif %}
-            {% endwith %}
         </div>
     </div>
 </div>
@@ -120,9 +110,9 @@
     document.onload = dataLayer.push({
         'search_version': 'v1',
         'search_query': '{{ search_query }}',
-        'search_results_page_type': 'content',
+        'search_results_page_type': 'pages',
         'search_results_count_total': '{{ show_total }}',
-        'search_results_count_content': '{{ show_total }}',
+        'search_results_count_pages_type': '{{ show_total }}'
     });
 </script>
 {% endblock %}
