@@ -1,16 +1,13 @@
 {% load wagtailcore_tags formatting %}
-
 <ul>
     {% for result in results %}
-    <li>
-        <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}" onclick="dataLayer.push({'search_result_selected_url': {% pageurl result %},
-                'search_result_selected_type':
-                'page', 'search_result_selected_section': 'pages', 'search_result_selected_number_overall':
-                {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section':
-                {{ forloop.counter }}, 'search_result_selected_page': {{ page }}})">{{ result.title }}</a>
-        </h3>
-
-        <p class="govuk-body">{{ result.preview_text }}</p>
-    </li>
+        <li>
+            <h3 class="govuk-heading-m">
+                <a class="govuk-link"
+                   href="{% pageurl result %}"
+                   onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': {% pageurl result %}, 'search_result_selected_type': 'page', 'search_result_selected_section': 'pages', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page } }})">{{ result.title }}</a>
+            </h3>
+            <p class="govuk-body">{{ result.preview_text }}</p>
+        </li>
     {% endfor %}
 </ul>

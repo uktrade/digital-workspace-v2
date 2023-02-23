@@ -1,39 +1,32 @@
 {% load markdown %}
-
 <div class="pf-team-card">
     <p class="pf-team-card__name mb-10">
-        {% if num_prev_results %} {# only search has this context var #}
-        <a class="govuk-link" href="{% url 'team-view' team.slug %}" onclick="dataLayer.push({'search_result_selected_url': {% url 'team-view' team.slug %}, 'search_result_selected_type':
-            'team',
-            'search_result_selected_section':
-            'teams', 'search_result_selected_number_overall':
-            {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section':
-            {{ forloop.counter }},
-            'search_result_selected_page': {{ page }}})">{{ team.name }}</a>
+        {% if num_prev_results %}
+            {# only search has this context var #}
+            <a class="govuk-link"
+               href="{% url 'team-view' team.slug %}"
+               onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': {% url 'team-view' team.slug %}, 'search_result_selected_type': 'team', 'search_result_selected_section': 'teams', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">{{ team.name }}</a>
         {% else %}
-        <a class="govuk-link" href="{% url 'team-view' team.slug %}">{{ team.name }}</a>
+            <a class="govuk-link" href="{% url 'team-view' team.slug %}">{{ team.name }}</a>
         {% endif %}
     </p>
-
     {% if team.all_parents %}
-    <div class="govuk-breadcrumbs p-0">
-        <ol class="govuk-breadcrumbs__list">
-            {% for parent_team in team.all_parents %}
-            <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-link" href="{% url 'team-view' parent_team.slug %}">{{ parent_team.short_name }}</a>
-            </li>
-            {% endfor %}
-        </ol>
-    </div>
+        <div class="govuk-breadcrumbs p-0">
+            <ol class="govuk-breadcrumbs__list">
+                {% for parent_team in team.all_parents %}
+                    <li class="govuk-breadcrumbs__list-item">
+                        <a class="govuk-link" href="{% url 'team-view' parent_team.slug %}">{{ parent_team.short_name }}</a>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
     {% endif %}
-
     <div class="pf-team-member-card__description govuk-body mt-20">
         {{ team.description|markdown|truncatewords_html:25 }}
     </div>
-
     {% if team.avg_profile_completion is not None %}
-    <div class="pf-team-card__metadata govuk-body">
-        {{ team.avg_profile_completion|floatformat:0 }}% average profile completion
-    </div>
+        <div class="pf-team-card__metadata govuk-body">
+            {{ team.avg_profile_completion|floatformat:0 }}% average profile completion
+        </div>
     {% endif %}
 </div>
