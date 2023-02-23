@@ -35,10 +35,12 @@ from peoplefinder.views.team import (
     TeamPeopleView,
     TeamTreeView,
 )
+from peoplefinder.views.contact import ContactPeopleView
 
 
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
+    path("contact/", ContactPeopleView.as_view(), name="people-contact"),
     path(
         "delete-confirmation/",
         DeleteConfirmationView.as_view(),

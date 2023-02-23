@@ -1,0 +1,59 @@
+{% extends 'peoplefinder/page.html' %}
+
+{% block title %}Contact people{% endblock %}
+
+{% block location %}Contact people{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l" data-test-name>Contact people{% if team %} in {{ team.name }}{% endif %}</h1>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <p class="govuk-body">
+            <a href="" id="mailto" class="govuk-link govuk-link--no-visited-state"></a>
+            <input type="text" id="selected-emails" class="govuk-input" readonly>
+        </p>
+        <div id="select-people" class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend">
+                    Select which users to contact
+                </legend>
+                <div class="govuk-checkboxes" style="max-height: 20em; overflow-y: auto; border: 2px solid black; padding: 0.5em;">
+                    {% for person in people %}
+                    <div class="govuk-checkboxes__item">
+                        <input type="checkbox" id="emails-{{ person.id }}" class="govuk-checkboxes__input" value="{{ person.preferred_email }}" name="emails" checked>
+                        <label class="govuk-label govuk-checkboxes__label" for="emails-{{ person.id }}">{{ person }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateMailto(event) {
+    const emails = [];
+
+    for (const el of document.querySelectorAll("input[name=emails]:checked")) {
+        emails.push(el.value);
+    }
+
+    const mailtoEl = document.querySelector("#mailto");
+    mailtoEl.href = `mailto:${emails.join(";")}`;
+    mailtoEl.innerHTML = `Email ${emails.length} people`;
+
+    const selectedEmailsEl = document.querySelector("#selected-emails");
+    selectedEmailsEl.value = emails.join(";");
+}
+
+updateMailto();
+
+document.querySelector("#select-people").addEventListener("change", updateMailto);
+</script>
+{% endblock %}
