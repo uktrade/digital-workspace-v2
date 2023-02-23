@@ -14,6 +14,7 @@
     </div>
 
     {% if self.allow_comments %}
+
         {% if comment_count > 0 %}
             <div class="news-article-comments">
                 <h2 class="govuk-heading-m">
@@ -60,6 +61,7 @@
                                     <label class="ws-hide" for="{{ field.auto_id }}">Comment content</label>
                                     {{ field }}
                                 {% endfor %}
+
                                 <p>
                                     <input value="Submit comment" type="submit" class="govuk-button"/>
                                 </p>
@@ -122,9 +124,8 @@
         </script>
     {% endif %}
 
-{% endblock %}
-
+{% endblock content %}
 
 {% block tertiary_col_content %}
     {% include "news/includes/news_categories.html" %}
-{% endblock %}
+{% endblock tertiary_col_content %}

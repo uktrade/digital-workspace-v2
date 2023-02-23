@@ -37,9 +37,7 @@
 
     {% endif %}
 
-
-{% endblock %}
-
+{% endblock content %}
 
 {% block tertiary_col_content %}
 
@@ -66,8 +64,8 @@
                     <p class="govuk-body-s ws-secondary-meta">{{ page_topic.page.last_published_at }}</p>
                 </li>
             {% endfor %}
+
         </ul>
     {% endif %}
 
-
-{% endblock %}
+{% endblock tertiary_col_content %}

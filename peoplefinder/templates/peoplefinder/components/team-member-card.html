@@ -3,11 +3,17 @@
 <div class="pf-team-member-card">
     <a class="govuk-link" href="{% url 'profile-view' member.person.slug %}">
 
+        {# djlint:off H006 #}
+
         {% if member.person.photo %}
-            <img src="{{ member.person.photo.url }}" width="100%">
+            <img src="{{ member.person.photo.url }}" width="100%" alt="profile photo">
         {% else %}
-            <img src="{% webpack_static 'no-photo-large.png' %}" width="100%">
+            <img src="{% webpack_static 'no-photo-large.png' %}"
+                 width="100%"
+                 alt="placeholder for missing team member photo">
         {% endif %}
+
+        {# djlint:on #}
 
     </a>
     <div class="pf-team-member-card__name">

@@ -11,9 +11,7 @@ Context:
       data-test-role-form>
     {% csrf_token %}
 
-    <h3 class="govuk-heading-s">
-        Team
-    </h2>
+    <h3 class="govuk-heading-s">Team</h3>
 
     {% include 'peoplefinder/components/messages.html' %}
     {% include 'peoplefinder/components/error-summary.html' %}
@@ -25,7 +23,9 @@ Context:
     selected-team-id="{{ form.instance.team.id }}"
     current-team-id="{{ form.instance.team.id }}"
     editing="
+
     {% if role %}false{% else %}true{% endif %}
+
     "
     ></team-select>
     {% include 'peoplefinder/components/input.html' with field=form.job_title %}

@@ -3,11 +3,11 @@
 {% block libraries %}
     {{ block.super }}
     <script src="//unpkg.com/alpinejs" defer></script>
-{% endblock %}
+{% endblock libraries %}
 
-{% block title %}Edit {{ team.name }}{% endblock %}
+{% block title %}Edit {{ team.name }}{% endblock title %}
 
-{% block location %}{{ team.name }}{% endblock %}
+{% block location %}{{ team.name }}{% endblock location %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -33,4 +33,4 @@
                href="{% url 'team-view' team.slug %}">Cancel</a>
         </div>
     </form>
-{% endblock %}
+{% endblock content %}

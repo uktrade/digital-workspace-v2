@@ -6,7 +6,7 @@
 {% load git_info %}
 
 <!DOCTYPE html>
-<html lang="en" class="govuk-template ">
+<html lang="en" class="govuk-template">
     <head>
         <meta charset="utf-8"/>
         <title>
@@ -19,15 +19,19 @@
                     {{ self.title }}
                 {% endif %}
 
-            {% endblock %}
+            {% endblock title %}
 
-            {% block title_suffix %}- Digital Workspace{% endblock %}
+            {% block title_suffix %}
+                - Digital Workspace
+            {% endblock title_suffix %}
 
         </title>
         <meta name="viewport"
               content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="theme-color" content="#cd1632"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="description" content="Departmental intranet" />
+        <meta name="keywords" content="intranet digital workspace" />
 
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager -->
@@ -56,9 +60,11 @@
 
         {% render_bundle 'main' 'css' %}
 
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+        {% endblock stylesheets %}
 
-        {% block libraries %}{% endblock %}
+        {% block libraries %}
+        {% endblock libraries %}
 
     </head>
 
@@ -85,20 +91,22 @@
 
                 {% block breadcrumbs %}
                     {% breadcrumbs %}
-                {% endblock %}
+                {% endblock breadcrumbs %}
 
-                {% block main_content %}{% endblock %}
+                {% block main_content %}
+                {% endblock main_content %}
 
                 {% block page_problem %}
                     {% include "includes/problem_found.html" %}
-                {% endblock %}
+                {% endblock page_problem %}
 
             </main>
         </div>
         {% include "includes/footer.html" %}
         {% render_bundle 'main' 'js' %}
 
-        {% block scripts %}{% endblock %}
+        {% block scripts %}
+        {% endblock scripts %}
 
         {% git_info %}
     </body>

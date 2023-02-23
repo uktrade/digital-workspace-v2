@@ -1,8 +1,12 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% block title %}Search results for '{{ form.cleaned_data.query }}'{% endblock %}
+{% block title %}
+    Search results for '{{ form.cleaned_data.query }}'
+{% endblock title %}
 
-{% block location %}Search results{% endblock %}
+{% block location %}
+    Search results
+{% endblock location %}
 
 {% block content %}
 
@@ -18,7 +22,7 @@
 
     <div class="govuk-grid-row mb-20">
         <div class="govuk-grid-column-one-quarter">
-            <form action="{% url 'people-and-teams-search' %}" method="GET">
+            <form action="{% url 'people-and-teams-search' %}" method="get">
                 <input type="hidden" name="query" value="{{ form.cleaned_data.query }}">
                 <fieldset class="govuk-fieldset mb-20">
                     <legend class="govuk-fieldset__legend">
@@ -68,4 +72,4 @@
 
         </div>
     </div>
-{% endblock %}
+{% endblock content %}

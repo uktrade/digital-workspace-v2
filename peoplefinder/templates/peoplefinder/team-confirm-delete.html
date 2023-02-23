@@ -1,13 +1,15 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% block title %}Confirm deletion of {{ team.name }}{% endblock %}
+{% block title %}
+    Confirm deletion of {{ team.name }}
+{% endblock title %}
 
-{% block location %}{{ team.name }}{% endblock %}
+{% block location %}
+    {{ team.name }}
+{% endblock location %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">
-        {{ team.name }}
-    </h2>
+    <h1 class="govuk-heading-l">{{ team.name }}</h1>
 
     <form method="post">
         {% csrf_token %}
@@ -25,4 +27,4 @@
         <a class="govuk-button govuk-button--secondary"
            href="{% url 'team-view' team.slug %}">Cancel</a>
     </form>
-{% endblock %}
+{% endblock content %}

@@ -6,7 +6,8 @@
             <div class="ws-primary-content">
                 <article>
 
-                    {% block content %}{% endblock %}
+                    {% block content %}
+                    {% endblock content %}
 
                 </article>
             </div>
@@ -14,9 +15,10 @@
         <div class="govuk-grid-column-one-third">
             <div class="ws-secondary-content">
 
-                {% block tertiary_col_content %}{% endblock %}
+                {% block tertiary_col_content %}
+                {% endblock tertiary_col_content %}
 
             </div>
         </div>
     </div>
-{% endblock %}
+{% endblock main_content %}

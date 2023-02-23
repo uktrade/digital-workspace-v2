@@ -26,7 +26,6 @@ Context:
 
             {% endfor %}
 
-
             {% if page.has_next %}
                 <span class="pf-pagination__page"><a class="govuk-link" href="?page={{ page.next_page_number }}">Next page</a></span>
                 <span class="pf-pagination__page"><a class="govuk-link" href="?page={{ page.paginator.num_pages }}">Last page</a></span>

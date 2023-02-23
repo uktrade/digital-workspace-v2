@@ -4,9 +4,13 @@
 
 {% load webpack_static from webpack_loader %}
 
-{% block title %}Edit profile{% endblock %}
+{% block title %}
+    Edit profile
+{% endblock title %}
 
-{% block location %}{{ profile.full_name }}{% endblock %}
+{% block location %}
+    {{ profile.full_name }}
+{% endblock location %}
 
 {% block content %}
     <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
@@ -122,7 +126,7 @@
                 <label class="govuk-label" for="{{ form.manager.id_for_label }}">Manager</label>
                 {% include 'peoplefinder/components/manager/main.html' with profile=profile manager=profile.manager %}
             </div>
- 
+
             {% include 'peoplefinder/components/checkbox.html' with field=form.do_not_work_for_dit %}
         </fieldset>
 
@@ -223,7 +227,9 @@
             <profile-photo
             name="photo"
             photo-url="
+
             {% if profile.photo %}{{ profile.photo.url }}{% endif %}
+
             "
             no-photo-url="{% webpack_static 'no-photo-large.png' %}"
             x-name="x"
@@ -292,4 +298,4 @@
     <a class="govuk-button govuk-button--secondary"
        href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
 
-{% endblock %}
+{% endblock content %}

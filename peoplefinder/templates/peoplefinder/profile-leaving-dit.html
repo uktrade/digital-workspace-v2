@@ -8,9 +8,11 @@
         Let us know {{ profile.full_name }} is leaving
     {% endif %}
 
-{% endblock %}
+{% endblock title %}
 
-{% block location %}Let us know someone is leaving{% endblock %}
+{% block location %}
+    Let us know someone is leaving
+{% endblock location %}
 
 {% block content %}
 
@@ -39,4 +41,4 @@
         <a class="govuk-button govuk-button--secondary"
            href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
     </form>
-{% endblock %}
+{% endblock content %}

@@ -2,17 +2,21 @@
 
 {% load render_bundle from webpack_loader %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock title %}
 
 {% block stylesheets %}
     {% render_bundle 'peoplefinder' 'css' %}
-{% endblock %}
+{% endblock stylesheets %}
 
 {% block main_content %}
     <div class="govuk-breadcrumbs">
         <ol class="govuk-breadcrumbs__list">
             <li class="govuk-breadcrumbs__list-item">
+                {# djlint:off D018 #}
                 <a class="govuk-link" href="/">Home</a>
+                {# djlint:on #}
             </li>
 
             {% for team in parent_teams %}
@@ -23,7 +27,8 @@
 
             <li class="govuk-breadcrumbs__list-item">
 
-                {% block location %}{% endblock %}
+                {% block location %}
+                {% endblock location %}
 
             </li>
         </ol>
@@ -31,9 +36,10 @@
 
     {% include 'peoplefinder/components/messages.html' %}
 
-    {% block content %}{% endblock %}
-{% endblock %}
+    {% block content %}
+    {% endblock content %}
+{% endblock main_content %}
 
 {% block scripts %}
     {% render_bundle 'peoplefinder' 'js' %}
-{% endblock %}
+{% endblock scripts %}

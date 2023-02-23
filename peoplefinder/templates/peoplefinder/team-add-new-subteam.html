@@ -1,8 +1,12 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% block title %}Add new sub-team{% endblock %}
+{% block title %}
+    Add new sub-team
+{% endblock title %}
 
-{% block location %}Add new sub-team{% endblock %}
+{% block location %}
+    Add new sub-team
+{% endblock location %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -24,4 +28,4 @@
                href="{% url 'team-view' parent_team.slug %}">Cancel</a>
         </div>
     </form>
-{% endblock %}
+{% endblock content %}

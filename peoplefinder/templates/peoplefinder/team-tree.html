@@ -2,13 +2,17 @@
 
 {% load sub_teams_tree %}
 
-{% block title %}All sub-teams of {{ team.name }}{% endblock %}
+{% block title %}
+    All sub-teams of {{ team.name }}
+{% endblock title %}
 
-{% block location %}{{ team.name }}{% endblock %}
+{% block location %}
+    {{ team.name }}
+{% endblock location %}
 
 {% block content %}
     <span class="govuk-caption-l">{{ team.short_name }}</span>
     <h1 class="govuk-heading-l">All sub-teams</h1>
 
     {% sub_teams_tree team %}
-{% endblock %}
+{% endblock content %}

@@ -4,11 +4,13 @@
 
 {% load static wagtailcore_tags %}
 
-{% block body_class %}template-searchresults{% endblock %}
+{% block body_class %}
+    template-searchresults
+{% endblock body_class %}
 
-
-{% block title %}Search{% endblock %}
-
+{% block title %}
+    Search
+{% endblock title %}
 
 {% block content %}
 
@@ -22,14 +24,13 @@
 
                 <form action="{% url 'search' %}" method="get">
 
-
                     <div class="govuk-grid-row">
                         <div class="govuk-grid-column-three-quarters">
 
                             <fieldset class="govuk-fieldset">
                                 <div class="govuk-form-group">
                                     <label class="govuk-label govuk-visually-hidden" for="address-line-1">Search term</label>
-                                    <input class="govuk-input" id="query" name="query" type="text"
+                                    <input class="govuk-input" id="query" name="query" type="text" 
                                         {% if search_query %} value="{{ search_query }}"{% endif %}
                                         >
                                     </div>
@@ -68,6 +69,7 @@
                                     <p class="govuk-body">{{ result.preview_text }}</p>
                                 </li>
                             {% endfor %}
+
                         </ul>
                     {% endif %}
 
@@ -86,7 +88,6 @@
 
                                     {% endif %}
 
-
                                     {% if result.meta.highlight.content_contentpage__body_no_html %}
 
                                         {% for item in result.meta.highlight.content_contentpage__body_no_html %}
@@ -94,7 +95,6 @@
                                         {% endfor %}
 
                                     {% endif %}
-
 
                                     {% if not result.meta.highlight %}
                                         <p class="govuk-body">{{ result.content_contentpage__body_no_html|preview }}....</p>
@@ -139,8 +139,8 @@
                         </div>
                     {% endif %}
 
-                {% endblock %}
-
+                </div>
             </div>
         </div>
-    </div>
+
+    {% endblock content %}

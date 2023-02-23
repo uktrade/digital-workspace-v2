@@ -2,9 +2,13 @@
 
 {% load markdown %}
 
-{% block title %}{{ team.name }}{% endblock %}
+{% block title %}
+    {{ team.name }}
+{% endblock title %}
 
-{% block location %}{{ team.name }}{% endblock %}
+{% block location %}
+    {{ team.name }}
+{% endblock location %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -49,6 +53,7 @@
             </div>
 
             {% if perms.peoplefinder.delete_team %}
+
                 {% if can_team_be_deleted %}
                     <a class="govuk-button govuk-button--warning"
                        href="{% url 'team-delete' team.slug %}">Delete team</a>
@@ -111,4 +116,4 @@
         </details>
     {% endif %}
 
-{% endblock %}
+{% endblock content %}

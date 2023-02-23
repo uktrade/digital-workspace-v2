@@ -1,14 +1,16 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% block title %}People in {{ team.name }}{% endblock %}
+{% block title %}
+    People in {{ team.name }}
+{% endblock title %}
 
-{% block location %}{{ team.name }}{% endblock %}
+{% block location %}
+    {{ team.name }}
+{% endblock lcoation %}
 
 {% block content %}
     <span class="govuk-caption-l">{{ team.short_name }}</span>
-    <h1 class="govuk-heading-l">
-        {{ heading }}
-    </h2>
+    <h1 class="govuk-heading-l">{{ heading }}</h1>
 
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
@@ -23,4 +25,4 @@
     </ul>
 
     {% include 'peoplefinder/components/pagination.html' with page=team_members page_numbers=page_numbers page_obj_name='people' %}
-{% endblock %}
+{% endblock content %}

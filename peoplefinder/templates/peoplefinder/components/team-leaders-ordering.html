@@ -68,7 +68,9 @@
                 <div class="mr-10" x-text="(index + 1) + ':'"></div>
                 <div x-text="member.name"></div>
 
+                {# djlint:off H021 #}
                 <div style="margin-left: auto;">
+                    {# djlint:on #}
                     <template x-if="index !== 0">
                         <button class="govuk-button govuk-button--secondary mb-0"
                                 type="button"
@@ -77,7 +79,7 @@
                             Move up
                         </button>
                     </template>
- 
+
                     <template x-if="index !== count - 1">
                         <button class="govuk-button govuk-button--secondary mb-0"
                                 type="button"
@@ -89,7 +91,7 @@
                 </div>
             </div>
         </template>
- 
+
         <input type="hidden" name="leaders_positions" x-model="order">
     </fieldset>
 </div>
