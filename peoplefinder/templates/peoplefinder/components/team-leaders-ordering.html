@@ -35,20 +35,27 @@
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             <h1 class="govuk-fieldset__heading">Team leader display order</h1>
         </legend>
-        <div class="govuk-hint">
-            Allows you to change the order of team leaders on the team page.
-        </div>
+        <div class="govuk-hint">Allows you to change the order of team leaders on the team page.</div>
 
         {# How they should be ordered. #}
         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="leaders-ordering-alphabetical" name="leaders_ordering" type="radio" value="alphabetical" x-model="ordering">
-                <label class="govuk-label govuk-radios__label" for="leaders-ordering-alphabetical">
-                    Default (alphabetical)
-                </label>
+                <input class="govuk-radios__input"
+                       id="leaders-ordering-alphabetical"
+                       name="leaders_ordering"
+                       type="radio"
+                       value="alphabetical"
+                       x-model="ordering">
+                <label class="govuk-label govuk-radios__label"
+                       for="leaders-ordering-alphabetical">Default (alphabetical)</label>
             </div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="leaders-ordering-custom" name="leaders_ordering" type="radio" value="custom" x-model="ordering">
+                <input class="govuk-radios__input"
+                       id="leaders-ordering-custom"
+                       name="leaders_ordering"
+                       type="radio"
+                       value="custom"
+                       x-model="ordering">
                 <label class="govuk-label govuk-radios__label" for="leaders-ordering-custom">
                     Custom (move up / down and save team)
                 </label>
@@ -63,16 +70,26 @@
 
                 <div style="margin-left: auto;">
                     <template x-if="index !== 0">
-                        <button class="govuk-button govuk-button--secondary mb-0" type="button" @click="up(index)" :disabled="!isCustomOrdering">Move up</button>
+                        <button class="govuk-button govuk-button--secondary mb-0"
+                                type="button"
+                                @click="up(index)"
+                                :disabled="!isCustomOrdering">
+                            Move up
+                        </button>
                     </template>
-    
+ 
                     <template x-if="index !== count - 1">
-                        <button class="govuk-button govuk-button--secondary mb-0" type="button" @click="down(index)" :disabled="!isCustomOrdering">Move down</button>
+                        <button class="govuk-button govuk-button--secondary mb-0"
+                                type="button"
+                                @click="down(index)"
+                                :disabled="!isCustomOrdering">
+                            Move down
+                        </button>
                     </template>
                 </div>
             </div>
         </template>
-        
+ 
         <input type="hidden" name="leaders_positions" x-model="order">
     </fieldset>
 </div>

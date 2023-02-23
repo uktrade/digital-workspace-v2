@@ -116,3 +116,13 @@ multi_line_output = 3
 skip_gitignore = true
 line_length = 88
 lines_after_imports = 2
+
+[tool.djlint]
+extension="html"
+profile="django"
+format_js=false
+format_css=false
+ignore="T002,H017"
+blank_line_before_tag="load,extends,block,if,with,for"
+blank_line_after_tag="load,extends,endblock,endif,endwith,endfor"
+preserve_blank_lines=true

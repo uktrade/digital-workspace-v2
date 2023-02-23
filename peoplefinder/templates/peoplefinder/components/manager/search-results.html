@@ -12,29 +12,31 @@ Context:
             </tr>
         </thead>
         <tbody class="govuk-table__body">
+
             {% for person in people %}
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell align-middle">
                         <strong>{{ person }}</strong>
+
                         {% if person.roles.first %}
                             <br>
                             <span class="govuk-body-s">({{ person.roles.first.team.name }}, {{ person.roles.first.job_title }})</span>
                         {% endif %}
+
                     </td>
                     <td class="govuk-table__cell align-middle">
-                        <button
-                            type="button"
-                            class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
-                            hx-get="{% url 'profile-edit-manager-select' profile.slug person.slug %}"
-                            hx-target="#manager-component"
-                            hx-swap="outerHTML"
-                            data-test-select-manager
-                        >
+                        <button type="button"
+                                class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
+                                hx-get="{% url 'profile-edit-manager-select' profile.slug person.slug %}"
+                                hx-target="#manager-component"
+                                hx-swap="outerHTML"
+                                data-test-select-manager>
                             Select
                         </button>
                     </td>
                 </tr>
             {% endfor %}
+
         </tbody>
     </table>
 {% else %}

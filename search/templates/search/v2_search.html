@@ -21,6 +21,7 @@
     <div class="govuk-grid-row mb-20">
         <!-- Search results -->
         <div class="govuk-grid-column-full v2-search-results">
+
             {% if not search_category %}
                 <!-- Category: Pages -->
                 <div class="v2-search-results__category">
@@ -52,13 +53,16 @@
                 <div class="v2-search-results__list">
                     {% include 'search/partials/see_all_results_form.html' %}
                     <h2 class="govuk-heading-m">{{ search_category|title }}</h2>
+
                     {% if results %}
                         {% include results_template %}
                     {% else %}
                         No results
                     {% endif %}
+
                 </div>
             {% endif %}
+
         </div>
     </div>
 {% endblock %}

@@ -141,6 +141,10 @@ make coverage
 xdg-open ./htmlcov/index.html
 ```
 
+## Linting
+
+We use `black` to lint all Python, and `djlint` to lint Django HTML templates, with all config in pyproject.toml.
+
 ## Assets
 
 Assets are handled via Webpack and `django-webpack-loader`. A number of npm

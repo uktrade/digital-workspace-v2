@@ -8,12 +8,14 @@ Context:
 {% if page.has_other_pages %}
     <div class="govuk-grid-row govuk-body-s pf-pagination">
         <div class="govuk-grid-column-one-half pf-pagination__nav">
+
             {% if page.has_previous %}
                 <span class="pf-pagination__page"><a class="govuk-link" href="?page=1">First page</a></span>
                 <span class="pf-pagination__page"><a class="govuk-link" href="?page={{ page.previous_page_number }}">Previous page</a></span>
             {% endif %}
 
             {% for num in page_numbers %}
+
                 {% if num == page.number %}
                     <span class="pf-pagination__page">{{ num }}</span>
                 {% elif num == page.paginator.ELLIPSIS %}
@@ -21,12 +23,15 @@ Context:
                 {% else %}
                     <span class="pf-pagination__page"><a class="govuk-link" href="?page={{ num }}">{{ num }}</a></span>
                 {% endif %}
+
             {% endfor %}
+
 
             {% if page.has_next %}
                 <span class="pf-pagination__page"><a class="govuk-link" href="?page={{ page.next_page_number }}">Next page</a></span>
                 <span class="pf-pagination__page"><a class="govuk-link" href="?page={{ page.paginator.num_pages }}">Last page</a></span>
             {% endif %}
+
         </div>
         <div class="govuk-grid-column-one-half pf-pagination__info">
             Displaying {{ page_obj_name }} <b>{{ page.start_index }} - {{ page.end_index }}</b> of <b>{{ page.paginator.count }}</b> in total

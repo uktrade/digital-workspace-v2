@@ -1,6 +1,7 @@
 {% extends 'peoplefinder/page.html' %}
 
 {% load static %}
+
 {% load webpack_static from webpack_loader %}
 
 {% block title %}Edit profile{% endblock %}
@@ -8,282 +9,287 @@
 {% block location %}{{ profile.full_name }}{% endblock %}
 
 {% block content %}
-<script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
+    <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
 
-<h1 class="govuk-heading-l">Edit profile</h1>
-<form id="edit-profile" class="ws-profile-edit-form" method="post" enctype="multipart/form-data" novalidate>
-    {% csrf_token %}
+    <h1 class="govuk-heading-l">Edit profile</h1>
+    <form id="edit-profile"
+          class="ws-profile-edit-form"
+          method="post"
+          enctype="multipart/form-data"
+          novalidate>
+        {% csrf_token %}
 
-    {% include 'peoplefinder/components/error-summary.html' with form=form %}
+        {% include 'peoplefinder/components/error-summary.html' with form=form %}
 
-    <fieldset>
-        <h2 class="govuk-heading-m">Personal details</h2>
+        <fieldset>
+            <h2 class="govuk-heading-m">Personal details</h2>
 
-        {% include 'peoplefinder/components/input.html' with field=form.first_name %}
-        {% include 'peoplefinder/components/input.html' with field=form.last_name %}
+            {% include 'peoplefinder/components/input.html' with field=form.first_name %}
+            {% include 'peoplefinder/components/input.html' with field=form.last_name %}
 
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add pronouns (optional)
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/input.html' with field=form.pronouns %}
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">Add pronouns (optional)</span>
+                </summary>
+                <div class="govuk-details__text">{% include 'peoplefinder/components/input.html' with field=form.pronouns %}</div>
+            </details>
+        </fieldset>
+
+        <fieldset>
+            <h2 class="govuk-heading-m">Email addresses</h2>
+
+            {% include 'peoplefinder/components/input.html' with field=form.email %}
+
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    Do not enter any of the following as your main work email address:
+                    <ul class="govuk-body">
+                        <li>a shared email address, for example, a Private Office or jobshare mailbox</li>
+                        <li>a secondary work email address, for example, a trade.gov.uk email address if you are employed by FCO at post</li>
+                        <li>an alternative work email address that is not safe for official information, for example, fcowebmail.gov.uk</li>
+                        <li>a personal email address, for example, Gmail</li>
+                    </ul>
+                </strong>
             </div>
-        </details>
-    </fieldset>
 
-    <fieldset>
-        <h2 class="govuk-heading-m">Email addresses</h2>
+            <p class="govuk-body govuk-inset-text">
+                If you want to show a different email address on your profile for your colleagues to contact you on instead,
+                for example a jobshare mailbox or your Private Office address, you can:
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">Add a contact email address (optional)</span>
+                    </summary>
+                    <div class="govuk-details__text">{% include 'peoplefinder/components/input.html' with field=form.contact_email %}</div>
+                </details>
+            </p>
 
-        {% include 'peoplefinder/components/input.html' with field=form.email %}
+        </fieldset>
 
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">Warning</span>
-                Do not enter any of the following as your main work email address:
-                <ul class="govuk-body">
-                    <li>a shared email address, for example, a Private Office or jobshare mailbox</li>
-                    <li>a secondary work email address, for example, a trade.gov.uk email address if you are employed by FCO at post</li>
-                    <li>an alternative work email address that is not safe for official information, for example, fcowebmail.gov.uk</li>
-                    <li>a personal email address, for example, Gmail</li>
-                </ul>
-            </strong>
-        </div>
+        <fieldset>
+            <h2 class="govuk-heading-m">Contact details</h2>
 
-        <p class="govuk-body govuk-inset-text">
-            If you want to show a different email address on your profile for your colleagues to contact you on instead,
-            for example a jobshare mailbox or your Private Office address, you can:
+            {% include 'peoplefinder/components/input.html' with field=form.primary_phone_number %}
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">Add alternative contact number (optional)</span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/input.html' with field=form.secondary_phone_number %}
+                </div>
+            </details>
+        </fieldset>
+
+        <fieldset>
+            <h2 class="govuk-heading-m">Location and working patterns</h2>
+
+            {% include 'peoplefinder/components/input.html' with field=form.country %}
+
+            {% include 'peoplefinder/components/input.html' with field=form.town_city_or_region %}
+
+            {% include 'peoplefinder/components/checkboxes.html' with field=form.buildings %}
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">Add UK regional or international location (if applicable)</span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/input.html' with field=form.regional_building %}
+
+                    {% include 'peoplefinder/components/input.html' with field=form.international_building %}
+                </div>
+            </details>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">Add location in building or change working days (optional)</span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/input.html' with field=form.location_in_building %}
+                    {% include 'peoplefinder/components/checkboxes.html' with field=form.workdays %}
+                </div>
+            </details>
+        </fieldset>
+
+        <fieldset>
+            <h2 class="govuk-heading-m">Grade and manager</h2>
+
+            {% include 'peoplefinder/components/input.html' with field=form.grade %}
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="{{ form.manager.id_for_label }}">Manager</label>
+                {% include 'peoplefinder/components/manager/main.html' with profile=profile manager=profile.manager %}
+            </div>
+ 
+            {% include 'peoplefinder/components/checkbox.html' with field=form.do_not_work_for_dit %}
+        </fieldset>
+
+        <fieldset>
+            <h2 class="govuk-heading-m">Skills, interests and networks</h2>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">Add skills</span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/checkboxes.html' with field=form.key_skills %}
+                    {% include 'peoplefinder/components/input.html' with field=form.other_key_skills %}
+                </div>
+            </details>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">Add languages</span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/input.html' with field=form.fluent_languages %}
+                    {% include 'peoplefinder/components/input.html' with field=form.intermediate_languages %}
+                </div>
+            </details>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">Add learning and development interests</span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/checkboxes.html' with field=form.learning_interests %}
+                    {% include 'peoplefinder/components/input.html' with field=form.other_learning_interests %}
+                    <p>
+                        Get opportunities to <a class="govuk-link"
+    href="https://workspace.trade.gov.uk/working-at-dit/topics/learning-and-development/">learn and develop</a>.
+                    </p>
+                </div>
+            </details>
+
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        Add a contact email address (optional)
+                        Add networks I belong to
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    {% include 'peoplefinder/components/input.html' with field=form.contact_email %}
+                    {% include 'peoplefinder/components/checkboxes.html' with field=form.networks %}
+                    <p>
+                        Join a <a class="govuk-link" href="https://workspace.trade.gov.uk/networks/">network</a>.
+                    </p>
                 </div>
             </details>
-        </p>
 
-    </fieldset>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Add professions I belong to
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/checkboxes.html' with field=form.professions %}
+                    <p>
+                        Find out about our <a class="govuk-link"
+    href="https://workspace.trade.gov.uk/about-us/professions/">professions</a>.
+                    </p>
+                </div>
+            </details>
 
-    <fieldset>
-        <h2 class="govuk-heading-m">Contact details</h2>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Add additional roles and responsibilities
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/checkboxes.html' with field=form.additional_roles %}
+                    {% include 'peoplefinder/components/input.html' with field=form.other_additional_roles %}
+                </div>
+            </details>
 
-        {% include 'peoplefinder/components/input.html' with field=form.primary_phone_number %}
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Add previous experience
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/input.html' with field=form.previous_experience %}
+                </div>
+            </details>
+        </fieldset>
 
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add alternative contact number (optional)
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/input.html' with field=form.secondary_phone_number %}
-            </div>
-        </details>
-    </fieldset>
-
-    <fieldset>
-        <h2 class="govuk-heading-m">Location and working patterns</h2>
-
-        {% include 'peoplefinder/components/input.html' with field=form.country %}
-
-        {% include 'peoplefinder/components/input.html' with field=form.town_city_or_region %}
-
-        {% include 'peoplefinder/components/checkboxes.html' with field=form.buildings %}
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add UK regional or international location (if applicable)
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/input.html' with field=form.regional_building %}
-
-                {% include 'peoplefinder/components/input.html' with field=form.international_building %}
-            </div>
-        </details>
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add location in building or change working days (optional)
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/input.html' with field=form.location_in_building %}
-                {% include 'peoplefinder/components/checkboxes.html' with field=form.workdays %}
-            </div>
-        </details>
-    </fieldset>
-
-    <fieldset>
-        <h2 class="govuk-heading-m">Grade and manager</h2>
-
-        {% include 'peoplefinder/components/input.html' with field=form.grade %}
-
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="{{ form.manager.id_for_label }}">Manager</label>
-            {% include 'peoplefinder/components/manager/main.html' with profile=profile manager=profile.manager %}
-        </div>
-        
-        {% include 'peoplefinder/components/checkbox.html' with field=form.do_not_work_for_dit %}
-    </fieldset>
-
-    <fieldset>
-        <h2 class="govuk-heading-m">Skills, interests and networks</h2>
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add skills
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/checkboxes.html' with field=form.key_skills %}
-                {% include 'peoplefinder/components/input.html' with field=form.other_key_skills %}
-            </div>
-        </details>
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add languages
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/input.html' with field=form.fluent_languages %}
-                {% include 'peoplefinder/components/input.html' with field=form.intermediate_languages %}
-            </div>
-        </details>
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add learning and development interests
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/checkboxes.html' with field=form.learning_interests %}
-                {% include 'peoplefinder/components/input.html' with field=form.other_learning_interests %}
-                <p>Get opportunities to <a class="govuk-link" href="https://workspace.trade.gov.uk/working-at-dit/topics/learning-and-development/">learn and develop</a>.</p>
-            </div>
-        </details>
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add networks I belong to
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/checkboxes.html' with field=form.networks %}
-                <p>Join a <a class="govuk-link" href="https://workspace.trade.gov.uk/networks/">network</a>.</p>
-            </div>
-        </details>
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add professions I belong to
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/checkboxes.html' with field=form.professions %}
-                <p>Find out about our <a class="govuk-link" href="https://workspace.trade.gov.uk/about-us/professions/">professions</a>.</p>
-            </div>
-        </details>
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add additional roles and responsibilities
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/checkboxes.html' with field=form.additional_roles %}
-                {% include 'peoplefinder/components/input.html' with field=form.other_additional_roles %}
-            </div>
-        </details>
-
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Add previous experience
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/input.html' with field=form.previous_experience %}
-            </div>
-        </details>
-    </fieldset>
-
-    <fieldset>
-        <h2 class="govuk-heading-m">Profile photo</h2>
-        <profile-photo
+        <fieldset>
+            <h2 class="govuk-heading-m">
+                Profile photo
+            </h2>
+            <profile-photo
             name="photo"
-            photo-url="{% if profile.photo %}{{ profile.photo.url }}{% endif %}"
+            photo-url="
+            {% if profile.photo %}{{ profile.photo.url }}{% endif %}
+            "
             no-photo-url="{% webpack_static 'no-photo-large.png' %}"
             x-name="x"
             y-name="y"
             width-name="width"
             height-name="height"
             remove-photo-name="remove_photo"
-        ></profile-photo>
-    </fieldset>
-</form>
+            ></profile-photo>
+        </fieldset>
+    </form>
 
-<fieldset class="mb-20">
-    {% include 'peoplefinder/components/teams-and-roles.html' with profile=profile role_forms=role_forms %}
-</fieldset>
-
-{% if perms.peoplefinder.delete_person %}
     <fieldset class="mb-20">
-        <h2 class="govuk-heading-m">SSO user</h2>
-        {% include 'peoplefinder/components/update-user-form.html' with profile=profile form=update_user_form %}
+        {% include 'peoplefinder/components/teams-and-roles.html' with profile=profile role_forms=role_forms %}
     </fieldset>
-{% endif %}
 
-{% if request.user.is_superuser %}
-    <fieldset>
-        <h2 class="govuk-heading-m">Administrative options</h2>
+    {% if perms.peoplefinder.delete_person %}
+        <fieldset class="mb-20">
+            <h2 class="govuk-heading-m">
+                SSO user
+            </h2>
+            {% include 'peoplefinder/components/update-user-form.html' with profile=profile form=update_user_form %}
+        </fieldset>
+    {% endif %}
 
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Permissions
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                <div class="govuk-hint">
-                    Administrators on People Finder can view global audit trails, reports, and debugging
-                    information as well as perform all groups and people management functions.
+    {% if request.user.is_superuser %}
+        <fieldset>
+            <h2 class="govuk-heading-m">
+                Administrative options
+            </h2>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Permissions
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <div class="govuk-hint">
+                        Administrators on People Finder can view global audit trails, reports, and debugging
+                        information as well as perform all groups and people management functions.
+                    </div>
+                    {% include 'peoplefinder/components/checkbox.html' with field=form.is_superuser %}
+                    {% include 'peoplefinder/components/checkbox.html' with field=form.is_team_admin %}
+                    {% include 'peoplefinder/components/checkbox.html' with field=form.is_person_admin %}
                 </div>
-                {% include 'peoplefinder/components/checkbox.html' with field=form.is_superuser %}
-                {% include 'peoplefinder/components/checkbox.html' with field=form.is_team_admin %}
-                {% include 'peoplefinder/components/checkbox.html' with field=form.is_person_admin %}
-            </div>
-        </details>
-    </fieldset>
-{% endif %}
+            </details>
+        </fieldset>
+    {% endif %}
 
-<p class="govuk-body-s">
-    All the information on your profile will be visible to DIT staff and contractors on
-    Digital Workspace and other internal DIT tools. Occasionally, we may collate this
-    data for departmental insights.
-</p>
-<p class="govuk-body-s">
-    This is a voluntary collection of your information, by submitting this form you are agreeing to the terms and conditions regarding the collection and processing of your data and are providing consent for this information to be collected and processed.
-    This follows our <a href="https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/policies/digital-workspace-privacy-policy/">privacy policy</a>.
-</p>
+    <p class="govuk-body-s">
+        All the information on your profile will be visible to DIT staff and contractors on
+        Digital Workspace and other internal DIT tools. Occasionally, we may collate this
+        data for departmental insights.
+    </p>
+    <p class="govuk-body-s">
+        This is a voluntary collection of your information, by submitting this form you are agreeing to the terms and conditions regarding the collection and processing of your data and are providing consent for this information to be collected and processed.
+        This follows our <a href="https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/policies/digital-workspace-privacy-policy/">privacy policy</a>.
+    </p>
 
-{# Actions #}
-<input form="edit-profile" class="govuk-button" type="submit" value="Save profile" data-test-save-profile>
-<a class="govuk-button govuk-button--secondary" href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
+    {# Actions #}
+    <input form="edit-profile"
+           class="govuk-button"
+           type="submit"
+           value="Save profile"
+           data-test-save-profile>
+    <a class="govuk-button govuk-button--secondary"
+       href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
 
 {% endblock %}

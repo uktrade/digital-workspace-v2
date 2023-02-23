@@ -1,23 +1,30 @@
 {% extends "1_col_content.html" %}
+
 {% load wagtailcore_tags %}
 
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
+
     {% for block in page.body %}
         {% include_block block %}
     {% endfor %}
-        {% for subpage_group in subpage_groups %}
-            {% for page in subpage_group %}
-                {% if forloop.first %}
-                    <h3 class="govuk-heading-m">{{ subpage_group.0.title|first|upper }}</h3>
-                    <ul class="govuk-list">
+
+    {% for subpage_group in subpage_groups %}
+
+        {% for page in subpage_group %}
+
+            {% if forloop.first %}
+                <h3 class="govuk-heading-m">{{ subpage_group.0.title|first|upper }}</h3>
+                <ul class="govuk-list">
                 {% endif %}
-                        <li>
-                            <a class="govuk-link" href="{% pageurl page %}">{{ page.title }}</a>
-                        </li>
-                {% if forloop.last %}
-                    </ul>
-                {% endif %}
+
+                <li>
+                    <a class="govuk-link" href="{% pageurl page %}">{{ page.title }}</a>
+                </li>
+
+                {% if forloop.last %}</ul>{% endif %}
+
             {% endfor %}
         {% endfor %}
-{% endblock %}
+
+    {% endblock %}

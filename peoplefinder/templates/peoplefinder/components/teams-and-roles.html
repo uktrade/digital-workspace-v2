@@ -11,16 +11,18 @@ Context:
 <div class="pf-roles">
     <h2 class="govuk-heading-m">Teams and roles</h2>
     <div id="roles">
+
         {% for form in role_forms %}
             {% include 'peoplefinder/components/role-edit.html' with profile=profile role=form.instance form=form %}
         {% endfor %}
+
     </div>
 
-    <button
-        class="govuk-button govuk-button--secondary"
-        hx-get="{% url 'roles' profile.slug %}"
-        hx-target="#roles"
-        hx-swap="beforeend"
-        data-test-add-role
-    >Add role</button>
+    <button class="govuk-button govuk-button--secondary"
+            hx-get="{% url 'roles' profile.slug %}"
+            hx-target="#roles"
+            hx-swap="beforeend"
+            data-test-add-role>
+        Add role
+    </button>
 </div>

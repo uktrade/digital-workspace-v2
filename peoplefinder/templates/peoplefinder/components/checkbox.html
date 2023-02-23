@@ -1,18 +1,22 @@
-<div class="govuk-form-group{% if field.errors %} govuk-form-group--error{% endif %}">
+<div class="govuk-form-group
+    {% if field.errors %} govuk-form-group--error{% endif %}
+    ">
+
     {% if field.errors %}
+
         {% for error in field.errors %}
             <span class="govuk-error-message">
-                <span class="govuk-visually-hidden">Error: </span>{{ error }}
+                <span class="govuk-visually-hidden">Error:</span>{{ error }}
             </span>
         {% endfor %}
+
     {% endif %}
 
     <div class="govuk-checkboxes">
         <div class="govuk-checkboxes__item">
             {{ field }}
-            <label class="govuk-label govuk-checkboxes__label" for="{{ field.id_for_label }}">
-                {{ field.label }}
-            </label>
+            <label class="govuk-label govuk-checkboxes__label"
+                   for="{{ field.id_for_label }}">{{ field.label }}</label>
         </div>
     </div>
 </div>

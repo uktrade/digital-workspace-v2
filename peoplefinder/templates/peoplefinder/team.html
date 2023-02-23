@@ -7,93 +7,108 @@
 {% block location %}{{ team.name }}{% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        {% if team.abbreviation %}
-            <span class="govuk-caption-l" data-test-abbreviation>{{ team.abbreviation }}</span>
-        {% endif %}
-        <h1 class="govuk-heading-l" data-test-name>{{ team.name }}</h1>
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-    </div>
-</div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">
-        <h2 class="govuk-heading-s">Team leader{{ team.leaders|length|pluralize }}</h2>
-        <div>
-            {% for member in team.leaders %}
-                {% include 'peoplefinder/components/team-member-card.html' with member=member %}
-            {% endfor %}
+            {% if team.abbreviation %}
+                <span class="govuk-caption-l" data-test-abbreviation>{{ team.abbreviation }}</span>
+            {% endif %}
+
+            <h1 class="govuk-heading-l" data-test-name>{{ team.name }}</h1>
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         </div>
     </div>
-    <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-s">About the team</h2>
-        <div class="govuk-body" data-test-description>
-            {{ team.description|markdown }}
-        </div>
-        <div>
-            {% if perms.peoplefinder.change_team %}
-                <a class="govuk-button govuk-button--secondary" href="{% url 'team-edit' team.slug %}" data-test-edit-team>Edit team</a>
-            {% endif %}
-            {% if perms.peoplefinder.add_team %}
-                <a class="govuk-button govuk-button--secondary" href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
-            {% endif %}
-        </div>
-        {% if perms.peoplefinder.delete_team %}
-            {% if can_team_be_deleted %}
-                <a class="govuk-button govuk-button--warning" href="{% url 'team-delete' team.slug %}">Delete team</a>
-            {% else %}
-                {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
-            {% endif %}
-        {% endif %}
-    </div>
-</div>
 
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <h2 class="govuk-heading-s">Team leader{{ team.leaders|length|pluralize }}</h2>
+            <div>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        {% if sub_teams %}
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-one-half">
-                    <h2 class="govuk-heading-m">Teams within {{ team.short_name }}</h2>
-                </div>
-                <div class="govuk-grid-column-one-half text-right separated">
-                    <a class="govuk-link inline-block" href="{% url 'team-people' team.slug %}">View all people</a>
-                    <a class="govuk-link inline-block" href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
-                    <a class="govuk-link inline-block" href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
-                </div>
+                {% for member in team.leaders %}
+                    {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                {% endfor %}
+
             </div>
-            <ul class="pf-team-cards">
-                {% for team in sub_teams %}
-                    <li>
-                        {% include 'peoplefinder/components/team-card.html' with team=team %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
-            <ul class="pf-team-member-cards">
-                {% for member in members %}
-                    <li>
-                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-</div>
-
-{% if perms.peoplefinder.change_team and perms.peoplefinder.view_auditlog %}
-    <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                Audit log
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-            {% include 'peoplefinder/components/audit-log.html' with audit_log=team_audit_log.reverse %}
         </div>
-    </details>
-{% endif %}
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-s">About the team</h2>
+            <div class="govuk-body" data-test-description>{{ team.description|markdown }}</div>
+            <div>
+
+                {% if perms.peoplefinder.change_team %}
+                    <a class="govuk-button govuk-button--secondary"
+                       href="{% url 'team-edit' team.slug %}"
+                       data-test-edit-team>Edit team</a>
+                {% endif %}
+
+                {% if perms.peoplefinder.add_team %}
+                    <a class="govuk-button govuk-button--secondary"
+                       href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
+                {% endif %}
+
+            </div>
+
+            {% if perms.peoplefinder.delete_team %}
+                {% if can_team_be_deleted %}
+                    <a class="govuk-button govuk-button--warning"
+                       href="{% url 'team-delete' team.slug %}">Delete team</a>
+                {% else %}
+                    {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
+                {% endif %}
+            {% endif %}
+
+        </div>
+    </div>
+
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            {% if sub_teams %}
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-half">
+                        <h2 class="govuk-heading-m">Teams within {{ team.short_name }}</h2>
+                    </div>
+                    <div class="govuk-grid-column-one-half text-right separated">
+                        <a class="govuk-link inline-block"
+                           href="{% url 'team-people' team.slug %}">View all people</a>
+                        <a class="govuk-link inline-block"
+                           href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
+                        <a class="govuk-link inline-block"
+                           href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
+                    </div>
+                </div>
+                <ul class="pf-team-cards">
+
+                    {% for team in sub_teams %}
+                        <li>{% include 'peoplefinder/components/team-card.html' with team=team %}</li>
+                    {% endfor %}
+
+                </ul>
+            {% else %}
+                <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
+                <ul class="pf-team-member-cards">
+
+                    {% for member in members %}
+                        <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
+                    {% endfor %}
+
+                </ul>
+            {% endif %}
+
+        </div>
+    </div>
+
+    {% if perms.peoplefinder.change_team and perms.peoplefinder.view_auditlog %}
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">Audit log</span>
+            </summary>
+            <div class="govuk-details__text">
+                {% include 'peoplefinder/components/audit-log.html' with audit_log=team_audit_log.reverse %}
+            </div>
+        </details>
+    {% endif %}
+
 {% endblock %}

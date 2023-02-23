@@ -1,4 +1,5 @@
 {% extends "1_col_content.html" %}
+
 {% load wagtailcore_tags %}
 
 {% block content %}
@@ -9,5 +10,6 @@
     {% for block in page.body %}
         {% include_block block %}
     {% endfor %}
+
     {% include "includes/child-links.html" with children=children num_cols=3 %}
 {% endblock %}
