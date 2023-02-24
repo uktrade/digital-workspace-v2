@@ -5,7 +5,7 @@
             {# only search has this context var #}
             <a class="govuk-link"
                href="{% url 'team-view' team.slug %}"
-               onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': {% url 'team-view' team.slug %}, 'search_result_selected_type': 'team', 'search_result_selected_section': 'teams', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">{{ team.name }}</a>
+               onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'team-view' team.slug %}', 'search_result_selected_type': 'team', 'search_result_selected_section': 'teams', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">{{ team.name }}</a>
         {% else %}
             <a class="govuk-link" href="{% url 'team-view' team.slug %}">{{ team.name }}</a>
         {% endif %}

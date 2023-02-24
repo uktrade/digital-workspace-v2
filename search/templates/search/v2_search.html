@@ -74,4 +74,12 @@
             {% endif %}
         </div>
     </div>
+    <script lang="javascript">
+        gtm_data_then_click = function(event, data) {
+            event.preventDefault();
+            dataLayer.push(data);
+            url=$(this).attr('href');
+            setTimeout(function(){location.href = url}, 500);
+        };
+    </script>
 {% endblock %}
