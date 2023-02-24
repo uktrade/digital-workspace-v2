@@ -68,7 +68,8 @@
         'search_results_page_type': page_type,
         'search_results_count_total': '{{ total_matches }}',
         'search_results_count_people_type': '{{ person_matches|length }}',
-        'search_results_count_teams_type': '{{ team_matches|length }}'
+        'search_results_count_teams_type': '{{ team_matches|length }}',
+        'search_results_count_pages_type': '0'
     });
     gtm_data_then_click = function(object, data) {
         dataLayer.push(data);
