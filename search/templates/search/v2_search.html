@@ -56,7 +56,7 @@
                     {% include 'search/partials/see_all_results_form.html' %}
                     <h2 class="govuk-heading-m">{{ search_category|title }}</h2>
                     {% if results %}
-                        {% include results_template %}
+                        {% include results_template with num_prev_results='0' %}
                     {% else %}
                         No results
                     {% endif %}
@@ -75,11 +75,11 @@
         </div>
     </div>
     <script lang="javascript">
-        gtm_data_then_click = function(event, data) {
-            event.preventDefault();
+        gtm_data_then_click = function(object, data) {
             dataLayer.push(data);
-            url=$(this).attr('href');
+            url=object.getAttribute('href');
             setTimeout(function(){location.href = url}, 500);
+            return false;
         };
     </script>
 {% endblock %}

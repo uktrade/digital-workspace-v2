@@ -71,7 +71,6 @@
         'search_results_count_teams_type': '{{ team_matches|length }}'
     });
     gtm_data_then_click = function(object, data) {
-        console.log(this, data);
         dataLayer.push(data);
         url=object.getAttribute('href');
         setTimeout(function(){location.href = url}, 500);

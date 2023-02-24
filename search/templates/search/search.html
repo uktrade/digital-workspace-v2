@@ -48,7 +48,7 @@
                                 <h3 class="govuk-heading-m">
                                     <a class="govuk-link"
                                        href="{% pageurl result %}"
-                                       onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% pageurl result %}', 'search_result_selected_type': 'page', 'search_result_selected_section': 'content_pinned', 'search_result_selected_number_overall': {{ forloop.counter }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page } }})">{{ result }}</a>
+                                       onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% pageurl result %}', 'search_result_selected_type': 'page', 'search_result_selected_section': 'content_pinned', 'search_result_selected_number_overall': {{ forloop.counter }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">{{ result }}</a>
                                 </h3>
                                 <p class="govuk-body">{{ result.preview_text }}</p>
                             </li>
@@ -62,7 +62,7 @@
                                 <h3 class="govuk-heading-m">
                                     <a class="govuk-link"
                                        href="{% slugurl result.slug_filter %}"
-                                       onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% slugurl result.slug_filter %}', 'search_result_selected_type': 'page', 'search_result_selected_section': 'pages', 'search_result_selected_number_overall': {{ forloop.counter|add:num_pinned_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page } }})">{{ result.title }}</a>
+                                       onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% slugurl result.slug_filter %}', 'search_result_selected_type': 'page', 'search_result_selected_section': 'pages', 'search_result_selected_number_overall': {{ forloop.counter|add:num_pinned_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">{{ result.title }}</a>
                                 </h3>
                                 {% if result.meta.highlight.title %}
                                     {% for item in result.meta.highlight.title %}<p class="govuk-body">{{ item|safe }}...</p>{% endfor %}
@@ -118,11 +118,11 @@
         'search_results_count_total': '{{ show_total }}',
         'search_results_count_pages_type': '{{ show_total }}'
     });
-    gtm_data_then_click = function(event, data) {
-        event.preventDefault();
+    gtm_data_then_click = function(object, data) {
         dataLayer.push(data);
-        url=$(this).attr('href');
+        url=object.getAttribute('href');
         setTimeout(function(){location.href = url}, 500);
+        return false;
     };
     </script>
 {% endblock %}
