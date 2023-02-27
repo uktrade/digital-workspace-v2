@@ -26,9 +26,6 @@
 # pg_dump -h localhost -U postgres test_dump > dw_dev_friendly.sql
 
 
-# psql -h localhost -U postgres -f dw_dev_friendly.sql digital_workspace
-# replace settings/.env
-
 echo "NOTE: Despite the name, the content you're uploading is still protected; be careful not to share anything outside the organisationc"
 
 set -ex
