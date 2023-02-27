@@ -20,7 +20,7 @@
 #
 # use the name list to rename everyone, swapping emails and phones as well
 # make shell (using shell_plus)
-# paste truncate_anonymise.py code into shell and run it - if errors try re-running it
+# paste truncate_anonymise.py.cli code into shell and run it - if errors try re-running it
 #
 # generate the data dump file
 # pg_dump -h localhost -U postgres test_dump > dw_dev_friendly.sql
