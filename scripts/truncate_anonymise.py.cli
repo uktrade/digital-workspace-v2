@@ -1,0 +1,119 @@
+# very basic anonymiser for running in the django shell
+# assumes shell_plus with all models and django classes available
+
+
+import json
+import math
+import random
+import uuid
+
+
+# first let's massively truncate our set
+# People
+retain_number = 500
+all_people = Person.objects.all()
+decimate_ratio = math.floor(len(all_people) / retain_number)
+Person.objects.annotate(idmod=F("id") % decimate_ratio).filter(~Q(idmod=0)).delete()
+
+# Documents
+retain_number = 500
+all_docs = Document.objects.all()
+decimate_ratio = math.floor(len(all_docs) / retain_number)
+Document.objects.annotate(idmod=F("id") % decimate_ratio).filter(~Q(idmod=0)).delete()
+
+# Images
+retain_number = 500
+all_imgs = Image.objects.all()
+decimate_ratio = math.floor(len(all_imgs) / retain_number)
+Image.objects.annotate(idmod=F("id") % decimate_ratio).filter(~Q(idmod=0)).delete()
+
+# Now remove PII for remaining users
+# grab some random global names
+last_names = []
+first_names = []
+
+with open("scripts/last_names.json", "r") as file:
+    last_names += json.loads(file.read())
+
+with open("scripts/first_names.json", "r") as file:
+    first_names += json.loads(file.read())
+
+# loop through everyone changing their PII
+ids = Person.objects.values_list("pk", flat=True)
+total = Person.objects.all().count()
+counter = 0
+for person in Person.objects.all().reverse():
+    if person.user is None:
+        person.delete()
+        continue
+
+    person.slug = uuid.uuid4()
+    person.legacy_sso_user_id = str(uuid.uuid4())
+    person.user.legacy_sso_user_id = person.legacy_sso_user_id
+    person.first_name = random.choice(first_names)
+    person.last_name = random.choice(last_names)
+    person.user.last_name = person.last_name
+    person.user.first_name = person.first_name
+    email_parts = person.email.split("@")
+    person.email = (
+        f"{person.first_name.lower()}.{person.last_name.lower()}@{email_parts[1]}"
+    )
+    if person.contact_email is not None:
+        email_parts = person.contact_email.split("@")
+        person.contact_email = (
+            f"{person.first_name.lower()}.{person.last_name.lower()}@{email_parts[1]}"
+        )
+    person.user.username = (
+        f"{person.first_name.lower()}.{person.last_name.lower()}-123456@id.trade.gov.uk"
+    )
+    person.user.email = person.email
+    if person.user.sso_contact_email is not None:
+        email_parts = person.user.sso_contact_email.split("@")
+        if len(email_parts) > 1:
+            person.user.sso_contact_email = f"{person.first_name.lower()}.{person.last_name.lower()}@{email_parts[1]}"
+        else:
+            person.user.sso_contact_email = None
+    if person.primary_phone_number is not None:
+        person.primary_phone_number = "07777 777777"
+    if person.secondary_phone_number is not None:
+        person.secondary_phone_number = "0207 4329876"
+    if person.town_city_or_region is not None:
+        person.town_city_or_region = random.choice(
+            [
+                "London",
+                "Sao Paolo",
+                "Amman",
+                "Brussels",
+                "Karachi",
+                "Sydney",
+                "New Delhi",
+                "Cardiff",
+                "Manchester",
+                "Ankara",
+                "Wuhan",
+                "Berlin",
+            ]
+        )
+    if person.fluent_languages is not None:
+        person.fluent_languages = "Klingon, Vogon"
+    if person.intermediate_languages is not None:
+        person.intermediate_languages = "Wookie, Mangalore"
+    person.other_learning_interest = None
+    person.previous_experience = None
+    if person.photo is not None:
+        person.photo = f"peoplefinder/person/{person.slug}/photo/my-photo.jpg"
+    if person.photo_small is not None:
+        person.photo_small = f"peoplefinder/person/{person.slug}/photo/my-photo.jpg"
+
+    print(f"saving #{counter} of #{total}")
+    counter += 1
+
+    try:
+        person.user.save()
+        person.save()
+    except:
+        person.delete()
+
+# delete unlinked users
+remaining_people_pks = Person.objects.all().values_list("user_id", flat=True)
+User.objects.exclude(pk__in=remaining_people_pks).delete()
