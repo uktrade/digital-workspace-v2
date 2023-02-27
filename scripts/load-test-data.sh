@@ -39,7 +39,7 @@ FILE=./dw_dev_friendly.sql
 if test -f "$FILE"
 then
 
-    echo "NOTE: Despite the name, the content you're uploading is still protected; be careful not to share anything outside the organisation"
+    echo "! NOTE: Despite the name, the content you're uploading is still protected; be careful not to share anything outside the organisation"
     echo
     echo "This will completely replace your local dev database"
     read -p "Do you want to continue? [yN]" -n 1 -r
