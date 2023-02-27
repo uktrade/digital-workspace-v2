@@ -13,19 +13,19 @@ import uuid
 retain_number = 500
 all_people = Person.objects.all()
 decimate_ratio = math.floor(len(all_people) / retain_number)
-Person.objects.annotate(idmod=F('id') % decimate_ratio).filter(~Q(idmod=0)).delete()
+Person.objects.annotate(idmod=F("id") % decimate_ratio).filter(~Q(idmod=0)).delete()
 
 # Documents
 retain_number = 500
 all_docs = Document.objects.all()
 decimate_ratio = math.floor(len(all_docs) / retain_number)
-Document.objects.annotate(idmod=F('id') % decimate_ratio).filter(~Q(idmod=0)).delete()
+Document.objects.annotate(idmod=F("id") % decimate_ratio).filter(~Q(idmod=0)).delete()
 
 # Images
 retain_number = 500
 all_imgs = Image.objects.all()
 decimate_ratio = math.floor(len(all_imgs) / retain_number)
-Image.objects.annotate(idmod=F('id') % decimate_ratio).filter(~Q(idmod=0)).delete()
+Image.objects.annotate(idmod=F("id") % decimate_ratio).filter(~Q(idmod=0)).delete()
 
 # Now remove PII for remaining users
 # grab some random global names
@@ -115,5 +115,5 @@ for person in Person.objects.all().reverse():
         person.delete()
 
 # delete unlinked users
-remaining_people_pks = Person.objects.all().values_list('user_id', flat=True)
+remaining_people_pks = Person.objects.all().values_list("user_id", flat=True)
 User.objects.exclude(pk__in=remaining_people_pks).delete()
