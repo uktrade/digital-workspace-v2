@@ -26,9 +26,8 @@
 # pg_dump -h localhost -U postgres test_dump > dw_dev_friendly.sql
 
 
-echo "NOTE: Despite the name, the content you're uploading is still protected; be careful not to share anything outside the organisationc"
 
-set -ex
+set -e
 
 export PGPASSWORD='postgres'
 
@@ -36,12 +35,34 @@ POSTGRES_HOST="localhost"
 POSTGRES_USER="postgres"
 DATABASE_NAME="digital_workspace"
 
-docker-compose run --rm -p "5432:5432" -d db
-sleep 2
+FILE=./dw_dev_friendly.sql
+if test -f "$FILE"
+then
 
-psql -h $POSTGRES_HOST -U $POSTGRES_USER -c "DROP DATABASE $DATABASE_NAME;"
-psql -h $POSTGRES_HOST -U $POSTGRES_USER -c "CREATE DATABASE $DATABASE_NAME TEMPLATE template0;"
+    echo "NOTE: Despite the name, the content you're uploading is still protected; be careful not to share anything outside the organisation"
+    echo
+    echo "This will completely replace your local dev database"
+    read -p "Do you want to continue? [yN]" -n 1 -r
+    echo
 
-psql -h $POSTGRES_HOST -U $POSTGRES_USER -f dw_dev_friendly.sql $DATABASE_NAME
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        docker-compose run --rm -p "5432:5432" -d db
+        sleep 2
 
-docker-compose kill db
+        psql -h $POSTGRES_HOST -U $POSTGRES_USER -c "DROP DATABASE $DATABASE_NAME;"
+        psql -h $POSTGRES_HOST -U $POSTGRES_USER -c "CREATE DATABASE $DATABASE_NAME TEMPLATE template0;"
+
+        psql -h $POSTGRES_HOST -U $POSTGRES_USER -f dw_dev_friendly.sql $DATABASE_NAME
+
+        docker-compose kill db
+
+        echo "Done. Since your DB has been overwritten you'll need to auth again and then make new superuser records to access the admin..."
+    else
+        echo "OK, cancelling withought doing anything."
+    fi
+
+else
+    echo "Data dump file not found."
+    exit 1
+fi
