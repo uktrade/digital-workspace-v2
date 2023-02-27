@@ -65,6 +65,8 @@ FILE_UPLOAD_HANDLERS = (
     "django_chunk_upload_handlers.s3.S3FileUploadHandler",
 )  # Order is important
 
+AWS_S3_FILE_OVERWRITE = False
+
 CLEAN_FILE_NAME = True
 
 # Celery file upload config
