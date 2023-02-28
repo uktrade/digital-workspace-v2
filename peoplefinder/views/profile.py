@@ -106,6 +106,12 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
     slug_url_kwarg = "profile_slug"
     success_message = "Your profile has been updated"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"request": self.request})
+
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
