@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 # Django
-django = "^3.2.18"
+django = "^4.1.7"
 django-environ = "^0.8.1"
 django-webpack-loader = "^1.4.1"
 django-storages = "^1.11.1"
@@ -23,7 +23,7 @@ django-staff-sso-client = "^4.0.1"
 django_log_formatter_ecs = "^0.0.5"
 django-chunk-upload-handlers = "^0.0.10"
 django-audit-log-middleware = "^0.0.4"
-django-hawk-drf = "^0.0.1"
+django-hawk-drf = "^1.1.0"
 # Wagtail
 wagtail = "^4.0.0"
 wagtailmedia = "^0.13.0"
@@ -52,12 +52,13 @@ pillow = "^9.3.0"
 bleach = "^4.1.0"
 elastic-apm = "^6.7.2"
 requests = "^2.27.1"
-boto3 = "^1.20.46"
+boto3 = "^1.26.80"
 # TODO: Are these packages used directly?
 pyjwt = { version = "^2.4.0", extras = ["crypto"] }
 # urllib3>=1.26.5
 # lxml>=4.9.1
 # PyYAML>=5.4
+django-taggit = "^3.1.0"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.3.2"
