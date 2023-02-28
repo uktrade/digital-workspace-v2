@@ -1,0 +1,12 @@
+from django.urls import path
+
+from .views import v2_search_category, v2_search_all, home_view
+
+
+app_name = "search"
+
+urlpatterns = [
+    path("v2/", home_view, name="home"),
+    path("v2/all", v2_search_all, name="all"),
+    path("v2/<str:category>", v2_search_category, name="category"),
+]

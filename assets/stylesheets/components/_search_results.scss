@@ -17,16 +17,50 @@
   }
 }
 
-.v2-search-results {
-  &__category {
-    padding-top: 20px;
-    margin-bottom: 20px;
+// Search v2
+.search-results {
+  margin-bottom: 2em;
+}
 
-    border: 1px solid $govuk-border-colour;
+.search-results__filters {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+
+  border-bottom: 1px solid black;
+
+  margin-bottom: 1rem;
+
+  > a {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+
+    &[data-selected] {
+      border-bottom: 4px solid $govuk-link-colour !important;
+    }
+  }
+}
+
+.search-results__list[data-search-category="teams"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-gap: 1.5rem;
+}
+
+.search-result--person {
+  margin-bottom: 1rem;
+}
+
+.search-result--page {
+  padding-bottom: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $govuk-border-colour;
   }
 
-  ul {
-    padding-left: 0px;
-    list-style: none;
+  > * {
+    margin-bottom: 0.5rem;
   }
 }

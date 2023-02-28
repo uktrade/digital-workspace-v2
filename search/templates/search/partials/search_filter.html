@@ -1,0 +1,5 @@
+<a
+    href="{{ name }}?query={{ search_query }}"
+    class="govuk-!-font-size-24 govuk-link govuk-link--no-underline govuk-link--no-visited-state"
+    {% if search_category == name %}data-selected{% endif %}
+>{{ name|title }}</a>

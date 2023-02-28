@@ -1,0 +1,53 @@
+{% extends "1_col_content.html" %}
+
+{% comment %}
+context:
+    search_url
+    search_query
+    search_category
+    search_results
+    search_results_template
+{% endcomment %}
+
+{% block title %}Search results for '{{ search_query }}'{% endblock %}
+
+{% block location %}Search{% endblock %}
+
+{% block content %}
+    <form
+        class="search-form"
+        action="{% if search_url %}{{ search_url }}{% else %}{% url 'search' %}{% endif %}"
+        method="get"
+        >
+        <label for="search-site" class="govuk-visually-hidden">Search Digital Workspace</label>
+        <input id="search-site"
+               class="govuk-input"
+               name="query"
+               placeholder="{{ placeholder|default:'Search site' }}"
+               type="search"
+               value="{{ search_query|default:'' }}"
+               {% comment %}
+               hx-get="{{ search_url }}"
+               hx-push-url="true"
+               hx-trigger="keyup changed delay:500ms, search"
+               hx-target="#search-results"
+               {% endcomment %}
+               />
+        <button type="submit">Search</button>
+    </form>
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+    <div id="search-results" class="search-results">
+        {% include 'search/partials/search_results.html' %}
+    </div>
+
+    <script lang="javascript">
+        gtm_data_then_click = function(object, data) {
+            dataLayer.push(data);
+            url=object.getAttribute('href');
+            setTimeout(function(){location.href = url}, 500);
+            return false;
+        };
+    </script>
+{% endblock content %}

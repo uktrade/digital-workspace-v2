@@ -1,20 +1,21 @@
 import logging
 import math
 import shlex
-from typing import Optional, TypedDict
+from typing import Literal, Mapping
 
-from django import forms
 from django.conf import settings
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
 from content.models import ContentPage, SearchExclusionPageLookUp, SearchPinPageLookUp
 
-from .forms import SearchCategory, SearchForm
-from .search import sanitize_search_query, search_all
+from . import search as search_vectors
+from .utils import sanitize_search_query
 
 
 logger = logging.getLogger(__name__)
@@ -179,93 +180,87 @@ def search(request):
     )
 
 
-class V2SearchContext(TypedDict):
-    search_query: Optional[str]
-    search_category: Optional[str]
-    search_categories: type[SearchCategory]
-    page_results: list
-    team_results: list
-    people_results: list
-    results: list
-    results_template: Optional[str]
-    total_matches: int
-    # Must be provided before passing to the response.
-    form: Optional[forms.Form]
+# Types
+SearchCategory = Literal["all", "people", "teams", "guidance", "tools", "news"]
+SearchCategoryToVector = Mapping[SearchCategory, search_vectors.SearchVector]
+
+# Constants
+SEARCH_CATEGORIES: set[SearchCategory] = {
+    "all",
+    "people",
+    "teams",
+    "guidance",
+    "tools",
+    "news",
+}
+
+SEARCH_CATEGORY_TO_VECTOR: SearchCategoryToVector = {
+    "people": search_vectors.PeopleSearchVector,
+    "teams": search_vectors.TeamsSearchVector,
+    "guidance": search_vectors.GuidanceSearchVector,
+    "tools": search_vectors.ToolsSearchVector,
+    "news": search_vectors.NewsSearchVector,
+}
+
+
+# Views
+@require_http_methods(["GET"])
+def home_view(request: HttpRequest) -> HttpResponse:
+    return redirect("search:all")
 
 
 @require_http_methods(["GET"])
-def v2_search(request: HttpRequest) -> HttpResponse:
-    if not request.user.enable_v2_search:
-        raise Http404
+def v2_search_category(request: HttpRequest, category: str) -> HttpResponse:
+    # If the category is invalid, redirect to search all.
+    if category not in SEARCH_CATEGORIES:
+        return redirect("search:all")
 
-    query = request.GET.get("query")
-    category = request.GET.get("category")
+    query = request.GET.get("query", "")
 
-    if category:
-        category = category if category in SearchCategory else None
+    search_vector = SEARCH_CATEGORY_TO_VECTOR[category]
+    results = search_vector(request).search(query)
 
-    context: V2SearchContext = {
+    template = "search/search_v2.html"
+    results_template = "search/partials/search_results.html"
+
+    # Check if the request is from htmx.
+    if request.headers.get("Hx-Request", False):
+        # Switch to the partial template.
+        template = results_template
+
+    context = {
+        "search_url": reverse("search:category", args=[category]),
         "search_query": query,
         "search_category": category,
-        "search_categories": SearchCategory,
-        "page_results": [],
-        "team_results": [],
-        "people_results": [],
-        "num_page_results": 0,
-        "num_team_results": 0,
-        "num_people_results": 0,
-        "results": [],
-        "results_template": None,
-        "total_matches": 0,
-        "form": None,
-        "page": 1,
-        "next_page": None,
-        "previous_page": None,
+        "search_results": results,
+        "search_results_template": "search/partials/search_results_category.html",
+        "search_results_item_template": _get_result_template(category),
     }
 
-    if query:
-        form = SearchForm(data=request.GET)
-        form.is_valid()
+    return TemplateResponse(request, template, context=context)
 
-        (
-            context["page_results"],
-            context["team_results"],
-            context["people_results"],
-        ) = search_all(request, query, category)
-        context["num_page_results"] = len(context["page_results"])
-        context["num_team_results"] = len(context["team_results"])
-        context["num_people_results"] = len(context["people_results"])
-    else:
-        form = SearchForm()
 
-    if category == "pages":
-        context["results"] = context["page_results"]
-        context["results_template"] = "search/partials/page_results.html"
-    elif category == "teams":
-        context["results"] = context["team_results"]
-        context["results_template"] = "search/partials/team_results.html"
-    elif category == "people":
-        context["results"] = context["people_results"]
-        context["results_template"] = "search/partials/people_results.html"
+@require_http_methods(["GET"])
+def v2_search_all(request: HttpRequest) -> HttpResponse:
+    category = "all"
+    query = request.GET.get("query", "")
 
-    if category:
-        context["total_matches"] = len(context["results"])
-    else:
-        context["total_matches"] = sum(
-            [
-                len(x)
-                for x in [
-                    context["page_results"],
-                    context["team_results"],
-                    context["people_results"],
-                ]
-            ]
-        )
+    results = []
 
-    context["form"] = form
+    context = {
+        "search_url": reverse("search:all"),
+        "search_query": query,
+        "search_category": category,
+        "search_results": results,
+    }
 
-    assert context["form"], "The form must be provided before passing to the response"
+    return TemplateResponse(request, "search/v2_search_all.html", context=context)
 
-    # We must return a `TemplateResponse` because there is middleware which uses the
-    # `process_template_response` hook.
-    return TemplateResponse(request, "search/v2_search.html", context=context)
+
+def _get_result_template(category: SearchCategory) -> str:
+    page_categories = ("guidance", "tools", "news")
+
+    if category in page_categories:
+        return "search/partials/result/page.html"
+
+    return f"search/partials/result/{category}.html"

@@ -8,7 +8,7 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
-from wagtail.models import Page
+from wagtail.models import Page, PageQuerySet, BasePageManager, PageManager
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
@@ -75,7 +75,17 @@ class BasePage(Page):
             return None
 
 
+class ContentPageQuerySet(PageQuerySet):
+    def pinned(self, query):
+        ...
+
+    def exclusions(self, query):
+        ...
+
+
 class ContentPage(BasePage):
+    objects = PageManager.from_queryset(ContentPageQuerySet)()
+
     is_creatable = False
     show_in_menus = True
 
@@ -217,10 +227,17 @@ class ContentPage(BasePage):
 
 class SearchKeywordOrPhrase(models.Model):
     keyword_or_phrase = models.CharField(max_length=1000)
+    # TODO: Remove historical records.
     history = HistoricalRecords()
 
 
+class SearchKeywordOrPhraseQuerySet(models.QuerySet):
+    ...
+
+
 class SearchExclusionPageLookUp(models.Model):
+    objects = SearchKeywordOrPhraseQuerySet.as_manager()
+
     search_keyword_or_phrase = models.ForeignKey(
         SearchKeywordOrPhrase,
         on_delete=models.CASCADE,
@@ -228,10 +245,13 @@ class SearchExclusionPageLookUp(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+    # TODO: Remove historical records.
     history = HistoricalRecords()
 
 
 class SearchPinPageLookUp(models.Model):
+    objects = SearchKeywordOrPhraseQuerySet.as_manager()
+
     search_keyword_or_phrase = models.ForeignKey(
         SearchKeywordOrPhrase,
         on_delete=models.CASCADE,
@@ -239,6 +259,7 @@ class SearchPinPageLookUp(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+    # TODO: Remove historical records.
     history = HistoricalRecords()
 
 

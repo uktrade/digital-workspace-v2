@@ -1,0 +1,4 @@
+{% for result in search_results %}
+    {% include search_results_item_template with object=result only %}
+{% endfor %}
+<!-- FIXME: pagination -->
