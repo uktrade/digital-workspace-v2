@@ -1,5 +1,55 @@
 SHELL := /bin/bash
 
+APPLICATION_NAME="Digital Workspace"
+
+# Colour coding for output
+COLOUR_NONE=\033[0m
+COLOUR_GREEN=\033[32;01m
+COLOUR_YELLOW=\033[33;01m
+COLOUR_RED='\033[0;31m'
+
+
+help:
+	@echo -e "$(COLOUR_GREEN)|--- $(APPLICATION_NAME) ---|$(COLOUR_NONE)"
+	@echo -e "$(COLOUR_YELLOW)make clean$(COLOUR_NONE) : Clean up python cache and webpack assets"
+	@echo -e "$(COLOUR_YELLOW)make makemigrations$(COLOUR_NONE) or $(COLOUR_YELLOW)make migrations$(COLOUR_NONE) : Run Django makemigrations command"
+	@echo -e "$(COLOUR_YELLOW)make empty-migration$(COLOUR_NONE) : Run Django makemigrations command with `--empty` flag"
+	@echo -e "$(COLOUR_YELLOW)make checkmigrations$(COLOUR_NONE) : Run Django makemigrations command with `--check` flag"
+	@echo -e "$(COLOUR_YELLOW)make migrate$(COLOUR_NONE) : Run Django migrate command"
+	@echo -e "$(COLOUR_YELLOW)make compilescss$(COLOUR_NONE) : Run Django compilescss command"
+	@echo -e "$(COLOUR_YELLOW)make test$(COLOUR_NONE) : Run tests with pytest"
+	@echo -e "$(COLOUR_YELLOW)test-selenium$(COLOUR_NONE) : Run selenioum tests with pytest"
+	@echo -e "$(COLOUR_YELLOW)test-all$(COLOUR_NONE) : Run all tests with pytest"
+	@echo -e "$(COLOUR_YELLOW)coverage$(COLOUR_NONE) : Run tests with pytest and generate coverage report"
+	@echo -e "$(COLOUR_YELLOW)shell$(COLOUR_NONE) : Open a Django shell"
+	@echo -e "$(COLOUR_YELLOW)flake8$(COLOUR_NONE) : Run flake8"
+	@echo -e "$(COLOUR_YELLOW)black-check$(COLOUR_NONE) : Run black checks"
+	@echo -e "$(COLOUR_YELLOW)black$(COLOUR_NONE) : Run black formatting"
+	@echo -e "$(COLOUR_YELLOW)isort-check$(COLOUR_NONE) : Run isort checks"
+	@echo -e "$(COLOUR_YELLOW)isort$(COLOUR_NONE) : Run isort formatting"
+	@echo -e "$(COLOUR_YELLOW)check-fixme$(COLOUR_NONE) : Check for fixme comments"
+	@echo -e "$(COLOUR_YELLOW)up$(COLOUR_NONE) : Start the docker containers"
+	@echo -e "$(COLOUR_YELLOW)down$(COLOUR_NONE) : Stop the docker containers"
+	@echo -e "$(COLOUR_YELLOW)build$(COLOUR_NONE) : Build the docker containers"
+	@echo -e "$(COLOUR_YELLOW)webpack$(COLOUR_NONE) : Run webpack"
+	@echo -e "$(COLOUR_YELLOW)elevate --email=someone@example.com$(COLOUR_NONE) : Elevate the permissions for a given email"
+	@echo -e "$(COLOUR_YELLOW)collectstatic$(COLOUR_NONE) : Run the Django collectstatic command"
+	@echo -e "$(COLOUR_YELLOW)findstatic$(COLOUR_NONE) : Run the Django findstatic command"
+	@echo -e "$(COLOUR_YELLOW)bash$(COLOUR_NONE) : Run bash in the wagtail container"
+	@echo -e "$(COLOUR_YELLOW)requirements$(COLOUR_NONE) : Export the requirements to requirements.txt"
+	@echo -e "$(COLOUR_YELLOW)superuser$(COLOUR_NONE) : Create a superuser"
+	@echo -e "$(COLOUR_YELLOW)fixtree$(COLOUR_NONE) : Fix the tree structure of the pages"
+	@echo -e "$(COLOUR_YELLOW)menus$(COLOUR_NONE) : Create the menus"
+	@echo -e "$(COLOUR_YELLOW)index$(COLOUR_NONE) : Reindex the search"
+	@echo -e "$(COLOUR_YELLOW)listlinks$(COLOUR_NONE) : List all the links in the site"
+	@echo -e "$(COLOUR_YELLOW)wagtail-groups$(COLOUR_NONE) : Create the wagtail groups"
+	@echo -e "$(COLOUR_YELLOW)pf-groups$(COLOUR_NONE) : Create the pf groups"
+	@echo -e "$(COLOUR_YELLOW)create_section_homepages$(COLOUR_NONE) : Create the section homepages"
+	@echo -e "$(COLOUR_YELLOW)first-use$(COLOUR_NONE) : Run the first use commands"
+	@echo -e "$(COLOUR_YELLOW)setup_v2_user --email=someone@example.com$(COLOUR_NONE) : Set up a v2 user with a given email"
+	@echo -e "$(COLOUR_YELLOW)data-countries$(COLOUR_NONE) : Import the countries data"
+	@echo -e "$(COLOUR_YELLOW)local-setup$(COLOUR_NONE) : Run the local setup commands"
+
 clean:
 	npm run clean
 	find . -name '__pycache__' -exec rm -rf {} +
