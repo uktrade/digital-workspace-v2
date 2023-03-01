@@ -45,6 +45,7 @@ help:
 	@echo -e "$(COLOUR_YELLOW)wagtail-groups$(COLOUR_NONE) : Create the wagtail groups"
 	@echo -e "$(COLOUR_YELLOW)pf-groups$(COLOUR_NONE) : Create the pf groups"
 	@echo -e "$(COLOUR_YELLOW)create_section_homepages$(COLOUR_NONE) : Create the section homepages"
+	@echo -e "$(COLOUR_YELLOW)reset-db$(COLOUR_NONE) : Reset the database"
 	@echo -e "$(COLOUR_YELLOW)first-use$(COLOUR_NONE) : Run the first use commands"
 	@echo -e "$(COLOUR_YELLOW)setup_v2_user --email=someone@example.com$(COLOUR_NONE) : Set up a v2 user with a given email"
 	@echo -e "$(COLOUR_YELLOW)data-countries$(COLOUR_NONE) : Import the countries data"
@@ -162,8 +163,12 @@ pf-groups:
 create_section_homepages:
 	$(wagtail) python manage.py create_section_homepages
 
+reset-db:
+	rm -rf ./.db/
+
 first-use:
 	docker-compose down
+	make reset-db
 	make migrate
 	make data-countries
 	make menus
