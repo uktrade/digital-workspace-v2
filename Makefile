@@ -171,7 +171,7 @@ create_section_homepages:
 	$(wagtail-exec) python manage.py create_section_homepages
 
 reset-db:
-	docker-compose stop db
+	docker-compose kill db
 	rm -rf ./.db/
 	docker-compose start db
 
