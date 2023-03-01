@@ -13,7 +13,7 @@ help:
 	@echo -e "$(COLOUR_GREEN)|--- $(APPLICATION_NAME) ---|$(COLOUR_NONE)"
 	@echo -e "$(COLOUR_YELLOW)make clean$(COLOUR_NONE) : Clean up python cache and webpack assets"
 	@echo -e "$(COLOUR_YELLOW)make makemigrations$(COLOUR_NONE) or $(COLOUR_YELLOW)make migrations$(COLOUR_NONE) : Run Django makemigrations command"
-	@echo -e "$(COLOUR_YELLOW)make empty-migration$(COLOUR_NONE) : Run Django makemigrations command with `--empty` flag"
+	@echo -e "$(COLOUR_YELLOW)make empty-migration --app=???$(COLOUR_NONE) : Run Django makemigrations command with `--empty` flag"
 	@echo -e "$(COLOUR_YELLOW)make checkmigrations$(COLOUR_NONE) : Run Django makemigrations command with `--check` flag"
 	@echo -e "$(COLOUR_YELLOW)make migrate$(COLOUR_NONE) : Run Django migrate command"
 	@echo -e "$(COLOUR_YELLOW)make compilescss$(COLOUR_NONE) : Run Django compilescss command"
@@ -55,59 +55,66 @@ clean:
 	npm run clean
 	find . -name '__pycache__' -exec rm -rf {} +
 
-wagtail = docker-compose run --rm wagtail
-chown = $(wagtail) chown $(shell id -u):$(shell id -g)
+# Run a command in a new container
+wagtail-run = docker-compose run --rm wagtail
+# Run a command in a new container (don't start dependencies)
+wagtail-run-no-deps = docker-compose run --rm wagtail
+# Run a command in an existing container
+wagtail-exec = docker-compose exec wagtail
+# Run tests in a new container named 'testrunner'
+testrunner = docker-compose run --rm --name testrunner wagtail
+
+chown = $(wagtail-exec) chown $(shell id -u):$(shell id -g)
 
 makemigrations:
-	$(wagtail) python manage.py makemigrations
+	$(wagtail-exec) python manage.py makemigrations
 	$(chown) */migrations/*
 
 migrations:
-	$(wagtail) python manage.py makemigrations
-	$(chown) */migrations/*
+	make makemigrations
 
 empty-migration:
-	$(wagtail) python manage.py makemigrations --empty $(app)
+	$(wagtail-exec) python manage.py makemigrations --empty $(app)
 	$(chown) */migrations/*
 
 checkmigrations:
-	docker-compose run --rm --no-deps wagtail python manage.py makemigrations --check
+	$(wagtail-exec) python manage.py makemigrations --check
 
 migrate:
-	$(wagtail) python manage.py migrate
+	$(wagtail-exec) python manage.py migrate
 
 compilescss:
-	$(wagtail) python manage.py compilescss
+	$(wagtail-exec) python manage.py compilescss
 
 test:
-	docker-compose run --rm --name testrunner wagtail pytest -m "not selenium" --reuse-db $(tests)
+	$(testrunner) pytest -m "not selenium" --reuse-db $(tests)
 
 test-selenium:
-	docker-compose run --rm --name testrunner wagtail pytest -m "selenium"
+	$(testrunner) pytest -m "selenium"
 
 test-all:
-	docker-compose run --rm --name testrunner wagtail pytest
+	$(testrunner) pytest
 
 coverage:
-	docker-compose run --rm --name testrunner wagtail ./scripts/coverage.sh
+	$(testrunner) ./scripts/coverage.sh
 
 shell:
-	$(wagtail) python manage.py shell_plus
+	$(wagtail-exec) python manage.py shell_plus
 
 flake8:
-	docker-compose run --rm --no-deps wagtail flake8
+	$(wagtail-run-no-deps) flake8
 
 black-check:
-	docker-compose run --rm --no-deps wagtail black --check .
+	$(wagtail-run-no-deps) black --check .
 
 black:
-	docker-compose run --rm --no-deps wagtail black .
+	$(wagtail-run-no-deps) black .
 
 isort-check:
-	docker-compose run --rm --no-deps wagtail isort --check .
+	$(wagtail-run-no-deps) isort --check .
 
 isort:
-	docker-compose run --rm --no-deps wagtail isort .
+	$(wagtail-run-no-deps) isort .
 
 check-fixme:
 	! git --no-pager grep -rni fixme -- ':!./Makefile' ':!./.circleci/config.yml'
@@ -125,46 +132,48 @@ webpack:
 	npm run dev
 
 elevate:
-	$(wagtail) python manage.py elevate_sso_user_permissions --email=$(email)
+	$(wagtail-exec) python manage.py elevate_sso_user_permissions --email=$(email)
 
 collectstatic:
-	$(wagtail) python manage.py collectstatic
+	$(wagtail-exec) python manage.py collectstatic
 
 findstatic:
-	$(wagtail) python manage.py findstatic $(app)
+	$(wagtail-exec) python manage.py findstatic $(app)
 
 bash:
-	$(wagtail) bash
+	$(wagtail-exec) bash
 
 requirements:
-	$(wagtail) poetry export --without-hashes --output requirements.txt
+	$(wagtail-exec) poetry export --without-hashes --output requirements.txt
 
 superuser:
-	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
+	$(wagtail-exec) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
 
 fixtree:
-	$(wagtail) python manage.py fixtree
+	$(wagtail-exec) python manage.py fixtree
 
 menus:
-	$(wagtail) python manage.py create_menus
+	$(wagtail-exec) python manage.py create_menus
 
 index:
-	$(wagtail) python manage.py update_index
+	$(wagtail-exec) python manage.py update_index
 
 listlinks:
-	$(wagtail) python manage.py list_links
+	$(wagtail-exec) python manage.py list_links
 
 wagtail-groups:
-	$(wagtail) python manage.py create_groups
+	$(wagtail-exec) python manage.py create_groups
 
 pf-groups:
-	$(wagtail) python manage.py create_people_finder_groups
+	$(wagtail-exec) python manage.py create_people_finder_groups
 
 create_section_homepages:
-	$(wagtail) python manage.py create_section_homepages
+	$(wagtail-exec) python manage.py create_section_homepages
 
 reset-db:
+	docker-compose stop db
 	rm -rf ./.db/
+	docker-compose start db
 
 first-use:
 	docker-compose down
@@ -179,11 +188,11 @@ first-use:
 	docker-compose up
 
 setup_v2_user:
-	$(wagtail) python manage.py setup_v2_user $(email)
+	$(wagtail-exec) python manage.py setup_v2_user $(email)
 
 # Data
 data-countries:
-	$(wagtail) python manage.py loaddata countries.json
+	$(wagtail-exec) python manage.py loaddata countries.json
 
 local-setup:
 	poetry install
