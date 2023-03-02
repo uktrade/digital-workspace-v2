@@ -3,20 +3,7 @@
 from django.db import migrations
 
 
-def rebrand_to_dbt(apps, schema_editor):
-    WorkingAtDITHome = apps.get_model("working_at_dit", "WorkingAtDITHome")
-    page = WorkingAtDITHome.objects.get(title="Working at DIT", slug="working-at-dit")
-    page.title = "Working at DBT"
-    page.slug = "working-at-dbt"
-    page.save()
-
-
-def rebrand_to_dit(apps, schema_editor):
-    WorkingAtDITHome = apps.get_model("working_at_dit", "WorkingAtDITHome")
-    page = WorkingAtDITHome.objects.get(title="Working at DBT", slug="working-at-dbt")
-    page.title = "Working at DIT"
-    page.slug = "working-at-dit"
-    page.save()
+# A migration is not the best place to perform the rebrand of "working for DIT".
 
 
 class Migration(migrations.Migration):
@@ -25,4 +12,4 @@ class Migration(migrations.Migration):
         ("working_at_dit", "0004_auto_20210217_1343"),
     ]
 
-    operations = [migrations.RunPython(rebrand_to_dbt, reverse_code=rebrand_to_dit)]
+    operations = []
