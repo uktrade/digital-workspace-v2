@@ -72,8 +72,8 @@ class Command(BaseCommand):
         transition.save_revision().publish()
 
         working_at_dit_home = WorkingAtDITHome(
-            title="Working at DIT",
-            slug="working-at-dit",
+            title="Working at DBT",
+            slug="working-at-dbt",
             live=True,
             first_published_at=datetime.now(),
             show_in_menus=True,
