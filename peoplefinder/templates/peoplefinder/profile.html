@@ -111,9 +111,9 @@
         </div>
 
         {% if request.user == profile.user %}
-            <p class="govuk-body-s">Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DIT</a>.</p>
+            <p class="govuk-body-s">Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.</p>
         {% else %}
-            <p class="govuk-body-s">Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DIT</a>.</p>
+            <p class="govuk-body-s">Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.</p>
         {% endif %}
     </div>
 </div>
