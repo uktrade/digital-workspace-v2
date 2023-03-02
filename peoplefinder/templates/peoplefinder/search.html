@@ -1,64 +1,81 @@
 {% extends 'peoplefinder/page.html' %}
-
 {% block title %}Search results for '{{ form.cleaned_data.query }}'{% endblock %}
-
 {% block location %}Search results{% endblock %}
-
 {% block content %}
-{% if total_matches %}
-    <h1 class="govuk-heading-l">{{ total_matches }} search results for '{{ query }}'</h1>
-{% else %}
-    <h1 class="govuk-heading-l">No search results for '{{ query }}'</h1>
-
-    <p class="govuk-body-l">Check your spelling or try another search.</p>
-{% endif %}
-
-{% include 'peoplefinder/components/error-summary.html' %}
-
-<div class="govuk-grid-row mb-20">
-    <div class="govuk-grid-column-one-quarter">
-        <form action="{% url 'people-and-teams-search' %}" method="GET">
-            <input type="hidden" name="query" value="{{ form.cleaned_data.query }}">
-            <fieldset class="govuk-fieldset mb-20">
-                <legend class="govuk-fieldset__legend">Filter by:</legend>
-                <div class="govuk-checkboxes">
-                    {% for checkbox in form.filters %}
-                        <div class="govuk-checkboxes__item">
-                            {{ checkbox.tag }}
-                            <label class="govuk-label govuk-checkboxes__label" for="{{ checkbox.id_for_label }}">
-                                {{ checkbox.choice_label }}
-                            </label>
-                        </div>
-                    {% endfor %}
-                </div>
-            </fieldset>
-            <button class="govuk-button" type="submit">Filter</button>
-        </form>
-    </div>
-    <div class="govuk-grid-column-three-quarters">
-        {# Team search results #}
-        {% if team_matches %}
-            <h3 class="govuk-heading-s">{{ team_matches|length }} teams found</h3>
-        {% endif %}
-        <div class="pf-team-search-results">
-            {% for team in team_matches %}
-                <li>
-                    {% include 'peoplefinder/components/team-card.html' %}
-                </li>
+    {% if total_matches %}
+        <h1 class="govuk-heading-l">{{ total_matches }} search results for '{{ query }}'</h1>
+    {% else %}
+        <h1 class="govuk-heading-l">No search results for '{{ query }}'</h1>
+        <p class="govuk-body-l">Check your spelling or try another search.</p>
+    {% endif %}
+    {% include 'peoplefinder/components/error-summary.html' %}
+    <div class="govuk-grid-row mb-20">
+        <div class="govuk-grid-column-one-quarter">
+            <form action="{% url 'people-and-teams-search' %}" method="GET">
+                <input type="hidden" name="query" value="{{ form.cleaned_data.query }}">
+                <fieldset class="govuk-fieldset mb-20">
+                    <legend class="govuk-fieldset__legend">
+                        Filter by:
+                    </legend>
+                    <div class="govuk-checkboxes">
+                        {% for checkbox in form.filters %}
+                            <div class="govuk-checkboxes__item">
+                                {{ checkbox.tag }}
+                                <label class="govuk-label govuk-checkboxes__label"
+                                       for="{{ checkbox.id_for_label }}">
+                                    {{ checkbox.choice_label }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+                <button class="govuk-button" type="submit">Filter</button>
+            </form>
+        </div>
+        <div class="govuk-grid-column-three-quarters">
+            {# Team search results #}
+            {% if team_matches %}<h3 class="govuk-heading-s">{{ team_matches|length }} teams found</h3>{% endif %}
+            <div class="pf-team-search-results">
+                {% for team in team_matches %}
+                    <li>{% include 'peoplefinder/components/team-card.html' with num_prev_results='0' %}</li>
+                {% endfor %}
+            </div>
+            {% if team_matches and person_matches %}
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+            {% endif %}
+            {# People search results #}
+            {% if person_matches %}<h3 class="govuk-heading-s">{{ person_matches|length }} people found</h3>{% endif %}
+            {% for person in person_matches %}
+                {% include 'peoplefinder/components/search-result-person.html' with num_prev_results=team_matches|length %}
             {% endfor %}
         </div>
-
-        {% if team_matches and person_matches %}
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        {% endif %}
-
-        {# People search results #}
-        {% if person_matches %}
-            <h3 class="govuk-heading-s">{{ person_matches|length }} people found</h3>
-        {% endif %}
-        {% for person in person_matches %}
-            {% include 'peoplefinder/components/search-result-person.html' %}
-        {% endfor %}
     </div>
-</div>
+    <script lang="javascript">
+    var page_type =
+    {% if filters|length == 2 %}
+        'peoplefinder'
+    {% else %}
+        {% if "teams" in filters %}
+            'teams'
+        {% else %}
+            'people'
+        {% endif %}
+    {% endif %}
+    document.onload = dataLayer.push({
+        'event': 'search',
+        'search_version': 'v1',
+        'search_query': '{{ form.cleaned_data.query }}',
+        'search_results_page_type': page_type,
+        'search_results_count_total': '{{ total_matches }}',
+        'search_results_count_people_type': '{{ person_matches|length }}',
+        'search_results_count_teams_type': '{{ team_matches|length }}',
+        'search_results_count_pages_type': '0'
+    });
+    gtm_data_then_click = function(object, data) {
+        dataLayer.push(data);
+        url=object.getAttribute('href');
+        setTimeout(function(){location.href = url}, 500);
+        return false;
+    };
+    </script>
 {% endblock %}

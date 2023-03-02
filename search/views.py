@@ -166,6 +166,7 @@ def search(request):
         "search/search.html",
         {
             "pinned_results": pinned_results,
+            "num_pinned_results": pinned_results.count() if page == 1 else 0,
             "num_results": pinned_results.count() + total,
             "search_query": search_query,
             "search_results": hits,
@@ -210,10 +211,16 @@ def v2_search(request: HttpRequest) -> HttpResponse:
         "page_results": [],
         "team_results": [],
         "people_results": [],
+        "num_page_results": 0,
+        "num_team_results": 0,
+        "num_people_results": 0,
         "results": [],
         "results_template": None,
         "total_matches": 0,
         "form": None,
+        "page": 1,
+        "next_page": None,
+        "previous_page": None,
     }
 
     if query:
@@ -225,6 +232,9 @@ def v2_search(request: HttpRequest) -> HttpResponse:
             context["team_results"],
             context["people_results"],
         ) = search_all(request, query, category)
+        context["num_page_results"] = len(context["page_results"])
+        context["num_team_results"] = len(context["team_results"])
+        context["num_people_results"] = len(context["people_results"])
     else:
         form = SearchForm()
 

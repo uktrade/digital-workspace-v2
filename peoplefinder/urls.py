@@ -93,7 +93,7 @@ people_urlpatterns = [
     ),
     # Leaving DIT
     path(
-        "<uuid:profile_slug>/leaving-dit",
+        "<uuid:profile_slug>/leaving-dbt",
         ProfileLeavingDitView.as_view(),
         name="profile-leaving-dit",
     ),
