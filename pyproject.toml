@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 # Django
-django = "^3.2.16"
+django = "^3.2.18"
 django-environ = "^0.8.1"
 django-webpack-loader = "^1.4.1"
 django-storages = "^1.11.1"
@@ -25,9 +25,9 @@ django-chunk-upload-handlers = "^0.0.10"
 django-audit-log-middleware = "^0.0.4"
 django-hawk-drf = "^0.0.1"
 # Wagtail
-wagtail = "^3.0.3"
-wagtailmedia = "^0.12.0"
-wagtailmenus = "^3.0.2"
+wagtail = "^4.0.0"
+wagtailmedia = "^0.13.0"
+wagtailmenus = "^3.1.5"
 wagtail-draftail-anchors = "^0.5.0"
 wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag="v0.2.0" }
 # OpenSearch
