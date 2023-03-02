@@ -48,6 +48,7 @@ def search_view(request):
         "query": query,
         "filters": filters,
         "form": form,
+        "page": 1,
     }
 
     # We must return a `TemplateResponse` because there is middleware which uses the
