@@ -100,10 +100,8 @@ for person in Person.objects.all().reverse():
         person.intermediate_languages = "Wookie, Mangalore"
     person.other_learning_interest = None
     person.previous_experience = None
-    if person.photo is not None:
-        person.photo = f"peoplefinder/person/{person.slug}/photo/my-photo.jpg"
-    if person.photo_small is not None:
-        person.photo_small = f"peoplefinder/person/{person.slug}/photo/my-photo.jpg"
+    person.photo = None
+    person.photo_small = None
 
     print(f"saving #{counter} of #{total}")
     counter += 1
