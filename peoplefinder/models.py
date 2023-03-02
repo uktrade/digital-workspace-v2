@@ -635,7 +635,7 @@ class Team(index.Indexed, models.Model):
         blank=True,
         help_text="A short form of the team name, up to 10 characters. For example DDaT.",
     )
-    slug = models.SlugField(max_length=130, unique=True, editable=False)
+    slug = models.SlugField(max_length=130, unique=True, editable=True)
     description = models.TextField(
         "Team description",
         null=False,
