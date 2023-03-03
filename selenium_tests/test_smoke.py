@@ -28,7 +28,7 @@ def test_smoke(django_user_model, selenium, live_server):
     assert "Home" in selenium.title
 
     wagtail_admin_page = home_page.goto_wagtail_admin_page()
-    assert "Wagtail" in selenium.title
+    assert "DBT Digital Workspace" in selenium.title
 
     home_page = wagtail_admin_page.get_home_page()
     assert "Home" in selenium.title
