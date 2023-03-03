@@ -2,6 +2,8 @@
 # assumes shell_plus with all models and django classes available
 
 
+# first paste this
+
 import json
 import math
 import random
@@ -15,17 +17,8 @@ all_people = Person.objects.all()
 decimate_ratio = math.floor(len(all_people) / retain_number)
 Person.objects.annotate(idmod=F("id") % decimate_ratio).filter(~Q(idmod=0)).delete()
 
-# Documents
-retain_number = 500
-all_docs = Document.objects.all()
-decimate_ratio = math.floor(len(all_docs) / retain_number)
-Document.objects.annotate(idmod=F("id") % decimate_ratio).filter(~Q(idmod=0)).delete()
 
-# Images
-retain_number = 500
-all_imgs = Image.objects.all()
-decimate_ratio = math.floor(len(all_imgs) / retain_number)
-Image.objects.annotate(idmod=F("id") % decimate_ratio).filter(~Q(idmod=0)).delete()
+# then paste this
 
 # Now remove PII for remaining users
 # grab some random global names
@@ -112,6 +105,58 @@ for person in Person.objects.all().reverse():
     except:
         person.delete()
 
+
+# then paste this
+
 # delete unlinked users
 remaining_people_pks = Person.objects.all().values_list("user_id", flat=True)
 User.objects.exclude(pk__in=remaining_people_pks).delete()
+
+
+# then paste this
+
+
+# Documents
+linked_docs = []
+all_docs = Document.objects.all()
+for doc in all_docs:
+    if len(doc.get_usage()) > 0:
+        linked_docs += [doc, ]
+    else:
+        doc.delete()
+
+with open("linked_docs.txt", "w") as file:
+    for i in linked_docs:
+        file.write(f"{i.file}\n")
+
+
+# then paste this
+
+# Images
+linked_images = []
+all_images = Image.objects.all()
+for img in all_images:
+    if len(img.get_usage()) > 0:
+        linked_images += [img, ]
+    else:
+        img.delete()
+
+with open("linked_images.txt", "w") as file:
+    for i in linked_images:
+        file.write(f"{i.file}\n")
+
+
+# then paste this
+
+# Media
+linked_media = []
+all_media = Media.objects.all()
+for media in all_media:
+    if len(media.get_usage()) > 0:
+        linked_media += [media, ]
+    else:
+        media.delete()
+
+with open("linked_media.txt", "w") as file:
+    for i in linked_media:
+        file.write(f"{i.file}\n")
