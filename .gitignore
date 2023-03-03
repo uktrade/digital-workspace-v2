@@ -61,3 +61,4 @@ ner_output_file.txt
 # Data tasks
 .db
 *.sql
+linked*.txt
