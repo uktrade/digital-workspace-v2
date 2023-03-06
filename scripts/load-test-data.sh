@@ -30,7 +30,7 @@ then
         psql -h $POSTGRES_HOST -U $POSTGRES_USER -c "DROP DATABASE $DATABASE_NAME;"
         psql -h $POSTGRES_HOST -U $POSTGRES_USER -c "CREATE DATABASE $DATABASE_NAME TEMPLATE template0;"
 
-        psql -h $POSTGRES_HOST -U $POSTGRES_USER -f dw_dev_friendly.sql $DATABASE_NAME
+        psql -h $POSTGRES_HOST -U $POSTGRES_USER -t $DATABASE_NAME -f dw_dev_friendly.sql $DATABASE_NAME
 
         docker-compose kill db
 
@@ -80,6 +80,10 @@ fi
 # while read -r line; do aws s3 cp s3://$prod_bucket/$line /tmp/files/$line --profile dit-intranet-prod-s3; done < linked_images.txt
 # now copy them back up
 # aws s3 sync /tmp/files/ s3://$dev_bucket/ --profile dit-intranet-dev-s3
+#
+# you need to regerate the renditions for all images now
+# make bash
+# python manage.py wagtail_update_image_renditions
 #
 # generate the data dump file
 # pg_dump -h localhost -U postgres test_dump > dw_dev_friendly.sql
