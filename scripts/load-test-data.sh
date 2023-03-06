@@ -30,7 +30,7 @@ then
         psql -h $POSTGRES_HOST -U $POSTGRES_USER -c "DROP DATABASE $DATABASE_NAME;"
         psql -h $POSTGRES_HOST -U $POSTGRES_USER -c "CREATE DATABASE $DATABASE_NAME TEMPLATE template0;"
 
-        psql -h $POSTGRES_HOST -U $POSTGRES_USER -t $DATABASE_NAME -f dw_dev_friendly.sql $DATABASE_NAME
+        psql -h $POSTGRES_HOST -U $POSTGRES_USER -t $DATABASE_NAME -f dw_dev_friendly.sql
 
         docker-compose kill db
 
