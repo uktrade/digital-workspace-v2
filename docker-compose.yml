@@ -33,9 +33,6 @@ services:
           "-f",
           "http://localhost:9200/_cat/health"
         ]
-    networks:
-      - default
-      - inside
   wagtail:
     build:
       context: .
@@ -82,23 +79,10 @@ services:
       - wagtail
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:1.3.7
-    container_name: opensearch-dashboards
     ports:
       - 5601:5601
     environment:
-      OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
+      - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
+      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
     depends_on:
       - opensearch
-    networks:
-      - default
-      - inside
-
-networks:
-  inside:
-    external: false
-    internal: true
-  default:
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.3.0/24
