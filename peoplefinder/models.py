@@ -597,7 +597,7 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
             With a specified `parent_field`:
             >>> team = Team.objects.with_parents(parent_field="slug").get(slug="software")
             >>> team.ancestry
-            ["spacex", "engineering", "software"]
+            ['spacex', 'engineering', 'software']
 
         Args:
             parent_field: The parent field to populate the array with.

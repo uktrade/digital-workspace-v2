@@ -3,9 +3,6 @@ import unicodedata
 from collections import deque
 from typing import Optional
 
-from wagtail.search.query import Phrase
-from wagtail.search.utils import parse_query_string
-
 
 def sanitize_search_query(query: Optional[str] = None) -> str:
     if query is None:
