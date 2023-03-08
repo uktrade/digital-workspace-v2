@@ -88,6 +88,7 @@ bpython = "^0.22.1"
 django-extensions = "^3.2.1"
 werkzeug = "^2.2.3"
 blessings = "^1.7"
+djlint = "^1.19.16"
 
 [build-system]
 requires = ["poetry-core"]
