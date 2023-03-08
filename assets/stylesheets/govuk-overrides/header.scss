@@ -18,8 +18,16 @@
   }
 }
 
+// TODO [DWPF-454] remove this rule
 .govuk-header__container {
   border-bottom: 5px solid $brand-color-primary;
+  margin-bottom: 0;
+  padding-top: 6px;
+}
+
+// TODO [DWPF-454] remove .search-v2 class to target .govuk-header__container
+.govuk-header__container.search-v2 {
+  border-bottom: none;
   margin-bottom: 0;
   padding-top: 6px;
 }

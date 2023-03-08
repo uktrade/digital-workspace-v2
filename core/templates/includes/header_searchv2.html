@@ -1,11 +1,10 @@
 {% load menu_tags %}
 {% load render_bundle webpack_static from webpack_loader %}
 {#{% get_menu "main" as main_navigation %}#}
-{# TODO [DWPF-454] Delete this template #}
 <header class="govuk-header govuk-header--ws"
         role="banner"
         data-module="govuk-header">
-    <div class="govuk-header__container govuk-width-container">
+    <div class="govuk-header__container govuk-width-container search-v2">
         <div class="govuk-header__logo govuk-header__logo--ws">
             <a href="/" class="govuk-header__link govuk-header__link--homepage">
                 <span class="govuk-header__logotype govuk-header__logotype--ws">
@@ -27,10 +26,15 @@
                         aria-label="Show or hide Top Level Navigation">
                     Menu
                 </button>
-                <nav>
-                    {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
-                </nav>
                 <div class="site-search">{% include 'search/partials/search_form.html' %}</div>
             </div>
         </div>
     </header>
+    <div class="nav-and-profile-bar">
+        <div class="govuk-width-container">
+            <nav>
+                {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+            </nav>
+            {% include 'includes/profile_panel.html' %}
+        </div>
+    </div>

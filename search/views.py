@@ -267,7 +267,10 @@ def _get_result_template(category: SearchCategory) -> str:
 
 
 def toggle_search_v2(request: HttpRequest, use_v2: str) -> HttpResponse:
-    """Temporary view to allow users to opt-in or -out of the beta/V2 functionality. Remove once Beta period is over"""
+    """
+    Temporary view to allow users to opt-in or -out of the beta/V2 functionality.
+    TODO [DWPF-454] Remove once Beta period is over
+    """
 
     next = request.GET.get("next", None)
     if next is None:
