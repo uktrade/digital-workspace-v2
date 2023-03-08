@@ -41,40 +41,101 @@ def sanitize_search_query(query: Optional[str] = None) -> str:
     return output
 
 
-# FIXME: add tests
-def get_query_parts_from_wagtail_query(query):
-    filters, query = parse_query_string(query)
-
-    stack = deque([query])
-
-    while stack:
-        query = stack.pop()
-
-        if subqueries := getattr(query, "subqueries", None):
-            stack.extendleft(subqueries)
-        else:
-            if isinstance(query, Phrase):
-                yield query.query_string
-            else:
-                yield from query.query_string.split(" ")
-
-
 def normalize_query(query: str) -> str:
-    """_summary_
+    """Return a normalized query string.
+
+    Notes:
+        - remove leading and trailing whitespace
+        - collapse multiple spaces down to a single space
 
     Examples:
-        >>> normalize_query("foo bar")
-        'foo bar'
-        >>> normalize_query(" foo bar ")
-        'foo bar'
+        >>> normalize_query(' foo  "bar baz"')
+        'foo "bar baz"'
 
     Args:
-        query (str): _description_
+        query: The query string, usually from a search input.
 
     Returns:
-        str: _description_
+        A normalized query string.
     """
-
     query = query.strip()
+    query = re.sub(r"\s+", " ", query)
 
     return query
+
+
+def split_query(query: str) -> list[str]:
+    """Split the query into a list of keyword and phrases.
+
+    Examples:
+        One word:
+        >>> split_query('hello')
+        ['hello']
+
+        Two words:
+        >>> split_query('hello world')
+        ['hello', 'world']
+
+        Double quoted phrase:
+        >>> split_query('hello "big world"')
+        ['hello', 'big world']
+
+        Single quoted phrase:
+        >>> split_query('hello \\'big world\\'')
+        ['hello', 'big world']
+
+        Quotes in quotes:
+        >>> split_query('hello "big \\'big world\\'"')
+        ['hello', "big 'big world'"]
+
+        Unbalanced quotes:
+        >>> split_query('hello "big world')
+        ['hello', 'big world']
+
+        Escaped quotes:
+        >>> split_query(r"hello 'john\\'s world'")
+        ['hello', "john's world"]
+
+        Empty query:
+        >>> split_query("")
+        []
+
+    Args:
+        query: The query string, usually from a search input.
+
+    Returns:
+        A list of keywords and phrases from the query.
+    """
+    if not query:
+        return []
+
+    query = normalize_query(query)
+
+    parts = []
+
+    p = re.compile(
+        r"""
+            # match a quoted phrase
+            # balanced double quotes
+            (?<!\\)\"  # unescaped double quote
+            (.*?)  # any character lazy (group)
+            (?<!\\)\"  # unescaped double quote
+            # balanced single quotes (similar to balanced double quotes)
+            | (?<!\\)\'(.*?)(?<!\\)\'  # (group)
+            # unbalanced quote (captures to the end of the string)
+            | [\"\'](.*)  # (group)
+            # match an unquoted keyword
+            | (\S+)  # capture non-whitespace characters (group)
+        """,
+        re.VERBOSE,
+    )
+
+    for match in re.finditer(p, query):
+        # grab the first group as only one should match
+        group = [g for g in match.groups() if g][0]
+        # unescape the escaped quotes
+        group = re.sub(r"\\(\"|\')", lambda match: match.group(1), group)
+
+        parts.append(group)
+
+    return parts
