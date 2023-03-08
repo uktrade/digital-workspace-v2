@@ -64,6 +64,24 @@ def normalize_query(query: str) -> str:
     return query
 
 
+RE_KEYWORDS_AND_PHRASES = re.compile(
+    r"""
+        # match a quoted phrase
+        # balanced double quotes
+        (?<!\\)\"  # unescaped double quote
+        (.*?)  # any character lazy (group)
+        (?<!\\)\"  # unescaped double quote
+        # balanced single quotes (similar to balanced double quotes)
+        | (?<!\\)\'(.*?)(?<!\\)\'  # (group)
+        # unbalanced quote (captures to the end of the string)
+        | [\"\'](.*)  # (group)
+        # match an unquoted keyword
+        | (\S+)  # capture non-whitespace characters (group)
+    """,
+    re.VERBOSE,
+)
+
+
 def split_query(query: str) -> list[str]:
     """Split the query into a list of keyword and phrases.
 
@@ -113,24 +131,7 @@ def split_query(query: str) -> list[str]:
 
     parts = []
 
-    p = re.compile(
-        r"""
-            # match a quoted phrase
-            # balanced double quotes
-            (?<!\\)\"  # unescaped double quote
-            (.*?)  # any character lazy (group)
-            (?<!\\)\"  # unescaped double quote
-            # balanced single quotes (similar to balanced double quotes)
-            | (?<!\\)\'(.*?)(?<!\\)\'  # (group)
-            # unbalanced quote (captures to the end of the string)
-            | [\"\'](.*)  # (group)
-            # match an unquoted keyword
-            | (\S+)  # capture non-whitespace characters (group)
-        """,
-        re.VERBOSE,
-    )
-
-    for match in re.finditer(p, query):
+    for match in re.finditer(RE_KEYWORDS_AND_PHRASES, query):
         # grab the first group as only one should match
         group = [g for g in match.groups() if g][0]
         # unescape the escaped quotes
