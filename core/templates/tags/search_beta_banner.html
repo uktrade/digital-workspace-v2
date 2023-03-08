@@ -1,0 +1,18 @@
+<div class="search-v2-banner">
+    <div class="govuk-width-container">
+        <div class="govuk-phase-banner">
+            <p class="govuk-phase-banner__content">
+                {% if user.enable_v2_search %}
+                    <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
+                    <span class="govuk-phase-banner__text">
+                        <a href="{% url "search:toggle" use_v2="off" %}?next={{ request.get_full_path }}">Switch back to the old search experience</a>
+                    </span>
+                {% else %}
+                    <span class="govuk-phase-banner__text">
+                        <a href="{% url "search:toggle" use_v2="on" %}?next={{  request.get_full_path }}">Switch to the new Beta Search experience</a>
+                    </span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
