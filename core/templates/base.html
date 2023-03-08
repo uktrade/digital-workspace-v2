@@ -68,7 +68,10 @@
             {% include "includes/header.html" %}
             {% include "includes/search_and_profile_bar.html" %}
         {% endif %}
-        {% include "tags/search_beta_banner.html" %}
+        {% if user.enable_v2_search or "search" in request.get_full_path %}
+            {# @TODO [DWPF-454] Remove this banner and the template file #}
+            {% include "tags/search_beta_banner.html" %}
+        {% endif %}
         {% cookie_banner %}
         {% site_alert %}
         <div class="govuk-width-container">
@@ -86,5 +89,8 @@
         {% render_bundle 'main' 'js' %}
         {% block scripts %}{% endblock %}
         {% git_info %}
+        <pre>
+        {% debug %}
+        </pre>
     </body>
 </html>
