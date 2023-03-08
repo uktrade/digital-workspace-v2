@@ -264,3 +264,20 @@ def _get_result_template(category: SearchCategory) -> str:
         return "search/partials/result/page.html"
 
     return f"search/partials/result/{category}.html"
+
+
+def toggle_search_v2(request: HttpRequest, use_v2: str) -> HttpResponse:
+    """Temporary view to allow users to opt-in or -out of the beta/V2 functionality. Remove once Beta period is over"""
+
+    next = request.GET.get("next", "/")
+
+    if use_v2 not in ['on', 'off',]:
+        return redirect(next)  # @TODO raise an error instead?
+
+    user = request.user
+    use_v2 = True if use_v2 == "on" else False
+    if user.enable_v2_search != use_v2:
+        user.enable_v2_search = use_v2
+        user.save()
+
+    return redirect(next)
