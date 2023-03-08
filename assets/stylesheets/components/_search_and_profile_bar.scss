@@ -1,3 +1,4 @@
+// @TODO [DWPF-454] remove all instances of .search-and-profile-bar
 .search-and-profile-bar {
   background-color: $brand-color-grey90;
   background-image: url("../images/search-and-profile-bar-pattern.png");
@@ -13,6 +14,12 @@
   @include govuk-media-query($until: desktop) {
     display: none;
   }
+}
+
+.nav-and-profile-bar {
+  background-color: #f3f2f1;
+  border-top: 5px solid $brand-color-primary;
+  border-bottom: 1px solid $brand-color-grey90;
 }
 
 .people-finder-panel {

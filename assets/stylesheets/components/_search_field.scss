@@ -9,6 +9,7 @@ $input-size: 40px;
   @return "%23" + $output;
 }
 
+// @TODO [DWPF-454] remove all instances of .search-and-profile-bar
 .search-and-profile-bar {
   .govuk-width-container {
     display: grid;
@@ -17,6 +18,16 @@ $input-size: 40px;
     column-gap: 20px;
     input {
       border: none;
+    }
+  }
+}
+
+.nav-and-profile-bar {
+  .govuk-width-container {
+    display: flex;
+    column-gap: 20px;
+    nav {
+        flex-grow: 10;
     }
   }
 }
