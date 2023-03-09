@@ -1,10 +1,16 @@
+{% comment %} TODO [DWPF-454] clean up the enable_v2_search if statements, remove enable_v2_search==False condition {% endcomment %}
 <form
     class="search-form"
     {# action="{% if request.user.enable_v2_search %}{% url 'v2-search' %}{% else %}{% url 'search' %}{% endif %}" #}
     action="{% if search_url %}{{ search_url }}{% else %}{% url 'search' %}{% endif %}"
     method="get"
->
+    >
     <label for="search-site" class="govuk-visually-hidden">Search Digital Workspace</label>
-    <input id="search-site" class="govuk-input" name="query" placeholder="{{ placeholder|default:'Search site' }}" type="search" value="{{ search_query|default:'' }}"/>
+    <input id="search-site"
+           class="govuk-input"
+           name="query"
+           placeholder="{{ placeholder|default:'Search site' }}"
+           type="search"
+           value="{{ search_query|default:'' }}"/>
     <button type="submit">Search</button>
 </form>

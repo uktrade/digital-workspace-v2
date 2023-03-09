@@ -9,7 +9,7 @@ $input-size: 40px;
   @return "%23" + $output;
 }
 
-// @TODO [DWPF-454] remove all instances of .search-and-profile-bar
+// @TODO [DWPF-454] remove all instances of .search-and-profile-bar from codebase
 .search-and-profile-bar {
   .govuk-width-container {
     display: grid;
@@ -22,12 +22,16 @@ $input-size: 40px;
   }
 }
 
+// @TODO [DWPF-454] remove .nav-and-profile-bar, merge these with more general definitions
 .nav-and-profile-bar {
   .govuk-width-container {
     display: flex;
     column-gap: 20px;
     nav {
-        flex-grow: 10;
+        flex-grow: 1;
+    }
+    .site-search {
+        flex-grow: 1;
     }
   }
 }
@@ -106,6 +110,16 @@ $input-size: 40px;
       background-color: $govuk-link-colour;
     }
   }
+}
+
+// @TODO [DWPF-454] merge these overrides with the relevant base classes
+.nav-and-profile-bar {
+    .site-search {
+        position: inherit;
+    }
+    .search-form {
+        margin: 7px 0;
+    }
 }
 
 .site-search-mobile {

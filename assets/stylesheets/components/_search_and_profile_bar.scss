@@ -68,3 +68,15 @@
     display: block;
   }
 }
+
+// @TODO [DWPF-454] remove .search-v2 class and merge all overrides into main declarations
+.search-v2 {
+  .people-finder-panel {
+    .profile-details {
+        background: none;
+        color: govuk-colour("black");
+        text-decoration-color: govuk-colour("black");
+        padding-right: 0;
+    }
+  }
+}
