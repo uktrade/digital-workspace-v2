@@ -1,8 +1,8 @@
 from content.models import ContentPage
-from tools.models import Tool
 from news.models import NewsPage
-from working_at_dit.models import PoliciesAndGuidanceHome
 from peoplefinder.models import Person, Team
+from tools.models import Tool
+from working_at_dit.models import PoliciesAndGuidanceHome
 
 
 class SearchVector:

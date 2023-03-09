@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import v2_search_category, v2_search_all, home_view, toggle_search_v2
+from .views import home_view, toggle_search_v2, v2_search_all, v2_search_category
 
 
 app_name = "search"
