@@ -18,16 +18,17 @@
             </div>
             <div class="govuk-header__content">
                 <a href="/"
-                   class="govuk-header__link govuk-header__link--ws govuk-header__link--service-name govuk-header__link--service-name--ws">
+                   class="govuk-header__link govuk-header__link--ws govuk-header__service-name govuk-header__service-name--ws">
                     Digital Workspace
                 </a>
-                <button type="button"
-                        class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
-                        aria-controls="navigation"
-                        aria-label="Show or hide Top Level Navigation">
-                    Menu
-                </button>
-                <nav>
+                <nav aria-label="Top Level Navigation" class="govuk-header__navigation">
+                    <button type="button"
+                            class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
+                            aria-controls="navigation"
+                            aria-label="Show or hide Top Level Navigation"
+                            hidden>
+                        Menu
+                    </button>
                     {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
                 </nav>
                 <div class="site-search">{% include 'search/partials/search_form.html' %}</div>
