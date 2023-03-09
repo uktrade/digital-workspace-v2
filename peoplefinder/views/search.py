@@ -1,7 +1,7 @@
-from django.template.response import TemplateResponse
-from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
+from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.views.decorators.http import require_http_methods
 
 from peoplefinder.forms.search import PEOPLE_FILTER, TEAMS_FILTER, SearchForm
 from peoplefinder.services.search import search
@@ -14,7 +14,10 @@ def search_view(request):
 
     # users in the beta need to use the v2 search
     if request.user.enable_v2_search:
-        return redirect(reverse("search:category", kwargs={'category':'people'}) + f"?query={query}")
+        return redirect(
+            reverse("search:category", kwargs={"category": "people"})
+            + f"?query={query}"
+        )
 
     context = {
         "team_matches": [],

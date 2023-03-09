@@ -8,7 +8,7 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
-from wagtail.models import Page, PageQuerySet, BasePageManager, PageManager
+from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
