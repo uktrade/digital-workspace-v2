@@ -211,11 +211,11 @@ def home_view(request: HttpRequest) -> HttpResponse:
 
 @require_http_methods(["GET"])
 def v2_search_category(request: HttpRequest, category: str) -> HttpResponse:
+    query = request.GET.get("query", "")
+
     # If the category is invalid, redirect to search all.
     if category not in SEARCH_CATEGORIES:
-        return redirect("search:all")
-
-    query = request.GET.get("query", "")
+        return redirect(reverse("search:all") + f"?query={query}", permanent=True)
 
     search_vector = SEARCH_CATEGORY_TO_VECTOR[category]
     results = search_vector(request).search(query)
