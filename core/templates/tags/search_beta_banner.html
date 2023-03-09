@@ -1,19 +1,28 @@
 {# TODO [DWPF-454] Delete this template #}
-<div class="search-v2-banner">
-    <div class="govuk-width-container">
-        <div class="govuk-phase-banner">
-            <p class="govuk-phase-banner__content">
-                {% if user.enable_v2_search %}
+{% if user.enable_v2_search %}
+    <div class="search-v2-banner">
+        <div class="govuk-width-container">
+            <div class="govuk-phase-banner">
+                <p class="govuk-phase-banner__content">
                     <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
                     <span class="govuk-phase-banner__text">
                         <a href="{% url "search:toggle" use_v2="off" %}?next={{ request.get_full_path }}">Switch back to the old search experience</a>
                     </span>
-                {% else %}
+                </p>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="search-v2-banner">
+        <div class="govuk-width-container opt-in-invitation">
+            <div class="govuk-phase-banner">
+                <p class="govuk-phase-banner__content">
+                    <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
                     <span class="govuk-phase-banner__text">
                         <a href="{% url "search:toggle" use_v2="on" %}?next={{  request.get_full_path }}">Switch to the new Beta Search experience</a>
                     </span>
-                {% endif %}
-            </p>
+                </p>
+            </div>
         </div>
     </div>
-</div>
+{% endif %}
