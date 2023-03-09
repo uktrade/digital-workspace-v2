@@ -26,7 +26,7 @@
 .separated > *:not(:last-child) {
   padding-right: 10px;
   margin-right: 10px;
-  border-right: 1px solid #b1b4b6;
+  border-right: 1px solid govuk-colour("mid-grey");
 }
 
 .p-0 {
@@ -66,7 +66,7 @@
 }
 
 .gds-border-bottom-1-grey {
-  border-bottom: 1px solid #b1b4b6;
+  border-bottom: 1px solid govuk-colour("mid-grey");
 }
 
 // Components
@@ -95,7 +95,7 @@
 
 .pf-role-form {
   padding: 20px;
-  border: 1px solid #b1b4b6;
+  border: 1px solid govuk-colour("mid-grey");
   margin-bottom: 20px;
 
   button {
@@ -112,15 +112,15 @@
   }
 
   .success {
-    border-left: 5px solid green;
+    border-left: 5px solid $govuk-success-colour;
   }
 
   .warning {
-    border-left: 5px solid orange;
+    border-left: 5px solid $brand-color-warning;
   }
 
   .error {
-    border-left: 5px solid #d4351c;
+    border-left: 5px solid $govuk-success-colour;
   }
 }
 
@@ -185,8 +185,8 @@
 .pf-team-card {
   height: 100%;
   padding: 22.5px;
-  border: 1px solid #b1b4b6;
-  box-shadow: 7px 7px 0 #fff, 8px 8px 0 #b1b4b6;
+  border: 1px solid govuk-colour("mid-grey");
+  box-shadow: 7px 7px 0 govuk-colour("white"), 8px 8px 0 govuk-colour("mid-grey");
 }
 
 .pf-team-card__name {
@@ -201,7 +201,7 @@
 
 .pf-team-card__metadata {
   font-size: 14px;
-  color: #505a5f;
+  color: govuk-colour("dark-grey");
   margin-bottom: 0;
 }
 
@@ -239,7 +239,7 @@
   margin-bottom: 0;
   margin-left: 0.35em;
   line-height: 1.6;
-  border-left: thin solid #000;
+  border-left: thin solid  govuk-colour("black");
 
   &:last-child {
     border-left: none;
@@ -251,12 +251,12 @@
     height: 0.6em;
     margin-right: 0.1em;
     vertical-align: top;
-    border-bottom: thin solid #000;
+    border-bottom: thin solid  govuk-colour("black");
     content: "";
   }
 
   &:last-child:before {
-    border-left: thin solid #000;
+    border-left: thin solid  govuk-colour("black");
   }
 }
 
@@ -295,7 +295,7 @@
     padding-bottom: 10px;
 
     &:not(:last-child) {
-      border-bottom: 1px solid #f3f2f1;
+      border-bottom: 1px solid govuk-colour("light-grey");
     }
   }
 
@@ -313,7 +313,7 @@
 }
 
 .team-select__current-team {
-  color: #505a5f;
+  color: govuk-colour("dark-grey");
   text-decoration: line-through;
 }
 
