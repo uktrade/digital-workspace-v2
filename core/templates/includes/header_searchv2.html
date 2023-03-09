@@ -36,8 +36,7 @@
                     {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
                 </nav>
                 <div class="site-search">
-                    {% comment %} TODO switch url to search:all once template exists {% endcomment %}
-                    {% url 'search:category' category='guidance' as search_url %}
+                    {% url 'search:all' as search_url %}
                     {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
                 </div>
             </div>
