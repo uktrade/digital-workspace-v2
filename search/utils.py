@@ -1,6 +1,6 @@
-from collections import deque
 import re
 import unicodedata
+from collections import deque
 from typing import Optional
 
 from wagtail.search.query import Phrase

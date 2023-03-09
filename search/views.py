@@ -258,8 +258,9 @@ def v2_search_all(request: HttpRequest) -> HttpResponse:
         return redirect(reverse("search") + f"?query={query}")
 
     # TEMPORARILT REDIRECT USERS TO A CATEGORY SEARCH WHILE THIS VIEW THROWS ERRORS
-    return redirect(reverse("search:category", kwargs={'category':'guidance'}) + f"?query={query}")
-
+    return redirect(
+        reverse("search:category", kwargs={"category": "guidance"}) + f"?query={query}"
+    )
 
     results = []
 
@@ -292,7 +293,10 @@ def toggle_search_v2(request: HttpRequest, use_v2: str) -> HttpResponse:
     if next is None:
         next = request.META.get("HTTP_REFERER", "/")
 
-    if use_v2 not in ['on', 'off',]:
+    if use_v2 not in [
+        "on",
+        "off",
+    ]:
         return redirect(next)  # @TODO raise an error instead?
 
     user = request.user
