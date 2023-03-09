@@ -9,13 +9,6 @@
             {% endif %}
         </li>
     {% endfor %}
-    {#          {% if peoplefinder_profile %}#}
-    {#            <li class="govuk-header__navigation-item govuk-header__navigation-item--mobile-only">#}
-    {#              <a class="govuk-header__link govuk-header__link--ws" href="#">#}
-    {#                My profile ({{ peoplefinder_profile.first_name }})#}
-    {#              </a>#}
-    {#            </li>#}
-    {#          {% endif %}#}
     <li class="govuk-header__navigation-item">
         <a class="govuk-header__link govuk-header__link--ws"
            href="/working-at-dbt/data-hub/">Data Hub</a>
@@ -27,7 +20,3 @@
         </li>
     {% endif %}
 </ul>
-{#              <li class="govuk-header__navigation-item">#}
-{#                <a class="govuk-header__link govuk-header__link--ws" href="{{ menu_item.link }}" {% if menu_item.open_in_new_tab %} target="_blank"{% endif %}>{{ menu_item.title }}</a>#}
-{#              </li>#}
-{#            {% endfor %}#}

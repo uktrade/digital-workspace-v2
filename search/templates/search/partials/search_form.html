@@ -1,7 +1,5 @@
-{% comment %} TODO [DWPF-454] clean up the enable_v2_search if statements, remove enable_v2_search==False condition {% endcomment %}
 <form
     class="search-form"
-    {# action="{% if request.user.enable_v2_search %}{% url 'v2-search' %}{% else %}{% url 'search' %}{% endif %}" #}
     action="{% if search_url %}{{ search_url }}{% else %}{% url 'search' %}{% endif %}"
     method="get"
     >
