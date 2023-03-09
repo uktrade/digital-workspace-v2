@@ -23,21 +23,22 @@
                 </a>
                 {% include 'includes/profile_panel.html' %}
             </div>
+            <button type="button"
+                    class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
+                    aria-controls="navigation"
+                    aria-label="Show or hide Top Level Navigation"
+                    hidden>
+                Menu
+            </button>
         </div>
-    </header>
-    <div class="nav-and-profile-bar">
-        <div class="govuk-width-container">
-            <nav aria-label="Top Level Navigation" class="govuk-header__navigation">
-                <button type="button"
-                        class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
-                        aria-controls="navigation"
-                        aria-label="Show or hide Top Level Navigation" hidden>
-                    Menu
-                </button>
-                {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
-            </nav>
-            <div class="site-search">
-                {% include 'search/partials/search_form.html' with placeholder="Search pages and people" %}
+        <div class="nav-and-profile-bar">
+            <div class="govuk-width-container">
+                <nav aria-label="Top Level Navigation" class="govuk-header__navigation">
+                    {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+                </nav>
+                <div class="site-search">
+                    {% include 'search/partials/search_form.html' with placeholder="Search pages and people" %}
+                </div>
             </div>
         </div>
-    </div>
+    </header>

@@ -1,43 +1,47 @@
 .govuk-header {
-  border-bottom: 0;
+    border-bottom: 0;
 }
 
 .govuk-header__content {
-  width: auto;
-  margin-top:10px;
+    width: auto;
+    margin-top: 10px;
 }
 
 .govuk-header--ws {
-  background-color: govuk-colour("white");
+    background-color: govuk-colour("white");
 }
 
 .govuk-header__link--ws {
-  &:link,
-  &:visited {
-    color: govuk-colour("black");
-  }
+
+    &:link,
+    &:visited {
+        color: govuk-colour("black");
+    }
 }
 
 // TODO [DWPF-454] merge this rule with the below one
 .govuk-header__container {
-  border-bottom: 5px solid $brand-color-primary;
-  margin-bottom: 0;
-  padding-top: 6px;
+    border-bottom: 5px solid $brand-color-primary;
+    margin-bottom: 0;
+    padding-top: 6px;
 }
 
 // TODO [DWPF-454] remove .search-v2 class to target .govuk-header__container
 .govuk-header__container.search-v2 {
-  border-bottom: none;
+    border-bottom: none;
 }
 
-// TODO [DWPF-454] remove .nav-and-profile-bar class to target directly
+// TODO [DWPF-454] remove .nav-and-profile-bar class nesting to target directly
 .nav-and-profile-bar {
+
     .govuk-header__navigation {
         margin: 0;
     }
+
     .govuk-header__navigation-item {
-        padding: 0;
+        padding: 17px 0;
     }
+
     .govuk-header__link,
     .govuk-header__navigation-item--active--ws,
     .ancestor {
@@ -45,66 +49,74 @@
         text-decoration-thickness: 5px;
         text-underline-offset: 16px;
     }
+
     .govuk-header__link:hover {
         text-decoration-color: $govuk-link-colour;
     }
+
     .govuk-header__link:focus {
         outline: none;
         box-shadow: none;
         text-decoration: underline;
         text-decoration-thickness: 5px;
     }
+
     .govuk-header__navigation-item:focus-within {
         background-color: #fd0;
+    }
+
+    .govuk-header__menu-button.govuk-js-header-toggle {
+        // right: 15px;
     }
 }
 
 .govuk-header__navigation-item--active--ws,
 .ancestor {
-  a {
-    &:link,
-    &:hover,
-    &:visited {
-      color: govuk-colour("black");
+    a {
+
+        &:link,
+        &:hover,
+        &:visited {
+            color: govuk-colour("black");
+        }
     }
-  }
 }
 
 .govuk-header__logo--ws {
-  @include govuk-media-query ($from: desktop) {
-    width: 20%;
-  }
+    @include govuk-media-query ($from: desktop) {
+        width: 20%;
+    }
 }
 
 .govuk-header__logotype--ws {
-  @include govuk-media-query ($from: desktop) {
-    img {
-      margin: govuk-spacing(1) 0;
+    @include govuk-media-query ($from: desktop) {
+        img {
+            margin: govuk-spacing(1) 0;
+        }
     }
-  }
 }
 
 .govuk-header__content--ws {
-  @include govuk-media-query ($from: desktop) {
-    width: 80%;
-    margin-top: govuk-spacing(1);
-  }
+    @include govuk-media-query ($from: desktop) {
+        width: 80%;
+        margin-top: govuk-spacing(1);
+    }
 }
 
 .govuk-header__service-name--ws {
-  @include govuk-font($size: 27, $weight: bold);
+    @include govuk-font($size: 27, $weight: bold);
 
-  @include govuk-media-query ($from: desktop) {
-    margin: govuk-spacing(1) 0;
-  }
+    @include govuk-media-query ($from: desktop) {
+        margin: govuk-spacing(1) 0;
+    }
 }
 
 .govuk-header__menu-button--ws {
-  color: govuk-colour("black");
+    color: govuk-colour("black");
 }
 
 .govuk-header__navigation-item--mobile-only {
-  @include govuk-media-query ($from: desktop) {
-    display: none;
-  }
+    @include govuk-media-query ($from: desktop) {
+        display: none;
+    }
 }

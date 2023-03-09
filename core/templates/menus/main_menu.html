@@ -20,9 +20,12 @@
         <a class="govuk-header__link govuk-header__link--ws"
            href="/working-at-dbt/data-hub/">Data Hub</a>
     </li>
-    <li class="site-search-mobile govuk-header__navigation-item govuk-header__navigation-item--mobile-only">
-        {% include 'search/partials/search_form.html' %}
-    </li>
+    {# @TODO [DWPF-454] Remove this conditional and contents #}
+    {% if not user.enable_v2_search %}
+        <li class="site-search-mobile govuk-header__navigation-item govuk-header__navigation-item--mobile-only">
+            {% include 'search/partials/search_form.html' %}
+        </li>
+    {% endif %}
 </ul>
 {#              <li class="govuk-header__navigation-item">#}
 {#                <a class="govuk-header__link govuk-header__link--ws" href="{{ menu_item.link }}" {% if menu_item.open_in_new_tab %} target="_blank"{% endif %}>{{ menu_item.title }}</a>#}
