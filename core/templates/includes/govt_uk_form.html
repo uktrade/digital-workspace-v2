@@ -1,6 +1,7 @@
 {% if form.non_field_errors %}
-<div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-  <h2 class="govuk-error-summary__title" id="error-summary-title">
+<div class="govuk-error-summary" tabindex="-1" data-module="govuk-error-summary">
+    <div role="alert">
+  <h2 class="govuk-error-summary__title">
     There is a problem
   </h2>
   <div class="govuk-error-summary__body">
@@ -12,6 +13,7 @@
         {% endfor %}
     </ul>
   </div>
+</div>
 </div>
 {% endif %}
 {% for field in form %}
@@ -26,10 +28,10 @@
             {% endif %}
             {% if field.errors %}
                 {% for error in field.errors %}
-                    <span id="{{ field.name }}-issued-error" class="govuk-error-message">
+                    <p id="{{ field.name }}-issued-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span>
                         {{ error|escape }}
-                    </span>
+                    </p>
                 {% endfor %}
             {% endif %}
             {% if field.field.widget.input_type != 'checkbox' %}
