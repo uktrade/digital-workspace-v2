@@ -18,7 +18,7 @@
   }
 }
 
-// TODO [DWPF-454] remove this rule
+// TODO [DWPF-454] merge this rule with the below one
 .govuk-header__container {
   border-bottom: 5px solid $brand-color-primary;
   margin-bottom: 0;
@@ -28,16 +28,31 @@
 // TODO [DWPF-454] remove .search-v2 class to target .govuk-header__container
 .govuk-header__container.search-v2 {
   border-bottom: none;
-  margin-bottom: 0;
-  padding-top: 6px;
 }
 
-.govuk-header__navigation-item--active--ws {
+// TODO [DWPF-454] remove .nav-and-profile-bar class to target directly
+.nav-and-profile-bar {
+    .govuk-header__navigation {
+        margin: 12px 0;
+    }
+    .govuk-header__link,
+    .govuk-header__navigation-item--active--ws,
+    .ancestor {
+        text-decoration-thickness: 5px;
+        text-underline-offset: 16px;
+    }
+    .govuk-header__link:hover {
+        text-decoration-color: #1d70b8;
+    }
+}
+
+.govuk-header__navigation-item--active--ws,
+.ancestor {
   a {
     &:link,
     &:hover,
     &:visited {
-      color: $brand-color-primary;
+      color: govuk-colour("black");
     }
   }
 }

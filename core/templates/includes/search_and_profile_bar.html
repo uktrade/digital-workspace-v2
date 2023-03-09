@@ -2,7 +2,6 @@
 {# TODO [DWPF-454] Delete this template #}
 <div class="search-and-profile-bar">
     <div class="govuk-width-container">
-        {# if not request.user.enable_v2_search #}
         <form class="search-form"
               method="GET"
               action="{% url 'people-and-teams-search' %}">
@@ -24,9 +23,6 @@
             {% endif %}
             <button type="submit">Search</button>
         </form>
-        {# else #}
-        <!-- <div></div> -->
-        {# endif #}
         {% include 'includes/profile_panel.html' %}
     </div>
 </div>

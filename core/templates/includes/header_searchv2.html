@@ -4,6 +4,7 @@
 <header class="govuk-header govuk-header--ws"
         role="banner"
         data-module="govuk-header">
+    {# @TODO [DWPF-454] remove search-v2 class #}
     <div class="govuk-header__container govuk-width-container search-v2">
         <div class="govuk-header__logo govuk-header__logo--ws">
             <a href="/" class="govuk-header__link govuk-header__link--homepage">
@@ -26,8 +27,8 @@
                         aria-label="Show or hide Top Level Navigation">
                     Menu
                 </button>
-                <div class="site-search">{% include 'search/partials/search_form.html' %}</div>
             </div>
+            {% include 'includes/profile_panel.html' %}
         </div>
     </header>
     <div class="nav-and-profile-bar">
@@ -35,6 +36,8 @@
             <nav>
                 {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
             </nav>
-            {% include 'includes/profile_panel.html' %}
+            <div class="site-search">
+                {% include 'search/partials/search_form.html' with placeholder="Search pages and people" %}
+            </div>
         </div>
     </div>
