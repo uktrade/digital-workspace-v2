@@ -15,7 +15,7 @@
   section {
     padding: 0 0 12px 0 !important;
     margin: 0 0 12px 0;
-    border-bottom: 5px solid #cf102d;
+    border-bottom: 5px solid $brand-color-red;
   }
 
   p {
@@ -48,7 +48,7 @@
 
       .quick-links {
         background-color: govuk-colour("light-grey");
-        border-bottom: 5px solid #cf102d;
+        border-bottom: 5px solid $brand-color-red;
         padding: 12px;
         margin: 0;
 
@@ -147,7 +147,7 @@
       // D and I
       .news-item-3 {
         order: 3;
-        border-bottom: 5px solid #0064C5;
+        border-bottom: 5px solid $govuk-brand-colour;
         background-color: govuk-colour("light-grey");
         .home-news-item-text-content {
           padding: 12px;
