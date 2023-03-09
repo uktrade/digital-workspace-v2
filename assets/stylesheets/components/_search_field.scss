@@ -23,8 +23,8 @@ $input-size: 40px;
     }
 }
 
-// @TODO [DWPF-454] remove .nav-and-profile-bar, merge these with more general definitions
-.nav-and-profile-bar {
+// @TODO [DWPF-454] remove .search-v2, merge these with more general definitions
+.search-v2 {
     .govuk-width-container {
         display: flex;
         column-gap: 20px;
@@ -119,7 +119,7 @@ $input-size: 40px;
 }
 
 // @TODO [DWPF-454] merge these overrides with the relevant base classes
-.nav-and-profile-bar {
+.search-v2 {
     .site-search {
         position: inherit;
     }
@@ -142,13 +142,13 @@ $input-size: 40px;
         display: none;
     }
 
-    // @TODO [DWPF-454] remove the .nav-and-profile-bar nesting and merge with existing rules
-    .nav-and-profile-bar {
+    // @TODO [DWPF-454] remove the .search-v2 nesting and merge with existing rules
+    .search-v2 {
         .govuk-width-container {
-            column-gap: 0;
+            flex-direction: column;
 
-            nav {
-                flex-grow: 0;
+            #navigation {
+                border-bottom: 1px solid #2e3133;
             }
         }
 
