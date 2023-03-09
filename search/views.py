@@ -25,6 +25,10 @@ def search(request):
     page = int(request.GET.get("page", 1))
     search_query = request.GET.get("query", None)
 
+    # users in the beta need to use the v2 search
+    if request.user.enable_v2_search:
+        return redirect(reverse("search:all") + f"?query={search_query}")
+
     if search_query is None:
         search_query = request.GET.get("s", None)
 
@@ -213,6 +217,10 @@ def home_view(request: HttpRequest) -> HttpResponse:
 def v2_search_category(request: HttpRequest, category: str) -> HttpResponse:
     query = request.GET.get("query", "")
 
+    # users not in the beta need to use the v1 search
+    if not request.user.enable_v2_search:
+        return redirect(reverse("search") + f"?query={query}")
+
     # If the category is invalid, redirect to search all.
     if category not in SEARCH_CATEGORIES:
         return redirect(reverse("search:all") + f"?query={query}", permanent=True)
@@ -244,6 +252,14 @@ def v2_search_category(request: HttpRequest, category: str) -> HttpResponse:
 def v2_search_all(request: HttpRequest) -> HttpResponse:
     category = "all"
     query = request.GET.get("query", "")
+
+    # users not in the beta need to use the v1 search
+    if not request.user.enable_v2_search:
+        return redirect(reverse("search") + f"?query={query}")
+
+    # TEMPORARILT REDIRECT USERS TO A CATEGORY SEARCH WHILE THIS VIEW THROWS ERRORS
+    return redirect(reverse("search:category", kwargs={'category':'guidance'}) + f"?query={query}")
+
 
     results = []
 
