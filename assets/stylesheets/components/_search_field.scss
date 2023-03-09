@@ -163,3 +163,10 @@ $input-size: 40px;
         }
     }
 }
+
+// @TODO [DWPF-454] remove this rule, it's only for the custom v2 opt-in banner
+.opt-in-invitation {
+    background-color: mix(white, govuk-colour("light-blue"), 50%);
+    padding: 0 1em;
+    margin-top: 1em;
+}
