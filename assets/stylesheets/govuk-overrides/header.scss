@@ -78,7 +78,7 @@
   }
 }
 
-.govuk-header__link--service-name--ws {
+.govuk-header__service-name--ws {
   @include govuk-font($size: 27, $weight: bold);
 
   @include govuk-media-query ($from: desktop) {
