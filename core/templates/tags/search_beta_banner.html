@@ -6,7 +6,7 @@
                 <p class="govuk-phase-banner__content">
                     <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
                     <span class="govuk-phase-banner__text">
-                        <a href="{% url "search:toggle" use_v2="off" %}?next={{ request.get_full_path }}">Switch back to the old search experience</a>
+                        Please <a href="#">let us know what you think</a> of the new experience, or <a href="{% url "search:toggle" use_v2="off" %}?next={{ request.get_full_path }}">switch back</a>.
                     </span>
                 </p>
             </div>
@@ -19,7 +19,7 @@
                 <p class="govuk-phase-banner__content">
                     <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
                     <span class="govuk-phase-banner__text">
-                        <a href="{% url "search:toggle" use_v2="on" %}?next={{  request.get_full_path }}">Switch to the new Beta Search experience</a>
+                        <b>We're improving search and navigation.</b> Would you like to <a href="#">find out more</a>, or <a href="{% url "search:toggle" use_v2="on" %}?next={{ request.get_full_path }}">try it out</a>?
                     </span>
                 </p>
             </div>
