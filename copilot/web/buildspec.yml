@@ -5,7 +5,7 @@ version: 0.2
 
 phases:
 #   install:
-# test
+# tests go here
 
 
   pre_build:
