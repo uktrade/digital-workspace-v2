@@ -221,9 +221,18 @@
     color: govuk-colour("black");
 }
 
-.govuk-header__menu-button[aria-expanded=true] {
+.govuk-header__menu-button[aria-expanded=true],
+.govuk-header__menu-button:hover {
     box-shadow: 0 0 govuk-colour("white"),
         0 4px govuk-colour("black");
+    text-decoration: none;
+}
+
+.govuk-header__menu-button[aria-expanded=true]:hover {
+    box-shadow: 0 0 govuk-colour("white"),
+        0 4px $govuk-link-colour;
+    text-decoration: none;
+    ;
 }
 
 .govuk-header__navigation-item--mobile-only {
