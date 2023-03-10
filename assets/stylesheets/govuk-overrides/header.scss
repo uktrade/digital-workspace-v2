@@ -29,50 +29,150 @@
 // TODO [DWPF-454] remove .search-v2 class nesting to target directly
 .search-v2 {
     .govuk-header__container {
+        padding: 10px 0 6px 0;
         border-bottom: none;
     }
 
-    .govuk-header__navigation {
+    .govuk-width-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .govuk-header__logo {
+        width: fit-content;
+        float: none;
+        padding: 0;
+        margin: 0;
+
+        .govuk-header__link {
+            margin: 0;
+            padding: 0;
+            line-height: auto;
+        }
+    }
+
+    .govuk-header__logotype--ws img {
         margin: 0;
     }
 
-    .govuk-header__navigation-item {
-        padding: 17px 0;
-    }
-
-    .govuk-header__link,
-    .govuk-header__navigation-item--active--ws,
-    .ancestor {
-        padding: 17px 0;
-        text-decoration-thickness: 5px;
-        text-underline-offset: 16px;
-    }
-
-    .govuk-header__link:hover {
-        text-decoration-color: $govuk-link-colour;
-    }
-
-    .govuk-header__link:focus {
-        outline: none;
-        box-shadow: none;
-        text-decoration: underline;
-        text-decoration-thickness: 5px;
-    }
-
-    .govuk-header__navigation-item:focus-within {
-        background-color: $govuk-focus-colour;
-    }
-
-    .govuk-header__menu-button.govuk-js-header-toggle {
-        // right: 15px;
+    .govuk-header__content {
+        flex-grow: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+        column-gap: 20px;
     }
 
     .govuk-header__service-name--ws {
         font-size: 27px;
-
+        margin: 0;
+        // margin: govuk-spacing(1) 0;
         // @include govuk-media-query ($from: mobile) {
         //     @include govuk-font($size: 27, $weight: bold);
         // }
+    }
+
+    .nav-and-profile-bar {
+
+        .govuk-header__navigation {
+            margin: 0;
+        }
+
+        .govuk-header__navigation-item {
+            padding: 17.5px 0;
+        }
+
+        .govuk-header__link,
+        .govuk-header__navigation-item--active--ws,
+        .ancestor {
+            // padding: 14px 0;
+            text-decoration-thickness: 5px;
+            text-underline-offset: 17px;
+        }
+
+        .govuk-header__link:hover {
+            text-decoration-color: $govuk-link-colour;
+        }
+
+        .govuk-header__link:focus {
+            outline: none;
+            box-shadow: none;
+            text-decoration: underline;
+            text-decoration-thickness: 5px;
+        }
+
+        .govuk-header__navigation-item:focus-within {
+            background-color: $govuk-focus-colour;
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+
+    // @TODO [DWPF-454] remove the .search-v2 nesting and merge with existing rules
+    .search-v2 {
+        .govuk-width-container {
+            flex-direction: column;
+
+            .govuk-header__content {
+                justify-content: left;
+                padding: 6px 0 0 0;
+            }
+        }
+
+        .govuk-header__menu-button.govuk-js-header-toggle {
+            top: 83px;
+        }
+
+        .nav-and-profile-bar {
+            background-color: govuk-colour("white");
+
+            .govuk-width-container {
+                margin: 0;
+            }
+
+            .govuk-header__navigation-item,
+            li.govuk-header__navigation-item--active--ws,
+            li.ancestor {
+                padding: 0;
+                border: none;
+            }
+
+            .govuk-header__link,
+            a.govuk-header__navigation-item--active--ws,
+            a.ancestor {
+                display: inline-block;
+                width: 100%;
+                padding-top: 17px;
+                padding-bottom: 17px;
+                padding-right: max(47px, calc(32px + env(safe-area-inset-right)));
+                padding-left: max(47px, calc(32px + env(safe-area-inset-left)));
+                text-decoration: none;
+            }
+
+            .govuk-header__link:hover,
+            .govuk-header__link:active,
+            a.govuk-header__navigation-item--active--ws,
+            a.ancestor {
+                background-color: $govuk-link-colour;
+                color: govuk-colour("white");
+                text-decoration: none;
+            }
+
+            .govuk-header__link:focus {
+                background-color: $govuk-focus-colour;
+                color: govuk-colour("black");
+                text-decoration: none;
+            }
+
+            .site-search {
+                display: block;
+                padding: 0 30px;
+                background-color: govuk-colour("light-grey");
+            }
+        }
     }
 }
 
@@ -119,6 +219,11 @@
 
 .govuk-header__menu-button--ws {
     color: govuk-colour("black");
+}
+
+.govuk-header__menu-button[aria-expanded=true] {
+    box-shadow: 0 0 govuk-colour("white"),
+        0 4px govuk-colour("black");
 }
 
 .govuk-header__navigation-item--mobile-only {
