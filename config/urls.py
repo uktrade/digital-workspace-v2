@@ -34,6 +34,7 @@ urlpatterns = [
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search_views.search, name="search"),
+    # TODO[DWPF-454] remove this
     path("search/", include("search.urls")),
     path("pingdom/", include("pingdom.urls")),
     # Peoplefinder

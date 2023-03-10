@@ -146,6 +146,7 @@ teams_urlpatterns = [
     ),
 ]
 
+# TODO[DWPF-454] remove this ... and add a redirect?
 people_and_teams_urlpatterns = [
     path("search/", search_view, name="people-and-teams-search"),
 ]

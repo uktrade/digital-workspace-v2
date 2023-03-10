@@ -7,6 +7,7 @@ from peoplefinder.forms.search import PEOPLE_FILTER, TEAMS_FILTER, SearchForm
 from peoplefinder.services.search import search
 
 
+# TODO[DWPF-454] remove this
 @require_http_methods(["GET"])
 def search_view(request):
     query = request.GET.get("query")

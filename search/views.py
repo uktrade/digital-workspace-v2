@@ -21,6 +21,7 @@ from .utils import sanitize_search_query
 logger = logging.getLogger(__name__)
 
 
+# TODO[DWPF-454] remove this view
 def search(request):
     page = int(request.GET.get("page", 1))
     search_query = request.GET.get("query", None)
@@ -218,12 +219,13 @@ def v2_search_category(request: HttpRequest, category: str) -> HttpResponse:
     query = request.GET.get("query", "")
 
     # users not in the beta need to use the v1 search
+    # TODO[DWPF-454] remove this
     if not request.user.enable_v2_search:
         return redirect(reverse("search") + f"?query={query}")
 
     # If the category is invalid, redirect to search all.
     if category not in SEARCH_CATEGORIES:
-        return redirect(reverse("search:all") + f"?query={query}", permanent=True)
+        return redirect(reverse("search:all") + f"?query={query}")
 
     search_vector = SEARCH_CATEGORY_TO_VECTOR[category]
     results = search_vector(request).search(query)
@@ -254,10 +256,11 @@ def v2_search_all(request: HttpRequest) -> HttpResponse:
     query = request.GET.get("query", "")
 
     # users not in the beta need to use the v1 search
+    # TODO[DWPF-454] remove this
     if not request.user.enable_v2_search:
         return redirect(reverse("search") + f"?query={query}")
 
-    # TEMPORARILT REDIRECT USERS TO A CATEGORY SEARCH WHILE THIS VIEW THROWS ERRORS
+    # TEMPORARILY REDIRECT USERS TO A CATEGORY SEARCH WHILE THIS VIEW THROWS ERRORS
     return redirect(
         reverse("search:category", kwargs={"category": "guidance"}) + f"?query={query}"
     )
