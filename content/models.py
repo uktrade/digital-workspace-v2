@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import Q, Subquery
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
@@ -15,6 +16,7 @@ from wagtail.snippets.models import register_snippet
 from content import blocks
 from content.utils import manage_excluded, manage_pinned
 from core.utils import set_seen_cookie_banner
+from search.utils import split_query
 from user.models import User as UserModel
 
 
@@ -76,11 +78,21 @@ class BasePage(Page):
 
 
 class ContentPageQuerySet(PageQuerySet):
+    def pinned_q(self, query):
+        pinned = SearchPinPageLookUp.objects.filter_by_query(query)
+
+        return Q(pk__in=Subquery(pinned.values("object_id")))
+
     def pinned(self, query):
-        ...
+        return self.filter(self.pinned_q(query))
+
+    def exclusions_q(self, query):
+        exclusions = SearchExclusionPageLookUp.objects.filter_by_query(query)
+
+        return Q(pk__in=Subquery(exclusions.values("object_id")))
 
     def exclusions(self, query):
-        ...
+        return self.filter(self.exclusions_q(query))
 
 
 class ContentPage(BasePage):
@@ -232,7 +244,10 @@ class SearchKeywordOrPhrase(models.Model):
 
 
 class SearchKeywordOrPhraseQuerySet(models.QuerySet):
-    ...
+    def filter_by_query(self, query):
+        query_parts = split_query(query)
+
+        return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
 class SearchExclusionPageLookUp(models.Model):
