@@ -36,7 +36,9 @@
                     {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
                 </nav>
                 <div class="site-search">
-                    {% url 'search:all' as search_url %}
+                    {% if not search_url %}
+                        {% url 'search:all' as search_url %}
+                    {% endif %}
                     {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
                 </div>
             </div>
