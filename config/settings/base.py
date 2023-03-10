@@ -454,12 +454,6 @@ LOGGING = {
             ],
             "level": "DEBUG",
         },
-        "botocore": {
-            "handlers": [
-                "stdout",
-            ],
-            "level": "CRITICAL",
-        },
     },
 }
 
