@@ -23,10 +23,9 @@ $input-size: 40px;
     }
 }
 
-// @TODO [DWPF-454] remove .search-v2, merge these with more general definitions
-.search-v2 {
+// @TODO [DWPF-454] remove .nav-and-profile-bar, merge these with more general definitions
+.nav-and-profile-bar {
     .govuk-width-container {
-        display: flex;
         column-gap: 20px;
 
         nav {
@@ -142,21 +141,6 @@ $input-size: 40px;
         display: none;
     }
 
-    // @TODO [DWPF-454] remove the .search-v2 nesting and merge with existing rules
-    .search-v2 {
-        .govuk-width-container {
-            flex-direction: column;
-
-            #navigation {
-                border-bottom: 1px solid #2e3133;
-            }
-        }
-
-        .site-search {
-            display: block;
-        }
-    }
-
     .search-and-profile-bar {
         .govuk-width-container {
             display: flow-root;
@@ -166,7 +150,11 @@ $input-size: 40px;
 
 // @TODO [DWPF-454] remove this rule, it's only for the custom v2 opt-in banner
 .opt-in-invitation {
-    background-color: mix(white, govuk-colour("light-blue"), 50%);
+    background-color: $tag-blue-background;
     padding: 0 1em;
     margin-top: 1em;
+
+    .govuk-phase-banner {
+        border-bottom: none;
+    }
 }

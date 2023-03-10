@@ -1,82 +1,108 @@
 // @TODO [DWPF-454] remove all instances of .search-and-profile-bar
 .search-and-profile-bar {
-  background-color: $brand-color-grey90;
-  background-image: url("../images/search-and-profile-bar-pattern.png");
+    background-color: $brand-color-grey90;
+    background-image: url("../images/search-and-profile-bar-pattern.png");
 }
 
 .ws-search-and-profile-bar__search {
-  padding: govuk-spacing(2) 0;
+    padding: govuk-spacing(2) 0;
 }
 
 .ws-search-and-profile-bar__profile {
-  padding: 0 0 0 govuk-spacing(3);
+    padding: 0 0 0 govuk-spacing(3);
 
-  @include govuk-media-query($until: desktop) {
-    display: none;
-  }
+    @include govuk-media-query($until: desktop) {
+        display: none;
+    }
 }
 
 .nav-and-profile-bar {
-  background-color: govuk-colour("light-grey");
-  border-top: 5px solid $brand-color-primary;
-  border-bottom: 1px solid $brand-color-grey90;
+    background-color: govuk-colour("light-grey");
+    border-top: 5px solid $brand-color-primary;
+    border-bottom: 1px solid $brand-color-grey90;
 }
 
 .people-finder-panel {
-  display: flex;
-  justify-content: flex-end;
-
-  .profile-link {
     display: flex;
+    justify-content: flex-end;
 
-    &:link,
-    &:hover,
-    &:visited {
-      color: govuk-colour("white");
-    }
-
-    &:focus {
-      @include govuk-focused-text;
-
-      .profile-details {
-        @include govuk-focused-text;
-      }
-    }
-  }
-
-  @media only screen and (max-width: 767px) {
     .profile-link {
-      display: none;
+        display: flex;
+
+        &:link,
+        &:hover,
+        &:visited {
+            color: govuk-colour("white");
+        }
+
+        &:focus {
+            @include govuk-focused-text;
+
+            .profile-details {
+                @include govuk-focused-text;
+            }
+        }
     }
-  }
 
-  .profile-details {
-    @include govuk-font($size: 16, $weight: bold);
-    background-color: darken($brand-color-grey90, 5%);
-    padding: govuk-spacing(2) govuk-spacing(3) govuk-spacing(2) govuk-spacing(6);
-    text-align: right;
-    color: govuk-colour("white");
-  }
+    @media only screen and (max-width: 767px) {
+        .profile-link {
+            display: none;
+        }
+    }
 
-  .profile-image {
-    width: 64px;
-    height: 64px;
-  }
+    .profile-details {
+        @include govuk-font($size: 16, $weight: bold);
+        background-color: darken($brand-color-grey90, 5%);
+        padding: govuk-spacing(2) govuk-spacing(3) govuk-spacing(2) govuk-spacing(6);
+        text-align: right;
+        color: govuk-colour("white");
+    }
 
-  .profile-prompt {
-    @include govuk-font($size: 14);
-    display: block;
-  }
+    .profile-image {
+        width: 64px;
+        height: 64px;
+    }
+
+    .profile-prompt {
+        @include govuk-font($size: 14);
+        display: block;
+    }
 }
 
 // @TODO [DWPF-454] remove .search-v2 class and merge all overrides into main declarations
 .search-v2 {
-  .people-finder-panel {
-    .profile-details {
-        background: none;
-        color: govuk-colour("black");
-        text-decoration-color: govuk-colour("black");
-        padding-right: 0;
+    .people-finder-panel {
+        .profile-link {
+            align-items: center;
+            column-gap: 10px;
+        }
+
+        .profile-details {
+            background: none;
+            color: govuk-colour("black");
+            text-decoration-color: govuk-colour("black");
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-prompt {
+            display: inline;
+
+            span {
+                display: inline-block;
+            }
+        }
+
+        .profile-image {
+            width: 40px;
+            height: 40px;
+        }
     }
-  }
+
+    @media only screen and (max-width: 767px) {
+        .people-finder-panel {
+            display: none;
+        }
+    }
 }
