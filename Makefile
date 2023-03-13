@@ -58,6 +58,12 @@ isort-check:
 isort:
 	docker-compose run --rm --no-deps wagtail isort .
 
+djlint-check:
+	docker-compose run --rm --no-deps wagtail djlint .
+
+djlint:
+	docker-compose run --rm --no-deps wagtail djlint --reformat .
+
 check-fixme:
 	! git --no-pager grep -rni fixme -- ':!./Makefile' ':!./.circleci/config.yml'
 
