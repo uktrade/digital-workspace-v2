@@ -1,14 +1,10 @@
 <div class="pagination">
-
     {% if posts.has_previous %}
         <a class="previous govuk-link"
            href="?page={{ posts.previous_page_number }}">Previous page</a>
     {% endif %}
-
     <ul class="page-links">
-
         {% for i in pagination_range %}
-
             {% if posts.number == i %}
                 <li class="active govuk-body">
                     <span>{{ i }}</span>
@@ -18,11 +14,7 @@
                     <a class="govuk-link" href="?page={{ i }}">{{ i }}</a>
                 </li>
             {% endif %}
-
         {% endfor %}
-
     </ul>
-
     {% if posts.has_next %}<a class="next govuk-link" href="?page={{ posts.next_page_number }}">Next page</a>{% endif %}
-
 </div>

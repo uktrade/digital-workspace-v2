@@ -1,7 +1,5 @@
 <div class="ws-children-{{ num_cols }}-col">
-
     {% if children %}
-
         {% for child in children %}
             <div class="ws-col-child">
                 <h3 class="govuk-heading-s">
@@ -12,9 +10,7 @@
                 <p class="govuk-body-s ws-updated-at">Updated {{ child.last_published_at }}</p>
             </div>
         {% endfor %}
-
     {% else %}
-
         {% for child in self.get_children.specific.live.public %}
             <div class="ws-col-child">
                 <h3 class="govuk-heading-s">
@@ -25,7 +21,5 @@
                 <p class="govuk-body-s ws-updated-at">Updated {{ child.last_published_at }}</p>
             </div>
         {% endfor %}
-
     {% endif %}
-
 </div>

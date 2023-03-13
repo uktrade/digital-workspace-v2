@@ -2,7 +2,6 @@
 Context:
     people (Person): Results of searching for a manager
 {% endcomment %}
-
 {% if people %}
     <table class="govuk-table">
         <thead class="govuk-table__head">
@@ -12,17 +11,14 @@ Context:
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-
             {% for person in people %}
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell align-middle">
                         <strong>{{ person }}</strong>
-
                         {% if person.roles.first %}
                             <br>
                             <span class="govuk-body-s">({{ person.roles.first.team.name }}, {{ person.roles.first.job_title }})</span>
                         {% endif %}
-
                     </td>
                     <td class="govuk-table__cell align-middle">
                         <button type="button"
@@ -36,7 +32,6 @@ Context:
                     </td>
                 </tr>
             {% endfor %}
-
         </tbody>
     </table>
 {% else %}

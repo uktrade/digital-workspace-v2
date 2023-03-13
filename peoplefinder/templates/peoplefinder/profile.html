@@ -1,23 +1,16 @@
 {% extends 'peoplefinder/page.html' %}
-
 {% load humanize %}
-
 {% load webpack_static from webpack_loader %}
-
 {% block title %}
     {{ profile.full_name }}
 {% endblock title %}
-
 {% block location %}
     {{ profile.full_name }}
 {% endblock location %}
-
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
-
             {# djlint:off H006 #}
-
             {% if profile.photo %}
                 <img src="{{ profile.photo.url }}" alt="profile photo" width="100%">
             {% else %}
@@ -25,13 +18,10 @@
                      width="100%"
                      alt="placeholder for missing profile photo">
             {% endif %}
-
             {# djlint:on #}
-
         </div>
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l mb-0" data-test-full-name>{{ profile.full_name }}</h1>
-
             {% if not profile.is_active %}
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -41,7 +31,6 @@
                     </strong>
                 </div>
             {% endif %}
-
             {% if profile.is_stale %}
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -53,7 +42,6 @@
             {% else %}
                 <p class="govuk-body-s">Last edited {{ profile.edited_or_confirmed_at|naturalday:"j F Y" }}</p>
             {% endif %}
-
             {% if profile.profile_completion < 100 %}
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -63,12 +51,10 @@
                     </strong>
                 </div>
             {% endif %}
-
             <dl class="ws-profile__primary-contact-list govuk-body-l">
                 <dt class="govuk-visually-hidden">
                     Preferred email
                 </dt>
-
                 {% if profile.contact_email %}
                     <dd>
                         <a href="mailto:{{ profile.contact_email }}" class="govuk-link">{{ profile.contact_email }}</a>
@@ -78,7 +64,6 @@
                         <a href="mailto:{{ profile.email }}" class="govuk-link">{{ profile.email }}</a>
                     </dd>
                 {% endif %}
-
                 {% if profile.primary_phone_number %}
                     <dt class="govuk-visually-hidden">
                         Preferred contact number
@@ -87,28 +72,21 @@
                         <a href="tel:{{ profile.primary_phone_number }}" class="govuk-link">{{ profile.primary_phone_number }}</a>
                     </dd>
                 {% endif %}
-
             </dl>
-
             {% for role in roles %}
                 <p class="govuk-body-m" data-test-role>
-
                     {% if role.job_title %}
                         <strong>{{ role.job_title }}</strong> in
                     {% else %}
                         Member of
                     {% endif %}
-
                     <a class="govuk-link" href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a>
                 </p>
             {% endfor %}
-
             <div class="govuk-button-group">
                 <p>
-
                     {% if profile.is_active %}
                         <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
-
                         {% if profile.is_stale and request.user == profile.user %}
                             <button class="govuk-button govuk-button--secondary"
                                     hx-post="{% url 'profile-confirm-details' profile.slug %}"
@@ -116,7 +94,6 @@
                                 Confirm my details are still correct
                             </button>
                         {% endif %}
-
                         {% if perms.peoplefinder.delete_person and request.user != profile.user %}
                             <form action="{% url 'profile-delete' profile.slug %}"
                                   method="post"
@@ -128,7 +105,6 @@
                                        value="Delete profile"/>
                             </form>
                         {% endif %}
-
                     {% elif perms.peoplefinder.delete_person %}
                         <button class="govuk-button"
                                 hx-post="{% url 'profile-activate' profile.slug %}"
@@ -137,10 +113,8 @@
                             Activate profile
                         </button>
                     {% endif %}
-
                 </p>
             </div>
-
             {% if request.user == profile.user %}
                 <p class="govuk-body-s">
                     Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DIT</a>.
@@ -150,9 +124,7 @@
                     Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DIT</a>.
                 </p>
             {% endif %}
-
         </div>
-
         {% if request.user == profile.user %}
             <p class="govuk-body-s">
                 Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.
@@ -163,9 +135,7 @@
             </p>
         {% endif %}
     </div>
-
     <hr class="govuk-section-break govuk-section-break--visible">
-
     <dl class="govuk-summary-list">
         {% if profile.buildings %}
             <div class="govuk-summary-list__row">
@@ -177,7 +147,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.location_in_building %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -188,7 +157,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.town_city_or_region %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -199,7 +167,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.country %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -210,7 +177,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.regional_building %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -221,7 +187,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.international_building %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -232,7 +197,6 @@
                 </dd>
             </div>
         {% endif %}
-
     </dl>
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
@@ -252,11 +216,8 @@
             </dd>
         {% endif %}
     </div>
-
     <hr class="govuk-section-break govuk-section-break--visible">
-
     <dl class="govuk-summary-list">
-
         {% if profile.buildings %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -267,7 +228,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.location_in_building %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -278,7 +238,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.town_city_or_region %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -289,7 +248,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.country %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -300,7 +258,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.regional_building %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -311,7 +268,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.international_building %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -322,12 +278,10 @@
                 </dd>
             </div>
         {% endif %}
-
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
                 Preferred email
             </dt>
-
             {% if profile.contact_email %}
                 <dd class="govuk-summary-list__value">
                     <a href="mailto:{{ profile.contact_email }}"
@@ -341,9 +295,7 @@
                        data-test-preferred-email>{{ profile.email }}</a>
                 </dd>
             {% endif %}
-
         </div>
-
         {% if profile.primary_phone_number %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -354,7 +306,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.secondary_phone_number %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -365,7 +316,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.manager %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -378,7 +328,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.pronouns %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -389,7 +338,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.workdays.exists %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -400,7 +348,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.key_skills.exists or profile.other_key_skills %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -411,7 +358,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.fluent_languages %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -422,7 +368,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.intermediate_languages %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -433,7 +378,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.grade %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -444,7 +388,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.previous_experience %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -455,7 +398,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.learning_interests.exists or profile.other_learning_interests %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -466,7 +408,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.networks.exists %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -477,7 +418,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.professions.exists %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -488,7 +428,6 @@
                 </dd>
             </div>
         {% endif %}
-
         {% if profile.additional_roles.exists or profile.other_additional_roles %}
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -499,9 +438,7 @@
                 </dd>
             </div>
         {% endif %}
-
     </dl>
-
     {% if perms.peoplefinder.view_auditlog %}
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
@@ -593,7 +530,6 @@
             </div>
         </details>
     {% endif %}
-
     {% if request.user == profile.user or perms.peoplefinder.view_auditlog %}
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
@@ -604,5 +540,4 @@
             </div>
         </details>
     {% endif %}
-
 {% endblock content %}

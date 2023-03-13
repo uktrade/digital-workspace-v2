@@ -10,17 +10,14 @@
                 <img src="{% webpack_static 'no-photo-large.png' %}"
                      alt="Placeholder for missing profile photo">
             {% endif %}
-
         </a>
     </div>
     <div class="pf-person-search-result__details">
-
         {% if not person.is_active %}
             <div class="pf-person-search-result__details__item">
                 <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
             </div>
         {% endif %}
-
         <div class="pf-person-search-result__details__item">
             <a class="govuk-link govuk-body govuk-!-font-weight-bold"
                href="{% url 'profile-view' person.slug %}"
@@ -36,7 +33,6 @@
                     {{ role.job_title }} in {{ role.team.name }}
                     <br>
                 {% endfor %}
-
             </a>
         </div>
         <div class="pf-person-search-result__details__item">
@@ -47,7 +43,6 @@
                 {{ person.preferred_email }}
             </a>
         </div>
-
         {% if person.primary_phone_number %}
             <div class="pf-person-search-result__details__item">
                 <a class="govuk-link" href="tel:{{ person.primary_phone_number }}">{{ person.primary_phone_number }}</a>
@@ -58,24 +53,20 @@
                 </a>
             </div>
         {% endif %}
-
         {% if person.all_languages %}
             <div class="pf-person-search-result__details__item govuk-body-s">
                 <strong>Languages:</strong> {{ person.all_languages }}
             </div>
         {% endif %}
-
         {% if person.key_skills.exists or person.other_key_skills %}
             <div class="pf-person-search-result__details__item govuk-body-s">
                 <strong>Key skills:</strong> {{ person.get_all_key_skills|join:", " }}
             </div>
         {% endif %}
-
         {% if person.learning_interests.exists or person.other_learning_interests %}
             <div class="pf-person-search-result__details__item govuk-body-s">
                 <strong>Learning and development interests:</strong> {{ person.get_all_learning_interests|join:", " }}
             </div>
         {% endif %}
-
     </div>
 </div>

@@ -4,28 +4,22 @@
 {% load cookie_banner %}
 {% load site_alert %}
 {% load git_info %}
-
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
     <head>
         {% if request.in_preview_panel %}<base target="_blank">{% endif %}
         <meta charset="utf-8"/>
         <title>
-
             {% block title %}
-
                 {% if self.seo_title %}
                     {{ self.seo_title }}
                 {% else %}
                     {{ self.title }}
                 {% endif %}
-
             {% endblock title %}
-
             {% block title_suffix %}
                 - Digital Workspace
             {% endblock title_suffix %}
-
         </title>
         <meta name="viewport"
               content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -33,7 +27,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="description" content="Departmental intranet" />
         <meta name="keywords" content="intranet digital workspace" />
-
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager -->
             <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -44,7 +37,6 @@
             </script>
             <!-- End Google Tag Manager -->
         {% endif %}
-
         <link rel="shortcut icon"
               sizes="16x16 32x32 48x48"
               href="{% static 'core/favicon.ico' %}"
@@ -54,23 +46,16 @@
               color="#0b0c0c">
         <link rel="apple-touch-icon"
               href="{% static 'core/apple-touch-icon.png' %}">
-
         <meta name="robots" content="noindex, nofollow">
         <meta property="og:image"
               content="{% webpack_static 'govuk-opengraph-image.png' %}">
-
         {% render_bundle 'main' 'css' %}
-
         {% block stylesheets %}
         {% endblock stylesheets %}
-
         {% block libraries %}
         {% endblock libraries %}
-
     </head>
-
     <body class="govuk-template__body ">
-
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.GTM_CODE }}"
@@ -80,7 +65,6 @@
                visibility:hidden"></iframe></noscript>
             <!-- End Google Tag Manager (noscript) -->
         {% endif %}
-
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
         <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
         {% include "includes/header.html" %}
@@ -89,26 +73,20 @@
         {% site_alert %}
         <div class="govuk-width-container">
             <main class="govuk-main-wrapper " id="main-content" role="main">
-
                 {% block breadcrumbs %}
                     {% breadcrumbs %}
                 {% endblock breadcrumbs %}
-
                 {% block main_content %}
                 {% endblock main_content %}
-
                 {% block page_problem %}
                     {% include "includes/problem_found.html" %}
                 {% endblock page_problem %}
-
             </main>
         </div>
         {% include "includes/footer.html" %}
         {% render_bundle 'main' 'js' %}
-
         {% block scripts %}
         {% endblock scripts %}
-
         {% git_info %}
     </body>
 </html>

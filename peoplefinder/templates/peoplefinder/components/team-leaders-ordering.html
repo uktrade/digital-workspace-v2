@@ -1,5 +1,4 @@
 {{ team_leaders_order_component|json_script:'team-leaders-order-component' }}
-
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('team_leaders_order_component', () => ({
@@ -29,14 +28,12 @@
         }))
     })
 </script>
-
 <div class="mb-20" x-data="team_leaders_order_component">
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             <h1 class="govuk-fieldset__heading">Team leader display order</h1>
         </legend>
         <div class="govuk-hint">Allows you to change the order of team leaders on the team page.</div>
-
         {# How they should be ordered. #}
         <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
             <div class="govuk-radios__item">
@@ -61,13 +58,11 @@
                 </label>
             </div>
         </div>
-
         {# What is the custom ordering? #}
         <template x-for="(member, index) in members" :key="member.pk">
             <div class="flex align-items-center govuk-body gds-border-bottom-1-grey mb-0 pt-10 pb-10">
                 <div class="mr-10" x-text="(index + 1) + ':'"></div>
                 <div x-text="member.name"></div>
-
                 {# djlint:off H021 #}
                 <div style="margin-left: auto;">
                     {# djlint:on #}
@@ -79,7 +74,6 @@
                             Move up
                         </button>
                     </template>
-
                     <template x-if="index !== count - 1">
                         <button class="govuk-button govuk-button--secondary mb-0"
                                 type="button"
@@ -91,7 +85,6 @@
                 </div>
             </div>
         </template>
-
         <input type="hidden" name="leaders_positions" x-model="order">
     </fieldset>
 </div>

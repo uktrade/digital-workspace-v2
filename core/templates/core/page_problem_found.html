@@ -1,11 +1,8 @@
 {% extends "1_col_content.html" %}
-
 {% block title %}
     There is a problem with this service
 {% endblock title %}
-
 {% block content %}
-
     {% if message_sent %}
         <div class="govuk-notification-banner"
              role="region"
@@ -33,8 +30,6 @@
             </form>
         </fieldset>
     {% endif %}
-
 {% endblock content %}
-
 {% block page_problem %}
 {% endblock page_problem %}

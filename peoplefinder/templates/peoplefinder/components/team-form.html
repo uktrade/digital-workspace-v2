@@ -1,19 +1,13 @@
 {% load static %}
 {% load classes %}
-
 <script src="{% static 'peoplefinder/team-select.js' %}"></script>
-
 {% include 'peoplefinder/components/error-summary.html' %}
-
 {% add_class form.name 'govuk-input' 'govuk-!-width-two-thirds' %}
 {% include 'peoplefinder/components/input.html' with field=form.name %}
-
 {% add_class form.abbreviation 'govuk-input' 'govuk-!-width-one-quarter' %}
 {% include 'peoplefinder/components/input.html' with field=form.abbreviation %}
-
 {% add_class form.description 'govuk-textarea' 'govuk-!-width-two-thirds' %}
 {% include 'peoplefinder/components/input.html' with field=form.description %}
-
 <details class="govuk-details" data-module="govuk-details">
     <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">Markdown help</span>
@@ -32,7 +26,6 @@
         <kbd>[Link title](https://www.gov.uk)</kbd>
     </div>
 </details>
-
 <details class="govuk-details" data-module="govuk-details">
     <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">Team links help</span>
@@ -42,7 +35,6 @@
         for example, <kbd>[New Corporate Tools](/teams/new-corporate-tools/)</kbd>.
     </div>
 </details>
-
 {% if not is_root_team %}
     <team-select
     name="parent_team"

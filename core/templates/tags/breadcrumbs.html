@@ -1,11 +1,8 @@
 {% load wagtailcore_tags %}
-
 {% if ancestors %}
     <nav class="govuk-breadcrumbs" role="navigation" aria-label="Breadcrumbs">
         <ol class="govuk-breadcrumbs__list">
-
             {% for ancestor in ancestors %}
-
                 {% if forloop.last %}
                     <li class="govuk-breadcrumbs__list-item"
                         aria-current="page"
@@ -17,9 +14,7 @@
                            aria-level="{% cycle 1 2 3 4 5 %}">{{ ancestor }}</a>
                     </li>
                 {% endif %}
-
             {% endfor %}
-
         </ol>
     </nav>
 {% endif %}

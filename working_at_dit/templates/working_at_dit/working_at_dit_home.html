@@ -1,7 +1,5 @@
 {% extends "1_col_content.html" %}
-
 {% load wagtailcore_tags %}
-
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -9,11 +7,9 @@
             {% for block in page.body %}
                 {% include_block block %}
             {% endfor %}
-
             <div class="govuk-accordion"
                  data-module="govuk-accordion"
                  id="accordion-default">
-
                 {% for theme in themes %}
                     <div class="govuk-accordion__section ">
                         <div class="govuk-accordion__section-header">
@@ -27,18 +23,15 @@
                              class="govuk-accordion__section-content"
                              aria-labelledby="accordion-default-heading-1">
                             <ul class="govuk-list">
-
                                 {% for theme_topic in theme.theme_topics.all %}
                                     <li>
                                         <a class="govuk-link" href="{{ theme_topic.topic.url }}">{{ theme_topic.topic.title }}</a>
                                     </li>
                                 {% endfor %}
-
                             </ul>
                         </div>
                     </div>
                 {% endfor %}
-
             </div>
         </div>
     </div>

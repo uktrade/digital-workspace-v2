@@ -1,11 +1,7 @@
 <{{ value.media_file.type }} preload="meta" controls class="ws-streamfield-content__media"
-
 {% if value.media_file.thumbnail %}poster="{{ value.media_file.thumbnail.url }}"{% endif %}
-
 >
-
 {% for s in value.media_file.sources %}<source src="{{ s.src }}" type="{{ s.type }}">{% endfor %}
-
 <p class="govuk-body">
     {{ value.media_file.type|capfirst }} file:
     <a href="{{ value.media_file.url }}">{{ value.media_file.title }}</a>

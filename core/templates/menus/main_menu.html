@@ -1,21 +1,16 @@
-
 <ul id="navigation"
     class="govuk-header__navigation"
     aria-label="Top Level Navigation">
-
     {% for item in menu_items %}
         <li class="govuk-header__navigation-item">
-
             {% if item.active_class %}
                 <a class="{{ item.active_class }}" href="{{ item.href }}">{{ item.text }}</a>
             {% else %}
                 <a class="govuk-header__link govuk-header__link--ws"
                    href="{{ item.href }}">{{ item.text }}</a>
             {% endif %}
-
         </li>
     {% endfor %}
-
     {#          {% if peoplefinder_profile %}#}
     {#            <li class="govuk-header__navigation-item govuk-header__navigation-item--mobile-only">#}
     {#              <a class="govuk-header__link govuk-header__link--ws" href="#">#}
@@ -28,13 +23,10 @@
         <a class="govuk-header__link govuk-header__link--ws" href="/working-at-dbt/data-hub/">Data Hub</a>
         {# djlint:on #}
     </li>
-
     <li class="site-search-mobile govuk-header__navigation-item govuk-header__navigation-item--mobile-only">
         {% include 'search/partials/search_form.html' %}
     </li>
 </ul>
-
-
 {#              <li class="govuk-header__navigation-item">#}
 {#                <a class="govuk-header__link govuk-header__link--ws" href="{{ menu_item.link }}" {% if menu_item.open_in_new_tab %} target="_blank"{% endif %}>{{ menu_item.title }}</a>#}
 {#              </li>#}

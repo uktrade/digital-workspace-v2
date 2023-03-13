@@ -11,8 +11,6 @@
            placeholder="{{ placeholder|default:'Search site' }}"
            type="search"
            value="{{ search_query|default:'' }}"/>
-
     {% if search_category %}<input name="category" type="hidden" value="{{ search_category }}"/>{% endif %}
-
     <button type="submit">Search</button>
 </form>

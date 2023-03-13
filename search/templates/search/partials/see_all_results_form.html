@@ -1,6 +1,5 @@
 <form method="get">
     <input type="hidden" name="query" value="{{ search_query|default:'' }}">
-
     {% if category %}
         <input type="hidden" name="category" value="{{ category }}">
         <button type="submit"
@@ -10,5 +9,4 @@
     {% else %}
         <button type="submit" class="govuk-button govuk-button--secondary">See results from all categories</button>
     {% endif %}
-
 </form>

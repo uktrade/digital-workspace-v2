@@ -4,18 +4,14 @@ Context:
     role: A persons's role
     form: The role form
 {% endcomment %}
-
 <form class="pf-role-form"
       hx-target="this"
       hx-swap="outerHTML"
       data-test-role-form>
     {% csrf_token %}
-
     <h3 class="govuk-heading-s">Team</h3>
-
     {% include 'peoplefinder/components/messages.html' %}
     {% include 'peoplefinder/components/error-summary.html' %}
-
     {{ form.person }}
     <team-select
     name="team"
@@ -23,14 +19,11 @@ Context:
     selected-team-id="{{ form.instance.team.id }}"
     current-team-id="{{ form.instance.team.id }}"
     editing="
-
     {% if role %}false{% else %}true{% endif %}
-
     "
     ></team-select>
     {% include 'peoplefinder/components/input.html' with field=form.job_title %}
     {% include 'peoplefinder/components/checkbox.html' with field=form.head_of_team %}
-
     {% if role %}
         <button class="govuk-button" hx-post="{% url 'role' profile.slug role.id %}">Update</button>
         <button class="govuk-button govuk-button--warning"
@@ -48,5 +41,4 @@ Context:
             Cancel
         </button>
     {% endif %}
-
 </form>

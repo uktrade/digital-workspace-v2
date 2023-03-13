@@ -1,47 +1,36 @@
 {% extends 'peoplefinder/page.html' %}
-
 {% block title %}
-
     {% if request.user == profile.user %}
         Let us know you are leaving
     {% else %}
         Let us know {{ profile.full_name }} is leaving
     {% endif %}
-
 {% endblock title %}
-
 {% block location %}
     Let us know someone is leaving
 {% endblock location %}
-
 {% block content %}
     {% if request.user == profile.user %}
         <h1 class="govuk-heading-l">Let us know you are leaving DBT</h1>
-
         <p class="govuk-body">
             If you are leaving DBT, please provide details in the form below. Our support team
             will confirm the details and remove your profile.
         </p>
     {% else %}
         <h1 class="govuk-heading-l">Let us know {{ profile.full_name }} is leaving DBT</h1>
-
         <p class="govuk-body">
             If {{ profile.full_name }} has left DBT, please provide details in the form below. Our support team
             will confirm the details and remove their profile. Your profile details will be included with the request.
         </p>
     {% endif %}
-
     <p class="govuk-body">
         If {{ profile.full_name }} has left DIT, please provide details in the form below. Our support team
         will confirm the details and remove their profile. Your profile details will be included with the request.
     </p>
 {% endif %}
-
 <form method="post">
     {% csrf_token %}
-
     {% include 'peoplefinder/components/input.html' with field=form.comment %}
-
     <input class="govuk-button" type="submit" value="Submit">
     <a class="govuk-button govuk-button--secondary"
        href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
