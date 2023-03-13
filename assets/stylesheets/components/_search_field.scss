@@ -146,6 +146,14 @@ $input-size: 40px;
             display: flow-root;
         }
     }
+
+    // @TODO [DWPF-454] remove this rule
+    .search-v2-banner {
+
+        .govuk-phase-banner__content {
+            line-height: 1.5;
+        }
+    }
 }
 
 // @TODO [DWPF-454] remove this rule, it's only for the custom v2 opt-in banner

@@ -53,6 +53,8 @@
 
     .govuk-header__logotype--ws img {
         margin: 0;
+        width: 120px;
+        height: 54px;
     }
 
     .govuk-header__content {
@@ -87,9 +89,11 @@
         .govuk-header__link,
         .govuk-header__navigation-item--active--ws,
         .ancestor {
-            // padding: 14px 0;
+            padding-right: max(15px, calc(15px + env(safe-area-inset-right)));
+            padding-left: max(15px, calc(15px + env(safe-area-inset-left)));
             text-decoration-thickness: 5px;
             text-underline-offset: 17px;
+
         }
 
         .govuk-header__link:hover {
@@ -118,12 +122,19 @@
 
             .govuk-header__content {
                 justify-content: left;
-                padding: 6px 0 0 0;
+                padding: 6px 0 4px 0;
+            }
+        }
+
+        .govuk-header__logo {
+            .govuk-header__link:hover {
+                border: none;
             }
         }
 
         .govuk-header__menu-button.govuk-js-header-toggle {
-            top: 83px;
+            top: 81px;
+            font-size: 1rem;
         }
 
         .nav-and-profile-bar {
@@ -147,8 +158,6 @@
                 width: 100%;
                 padding-top: 17px;
                 padding-bottom: 17px;
-                padding-right: max(47px, calc(32px + env(safe-area-inset-right)));
-                padding-left: max(47px, calc(32px + env(safe-area-inset-left)));
                 text-decoration: none;
             }
 
@@ -169,12 +178,44 @@
 
             .site-search {
                 display: block;
-                padding: 0 30px;
+                padding: 0 15px;
                 background-color: govuk-colour("light-grey");
             }
         }
     }
 }
+
+@media(min-width: 40.0625em) {
+    .search-v2 {
+        .nav-and-profile-bar {
+
+            .govuk-header__link,
+            a.govuk-header__navigation-item--active--ws,
+            a.ancestor {
+                padding-right: max(30px, calc(30px + env(safe-area-inset-right)));
+                padding-left: max(30px, calc(30px + env(safe-area-inset-left)));
+            }
+
+            .site-search {
+                padding: 0 30px;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 767px) {
+    .search-v2 {
+        .nav-and-profile-bar {
+
+            .govuk-header__link,
+            a.govuk-header__navigation-item--active--ws,
+            a.ancestor {
+                padding: 0;
+            }
+        }
+    }
+}
+
 
 .govuk-header__navigation-item--active--ws,
 .ancestor {
