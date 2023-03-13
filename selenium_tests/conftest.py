@@ -17,6 +17,7 @@ from typing import Any
 import psycopg2
 import pytest
 from django.conf import settings
+from django.core.management import call_command
 from django.db import connections
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
@@ -44,18 +45,19 @@ def run_sql(sql: str, db_settings: dict[str, Any]) -> None:
 
 
 @pytest.fixture(scope="package")
-def django_db_setup(django_db_setup):
+def django_db_setup(django_db_setup, django_db_blocker):
     # TODO: There needs to be a one-time top-level project setup for tests.
-    # with django_db_blocker.unblock():
-    #     # digital-workspace setup
-    #     call_command("create_menus")
-    #     call_command("create_section_homepages")
-    #     call_command("create_groups")
-    #     # peoplefinder setup
-    #     call_command("loaddata", "countries.json")
-    #     call_command("create_people_finder_groups")
-    #     # common setup
-    #     call_command("update_index")
+    with django_db_blocker.unblock():
+        # digital-workspace setup
+        call_command("create_menus")
+        call_command("create_section_homepages")
+        call_command("create_groups")
+        # peoplefinder setup
+        call_command("loaddata", "countries.json")
+        call_command("create_people_finder_groups")
+        call_command("create_test_teams")
+        # common setup
+        call_command("update_index")
 
     db_settings = settings.DATABASES["default"]
 
