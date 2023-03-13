@@ -32,4 +32,5 @@ def person_update_notifier(person_id):
         settings.PERSON_UPDATE_WEBHOOK_URL,
         auth=hawk_auth,
         data=serializer.data,
+        timeout=5,
     )
