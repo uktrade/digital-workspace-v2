@@ -4,8 +4,9 @@
 
         {% for category in categories %}
             <li>
-                <a class="govuk-link"
-                   href="/news-and-views/category/{{ category.slug }}">{{ category.category }}</a>
+                {# djlint:off #}
+                <a class="govuk-link" href="/news-and-views/category/{{ category.slug }}">{{ category.category }}</a>
+                {# djlint:on #}
             </li>
         {% endfor %}
 

@@ -1,11 +1,16 @@
+
 {% extends "1_col_content.html" %}
 
-{% block title %}Bad request{% endblock title %}
+{% block title %}
+    Bad request
+{% endblock title %}
 
 {% block content %}
     <h1 class="govuk-heading-m">The server couldn't process your request</h1>
     <p class="govuk-body">An issue has been logged in our systems.</p>
     <p class="govuk-body">
-        You can browse from the <a class="govuk-link" href="/">homepage</a> or use the search box above to find the information you need.
+        {# djlint:off #}
+You can browse from the <a class="govuk-link" href="/">homepage</a> or use the search box above to find the information you need.
+        {# djlint:on #}
     </p>
 {% endblock content %}

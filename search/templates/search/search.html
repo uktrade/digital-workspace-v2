@@ -70,6 +70,7 @@
                                 </li>
                             {% endfor %}
 
+
                         </ul>
                     {% endif %}
 
@@ -86,6 +87,7 @@
 
                                         {% for item in result.meta.highlight.title %}<p class="govuk-body">{{ item|safe }}...</p>{% endfor %}
 
+
                                     {% endif %}
 
                                     {% if result.meta.highlight.content_contentpage__body_no_html %}
@@ -93,6 +95,7 @@
                                         {% for item in result.meta.highlight.content_contentpage__body_no_html %}
                                             <p class="govuk-body">{{ item|safe }}...</p>
                                         {% endfor %}
+
 
                                     {% endif %}
 
@@ -102,6 +105,7 @@
 
                                 </li>
                             {% endfor %}
+
 
                         </ul>
 
@@ -128,6 +132,7 @@
                                     {% endif %}
 
                                 {% endfor %}
+
 
                             </ul>
 

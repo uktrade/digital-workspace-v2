@@ -5,6 +5,7 @@
 {% load wagtailcore_tags %}
 
 {% load wagtailimages_tags %}
+
 {% load twitter_tags %}
 
 {% block main_content %}
@@ -35,7 +36,9 @@
                 {% endfor %}
 
             </ul>
+            {# djlint:off #}
             <a class="govuk-link" href="/news-and-views/">View all news</a>
+            {# djlint:on #}
         </section>
         <section>
             <h2 class="govuk-heading-m">What's Popular?</h2>
@@ -71,7 +74,9 @@
 
             </ul>
             <p class="ws-all-how-to">
+                {# djlint:off #}
                 <a class="govuk-link" href="/working-at-dit/how-do-i/">View all "How do I?" guides</a>
+                {# djlint:on #}
             </p>
         </section>
 

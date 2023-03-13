@@ -5,9 +5,11 @@
         <a href="{% url 'profile-view' person.slug %}">
 
             {% if person.photo %}
-                <img src="{{ person.photo.url }}">
+                <img src="{{ person.photo.url }}"
+                     alt="Profile photo of {{ person.full_name }}">
             {% else %}
-                <img src="{% webpack_static 'no-photo-large.png' %}">
+                <img src="{% webpack_static 'no-photo-large.png' %}"
+                     alt="Placeholder for missing profile photo">
             {% endif %}
 
         </a>

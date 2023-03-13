@@ -1,8 +1,12 @@
 {% extends "1_col_content.html" %}
 
-{% block title %}Search results for '{{ form.cleaned_data.search_query }}'{% endblock title %}
+{% block title %}
+    Search results for '{{ form.cleaned_data.search_query }}'
+{% endblock title %}
 
-{% block location %}Search results{% endblock location %}
+{% block location %}
+    Search results
+{% endblock location %}
 
 {% block content %}
     {% include 'search/partials/search_form.html' with search_url='v2-search' placeholder='Search news, policies, people and teams' %}

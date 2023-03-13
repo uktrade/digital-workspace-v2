@@ -4,7 +4,7 @@
     <div class="govuk-width-container">
         {# if not request.user.enable_v2_search #}
         <form class="search-form"
-              method="GET"
+              method="get"
               action="{% url 'people-and-teams-search' %}">
             <label for="search-main" class="govuk-visually-hidden">Search people, teams and skills</label>
             <input class="govuk-input"

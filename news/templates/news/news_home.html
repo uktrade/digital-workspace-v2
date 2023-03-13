@@ -48,8 +48,9 @@
                                     {{ news_item.first_published_at }}
 
                                     {% for news_category_lkup in news_item.news_categories.all %}
-                                        <a class="govuk-link"
-                                           href="/news-and-views/category/{{ news_category_lkup.news_category.slug }}">{{ news_category_lkup.news_category.category }}</a>,
+                                        {# djlint:off #}
+                                        <a class="govuk-link" href="/news-and-views/category/{{ news_category_lkup.news_category.slug }}">{{ news_category_lkup.news_category.category }}</a>,
+                                        {# djlint:on #}
                                     {% endfor %}
 
                                 </p>
@@ -59,6 +60,7 @@
                                 </p>
                             </li>
                         {% endfor %}
+
                     </ul>
                     {# Only show pagination if there is more than one page to click through #}
 

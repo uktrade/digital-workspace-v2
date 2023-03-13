@@ -22,6 +22,7 @@
                         {% for item in log.diff %}
 
                             {% if not excluded_keys or item.key not in excluded_keys %}
+
                                 {% if item.action == 'add' %}
                                     <li class="pf-audit-log__diff-item pf-audit-log__diff-item--add">
                                         {{ item.action|title }} <strong>{{ item.key }}</strong> — {{ item.from_value|stringformat:'r' }}

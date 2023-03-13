@@ -7,12 +7,13 @@
                 <h3 class="govuk-heading-s">
                     <a 
                         {% if target_blank %}target="_blank"{% endif %}
-                    href="{{ child.url }}">{{ child.title }}</a>
+                     href="{{ child.url }}">{{ child.title }}</a>
                 </h3>
                 <p class="govuk-body ws-excerpt">{{ child.excerpt }}</p>
                 <p class="govuk-body-s ws-updated-at">Updated {{ child.last_published_at }}</p>
             </div>
         {% endfor %}
+
 
     {% else %}
 
@@ -21,12 +22,13 @@
                 <h3 class="govuk-heading-s">
                     <a 
                         {% if target_blank %}target="_blank"{% endif %}
-                    href="{{ child.url }}">{{ child.title }}</a>
+                     href="{{ child.url }}">{{ child.title }}</a>
                 </h3>
                 <p class="govuk-body ws-excerpt">{{ child.excerpt }}</p>
                 <p class="govuk-body-s ws-updated-at">Updated {{ child.last_published_at }}</p>
             </div>
         {% endfor %}
+
 
     {% endif %}
 

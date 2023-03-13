@@ -8,30 +8,33 @@
         data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__logo govuk-header__logo--ws">
+            {# djlint:off #}
             <a href="/" class="govuk-header__link govuk-header__link--homepage">
-                <span class="govuk-header__logotype govuk-header__logotype--ws">
-                    <img aria-hidden="true" src="{% webpack_static 'dit-logo.png' %}"
-                        srcset="{% webpack_static 'dit-logo@2x.png' %} 2x" {# /PS-IGNORE #}
-                        alt="Department for International Trade logo">
-                        <span class="govuk-visually-hidden">Department for International Trade</span>
-                    </span>
-                </a>
-            </div>
-            <div class="govuk-header__content">
-                <a href="/"
-                   class="govuk-header__link govuk-header__link--ws govuk-header__link--service-name govuk-header__link--service-name--ws">
+            {# djlint:on #}
+            <span class="govuk-header__logotype govuk-header__logotype--ws">
+                <img aria-hidden="true" src="{% webpack_static 'dit-logo.png' %}"
+                    srcset="{% webpack_static 'dit-logo@2x.png' %} 2x" {# /PS-IGNORE #}
+                    alt="Department for International Trade logo">
+                    <span class="govuk-visually-hidden">Department for International Trade</span>
+                </span>
+            </a>
+        </div>
+        <div class="govuk-header__content">
+            {# djlint:off #}
+                <a href="/" class="govuk-header__link govuk-header__link--ws govuk-header__link--service-name govuk-header__link--service-name--ws">
                     Digital Workspace
                 </a>
-                <button type="button"
-                        class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
-                        aria-controls="navigation"
-                        aria-label="Show or hide Top Level Navigation">
-                    Menu
-                </button>
-                <nav>
-                    {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
-                </nav>
-                <div class="site-search">{% include 'search/partials/search_form.html' %}</div>
-            </div>
+            {# djlint:on #}
+            <button type="button"
+                    class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
+                    aria-controls="navigation"
+                    aria-label="Show or hide Top Level Navigation">
+                Menu
+            </button>
+            <nav>
+                {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+            </nav>
+            <div class="site-search">{% include 'search/partials/search_form.html' %}</div>
         </div>
-    </header>
+    </div>
+</header>
