@@ -1,6 +1,6 @@
 # Digital Workspace
 
-A [Wagtail]-based intranet for the Department for International Trade.
+A [Wagtail]-based intranet for the Department for Business & Trade.
 
 ## Setup
 

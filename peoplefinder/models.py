@@ -412,7 +412,7 @@ class Person(index.Indexed, models.Model):
         ),
     )
     do_not_work_for_dit = models.BooleanField(
-        "My manager is not listed because I do not work for DIT", default=False
+        "My manager is not listed because I do not work for DBT", default=False
     )
     other_key_skills = models.CharField(
         "What other skills do you have?",
@@ -610,7 +610,7 @@ class TeamQuerySet(models.QuerySet):
 # markdown
 DEFAULT_TEAM_DESCRIPTION = """Find out who is in the team and their contact details.
 
-You can update this description, by [updating your team information](https://workspace.trade.gov.uk/working-at-dit/how-do-i/update-my-team-information-on-people-finder/).
+You can update this description, by [updating your team information](https://workspace.trade.gov.uk/working-at-dbt/how-do-i/update-my-team-information-on-people-finder/).
 """
 
 
@@ -635,7 +635,7 @@ class Team(index.Indexed, models.Model):
         blank=True,
         help_text="A short form of the team name, up to 10 characters. For example DDaT.",
     )
-    slug = models.SlugField(max_length=130, unique=True, editable=False)
+    slug = models.SlugField(max_length=130, unique=True, editable=True)
     description = models.TextField(
         "Team description",
         null=False,

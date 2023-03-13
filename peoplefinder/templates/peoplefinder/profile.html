@@ -152,6 +152,67 @@
             {% endif %}
 
         </div>
+
+        {% if request.user == profile.user %}
+            <p class="govuk-body-s">Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.</p>
+        {% else %}
+            <p class="govuk-body-s">Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.</p>
+        {% endif %}
+    </div>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--visible">
+
+<dl class="govuk-summary-list">
+    {% if profile.buildings %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Place(s) I usually work</dt>
+            <dd class="govuk-summary-list__value">{{ profile.buildings.all|join:", " }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.location_in_building %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Location in building</dt>
+            <dd class="govuk-summary-list__value">{{ profile.location_in_building }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.town_city_or_region %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Town, city or region</dt>
+            <dd class="govuk-summary-list__value">{{ profile.town_city_or_region }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.country %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Country</dt>
+            <dd class="govuk-summary-list__value">{{ profile.country }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.regional_building %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Other - UK regional</dt>
+            <dd class="govuk-summary-list__value">{{ profile.regional_building }}</dd>
+        </div>
+    {% endif %}
+
+    {% if profile.international_building %}
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Other - Overseas</dt>
+            <dd class="govuk-summary-list__value">{{ profile.international_building }}</dd>
+        </div>
+    {% endif %}
+
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Preferred email</dt>
+        {% if profile.contact_email %}
+            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.contact_email }}" class="govuk-link" data-test-preferred-email>{{ profile.contact_email }}</a></dd>
+        {% else %}
+            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.email }}" class="govuk-link" data-test-preferred-email>{{ profile.email }}</a></dd>
+        {% endif %}
     </div>
 
     <hr class="govuk-section-break govuk-section-break--visible">

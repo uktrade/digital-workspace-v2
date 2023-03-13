@@ -1,0 +1,63 @@
+@font-face {
+  font-family: "GDS Transport";
+  font-style: normal;
+  font-weight: normal;
+  src: url(/static/webpack_bundles/light-94a07e06a1-v2.woff2) format("woff2"),
+    url(/static/webpack_bundles/light-f591b13f7d-v2.woff) format("woff");
+  font-display: fallback;
+}
+@font-face {
+  font-family: "GDS Transport";
+  font-style: normal;
+  font-weight: bold;
+  src: url(/static/webpack_bundles/bold-b542beb274-v2.woff2) format("woff2"),
+    url(/static/webpack_bundles/bold-affa96571d-v2.woff) format("woff");
+  font-display: fallback;
+}
+
+:root {
+  --w-color-primary: #0b0c0c;
+  --w-color-primary-200: #232424;
+  --w-color-secondary: #00703c;
+  --w-color-secondary-600: #005a30;
+  --w-color-positive-100: #00703c;
+  --w-color-warning-100: #ffdd00;
+  --w-color-warning-50: #fff199;
+  --w-color-critical-100: #d4351c;
+  --w-color-critical-50: #ea9a8e;
+  --w-font-sans: "GDS Transport", arial, sans-serif;
+}
+
+.sidebar-custom-branding {
+  margin: 0 2em 1em 2em;
+  text-align: left;
+}
+
+a.sidebar-custom-branding {
+  color: #fffc;
+}
+
+.sidebar-custom-branding .slim {
+  display: none;
+  text-align: left;
+}
+
+.sidebar-custom-branding .slim img {
+  max-width: auto;
+}
+
+.sidebar--slim .sidebar-custom-branding {
+  margin: 0 0 0 0.8em;
+}
+
+.sidebar--slim .sidebar-custom-branding span {
+  display: none;
+}
+
+.sidebar--slim .sidebar-custom-branding .wide {
+  display: none;
+}
+
+.sidebar--slim .sidebar-custom-branding .slim {
+  display: inherit;
+}

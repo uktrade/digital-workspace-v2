@@ -73,17 +73,21 @@
                 {% endfor %}
 
             </ul>
-            <p class="ws-all-how-to">
-                {# djlint:off #}
-                <a class="govuk-link" href="/working-at-dit/how-do-i/">View all "How do I?" guides</a>
-                {# djlint:on #}
-            </p>
+            <p class="ws-all-how-to"><a class="govuk-link" href="/working-at-dbt/how-do-i/">View all "How do I?" guides</a></p>
         </section>
 
         {% if not hide_news %}
-            <section>
-                <h2 class="govuk-heading-m">DIT news from GOV.UK</h2>
-                <ul class="govuk-news">
+        <section>
+            <h2 class="govuk-heading-m">DBT news from GOV.UK</h2>
+            <ul class="govuk-news">
+                {% for govuk_news_item in govuk_feed %}
+                    <li>
+                        <p><a class="govuk-link" href="{{ govuk_news_item.links.0.href }}">{{ govuk_news_item.title.value }}</a></p>
+                        <p class="govuk-body-s">{{ govuk_news_item.updated }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
 
                     {% for govuk_news_item in govuk_feed %}
                         <li>

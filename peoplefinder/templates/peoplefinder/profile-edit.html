@@ -166,6 +166,21 @@
                     </p>
                 </div>
             </details>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Add learning and development interests
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    {% include 'peoplefinder/components/checkboxes.html' with field=form.learning_interests %}
+                    {% include 'peoplefinder/components/input.html' with field=form.other_learning_interests %}
+                    <p>
+                        Get opportunities to <a class="govuk-link"
+    href="https://workspace.trade.gov.uk/working-at-dbt/topics/learning-and-development/">learn and develop</a>.
+                    </p>
+                </div>
+            </details>
 
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
@@ -287,6 +302,15 @@
     <p class="govuk-body-s">
         This is a voluntary collection of your information, by submitting this form you are agreeing to the terms and conditions regarding the collection and processing of your data and are providing consent for this information to be collected and processed.
         This follows our <a href="https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/policies/digital-workspace-privacy-policy/">privacy policy</a>.
+    </p>
+    <p class="govuk-body-s">
+        All the information on your profile will be visible to DBT staff and contractors on
+        Digital Workspace and other internal DBT tools. Occasionally, we may collate this
+        data for departmental insights.
+    </p>
+    <p class="govuk-body-s">
+        This is a voluntary collection of your information, by submitting this form you are agreeing to the terms and conditions regarding the collection and processing of your data and are providing consent for this information to be collected and processed.
+        This follows our <a href="https://workspace.trade.gov.uk/working-at-dbt/policies-and-guidance/policies/digital-workspace-privacy-policy/">privacy policy</a>.
     </p>
 
     {# Actions #}
