@@ -1,8 +1,10 @@
 {% extends "wagtailadmin/admin_base.html" %}
 {% load static %}
-{% block branding_title %}DBT Digital Workspace{% endblock %}
+{% block branding_title %}
+    DBT Digital Workspace
+{% endblock branding_title %}
 {% block branding_favicon %}
     <link rel="shortcut icon" href="{% static 'core/favicon-bw-32x32.png' %}" />
     <link rel="apple-touch-icon"
           href="{% static 'core/apple-touch-icon-bw.png' %}">
-{% endblock %}
+{% endblock branding_favicon %}

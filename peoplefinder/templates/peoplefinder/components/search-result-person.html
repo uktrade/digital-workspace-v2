@@ -23,61 +23,59 @@
 
         <div class="pf-person-search-result__details__item">
             <a class="govuk-link govuk-body govuk-!-font-weight-bold"
-               href="{% url 'profile-view' person.slug %}">
-                <a class="govuk-link govuk-body govuk-!-font-weight-bold"
-                   href="{% url 'profile-view' person.slug %}"
-                   onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">
-                    {{ person.full_name }}
-                </a>
-            </div>
-            <div class="pf-person-search-result__details__item">
-                <a class="govuk-link"
-                   href="{% url 'profile-view' person.slug %}"
-                   onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">
-                    {% for role in person.roles.all %}
-                        {{ role.job_title }} in {{ role.team.name }}
-                        <br>
-                    {% endfor %}
-
-                </a>
-            </div>
-            <div class="pf-person-search-result__details__item">
-                <a class="govuk-link" href="mailto:{{ person.preferred_email }}">{{ person.preferred_email }}</a>
-                <a class="govuk-link"
-                   href="mailto:{{ person.preferred_email }}"
-                   onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }}, 'search_result_selected_action': 'email'})">
-                    {{ person.preferred_email }}
-                </a>
-            </div>
-
-            {% if person.primary_phone_number %}
-                <div class="pf-person-search-result__details__item">
-                    <a class="govuk-link" href="tel:{{ person.primary_phone_number }}">{{ person.primary_phone_number }}</a>
-                    <a class="govuk-link"
-                       href="tel:{{ person.primary_phone_number }}"
-                       onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }}, 'search_result_selected_action': 'phone'})">
-                        {{ person.primary_phone_number }}
-                    </a>
-                </div>
-            {% endif %}
-
-            {% if person.all_languages %}
-                <div class="pf-person-search-result__details__item govuk-body-s">
-                    <strong>Languages:</strong> {{ person.all_languages }}
-                </div>
-            {% endif %}
-
-            {% if person.key_skills.exists or person.other_key_skills %}
-                <div class="pf-person-search-result__details__item govuk-body-s">
-                    <strong>Key skills:</strong> {{ person.get_all_key_skills|join:", " }}
-                </div>
-            {% endif %}
-
-            {% if person.learning_interests.exists or person.other_learning_interests %}
-                <div class="pf-person-search-result__details__item govuk-body-s">
-                    <strong>Learning and development interests:</strong> {{ person.get_all_learning_interests|join:", " }}
-                </div>
-            {% endif %}
-
+               href="{% url 'profile-view' person.slug %}"
+               onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">
+                {{ person.full_name }}
+            </a>
         </div>
+        <div class="pf-person-search-result__details__item">
+            <a class="govuk-link"
+               href="{% url 'profile-view' person.slug %}"
+               onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">
+                {% for role in person.roles.all %}
+                    {{ role.job_title }} in {{ role.team.name }}
+                    <br>
+                {% endfor %}
+
+            </a>
+        </div>
+        <div class="pf-person-search-result__details__item">
+            <a class="govuk-link" href="mailto:{{ person.preferred_email }}">{{ person.preferred_email }}</a>
+            <a class="govuk-link"
+               href="mailto:{{ person.preferred_email }}"
+               onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }}, 'search_result_selected_action': 'email'})">
+                {{ person.preferred_email }}
+            </a>
+        </div>
+
+        {% if person.primary_phone_number %}
+            <div class="pf-person-search-result__details__item">
+                <a class="govuk-link" href="tel:{{ person.primary_phone_number }}">{{ person.primary_phone_number }}</a>
+                <a class="govuk-link"
+                   href="tel:{{ person.primary_phone_number }}"
+                   onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }}, 'search_result_selected_action': 'phone'})">
+                    {{ person.primary_phone_number }}
+                </a>
+            </div>
+        {% endif %}
+
+        {% if person.all_languages %}
+            <div class="pf-person-search-result__details__item govuk-body-s">
+                <strong>Languages:</strong> {{ person.all_languages }}
+            </div>
+        {% endif %}
+
+        {% if person.key_skills.exists or person.other_key_skills %}
+            <div class="pf-person-search-result__details__item govuk-body-s">
+                <strong>Key skills:</strong> {{ person.get_all_key_skills|join:", " }}
+            </div>
+        {% endif %}
+
+        {% if person.learning_interests.exists or person.other_learning_interests %}
+            <div class="pf-person-search-result__details__item govuk-body-s">
+                <strong>Learning and development interests:</strong> {{ person.get_all_learning_interests|join:", " }}
+            </div>
+        {% endif %}
+
     </div>
+</div>

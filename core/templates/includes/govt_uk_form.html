@@ -20,9 +20,7 @@
     {% if field.field.widget.input_type == 'hidden' %}
         {{ field }}
     {% else %}
-        <div class="govuk-form-group 
-            {% if field.errors %} govuk-form-group--error{% endif %}
-             ">
+        <div class="govuk-form-group {% if field.errors %} govuk-form-group--error{% endif %} ">
 
             {% if field.field.widget.input_type != 'checkbox' %}
                 <label class="govuk-label" for="{{ field.name }}">
@@ -41,7 +39,6 @@
                         {{ error|escape }}
                     </span>
                 {% endfor %}
-
 
             {% endif %}
 

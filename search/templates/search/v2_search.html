@@ -1,6 +1,10 @@
 {% extends "1_col_content.html" %}
-{% block title %}Search results for '{{ form.cleaned_data.search_query }}'{% endblock %}
-{% block location %}Search results{% endblock %}
+{% block title %}
+    Search results for '{{ form.cleaned_data.search_query }}'
+{% endblock title %}
+{% block location %}
+    Search results
+{% endblock location %}
 {% block content %}
     {% include 'search/partials/search_form.html' with search_url='v2-search' placeholder='Search news, policies, people and teams' %}
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
@@ -78,9 +82,6 @@
 
         </div>
     </div>
-<<<<<<< HEAD
-{% endblock content %}
-=======
     <script lang="javascript">
         gtm_data_then_click = function(object, data) {
             dataLayer.push(data);
@@ -89,5 +90,4 @@
             return false;
         };
     </script>
-{% endblock %}
->>>>>>> master
+{% endblock content %}

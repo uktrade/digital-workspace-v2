@@ -1,6 +1,10 @@
 {% extends 'peoplefinder/page.html' %}
-{% block title %}Search results for '{{ form.cleaned_data.query }}'{% endblock %}
-{% block location %}Search results{% endblock %}
+{% block title %}
+    Search results for '{{ form.cleaned_data.query }}'
+{% endblock title %}
+{% block location %}
+    Search results
+{% endblock location %}
 {% block content %}
     {% if total_matches %}
         <h1 class="govuk-heading-l">{{ total_matches }} search results for '{{ query }}'</h1>
@@ -11,7 +15,7 @@
     {% include 'peoplefinder/components/error-summary.html' %}
     <div class="govuk-grid-row mb-20">
         <div class="govuk-grid-column-one-quarter">
-            <form action="{% url 'people-and-teams-search' %}" method="GET">
+            <form action="{% url 'people-and-teams-search' %}" method="get">
                 <input type="hidden" name="query" value="{{ form.cleaned_data.query }}">
                 <fieldset class="govuk-fieldset mb-20">
                     <legend class="govuk-fieldset__legend">
@@ -78,4 +82,4 @@
         return false;
     };
     </script>
-{% endblock %}
+{% endblock content %}
