@@ -88,6 +88,7 @@ bpython = "^0.22.1"
 django-extensions = "^3.2.1"
 werkzeug = "^2.2.3"
 blessings = "^1.7"
+djlint = "^1.19.16"
 
 [build-system]
 requires = ["poetry-core"]
@@ -123,6 +124,4 @@ profile="django"
 format_js=false
 format_css=false
 ignore="T002,H006,H017,H023"
-blank_line_before_tag="load,extends,block,if,with,for"
-blank_line_after_tag="load,extends,endblock,endif,endwith,endfor"
 preserve_blank_lines=true
