@@ -1,8 +1,6 @@
-<form
-    class="search-form"
-    action="{% if search_url %}{{ search_url }}{% else %}{% url 'search' %}{% endif %}"
-    method="get"
-    >
+<form class="search-form"
+      action="{% if search_url %}{{ search_url }}{% else %}{% url 'search' %}{% endif %}"
+      method="get">
     <label for="search-site" class="govuk-visually-hidden">Search Digital Workspace</label>
     <input id="search-site"
            class="govuk-input"
