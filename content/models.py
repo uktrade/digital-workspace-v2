@@ -86,6 +86,9 @@ class ContentPageQuerySet(PageQuerySet):
     def pinned(self, query):
         return self.filter(self.pinned_q(query))
 
+    def not_pinned(self, query):
+        return self.exclude(self.pinned_q(query))
+
     def exclusions_q(self, query):
         exclusions = SearchExclusionPageLookUp.objects.filter_by_query(query)
 
