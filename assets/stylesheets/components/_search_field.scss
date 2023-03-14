@@ -136,7 +136,7 @@ $input-size: 40px;
     }
 }
 
-@media only screen and (max-width: 767px) {
+@include govuk-media-query($until: desktop, $media-type: "screen") {
     .site-search {
         display: none;
     }

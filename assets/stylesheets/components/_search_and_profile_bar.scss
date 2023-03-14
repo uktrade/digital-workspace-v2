@@ -44,7 +44,7 @@
         }
     }
 
-    @media only screen and (max-width: 767px) {
+    @include govuk-media-query($until: desktop, $media-type: "screen") {
         .profile-link {
             display: none;
         }
@@ -100,7 +100,7 @@
         }
     }
 
-    @media only screen and (max-width: 767px) {
+    @include govuk-media-query($until: desktop, $media-type: "screen") {
         .people-finder-panel {
             position: absolute;
             top: 10px;
