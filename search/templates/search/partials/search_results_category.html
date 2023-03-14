@@ -1,11 +1,24 @@
-{% if pinned_results %}
-    <div class="pinned">
-        {% for result in pinned_results %}
+<div class="search-results__category">
+    {% if heading %}
+        <h3 class="govuk-heading-m">{{ count }} {{ heading }}</h3>
+    {% endif %}
+
+    <div class="search-results__list" data-search-category="{{ search_category }}">
+        {% if pinned_results %}
+            <div class="pinned">
+                <h3 class="govuk-heading-s">Features pages</h3>
+                {% for result in pinned_results %}
+                    {% include search_results_item_template with object=result only %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for result in search_results %}
             {% include search_results_item_template with object=result only %}
         {% endfor %}
     </div>
-{% endif %}
 
-{% for result in search_results %}
-    {% include search_results_item_template with object=result only %}
-{% endfor %}
+    {% if search_results.has_other_pages %}
+        {% include 'includes/pagination_v2.html' with page=search_results %}
+    {% endif %}
+</div>

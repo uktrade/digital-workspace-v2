@@ -4,14 +4,12 @@ context:
     search_url
     search_query
     search_category
-    search_results
-    search_results_template
+    page
 {% endcomment %}
 {% block title %}Search results for '{{ search_query }}'{% endblock %}
 {% block location %}Search{% endblock %}
 {% block content %}
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-    <div id="search-results" class="search-results">{% include 'search/partials/search_results.html' %}</div>
+    {% include 'search/partials/search_results.html' %}
     <script lang="javascript">
         gtm_data_then_click = function(object, data) {
             dataLayer.push(data);
