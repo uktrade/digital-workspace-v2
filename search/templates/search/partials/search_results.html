@@ -1,18 +1,15 @@
-{% if search_query %}
-    {% if search_results %}
-        <h1 class="govuk-heading-l">{{ search_results|length }} search results for '{{ search_query }}'</h1>
+<div class="search-results" id="search-results">
+    {% if search_query %}
+        <h1 class="govuk-heading-l">Search results for '{{ search_query }}'</h1>
     {% else %}
-        <h1 class="govuk-heading-l">No search results for '{{ search_query }}'</h1>
-        <p class="govuk-body-l">Check your spelling or try another search.</p>
+        <h1 class="govuk-heading-l">Start typing to search {{ search_category }}</h1>
     {% endif %}
-{% else %}
-    <h1 class="govuk-heading-l">Start typing to search {{ search_category }}</h1>
-{% endif %}
 
-{% include 'search/partials/search_filters.html' %}
+    {% include 'search/partials/search_filters.html' %}
 
-<div class="search-results__list" data-search-category="{{ search_category }}">
-    {% include search_results_template %}
+    {% if search_category == 'all' %}
+        {% include 'search/partials/search_results_all.html' %}
+    {% else %}
+        {% include 'search/partials/search_results_single_category.html' %}
+    {% endif %}
 </div>
-
-{% include 'includes/pagination_v2.html' with page=search_results %}
