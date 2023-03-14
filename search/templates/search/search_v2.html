@@ -20,9 +20,11 @@ context:
             return false;
         };
         // set focus to search input, move cursor to end of text
-        const searchinput = document.getElementById("search-site");
-        searchinput.focus();
-        searchinput.selectionStart = 10000;
-        searchinput.selectionEnd = 10000;
+        document.addEventListener("DOMContentLoaded", () => {
+            const searchinput = document.getElementById("search-site");
+            searchinput.selectionStart = 1000;
+            searchinput.selectionEnd = 1000;
+            searchinput.focus();
+        });
     </script>
 {% endblock content %}
