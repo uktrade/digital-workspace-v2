@@ -21,13 +21,8 @@ context:
         };
         // set focus to search input, move cursor to end of text
         const searchinput = document.getElementById("search-site");
-        searchinput.addEventListener('focus', (e) => {
-            setTimeout(
-                () => {
-                    e.target.selectionStart = 1000;
-                    e.target.selectionEnd = 10000;
-                }, 0);
-        }, false);
         searchinput.focus();
+        searchinput.selectionStart = 10000;
+        searchinput.selectionEnd = 10000;
     </script>
 {% endblock content %}
