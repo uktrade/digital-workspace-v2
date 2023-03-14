@@ -14,3 +14,5 @@
 <div class="search-results__list" data-search-category="{{ search_category }}">
     {% include search_results_template %}
 </div>
+
+{% include 'includes/pagination_v2.html' with page=search_results %}

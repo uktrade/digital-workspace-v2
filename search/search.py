@@ -13,10 +13,7 @@ class SearchVector:
         raise NotImplementedError
 
     def search(self, query, *args, **kwargs):
-        queryset = self.get_queryset()
-        results = queryset.search(query, *args, operator="and", **kwargs)
-
-        return results
+        return self.get_queryset().search(query, *args, operator="and", **kwargs)
 
 
 class PagesSearchVector(SearchVector):
@@ -24,6 +21,16 @@ class PagesSearchVector(SearchVector):
 
     def get_queryset(self):
         return self.page_model.objects.public().live()
+
+    def search(self, query, *args, **kwargs):
+        return (
+            self.get_queryset()
+            .not_pinned(query)
+            .search(query, *args, operator="and", **kwargs)
+        )
+
+    def pinned(self, query):
+        return self.get_queryset().pinned(query)
 
 
 class GuidanceSearchVector(PagesSearchVector):

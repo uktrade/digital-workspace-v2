@@ -1,4 +1,11 @@
+{% if pinned_results %}
+    <div class="pinned">
+        {% for result in pinned_results %}
+            {% include search_results_item_template with object=result only %}
+        {% endfor %}
+    </div>
+{% endif %}
+
 {% for result in search_results %}
     {% include search_results_item_template with object=result only %}
 {% endfor %}
-<!-- FIXME: pagination -->

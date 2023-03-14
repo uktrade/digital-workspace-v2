@@ -4,6 +4,7 @@ import shlex
 from typing import Literal, Mapping
 
 from django.conf import settings
+from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -208,6 +209,15 @@ SEARCH_CATEGORY_TO_VECTOR: SearchCategoryToVector = {
 }
 
 
+SEARCH_CATEGORY_TO_VECTOR: SearchCategoryToVector = {
+    "people": search_vectors.PeopleSearchVector,
+    "teams": search_vectors.TeamsSearchVector,
+    "guidance": search_vectors.GuidanceSearchVector,
+    "tools": search_vectors.ToolsSearchVector,
+    "news": search_vectors.NewsSearchVector,
+}
+
+
 # Views
 @require_http_methods(["GET"])
 def home_view(request: HttpRequest) -> HttpResponse:
@@ -217,6 +227,7 @@ def home_view(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["GET"])
 def v2_search_category(request: HttpRequest, category: str) -> HttpResponse:
     query = request.GET.get("query", "")
+    page = request.GET.get("page", "1")
 
     # users not in the beta need to use the v1 search
     # TODO[DWPF-454] remove this
@@ -227,8 +238,15 @@ def v2_search_category(request: HttpRequest, category: str) -> HttpResponse:
     if category not in SEARCH_CATEGORIES:
         return redirect(reverse("search:all") + f"?query={query}")
 
-    search_vector = SEARCH_CATEGORY_TO_VECTOR[category]
-    results = search_vector(request).search(query)
+    search_vector = SEARCH_CATEGORY_TO_VECTOR[category](request)
+    pinned_results = search_vector.pinned(query)
+    # `list` needs to be called to force the database query to be evaluated before
+    # passing the value to the paginator. If this isn't done, the pages will have the
+    # pinned results removed after pagination and cause the pages to have odd lengths.
+    search_results = list(search_vector.search(query))
+
+    search_results_paginator = Paginator(search_results, 5)
+    search_results_page = search_results_paginator.page(page)
 
     template = "search/search_v2.html"
     results_template = "search/partials/search_results.html"
@@ -242,9 +260,11 @@ def v2_search_category(request: HttpRequest, category: str) -> HttpResponse:
         "search_url": reverse("search:category", args=[category]),
         "search_query": query,
         "search_category": category,
-        "search_results": results,
+        "pinned_results": pinned_results,
+        "search_results": search_results_page,
         "search_results_template": "search/partials/search_results_category.html",
         "search_results_item_template": _get_result_template(category),
+        "page_numbers": search_results_paginator.get_elided_page_range(page),
     }
 
     return TemplateResponse(request, template, context=context)
