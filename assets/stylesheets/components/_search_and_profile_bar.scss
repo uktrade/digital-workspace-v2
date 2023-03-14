@@ -102,7 +102,23 @@
 
     @media only screen and (max-width: 767px) {
         .people-finder-panel {
-            display: none;
+            position: absolute;
+            top: 10px;
+            right: 0;
+
+            .profile-link {
+                display: flex;
+                column-gap: 5px;
+
+                .profile-prompt {
+                    display: none;
+                }
+
+                img {
+                    width: 20px;
+                    height: 20px;
+                }
+            }
         }
     }
 }
