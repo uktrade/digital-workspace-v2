@@ -49,6 +49,10 @@
             padding: 0;
             line-height: auto;
         }
+
+        .govuk-header__link:hover {
+            border: none;
+        }
     }
 
     .govuk-header__logotype--ws img {
@@ -79,7 +83,13 @@
     .nav-and-profile-bar {
 
         .govuk-header__navigation {
+            display: block;
             margin: 0;
+        }
+
+        .govuk-header__navigation-list {
+            margin: 0;
+            padding: 0;
         }
 
         .govuk-header__navigation-item {
@@ -113,7 +123,7 @@
     }
 }
 
-@media only screen and (max-width: 767px) {
+@include govuk-media-query($until: desktop, $media-type: "screen") {
 
     // @TODO [DWPF-454] remove the .search-v2 nesting and merge with existing rules
     .search-v2 {
@@ -123,12 +133,6 @@
             .govuk-header__content {
                 justify-content: left;
                 padding: 6px 0 4px 0;
-            }
-        }
-
-        .govuk-header__logo {
-            .govuk-header__link:hover {
-                border: none;
             }
         }
 
@@ -185,7 +189,7 @@
     }
 }
 
-@media(min-width: 40.0625em) {
+@include govuk-media-query($from: tablet, $media-type: "screen") {
     .search-v2 {
         .nav-and-profile-bar {
 
@@ -203,13 +207,17 @@
     }
 }
 
-@media only screen and (min-width: 767px) {
+@include govuk-media-query($from: desktop, $media-type: "screen") {
     .search-v2 {
         .nav-and-profile-bar {
 
             .govuk-header__link,
             a.govuk-header__navigation-item--active--ws,
             a.ancestor {
+                padding: 0;
+            }
+
+            .site-search {
                 padding: 0;
             }
         }
