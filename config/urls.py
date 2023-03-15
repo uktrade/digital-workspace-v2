@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls import include
 from django.urls import path
 from django.views.generic import RedirectView
+from django_feedback_govuk import urls as feedback_urls
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
@@ -43,6 +44,8 @@ urlpatterns = [
     path("people-and-teams/", include(people_and_teams_urlpatterns)),
     path("peoplefinder/api/", include(api_urlpatterns)),
     path("sitemap.xml", sitemap),
+    # Feedback
+    path("feedback/", include(feedback_urls), name="feedback"),  # @TODO [DWPF-454] remove feedback after beta
     # Wagtail
     path("", include(wagtail_urls)),
 ]

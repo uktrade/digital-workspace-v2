@@ -1,73 +1,75 @@
 .search-results-wrapper {
-  margin-top: 10px;
+    margin-top: 10px;
 
-  .search-results {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    .search-results {
+        list-style: none;
+        padding: 0;
+        margin: 0;
 
-    em {
-      font-weight: bold;
+        em {
+            font-weight: bold;
+        }
     }
-  }
 
-  .pinned {
-    background-color: govuk-colour("light-grey");
-    margin-bottom: 20px;
-  }
+    .pinned {
+        background-color: govuk-colour("light-grey");
+        margin-bottom: 20px;
+    }
 }
 
 // Search v2
 .search-results {
-  margin-bottom: 2rem;
+    margin-bottom: 2rem;
 }
 
 .search-results__filters {
-  display: flex;
-  flex-direction: row;
-  gap: 1em;
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
 
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 
-  border-bottom: 1px solid black;
+    border-bottom: 1px solid black;
 
-  > a {
-    padding-top: 0.25em;
-    padding-bottom: 0.25em;
+    >a {
+        padding-top: 0.25em;
+        padding-bottom: 0.25em;
 
-    &[data-selected] {
-      border-bottom: 4px solid $govuk-link-colour !important;
+        &[data-selected] {
+            border-bottom: 4px solid $govuk-link-colour !important;
+        }
     }
-  }
 }
 
 .search-results__list {
-  .pinned {
-    padding: 1rem;
-    margin-bottom: 2rem;
-    background-color: govuk-colour("light-grey");
-  }
+    .pinned {
+        padding: 1rem;
+        margin-bottom: 2rem;
+        background-color: govuk-colour("light-grey");
+    }
 }
 
 .search-results__list[data-search-category="teams"] {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  grid-gap: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-gap: 1.5rem;
 }
 
 .search-result--person {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 
 .search-result--page {
-  padding-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
 
-  &:not(:last-child) {
-    margin-bottom: 1rem;
-    border-bottom: 1px solid $govuk-border-colour;
-  }
+    &:not(:last-child) {
+        margin-bottom: 1rem;
+        border-bottom: 1px solid $govuk-border-colour;
+    }
 
-  > * {
-    margin-bottom: 0.5rem;
-  }
+    >* {
+        margin-bottom: 0.5rem;
+    }
 }
+
+.beta-feedback {}

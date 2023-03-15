@@ -1,4 +1,5 @@
 {# TODO [DWPF-454] Delete this template #}
+{% load feedback_tags %}
 {% if user.enable_v2_search %}
     <div class="search-v2-banner">
         <div class="govuk-width-container">
@@ -6,13 +7,32 @@
                 <p class="govuk-phase-banner__content">
                     <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
                     <span class="govuk-phase-banner__text">
-                        Please <a href="#" class="govuk-link">let us know what you think</a> of the new experience, or <a href="{% url "search:toggle" use_v2="off" %}?next={{ request.get_full_path }}"
+                        Please <a href="{% url "feedback-submit" %}"
+    class="govuk-link"
+    id="show-feedback-link">let us know what you think</a> of the new experience, or <a href="{% url "search:toggle" use_v2="off" %}?next={{ request.get_full_path }}"
     class="govuk-link">switch back</a>.
                     </span>
                 </p>
             </div>
         </div>
     </div>
+    <div class="govuk-width-container beta-feedback"
+         id="feedback-submit-form-inline"
+         hidden>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">{% feedback_submit %}</div>
+        </div>
+    </div>
+    <script lang="javascript">
+        document.addEventListener("DOMContentLoaded", () => {
+            const fblink = document.getElementById('show-feedback-link');
+            fblink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const fbform = document.getElementById('feedback-submit-form-inline');
+                fbform.hidden = !fbform.hidden;
+            })
+        });
+    </script>
 {% else %}
     <div class="search-v2-banner">
         <div class="govuk-width-container opt-in-invitation">
