@@ -55,7 +55,7 @@ jobs:
           command: cp .env.ci .env
       - run:
           name: build containers
-          command: make build
+          command: make build-all
       - run:
           name: install npm packages
           command: npm ci
