@@ -32,7 +32,7 @@ jobs:
             # docker load -i /caches/db.tar | true
             # docker load -i /caches/opensearch.tar | true
       - run:
-          name: Build application Docker image
+          name: Build custom Docker images
           command: |
             docker build --cache-from=wagtail -t wagtail .
             docker build --cache-from=celery -t celery .
@@ -47,10 +47,18 @@ jobs:
           paths:
             - /caches/wagtail.tar
             - /caches/celery.tar
+      - persist_to_workspace:
+          root: /caches
+          paths:
+            - wagtail.tar
+            - celery.tar
+      - run:
+          name: Run containers
+          command: |
+            docker-compose -f ./docker-compose.yml up -d
       - run:
           name: Run checks
           command: |
-            docker-compose -f ./docker-compose.yml up
             docker-compose -f ./docker-compose.yml run --rm --no-deps wagtail python manage.py makemigrations --check
 
   build:
@@ -103,9 +111,9 @@ jobs:
           command: |
             docker load -i /tmp/docker-images/wagtail.tar
             docker load -i /tmp/docker-images/celery.tar
-            docker load -i /tmp/docker-images/redis.tar
-            docker load -i /tmp/docker-images/db.tar
-            docker load -i /tmp/docker-images/opensearch.tar
+            # docker load -i /tmp/docker-images/redis.tar
+            # docker load -i /tmp/docker-images/db.tar
+            # docker load -i /tmp/docker-images/opensearch.tar
       - run:
           name: run containers
           command: docker-compose up -d
@@ -184,7 +192,7 @@ workflows:
                 - nothing
       - lint:
           requires:
-            - build
+            - build-basic
       - unit-tests:
           requires:
             - build
