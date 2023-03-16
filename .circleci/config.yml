@@ -1,8 +1,8 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: cimg/node:current
+    # docker:
+    #   - image: cimg/node:current
     steps:
       - checkout
       - setup_remote_docker
@@ -21,15 +21,15 @@ jobs:
       - run:
           name: check for missing migrations
           command: make checkmigrations
-      - run:
-          name: run containers
-          command: docker-compose --profile selenium up -d
   lint:
     steps:
       - checkout
       - run:
           name: Check for fixme comments
           command: make check-fixme
+      - run:
+          name: run containers
+          command: docker-compose up -d
       - run:
           name: run black (code formatting check)
           command: make black-check
@@ -43,6 +43,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: run containers
+          command: docker-compose up -d
+      - run:
           name: run all tests
           command: make test
       - run:
@@ -53,6 +56,9 @@ jobs:
   e2e-tests:
     steps:
       - checkout
+      - run:
+          name: run containers
+          command: docker-compose --profile selenium up -d
       - run:
           name: run all tests
           command: make test-selenium
