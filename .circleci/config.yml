@@ -7,9 +7,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Check for fixme comments
-          command: make check-fixme
-      - run:
           name: Copy env file
           command: cp .env.ci .env
       - run:
@@ -44,6 +41,9 @@ jobs:
           command: |
             wget -O codecov.sh https://codecov.io/bash
             bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
+      - run:
+          name: Check for fixme comments
+          command: make check-fixme
   e2e-tests:
     machine:
       image: ubuntu-2004:202101-01
@@ -79,12 +79,9 @@ workflows:
   build_and_test:
     jobs:
       - build-and-test
-      - e2e-tests
-      # - e2e-tests:
-      #     filters:
-      #       branches:
-      #         only:
-      #           - main
-      #           - master
-      #     requires:
-      #       - build-and-test
+      - e2e-tests:
+          filters:
+            branches:
+              only:
+                - main
+                - master
