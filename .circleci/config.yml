@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cimg/node:stable
+      - image: cimg/node:current
     steps:
       - checkout
       - setup_remote_docker
