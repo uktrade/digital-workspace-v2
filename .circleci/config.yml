@@ -3,6 +3,7 @@ jobs:
   build-and-test:
     machine:
       image: ubuntu-2004:202101-01
+      docker_layer_caching: true
     steps:
       - checkout
       - run:
@@ -46,6 +47,7 @@ jobs:
   e2e-tests:
     machine:
       image: ubuntu-2004:202101-01
+      docker_layer_caching: true
     steps:
       - checkout
       - run:
