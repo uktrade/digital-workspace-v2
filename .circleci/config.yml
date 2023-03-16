@@ -28,11 +28,14 @@ jobs:
       #       # docker load -i /caches/redis.tar | true
       #       # docker load -i /caches/db.tar | true
       #       # docker load -i /caches/opensearch.tar | true
+      # - run:
+      #     name: Build custom Docker images
+      #     command: |
+      #       docker build --cache-from=wagtail -t wagtail .
+      #       docker build --cache-from=celery -t celery .
       - run:
-          name: Build custom Docker images
-          command: |
-            docker build --cache-from=wagtail -t wagtail .
-            docker build --cache-from=celery -t celery .
+          name: Build docker images
+          command: make build
       # - run:
       #     name: Save Docker image layer cache
       #     command: |
