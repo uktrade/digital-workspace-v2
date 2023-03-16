@@ -46,6 +46,9 @@ def run_sql(sql: str, db_settings: dict[str, Any]) -> None:
 
 @pytest.fixture(scope="package")
 def django_db_setup(django_db_blocker):
+    for connection in connections.all():
+        connection.close()
+
     with django_db_blocker.unblock():
         # digital-workspace setup
         call_command("migrate")
