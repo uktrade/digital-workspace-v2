@@ -83,7 +83,7 @@ def django_db_setup(django_db_blocker):
         connection.close()
 
     run_sql(
-        f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{db_settings["NAME"]}' AND pid <> pg_backend_pid()",
+        "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'digital_workspace' AND pid <> pg_backend_pid()",
         db_settings,
     )
 
@@ -96,7 +96,7 @@ def django_db_setup(django_db_blocker):
         connection.close()
 
     run_sql(
-        f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{db_settings["NAME"]}' AND pid <> pg_backend_pid()",
+        "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'digital_workspace' AND pid <> pg_backend_pid()",
         db_settings,
     )
 
