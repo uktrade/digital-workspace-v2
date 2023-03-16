@@ -7,7 +7,6 @@ ENV POETRY_VIRTUALENVS_CREATE=false
 
 WORKDIR /app
 
-RUN cp .env.ci .env
 COPY pyproject.toml poetry.lock ./
 
 RUN pip install --no-cache-dir --upgrade pip
