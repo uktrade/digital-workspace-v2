@@ -36,7 +36,10 @@ services:
   wagtail:
     build:
       context: .
-    command: python manage.py runserver_plus 0.0.0.0:8000
+      cache_from:
+        - digital_workspace/wagtail:latest
+    image: digital_workspace/wagtail:latest
+    command: python manage.py runserver 0.0.0.0:8000
     # mimics production
     # command: waitress-serve --port=8000 config.wsgi:application
     volumes:
@@ -49,12 +52,15 @@ services:
       - opensearch
       - celery
     environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - DJANGO_SETTINGS_MODULE=config.settings.test
     stdin_open: true
     tty: true
   celery:
     build:
       context: .
+      cache_from:
+        - digital_workspace/celery:latest
+    image: digital_workspace/celery:latest
     command: celery -A config worker -l info
     volumes:
       - .:/app
@@ -67,13 +73,13 @@ services:
     image: redis:buster
     ports:
       - "6379:6379"
-  selenium:
-    image: selenium/standalone-chrome:4
+  playwright:
+    build:
+      context: .
+      dockerfile: test.dockerfile
+    # command: poetry run pytest e2e_tests
     profiles:
-      - selenium
-    ports:
-      - "4444:4444"
-    volumes:
-      - /dev/shm:/dev/shm
+      - playwright
+    ipc: host
     depends_on:
       - wagtail

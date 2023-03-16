@@ -34,6 +34,9 @@ test:
 test-selenium:
 	docker-compose run --rm --name testrunner wagtail pytest -m "selenium"
 
+test-e2e:
+	docker-compose exec playwright pytest e2e_tests
+
 test-all:
 	docker-compose run --rm --name testrunner wagtail pytest
 
@@ -68,7 +71,7 @@ down:
 	docker-compose down
 
 build:
-	docker-compose build
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose build
 
 webpack:
 	npm run dev

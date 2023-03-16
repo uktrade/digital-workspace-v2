@@ -61,3 +61,6 @@ ner_output_file.txt
 # Data tasks
 .db
 *.sql
+
+# Playwright
+/playwright-report
