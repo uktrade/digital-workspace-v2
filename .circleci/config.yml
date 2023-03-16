@@ -1,8 +1,61 @@
 version: 2
 jobs:
+  build-basic:
+    docker:
+      - image: docker:cli
+    steps:
+      - checkout
+      - setup_remote_docker
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       apk add --no-cache \
+      #         py-pip=9.0.0-r1
+      #       pip install \
+      #         docker-compose==1.12.0
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/wagtail.tar
+            - /caches/celery.tar
+            # - /caches/redis.tar
+            # - /caches/db.tar
+            # - /caches/opensearch.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/wagtail.tar | true
+            docker load -i /caches/celery.tar | true
+            # docker load -i /caches/redis.tar | true
+            # docker load -i /caches/db.tar | true
+            # docker load -i /caches/opensearch.tar | true
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build --cache-from=wagtail -t wagtail .
+            docker build --cache-from=celery -t celery .
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/wagtail.tar wagtail
+            docker save -o /caches/celery.tar celery
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/wagtail.tar
+            - /caches/celery.tar
+      - run:
+          name: Run checks
+          command: |
+            docker-compose -f ./docker-compose.yml up
+            docker-compose -f ./docker-compose.yml run --rm --no-deps wagtail python manage.py makemigrations --check
+
   build:
-    # docker:
-    #   - image: cimg/node:current
+    docker:
+      - image: cimg/node:current
     steps:
       - checkout
       - setup_remote_docker
@@ -21,15 +74,44 @@ jobs:
       - run:
           name: check for missing migrations
           command: make checkmigrations
+      - run:
+          name: save docker images
+          command: |
+            mkdir -p /tmp/docker-images
+            docker save -o /tmp/docker-images/wagtail.tar wagtail
+            docker save -o /tmp/docker-images/celery.tar celery
+            docker save -o /tmp/docker-images/redis.tar redis
+            docker save -o /tmp/docker-images/db.tar db
+            docker save -o /tmp/docker-images/opensearch.tar opensearch
+      - persist_to_workspace:
+          root: /tmp/docker-images
+          paths:
+            - wagtail.tar
+            - celery.tar
+            - redis.tar
+            - db.tar
+            - opensearch.tar
+
   lint:
     steps:
       - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/docker-images
       - run:
-          name: Check for fixme comments
-          command: make check-fixme
+          name: reinstate docker images
+          command: |
+            docker load -i /tmp/docker-images/wagtail.tar
+            docker load -i /tmp/docker-images/celery.tar
+            docker load -i /tmp/docker-images/redis.tar
+            docker load -i /tmp/docker-images/db.tar
+            docker load -i /tmp/docker-images/opensearch.tar
       - run:
           name: run containers
           command: docker-compose up -d
+      - run:
+          name: Check for fixme comments
+          command: make check-fixme
       - run:
           name: run black (code formatting check)
           command: make black-check
@@ -42,6 +124,17 @@ jobs:
   unit-tests:
     steps:
       - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/docker-images
+      - run:
+          name: reinstate docker images
+          command: |
+            docker load -i /tmp/docker-images/wagtail.tar
+            docker load -i /tmp/docker-images/celery.tar
+            docker load -i /tmp/docker-images/redis.tar
+            docker load -i /tmp/docker-images/db.tar
+            docker load -i /tmp/docker-images/opensearch.tar
       - run:
           name: run containers
           command: docker-compose up -d
@@ -56,6 +149,17 @@ jobs:
   e2e-tests:
     steps:
       - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/docker-images
+      - run:
+          name: reinstate docker images
+          command: |
+            docker load -i /tmp/docker-images/wagtail.tar
+            docker load -i /tmp/docker-images/celery.tar
+            docker load -i /tmp/docker-images/redis.tar
+            docker load -i /tmp/docker-images/db.tar
+            docker load -i /tmp/docker-images/opensearch.tar
       - run:
           name: run containers
           command: docker-compose --profile selenium up -d
@@ -72,7 +176,12 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
+      - build-basic
+      - build:
+          filters:
+            branches:
+              only:
+                - nothing
       - lint:
           requires:
             - build
