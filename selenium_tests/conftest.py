@@ -48,55 +48,25 @@ def run_sql(sql: str, db_settings: dict[str, Any]) -> None:
 def django_db_setup(django_db_blocker):
     with django_db_blocker.unblock():
         # digital-workspace setup
-        for connection in connections.all():
-            connection.close()
         call_command("migrate")
-        for connection in connections.all():
-            connection.close()
         call_command("create_menus")
-        for connection in connections.all():
-            connection.close()
         call_command("create_section_homepages")
-        for connection in connections.all():
-            connection.close()
         call_command("create_groups")
-        for connection in connections.all():
-            connection.close()
         # peoplefinder setup
         call_command("loaddata", "countries.json")
-        for connection in connections.all():
-            connection.close()
         call_command("create_people_finder_groups")
-        for connection in connections.all():
-            connection.close()
         # common setup
         call_command("update_index")
-        for connection in connections.all():
-            connection.close()
 
     db_settings = settings.DATABASES["default"]
 
     test_db_name = db_settings["NAME"]
     template_db_name = TEMPLATE_DATABASE_PREFIX + test_db_name
 
-    for connection in connections.all():
-        connection.close()
-
-    run_sql(
-        "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'digital_workspace' AND pid <> pg_backend_pid()",
-        db_settings,
-    )
-
-    for connection in connections.all():
-        connection.close()
-
     run_sql(f"DROP DATABASE IF EXISTS {template_db_name}", db_settings)
 
-    for connection in connections.all():
-        connection.close()
-
     run_sql(
-        "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'digital_workspace' AND pid <> pg_backend_pid()",
+        f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{test_db_name}' AND pid <> pg_backend_pid()",
         db_settings,
     )
 
