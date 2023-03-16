@@ -80,11 +80,12 @@ workflows:
   build_and_test:
     jobs:
       - build-and-test
-      - e2e-tests:
-          filters:
-            branches:
-              only:
-                - main
-                - master
-          requires:
-            - build-and-test
+      - e2e-tests
+      # - e2e-tests:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
+      #           - master
+      #     requires:
+      #       - build-and-test
