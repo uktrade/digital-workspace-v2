@@ -79,10 +79,10 @@ workflows:
   build_and_test:
     jobs:
       - build-and-test
-      - e2e-tests
-      # - e2e-tests:
-      #     filters:
-      #       branches:
-      #         only:
-      #           - main
-      #           - master
+      - e2e-tests:
+          filters:
+            branches:
+              only:
+                - main
+                - master
+                - /.*e2e.*/ # run on any branch containing "e2e" in the name

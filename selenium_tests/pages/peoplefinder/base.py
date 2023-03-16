@@ -1,5 +1,5 @@
-from ..base import SitePage
+# from ..base import SitePage
 
 
-class PeoplefinderPage(SitePage):
-    pass
+# class PeoplefinderPage(SitePage):
+#     pass
