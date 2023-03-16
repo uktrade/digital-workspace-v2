@@ -48,6 +48,7 @@ def run_sql(sql: str, db_settings: dict[str, Any]) -> None:
 def django_db_setup(django_db_blocker):
     with django_db_blocker.unblock():
         # digital-workspace setup
+        call_command("migrate")
         call_command("create_menus")
         call_command("create_section_homepages")
         call_command("create_groups")
