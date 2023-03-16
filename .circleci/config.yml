@@ -1,70 +1,28 @@
 version: 2
 jobs:
   build-and-test:
-    docker:
-      - image: docker:git
+    machine:
+      image: ubuntu-2004:202101-01
     steps:
       - checkout
-      - setup_remote_docker
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --no-cache make
-      - run:
-          name: Copy env file
-          command: cp .env.ci .env
-      # - restore_cache:
-      #     keys:
-      #       - v1-{{ .Branch }}
-      #     paths:
-      #       - /caches/wagtail.tar
-      #       - /caches/celery.tar
-      #       # - /caches/redis.tar
-      #       # - /caches/db.tar
-      #       # - /caches/opensearch.tar
-      # - run:
-      #     name: Load Docker image layer cache
-      #     command: |
-      #       set +o pipefail
-      #       docker load -i /caches/wagtail.tar | true
-      #       docker load -i /caches/celery.tar | true
-      #       # docker load -i /caches/redis.tar | true
-      #       # docker load -i /caches/db.tar | true
-      #       # docker load -i /caches/opensearch.tar | true
-      # - run:
-      #     name: Build custom Docker images
-      #     command: |
-      #       docker build --cache-from=wagtail -t wagtail .
-      #       docker build --cache-from=celery -t celery .
-      - run:
-          name: Build docker images
-          command: make build
-      # - run:
-      #     name: Save Docker image layer cache
-      #     command: |
-      #       mkdir -p /caches
-      #       docker save -o /caches/wagtail.tar wagtail
-      #       docker save -o /caches/celery.tar celery
-      # - save_cache:
-      #     key: v1-{{ .Branch }}-{{ epoch }}
-      #     paths:
-      #       - /caches/wagtail.tar
-      #       - /caches/celery.tar
-      # - persist_to_workspace:
-      #     root: /caches
-      #     paths:
-      #       - wagtail.tar
-      #       - celery.tar
-      - run:
-          name: Run containers
-          command: |
-            docker-compose -f ./docker-compose.yml up -d
-      - run:
-          name: check for missing migrations
-          command: make checkmigrations
       - run:
           name: Check for fixme comments
           command: make check-fixme
+      - run:
+          name: Copy env file
+          command: cp .env.ci .env
+      - run:
+          name: build containers
+          command: make build
+      # - run:
+      #     name: install npm packages
+      #     command: npm ci
+      # - run:
+      #     name: build webpack
+      #     command: npm run build
+      - run:
+          name: check for missing migrations
+          command: make checkmigrations
       - run:
           name: run black (code formatting check)
           command: make black-check
@@ -75,6 +33,9 @@ jobs:
           name: run flake8 (coding standards compliance test)
           command: make flake8
       - run:
+          name: run containers
+          command: docker-compose up -d
+      - run:
           name: run unit tests
           command: make test
       - run:
@@ -83,14 +44,26 @@ jobs:
             wget -O codecov.sh https://codecov.io/bash
             bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
   e2e-tests:
+    machine:
+      image: ubuntu-2004:202101-01
+    steps:
     steps:
       - checkout
-      - setup_remote_docker
       - run:
-          name: Build custom Docker images
-          command: |
-            docker build --cache-from=wagtail -t wagtail .
-            docker build --cache-from=celery -t celery .
+          name: Check for fixme comments
+          command: make check-fixme
+      - run:
+          name: Copy env file
+          command: cp .env.ci .env
+      - run:
+          name: build containers
+          command: make build
+      - run:
+          name: install npm packages
+          command: npm ci
+      - run:
+          name: build webpack
+          command: npm run build
       - run:
           name: run containers
           command: docker-compose --profile selenium up -d
@@ -98,7 +71,7 @@ jobs:
           name: run e2e tests
           command: make test-selenium
       - run:
-          name: Publish e2e test coverage
+          name: Publish unit test coverage
           command: |
             wget -O codecov.sh https://codecov.io/bash
             bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
