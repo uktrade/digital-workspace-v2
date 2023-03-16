@@ -35,7 +35,7 @@ test-selenium:
 	docker-compose run --rm --name testrunner wagtail pytest -m "selenium"
 
 test-e2e:
-	docker-compose exec playwright pytest e2e_tests
+	docker-compose exec playwright poetry run pytest e2e_tests
 
 test-all:
 	docker-compose run --rm --name testrunner wagtail pytest

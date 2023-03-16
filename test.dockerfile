@@ -1,13 +1,15 @@
 FROM ubuntu:focal
 
 ARG DEBIAN_FRONTEND=noninteractive
+ENV PYTHON_VERSION=python3.9
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONSTARTUP=.pythonrc.py
+ENV POETRY_VIRTUALENVS_PATH=~/.venvs/
 
 RUN apt-get update
 RUN apt-get install -y \
-    python3.9-dev \
+    $PYTHON_VERSION-dev \
     libpq-dev \
     build-essential \
     python3-pip \
@@ -19,10 +21,10 @@ COPY pyproject.toml poetry.lock ./
 
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir poetry
-RUN poetry env use /usr/bin/python3.9
+RUN poetry env use $(which $PYTHON_VERSION)
 RUN poetry install --with dev
 RUN poetry run playwright install-deps
-RUN poetry run playwright install chrome
+RUN poetry run playwright install
 
 COPY . ./
 RUN cp .env.ci .env
