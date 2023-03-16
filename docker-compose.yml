@@ -77,6 +77,9 @@ services:
     build:
       context: .
       dockerfile: test.dockerfile
+      cache_from:
+        - digital_workspace/playwright:latest
+    image: digital_workspace/playwright:latest
     command: tail -F anything  # keep running until "down" command
     volumes:
       - ./:/app/
@@ -85,3 +88,5 @@ services:
     ipc: host
     depends_on:
       - wagtail
+    links:
+      - "wagtail:main"
