@@ -46,20 +46,33 @@ def run_sql(sql: str, db_settings: dict[str, Any]) -> None:
 
 @pytest.fixture(scope="package")
 def django_db_setup(django_db_blocker):
-    for connection in connections.all():
-        connection.close()
-
     with django_db_blocker.unblock():
         # digital-workspace setup
+        for connection in connections.all():
+            connection.close()
         call_command("migrate")
+        for connection in connections.all():
+            connection.close()
         call_command("create_menus")
+        for connection in connections.all():
+            connection.close()
         call_command("create_section_homepages")
+        for connection in connections.all():
+            connection.close()
         call_command("create_groups")
+        for connection in connections.all():
+            connection.close()
         # peoplefinder setup
         call_command("loaddata", "countries.json")
+        for connection in connections.all():
+            connection.close()
         call_command("create_people_finder_groups")
+        for connection in connections.all():
+            connection.close()
         # common setup
         call_command("update_index")
+        for connection in connections.all():
+            connection.close()
 
     db_settings = settings.DATABASES["default"]
 

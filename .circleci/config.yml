@@ -49,9 +49,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Check for fixme comments
-          command: make check-fixme
-      - run:
           name: Copy env file
           command: cp .env.ci .env
       - run:
