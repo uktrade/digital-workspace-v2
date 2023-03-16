@@ -125,6 +125,10 @@ attributes to make your tests more resistant to changes.
 This project uses the `data-test-XXX` naming convention for html data attributes which
 are there to support tests.
 
+Playwright also has a [test generator](https://playwright.dev/python/docs/codegen-intro) -
+install the dependencies on your host machine and run `playwright codegen` to generate test cases
+as you browse.
+
 ## Coverage
 
 We use [coverage.py](https://coverage.readthedocs.io) to track our test coverage.
