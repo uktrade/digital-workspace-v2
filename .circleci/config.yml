@@ -14,12 +14,12 @@ jobs:
       - run:
           name: build containers
           command: make build
-      # - run:
-      #     name: install npm packages
-      #     command: npm ci
-      # - run:
-      #     name: build webpack
-      #     command: npm run build
+      - run:
+          name: install npm packages
+          command: npm ci
+      - run:
+          name: build webpack
+          command: npm run build
       - run:
           name: check for missing migrations
           command: make checkmigrations
