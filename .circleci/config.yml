@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build-basic:
+  build-and-test:
     docker:
       - image: docker:cli
     steps:
@@ -36,87 +36,29 @@ jobs:
           command: |
             docker build --cache-from=wagtail -t wagtail .
             docker build --cache-from=celery -t celery .
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            mkdir -p /caches
-            docker save -o /caches/wagtail.tar wagtail
-            docker save -o /caches/celery.tar celery
+      # - run:
+      #     name: Save Docker image layer cache
+      #     command: |
+      #       mkdir -p /caches
+      #       docker save -o /caches/wagtail.tar wagtail
+      #       docker save -o /caches/celery.tar celery
       # - save_cache:
       #     key: v1-{{ .Branch }}-{{ epoch }}
       #     paths:
       #       - /caches/wagtail.tar
       #       - /caches/celery.tar
-      - persist_to_workspace:
-          root: /caches
-          paths:
-            - wagtail.tar
-            - celery.tar
+      # - persist_to_workspace:
+      #     root: /caches
+      #     paths:
+      #       - wagtail.tar
+      #       - celery.tar
       - run:
           name: Run containers
           command: |
             docker-compose -f ./docker-compose.yml up -d
       - run:
-          name: Run checks
-          command: |
-            docker-compose -f ./docker-compose.yml run --rm --no-deps wagtail python manage.py makemigrations --check
-
-  build:
-    docker:
-      - image: cimg/node:current
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Copy env file
-          command: cp .env.ci .env
-      - run:
-          name: build containers
-          command: make build
-      - run:
-          name: install npm packages
-          command: npm ci
-      - run:
-          name: build webpack
-          command: npm run build
-      - run:
           name: check for missing migrations
           command: make checkmigrations
-      - run:
-          name: save docker images
-          command: |
-            mkdir -p /tmp/docker-images
-            docker save -o /tmp/docker-images/wagtail.tar wagtail
-            docker save -o /tmp/docker-images/celery.tar celery
-            docker save -o /tmp/docker-images/redis.tar redis
-            docker save -o /tmp/docker-images/db.tar db
-            docker save -o /tmp/docker-images/opensearch.tar opensearch
-      - persist_to_workspace:
-          root: /tmp/docker-images
-          paths:
-            - wagtail.tar
-            - celery.tar
-            - redis.tar
-            - db.tar
-            - opensearch.tar
-
-  lint:
-    steps:
-      - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: /tmp/docker-images
-      - run:
-          name: reinstate docker images
-          command: |
-            docker load -i /tmp/docker-images/wagtail.tar
-            docker load -i /tmp/docker-images/celery.tar
-            # docker load -i /tmp/docker-images/redis.tar
-            # docker load -i /tmp/docker-images/db.tar
-            # docker load -i /tmp/docker-images/opensearch.tar
-      - run:
-          name: run containers
-          command: docker-compose up -d
       - run:
           name: Check for fixme comments
           command: make check-fixme
@@ -129,23 +71,6 @@ jobs:
       - run:
           name: run flake8 (coding standards compliance test)
           command: make flake8
-  unit-tests:
-    steps:
-      - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: /tmp/docker-images
-      - run:
-          name: reinstate docker images
-          command: |
-            docker load -i /tmp/docker-images/wagtail.tar
-            docker load -i /tmp/docker-images/celery.tar
-            docker load -i /tmp/docker-images/redis.tar
-            docker load -i /tmp/docker-images/db.tar
-            docker load -i /tmp/docker-images/opensearch.tar
-      - run:
-          name: run containers
-          command: docker-compose up -d
       - run:
           name: run all tests
           command: make test
@@ -184,18 +109,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build-basic
-      - build:
-          filters:
-            branches:
-              only:
-                - nothing
-      - lint:
-          requires:
-            - build-basic
-      - unit-tests:
-          requires:
-            - build
+      - build-and-test
       - e2e-tests:
           filters:
             branches:
@@ -203,4 +117,4 @@ workflows:
                 - main
                 - master
           requires:
-            - build
+            - build-and-test
