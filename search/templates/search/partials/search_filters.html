@@ -1,8 +1,8 @@
 <div class="search-results__filters">
-    {% include 'search/partials/search_filter.html' with name='all' %}
-    {% include 'search/partials/search_filter.html' with name='people' %}
-    {% include 'search/partials/search_filter.html' with name='teams' %}
-    {% include 'search/partials/search_filter.html' with name='guidance' %}
-    {% include 'search/partials/search_filter.html' with name='tools' %}
-    {% include 'search/partials/search_filter.html' with name='news' %}
+    {% include 'search/partials/search_filter.html' with name='all' search_count_category='all_pages' %}
+    {% include 'search/partials/search_filter.html' with name='people' search_count_category='people' %}
+    {% include 'search/partials/search_filter.html' with name='teams' search_count_category='teams' %}
+    {% include 'search/partials/search_filter.html' with name='guidance' search_count_category='guidance' %}
+    {% include 'search/partials/search_filter.html' with name='tools' search_count_category='tools' %}
+    {% include 'search/partials/search_filter.html' with name='news' search_count_category='news' %}
 </div>

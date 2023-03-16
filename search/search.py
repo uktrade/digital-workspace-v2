@@ -15,6 +15,9 @@ class SearchVector:
     def search(self, query, *args, **kwargs):
         return self.get_queryset().search(query, *args, operator="and", **kwargs)
 
+    def pinned(self, query):
+        return []
+
 
 class PagesSearchVector(SearchVector):
     page_model = None
@@ -31,6 +34,10 @@ class PagesSearchVector(SearchVector):
 
     def pinned(self, query):
         return self.get_queryset().pinned(query)
+
+
+class AllPagesSearchVector(PagesSearchVector):
+    page_model = ContentPage
 
 
 class GuidanceSearchVector(PagesSearchVector):

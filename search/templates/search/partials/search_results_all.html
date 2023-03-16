@@ -1,0 +1,17 @@
+{% load search %}
+
+<div class="search-results__all">
+    <div class="left-col">
+        <div class="pages">
+            {% search_category category='all_pages' %}
+        </div>
+    </div>
+    <div class="right-col">
+        <div class="people">
+            {% search_category category='people' limit=1 heading='person' heading_plural='people' %}
+        </div>
+        <div class="teams">
+            {% search_category category='teams' limit=1 heading='team' %}
+        </div>
+    </div>
+</div>

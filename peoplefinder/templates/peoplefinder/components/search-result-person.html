@@ -33,7 +33,7 @@
                 {% endfor %}
             </a>
         </div>
-        <div class="pf-person-search-result__details__item">
+        <div class="pf-person-search-result__details__item" data-detail="email" data-detail-additional>
             <a class="govuk-link"
                href="mailto:{{ person.preferred_email }}"
                onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }}, 'search_result_selected_action': 'email'})">
@@ -41,7 +41,7 @@
             </a>
         </div>
         {% if person.primary_phone_number %}
-            <div class="pf-person-search-result__details__item">
+            <div class="pf-person-search-result__details__item" data-detail="phone" data-detail-additional>
                 <a class="govuk-link"
                    href="tel:{{ person.primary_phone_number }}"
                    onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }}, 'search_result_selected_action': 'phone'})">
@@ -50,17 +50,17 @@
             </div>
         {% endif %}
         {% if person.all_languages %}
-            <div class="pf-person-search-result__details__item govuk-body-s">
+            <div class="pf-person-search-result__details__item search-v2-hide govuk-body-s">
                 <strong>Languages:</strong> {{ person.all_languages }}
             </div>
         {% endif %}
         {% if person.key_skills.exists or person.other_key_skills %}
-            <div class="pf-person-search-result__details__item govuk-body-s">
+            <div class="pf-person-search-result__details__item search-v2-hide govuk-body-s">
                 <strong>Key skills:</strong> {{ person.get_all_key_skills|join:", " }}
             </div>
         {% endif %}
         {% if person.learning_interests.exists or person.other_learning_interests %}
-            <div class="pf-person-search-result__details__item govuk-body-s">
+            <div class="pf-person-search-result__details__item search-v2-hide govuk-body-s">
                 <strong>Learning and development interests:</strong> {{ person.get_all_learning_interests|join:", " }}
             </div>
         {% endif %}

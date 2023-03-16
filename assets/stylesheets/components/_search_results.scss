@@ -19,7 +19,11 @@
 
 // Search v2
 .search-results {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
+
+  .search-v2-hide {
+    display: none;
+  }
 }
 
 .search-results__filters {
@@ -41,6 +45,13 @@
     }
 }
 
+.search-results__all {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto;
+  gap: 1rem;
+}
+
 .search-results__list {
     .pinned {
         padding: 1rem;
@@ -55,8 +66,24 @@
     grid-gap: 1.5rem;
 }
 
+.search-result {
+  container-type: inline-size;
+  width: 100%;
+}
+
 .search-result--person {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
+
+  [data-detail-additional] {
+    display: none;
+  }
+}
+
+// Show a person's additional details when the container is medium-large.
+@container (min-width: 320px) {
+  .search-result--person [data-detail-additional] {
+    display: block;
+  }
 }
 
 .search-result--page {

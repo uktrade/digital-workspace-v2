@@ -1,10 +1,9 @@
 import logging
 import math
 import shlex
-from typing import Literal, Mapping
+from functools import wraps
 
 from django.conf import settings
-from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -14,8 +13,8 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
 from content.models import ContentPage, SearchExclusionPageLookUp, SearchPinPageLookUp
+from search.templatetags.search import SEARCH_CATEGORIES
 
-from . import search as search_vectors
 from .utils import sanitize_search_query
 
 
@@ -186,124 +185,46 @@ def search(request):
     )
 
 
-# Types
-SearchCategory = Literal["all", "people", "teams", "guidance", "tools", "news"]
-SearchCategoryToVector = Mapping[SearchCategory, search_vectors.SearchVector]
+def search_view(func):
+    @wraps(func)
+    def wrapper(request, *args, **kwargs):
+        query = request.GET.get("query", "")
 
-# Constants
-SEARCH_CATEGORIES: set[SearchCategory] = {
-    "all",
-    "people",
-    "teams",
-    "guidance",
-    "tools",
-    "news",
-}
+        # Users not in the beta need to use the v1 search.
+        # TODO[DWPF-454] remove this
+        if not request.user.enable_v2_search:
+            return redirect(reverse("search") + f"?query={query}")
 
-SEARCH_CATEGORY_TO_VECTOR: SearchCategoryToVector = {
-    "people": search_vectors.PeopleSearchVector,
-    "teams": search_vectors.TeamsSearchVector,
-    "guidance": search_vectors.GuidanceSearchVector,
-    "tools": search_vectors.ToolsSearchVector,
-    "news": search_vectors.NewsSearchVector,
-}
+        return func(request, *args, **kwargs)
 
-
-SEARCH_CATEGORY_TO_VECTOR: SearchCategoryToVector = {
-    "people": search_vectors.PeopleSearchVector,
-    "teams": search_vectors.TeamsSearchVector,
-    "guidance": search_vectors.GuidanceSearchVector,
-    "tools": search_vectors.ToolsSearchVector,
-    "news": search_vectors.NewsSearchVector,
-}
+    return wrapper
 
 
 # Views
 @require_http_methods(["GET"])
+@search_view
 def home_view(request: HttpRequest) -> HttpResponse:
     return redirect("search:all")
 
 
 @require_http_methods(["GET"])
-def v2_search_category(request: HttpRequest, category: str) -> HttpResponse:
+@search_view
+def search_v2(request: HttpRequest, category: str) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
-
-    # users not in the beta need to use the v1 search
-    # TODO[DWPF-454] remove this
-    if not request.user.enable_v2_search:
-        return redirect(reverse("search") + f"?query={query}")
 
     # If the category is invalid, redirect to search all.
     if category not in SEARCH_CATEGORIES:
         return redirect(reverse("search:all") + f"?query={query}")
 
-    search_vector = SEARCH_CATEGORY_TO_VECTOR[category](request)
-    pinned_results = search_vector.pinned(query)
-    # `list` needs to be called to force the database query to be evaluated before
-    # passing the value to the paginator. If this isn't done, the pages will have the
-    # pinned results removed after pagination and cause the pages to have odd lengths.
-    search_results = list(search_vector.search(query))
-
-    search_results_paginator = Paginator(search_results, 5)
-    search_results_page = search_results_paginator.page(page)
-
-    template = "search/search_v2.html"
-    results_template = "search/partials/search_results.html"
-
-    # Check if the request is from htmx.
-    if request.headers.get("Hx-Request", False):
-        # Switch to the partial template.
-        template = results_template
-
     context = {
         "search_url": reverse("search:category", args=[category]),
         "search_query": query,
         "search_category": category,
-        "pinned_results": pinned_results,
-        "search_results": search_results_page,
-        "search_results_template": "search/partials/search_results_category.html",
-        "search_results_item_template": _get_result_template(category),
-        "page_numbers": search_results_paginator.get_elided_page_range(page),
+        "page": page,
     }
 
-    return TemplateResponse(request, template, context=context)
-
-
-@require_http_methods(["GET"])
-def v2_search_all(request: HttpRequest) -> HttpResponse:
-    category = "all"
-    query = request.GET.get("query", "")
-
-    # users not in the beta need to use the v1 search
-    # TODO[DWPF-454] remove this
-    if not request.user.enable_v2_search:
-        return redirect(reverse("search") + f"?query={query}")
-
-    # TEMPORARILY REDIRECT USERS TO A CATEGORY SEARCH WHILE THIS VIEW THROWS ERRORS
-    return redirect(
-        reverse("search:category", kwargs={"category": "guidance"}) + f"?query={query}"
-    )
-
-    results = []
-
-    context = {
-        "search_url": reverse("search:all"),
-        "search_query": query,
-        "search_category": category,
-        "search_results": results,
-    }
-
-    return TemplateResponse(request, "search/v2_search_all.html", context=context)
-
-
-def _get_result_template(category: SearchCategory) -> str:
-    page_categories = ("guidance", "tools", "news")
-
-    if category in page_categories:
-        return "search/partials/result/page.html"
-
-    return f"search/partials/result/{category}.html"
+    return TemplateResponse(request, "search/search_v2.html", context=context)
 
 
 def toggle_search_v2(request: HttpRequest, use_v2: str) -> HttpResponse:
