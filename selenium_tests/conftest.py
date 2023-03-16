@@ -82,10 +82,27 @@ def django_db_setup(django_db_blocker):
     for connection in connections.all():
         connection.close()
 
-    run_sql("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'test' AND pid <> pg_backend_pid()", db_settings)
+    run_sql(
+        "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'test' AND pid <> pg_backend_pid()",
+        db_settings,
+    )
+
+    for connection in connections.all():
+        connection.close()
 
     run_sql(f"DROP DATABASE IF EXISTS {template_db_name}", db_settings)
-    run_sql("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'test' AND pid <> pg_backend_pid()", db_settings)
+
+    for connection in connections.all():
+        connection.close()
+
+    run_sql(
+        "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'test' AND pid <> pg_backend_pid()",
+        db_settings,
+    )
+
+    for connection in connections.all():
+        connection.close()
+
     run_sql(
         f"CREATE DATABASE {template_db_name} WITH TEMPLATE {test_db_name}",
         db_settings,
