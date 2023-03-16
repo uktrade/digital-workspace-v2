@@ -31,7 +31,7 @@ compilescss:
 test:
 	docker-compose run --rm --name testrunner wagtail pytest -m "not selenium" --reuse-db $(tests)
 
-test-selenium:
+test-selenium: migrate
 	docker-compose run --rm --name testrunner wagtail pytest -m "selenium"
 
 test-all:
