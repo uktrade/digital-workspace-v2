@@ -47,7 +47,6 @@ jobs:
     machine:
       image: ubuntu-2004:202101-01
     steps:
-    steps:
       - checkout
       - run:
           name: Check for fixme comments
