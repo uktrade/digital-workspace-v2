@@ -1,3 +1,5 @@
+import logging
+
 from .base import *  # noqa
 
 
@@ -14,5 +16,4 @@ WAGTAILSEARCH_BACKENDS["default"] |= {  # noqa
     "AUTO_UPDATE": False,
 }
 
-import logging
 logging.disable(logging.WARN)

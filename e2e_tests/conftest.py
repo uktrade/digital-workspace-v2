@@ -12,15 +12,14 @@ test adds around 500ms to each test. As I expect the number of e2e tests to be
 small, this overhead is fine.
 """
 
-from typing import Any, Dict
 import os
+from typing import Any
 
 import psycopg2
 import pytest
 from django.conf import settings
 from django.core.management import call_command
 from django.db import connections
-from playwright.sync_api import BrowserType
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 

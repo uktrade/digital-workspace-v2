@@ -23,12 +23,16 @@ def login(page, user):
     cookie = {
         "name": settings.SESSION_COOKIE_NAME,
         "value": session.session_key,
-        "url": "http://wagtail:8000/"
+        "url": "http://wagtail:8000/",
     }
 
     # Navigate to the homepage so we can set the cookie.
     page.goto(URL)
     # Set the cookie.
-    page.context.add_cookies([cookie, ])
+    page.context.add_cookies(
+        [
+            cookie,
+        ]
+    )
     # Refresh the page now that we are logged in.
     page.reload()
