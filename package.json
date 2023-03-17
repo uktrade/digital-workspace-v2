@@ -27,5 +27,9 @@
     "last 1 firefox version",
     "last 1 safari version",
     "IE 11"
-  ]
+  ],
+    "engines": {
+        "npm": ">=8.0.0",
+        "node": ">=18.0.0"
+    }
 }
