@@ -23,6 +23,7 @@ from django.db import connections
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
+TEST_DATABASE_SUFFIX = "_test"
 TEMPLATE_DATABASE_PREFIX = "template_"
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
@@ -62,7 +63,7 @@ def django_db_setup(django_db_blocker):
 
     db_settings = settings.DATABASES["default"]
 
-    test_db_name = db_settings["NAME"]
+    test_db_name = db_settings["NAME"] + TEST_DATABASE_SUFFIX
     template_db_name = TEMPLATE_DATABASE_PREFIX + test_db_name
 
     for connection in connections.all():
