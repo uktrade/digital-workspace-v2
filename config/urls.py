@@ -45,7 +45,9 @@ urlpatterns = [
     path("peoplefinder/api/", include(api_urlpatterns)),
     path("sitemap.xml", sitemap),
     # Feedback
-    path("feedback/", include(feedback_urls), name="feedback"),  # @TODO [DWPF-454] remove feedback after beta
+    path(
+        "feedback/", include(feedback_urls), name="feedback"
+    ),  # @TODO [DWPF-454] remove feedback after beta
     # Wagtail
     path("", include(wagtail_urls)),
 ]

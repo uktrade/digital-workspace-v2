@@ -77,20 +77,34 @@
             column-gap: 10px;
         }
 
+        .profile-link:focus {
+            box-shadow: none;
+
+            .profile-details {
+                box-shadow: none;
+            }
+        }
+
         .profile-details {
-            background: none;
-            color: govuk-colour("black");
-            text-decoration-color: govuk-colour("black");
             padding: 0;
             display: flex;
             flex-direction: column;
-        }
+            background: none;
+            color: govuk-colour("black");
+            font-weight: normal;
+            text-decoration-color: govuk-colour("black");
 
-        .profile-prompt {
-            display: inline;
+            .salutation {
+                text-decoration: underline;
+            }
 
-            span {
-                display: inline-block;
+            .profile-prompt {
+                display: inline;
+                text-decoration: none;
+
+                span {
+                    display: inline-block;
+                }
             }
         }
 
@@ -103,7 +117,7 @@
     @include govuk-media-query($until: desktop, $media-type: "screen") {
         .people-finder-panel {
             position: absolute;
-            top: 10px;
+            top: 15px;
             right: 0;
 
             .profile-link {

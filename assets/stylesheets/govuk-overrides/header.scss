@@ -72,7 +72,7 @@
     }
 
     .govuk-header__service-name--ws {
-        font-size: 27px;
+        font-size: 24px;
         margin: 0;
         // margin: govuk-spacing(1) 0;
         // @include govuk-media-query ($from: mobile) {
@@ -132,7 +132,7 @@
 
             .govuk-header__content {
                 justify-content: left;
-                padding: 6px 0 4px 0;
+                padding: 10px 0 4px 0;
             }
         }
 
@@ -191,6 +191,10 @@
 
 @include govuk-media-query($from: tablet, $media-type: "screen") {
     .search-v2 {
+
+        .govuk-header__service-name--ws {
+            font-size: 27px;
+        }
         .nav-and-profile-bar {
 
             .govuk-header__link,
