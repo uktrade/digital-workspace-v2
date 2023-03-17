@@ -76,7 +76,7 @@ def django_db_setup(django_db_blocker):
 
     run_sql(f"DROP DATABASE IF EXISTS {test_db_name}", db_settings)
     run_sql(
-        f"CREATE DATABASE {test_db_name} WITH TEMPLATE {test_db_name}",
+        f"CREATE DATABASE {test_db_name} WITH TEMPLATE template1",
         db_settings,
     )
 
