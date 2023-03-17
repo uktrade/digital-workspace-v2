@@ -17,7 +17,7 @@ jobs:
       - run:
           name: install npm packages
           command: |
-            nvm install 16
+            nvm install 18
             npm ci
       - run:
           name: build webpack
