@@ -12,17 +12,20 @@ test adds around 500ms to each test. As I expect the number of e2e tests to be
 small, this overhead is fine.
 """
 
-from typing import Any
+from typing import Any, Dict
+import os
 
 import psycopg2
 import pytest
 from django.conf import settings
 from django.core.management import call_command
 from django.db import connections
+from playwright.sync_api import BrowserType
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 TEMPLATE_DATABASE_PREFIX = "template_"
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 
 def run_sql(sql: str, db_settings: dict[str, Any]) -> None:
@@ -49,30 +52,35 @@ def django_db_setup(django_db_blocker):
     with django_db_blocker.unblock():
         # digital-workspace setup
         call_command("migrate")
-        call_command("create_menus")
         call_command("create_section_homepages")
         call_command("create_groups")
+        call_command("create_menus")
         # peoplefinder setup
         call_command("loaddata", "countries.json")
         call_command("create_people_finder_groups")
         # common setup
-        call_command("update_index")
+        # call_command("update_index")
 
     db_settings = settings.DATABASES["default"]
 
     test_db_name = db_settings["NAME"]
     template_db_name = TEMPLATE_DATABASE_PREFIX + test_db_name
 
-    run_sql(f"DROP DATABASE IF EXISTS {template_db_name}", db_settings)
+    for connection in connections.all():
+        connection.close()
 
     run_sql(
         f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{test_db_name}' AND pid <> pg_backend_pid()",  # noqa: S608
         db_settings,
     )
 
-    for connection in connections.all():
-        connection.close()
+    run_sql(f"DROP DATABASE IF EXISTS {test_db_name}", db_settings)
+    run_sql(
+        f"CREATE DATABASE {test_db_name} WITH TEMPLATE {test_db_name}",
+        db_settings,
+    )
 
+    run_sql(f"DROP DATABASE IF EXISTS {template_db_name}", db_settings)
     run_sql(
         f"CREATE DATABASE {template_db_name} WITH TEMPLATE {test_db_name}",
         db_settings,
@@ -83,12 +91,31 @@ def django_db_setup(django_db_blocker):
     for connection in connections.all():
         connection.close()
 
+    run_sql(
+        f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{test_db_name}' AND pid <> pg_backend_pid()",  # noqa: S608
+        db_settings,
+    )
+
     run_sql(f"DROP DATABASE IF EXISTS {test_db_name}", db_settings)
     run_sql(
         f"CREATE DATABASE {test_db_name} WITH TEMPLATE {template_db_name}",
         db_settings,
     )
     run_sql(f"DROP DATABASE IF EXISTS {template_db_name}", db_settings)
+
+
+# @pytest.fixture(scope="session")
+# def context(
+#     browser_type: BrowserType,
+#     browser_type_launch_args: Dict,
+#     browser_context_args: Dict
+# ):
+#     context = browser_type.launch_persistent_context("./foobar", **{
+#         **browser_type_launch_args,
+#         **browser_context_args,
+#     })
+#     yield context
+#     context.close()
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -100,6 +127,11 @@ def copy_database():
 
     for connection in connections.all():
         connection.close()
+
+    run_sql(
+        f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{test_db_name}' AND pid <> pg_backend_pid()",  # noqa: S608
+        db_settings,
+    )
 
     run_sql(f"DROP DATABASE IF EXISTS {test_db_name}", db_settings)
     run_sql(

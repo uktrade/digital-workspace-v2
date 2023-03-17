@@ -23,15 +23,15 @@ class Command(BaseCommand):
                 site=site,
             )
 
-        news_home = NewsHome.objects.all()
-        transition_home = TransitionHome.objects.all()
-        working_at_dit_home = WorkingAtDITHome.objects.all()
-        about_us_home = AboutUsHome.objects.all()
-        tools_home = ToolsHome.objects.all()
-        # TODO - figure out a way of dealing with Data Hub link
+        if main_menu.get_base_page_queryset().count() < 5:
+            news_home = NewsHome.objects.all()
+            transition_home = TransitionHome.objects.all()
+            working_at_dit_home = WorkingAtDITHome.objects.all()
+            about_us_home = AboutUsHome.objects.all()
+            tools_home = ToolsHome.objects.all()
 
-        main_menu.add_menu_items_for_pages(news_home)
-        main_menu.add_menu_items_for_pages(transition_home)
-        main_menu.add_menu_items_for_pages(working_at_dit_home)
-        main_menu.add_menu_items_for_pages(about_us_home)
-        main_menu.add_menu_items_for_pages(tools_home)
+            main_menu.add_menu_items_for_pages(news_home)
+            main_menu.add_menu_items_for_pages(transition_home)
+            main_menu.add_menu_items_for_pages(working_at_dit_home)
+            main_menu.add_menu_items_for_pages(about_us_home)
+            main_menu.add_menu_items_for_pages(tools_home)

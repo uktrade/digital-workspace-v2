@@ -13,3 +13,6 @@ WAGTAILSEARCH_BACKENDS["default"] |= {  # noqa
     "INDEX": "test_wagtail",
     "AUTO_UPDATE": False,
 }
+
+import logging
+logging.disable(logging.WARN)
