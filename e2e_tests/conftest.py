@@ -122,7 +122,7 @@ def django_db_setup(django_db_blocker):
 def copy_database():
     db_settings = settings.DATABASES["default"]
 
-    test_db_name = db_settings["NAME"]
+    test_db_name = db_settings["NAME"] + TEST_DATABASE_SUFFIX
     template_db_name = TEMPLATE_DATABASE_PREFIX + test_db_name
 
     for connection in connections.all():
