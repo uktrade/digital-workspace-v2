@@ -47,9 +47,19 @@
 
 .search-results__all {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: auto;
   gap: 1rem;
+
+  .people {
+    margin-bottom: 1rem;
+  }
+}
+
+@include govuk-media-query($from: desktop) {
+  .search-results__all {
+    grid-template-columns: 2fr 1fr;
+  }
 }
 
 .search-results__list {

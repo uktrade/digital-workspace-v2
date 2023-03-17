@@ -50,8 +50,10 @@ def search_category(
     if limit:
         search_results = search_results[: int(limit)]
 
-    search_results_paginator = Paginator(search_results, PAGE_SIZE)
-    search_results_page = search_results_paginator.page(page)
+    # Only paginate if there is no limit.
+    if not limit:
+        search_results_paginator = Paginator(search_results, PAGE_SIZE)
+        search_results = search_results_paginator.page(page)
 
     if heading and count > 1:
         heading = heading_plural or f"{heading}s"
@@ -61,7 +63,7 @@ def search_category(
         "search_category": category,
         "search_results_item_template": _get_result_template(category),
         "pinned_results": pinned_results,
-        "search_results": search_results_page,
+        "search_results": search_results,
         "count": count,
         "heading": heading,
     }
