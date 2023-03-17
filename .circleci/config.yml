@@ -16,7 +16,9 @@ jobs:
           command: make build
       - run:
           name: install npm packages
-          command: npm ci
+          command: |
+            nvm install 18
+            npm ci
       - run:
           name: build webpack
           command: npm run build
