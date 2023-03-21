@@ -1,21 +1,21 @@
 from importlib import import_module
 
 from django.conf import settings
-from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
+from django.contrib.auth import (
+    BACKEND_SESSION_KEY,
+    HASH_SESSION_KEY,
+    SESSION_KEY,
+)
 
 
 # https://docs.djangoproject.com/en/3.2/topics/http/sessions/#using-sessions-out-of-views
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
-# The host must match the `--name` value passed to `docker-compose run`.
-# The port must match the port given in the `--liveserver` value.
-URL = "http://wagtail:8000/"
 
-
-def login(page, user):
-    # Manually create the session to bypass SSO.
+def login(browser, user):
+    # Manually create the session to bypass auth.
     session = SessionStore()
-    session[SESSION_KEY] = user.pk
+    session[SESSION_KEY] = user._meta.pk.value_to_string(user)
     session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
     session[HASH_SESSION_KEY] = user.get_session_auth_hash()
     session.save()
@@ -24,15 +24,21 @@ def login(page, user):
         "name": settings.SESSION_COOKIE_NAME,
         "value": session.session_key,
         "url": "http://wagtail:8000/",
+        "sameSite": "None",
     }
 
-    # Navigate to the homepage so we can set the cookie.
-    page.goto(URL)
-    # Set the cookie.
-    page.context.add_cookies(
-        [
-            cookie,
-        ]
-    )
-    # Refresh the page now that we are logged in.
-    page.reload()
+    print("vvvvvvvvvvv")
+    if (len(browser.contexts) == 0):
+        browser.new_context()
+    for context in browser.contexts:
+        context.add_cookies([cookie, ])
+        print(context.cookies())
+    page = browser.new_page()
+    page.goto("/")
+
+    for context in browser.contexts:
+        print(context.cookies())
+    print(user)
+    print(cookie)
+    print(session)
+    print("^^^^^^^^^^")

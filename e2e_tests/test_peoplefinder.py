@@ -2,50 +2,9 @@
 # from django.core.management import call_command
 
 # from peoplefinder.models import Team
-# from selenium_tests.pages.homepage import HomePage
-# from selenium_tests.pages.peoplefinder.team import TeamViewPage
-# from selenium_tests.utils import login
-
-
-# @pytest.fixture
-# def superuser(django_user_model, selenium, live_server):
-#     email = "test.user@example.com"
-
-#     user, _ = django_user_model.objects.get_or_create(
-#         username="testuser",
-#         first_name="Test",
-#         last_name="User",
-#         email=email,
-#         legacy_sso_user_id="legacy-test-user-id",
-#         is_staff=True,
-#         is_superuser=True,
-#     )
-#     user.set_password("password")
-#     user.save()
-
-#     call_command("create_test_teams")
-#     call_command("create_user_profiles")
-
-#     login(selenium, user)
-
-#     return user
-
-
-# @pytest.fixture
-# def user(django_user_model):
-#     user, _ = django_user_model.objects.get_or_create(
-#         username="john.smith-1234abcd@digital.trade.gov.uk",
-#         first_name="John",
-#         last_name="Smith",
-#         email="john.smith@digital.trade.gov.uk",
-#         legacy_sso_user_id="1234abcd-1234-abcd-1234-abcd1234abcd",
-#     )
-#     user.set_password("password")
-#     user.save()
-
-#     call_command("create_user_profiles")
-
-#     return user
+# from e2e_tests.pages.homepage import HomePage
+# from e2e_tests.pages.peoplefinder.team import TeamViewPage
+# from e2e_tests.fixtures import superuser, login, user
 
 
 # @pytest.mark.selenium

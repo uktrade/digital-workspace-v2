@@ -1,41 +1,20 @@
 import re
-
 import pytest
-from django.core.management import call_command
-from playwright.sync_api import Page, expect
 
-from .utils import login
+from playwright.sync_api import Page, expect
 
 
 @pytest.mark.e2e
-def test_smoke(django_user_model, page: Page, live_server):
-    user, _ = django_user_model.objects.get_or_create(
-        username="testuser",
-        first_name="Test",
-        last_name="User",
-        email="test.user@example.com",
-        legacy_sso_user_id="legacy-test-user-id",
-        is_staff=True,
-        is_superuser=True,
-    )
-    user.set_password("password")
-    user.save()
-
-    call_command("create_test_teams")
-    call_command("create_user_profiles")
-
-    login(page, user)
-
-    page.goto("/")
-    expect(page).to_have_title(re.compile("Home"))
-
+@pytest.mark.usefixtures
+def test_smoke(superuser, page: Page):
     page.goto("/admin")
-    expect(page).to_have_title(re.compile("DBT Digital Workspace"))
+    expect(page).to_have_title("DBT Digital Workspace")
 
     page.goto("/")
-    expect(page).to_have_title(re.compile("Home"))
+    expect(page).to_have_title(re.compile(r"Home.*"))
 
-    news = page.get_by_role("link", name="News")
+    news = page.get_by_role("link", name="News and views")
     expect(news).to_have_attribute("href", "/news-and-views/")
+
     news.click()
-    expect(page).to_have_url(re.compile(".*news"))
+    expect(page).to_have_url(re.compile(r".*news"))

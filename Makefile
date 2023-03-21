@@ -31,8 +31,18 @@ compilescss:
 test:
 	docker-compose run --rm --name testrunner wagtail pytest -m "not e2e" --reuse-db $(tests)
 
-test-e2e:
-	docker-compose exec playwright poetry run pytest -m "e2e"
+test-e2e: up-all
+	# make sure the main app is running in CI config
+	# - important if running with custom .env
+	cp .env .env.orig
+	cp .env.ci .env
+	docker-compose stop wagtail
+	docker-compose start wagtail
+	-docker-compose exec playwright poetry run pytest -m "e2e"
+	# return main container config to original
+	mv .env.orig .env
+	docker-compose stop wagtail
+	docker-compose start wagtail
 
 test-all:
 	docker-compose run --rm --name testrunner wagtail pytest
@@ -64,8 +74,14 @@ check-fixme:
 up:
 	docker-compose up
 
+up-all:
+	docker-compose --profile playwright up -d
+
 down:
 	docker-compose down
+
+down-all:
+	docker-compose --profile playwright down
 
 build:
 	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose build
@@ -87,6 +103,9 @@ findstatic:
 
 bash:
 	$(wagtail) bash
+
+psql:
+	PGPASSWORD='postgres' psql -h localhost -U postgres
 
 requirements:
 	$(wagtail) poetry export --without-hashes --output requirements.txt
@@ -116,7 +135,7 @@ create_section_homepages:
 	$(wagtail) python manage.py create_section_homepages
 
 first-use:
-	docker-compose down
+	docker-compose --profile playwright down
 	make migrate
 	make data-countries
 	make menus

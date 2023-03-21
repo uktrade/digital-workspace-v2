@@ -88,5 +88,7 @@ services:
     ipc: host
     depends_on:
       - wagtail
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.test
     links:
       - "wagtail:main"
