@@ -27,7 +27,6 @@ from .db_utils import (
     drop_dbs,
     recreate_db,
 )
-from .utils import populate_db
 
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -76,7 +75,18 @@ def django_db_setup(
     """
     keep_db = os.environ.get("TESTS_KEEP_DB", False)
 
-    populate_db(django_db_blocker)
+    # run django commands for full DB fixture setup
+    with django_db_blocker.unblock():
+        call_command("migrate")
+        call_command("loaddata", "countries.json")
+        call_command("create_section_homepages")
+        call_command("create_menus")
+        call_command("create_groups")
+        call_command("create_people_finder_groups")
+        # call_command("update_index")
+
+    for connection in connections.all():
+        connection.close()
 
     if keep_db:
         create_template_db(drop_first=True)
@@ -101,8 +111,8 @@ def enable_db_access_for_all_tests(django_db_serialized_rollback):
 # we use live_server which depends on transational_db, which clear/reset
 # the db between runs -  so we need to make sure it's populated ourselves
 @pytest.fixture(autouse=True, scope="function")
-def populate_db_between_tests(django_db_blocker):
-    populate_db(django_db_blocker)
+def recreate_db_between_tests(django_db_blocker):
+    recreate_db()
 
 
 @pytest.fixture
