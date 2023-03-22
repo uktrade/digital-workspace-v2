@@ -1,11 +1,7 @@
 from importlib import import_module
 
 from django.conf import settings
-from django.contrib.auth import (
-    BACKEND_SESSION_KEY,
-    HASH_SESSION_KEY,
-    SESSION_KEY,
-)
+from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 
 
 base_url = "http://localhost:8000"
@@ -30,4 +26,8 @@ def login(page, user):
 
     page.goto(f"{base_url}/")  # ensures a context should exist
     context = page.context
-    context.add_cookies([cookie, ])
+    context.add_cookies(
+        [
+            cookie,
+        ]
+    )

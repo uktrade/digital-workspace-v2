@@ -126,8 +126,8 @@ This project uses the `data-test-XXX` naming convention for html data attributes
 are there to support tests.
 
 Playwright also has a [test generator](https://playwright.dev/python/docs/codegen-intro) -
-install the dependencies on your host machine and run `playwright codegen` to generate test cases
-as you browse.
+install the dependencies on your host machine and run `make e2e-codegen` to generate test cases
+as you browse (using the CI settings).
 
 > Note: if you're running e2e tests many times in a session and don't want to destroy and recreate the DB each time (to make the run faster), set the `TESTS_KEEP_DB` environment variable to a truthy value (most easily by modifying .env.ci)
 

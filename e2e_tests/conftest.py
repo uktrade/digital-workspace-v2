@@ -14,22 +14,19 @@ for each test adds around 500ms to each test. As we expect the number of e2e
 tests requiring this to be small, this overhead is fine.
 """
 import os
-from typing import Any
 
 import pytest
 from django.conf import settings
 from django.core.management import call_command
 from django.db import connections
-from pytest_django.fixtures import (
-    skip_if_no_django,
-)
+from pytest_django.fixtures import skip_if_no_django
+
 from .db_utils import (
     TEMPLATE_DATABASE_PREFIX,
     create_template_db,
     drop_dbs,
     recreate_db,
 )
-from .utils import login
 
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -46,7 +43,7 @@ def django_db_modify_db_settings(
     Used as a fixture by django_db_setup.
     """
     skip_if_no_django()
-    keep_db = os.environ.get('TESTS_KEEP_DB', False)
+    keep_db = os.environ.get("TESTS_KEEP_DB", False)
 
     db_settings = settings.DATABASES["default"]
     test_name = db_settings.get("TEST", {}).get("NAME")
@@ -75,7 +72,7 @@ def django_db_setup(
     fixture data and create template DB for quicker DB resets if needed between
     functions.
     """
-    keep_db = os.environ.get('TESTS_KEEP_DB', False)
+    keep_db = os.environ.get("TESTS_KEEP_DB", False)
 
     # run django commands for full DB fixture setup
     with django_db_blocker.unblock():

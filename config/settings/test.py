@@ -22,4 +22,23 @@ INSTALLED_APPS += [  # noqa F405
     "django_extensions",
 ]
 
+LOGGING["handlers"] |= {
+    "file": {
+        "level": "DEBUG",
+        "class": "logging.FileHandler",
+        "filename": "/tmp/wagtail-debug.log",
+    }
+}
+LOGGING["loggers"] = {
+    "django.db.backends.schema": {
+        "handlers": ["file"],
+        "propagate": True,
+        "level": "INFO",
+    },
+    "": {
+        "handlers": ["file"],
+        "level": "DEBUG",
+    },
+}
+
 logging.disable(logging.WARN)

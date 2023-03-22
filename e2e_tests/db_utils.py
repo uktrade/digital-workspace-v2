@@ -1,9 +1,9 @@
 import os
-import psycopg2
 from typing import Any
 
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+import psycopg2
 from django.conf import settings
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 TEMPLATE_DATABASE_PREFIX = "template_"
@@ -32,7 +32,7 @@ def _run_sql(sql: str, db_settings: dict[str, Any]) -> None:
 
 
 def _get_db_name() -> str:
-    return settings.DATABASES['default']['NAME']
+    return settings.DATABASES["default"]["NAME"]
 
 
 def _get_template_name() -> str:
@@ -40,7 +40,7 @@ def _get_template_name() -> str:
     return f"{TEMPLATE_DATABASE_PREFIX}{test_name}"
 
 
-def create_template_db(drop_first: bool=True) -> None:
+def create_template_db(drop_first: bool = True) -> None:
     """
     Creates a new Postgres DB copied directly from the test DB, allowing future
     test runs requiring clean-but-complete-with-fixture DBs to be quickly
@@ -76,7 +76,7 @@ def create_template_db(drop_first: bool=True) -> None:
         pass
 
 
-def recreate_db(use_template: bool=True, _retries:Any=None):
+def recreate_db(use_template: bool = True, _retries: Any = None):
     """
     Drops the existing test DB and recreates it, either clean or from the
     existing template DB.
@@ -114,7 +114,7 @@ def recreate_db(use_template: bool=True, _retries:Any=None):
             f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{test_name}' AND pid <> pg_backend_pid()",  # noqa: S608
             db_settings,
         )
-    except:
+    except Exception:
         # first time with TESTS_KEEP_DB=1 this will break
         if _retries is None or _retries < 2:
             retries = _retries
@@ -122,12 +122,12 @@ def recreate_db(use_template: bool=True, _retries:Any=None):
                 retries = 0
             retries += 1
 
-            keep_db = os.environ.get('TESTS_KEEP_DB', False)
+            keep_db = os.environ.get("TESTS_KEEP_DB", False)
             if keep_db:
                 return recreate_db(use_template=False, _retries=retries)
 
 
-def drop_dbs(only_test: bool=False):
+def drop_dbs(only_test: bool = False):
     """
     Drops both test and template DBs or, optionally, only test DB to clean up at the end of a test run
 

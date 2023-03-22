@@ -52,7 +52,7 @@ services:
       - opensearch
       - celery
     environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.test
+      - DJANGO_SETTINGS_MODULE=config.settings.local
     stdin_open: true
     tty: true
   celery:
