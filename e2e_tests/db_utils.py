@@ -1,3 +1,4 @@
+import os
 import psycopg2
 from typing import Any
 
@@ -39,21 +40,25 @@ def _get_template_name() -> str:
     return f"{TEMPLATE_DATABASE_PREFIX}{test_name}"
 
 
-def create_template_db() -> None:
+def create_template_db(without_drop: bool=False) -> None:
     """
     Creates a new Postgres DB copied directly from the test DB, allowing future
     test runs requiring clean-but-complete-with-fixture DBs to be quickly
     copied across
+
+    Args:
+        without_drop: A flag to say whether or not to drop the template DB before trying to create it. Defaults to False
     """
     db_settings = settings.DATABASES["default"]
     test_name = _get_db_name()
     template_name = _get_template_name()
 
-    _run_sql(
-        f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
-        db_settings,
-    )
-    _run_sql(f"DROP DATABASE IF EXISTS {template_name}", db_settings)
+    if without_drop:
+        _run_sql(
+            f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
+            db_settings,
+        )
+        _run_sql(f"DROP DATABASE IF EXISTS {template_name}", db_settings)
     _run_sql(
         f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
         db_settings,
@@ -68,7 +73,7 @@ def create_template_db() -> None:
     )
 
 
-def recreate_db(use_template: bool=True):
+def recreate_db(use_template: bool=True, _retries:Any=None):
     """
     Drops the existing test DB and recreates it, either clean or from the
     existing template DB.
@@ -77,7 +82,8 @@ def recreate_db(use_template: bool=True):
     exist.
 
     Args:
-        use_template: A flag to say whether or not to base the new DB on the template. Defaults to True
+        use_template: A flag to determine whether or not to base the new DB on the template. Defaults to True
+        _retries: An internal-use number to ensure we don't recurse forever
     """
     db_settings = settings.DATABASES["default"]
     test_name = _get_db_name()
@@ -96,19 +102,34 @@ def recreate_db(use_template: bool=True):
     else:
         sql = f"CREATE DATABASE {test_name} WITH TEMPLATE template1"
 
-    _run_sql(
-        sql,
-        db_settings,
-    )
-    _run_sql(
-        f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{test_name}' AND pid <> pg_backend_pid()",  # noqa: S608
-        db_settings,
-    )
+    try:
+        _run_sql(
+            sql,
+            db_settings,
+        )
+        _run_sql(
+            f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{test_name}' AND pid <> pg_backend_pid()",  # noqa: S608
+            db_settings,
+        )
+    except:
+        # first time with TESTS_KEEP_DB=1 this will break
+        if _retries is None or _retries < 2:
+            retries = _retries
+            if _retries is None:
+                retries = 0
+            retries += 1
+
+            keep_db = os.environ.get('TESTS_KEEP_DB', False)
+            if keep_db:
+                return recreate_db(use_template=False, _retries=retries)
 
 
-def drop_dbs():
+def drop_dbs(only_test: bool=False):
     """
-    Drops both test and template DBs to clean up at the end of a test run
+    Drops both test and template DBs or, optionally, only test DB to clean up at the end of a test run
+
+    Args:
+        only_test: A flag to determine whether or not to drop only the test DB, preserving the template DB. Defaults to False
     """
     db_settings = settings.DATABASES["default"]
     test_name = _get_db_name()
@@ -122,8 +143,9 @@ def drop_dbs():
         f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
         db_settings,
     )
-    _run_sql(f"DROP DATABASE IF EXISTS {template_name}", db_settings)
-    _run_sql(
-        f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{test_name}' OR pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
-        db_settings,
-    )
+    if not only_test:
+        _run_sql(f"DROP DATABASE IF EXISTS {template_name}", db_settings)
+        _run_sql(
+            f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{test_name}' OR pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
+            db_settings,
+        )

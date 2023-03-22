@@ -3,10 +3,14 @@ import pytest
 
 from playwright.sync_api import Page, expect
 
+from .utils import login
+
 
 @pytest.mark.e2e
 @pytest.mark.usefixtures
 def test_smoke(superuser, page: Page):
+    login(page, superuser)
+
     page.goto("/admin")
     expect(page).to_have_title("DBT Digital Workspace")
 

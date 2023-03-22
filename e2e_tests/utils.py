@@ -8,11 +8,13 @@ from django.contrib.auth import (
 )
 
 
+base_url = "http://wagtail:8000"
+
 # https://docs.djangoproject.com/en/3.2/topics/http/sessions/#using-sessions-out-of-views
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
-def login(browser, user):
+def login(page, user):
     # Manually create the session to bypass auth.
     session = SessionStore()
     session[SESSION_KEY] = user._meta.pk.value_to_string(user)
@@ -23,21 +25,15 @@ def login(browser, user):
     cookie = {
         "name": settings.SESSION_COOKIE_NAME,
         "value": session.session_key,
-        "url": "http://wagtail:8000/",
-        "sameSite": "None",
+        "url": f"{base_url}/",
     }
 
-    print("vvvvvvvvvvv")
-    if (len(browser.contexts) == 0):
-        browser.new_context()
-    for context in browser.contexts:
-        context.add_cookies([cookie, ])
-        print(context.cookies())
-    page = browser.new_page()
-    page.goto("/")
+    page.goto(f"{base_url}/")  # ensures a context should exist
+    context = page.context
+    context.add_cookies([cookie, ])
 
-    for context in browser.contexts:
-        print(context.cookies())
+    print("vvvvvvvvvvv")
+    print(context.cookies())
     print(user)
     print(cookie)
     print(session)

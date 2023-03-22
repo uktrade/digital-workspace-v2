@@ -129,6 +129,8 @@ Playwright also has a [test generator](https://playwright.dev/python/docs/codege
 install the dependencies on your host machine and run `playwright codegen` to generate test cases
 as you browse.
 
+> Note: if you're running e2e tests many times in a session and don't want to destroy and recreate the DB each time (to make the run faster), set the `TESTS_KEEP_DB` environment variable to a truthy value (most easily by modifying .env.ci)
+
 ## Coverage
 
 We use [coverage.py](https://coverage.readthedocs.io) to track our test coverage.

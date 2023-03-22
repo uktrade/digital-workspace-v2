@@ -13,7 +13,6 @@ At the time of writing, the whole process of dropping and copying a database
 for each test adds around 500ms to each test. As we expect the number of e2e
 tests requiring this to be small, this overhead is fine.
 """
-
 import os
 from typing import Any
 
@@ -47,6 +46,7 @@ def django_db_modify_db_settings(
     Used as a fixture by django_db_setup.
     """
     skip_if_no_django()
+    keep_db = os.environ.get('TESTS_KEEP_DB', False)
 
     db_settings = settings.DATABASES["default"]
     test_name = db_settings.get("TEST", {}).get("NAME")
@@ -58,7 +58,10 @@ def django_db_modify_db_settings(
     db_settings["TEMPLATE"] = f"{TEMPLATE_DATABASE_PREFIX}{test_name}"
 
     # directly create new clean DB
-    recreate_db(use_template=False)
+    if keep_db:
+        recreate_db()  # use template DB if available
+    else:
+        recreate_db(use_template=False)
 
 
 @pytest.fixture(scope="session")
@@ -68,6 +71,8 @@ def django_db_setup(django_db_blocker, django_db_modify_db_settings) -> None:
     fixture data and create template DB for quicker DB resets if needed between
     functions.
     """
+    keep_db = os.environ.get('TESTS_KEEP_DB', False)
+
     # run django commands for full DB fixture setup
     with django_db_blocker.unblock():
         call_command("migrate")
@@ -82,12 +87,18 @@ def django_db_setup(django_db_blocker, django_db_modify_db_settings) -> None:
         connection.close()
 
     # create template of new DB
-    create_template_db()
+    if keep_db:
+        create_template_db(without_drop=True)
+    else:
+        create_template_db()
 
     yield  # run all tests
 
     # cleanup at end of session
-    drop_dbs()
+    if keep_db:
+        drop_dbs(only_test=True)  # preserve template DB
+    else:
+        drop_dbs()
 
 
 @pytest.fixture(autouse=True)
@@ -96,7 +107,7 @@ def enable_db_access_for_all_tests(db):
 
 
 @pytest.fixture
-def superuser(django_db_blocker, django_user_model, browser):
+def superuser(django_db_blocker, django_user_model, page):
     email = "test.user@example.com"
 
     user, _ = django_user_model.objects.get_or_create(
@@ -114,8 +125,6 @@ def superuser(django_db_blocker, django_user_model, browser):
     with django_db_blocker.unblock():
         call_command("create_test_teams")
         call_command("create_user_profiles")
-
-    login(browser, user)
 
     return user
 
