@@ -89,7 +89,7 @@ def django_db_setup(
         connection.close()
 
     if keep_db:
-        create_template_db(drop_first=True)
+        create_template_db(drop_first=False)
     else:
         # create template of new DB
         create_template_db()
