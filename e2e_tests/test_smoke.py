@@ -23,7 +23,6 @@ def test_site_has_all_major_sections(page: Page):
     page.get_by_role("heading", name="What's Popular?").click()
     page.get_by_role("heading", name="How do I?").click()
     page.get_by_role("heading", name="DBT news from GOV.UK").click()
-    page.get_by_role("heading", name="Latest tweets").click()
 
     news = page.get_by_role("link", name="News and views")
     expect(news).to_have_attribute("href", "/news-and-views/")
