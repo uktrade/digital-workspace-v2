@@ -40,20 +40,20 @@ def _get_template_name() -> str:
     return f"{TEMPLATE_DATABASE_PREFIX}{test_name}"
 
 
-def create_template_db(without_drop: bool=False) -> None:
+def create_template_db(drop_first: bool=True) -> None:
     """
     Creates a new Postgres DB copied directly from the test DB, allowing future
     test runs requiring clean-but-complete-with-fixture DBs to be quickly
     copied across
 
     Args:
-        without_drop: A flag to say whether or not to drop the template DB before trying to create it. Defaults to False
+        drop_first: A flag to say whether or not to drop the template DB before trying to create it. Defaults to True
     """
     db_settings = settings.DATABASES["default"]
     test_name = _get_db_name()
     template_name = _get_template_name()
 
-    if without_drop:
+    if drop_first:
         _run_sql(
             f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
             db_settings,
@@ -63,14 +63,17 @@ def create_template_db(without_drop: bool=False) -> None:
         f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
         db_settings,
     )
-    _run_sql(
-        f"CREATE DATABASE {template_name} WITH TEMPLATE {test_name}",
-        db_settings,
-    )
-    _run_sql(
-        f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
-        db_settings,
-    )
+    try:
+        _run_sql(
+            f"CREATE DATABASE {template_name} WITH TEMPLATE {test_name}",
+            db_settings,
+        )
+        _run_sql(
+            f"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '{template_name}' AND pid <> pg_backend_pid()",  # noqa: S608
+            db_settings,
+        )
+    except psycopg2.errors.DuplicateDatabase:
+        pass
 
 
 def recreate_db(use_template: bool=True, _retries:Any=None):

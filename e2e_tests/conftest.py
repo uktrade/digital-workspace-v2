@@ -65,7 +65,11 @@ def django_db_modify_db_settings(
 
 
 @pytest.fixture(scope="session")
-def django_db_setup(django_db_blocker, django_db_modify_db_settings) -> None:
+def django_db_setup(
+    django_db_blocker,
+    django_db_modify_db_settings,
+    live_server,
+) -> None:
     """
     Overrides pytest-django fixture with same sig and scope to populate all
     fixture data and create template DB for quicker DB resets if needed between
@@ -86,10 +90,10 @@ def django_db_setup(django_db_blocker, django_db_modify_db_settings) -> None:
     for connection in connections.all():
         connection.close()
 
-    # create template of new DB
     if keep_db:
-        create_template_db(without_drop=True)
+        create_template_db(drop_first=True)
     else:
+        # create template of new DB
         create_template_db()
 
     yield  # run all tests
@@ -108,14 +112,14 @@ def enable_db_access_for_all_tests(db):
 
 @pytest.fixture
 def superuser(django_db_blocker, django_user_model, page):
-    email = "test.user@example.com"
+    email = "super.user@example.com"
 
     user, _ = django_user_model.objects.get_or_create(
-        username="testuser",
-        first_name="Test",
+        username="testsuperuser",
+        first_name="Super",
         last_name="User",
         email=email,
-        legacy_sso_user_id="legacy-test-user-id",
+        legacy_sso_user_id="legacy-super-user-id",
         is_staff=True,
         is_superuser=True,
     )

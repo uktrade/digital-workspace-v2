@@ -8,7 +8,7 @@ from django.contrib.auth import (
 )
 
 
-base_url = "http://wagtail:8000"
+base_url = "http://localhost:8000"
 
 # https://docs.djangoproject.com/en/3.2/topics/http/sessions/#using-sessions-out-of-views
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
@@ -31,10 +31,3 @@ def login(page, user):
     page.goto(f"{base_url}/")  # ensures a context should exist
     context = page.context
     context.add_cookies([cookie, ])
-
-    print("vvvvvvvvvvv")
-    print(context.cookies())
-    print(user)
-    print(cookie)
-    print(session)
-    print("^^^^^^^^^^")

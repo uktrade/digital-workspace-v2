@@ -95,7 +95,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 minversion = "6.0"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "--disable-warnings --ds=config.settings.test --base-url http://wagtail:8000"
+addopts = "--disable-warnings --ds=config.settings.test --base-url http://localhost:8000 --liveserver=0.0.0.0:8000"
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 markers = [
     "e2e: Mark the test as using Playwright.",

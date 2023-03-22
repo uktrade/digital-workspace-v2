@@ -448,6 +448,13 @@ LOGGING = {
             "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),
             "propagate": True,
         },
+        'django.request': {
+            'handlers': [
+                "stdout",
+            ],
+            "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),
+            'propagate': False,
+        },
     },
 }
 

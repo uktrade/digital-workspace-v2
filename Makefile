@@ -32,17 +32,7 @@ test:
 	docker-compose run --rm --name testrunner wagtail pytest -m "not e2e" --reuse-db $(tests)
 
 test-e2e: up-all
-	# make sure the main app is running in CI config
-	# - important if running with custom .env
-	cp .env .env.orig
-	cp .env.ci .env
-	docker-compose stop wagtail
-	docker-compose start wagtail
-	-docker-compose exec playwright poetry run pytest -m "e2e"
-	# return main container config to original
-	mv .env.orig .env
-	docker-compose stop wagtail
-	docker-compose start wagtail
+	docker-compose exec playwright poetry run pytest -m "e2e"
 
 test-all:
 	docker-compose run --rm --name testrunner wagtail pytest

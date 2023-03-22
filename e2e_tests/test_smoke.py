@@ -7,12 +7,11 @@ from .utils import login
 
 
 @pytest.mark.e2e
-@pytest.mark.usefixtures
 def test_smoke(superuser, page: Page):
     login(page, superuser)
 
     page.goto("/admin")
-    expect(page).to_have_title("DBT Digital Workspace")
+    expect(page).to_have_title(re.compile(r".*DBT Digital Workspace"))
 
     page.goto("/")
     expect(page).to_have_title(re.compile(r"Home.*"))
