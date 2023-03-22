@@ -2,6 +2,8 @@ from importlib import import_module
 
 from django.conf import settings
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
+from django.core.management import call_command
+from django.db import connections
 
 
 base_url = "http://localhost:8000"
@@ -31,3 +33,18 @@ def login(page, user):
             cookie,
         ]
     )
+
+
+def populate_db(django_db_blocker):
+        # run django commands for full DB fixture setup
+    with django_db_blocker.unblock():
+        call_command("migrate")
+        call_command("loaddata", "countries.json")
+        call_command("create_section_homepages")
+        call_command("create_menus")
+        call_command("create_groups")
+        call_command("create_people_finder_groups")
+        # call_command("update_index")
+
+    for connection in connections.all():
+        connection.close()

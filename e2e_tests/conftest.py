@@ -27,6 +27,7 @@ from .db_utils import (
     drop_dbs,
     recreate_db,
 )
+from .utils import populate_db
 
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -74,18 +75,7 @@ def django_db_setup(
     """
     keep_db = os.environ.get("TESTS_KEEP_DB", False)
 
-    # run django commands for full DB fixture setup
-    with django_db_blocker.unblock():
-        call_command("migrate")
-        call_command("loaddata", "countries.json")
-        call_command("create_menus")
-        call_command("create_section_homepages")
-        call_command("create_groups")
-        call_command("create_people_finder_groups")
-        # call_command("update_index")
-
-    for connection in connections.all():
-        connection.close()
+    populate_db(django_db_blocker)
 
     if keep_db:
         create_template_db(drop_first=True)
@@ -105,6 +95,11 @@ def django_db_setup(
 @pytest.fixture(autouse=True)
 def enable_db_access_for_all_tests(db):
     pass
+
+
+# @pytest.fixture(autouse=True, scope="function")
+# def populate_db_between_tests(django_db_blocker):
+#     populate_db(django_db_blocker)
 
 
 @pytest.fixture
