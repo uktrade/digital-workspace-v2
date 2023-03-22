@@ -22,14 +22,14 @@ INSTALLED_APPS += [  # noqa F405
     "django_extensions",
 ]
 
-LOGGING["handlers"] |= {
+LOGGING["handlers"] |= {  # noqa F405
     "file": {
         "level": "DEBUG",
         "class": "logging.FileHandler",
-        "filename": "/tmp/wagtail-debug.log",
+        "filename": "/tmp/wagtail-debug.log",  # noqa S108
     }
 }
-LOGGING["loggers"] = {
+LOGGING["loggers"] = {  # noqa F405
     "django.db.backends.schema": {
         "handlers": ["file"],
         "propagate": True,
