@@ -1,11 +1,13 @@
 from datetime import datetime
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
-from wagtail.models import Page
+from wagtail.models import Page, Site
 
 from about_us.models import AboutUsHome
 from content.models import ContentPage, PrivacyPolicyHome
 from country_fact_sheet.models import CountryFactSheetHome
+from home.models import HomePage
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome
@@ -25,6 +27,29 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         home_page = Page.objects.filter(slug="home").first()
+        if home_page is None:
+            # Create content type for homepage model
+            homepage_content_type, __ = ContentType.objects.get_or_create(
+                model="homepage", app_label="home"
+            )
+
+            home_page = HomePage.objects.create(
+                title="Home",
+                draft_title="Home",
+                slug="home",
+                content_type=homepage_content_type,
+                path="00010001",
+                depth=2,
+                numchild=0,
+                url_path="/home/",
+            )
+
+            home_page.show_in_menus = True
+            home_page.save()
+
+        site = Site.objects.get(root_page=home_page)
+        if site is None:
+            Site.objects.create(hostname="localhost", root_page=home_page, is_default_site=True)
 
         #  Cookies
         try:

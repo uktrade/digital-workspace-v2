@@ -65,6 +65,7 @@ def django_db_modify_db_settings(
 @pytest.fixture(scope="session")
 def django_db_setup(
     django_db_blocker,
+    django_db_keepdb,
     django_db_modify_db_settings,
     live_server,
 ) -> None:
@@ -93,13 +94,15 @@ def django_db_setup(
 
 
 @pytest.fixture(autouse=True)
-def enable_db_access_for_all_tests(db):
+def enable_db_access_for_all_tests(django_db_serialized_rollback):
     pass
 
 
-# @pytest.fixture(autouse=True, scope="function")
-# def populate_db_between_tests(django_db_blocker):
-#     populate_db(django_db_blocker)
+# we use live_server which depends on transational_db, which clear/reset
+# the db between runs -  so we need to make sure it's populated ourselves
+@pytest.fixture(autouse=True, scope="function")
+def populate_db_between_tests(django_db_blocker):
+    populate_db(django_db_blocker)
 
 
 @pytest.fixture
