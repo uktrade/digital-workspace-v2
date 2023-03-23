@@ -60,11 +60,7 @@ services:
     tty: true
 
   celery:
-    build:
-      context: .
-      cache_from:
-        - digital_workspace/celery:latest
-    image: digital_workspace/celery:latest
+    image: digital_workspace/wagtail:latest
     command: poetry run celery -A config worker -l info
     volumes:
       - .:/app
@@ -86,8 +82,8 @@ services:
         - digital_workspace/playwright:latest
     image: digital_workspace/playwright:latest
     command: tail -F anything  # keep running until "down" command
-    volumes:
-      - ./:/app/
+    # volumes:
+    #   - ./:/app/
     profiles:
       - playwright
     ipc: host

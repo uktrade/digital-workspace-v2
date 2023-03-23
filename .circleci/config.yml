@@ -51,20 +51,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Copy env file
-          command: cp .env.ci .env
-      - run:
           name: build containers
           command: make build-all
-      - run:
-          name: install npm packages
-          command: npm ci
-      - run:
-          name: build webpack
-          command: npm run build
-      - run:
-          name: run containers
-          command: make up-all
       - run:
           name: run e2e tests (playwright)
           command: make test-e2e
