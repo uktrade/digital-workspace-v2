@@ -4,8 +4,8 @@ from .base import *  # noqa
 
 
 APP_ENV = "test"
-DEBUG = False
-TEMPLATE_DEBUG = False
+DEBUG = True
+TEMPLATE_DEBUG = True
 
 # Required for tests to bypass SSO.
 MIDDLEWARE.remove("authbroker_client.middleware.ProtectAllViewsMiddleware")  # noqa
@@ -35,10 +35,10 @@ LOGGING["loggers"] = {  # noqa F405
         "propagate": True,
         "level": "INFO",
     },
-    "": {
-        "handlers": ["file"],
-        "level": "DEBUG",
-    },
+    # "": {
+    #     "handlers": ["file"],
+    #     "level": "DEBUG",
+    # },
 }
 
 logging.disable(logging.WARN)

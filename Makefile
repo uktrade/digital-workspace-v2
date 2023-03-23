@@ -151,7 +151,7 @@ e2e-codegen:
 	cp .env.ci .env
 	docker-compose stop wagtail
 	docker-compose run --rm -d -p 8000:8000 --env DJANGO_SETTINGS_MODULE=config.settings.test --name wagtail-test-server wagtail
-	sleep 10
+	sleep 5
 	poetry run playwright codegen http://localhost:8000
 	mv .env.orig .env
 	docker stop wagtail-test-server
