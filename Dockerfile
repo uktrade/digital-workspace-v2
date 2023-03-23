@@ -22,14 +22,14 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     # Install python and supporting packages
     ${PYTHON_VERSION} \
     ${PYTHON_VERSION}-dev \
-    python3-pip &&  \
+    python3-pip \
+    # Install Node
+    nodejs \
+    npm && \
     # Setup python symlinks
     rm -rf /usr/bin/python3 && \
     ln -s /usr/bin/${PYTHON_VERSION} /usr/bin/python3 && \
     ln -s /usr/bin/python3 /usr/bin/python \
-    # Install Node
-    nodejs \
-    npm && \
     # clean apt cache
     rm -rf /var/lib/apt/lists/*
 
