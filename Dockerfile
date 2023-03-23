@@ -29,7 +29,7 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     # Setup python symlinks
     rm -rf /usr/bin/python3 && \
     ln -s /usr/bin/${PYTHON_VERSION} /usr/bin/python3 && \
-    ln -s /usr/bin/python3 /usr/bin/python \
+    ln -s /usr/bin/python3 /usr/bin/python && \
     # clean apt cache
     rm -rf /var/lib/apt/lists/*
 
