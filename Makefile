@@ -33,7 +33,7 @@ test:
 
 test-e2e: up-all
 	docker-compose exec playwright poetry run pytest -m "e2e"
-	docker compose stop playwright
+	docker-compose stop playwright
 
 test-all:
 	docker-compose run --rm --name testrunner wagtail pytest
