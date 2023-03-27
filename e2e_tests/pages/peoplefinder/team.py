@@ -9,69 +9,55 @@ from .base import PeoplefinderPage
 
 class TeamViewPage(PeoplefinderPage):
     def goto_root_team_page(self) -> "TeamViewPage":
-        url = urlparse(self.driver.current_url)
-        new_url = url._replace(path="/teams")
-        self.driver.get(new_url.geturl())
-
+        self.page.goto("/teams/")
         return self
 
     def goto_team_page(self, team: Team) -> "TeamViewPage":
-        url = urlparse(self.driver.current_url)
-        new_url = url._replace(path=f"/teams/{slugify(team.name)}")
-        self.driver.get(new_url.geturl())
-
+        self.page.goto(f"/teams/{slugify(team.name)}")
         return self
 
     def goto_team_edit_page(self) -> "TeamEditPage":
-        self.find_test_element("edit-team").click()
-
-        return TeamEditPage(self.driver)
+        self.page.get_by_test_id("edit-team").click()
+        return TeamEditPage(self.page)
 
     @property
     def name(self) -> str:
-        return self.find_test_element("name").text
+        return self.page.get_by_test_id("name").inner_text()
 
     @property
     def abbreviation(self) -> str:
-        return self.find_test_element("abbreviation").text
+        return self.page.get_by_test_id("abbreviation").inner_text()
 
     @property
     def description(self) -> str:
-        return self.find_test_element("description").text
+        return self.page.get_by_test_id("description").inner_text()
 
 
 class TeamEditPage(PeoplefinderPage):
     @property
     def name(self) -> str:
-        return self.driver.find_element_by_name("name").get_attribute("value")
+        return self.page.get_attribute("input[name=name]", "value")
 
     @name.setter
     def name(self, value: str) -> None:
-        name_input = self.driver.find_element_by_name("name")
-        name_input.clear()
-        name_input.send_keys(value)
+        self.page.get_by_label("Team name").fill(value)
 
     @property
     def abbreviation(self) -> str:
-        return self.driver.find_element_by_name("abbreviation").get_attribute("value")
+        return self.page.get_attribute("input[name=abbreviation]", "value")
 
     @abbreviation.setter
     def abbreviation(self, value: str) -> None:
-        abbreviation_input = self.driver.find_element_by_name("abbreviation")
-        abbreviation_input.clear()
-        abbreviation_input.send_keys(value)
+        self.page.get_by_label("Team acronym or initials").fill(value)
 
     @property
     def description(self) -> str:
-        return self.driver.find_element_by_name("description").get_attribute("value")
+        return self.page.get_attribute("textarea[name=description]", "value")
 
     @description.setter
     def description(self, value: str) -> None:
-        description_input = self.driver.find_element_by_name("description")
-        description_input.clear()
-        description_input.send_keys(value)
+        self.page.get_by_label("Team description").fill(value)
 
     def save_team(self) -> TeamViewPage:
-        self.find_test_element("save-team").click()
-
-        return TeamViewPage(self.driver)
+        self.page.get_by_test_id("save-team").click()
+        return TeamViewPage(self.page)

@@ -35,26 +35,27 @@ def test_profile(superuser, user, page: Page):
     assert "CEO in SpaceX" in profile_view_page.roles
 
 
-# @pytest.mark.selenium
-# def test_team(superuser, selenium):
-#     team_view_page = TeamViewPage(selenium).goto_root_team_page()
-#     assert "SpaceX" in selenium.title
-4
-#     software = Team.objects.get(name="Software")
-#     team_view_page = team_view_page.goto_team_page(software)
+@pytest.mark.e2e
+def test_team(superuser, user, page: Page):
+    login(page, superuser)
 
-#     assert "Software" in selenium.title
+    team_view_page = TeamViewPage(page).goto_root_team_page()
+    expect(team_view_page.page).to_have_title(re.compile(r"SpaceX.*"))
 
-#     name = "Rocket Software"
-#     abbreviation = "RS"
-#     description = "The rocket software team writes code for rockets"
+    software = Team.objects.get(name="Software")
+    team_view_page = team_view_page.goto_team_page(software)
+    expect(team_view_page.page).to_have_title(re.compile(r"Software.*"))
 
-#     team_edit_page = team_view_page.goto_team_edit_page()
-#     team_edit_page.name = name
-#     team_edit_page.abbreviation = abbreviation
-#     team_edit_page.description = description
-#     team_view_page = team_edit_page.save_team()
+    name = "Rocket Software"
+    abbreviation = "RS"
+    description = "The rocket software team writes code for rockets"
 
-#     assert team_view_page.name == name
-#     assert team_view_page.abbreviation == abbreviation
-#     assert team_view_page.description == description
+    team_edit_page = team_view_page.goto_team_edit_page()
+    team_edit_page.name = name
+    team_edit_page.abbreviation = abbreviation
+    team_edit_page.description = description
+    team_view_page = team_edit_page.save_team()
+
+    assert team_view_page.name == name
+    assert team_view_page.abbreviation == abbreviation
+    assert team_view_page.description == description
