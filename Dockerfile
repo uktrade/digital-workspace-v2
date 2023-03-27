@@ -10,8 +10,7 @@ ENV PYTHONSTARTUP=.pythonrc.py
 ENV POETRY_VIRTUALENVS_CREATE=false
 
 # Install Python & Node
-RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
-    apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     # Install general packages
     git nano \
     curl wget gpg \
@@ -22,9 +21,10 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     # Install python and supporting packages
     python${PYTHON_VERSION} \
     python${PYTHON_VERSION}-dev \
-    python3-pip \
+    python3-pip && \
     # Install Node
-    nodejs && \
+    curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+    apt-get install -y --no-install-recommends nodejs && \
     # Setup python symlinks
     rm -rf /usr/bin/python3 && \
     ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \

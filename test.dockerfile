@@ -8,6 +8,3 @@ RUN poetry run playwright install-deps
 RUN poetry run playwright install
 
 COPY . ./
-RUN cp .env.ci .env
-
-RUN npm ci && npm run build
