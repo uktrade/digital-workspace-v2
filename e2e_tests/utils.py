@@ -4,18 +4,16 @@ from django.conf import settings
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 
 
+base_url = "http://localhost:8000"
+
 # https://docs.djangoproject.com/en/3.2/topics/http/sessions/#using-sessions-out-of-views
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
-# The host must match the `--name` value passed to `docker-compose run`.
-# The port must match the port given in the `--liveserver` value.
-URL = "http://testrunner:8000/"
 
-
-def login(selenium, user):
-    # Manually create the session to bypass SSO.
+def login(page, user):
+    # Manually create the session to bypass auth.
     session = SessionStore()
-    session[SESSION_KEY] = user.pk
+    session[SESSION_KEY] = user._meta.pk.value_to_string(user)
     session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
     session[HASH_SESSION_KEY] = user.get_session_auth_hash()
     session.save()
@@ -23,11 +21,13 @@ def login(selenium, user):
     cookie = {
         "name": settings.SESSION_COOKIE_NAME,
         "value": session.session_key,
+        "url": f"{base_url}/",
     }
 
-    # Navigate to the homepage so we can set the cookie.
-    selenium.get(URL)
-    # Set the cookie.
-    selenium.add_cookie(cookie)
-    # Refresh the page now that we are logged in.
-    selenium.refresh()
+    page.goto(f"{base_url}/")  # ensures a context should exist
+    context = page.context
+    context.add_cookies(
+        [
+            cookie,
+        ]
+    )

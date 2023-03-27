@@ -1,4 +1,4 @@
-SHELL := /bin/bash
+SHELL := /bin/sh
 
 clean:
 	npm run clean
@@ -29,10 +29,11 @@ compilescss:
 	$(wagtail) python manage.py compilescss
 
 test:
-	docker-compose run --rm --name testrunner wagtail pytest -m "not selenium" --reuse-db $(tests)
+	docker-compose run --rm --name testrunner wagtail pytest -m "not e2e" --reuse-db $(tests)
 
-test-selenium:
-	docker-compose run --rm --name testrunner wagtail pytest -m "selenium"
+test-e2e: up-all
+	docker-compose exec playwright poetry run pytest -m "e2e"
+	docker-compose stop playwright
 
 test-all:
 	docker-compose run --rm --name testrunner wagtail pytest
@@ -64,11 +65,20 @@ check-fixme:
 up:
 	docker-compose up
 
+up-all:
+	docker-compose --profile playwright up -d
+
 down:
 	docker-compose down
 
+down-all:
+	docker-compose --profile playwright down
+
 build:
-	docker-compose build
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose build
+
+build-all:
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose --profile playwright build
 
 webpack:
 	npm run dev
@@ -84,6 +94,9 @@ findstatic:
 
 bash:
 	$(wagtail) bash
+
+psql:
+	PGPASSWORD='postgres' psql -h localhost -U postgres
 
 requirements:
 	$(wagtail) poetry export --without-hashes --output requirements.txt
@@ -113,7 +126,7 @@ create_section_homepages:
 	$(wagtail) python manage.py create_section_homepages
 
 first-use:
-	docker-compose down
+	docker-compose --profile playwright down
 	make migrate
 	make data-countries
 	make menus
@@ -133,3 +146,13 @@ data-countries:
 local-setup:
 	poetry install
 	npm install
+
+e2e-codegen:
+	cp .env .env.orig
+	cp .env.ci .env
+	docker-compose stop wagtail
+	docker-compose run --rm -d -p 8000:8000 --env DJANGO_SETTINGS_MODULE=config.settings.test --name wagtail-test-server wagtail
+	sleep 5
+	poetry run playwright codegen http://localhost:8000
+	mv .env.orig .env
+	docker stop wagtail-test-server
