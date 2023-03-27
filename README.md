@@ -122,7 +122,7 @@ Playwright tests live in the `e2e_tests` folder for convenience.
 Please make use of html [data](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes)
 attributes to make your tests more resistant to changes.
 
-This project uses the `data-test-XXX` naming convention for html data attributes which
+This project uses the `data-testid="XXX"` naming convention for html data attributes which
 are there to support tests.
 
 Playwright also has a [test generator](https://playwright.dev/python/docs/codegen-intro) -

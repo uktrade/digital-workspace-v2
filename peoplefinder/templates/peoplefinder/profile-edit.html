@@ -131,7 +131,7 @@
             <label class="govuk-label" for="{{ form.manager.id_for_label }}">Manager</label>
             {% include 'peoplefinder/components/manager/main.html' with profile=profile manager=profile.manager %}
         </div>
-        
+
         {% include 'peoplefinder/components/checkbox.html' with field=form.do_not_work_for_dit %}
     </fieldset>
 
@@ -283,7 +283,7 @@
 </p>
 
 {# Actions #}
-<input form="edit-profile" class="govuk-button" type="submit" value="Save profile" data-test-save-profile>
+<input form="edit-profile" class="govuk-button" type="submit" value="Save profile" data-testid="save-profile">
 <a class="govuk-button govuk-button--secondary" href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
 
 {% endblock %}

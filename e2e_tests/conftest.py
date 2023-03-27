@@ -21,6 +21,8 @@ from django.core.management import call_command
 from django.db import connections
 from pytest_django.fixtures import skip_if_no_django
 
+from peoplefinder.models import Person
+
 from .db_utils import (
     TEMPLATE_DATABASE_PREFIX,
     create_template_db,
@@ -152,3 +154,11 @@ def user(django_db_blocker, django_user_model):
 
     with django_db_blocker.unblock():
         call_command("create_user_profiles")
+
+    john_user_profile = Person.objects.get(user=user)
+    super_user_profile = Person.objects.get(user__username="testsuperuser")
+
+    john_user_profile.manager = super_user_profile
+    john_user_profile.save(update_fields=["manager"])
+
+    return user

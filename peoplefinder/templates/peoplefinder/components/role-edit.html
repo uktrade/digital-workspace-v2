@@ -5,7 +5,7 @@ Context:
     form: The role form
 {% endcomment %}
 
-<form class="pf-role-form" hx-target="this" hx-swap="outerHTML" data-test-role-form>
+<form class="pf-role-form" hx-target="this" hx-swap="outerHTML" data-testid="role-form">
     {% csrf_token %}
 
     <h3 class="govuk-heading-s">Team</h2>
@@ -38,7 +38,7 @@ Context:
         <button
             class="govuk-button"
             hx-post="{% url 'roles' profile.slug %}"
-            data-test-save-role
+            data-testid="save-role"
         >Save</button>
         <button
             class="govuk-button govuk-button--secondary"
