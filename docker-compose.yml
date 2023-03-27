@@ -81,9 +81,9 @@ services:
       cache_from:
         - digital_workspace/playwright:latest
     image: digital_workspace/playwright:latest
-    command: tail -F anything  # keep running until "down" command
-    # volumes:
-    #   - ./:/app/
+    command: tail -F anything # keep running until "down" command
+    volumes:
+      - ./:/app/
     profiles:
       - playwright
     ipc: host
