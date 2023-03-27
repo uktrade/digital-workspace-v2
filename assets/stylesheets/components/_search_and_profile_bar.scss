@@ -17,7 +17,7 @@
 }
 
 .nav-and-profile-bar {
-    background-color: govuk-colour("light-grey");
+    background-color: $brand-color-navy;
     border-top: 5px solid $brand-color-primary;
     border-bottom: 1px solid $govuk-border-colour;
 }

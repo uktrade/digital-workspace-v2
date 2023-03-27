@@ -28,7 +28,7 @@ def search(request):
 
     # users in the beta need to use the v2 search
     if request.user.enable_v2_search:
-        return redirect(reverse("search:all") + f"?query={search_query}")
+        return redirect(reverse("search:home") + f"?query={search_query}")
 
     if search_query is None:
         search_query = request.GET.get("s", None)
@@ -204,7 +204,7 @@ def search_view(func):
 @require_http_methods(["GET"])
 @search_view
 def home_view(request: HttpRequest) -> HttpResponse:
-    return redirect("search:all")
+    return redirect("search:category", kwargs={"category": "all"})
 
 
 @require_http_methods(["GET"])
@@ -215,7 +215,7 @@ def search_v2(request: HttpRequest, category: str) -> HttpResponse:
 
     # If the category is invalid, redirect to search all.
     if category not in SEARCH_CATEGORIES:
-        return redirect(reverse("search:all") + f"?query={query}")
+        return redirect(reverse("search:home") + f"?query={query}")
 
     context = {
         "search_url": reverse("search:category", args=[category]),
