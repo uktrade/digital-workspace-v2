@@ -1,7 +1,3 @@
-import time
-
-from playwright.sync_api import Locator
-
 from .base import PeoplefinderPage
 
 
@@ -20,7 +16,7 @@ class ProfileViewPage(PeoplefinderPage):
 
     @property
     def roles(self):
-        return [role.inner_text() for role in self.page.get_by_test_id(f"role").all()]
+        return [role.inner_text() for role in self.page.get_by_test_id("role").all()]
 
     @property
     def preferred_email(self):

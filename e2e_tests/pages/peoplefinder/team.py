@@ -1,5 +1,3 @@
-from urllib.parse import urlparse
-
 from django.utils.text import slugify
 
 from peoplefinder.models import Team
