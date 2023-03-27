@@ -24,8 +24,7 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     python${PYTHON_VERSION}-dev \
     python3-pip \
     # Install Node
-    nodejs \
-    npm && \
+    nodejs && \
     # Setup python symlinks
     rm -rf /usr/bin/python3 && \
     ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
