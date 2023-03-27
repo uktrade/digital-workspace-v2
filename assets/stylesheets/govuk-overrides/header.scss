@@ -228,8 +228,8 @@
     .search-v2 {
         .nav-and-profile-bar {
             .govuk-header__navigation-list {
-                display: block;
-
+                display: flex;
+                justify-content: space-between;
             }
 
             .govuk-header__link,
