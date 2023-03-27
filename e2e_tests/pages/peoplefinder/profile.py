@@ -16,13 +16,11 @@ class ProfileViewPage(PeoplefinderPage):
 
     @property
     def manager(self):
-        pass
-        # return self.find_test_element("manager").text
+        return self.page.get_by_test_id("manager").inner_text()
 
     @property
     def roles(self):
-        pass
-        # return [element.text for element in self.find_test_elements("role")]
+        return [role.inner_text() for role in self.page.get_by_test_id(f"role").all()]
 
     @property
     def preferred_email(self):
