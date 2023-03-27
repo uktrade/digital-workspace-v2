@@ -80,9 +80,8 @@ pydocstyle = "^6.1.1"
 # Testing
 pytest = "^6.2.5"
 pytest-django = "^4.5.2"
+pytest-playwright = "^0.3.2"
 coverage = "^5.5"
-selenium = "^3.141.0"
-pytest-selenium = "^3.0.0"
 faker = "^11.3.0"
 factory-boy = "^3.2.1"
 # Util
@@ -99,10 +98,10 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 minversion = "6.0"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "--disable-warnings --ds=config.settings.test --driver=Remote --selenium-host=selenium --capability browserName chrome --liveserver=0.0.0.0:8000"
+addopts = "--disable-warnings --ds=config.settings.test --base-url http://localhost:8000 --liveserver=0.0.0.0:8000"
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 markers = [
-    "selenium: Mark the test as using Selenium.",
+    "e2e: Mark the test as using Playwright.",
     "opensearch: Mark the test as using OpenSearch.",
 ]
 
@@ -110,7 +109,7 @@ markers = [
 omit = [
     "*/migrations/*",
     "*/test/*",
-    "selenium_tests/*"
+    "e2e_tests/*",
 ]
 
 [tool.isort]

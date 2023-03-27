@@ -17,7 +17,7 @@
         {% endif %}
     </div>
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l mb-0" data-test-full-name>{{ profile.full_name }}</h1>
+        <h1 class="govuk-heading-l mb-0" data-testid="full-name">{{ profile.full_name }}</h1>
 
         {% if not profile.is_active %}
             <div class="govuk-warning-text">
@@ -64,9 +64,9 @@
                 <dd><a href="tel:{{ profile.primary_phone_number }}" class="govuk-link">{{ profile.primary_phone_number }}</a></dd>
             {% endif %}
         </dl>
-        
+
         {% for role in roles %}
-            <p class="govuk-body-m" data-test-role>
+            <p class="govuk-body-m" data-testid="role">
                 {% if role.job_title %}
                     <strong>{{ role.job_title }}</strong> in
                 {% else %}
@@ -166,9 +166,9 @@
     <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Preferred email</dt>
         {% if profile.contact_email %}
-            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.contact_email }}" class="govuk-link" data-test-preferred-email>{{ profile.contact_email }}</a></dd>
+            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.contact_email }}" class="govuk-link" data-testid="preferred-email">{{ profile.contact_email }}</a></dd>
         {% else %}
-            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.email }}" class="govuk-link" data-test-preferred-email>{{ profile.email }}</a></dd>
+            <dd class="govuk-summary-list__value"><a href="mailto:{{ profile.email }}" class="govuk-link" data-testid="preferred-email">{{ profile.email }}</a></dd>
         {% endif %}
     </div>
 
@@ -189,7 +189,7 @@
     {% if profile.manager %}
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">My manager</dt>
-            <dd class="govuk-summary-list__value"><a href="{% url 'profile-view' profile.manager.slug %}" class="govuk-link" data-test-manager>{{ profile.manager.full_name }}</a></dd>
+            <dd class="govuk-summary-list__value"><a href="{% url 'profile-view' profile.manager.slug %}" class="govuk-link" data-testid="manager">{{ profile.manager.full_name }}</a></dd>
         </div>
     {% endif %}
 

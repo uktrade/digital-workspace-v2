@@ -179,7 +179,10 @@ class HomePage(BasePage):
         if not cache.get("homepage_govuk_news"):
             govuk_news_feed_url = "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=department-for-international-trade"
 
-            response = requests.get(govuk_news_feed_url, timeout=5)
+            response = requests.get(
+                govuk_news_feed_url,
+                timeout=5,
+            )
             feed = atoma.parse_atom_bytes(response.content)
 
             cache.set(

@@ -1,1 +1,1 @@
-CREATE DATABASE digital_workspace;
+CREATE DATABASE digital_workspace WITH TEMPLATE template1;

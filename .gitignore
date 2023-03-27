@@ -46,6 +46,7 @@ backup.sql
 backup.dump
 backup_s3_asset_only.backup
 backup_file_post_live.backup
+.env.orig
 
 # Add core app static folder
 !core/static/core
@@ -61,3 +62,7 @@ ner_output_file.txt
 # Data tasks
 .db
 *.sql
+
+# Playwright
+/playwright-report
+/playwright/.auth

@@ -1,5 +1,6 @@
 version: "3"
 services:
+
   db:
     image: postgres:11
     ports:
@@ -14,6 +15,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
   opensearch:
     image: opensearchproject/opensearch:1.2.3
     ports:
@@ -33,10 +35,14 @@ services:
           "-f",
           "http://localhost:9200/_cat/health"
         ]
+
   wagtail:
     build:
       context: .
-    command: python manage.py runserver_plus 0.0.0.0:8000
+      cache_from:
+        - digital_workspace/wagtail:latest
+    image: digital_workspace/wagtail:latest
+    command: poetry run python manage.py runserver 0.0.0.0:8000
     # mimics production
     # command: waitress-serve --port=8000 config.wsgi:application
     volumes:
@@ -52,10 +58,10 @@ services:
       - DJANGO_SETTINGS_MODULE=config.settings.local
     stdin_open: true
     tty: true
+
   celery:
-    build:
-      context: .
-    command: celery -A config worker -l info
+    image: digital_workspace/wagtail:latest
+    command: poetry run celery -A config worker -l info
     volumes:
       - .:/app
     depends_on:
@@ -67,13 +73,23 @@ services:
     image: redis:buster
     ports:
       - "6379:6379"
-  selenium:
-    image: selenium/standalone-chrome:4
-    profiles:
-      - selenium
-    ports:
-      - "4444:4444"
+
+  playwright:
+    build:
+      context: .
+      dockerfile: test.dockerfile
+      cache_from:
+        - digital_workspace/playwright:latest
+    image: digital_workspace/playwright:latest
+    command: tail -F anything # keep running until "down" command
     volumes:
-      - /dev/shm:/dev/shm
+      - ./:/app/
+    profiles:
+      - playwright
+    ipc: host
     depends_on:
       - wagtail
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.test
+    links:
+      - "wagtail:main"

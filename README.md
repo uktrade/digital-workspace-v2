@@ -101,31 +101,35 @@ pytest --create-db
 
 The pytest settings can be found in the `pyproject.toml` file.
 
-## Selenium tests
+## End to end tests
 
-You can write selenium tests using [selenium](https://selenium-python.readthedocs.io/)
-and [pytest-selenium](https://pytest-selenium.readthedocs.io/en/latest/).
+End-to-end (e2e) tests only run in CI against the master/main branch, and any branch with
+`e2e` in the branch name.
 
-The tests are ran against the latest version of Chrome using the Remote WebDriver.
+[Playwright](https://playwright.dev/python/) is used as the e2e test runner, using the python variant,
+and executed with `pytest-playwright`.
 
-To run the tests make sure you have started the `selenium` docker-compose service. This
-can be done using the `selenium` docker-compose
-[profile](https://docs.docker.com/compose/profiles/), e.g. `docker-compose --profile selenium up`.
-Then you can use the make command `make test-selenium` to run the tests.
+To run the tests make sure you have started the `playwright` docker-compose service. This
+can be done using the `playwright` docker-compose
+[profile](https://docs.docker.com/compose/profiles/), e.g. `docker-compose --profile playwright up`.
+Then you can use the make command `make test-e2e` to run the tests.
 
-All selenium based tests must live in `selenium_tests/`. This is necessary because in
-order to get multiple selenium tests to work, the default pytest-django database
-handling has to be overridden. See the module docstring for `selenium_tests/conftest.py`
-for complete details of selenium based tests.
+Playwright tests live in the `e2e_tests` folder for convenience.
 
-> Note: It is important that any selenium tests are marked appropriately with
-> `@pytest.mark.selenium`.
+> Note: It is important that any e2e tests are marked appropriately with
+> `@pytest.mark.e2e` so they don't run in unit-test runs.
 
 Please make use of html [data](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes)
 attributes to make your tests more resistant to changes.
 
-This project uses the `data-test-XXX` naming convention for html data attributes which
+This project uses the `data-testid="XXX"` naming convention for html data attributes which
 are there to support tests.
+
+Playwright also has a [test generator](https://playwright.dev/python/docs/codegen-intro) -
+install the dependencies on your host machine and run `make e2e-codegen` to generate test cases
+as you browse (using the CI settings).
+
+> Note: if you're running e2e tests many times in a session and don't want to destroy and recreate the DB each time (to make the run faster), set the `TESTS_KEEP_DB` environment variable to a truthy value (most easily by modifying .env.ci)
 
 ## Coverage
 
