@@ -31,8 +31,8 @@ def test_profile(superuser, user, page: Page):
     # Updated profile page
     profile_view_page = profile_edit_page.save_profile()
     assert profile_view_page.full_name == "John Smith"
-    # assert profile_view_page.manager == "Super User"
-    # assert "CEO in SpaceX" in profile_view_page.roles
+    assert profile_view_page.manager == "Super User"
+    assert "CEO in SpaceX" in profile_view_page.roles
 
 
 # @pytest.mark.selenium
