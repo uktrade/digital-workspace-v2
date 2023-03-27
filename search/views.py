@@ -205,7 +205,9 @@ def search_view(func):
 @search_view
 def home_view(request: HttpRequest) -> HttpResponse:
     query = request.GET.get("query", "")
-    return redirect(reverse("search:category", kwargs={"category": "all"}) + f"?query={query}")
+    return redirect(
+        reverse("search:category", kwargs={"category": "all"}) + f"?query={query}"
+    )
 
 
 @require_http_methods(["GET"])
