@@ -54,6 +54,12 @@ jobs:
           name: Copy env file
           command: cp .env.ci .env
       - run:
+          name: install npm packages
+          command: npm ci
+      - run:
+          name: build webpack
+          command: npm run build
+      - run:
           name: build containers
           command: make build-all
       - run:
