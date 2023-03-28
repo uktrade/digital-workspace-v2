@@ -82,7 +82,7 @@
                         {% if previous_page %}
                             <a class="previous govuk-link"
                                href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ previous_page }}"
-                               onclick="dataLayer.push({'search_ui': 'pagination_prev'})">Previous page</a>
+                               onclick="dataLayer.push({'event':'search-ui', 'search_ui': 'pagination_prev'})">Previous page</a>
                         {% endif %}
                         <ul class="page-links">
                             {% for i in pagination_range %}
@@ -94,7 +94,7 @@
                                     <li>
                                         <a class="govuk-link"
                                            href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ i }}"
-                                           onclick="dataLayer.push({'search_ui': 'pagination_{{ i }}'})">{{ i }}</a>
+                                           onclick="dataLayer.push({'event':'search-ui', 'search_ui': 'pagination_{{ i }}'})">{{ i }}</a>
                                     </li>
                                 {% endif %}
                             {% endfor %}
@@ -102,7 +102,7 @@
                         {% if next_page %}
                             <a class="next govuk-link"
                                href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ next_page }}"
-                               onclick="dataLayer.push({'search_ui': 'pagination_next'})">Next page</a>
+                               onclick="dataLayer.push({'event':'search-ui', 'search_ui': 'pagination_next'})">Next page</a>
                         {% endif %}
                     </div>
                 {% endif %}
@@ -118,7 +118,8 @@
         'search_results_count_total': '{{ show_total }}',
         'search_results_count_pages_type': '{{ show_total }}',
         'search_results_count_people_type': '0',
-        'search_results_count_teams_type': '0'
+        'search_results_count_teams_type': '0',
+        'search_result_selected_page': '{{ page }}'
     });
     </script>
 {% endblock content %}

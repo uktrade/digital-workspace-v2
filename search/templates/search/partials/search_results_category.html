@@ -8,13 +8,13 @@
             <div class="pinned">
                 <h3 class="govuk-heading-s">Featured pages</h3>
                 {% for result in pinned_results %}
-                    {% include search_results_item_template with object=result only %}
+                    {% include search_results_item_template with object=result forloop=forloop type="page" section="pinned" num_prev_results=0 only %}
                 {% endfor %}
             </div>
         {% endif %}
 
         {% for result in search_results %}
-            {% include search_results_item_template with object=result only %}
+            {% include search_results_item_template with object=result forloop=forloop type=search_category section=search_category num_prev_results=num_pinned_results only %}
         {% endfor %}
     </div>
 
@@ -22,6 +22,6 @@
         {% include 'includes/pagination_v2.html' with page=search_results %}
     {% endif %}
     {% if is_limited %}
-        <a href="{% url 'search:category' search_category %}?query={{ search_query }}" class="govuk-button govuk-button--secondary">See all {{ search_category }} results</a>
+        <a href="{% url 'search:category' search_category %}?query={{ search_query }}" class="govuk-button govuk-button--secondary" onclick="gtm_data_then_click(this, { 'event': 'search-ui', 'search_ui': 'see_all_{{ search_category }}' })">See all {{ search_category }} results</a>
     {% endif %}
 </div>

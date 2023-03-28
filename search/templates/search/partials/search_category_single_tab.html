@@ -5,3 +5,9 @@
     class="govuk-!-font-size-19 govuk-link govuk-link--no-underline govuk-link--no-visited-state"
     {% if search_category == name %}data-selected{% endif %}
 >{{ name|title }}&nbsp;({{ hits }})</a>
+
+<script lang="javascript">
+    document.onload = dataLayer.push({
+        'search_results_count_{{ name }}_type': '{{ hits }}'
+    });
+</script>

@@ -63,6 +63,7 @@ def search_category(
         "search_category": category,
         "search_results_item_template": _get_result_template(category),
         "pinned_results": pinned_results,
+        "num_pinned_results": len(pinned_results),
         "search_results": search_results,
         "search_query": query,
         "count": count,
