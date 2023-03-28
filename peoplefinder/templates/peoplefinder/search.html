@@ -1,6 +1,6 @@
 {% extends 'peoplefinder/page.html' %}
-{% block title %}Search results for '{{ form.cleaned_data.query }}'{% endblock %}
-{% block location %}Search results{% endblock %}
+{% block title %}Search results for '{{ form.cleaned_data.query }}'{% endblock title %}
+{% block location %}Search results{% endblock location %}
 {% block content %}
     {% if total_matches %}
         <h1 class="govuk-heading-l">{{ total_matches }} search results for '{{ query }}'</h1>

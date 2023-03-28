@@ -6,7 +6,7 @@
     <div class="search-results__list" data-search-category="{{ search_category }}">
         {% if pinned_results %}
             <div class="pinned">
-                <h3 class="govuk-heading-s">Features pages</h3>
+                <h3 class="govuk-heading-s">Featured pages</h3>
                 {% for result in pinned_results %}
                     {% include search_results_item_template with object=result only %}
                 {% endfor %}
@@ -20,5 +20,8 @@
 
     {% if search_results.has_other_pages %}
         {% include 'includes/pagination_v2.html' with page=search_results %}
+    {% endif %}
+    {% if is_limited %}
+        <a href="{% url 'search:category' search_category %}?query={{ search_query }}" class="govuk-button govuk-button--secondary">See all {{ search_category }} results</a>
     {% endif %}
 </div>

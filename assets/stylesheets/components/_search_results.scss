@@ -26,9 +26,9 @@
   }
 }
 
-.search-results__filters {
+.search-results__categories {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 1em;
 
     margin-bottom: 1rem;
@@ -51,6 +51,14 @@
   grid-template-rows: auto;
   gap: 1rem;
 
+  .left-col {
+      order: 2;
+  }
+
+  .right-col {
+      order: 1;
+  }
+
   .people {
     margin-bottom: 1rem;
   }
@@ -59,7 +67,30 @@
 @include govuk-media-query($from: desktop) {
   .search-results__all {
     grid-template-columns: 2fr 1fr;
+
+    .left-col {
+        order: 1;
+    }
+    .right-col {
+        order: 2;
+    }
   }
+}
+
+@include govuk-media-query($from: tablet) {
+    .search-results__categories {
+        flex-direction: row;
+        margin-bottom: 1rem;
+
+        >a {
+            padding-top: 0.25em;
+            padding-bottom: 0.25em;
+
+            &[data-selected] {
+                border-bottom: 4px solid $govuk-link-colour !important;
+            }
+        }
+    }
 }
 
 .search-results__list {
@@ -74,6 +105,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     grid-gap: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .search-result {

@@ -64,8 +64,10 @@ def search_category(
         "search_results_item_template": _get_result_template(category),
         "pinned_results": pinned_results,
         "search_results": search_results,
+        "search_query": query,
         "count": count,
         "heading": heading,
+        "is_limited": limit is not None and count > limit,
     }
 
 
