@@ -29,10 +29,8 @@
 .search-results__categories {
     display: flex;
     flex-direction: column;
-    gap: 1em;
-
+    gap: .25em;
     margin-bottom: 1rem;
-
     border-bottom: 1px solid black;
 
     >a {
@@ -80,16 +78,7 @@
 @include govuk-media-query($from: tablet) {
     .search-results__categories {
         flex-direction: row;
-        margin-bottom: 1rem;
-
-        >a {
-            padding-top: 0.25em;
-            padding-bottom: 0.25em;
-
-            &[data-selected] {
-                border-bottom: 4px solid $govuk-link-colour !important;
-            }
-        }
+        gap: 1em;
     }
 }
 
