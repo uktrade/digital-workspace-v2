@@ -11,12 +11,6 @@ context:
 {% block content %}
     {% include 'search/partials/search_results.html' %}
     <script lang="javascript">
-        gtm_data_then_click = function(object, data) {
-            dataLayer.push(data);
-            url=object.getAttribute("href");
-            setTimeout(function(){location.href = url}, 500);
-            return false;
-        };
         // set focus to search input, move cursor to end of text
         document.addEventListener("DOMContentLoaded", () => {
             const searchinput = document.getElementById("search-site");

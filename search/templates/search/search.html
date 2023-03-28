@@ -120,11 +120,5 @@
         'search_results_count_ppeople_type': '0',
         'search_results_count_teams_type': '0'
     });
-    gtm_data_then_click = function(object, data) {
-        dataLayer.push(data);
-        url=object.getAttribute('href');
-        setTimeout(function(){location.href = url}, 500);
-        return false;
-    };
     </script>
 {% endblock %}
