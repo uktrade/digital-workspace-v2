@@ -158,4 +158,4 @@ e2e-codegen:
 	docker stop wagtail-test-server
 
 dump-db:
-    pg_dump digital_workspace -U postgres -h localhost -p 5432 -O -x -c -f dw.dump
+	pg_dump digital_workspace -U postgres -h localhost -p 5432 -O -x -c -f dw.dump
