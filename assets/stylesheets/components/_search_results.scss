@@ -27,18 +27,32 @@
 }
 
 .search-results__categories {
-    display: flex;
-    flex-direction: column;
-    gap: .25em;
-    margin-bottom: 1rem;
     border-bottom: 1px solid black;
+    margin-bottom: 1rem;
 
-    >a {
-        padding-top: 0.25em;
-        padding-bottom: 0.25em;
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: .25em;
+        padding-bottom: 1em;
 
-        &[data-selected] {
-            border-bottom: 4px solid $govuk-link-colour !important;
+        >a {
+            padding: 0.25em 1em;
+            margin-left: -1em;
+            margin-right: -1em;
+
+            &[data-selected],
+            &:hover {
+                color: govuk-colour("white");
+                background-color: $govuk-link-colour;
+                text-decoration: none;
+            }
+            &:focus {
+                color: govuk-colour("black");
+                background-color: $govuk-focus-colour;
+                box-shadow: 0 -2px $govuk-focus-colour,
+                    0 5px govuk-colour("black");
+            }
         }
     }
 }
@@ -77,8 +91,33 @@
 
 @include govuk-media-query($from: tablet) {
     .search-results__categories {
-        flex-direction: row;
-        gap: 1em;
+
+        div {
+            max-width: 750px;
+            flex-direction: row;
+            justify-content: space-between;
+            padding-bottom: 5px;
+
+            >a {
+                margin: 0;
+                padding: 0.25em 0;
+
+                &[data-selected],
+                &:hover {
+                    color: $govuk-link-colour;
+                    background-color: govuk-colour("white");
+                    box-shadow: 0 0 govuk-colour("white"),
+                        0 5px $govuk-link-colour;
+                }
+
+                &:focus {
+                    color: govuk-colour("black");
+                    background-color: $govuk-focus-colour;
+                    box-shadow: 0 -2px $govuk-focus-colour,
+                        0 5px govuk-colour("black");
+                }
+            }
+        }
     }
 }
 
