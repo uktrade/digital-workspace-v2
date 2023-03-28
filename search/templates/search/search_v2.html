@@ -11,6 +11,19 @@ context:
 {% block content %}
     {% include 'search/partials/search_results.html' %}
     <script lang="javascript">
+        document.onload = dataLayer.push({
+            'event': 'search',
+            'search_version': 'v2-2023.04-1',
+            'search_query': '{{ search_query }}',
+            'search_results_page_type': 'xx',
+            'search_results_count_total': '0',
+            'search_results_count_pages_type': '0',
+            'search_results_count_people_type': '0',
+            'search_results_count_teams_type': '0',
+            'search_results_count_guidance_type': '0',
+            'search_results_count_tools_type': '0',
+            'search_results_count_news_type': '0'
+        });
         // set focus to search input, move cursor to end of text
         document.addEventListener("DOMContentLoaded", () => {
             const searchinput = document.getElementById("search-site");
