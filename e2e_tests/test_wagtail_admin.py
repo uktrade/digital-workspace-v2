@@ -31,7 +31,7 @@ def test_add_news_page(superuser, page: Page):
     page.keyboard.press("Enter")
     page.locator("#body-0-value").fill("Test news page heading")
 
-    # FIXME: The choose an image modal doesn't seem to be appearing.
+    # TODO: The choose an image modal doesn't seem to be appearing.
     # page.get_by_role("button", name="Choose an image").click()
     # page.locator(".image-choice").nth(0).click()
 
@@ -41,6 +41,9 @@ def test_add_news_page(superuser, page: Page):
     # Publish
     page.locator("li.footer__container nav .dropdown-toggle").click()
     page.get_by_role("button", name="Publish").click()
+
+    # Check the page is visible in the admin.
+    page.get_by_text("Test news page")
 
 
 @pytest.mark.e2e
