@@ -11,7 +11,7 @@
                         class="govuk-link"
                         id="show-feedback-link">let us know what you think</a> of the new experience, or <a href="{% url "search:toggle" use_v2="off" %}?next={{ request.get_full_path }}"
                         class="govuk-link"
-                        onclick="gtm_data_then_click(this, { 'event': 'beta_opt_out' })">switch back</a>.
+                        onclick="gtm_data_then_click(this, { 'event': 'beta_opt_out' })">switch back to the original experience</a>.
                     </span>
                 </p>
             </div>
@@ -41,9 +41,9 @@
                 <p class="govuk-phase-banner__content">
                     <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
                     <span class="govuk-phase-banner__text">
-                        <b>We're improving search and navigation.</b> Would you like to <a href="#" class="govuk-link">find out more</a>, or <a href="{% url "search:toggle" use_v2="on" %}?next={{ request.get_full_path }}"
+                        We're <a href="#" class="govuk-link">improving search and navigation</a>. Would you like to <a href="{% url "search:toggle" use_v2="on" %}?next={{ request.get_full_path }}"
     class="govuk-link"
-                        onclick="gtm_data_then_click(this, { 'event': 'beta_opt_in' })">try it out</a>?
+                        onclick="gtm_data_then_click(this, { 'event': 'beta_opt_in' })">try the new search experience</a>?
                     </span>
                 </p>
             </div>
