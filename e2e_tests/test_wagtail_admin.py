@@ -1,3 +1,5 @@
+import re
+
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -14,6 +16,7 @@ def test_add_news_page(superuser, page: Page):
 
     login(page, superuser)
     page.goto("/admin")
+    expect(page).to_have_title(re.compile(r".*DBT Digital Workspace"))
 
     page.get_by_role("button", name="Pages").click()
     page.get_by_role("link", name="Home", exact=True).click()
@@ -50,6 +53,7 @@ def test_home_page_news_order(superuser, page: Page):
 
     login(page, superuser)
     page.goto("/admin")
+    expect(page).to_have_title(re.compile(r".*DBT Digital Workspace"))
     page.get_by_text("Home news order").click()
 
     # Add the news pages to define their order on the home page.
