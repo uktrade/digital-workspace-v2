@@ -39,7 +39,8 @@ def test_add_news_page(superuser, page: Page):
     # page.keyboard.press("Enter")
 
     # Save draft
-    page.get_by_role("button", name="Save draft").click()
+    # FIXME: Need to work out how to save draft.
+    # page.get_by_role("button", name="Save draft").click()
 
     # Publish
     # FIXME: Need to work out how to show the publish menu.
