@@ -1463,7 +1463,7 @@ files = [
 name = "factory-boy"
 version = "3.2.1"
 description = "A versatile test fixtures replacement based on thoughtbot's factory_bot for Ruby."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -1482,7 +1482,7 @@ doc = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 name = "faker"
 version = "11.4.0"
 description = "Faker is a Python package that generates fake data for you."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -3343,7 +3343,7 @@ docs = ["mkdocs (>=1.1,<1.2)", "mkdocs-material (>=6.2,<6.3)"]
 name = "text-unidecode"
 version = "1.3"
 description = "The most basic Text::Unidecode port"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -3578,7 +3578,7 @@ wagtail = ">2.9"
 name = "wagtail-factories"
 version = "4.0.0"
 description = "Factory boy classes for wagtail"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -3910,4 +3910,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "3062f21aad572c53fa2241cef506550ec54062a987aa993dea1cf1a62e42adb9"
+content-hash = "d457ceff66065582fe126b72bd6974a24055b6cacd2ca7cac451fe9fbe6134be"
