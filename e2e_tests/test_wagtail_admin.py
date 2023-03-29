@@ -29,22 +29,18 @@ def test_add_news_page(superuser, page: Page):
     page.get_by_role("button", name="Insert a block").click()
     page.get_by_placeholder("Search options…").fill("Heading 2")
     page.keyboard.press("Enter")
+    page.locator("#body-0-value").fill("Test news page heading")
 
-    # FIXME: Can't select the empty input to fill it.
-    # page.get_by_role("textbox", name="body-2-value").fill("Test news page heading")
-
-    page.get_by_role("button", name="Choose an image").click()
-    # FIXME: Can't search for an image.
-    # page.get_by_placeholder("Search").fill("An image name")
-    # page.keyboard.press("Enter")
+    # FIXME: The choose an image modal doesn't seem to be appearing.
+    # page.get_by_role("button", name="Choose an image").click()
+    # page.locator(".image-choice").nth(0).click()
 
     # Save draft
-    # FIXME: Need to work out how to save draft.
-    # page.get_by_role("button", name="Save draft").click()
+    page.get_by_role("button", name="Save draft").click()
 
     # Publish
-    # FIXME: Need to work out how to show the publish menu.
-    # page.get_by_role("button", name="Publish").click()
+    page.locator("li.footer__container nav .dropdown-toggle").click()
+    page.get_by_role("button", name="Publish").click()
 
 
 @pytest.mark.e2e
