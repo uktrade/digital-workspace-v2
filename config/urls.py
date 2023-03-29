@@ -54,24 +54,6 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-    # Test admin login
-    def login_as_admin(request):
-        from django.contrib.auth import login
-
-        from user.models import User
-
-        user = User.objects.filter(is_superuser=True).first()
-        login(
-            request,
-            user,
-            backend="django.contrib.auth.backends.ModelBackend",
-        )
-        return RedirectView.as_view(url="/")(request)
-
-    urlpatterns = [
-        path("login-as-admin/", login_as_admin),
-    ] + urlpatterns
-
 # Removed until we find a fix for Wagtail's redirect behaviour
 handler404 = "core.views.view_404"
 handler500 = "core.views.view_500"
