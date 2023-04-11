@@ -82,6 +82,7 @@ pytest-playwright = "^0.3.2"
 coverage = "^5.5"
 faker = "^11.3.0"
 factory-boy = "^3.2.1"
+wagtail-factories = "^4.0.0"
 # Util
 bpython = "^0.22.1"
 django-extensions = "^3.2.1"
