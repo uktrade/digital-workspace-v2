@@ -1049,7 +1049,7 @@ testing = ["coverage[toml] (>=5.0a4)", "pytest (>=4.6.11)"]
 name = "django-extensions"
 version = "3.2.1"
 description = "Extensions for Django"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -1062,14 +1062,14 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-feedback-govuk"
-version = "0.1.0"
+version = "0.1.2"
 description = "A Django app to gather and send internal Government staff feedback"
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "django_feedback_govuk-0.1.0-py3-none-any.whl", hash = "sha256:9547cf18bf125bfcaf8d20b95768925d818e8a9ed25add82349b0b409a2dd09a"},
-    {file = "django_feedback_govuk-0.1.0.tar.gz", hash = "sha256:681ff64bcd60d7e505521da2a66ecef099007ad66e3eea0112a0b3e30d81c63e"},
+    {file = "django_feedback_govuk-0.1.2-py3-none-any.whl", hash = "sha256:d6cbf59797c67da6bb3f16b9ca9b7d070045ee6d029facb4e45bb117962f8fe4"},
+    {file = "django_feedback_govuk-0.1.2.tar.gz", hash = "sha256:36ce651498651c676737b0886e6b77f31b36efc930a8d590bd04b746498a0b79"},
 ]
 
 [package.dependencies]
@@ -4147,4 +4147,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "d0892d15c52d4c49c52883460cc67ae9fe6dc82def816b93f399e9bd82eb80aa"
+content-hash = "54a74eea78e2a219c040d8dd3105e64ab7acedc78cd5a99116c36a926b90b812"

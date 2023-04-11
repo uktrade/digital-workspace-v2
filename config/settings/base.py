@@ -543,4 +543,9 @@ DJANGO_FEEDBACK_GOVUK = {
     "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS": env.list(
         "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
     ),
+    "COPY": {
+        "SUBMIT_TITLE": "Give your feedback on the beta search experience",
+        "FIELD_SATISFACTION_LEGEND": "Overall, how did you feel about the new experience?",
+        "FIELD_COMMENT_LEGEND": "How could we improve this experience?",
+    },
 }
