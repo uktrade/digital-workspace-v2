@@ -1,20 +1,20 @@
 .search-results-wrapper {
-    margin-top: 10px;
+  margin-top: 10px;
 
-    .search-results {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+  .search-results {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 
-        em {
-            font-weight: bold;
-        }
+    em {
+      font-weight: bold;
     }
+  }
 
-    .pinned {
-        background-color: govuk-colour("light-grey");
-        margin-bottom: 20px;
-    }
+  .pinned {
+    background-color: govuk-colour("light-grey");
+    margin-bottom: 20px;
+  }
 }
 
 // Search v2
@@ -27,34 +27,33 @@
 }
 
 .search-results__categories {
-    border-bottom: 1px solid black;
-    margin-bottom: 1rem;
+  border-bottom: 1px solid black;
+  margin-bottom: 1rem;
 
-    div {
-        display: flex;
-        flex-direction: column;
-        gap: .25em;
-        padding-bottom: 1em;
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    padding-bottom: 1em;
 
-        >a {
-            padding: 0.4em 1em;
-            margin-left: -1em;
-            margin-right: -1em;
+    > a {
+      padding: 0.4em 1em;
+      margin-left: -1em;
+      margin-right: -1em;
 
-            &[data-selected],
-            &:hover {
-                color: govuk-colour("white");
-                background-color: $govuk-link-colour;
-                text-decoration: none;
-            }
-            &:focus {
-                color: govuk-colour("black");
-                background-color: $govuk-focus-colour;
-                box-shadow: 0 -2px $govuk-focus-colour,
-                    0 5px govuk-colour("black");
-            }
-        }
+      &[data-selected],
+      &:hover {
+        color: govuk-colour("white");
+        background-color: $govuk-link-colour;
+        text-decoration: none;
+      }
+      &:focus {
+        color: govuk-colour("black");
+        background-color: $govuk-focus-colour;
+        box-shadow: 0 -2px $govuk-focus-colour, 0 5px govuk-colour("black");
+      }
     }
+  }
 }
 
 .search-results__all {
@@ -64,15 +63,44 @@
   gap: 1rem;
 
   .left-col {
-      order: 2;
+    order: 2;
   }
 
   .right-col {
-      order: 1;
+    order: 1;
   }
 
   .people {
     margin-bottom: 1rem;
+  }
+}
+
+@include govuk-media-query($from: tablet) {
+  .search-results__categories {
+    div {
+      max-width: 660px;
+      flex-direction: row;
+      justify-content: space-between;
+      padding-bottom: 5px;
+
+      > a {
+        margin: 0;
+        padding: 0.25em 0;
+
+        &[data-selected],
+        &:hover {
+          color: $govuk-link-colour;
+          background-color: govuk-colour("white");
+          box-shadow: 0 0 govuk-colour("white"), 0 5px $govuk-link-colour;
+        }
+
+        &:focus {
+          color: govuk-colour("black");
+          background-color: $govuk-focus-colour;
+          box-shadow: 0 -2px $govuk-focus-colour, 0 5px govuk-colour("black");
+        }
+      }
+    }
   }
 }
 
@@ -81,59 +109,35 @@
     grid-template-columns: 2fr 1fr;
 
     .left-col {
-        order: 1;
+      order: 1;
     }
     .right-col {
-        order: 2;
+      order: 2;
+    }
+  }
+
+  .search-results__categories {
+    div {
+        max-width: none;
+      justify-content: flex-start;
+      gap: 1em;
     }
   }
 }
 
-@include govuk-media-query($from: tablet) {
-    .search-results__categories {
-
-        div {
-            max-width: 700px;
-            flex-direction: row;
-            justify-content: space-between;
-            padding-bottom: 5px;
-
-            >a {
-                margin: 0;
-                padding: 0.25em 0;
-
-                &[data-selected],
-                &:hover {
-                    color: $govuk-link-colour;
-                    background-color: govuk-colour("white");
-                    box-shadow: 0 0 govuk-colour("white"),
-                        0 5px $govuk-link-colour;
-                }
-
-                &:focus {
-                    color: govuk-colour("black");
-                    background-color: $govuk-focus-colour;
-                    box-shadow: 0 -2px $govuk-focus-colour,
-                        0 5px govuk-colour("black");
-                }
-            }
-        }
-    }
-}
-
 .search-results__list {
-    .pinned {
-        padding: 1rem;
-        margin-bottom: 2rem;
-        background-color: govuk-colour("light-grey");
-    }
+  .pinned {
+    padding: 1rem;
+    margin-bottom: 2rem;
+    background-color: govuk-colour("light-grey");
+  }
 }
 
 .search-results__list[data-search-category="teams"] {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    grid-gap: 1.5rem;
-    margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .search-result {
@@ -157,16 +161,17 @@
 }
 
 .search-result--page {
-    padding-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
 
-    &:not(:last-child) {
-        margin-bottom: 1rem;
-        border-bottom: 1px solid $govuk-border-colour;
-    }
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid $govuk-border-colour;
+  }
 
-    >* {
-        margin-bottom: 0.5rem;
-    }
+  > * {
+    margin-bottom: 0.5rem;
+  }
 }
 
-.beta-feedback {}
+.beta-feedback {
+}

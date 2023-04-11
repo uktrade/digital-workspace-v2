@@ -365,3 +365,14 @@
     width: 50%;
   }
 }
+
+// @TODO [DWPF-454] remove .search-v2 class and merge all overrides into main declarations
+.search-v2 {
+    .pf-team-card {
+        box-shadow: none;
+    }
+
+    .pf-team-card__name {
+        font-size: 19px;
+    }
+}

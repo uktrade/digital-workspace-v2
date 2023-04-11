@@ -1,6 +1,6 @@
 {% load wagtailcore_tags %}
 <div class="search-result search-result--page">
-    <h3 class="govuk-heading-m">
+    <h3 class="govuk-heading-s">
         <a class="govuk-link"
             href="{% pageurl object %}"
             onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% pageurl object %}', 'search_result_selected_type': '{{ type }}', 'search_result_selected_section': '{{ section }}', 'search_result_selected_number_overall': {{ forloop.counter|add:num_prev_results }}, 'search_result_selected_number_section': {{ forloop.counter }} })"

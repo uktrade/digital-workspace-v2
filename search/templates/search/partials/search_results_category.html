@@ -1,6 +1,6 @@
 <div class="search-results__category">
     {% if heading %}
-        <h3 class="govuk-heading-m">{{ count }} {{ heading }}</h3>
+        <h3 class="govuk-heading-s">{{ count }} {{ heading }}</h3>
     {% endif %}
 
     <div class="search-results__list" data-search-category="{{ search_category }}">
@@ -13,9 +13,23 @@
             </div>
         {% endif %}
 
-        {% for result in search_results %}
-            {% include search_results_item_template with object=result forloop=forloop type=search_category section=search_category num_prev_results=num_pinned_results only %}
-        {% endfor %}
+        {% if search_results %}
+            {% for result in search_results %}
+                {% include search_results_item_template with object=result forloop=forloop type=search_category section=search_category num_prev_results=num_pinned_results only %}
+            {% endfor %}
+        {% else %}
+            <p class="govuk-body">There are no matching {{ heading|default:"results" }}.</p>
+
+            {% if search_category == 'all_pages' %}
+            {% comment %} Only show this in the main pages section of the "all" results {% endcomment %}
+                <p class="govuk-body">Improve your search results by:</p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>double-checking your spelling</li>
+                    <li>using fewer keywords</li>
+                    <li>searching for something less specific</li>
+                </ul>
+            {% endif %}
+        {% endif %}
     </div>
 
     {% if search_results.has_other_pages %}

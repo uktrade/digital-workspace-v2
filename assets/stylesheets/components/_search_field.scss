@@ -121,6 +121,12 @@ $input-size: 40px;
 .search-v2 {
     .site-search {
         position: inherit;
+
+        .search-form {
+            input {
+                border: none;
+            }
+        }
     }
 
     .search-form {
