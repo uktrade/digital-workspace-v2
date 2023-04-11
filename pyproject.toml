@@ -10,20 +10,21 @@ readme = "README.md"
 python = "^3.9"
 # Django
 django = "^3.2.18"
+django-crispy-forms = "^1.9"
 django-environ = "^0.8.1"
-django-webpack-loader = "^1.4.1"
-django-storages = "^1.11.1"
-django-extensions = "^3.1.5"
 django_redis = "^5.2.0"
 django-settings-export = "^1.2.1"
 django-simple-history = "^3.0.0"
+django-storages = "^1.11.1"
+django-webpack-loader = "^1.4.1"
 djangorestframework = "^3.13.1"
 # DIT Django
-django-staff-sso-client = "^4.0.1"
-django_log_formatter_ecs = "^0.0.5"
-django-chunk-upload-handlers = "^0.0.10"
 django-audit-log-middleware = "^0.0.4"
+django-chunk-upload-handlers = "^0.0.10"
+django-feedback-govuk = "^0.1.1"
 django-hawk-drf = "^0.0.1"
+django_log_formatter_ecs = "^0.0.5"
+django-staff-sso-client = "^4.0.1"
 # Wagtail
 wagtail = "^4.0.0"
 wagtailmedia = "^0.13.0"
@@ -53,13 +54,11 @@ bleach = "^4.1.0"
 elastic-apm = "^6.7.2"
 requests = "^2.27.1"
 boto3 = "^1.20.46"
-django-feedback-govuk = "^0.1.0"
 # TODO: Are these packages used directly?
 pyjwt = { version = "^2.4.0", extras = ["crypto"] }
 # urllib3>=1.26.5
 # lxml>=4.9.1
 # PyYAML>=5.4
-django-crispy-forms = "^1.9"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.3.2"
@@ -69,6 +68,7 @@ isort = "^5.10.1"
 flake8 = "^6.0.0"
 flake8-bandit = "^4.1.1"
 flake8-bugbear = "^23.1.20"
+djlint = "^1.19.16"
 # TODO: Do these flake8 plugins provide much value?
 # flake8-blind-except
 # flake8-debugger
@@ -89,7 +89,6 @@ bpython = "^0.22.1"
 django-extensions = "^3.2.1"
 werkzeug = "^2.2.3"
 blessings = "^1.7"
-djlint = "^1.19.16"
 
 [build-system]
 requires = ["poetry-core"]
