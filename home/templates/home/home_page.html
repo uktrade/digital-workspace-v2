@@ -23,7 +23,7 @@
                     </nav>
                 </li>
                 {% for news_item in news_items %}
-                    <li class="news-item news-item-{{ forloop.counter }}">
+                    <li class="news-item news-item-{{ forloop.counter }}" data-testid="home-news-item">
                         {% include "home/includes/news_item.html" with news_item=news_item %}
                     </li>
                 {% endfor %}

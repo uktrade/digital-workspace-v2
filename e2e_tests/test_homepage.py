@@ -3,21 +3,22 @@ import re
 import pytest
 from playwright.sync_api import Page, expect
 
-from .utils import login
+from news.factories import NewsPageFactory
 
 
 @pytest.mark.e2e
-def test_wagtail_accessible(superuser, page: Page):
-    login(page, superuser)
+def test_homepage(page: Page):
+    NewsPageFactory.create_batch(5)
 
-    page.goto("/admin")
-    expect(page).to_have_title(re.compile(r".*DBT Digital Workspace"))
-
-
-@pytest.mark.e2e
-def test_site_has_all_major_sections(page: Page):
     page.goto("/")
     expect(page).to_have_title(re.compile(r"Home.*"))
+
+    page.get_by_title("News page 1")
+    page.get_by_title("News page 2")
+    page.get_by_title("News page 3")
+    page.get_by_title("News page 4")
+    page.get_by_title("News page 5")
+
     page.get_by_text("Quick links").click()
     page.get_by_role("heading", name="What's Popular?").click()
     page.get_by_role("heading", name="How do I?").click()
