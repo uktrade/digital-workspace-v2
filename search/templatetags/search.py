@@ -45,17 +45,18 @@ def search_category(
     # passing the value to the paginator. If this isn't done, the pages will have the
     # pinned results removed after pagination and cause the pages to have odd lengths.
     search_results = list(search_vector.search(query))
-    count = len(search_results)
+    search_results_all = list(pinned_results) + search_results # used to ensure pagination takes account of all types
+    count = len(search_results_all)
 
     if limit:
         search_results = search_results[: int(limit)]
 
     # Only paginate if there is no limit.
     if not limit:
-        search_results_paginator = Paginator(search_results, PAGE_SIZE)
-        search_results = search_results_paginator.page(page)
+        search_results_paginator = Paginator(search_results_all, PAGE_SIZE)
+        search_results_all = search_results_paginator.page(page)
 
-    if heading and (count > 1 or count == 0):
+    if heading and (count != 1):
         heading = heading_plural or f"{heading}s"
 
     return {
@@ -63,8 +64,9 @@ def search_category(
         "search_category": category,
         "search_results_item_template": _get_result_template(category),
         "pinned_results": pinned_results,
-        "num_pinned_results": len(pinned_results),
+        "num_pinned_results": f"{len(pinned_results)}",
         "search_results": search_results,
+        "search_results_all": search_results_all,
         "search_query": query,
         "count": count,
         "heading": heading,
@@ -79,6 +81,14 @@ def search_count(context, *, category):
 
     search_vector = SEARCH_VECTORS[category](request)
     hits = search_vector.search(query).count()
+    # hits += len(search_vector.pinned(query))
+
+    # combined total for not just pages but people and teams
+    if category == "all_pages":
+        search_vector = SEARCH_VECTORS["people"](request)
+        hits += search_vector.search(query).count()
+        search_vector = SEARCH_VECTORS["teams"](request)
+        hits += search_vector.search(query).count()
 
     return hits
 

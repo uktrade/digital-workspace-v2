@@ -95,12 +95,12 @@
         .govuk-header__navigation-item,
         .govuk-header__navigation-item--active--ws,
         .ancestor {
-            padding-top: 17.5px;
+            padding-top: 17px;
             padding-right: max(15px, calc(15px + env(safe-area-inset-right)));
-            padding-top: 17.5px;
+            padding-bottom: 18px;
             padding-left: max(20px, calc(20px + env(safe-area-inset-left)));
             text-decoration-thickness: 5px;
-            text-underline-offset: 16.5px;
+            text-underline-offset: 17px;
 
             .govuk-header__link--ws {
 
