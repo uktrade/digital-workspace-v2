@@ -545,7 +545,8 @@ DJANGO_FEEDBACK_GOVUK = {
     ),
     "COPY": {
         "SUBMIT_TITLE": "Give your feedback on the beta search experience",
-        "FIELD_SATISFACTION_LEGEND": "Overall, how did you feel about the new experience?",
-        "FIELD_COMMENT_LEGEND": "How could we improve this experience?",
+        "FIELD_SATISFACTION_LEGEND": "How do you feel about your search experience today?",
+        "FIELD_COMMENT_LEGEND": "Tell us why you gave this response",
+        "FIELD_COMMENT_HINT": "If you would not like us to contact you for further user research please indicate below. Do not include any personal information.",
     },
 }
