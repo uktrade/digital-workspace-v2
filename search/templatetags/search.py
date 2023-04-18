@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Tuple
 
 from django import template
 from django.core.paginator import Paginator
@@ -32,9 +32,7 @@ PAGE_SIZE = 20
 @register.inclusion_tag(
     "search/partials/search_results_category.html", takes_context=True
 )
-def search_category(
-    context, *, category, limit=None, heading=None, heading_plural=None
-):
+def search_category(context, *, category, limit=None, show_heading=False):
     request = context["request"]
     query = context["search_query"]
     page = context["page"]
@@ -58,8 +56,13 @@ def search_category(
         search_results_paginator = Paginator(search_results_all, PAGE_SIZE)
         search_results_all = search_results_paginator.page(page)
 
-    if heading and (count != 1):
-        heading = heading_plural or f"{heading}s"
+    # The singular/plural of the result type we can tell users about in
+    # headings, errors etc
+    result_type_display, result_type_display_plural = _get_result_type_displays(
+        category
+    )
+    if count != 1:
+        result_type_display = result_type_display_plural
 
     return {
         "request": request,
@@ -71,7 +74,8 @@ def search_category(
         "search_results_all": search_results_all,
         "search_query": query,
         "count": count,
-        "heading": heading,
+        "show_heading": show_heading,
+        "result_type_display": result_type_display,
         "is_limited": limit is not None and count > limit,
     }
 
@@ -102,3 +106,16 @@ def _get_result_template(category: SearchCategory) -> str:
         return "search/partials/result/page.html"
 
     return f"search/partials/result/{category}.html"
+
+
+def _get_result_type_displays(category: SearchCategory) -> Tuple[str, str]:
+    category_result_types_mapping = {
+        "all_pages": ("page", "pages"),
+        "people": ("person", "people"),
+        "teams": ("team", "teams"),
+        "guidance": ("guidance page", "guidance pages"),
+        "tools": ("tool", "tools"),
+        "news": ("news item", "news items"),
+    }
+
+    return category_result_types_mapping[category]
