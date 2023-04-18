@@ -4,7 +4,7 @@
     {% endif %}
 {{page}}
     <div class="search-results__list" data-search-category="{{ search_category }}">
-        {% if pinned_results %}
+        {% if pinned_results and not search_results.has_previous %}
             <div class="pinned">
                 <h3 class="govuk-heading-s">Featured {{ heading }}</h3>
 
@@ -16,7 +16,12 @@
 
         {% if search_results %}
             {% for result in search_results %}
-                {% include search_results_item_template with object=result type=search_category section=search_category number_overall=forloop.counter|add:num_pinned_results number_section=forloop.counter only %}
+                {% comment %}
+                skip any pinned results that are already rendered above
+                {% endcomment %}
+                {% if search_results.has_previous or forloop.counter > num_pinned_results|add:"0" %}
+                    {% include search_results_item_template with object=result type=search_category section=search_category number_overall=forloop.counter|add:num_pinned_results number_section=forloop.counter only %}
+                {% endif %}
             {% endfor %}
 
         {% else %}
@@ -34,8 +39,8 @@
         {% endif %}
     </div>
 
-    {% if search_results_all.has_other_pages %}
-        {% include 'includes/pagination_v2.html' with paginated_set=search_results_all %}
+    {% if search_results.has_other_pages %}
+        {% include 'includes/pagination_v2.html' with paginated_set=search_results %}
     {% endif %}
     {% if is_limited %}
         <a href="{% url 'search:category' search_category %}?query={{ search_query }}" class="govuk-button govuk-button--secondary" onclick="gtm_data_then_click(this, { 'event': 'search-ui', 'search_ui': 'see_all_{{ search_category }}' })">See all {{ search_category }} results</a>
