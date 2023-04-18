@@ -1,3 +1,13 @@
 {% load search %}
 
+{% if search_category in "guidance,tools,news" %}
+<div class="search-results__all">
+    <div class="left-col">
+{% endif %}
+
 {% search_category category=search_category %}
+
+{% if search_category in "guidance,tools,news" %}
+    </div>
+</div>
+{% endif %}
