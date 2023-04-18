@@ -26,7 +26,7 @@ django-hawk-drf = "^0.0.1"
 django_log_formatter_ecs = "^0.0.5"
 django-staff-sso-client = "^4.0.1"
 # Wagtail
-wagtail = "^4.0.0"
+wagtail = "^4.2.2"
 wagtailmedia = "^0.13.0"
 wagtailmenus = "^3.1.5"
 wagtail-draftail-anchors = "^0.5.0"
