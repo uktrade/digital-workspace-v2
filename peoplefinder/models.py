@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search import index
+from wagtail.search.queryset import SearchableQuerySetMixin
 
 
 # United Kingdom
@@ -168,7 +169,7 @@ class ActivePeopleManager(models.Manager):
         return super().get_queryset().exclude(is_active=False)
 
 
-class PersonQuerySet(models.QuerySet):
+class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
     def active(self):
         return self.exclude(is_active=False)
 
@@ -554,9 +555,9 @@ class Person(index.Indexed, models.Model):
         return ", ".join(map(str, workdays))
 
 
-class TeamQuerySet(models.QuerySet):
+class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
     def with_all_parents(self):
-        return self.values("pk").annotate(
+        return self.annotate(
             all_parents=ArrayAgg(
                 Func(
                     Value("slug"),
@@ -573,6 +574,8 @@ class TeamQuerySet(models.QuerySet):
                     function="jsonb_build_object",
                     output_field=JSONField(),
                 ),
+                # Filter out the last team (deepest).
+                filter=~Q(children__parent=F("pk")),
                 ordering="-children__depth",
             ),
         )
@@ -594,7 +597,7 @@ class TeamQuerySet(models.QuerySet):
             With a specified `parent_field`:
             >>> team = Team.objects.with_parents(parent_field="slug").get(slug="software")
             >>> team.ancestry
-            ["spacex", "engineering", "software"]
+            ['spacex', 'engineering', 'software']
 
         Args:
             parent_field: The parent field to populate the array with.

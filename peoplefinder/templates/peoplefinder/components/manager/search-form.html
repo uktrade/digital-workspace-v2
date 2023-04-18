@@ -2,7 +2,6 @@
 Context:
     profile (Person): The person behind the profile
 {% endcomment %}
-
 <fieldset>
     <h3 class="govuk-heading-s">Search for a manager</h3>
     <span class="govuk-hint">Search for the name of your manager, then click the "Select" button next to their name</span>
@@ -17,11 +16,11 @@ Context:
         data-testid="manager-search"
     >
     <div class="manager-search-results" id="manager-component-search-results"></div>
-    <button
-        class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
-        type="button"
-        hx-get="{% url 'profile-edit-manager-cancel' profile.slug %}"
-        hx-target="#manager-component"
-        hx-swap="outerHTML"
-    >Cancel</button>
+    <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
+            type="button"
+            hx-get="{% url 'profile-edit-manager-cancel' profile.slug %}"
+            hx-target="#manager-component"
+            hx-swap="outerHTML">
+        Cancel
+    </button>
 </fieldset>

@@ -1,33 +1,22 @@
-
-<ul id="navigation" class="govuk-header__navigation" aria-label="Top Level Navigation">
-
-{% for item in menu_items %}
-    <li class="govuk-header__navigation-item">
-        {% if item.active_class %}
-            <a class="{{ item.active_class }}" href="{{ item.href }}">{{ item.text }}</a>
-        {% else %}
-            <a class="govuk-header__link govuk-header__link--ws" href="{{ item.href }}">{{ item.text }}</a>
-        {% endif %}
-    </li>
-{% endfor %}
-{#          {% if peoplefinder_profile %}#}
-{#            <li class="govuk-header__navigation-item govuk-header__navigation-item--mobile-only">#}
-{#              <a class="govuk-header__link govuk-header__link--ws" href="#">#}
-{#                My profile ({{ peoplefinder_profile.first_name }})#}
-{#              </a>#}
-{#            </li>#}
-{#          {% endif %}#}
-    <li class="govuk-header__navigation-item">
-        <a class="govuk-header__link govuk-header__link--ws" href="/working-at-dbt/data-hub/">Data Hub</a>
-    </li>
-
-    <li class="site-search-mobile govuk-header__navigation-item govuk-header__navigation-item--mobile-only">
-        {% include 'search/partials/search_form.html' %}
-    </li>
+<ul id="navigation" class="govuk-header__navigation-list">
+    {% for item in menu_items %}
+        <li class="govuk-header__navigation-item {{ item.active_class }}">
+            {% if item.active_class %}
+                <a class="{{ item.active_class }}" href="{{ item.href }}">{{ item.text }}</a>
+            {% else %}
+                <a class="govuk-header__link govuk-header__link--ws"
+                   href="{{ item.href }}">{{ item.text }}</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+    {# @TODO [DWPF-454] Remove this conditional and contents #}
+    {% if not user.enable_v2_search %}
+        <li class="govuk-header__navigation-item">
+            <a class="govuk-header__link govuk-header__link--ws"
+               href="/working-at-dbt/data-hub/">Data Hub</a>
+        </li>
+        <li class="site-search-mobile govuk-header__navigation-item govuk-header__navigation-item--mobile-only">
+            {% include 'search/partials/search_form.html' %}
+        </li>
+    {% endif %}
 </ul>
-
-
-{#              <li class="govuk-header__navigation-item">#}
-{#                <a class="govuk-header__link govuk-header__link--ws" href="{{ menu_item.link }}" {% if menu_item.open_in_new_tab %} target="_blank"{% endif %}>{{ menu_item.title }}</a>#}
-{#              </li>#}
-{#            {% endfor %}#}

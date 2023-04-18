@@ -5,16 +5,18 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import Q, Subquery
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
-from wagtail.models import Page
+from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned
 from core.utils import set_seen_cookie_banner
+from search.utils import split_query
 from user.models import User as UserModel
 
 
@@ -75,7 +77,30 @@ class BasePage(Page):
             return None
 
 
+class ContentPageQuerySet(PageQuerySet):
+    def pinned_q(self, query):
+        pinned = SearchPinPageLookUp.objects.filter_by_query(query)
+
+        return Q(pk__in=Subquery(pinned.values("object_id")))
+
+    def pinned(self, query):
+        return self.filter(self.pinned_q(query))
+
+    def not_pinned(self, query):
+        return self.exclude(self.pinned_q(query))
+
+    def exclusions_q(self, query):
+        exclusions = SearchExclusionPageLookUp.objects.filter_by_query(query)
+
+        return Q(pk__in=Subquery(exclusions.values("object_id")))
+
+    def exclusions(self, query):
+        return self.filter(self.exclusions_q(query))
+
+
 class ContentPage(BasePage):
+    objects = PageManager.from_queryset(ContentPageQuerySet)()
+
     is_creatable = False
     show_in_menus = True
 
@@ -217,10 +242,20 @@ class ContentPage(BasePage):
 
 class SearchKeywordOrPhrase(models.Model):
     keyword_or_phrase = models.CharField(max_length=1000)
+    # TODO: Remove historical records.
     history = HistoricalRecords()
 
 
+class SearchKeywordOrPhraseQuerySet(models.QuerySet):
+    def filter_by_query(self, query):
+        query_parts = split_query(query)
+
+        return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
+
+
 class SearchExclusionPageLookUp(models.Model):
+    objects = SearchKeywordOrPhraseQuerySet.as_manager()
+
     search_keyword_or_phrase = models.ForeignKey(
         SearchKeywordOrPhrase,
         on_delete=models.CASCADE,
@@ -228,10 +263,13 @@ class SearchExclusionPageLookUp(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+    # TODO: Remove historical records.
     history = HistoricalRecords()
 
 
 class SearchPinPageLookUp(models.Model):
+    objects = SearchKeywordOrPhraseQuerySet.as_manager()
+
     search_keyword_or_phrase = models.ForeignKey(
         SearchKeywordOrPhrase,
         on_delete=models.CASCADE,
@@ -239,6 +277,7 @@ class SearchPinPageLookUp(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
+    # TODO: Remove historical records.
     history = HistoricalRecords()
 
 

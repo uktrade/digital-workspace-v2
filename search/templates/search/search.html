@@ -1,8 +1,8 @@
 {% extends "1_col_content.html" %}
 {% load formatting %}
 {% load static wagtailcore_tags %}
-{% block body_class %}template-searchresults{% endblock %}
-{% block title %}Search{% endblock %}
+{% block body_class %}template-searchresults{% endblock body_class %}
+{% block title %}Search{% endblock title %}
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -82,7 +82,7 @@
                         {% if previous_page %}
                             <a class="previous govuk-link"
                                href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ previous_page }}"
-                               onclick="dataLayer.push({'search_ui': 'pagination_prev'})">Previous page</a>
+                               onclick="dataLayer.push({'event':'search-ui', 'search_ui': 'pagination_prev'})">Previous page</a>
                         {% endif %}
                         <ul class="page-links">
                             {% for i in pagination_range %}
@@ -94,7 +94,7 @@
                                     <li>
                                         <a class="govuk-link"
                                            href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ i }}"
-                                           onclick="dataLayer.push({'search_ui': 'pagination_{{ i }}'})">{{ i }}</a>
+                                           onclick="dataLayer.push({'event':'search-ui', 'search_ui': 'pagination_{{ i }}'})">{{ i }}</a>
                                     </li>
                                 {% endif %}
                             {% endfor %}
@@ -102,7 +102,7 @@
                         {% if next_page %}
                             <a class="next govuk-link"
                                href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ next_page }}"
-                               onclick="dataLayer.push({'search_ui': 'pagination_next'})">Next page</a>
+                               onclick="dataLayer.push({'event':'search-ui', 'search_ui': 'pagination_next'})">Next page</a>
                         {% endif %}
                     </div>
                 {% endif %}
@@ -117,14 +117,9 @@
         'search_results_page_type': 'pages',
         'search_results_count_total': '{{ show_total }}',
         'search_results_count_pages_type': '{{ show_total }}',
-        'search_results_count_ppeople_type': '0',
-        'search_results_count_teams_type': '0'
+        'search_results_count_people_type': '0',
+        'search_results_count_teams_type': '0',
+        'search_result_selected_page': '{{ page }}'
     });
-    gtm_data_then_click = function(object, data) {
-        dataLayer.push(data);
-        url=object.getAttribute('href');
-        setTimeout(function(){location.href = url}, 500);
-        return false;
-    };
     </script>
-{% endblock %}
+{% endblock content %}

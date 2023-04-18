@@ -1,14 +1,16 @@
 html {
   box-sizing: border-box;
 }
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
 .ws-video-embed {
   iframe {
-    width: 100%!important;
-    height: calc(100vw * 0.30)
+    width: 100% !important;
+    height: calc(100vw * 0.3);
   }
 }
 
@@ -18,17 +20,17 @@ html {
 }
 
 .ws-primary-content {
-    border-top: 1px solid #b1b4b6;
-    padding-top: 20px;
+  border-top: 1px solid govuk-colour("mid-grey");
+  padding-top: 20px;
 }
 
 .ws-secondary-content {
-  border-top: 5px solid #cd1632;
+  border-top: 5px solid $brand-color-primary;
   padding-top: 20px;
 }
 
 .ws-article-content {
-    border-top: 1px solid #b1b4b6;
+  border-top: 1px solid govuk-colour("mid-grey");
 }
 
 .ws-secondary-meta {
@@ -36,15 +38,16 @@ html {
 }
 
 .ws-related-topics {
-  border-top:3px solid $govuk-error-colour;
+  border-top: 3px solid $govuk-error-colour;
 }
 
 .ws-hide {
-    position: absolute !important; /* Outside the DOM flow */
-    height: 1px; width: 1px; /* Nearly collapsed */
-    overflow: hidden;
-    clip: rect(1px 1px 1px 1px); /* IE 7+ only support clip without commas */
-    clip: rect(1px, 1px, 1px, 1px); /* All other browsers */
+  position: absolute !important; /* Outside the DOM flow */
+  height: 1px;
+  width: 1px; /* Nearly collapsed */
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px); /* IE 7+ only support clip without commas */
+  clip: rect(1px, 1px, 1px, 1px); /* All other browsers */
 }
 
 .ws-children-2-col {

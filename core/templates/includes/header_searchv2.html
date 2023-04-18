@@ -1,0 +1,46 @@
+{% load menu_tags %}
+{% load render_bundle webpack_static from webpack_loader %}
+{# @TODO [DWPF-454] remove search-v2 class, rename this template #}
+<header class="govuk-header govuk-header--ws search-v2"
+        role="banner"
+        data-module="govuk-header">
+    <div class="govuk-header__container govuk-width-container">
+        <div class="govuk-header__logo govuk-header__logo--ws gov-grid-column-one-third">
+            <a href="/" class="govuk-header__link govuk-header__link--homepage">
+                <span class="govuk-header__logotype govuk-header__logotype--ws">
+                    <img aria-hidden="true" src="{% webpack_static 'dbt-logo.png' %}"
+                        srcset="{% webpack_static 'dbt-logo@2x.png' %} 2x" {# /PS-IGNORE #}
+                        alt="Department for Business & Trade logo" />
+                        <span class="govuk-visually-hidden">Department for Business & Trade</span>
+                    </span>
+                </a>
+            </div>
+            <div class="govuk-header__content gov-grid-column-two-thirds">
+                <a href="/"
+                   class="govuk-header__link govuk-header__link--ws govuk-header__service-name govuk-header__service-name--ws">
+                    Digital Workspace
+                </a>
+            </div>
+            {% include 'includes/profile_panel.html' %}
+            <button type="button"
+                    class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
+                    aria-controls="navigation"
+                    aria-label="Show or hide Top Level Navigation"
+                    hidden>
+                Menu
+            </button>
+        </div>
+        <div class="nav-and-profile-bar">
+            <div class="govuk-width-container">
+                <nav aria-label="Top Level Navigation" class="govuk-header__navigation">
+                    {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+                </nav>
+                <div class="site-search">
+                    {% if not search_url %}
+                        {% url 'search:all' as search_url %}
+                    {% endif %}
+                    {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
+                </div>
+            </div>
+        </div>
+    </header>

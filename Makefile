@@ -156,3 +156,6 @@ e2e-codegen:
 	poetry run playwright codegen http://localhost:8000
 	mv .env.orig .env
 	docker stop wagtail-test-server
+
+dump-db:
+	pg_dump digital_workspace -U postgres -h localhost -p 5432 -O -x -c -f dw.dump
