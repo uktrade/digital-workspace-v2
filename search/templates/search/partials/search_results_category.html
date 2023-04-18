@@ -34,7 +34,7 @@
         {% endif %}
     </div>
 
-    {% if search_results.has_other_pages %}
+    {% if search_results_all.has_other_pages %}
         {% include 'includes/pagination_v2.html' with paginated_set=search_results_all %}
     {% endif %}
     {% if is_limited %}
