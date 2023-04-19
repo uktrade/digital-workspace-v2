@@ -39,22 +39,20 @@ def search_category(context, *, category, limit=None, show_heading=False):
 
     search_vector = SEARCH_VECTORS[category](request)
     pinned_results = search_vector.pinned(query)
-    # `list` needs to be called to force the database query to be evaluated before
-    # passing the value to the paginator. If this isn't done, the pages will have the
-    # pinned results removed after pagination and cause the pages to have odd lengths.
-    search_results = list(search_vector.search(query))
-    search_results_all = (
-        list(pinned_results) + search_results
-    )  # used to ensure pagination takes account of all types
-    count = len(search_results_all)
+    # `list` needs to be called to force the database query to be evaluated
+    # before passing the value to the paginator. If this isn't done, the
+    # pages will have the pinned results removed after pagination and cause
+    # the pages to have odd lengths.
+    search_results = list(pinned_results) + list(search_vector.search(query))
+    count = len(search_results)
 
     if limit:
         search_results = search_results[: int(limit)]
 
     # Only paginate if there is no limit.
     if not limit:
-        search_results_paginator = Paginator(search_results_all, PAGE_SIZE)
-        search_results_all = search_results_paginator.page(page)
+        search_results_paginator = Paginator(search_results, PAGE_SIZE)
+        search_results = search_results_paginator.page(page)
 
     # The singular/plural of the result type we can tell users about in
     # headings, errors etc
@@ -71,7 +69,6 @@ def search_category(context, *, category, limit=None, show_heading=False):
         "pinned_results": pinned_results,
         "num_pinned_results": f"{len(pinned_results)}",
         "search_results": search_results,
-        "search_results_all": search_results_all,
         "search_query": query,
         "count": count,
         "show_heading": show_heading,
