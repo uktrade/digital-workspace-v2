@@ -58,8 +58,9 @@ jobs:
       - run:
           name: Get node 18 installed
           command: |
-            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-            sudo apt install -y nodejs
+            # curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            # sudo apt install -y nodejs
+            nvm install 18
       - run:
           name: install npm packages
           command: npm ci
