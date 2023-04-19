@@ -62,9 +62,9 @@ class PeopleSearchVector(SearchVector):
         people = Person.objects.all()
 
         if not self.request.user.has_perm("peoplefinder.delete_person"):
-            people.active()
+            people = people.active()
 
-        people.prefetch_related("key_skills", "additional_roles", "teams")
+        people = people.prefetch_related("key_skills", "additional_roles", "teams")
 
         return people
 
