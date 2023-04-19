@@ -3,15 +3,15 @@
 <div class="search-results__all">
     <div class="left-col">
         <div class="pages">
-            {% search_category category='all_pages' heading='page' %}
+            {% search_category category='all_pages' show_heading=True %}
         </div>
     </div>
     <div class="right-col">
         <div class="people">
-            {% search_category category='people' limit=3 heading='person' heading_plural='people' %}
+            {% search_category category='people' limit=3 show_heading=True %}
         </div>
         <div class="teams">
-            {% search_category category='teams' limit=3 heading='team' %}
+            {% search_category category='teams' limit=3 show_heading=True %}
         </div>
     </div>
 </div>
