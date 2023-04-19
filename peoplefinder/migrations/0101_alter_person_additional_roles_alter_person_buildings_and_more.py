@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("peoplefinder", "0098_delete_country"),
+        ("peoplefinder", "0100_alter_team_slug"),
     ]
 
     operations = [
