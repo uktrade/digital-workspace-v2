@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("working_at_dit", "0003_howdoi_include_link_on_homepage"),
     ]

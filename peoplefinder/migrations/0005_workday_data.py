@@ -23,7 +23,6 @@ def insert_workday_data(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0004_country_data"),
     ]

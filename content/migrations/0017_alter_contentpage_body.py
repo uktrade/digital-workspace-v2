@@ -10,7 +10,6 @@ import content.blocks
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("content", "0016_auto_20230209_1441"),
     ]
