@@ -56,6 +56,11 @@ jobs:
           name: Copy env file
           command: cp .env.ci .env
       - run:
+          name: Get node 18 installed
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            sudo apt install -y nodejs
+      - run:
           name: install npm packages
           command: npm ci
       - run:
