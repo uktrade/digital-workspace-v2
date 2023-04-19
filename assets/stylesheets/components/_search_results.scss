@@ -171,6 +171,12 @@
   > * {
     margin-bottom: 0.5rem;
   }
+
+  .govuk-heading-s {
+    .govuk-link:hover {
+        text-decoration: underline;
+    }
+  }
 }
 
 .beta-feedback {
