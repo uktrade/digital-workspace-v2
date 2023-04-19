@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Tuple
 
 from django import template
 from django.core.paginator import Paginator
@@ -32,34 +32,35 @@ PAGE_SIZE = 20
 @register.inclusion_tag(
     "search/partials/search_results_category.html", takes_context=True
 )
-def search_category(
-    context, *, category, limit=None, heading=None, heading_plural=None
-):
+def search_category(context, *, category, limit=None, show_heading=False):
     request = context["request"]
     query = context["search_query"]
     page = context["page"]
 
     search_vector = SEARCH_VECTORS[category](request)
     pinned_results = search_vector.pinned(query)
-    # `list` needs to be called to force the database query to be evaluated before
-    # passing the value to the paginator. If this isn't done, the pages will have the
-    # pinned results removed after pagination and cause the pages to have odd lengths.
-    search_results = list(search_vector.search(query))
-    search_results_all = (
-        list(pinned_results) + search_results
-    )  # used to ensure pagination takes account of all types
-    count = len(search_results_all)
+    # `list` needs to be called to force the database query to be evaluated
+    # before passing the value to the paginator. If this isn't done, the
+    # pages will have the pinned results removed after pagination and cause
+    # the pages to have odd lengths.
+    search_results = list(pinned_results) + list(search_vector.search(query))
+    count = len(search_results)
 
     if limit:
         search_results = search_results[: int(limit)]
 
     # Only paginate if there is no limit.
     if not limit:
-        search_results_paginator = Paginator(search_results_all, PAGE_SIZE)
-        search_results_all = search_results_paginator.page(page)
+        search_results_paginator = Paginator(search_results, PAGE_SIZE)
+        search_results = search_results_paginator.page(page)
 
-    if heading and (count != 1):
-        heading = heading_plural or f"{heading}s"
+    # The singular/plural of the result type we can tell users about in
+    # headings, errors etc
+    result_type_display, result_type_display_plural = _get_result_type_displays(
+        category
+    )
+    if count != 1:
+        result_type_display = result_type_display_plural
 
     return {
         "request": request,
@@ -68,10 +69,10 @@ def search_category(
         "pinned_results": pinned_results,
         "num_pinned_results": f"{len(pinned_results)}",
         "search_results": search_results,
-        "search_results_all": search_results_all,
         "search_query": query,
         "count": count,
-        "heading": heading,
+        "show_heading": show_heading,
+        "result_type_display": result_type_display,
         "is_limited": limit is not None and count > limit,
     }
 
@@ -102,3 +103,16 @@ def _get_result_template(category: SearchCategory) -> str:
         return "search/partials/result/page.html"
 
     return f"search/partials/result/{category}.html"
+
+
+def _get_result_type_displays(category: SearchCategory) -> Tuple[str, str]:
+    category_result_types_mapping = {
+        "all_pages": ("page", "pages"),
+        "people": ("person", "people"),
+        "teams": ("team", "teams"),
+        "guidance": ("guidance page", "guidance pages"),
+        "tools": ("tool", "tools"),
+        "news": ("news item", "news items"),
+    }
+
+    return category_result_types_mapping[category]
