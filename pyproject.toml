@@ -31,7 +31,7 @@ wagtail = "^4.2.2"
 wagtailmedia = "^0.13.0"
 wagtailmenus = "^3.1.7"
 wagtail-draftail-anchors = "^0.5.0"
-wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag="v0.2.0" }
+wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag="v0.3.0" }
 # OpenSearch
 elasticsearch = "<7.14.0"  # highest version for OpenSearch support
 elasticsearch-dsl = "^7.4.0"
@@ -64,7 +64,7 @@ isort = "^5.12.0"
 flake8 = "^6.0.0"
 flake8-bandit = "^4.1.1"
 flake8-bugbear = "^23.3.23"
-djlint = "^1.23.1"
+djlint = "^1.23.2"
 pydocstyle = "^6.3.0"
 # Testing
 pytest = "^7.3.1"
