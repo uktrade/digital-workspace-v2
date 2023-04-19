@@ -1315,14 +1315,14 @@ pytz = "*"
 
 [[package]]
 name = "djlint"
-version = "1.23.1"
+version = "1.23.2"
 description = "HTML Template Linter and Formatter"
 category = "dev"
 optional = false
 python-versions = ">=3.8.0,<4.0.0"
 files = [
-    {file = "djlint-1.23.1-py3-none-any.whl", hash = "sha256:a41d71ed2c71480381ac2154c7fc628b4c9ebcffc687f17b381784db4686bb90"},
-    {file = "djlint-1.23.1.tar.gz", hash = "sha256:fbb94264950fbbda2135766270910212723d6bc50401f5e07d7f8127afda3c9d"},
+    {file = "djlint-1.23.2-py3-none-any.whl", hash = "sha256:01987f2e7befe05af195f124ff1d580bde1bd445daef7e170120be5eb6cb41cf"},
+    {file = "djlint-1.23.2.tar.gz", hash = "sha256:3601af713fcc230b2ca795a29a446c07a13c42c9476ebb8e1618458339d2a06d"},
 ]
 
 [package.dependencies]
@@ -3697,8 +3697,8 @@ wagtail = ">=2.15.0"
 [package.source]
 type = "git"
 url = "https://github.com/uktrade/wagtail-admin-sortable.git"
-reference = "v0.2.0"
-resolved_reference = "91b2973f5c5a354b82a322d697fa95eaab5b45b3"
+reference = "v0.3.0"
+resolved_reference = "26299945870b5bf44bcd14daa8898595962bcee6"
 
 [[package]]
 name = "wagtail-draftail-anchors"
@@ -4050,4 +4050,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0cb30603d35342e594a3d097c96be37d81473788abb1bc7d372d55f0b24b89c9"
+content-hash = "88395d508e21b51d71b129611529db1c2490ef7802ce4cbe591324d63556424d"
