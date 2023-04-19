@@ -56,11 +56,19 @@ jobs:
           name: Copy env file
           command: cp .env.ci .env
       - run:
+          name: Get node 18 installed
+          command: |
+            nvm install 18
+      - run:
           name: install npm packages
-          command: npm ci
+          command: |
+            nvm use 18
+            npm ci
       - run:
           name: build webpack
-          command: npm run build
+          command: |
+            nvm use 18
+            npm run build
       - run:
           name: build containers
           command: make build-all
