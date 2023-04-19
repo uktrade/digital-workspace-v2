@@ -1,0 +1,13 @@
+{% extends "wagtailadmin/base.html" %}
+{% load render_bundle webpack_static from webpack_loader %}
+{% block branding_logo %}
+    <img src="{% webpack_static 'dbt-logo-white.png' %}"
+         srcset="{% webpack_static 'dbt-logo-white@2x.png' %} 2x"
+         alt="Department for Business & Trade logo"
+         class="wide">
+    <span class="wide">Digital Workspace CMS</span>
+    <img src="{% webpack_static 'dbt-mark-white.png' %}"
+         alt="Department for Business & Trade logomark"
+         class="slim">
+    <span class="slim">CMS</span>
+{% endblock branding_logo %}

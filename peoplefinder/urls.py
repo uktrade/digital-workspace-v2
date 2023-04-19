@@ -93,7 +93,7 @@ people_urlpatterns = [
     ),
     # Leaving DIT
     path(
-        "<uuid:profile_slug>/leaving-dit",
+        "<uuid:profile_slug>/leaving-dbt",
         ProfileLeavingDitView.as_view(),
         name="profile-leaving-dit",
     ),
@@ -146,6 +146,7 @@ teams_urlpatterns = [
     ),
 ]
 
+# TODO[DWPF-454] remove this ... and add a redirect?
 people_and_teams_urlpatterns = [
     path("search/", search_view, name="people-and-teams-search"),
 ]

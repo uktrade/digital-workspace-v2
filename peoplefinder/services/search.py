@@ -18,7 +18,7 @@ def search(request: HttpRequest, query: str, filters: list[str]) -> SearchResult
     person_results = []
 
     if TEAMS_FILTER in filters:
-        team_results = s.search(query, Team)[:50]
+        team_results = s.search(query, Team.objects.with_all_parents())[:50]
 
     if PEOPLE_FILTER in filters:
         qs = Person.objects.all()

@@ -16,6 +16,7 @@ env = environ.Env()
 env_file = os.path.join(BASE_DIR, ".env")
 if os.path.exists(env_file):
     env.read_env(env_file)
+env.read_env()
 
 VCAP_SERVICES = env.json("VCAP_SERVICES", {})
 
@@ -118,6 +119,9 @@ THIRD_PARTY_APPS = [
     "django_chunk_upload_handlers",
     "django_audit_log_middleware",
     "rest_framework",
+    "crispy_forms",
+    "crispy_forms_gds",
+    "django_feedback_govuk",
 ]
 
 WAGTAIL_APPS = [
@@ -433,6 +437,13 @@ LOGGING = {
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": True,
         },
+        "django.request": {
+            "handlers": [
+                "stdout",
+            ],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
         "django.server": {
             "handlers": [
                 "stdout",
@@ -446,6 +457,12 @@ LOGGING = {
             ],
             "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),
             "propagate": True,
+        },
+        "opensearch": {
+            "handlers": [
+                "stdout",
+            ],
+            "level": "INFO",
         },
     },
 }
@@ -511,3 +528,24 @@ PERSON_UPDATE_WEBHOOK_URL = env("PERSON_UPDATE_WEBHOOK_URL", None)
 
 # Home page
 HIDE_NEWS = env.bool("HIDE_NEWS", False)
+
+# Crispy forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = ["gds"]
+CRISPY_TEMPLATE_PACK = "gds"
+
+# Feedback
+DJANGO_FEEDBACK_GOVUK = {
+    "SERVICE_NAME": "the beta experience",
+    "FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID": env(
+        "FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID"
+    ),
+    "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS": env.list(
+        "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
+    ),
+    "COPY": {
+        "SUBMIT_TITLE": "Give your feedback on the beta search experience",
+        "FIELD_SATISFACTION_LEGEND": "How do you feel about your search experience today?",
+        "FIELD_COMMENT_LEGEND": "Tell us why you gave that rating",
+        "FIELD_COMMENT_HINT": "If you do not want to be contacted about more research opportunities, you can let us know here.",
+    },
+}

@@ -1,13 +1,12 @@
-<form
-    class="search-form"
-    {# action="{% if request.user.enable_v2_search %}{% url 'v2-search' %}{% else %}{% url 'search' %}{% endif %}" #}
-    action="{% url search_url|default:'search' %}"
-    method="get"
->
+<form class="search-form"
+      action="{% if search_url %}{{ search_url }}{% else %}{% url 'search' %}{% endif %}"
+      method="get">
     <label for="search-site" class="govuk-visually-hidden">Search Digital Workspace</label>
-    <input id="search-site" class="govuk-input" name="query" placeholder="{{ placeholder|default:'Search site' }}" type="search" value="{{ search_query|default:'' }}"/>
-    {% if search_category %}
-        <input name="category" type="hidden" value="{{ search_category }}"/>
-    {% endif %}
+    <input id="search-site"
+           class="govuk-input"
+           name="query"
+           placeholder="{{ placeholder|default:'Search site' }}"
+           type="search"
+           value="{{ search_query|default:'' }}"/>
     <button type="submit">Search</button>
 </form>

@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search import index
+from wagtail.search.queryset import SearchableQuerySetMixin
 
 
 # United Kingdom
@@ -168,7 +169,7 @@ class ActivePeopleManager(models.Manager):
         return super().get_queryset().exclude(is_active=False)
 
 
-class PersonQuerySet(models.QuerySet):
+class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
     def active(self):
         return self.exclude(is_active=False)
 
@@ -412,7 +413,7 @@ class Person(index.Indexed, models.Model):
         ),
     )
     do_not_work_for_dit = models.BooleanField(
-        "My manager is not listed because I do not work for DIT", default=False
+        "My manager is not listed because I do not work for DBT", default=False
     )
     other_key_skills = models.CharField(
         "What other skills do you have?",
@@ -554,9 +555,9 @@ class Person(index.Indexed, models.Model):
         return ", ".join(map(str, workdays))
 
 
-class TeamQuerySet(models.QuerySet):
+class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
     def with_all_parents(self):
-        return self.values("pk").annotate(
+        return self.annotate(
             all_parents=ArrayAgg(
                 Func(
                     Value("slug"),
@@ -573,6 +574,8 @@ class TeamQuerySet(models.QuerySet):
                     function="jsonb_build_object",
                     output_field=JSONField(),
                 ),
+                # Filter out the last team (deepest).
+                filter=~Q(children__parent=F("pk")),
                 ordering="-children__depth",
             ),
         )
@@ -594,7 +597,7 @@ class TeamQuerySet(models.QuerySet):
             With a specified `parent_field`:
             >>> team = Team.objects.with_parents(parent_field="slug").get(slug="software")
             >>> team.ancestry
-            ["spacex", "engineering", "software"]
+            ['spacex', 'engineering', 'software']
 
         Args:
             parent_field: The parent field to populate the array with.
@@ -610,7 +613,7 @@ class TeamQuerySet(models.QuerySet):
 # markdown
 DEFAULT_TEAM_DESCRIPTION = """Find out who is in the team and their contact details.
 
-You can update this description, by [updating your team information](https://workspace.trade.gov.uk/working-at-dit/how-do-i/update-my-team-information-on-people-finder/).
+You can update this description, by [updating your team information](https://workspace.trade.gov.uk/working-at-dbt/how-do-i/update-my-team-information-on-people-finder/).
 """
 
 
@@ -635,7 +638,7 @@ class Team(index.Indexed, models.Model):
         blank=True,
         help_text="A short form of the team name, up to 10 characters. For example DDaT.",
     )
-    slug = models.SlugField(max_length=130, unique=True, editable=False)
+    slug = models.SlugField(max_length=130, unique=True, editable=True)
     description = models.TextField(
         "Team description",
         null=False,

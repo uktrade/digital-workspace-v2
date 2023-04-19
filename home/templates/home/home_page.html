@@ -23,7 +23,7 @@
                     </nav>
                 </li>
                 {% for news_item in news_items %}
-                    <li class="news-item news-item-{{ forloop.counter }}">
+                    <li class="news-item news-item-{{ forloop.counter }}" data-testid="home-news-item">
                         {% include "home/includes/news_item.html" with news_item=news_item %}
                     </li>
                 {% endfor %}
@@ -59,12 +59,12 @@
                     </li>
                 {% endfor %}
             </ul>
-            <p class="ws-all-how-to"><a class="govuk-link" href="/working-at-dit/how-do-i/">View all "How do I?" guides</a></p>
+            <p class="ws-all-how-to"><a class="govuk-link" href="/working-at-dbt/how-do-i/">View all "How do I?" guides</a></p>
         </section>
 
         {% if not hide_news %}
         <section>
-            <h2 class="govuk-heading-m">DIT news from GOV.UK</h2>
+            <h2 class="govuk-heading-m">DBT news from GOV.UK</h2>
             <ul class="govuk-news">
                 {% for govuk_news_item in govuk_feed %}
                     <li>

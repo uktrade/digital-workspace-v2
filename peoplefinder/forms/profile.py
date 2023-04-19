@@ -61,17 +61,23 @@ class ProfileForm(forms.ModelForm):
     height = forms.IntegerField(required=False)
     remove_photo = forms.BooleanField(required=False)
 
+    # These fields are disabled by default as only a superuser can edit them. Disabled
+    # fields cannot be tampered with and will fall back to their initial value.
     is_superuser = forms.BooleanField(
-        required=False, label="Allow this person to administrate People Finder"
+        disabled=True,
+        required=False,
+        label="Allow this person to administrate People Finder",
     )
     is_team_admin = forms.BooleanField(
-        required=False, label="Allow this person to manage teams"
+        disabled=True, required=False, label="Allow this person to manage teams"
     )
     is_person_admin = forms.BooleanField(
-        required=False, label="Allow this person to manage people"
+        disabled=True, required=False, label="Allow this person to manage people"
     )
 
     def __init__(self, *args, **kwargs) -> None:
+        self.request = kwargs.pop("request", None)
+
         super().__init__(*args, **kwargs)
 
         person = self.instance
@@ -176,6 +182,12 @@ class ProfileForm(forms.ModelForm):
             is_team_admin=user and user.groups.filter(name="Team Admin").exists(),
             is_person_admin=user and user.groups.filter(name="Person Admin").exists(),
         )
+
+        # Enable the fields that only a superuser can edit.
+        if self.request and self.request.user.is_superuser:
+            self.fields["is_superuser"].disabled = False
+            self.fields["is_team_admin"].disabled = False
+            self.fields["is_person_admin"].disabled = False
 
     def clean_manager(self):
         manager_slug = self.cleaned_data["manager"]

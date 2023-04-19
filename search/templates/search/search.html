@@ -1,98 +1,125 @@
 {% extends "1_col_content.html" %}
 {% load formatting %}
 {% load static wagtailcore_tags %}
-
-{% block body_class %}template-searchresults{% endblock %}
-
-{% block title %}Search{% endblock %}
-
+{% block body_class %}template-searchresults{% endblock body_class %}
+{% block title %}Search{% endblock title %}
 {% block content %}
-
     <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-
-    <div class="search-results-wrapper">
-    <h2 class="govuk-heading-m">
-        Search results for <em>&lsquo;{{ search_query }}&rsquo;</em>
-    </h2>
-
-    <form  action="{% url 'search' %}" method="get">
-
-
-    <div class="govuk-grid-row">
-    <div class="govuk-grid-column-three-quarters">
-
-        <fieldset class="govuk-fieldset">
-            <div class="govuk-form-group">
-                <label class="govuk-label govuk-visually-hidden" for="address-line-1" >
-                    Search term
-                </label>
-                <input class="govuk-input" id="query" name="query" type="text"{% if search_query %} value="{{ search_query }}"{% endif %}>
-            </div>
-        </fieldset>
-  </div>
-      <div class="govuk-grid-column-one-quarter">
-          <input value="search" type="submit" class="govuk-button" data-module="govuk-button">
-      </div>
-
-    </div>
-
-    </form>
-    <p class="govuk-body">{{ show_total }} {% if show_total == 1 %}result{% else %}results{% endif %} found</p>
-    {% if pinned_results and page == 1 %}
-        <ul class="search-results pinned">
-            {% for result in pinned_results %}
-                <li>
-                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% pageurl result %}">{{ result }}</a></h3>
-                    <p class="govuk-body">{{ result.preview_text }}</p>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    {% if search_results %}
-        <ul class="search-results">
-            {% for result in search_results %}
-                <li>
-                    <h3 class="govuk-heading-m"><a class="govuk-link" href="{% slugurl result.slug_filter %}">{{ result.title }}</a></h3>
-
-                    {% if result.meta.highlight.title %}
-                        {% for item in result.meta.highlight.title %}
-                            <p class="govuk-body">{{ item|safe }}...</p>
-                        {% endfor %}
-                    {% endif %}
-
-                    {% if result.meta.highlight.content_contentpage__body_no_html %}
-                        {% for item in result.meta.highlight.content_contentpage__body_no_html %}
-                            <p class="govuk-body">{{ item|safe }}...</p>
-                        {% endfor %}
-                    {% endif %}
-
-                    {% if not result.meta.highlight %}
-                        <p class="govuk-body">{{ result.content_contentpage__body_no_html|preview }}....</p>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-
-        <div class="pagination">
-            {% if previous_page %}
-                <a class="previous govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ previous_page }}">Previous page</a>
-            {% endif %}
-            <ul class="page-links">
-                {% for i in pagination_range %}
-                    {% if page == i %}
-                        <li class="active govuk-body"><span>{{ i }} </span></li>
+        <div class="govuk-grid-column-two-thirds">
+            <div class="search-results-wrapper">
+                <h2 class="govuk-heading-m">
+                    Search results for <em>&lsquo;{{ search_query }}&rsquo;</em>
+                </h2>
+                <form action="{% url 'search' %}" method="get">
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-three-quarters">
+                            <fieldset class="govuk-fieldset">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-visually-hidden" for="address-line-1">Search term</label>
+                                    <input class="govuk-input"
+                                           id="query"
+                                           name="query"
+                                           type="text"
+                                           {% if search_query %} value="{{ search_query }}"{% endif %}>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="govuk-grid-column-one-quarter">
+                            <input value="search"
+                                   type="submit"
+                                   class="govuk-button"
+                                   data-module="govuk-button">
+                        </div>
+                    </div>
+                </form>
+                <p class="govuk-body">
+                    {{ show_total }}
+                    {% if show_total == 1 %}
+                        result
                     {% else %}
-                        <li><a class="govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ i }}">{{ i }}</a></li>
+                        results
                     {% endif %}
-                {% endfor %}
-            </ul>
-            {% if next_page %}
-                <a class="next govuk-link" href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ next_page }}">Next page</a>
-            {% endif %}
+                    found
+                </p>
+                {% if pinned_results and page == 1 %}
+                    <ul class="search-results pinned">
+                        {% for result in pinned_results %}
+                            <li>
+                                <h3 class="govuk-heading-m">
+                                    <a class="govuk-link"
+                                       href="{% pageurl result %}"
+                                       onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% pageurl result %}', 'search_result_selected_type': 'page', 'search_result_selected_section': 'content_pinned', 'search_result_selected_number_overall': {{ forloop.counter }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">{{ result }}</a>
+                                </h3>
+                                <p class="govuk-body">{{ result.preview_text }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if search_results %}
+                    <ul class="search-results">
+                        {% for result in search_results %}
+                            <li>
+                                <h3 class="govuk-heading-m">
+                                    <a class="govuk-link"
+                                       href="{% slugurl result.slug_filter %}"
+                                       onclick="gtm_data_then_click(this, { 'event': 'search_result', 'search_result_selected_url': '{% slugurl result.slug_filter %}', 'search_result_selected_type': 'page', 'search_result_selected_section': 'pages', 'search_result_selected_number_overall': {{ forloop.counter|add:num_pinned_results }}, 'search_result_selected_number_section': {{ forloop.counter }}, 'search_result_selected_page': {{ page }} })">{{ result.title }}</a>
+                                </h3>
+                                {% if result.meta.highlight.title %}
+                                    {% for item in result.meta.highlight.title %}<p class="govuk-body">{{ item|safe }}...</p>{% endfor %}
+                                {% endif %}
+                                {% if result.meta.highlight.content_contentpage__body_no_html %}
+                                    {% for item in result.meta.highlight.content_contentpage__body_no_html %}
+                                        <p class="govuk-body">{{ item|safe }}...</p>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if not result.meta.highlight %}
+                                    <p class="govuk-body">{{ result.content_contentpage__body_no_html|preview }}....</p>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="pagination">
+                        {% if previous_page %}
+                            <a class="previous govuk-link"
+                               href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ previous_page }}"
+                               onclick="dataLayer.push({'event':'search-ui', 'search_ui': 'pagination_prev'})">Previous page</a>
+                        {% endif %}
+                        <ul class="page-links">
+                            {% for i in pagination_range %}
+                                {% if page == i %}
+                                    <li class="active govuk-body">
+                                        <span>{{ i }}</span>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a class="govuk-link"
+                                           href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ i }}"
+                                           onclick="dataLayer.push({'event':'search-ui', 'search_ui': 'pagination_{{ i }}'})">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        {% if next_page %}
+                            <a class="next govuk-link"
+                               href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ next_page }}"
+                               onclick="dataLayer.push({'event':'search-ui', 'search_ui': 'pagination_next'})">Next page</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
         </div>
-    {% endif %}
-{% endblock %}
-</div>
-</div>
-</div>
+    </div>
+    <script lang="javascript">
+    document.onload = dataLayer.push({
+        'event': 'search',
+        'search_version': 'v1',
+        'search_query': '{{ search_query }}',
+        'search_results_page_type': 'pages',
+        'search_results_count_total': '{{ show_total }}',
+        'search_results_count_pages_type': '{{ show_total }}',
+        'search_results_count_people_type': '0',
+        'search_results_count_teams_type': '0',
+        'search_result_selected_page': '{{ page }}'
+    });
+    </script>
+{% endblock content %}

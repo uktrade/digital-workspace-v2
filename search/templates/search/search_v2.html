@@ -1,0 +1,29 @@
+{% extends "1_col_content.html" %}
+{% comment %}
+context:
+    search_url
+    search_query
+    search_category
+    page
+{% endcomment %}
+{% block title %}Search results for '{{ search_query }}'{% endblock title %}
+{% block location %}Search{% endblock location %}
+{% block content %}
+    {% include 'search/partials/search_results.html' %}
+    <script lang="javascript">
+        document.onload = dataLayer.push({
+            'event': 'search',
+            'search_version': 'v2-2023.04-1',
+            'search_query': '{{ search_query }}',
+            'search_results_page_type': '{{ search_category }}',
+            'search_result_selected_page': '{{ page }}'
+        });
+        // set focus to search input, move cursor to end of text
+        document.addEventListener("DOMContentLoaded", () => {
+            const searchinput = document.getElementById("search-site");
+            searchinput.selectionStart = 1000;
+            searchinput.selectionEnd = 1000;
+            searchinput.focus();
+        });
+    </script>
+{% endblock content %}

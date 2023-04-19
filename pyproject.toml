@@ -9,21 +9,22 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 # Django
-django = "^4.1.7"
+django = "^3.2.18"
+django-crispy-forms = "^1.9"
 django-environ = "^0.8.1"
-django-webpack-loader = "^1.4.1"
-django-storages = "^1.11.1"
-django-extensions = "^3.1.5"
 django_redis = "^5.2.0"
 django-settings-export = "^1.2.1"
 django-simple-history = "^3.0.0"
+django-storages = "^1.11.1"
+django-webpack-loader = "^1.4.1"
 djangorestframework = "^3.13.1"
 # DIT Django
-django-staff-sso-client = "^4.0.1"
-django_log_formatter_ecs = "^0.0.5"
-django-chunk-upload-handlers = "^0.0.10"
 django-audit-log-middleware = "^0.0.4"
 django-hawk-drf = "^1.1.0"
+django-chunk-upload-handlers = "^0.0.10"
+django-feedback-govuk = "^0.1.2"
+django_log_formatter_ecs = "^0.0.5"
+django-staff-sso-client = "^4.0.1"
 # Wagtail
 wagtail = "^4.0.0"
 wagtailmedia = "^0.13.0"
@@ -35,7 +36,7 @@ elasticsearch = "7.13.4"
 elasticsearch-dsl = "^7.4.0"
 django-elasticsearch-dsl = "^7.2.2"
 # GOV.UK Notify
-notifications-python-client = "^6.3.0"
+notifications-python-client = "^8.0.0"
 # Peoplefinder
 markdown = "^3.3.4"
 requests-hawk = "^1.1.1"
@@ -68,6 +69,7 @@ isort = "^5.10.1"
 flake8 = "^6.0.0"
 flake8-bandit = "^4.1.1"
 flake8-bugbear = "^23.1.20"
+djlint = "^1.19.16"
 # TODO: Do these flake8 plugins provide much value?
 # flake8-blind-except
 # flake8-debugger
@@ -79,11 +81,11 @@ pydocstyle = "^6.1.1"
 # Testing
 pytest = "^6.2.5"
 pytest-django = "^4.5.2"
+pytest-playwright = "^0.3.2"
 coverage = "^5.5"
-selenium = "^3.141.0"
-pytest-selenium = "^3.0.0"
 faker = "^11.3.0"
 factory-boy = "^3.2.1"
+wagtail-factories = "^4.0.0"
 # Util
 bpython = "^0.22.1"
 django-extensions = "^3.2.1"
@@ -97,10 +99,10 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 minversion = "6.0"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "--disable-warnings --ds=config.settings.test --driver=Remote --selenium-host=selenium --capability browserName chrome --liveserver=0.0.0.0:8000"
+addopts = "--disable-warnings --ds=config.settings.test --base-url http://localhost:8000 --liveserver=0.0.0.0:8000"
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 markers = [
-    "selenium: Mark the test as using Selenium.",
+    "e2e: Mark the test as using Playwright.",
     "opensearch: Mark the test as using OpenSearch.",
 ]
 
@@ -108,7 +110,7 @@ markers = [
 omit = [
     "*/migrations/*",
     "*/test/*",
-    "selenium_tests/*"
+    "e2e_tests/*",
 ]
 
 [tool.isort]
@@ -117,3 +119,11 @@ multi_line_output = 3
 skip_gitignore = true
 line_length = 88
 lines_after_imports = 2
+
+[tool.djlint]
+extension="html"
+profile="django"
+format_js=false
+format_css=false
+ignore="T002,H006,H017,H023"
+preserve_blank_lines=true

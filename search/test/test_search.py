@@ -1,6 +1,6 @@
 import pytest
 
-from search.search import sanitize_search_query
+from search.utils import sanitize_search_query
 
 
 @pytest.mark.parametrize(

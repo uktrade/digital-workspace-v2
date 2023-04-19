@@ -1,6 +1,8 @@
-const images = require.context('../images', true)
-const imagePath = (name) => images(name, true)
+import "htmx.org/dist/htmx.js";
 
-require.context('govuk-frontend/govuk/assets');
-import { initAll } from 'govuk-frontend';
+const images = require.context("../images", true);
+const imagePath = (name) => images(name, true);
+
+require.context("govuk-frontend/govuk/assets");
+import { initAll } from "govuk-frontend";
 initAll();

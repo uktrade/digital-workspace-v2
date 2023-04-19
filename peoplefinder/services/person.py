@@ -47,7 +47,7 @@ NOTIFY_ABOUT_CHANGES_LOG_MESSAGE = """Hello {profile_name},
 You may want to check your profile to make sure that it is up to date:
 {profile_url}
 
-You can update any profile on Digital Workspace. Find out more at: https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/using-people-finder/
+You can update any profile on Digital Workspace. Find out more at: https://workspace.trade.gov.uk/working-at-dbt/policies-and-guidance/using-people-finder/
 """
 
 

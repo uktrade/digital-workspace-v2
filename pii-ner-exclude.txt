@@ -180,7 +180,6 @@ min-width
 @media
 767px
 # Linting & security
-selenium==3.141.0
 npm-debug.log
 # Wordpress
 IDE

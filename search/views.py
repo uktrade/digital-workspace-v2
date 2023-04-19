@@ -1,28 +1,34 @@
 import logging
 import math
 import shlex
-from typing import Optional, TypedDict
+from functools import wraps
 
-from django import forms
 from django.conf import settings
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
 from content.models import ContentPage, SearchExclusionPageLookUp, SearchPinPageLookUp
+from search.templatetags.search import SEARCH_CATEGORIES
 
-from .forms import SearchCategory, SearchForm
-from .search import sanitize_search_query, search_all
+from .utils import sanitize_search_query
 
 
 logger = logging.getLogger(__name__)
 
 
+# TODO[DWPF-454] remove this view
 def search(request):
     page = int(request.GET.get("page", 1))
     search_query = request.GET.get("query", None)
+
+    # users in the beta need to use the v2 search
+    if request.user.enable_v2_search:
+        return redirect(reverse("search:home") + f"?query={search_query}")
 
     if search_query is None:
         search_query = request.GET.get("s", None)
@@ -166,6 +172,7 @@ def search(request):
         "search/search.html",
         {
             "pinned_results": pinned_results,
+            "num_pinned_results": pinned_results.count() if page == 1 else 0,
             "num_results": pinned_results.count() + total,
             "search_query": search_query,
             "search_results": hits,
@@ -178,84 +185,71 @@ def search(request):
     )
 
 
-class V2SearchContext(TypedDict):
-    search_query: Optional[str]
-    search_category: Optional[str]
-    search_categories: type[SearchCategory]
-    page_results: list
-    team_results: list
-    people_results: list
-    results: list
-    results_template: Optional[str]
-    total_matches: int
-    # Must be provided before passing to the response.
-    form: Optional[forms.Form]
+def search_view(func):
+    @wraps(func)
+    def wrapper(request, *args, **kwargs):
+        query = request.GET.get("query", "")
+
+        # Users not in the beta need to use the v1 search.
+        # TODO[DWPF-454] remove this
+        if not request.user.enable_v2_search:
+            return redirect(reverse("search") + f"?query={query}")
+
+        return func(request, *args, **kwargs)
+
+    return wrapper
+
+
+# Views
+@require_http_methods(["GET"])
+@search_view
+def home_view(request: HttpRequest) -> HttpResponse:
+    query = request.GET.get("query", "")
+    return redirect(
+        reverse("search:category", kwargs={"category": "all"}) + f"?query={query}"
+    )
 
 
 @require_http_methods(["GET"])
-def v2_search(request: HttpRequest) -> HttpResponse:
-    if not request.user.enable_v2_search:
-        raise Http404
+@search_view
+def search_v2(request: HttpRequest, category: str) -> HttpResponse:
+    query = request.GET.get("query", "")
+    page = request.GET.get("page", "1")
 
-    query = request.GET.get("query")
-    category = request.GET.get("category")
+    # If the category is invalid, redirect to search all.
+    if category not in SEARCH_CATEGORIES:
+        return redirect(reverse("search:home") + f"?query={query}")
 
-    if category:
-        category = category if category in SearchCategory else None
-
-    context: V2SearchContext = {
+    context = {
+        "search_url": reverse("search:category", args=[category]),
         "search_query": query,
         "search_category": category,
-        "search_categories": SearchCategory,
-        "page_results": [],
-        "team_results": [],
-        "people_results": [],
-        "results": [],
-        "results_template": None,
-        "total_matches": 0,
-        "form": None,
+        "page": page,
     }
 
-    if query:
-        form = SearchForm(data=request.GET)
-        form.is_valid()
+    return TemplateResponse(request, "search/search_v2.html", context=context)
 
-        (
-            context["page_results"],
-            context["team_results"],
-            context["people_results"],
-        ) = search_all(request, query, category)
-    else:
-        form = SearchForm()
 
-    if category == "pages":
-        context["results"] = context["page_results"]
-        context["results_template"] = "search/partials/page_results.html"
-    elif category == "teams":
-        context["results"] = context["team_results"]
-        context["results_template"] = "search/partials/team_results.html"
-    elif category == "people":
-        context["results"] = context["people_results"]
-        context["results_template"] = "search/partials/people_results.html"
+def toggle_search_v2(request: HttpRequest, use_v2: str) -> HttpResponse:
+    """
+    Temporary view to allow users to opt-in or -out of the beta/V2 functionality.
+    TODO [DWPF-454] Remove once Beta period is over
+    """
 
-    if category:
-        context["total_matches"] = len(context["results"])
-    else:
-        context["total_matches"] = sum(
-            [
-                len(x)
-                for x in [
-                    context["page_results"],
-                    context["team_results"],
-                    context["people_results"],
-                ]
-            ]
-        )
+    next = request.GET.get("next", None)
+    if next is None:
+        next = request.META.get("HTTP_REFERER", "/")
 
-    context["form"] = form
+    if use_v2 not in [
+        "on",
+        "off",
+    ]:
+        return redirect(next)  # @TODO raise an error instead?
 
-    assert context["form"], "The form must be provided before passing to the response"
+    user = request.user
+    use_v2 = True if use_v2 == "on" else False
+    if user.enable_v2_search != use_v2:
+        user.enable_v2_search = use_v2
+        user.save()
 
-    # We must return a `TemplateResponse` because there is middleware which uses the
-    # `process_template_response` hook.
-    return TemplateResponse(request, "search/v2_search.html", context=context)
+    return redirect(next)

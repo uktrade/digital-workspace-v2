@@ -1,15 +1,24 @@
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from peoplefinder.forms.search import PEOPLE_FILTER, TEAMS_FILTER, SearchForm
-from peoplefinder.models import Team
 from peoplefinder.services.search import search
 
 
+# TODO[DWPF-454] remove this
 @require_http_methods(["GET"])
 def search_view(request):
     query = request.GET.get("query")
     filters = request.GET.getlist("filters", [TEAMS_FILTER, PEOPLE_FILTER])
+
+    # users in the beta need to use the v2 search
+    if request.user.enable_v2_search:
+        return redirect(
+            reverse("search:category", kwargs={"category": "people"})
+            + f"?query={query}"
+        )
 
     context = {
         "team_matches": [],
@@ -22,17 +31,6 @@ def search_view(request):
         form.is_valid()
 
         team_matches, person_matches = search(request, **form.cleaned_data)
-
-        if team_matches:
-            team_parents = {
-                team["pk"]: team
-                for team in Team.objects.with_all_parents().filter(
-                    pk__in=[x.pk for x in team_matches]
-                )
-            }
-
-            for team in team_matches:
-                team.all_parents = team_parents[team.pk]["all_parents"][:-1]
 
         context |= {
             "team_matches": team_matches,
@@ -48,6 +46,7 @@ def search_view(request):
         "query": query,
         "filters": filters,
         "form": form,
+        "page": 1,
     }
 
     # We must return a `TemplateResponse` because there is middleware which uses the
