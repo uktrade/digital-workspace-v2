@@ -71,14 +71,14 @@ wagtail-exec = docker-compose exec wagtail
 wagtail := ${if $(shell docker ps -q -f name=wagtail),$(wagtail-exec),$(wagtail-run)}
 
 # Run a command in a new container (don't start dependencies)
-wagtail-no-deps = docker-compose run --rm wagtail --no-deps
+wagtail-run-no-deps = docker-compose run --rm --no-deps wagtail
+# run on existing container if available otherwise a new one (with no deps)
+wagtail-no-deps := ${if $(shell docker ps -q -f name=wagtail),$(wagtail-exec),$(wagtail-run-no-deps)}
+
 # Run tests in a new container named 'testrunner'
 testrunner = docker-compose run --rm --name testrunner wagtail
 
 chown = $(wagtail-exec) chown $(shell id -u):$(shell id -g)
-
-try:
-	$(wagtail) bash
 
 
 #
