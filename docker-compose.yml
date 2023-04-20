@@ -77,7 +77,7 @@ services:
   playwright:
     build:
       context: .
-      dockerfile: test.dockerfile
+      dockerfile: Dockerfile.test
       cache_from:
         - digital_workspace/playwright:latest
     image: digital_workspace/playwright:latest
