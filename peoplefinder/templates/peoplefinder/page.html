@@ -5,32 +5,31 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block stylesheets %}
-{% render_bundle 'peoplefinder' 'css' %}
+    {% render_bundle 'peoplefinder' 'css' %}
 {% endblock %}
 
 {% block main_content %}
-<div class="govuk-breadcrumbs">
-    <ol class="govuk-breadcrumbs__list">
-        <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-link" href="/">Home</a>
-        </li>
-        {% for team in parent_teams %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-link" href="{% url 'team-view' team.slug %}">{{ team.short_name }}</a>
+                <a class="govuk-link" href="/">Home</a>
             </li>
-        {% endfor %}
-        <li class="govuk-breadcrumbs__list-item">
-            {% block location %}{% endblock %}
-        </li>
-    </ol>
-</div>
+            {% for team in parent_teams %}
+                <li class="govuk-breadcrumbs__list-item">
+                    <a class="govuk-link" href="{% url 'team-view' team.slug %}">{{ team.short_name }}</a>
+                </li>
+            {% endfor %}
+            <li class="govuk-breadcrumbs__list-item">
+                {% block location %}{% endblock %}
+            </li>
+        </ol>
+    </div>
 
-{% include 'peoplefinder/components/messages.html' %}
+    {% include 'peoplefinder/components/messages.html' %}
 
-{% block content %}
-{% endblock %}
+    {% block content %}{% endblock %}
 {% endblock %}
 
 {% block scripts %}
-{% render_bundle 'peoplefinder' 'js' %}
+    {% render_bundle 'peoplefinder' 'js' %}
 {% endblock %}

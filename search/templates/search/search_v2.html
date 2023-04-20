@@ -6,8 +6,12 @@ context:
     search_category
     page
 {% endcomment %}
-{% block title %}Search results for '{{ search_query }}'{% endblock title %}
-{% block location %}Search{% endblock location %}
+{% block title %}
+    Search results for '{{ search_query }}'
+{% endblock title %}
+{% block location %}
+    Search
+{% endblock location %}
 {% block content %}
     {% include 'search/partials/search_results.html' %}
     <script lang="javascript">

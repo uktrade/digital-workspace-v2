@@ -5,20 +5,23 @@
 {% block location %}{{ team.name }}{% endblock %}
 
 {% block content %}
-<h1 class="govuk-heading-l">{{ team.name }}</h2>
+    <h1 class="govuk-heading-l">
+        {{ team.name }}
+    </h2>
 
-<form method="post">
-    {% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
 
-    {% if can_team_be_deleted %}
-        <p class="govuk-body">Are you sure you want to delete the team {{ team }}?</p>
-    {% else %}
-        {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
-    {% endif %}
+        {% if can_team_be_deleted %}
+            <p class="govuk-body">Are you sure you want to delete the team {{ team }}?</p>
+        {% else %}
+            {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
+        {% endif %}
 
-    {% if can_team_be_deleted %}
-        <button class="govuk-button govuk-button--warning" type="submit">Confirm</button>
-    {% endif %}
-    <a class="govuk-button govuk-button--secondary" href="{% url 'team-view' team.slug %}">Cancel</a>
-</form>
+        {% if can_team_be_deleted %}
+            <button class="govuk-button govuk-button--warning" type="submit">Confirm</button>
+        {% endif %}
+        <a class="govuk-button govuk-button--secondary"
+           href="{% url 'team-view' team.slug %}">Cancel</a>
+    </form>
 {% endblock %}

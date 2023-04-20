@@ -1,16 +1,15 @@
 <div class="search-results__category">
-    {% if show_heading %}
-        <h3 class="govuk-heading-s">{{ count }} {{ result_type_display }}</h3>
-    {% endif %}
-{{page}}
-    <div class="search-results__list" data-search-category="{{ search_category }}">
+    {% if show_heading %}<h3 class="govuk-heading-s">{{ count }} {{ result_type_display }}</h3>{% endif %}
+    {{ page }}
+    <div class="search-results__list"
+         data-search-category="{{ search_category }}">
         {% if pinned_results and not search_results.has_previous %}
             <div class="pinned">
                 <h3 class="govuk-heading-s">Featured {{ result_type_display }}</h3>
 
-                    {% for result in pinned_results %}
-                        {% include search_results_item_template with object=result type=search_category section="pinned" number_overall=forloop.counter number_section=forloop.counter only %}
-                    {% endfor %}
+                {% for result in pinned_results %}
+                    {% include search_results_item_template with object=result type=search_category section="pinned" number_overall=forloop.counter number_section=forloop.counter only %}
+                {% endfor %}
             </div>
         {% endif %}
 
@@ -28,7 +27,7 @@
             <p class="govuk-body">There are no matching {{ result_type_display }}.</p>
 
             {% if search_category == 'all_pages' %}
-            {% comment %} Only show this in the main pages section of the "all" results {% endcomment %}
+                {% comment %} Only show this in the main pages section of the "all" results {% endcomment %}
                 <p class="govuk-body">Improve your search results by:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>double-checking your spelling</li>
@@ -43,6 +42,8 @@
         {% include 'includes/pagination_v2.html' with paginated_set=search_results %}
     {% endif %}
     {% if is_limited %}
-        <a href="{% url 'search:category' search_category %}?query={{ search_query }}" class="govuk-button govuk-button--secondary" onclick="gtm_data_then_click(this, { 'event': 'search-ui', 'search_ui': 'see_all_{{ search_category }}' })">See all {{ search_category }} results</a>
+        <a href="{% url 'search:category' search_category %}?query={{ search_query }}"
+           class="govuk-button govuk-button--secondary"
+           onclick="gtm_data_then_click(this, { 'event': 'search-ui', 'search_ui': 'see_all_{{ search_category }}' })">See all {{ search_category }} results</a>
     {% endif %}
 </div>

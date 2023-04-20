@@ -1,7 +1,5 @@
 {% load wagtailcore_tags wagtailembeds_tags %}
 
 {% block content %}
-    <div class="ws-video-embed">
-        {% embed self.video.url max_width=540 %}
-    </div>
+    <div class="ws-video-embed">{% embed self.video.url max_width=540 %}</div>
 {% endblock %}

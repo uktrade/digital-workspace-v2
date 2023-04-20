@@ -3,9 +3,7 @@
         {% if perm_sec_as_author %}
             {{ settings.PERM_SEC_NAME }}
         {% elif first_publisher_as_author %}
-            {% if page.get_first_publisher %}
-                {{ page.get_first_publisher.get_full_name }}
-            {% endif %}
+            {% if page.get_first_publisher %}{{ page.get_first_publisher.get_full_name }}{% endif %}
         {% else %}
             {{ page.get_latest_revision.user.get_full_name }}
         {% endif %}
