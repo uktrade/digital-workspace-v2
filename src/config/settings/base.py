@@ -251,12 +251,12 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT_DIR, "media")
 MEDIA_URL = "https://static.workspace.trade.gov.uk/wp-content/"
 
 WEBPACK_LOADER = {
-  'DEFAULT': {
-    'CACHE': not DEBUG,
-    'STATS_FILE': os.path.join(PROJECT_ROOT_DIR, 'webpack-stats.json'),
-    'POLL_INTERVAL': 0.1,
-    'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
-  }
+    "DEFAULT": {
+        "CACHE": not DEBUG,
+        "STATS_FILE": os.path.join(PROJECT_ROOT_DIR, "webpack-stats.json"),
+        "POLL_INTERVAL": 0.1,
+        "IGNORE": [r".+\.hot-update.js", r".+\.map"],
+    }
 }
 
 # Configure Wagtail
