@@ -24,7 +24,7 @@ class QuickLinksAdmin(ModelAdmin):
 
 class WhatsPopularAdmin(ModelAdmin):
     model = WhatsPopular
-    menu_label = "What's popular?"
+    menu_label = "Popular on Digital Workspace"
     menu_icon = "link"
     menu_order = 200
     add_to_settings_menu = False

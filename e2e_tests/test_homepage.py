@@ -20,7 +20,7 @@ def test_homepage(page: Page):
     page.get_by_title("News page 5")
 
     page.get_by_text("Quick links").click()
-    page.get_by_role("heading", name="What's Popular?").click()
+    page.get_by_role("heading", name="Popular on Digital Workspace").click()
     page.get_by_role("heading", name="How do I?").click()
     page.get_by_role("heading", name="DBT news from GOV.UK").click()
 
