@@ -69,7 +69,6 @@ def insert_key_skills_data(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0012_auto_20210609_0858"),
     ]

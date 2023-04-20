@@ -10,7 +10,6 @@ def delete_all_people(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0069_auto_20220317_1357"),
     ]

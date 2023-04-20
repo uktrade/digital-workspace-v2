@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0091_switch_person_country_columns"),
     ]

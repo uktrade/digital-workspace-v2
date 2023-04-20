@@ -16,7 +16,6 @@ def fix_key_skill_names(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0086_person_legacy_sso_user_id"),
     ]

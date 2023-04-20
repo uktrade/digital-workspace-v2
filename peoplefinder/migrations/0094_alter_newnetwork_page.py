@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("networks", "0002_network_excerpt"),
         ("peoplefinder", "0093_newnetwork"),

@@ -7,7 +7,6 @@ import peoplefinder.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0005_workday_data"),
     ]

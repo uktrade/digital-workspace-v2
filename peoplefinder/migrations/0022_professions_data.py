@@ -46,7 +46,6 @@ def insert_professions_data(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0021_auto_20210610_1123"),
     ]

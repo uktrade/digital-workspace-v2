@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("news", "0011_historicalcomment_historicalnewscategory"),
         ("home", "0003_quicklink_result_weighting"),

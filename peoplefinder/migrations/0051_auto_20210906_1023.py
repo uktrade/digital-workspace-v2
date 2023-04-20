@@ -14,7 +14,6 @@ def copy_name_and_email(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0050_auto_20210906_1022"),
     ]

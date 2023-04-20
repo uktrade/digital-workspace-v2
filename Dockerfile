@@ -2,7 +2,7 @@ FROM ubuntu:focal
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV PYTHON_VERSION=3.9
+ENV PYTHON_VERSION=3.11
 ENV NODE_VERSION=18
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -18,17 +18,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tzdata \
     build-essential \
     libpq-dev \
+    software-properties-common && \
     # Install python and supporting packages
+    add-apt-repository ppa:deadsnakes/ppa -y && \
+    apt-get install -y --no-install-recommends \
     python${PYTHON_VERSION} \
     python${PYTHON_VERSION}-dev \
-    python3-pip && \
+    python${PYTHON_VERSION}-distutils && \
+    # set as default Python (to e.g. avoid needing virtualenvs)
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
+    # Pip
+    curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py && \
     # Install Node
     curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     apt-get install -y --no-install-recommends nodejs && \
-    # Setup python symlinks
-    rm -rf /usr/bin/python3 && \
-    ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
-    ln -s /usr/bin/python3 /usr/bin/python && \
     # clean apt cache
     rm -rf /var/lib/apt/lists/*
 

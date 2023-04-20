@@ -12,7 +12,6 @@ import peoplefinder.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("peoplefinder", "0068_data_person_id"),
