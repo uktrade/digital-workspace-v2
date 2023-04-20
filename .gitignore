@@ -15,6 +15,7 @@ __pycache__
 .venv/
 .pytest_cache/
 .python-version
+.ruff_cache
 
 /node_modules
 npm-debug.log*
