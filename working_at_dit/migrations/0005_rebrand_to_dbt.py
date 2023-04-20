@@ -7,7 +7,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("working_at_dit", "0004_auto_20210217_1343"),
     ]

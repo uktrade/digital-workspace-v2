@@ -162,7 +162,7 @@ class HomePage(BasePage):
 
         context["tweets"] = cache.get("homepage_tweets")[:3]
 
-        # What's popular
+        # Popular on Digital Workspace
         context["whats_popular_items"] = WhatsPopular.objects.all()
 
         # How do I

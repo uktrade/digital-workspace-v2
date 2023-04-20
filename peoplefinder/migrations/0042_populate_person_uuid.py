@@ -14,7 +14,6 @@ def generate_person_uuids(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0041_person_uuid"),
     ]

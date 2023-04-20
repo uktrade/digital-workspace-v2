@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0017_learning_interests_data"),
     ]

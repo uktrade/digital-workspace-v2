@@ -12,7 +12,6 @@ def insert_person_id(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0067_person_id"),
     ]

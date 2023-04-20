@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0065_alter_person_secondary_phone_number"),
     ]

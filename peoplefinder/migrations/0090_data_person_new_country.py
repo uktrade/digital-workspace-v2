@@ -20,7 +20,6 @@ def insert_person_new_country(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0089_person_new_country"),
     ]

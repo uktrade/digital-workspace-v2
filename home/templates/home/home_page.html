@@ -31,7 +31,8 @@
             <a class="govuk-link" href="/news-and-views/">View all news</a>
         </section>
         <section>
-            <h2 class="govuk-heading-m">What's Popular?</h2>
+            {% comment %} used to be known as "What's popular?"" {% endcomment %}
+            <h2 class="govuk-heading-m">Popular on Digital Workspace</h2>
             <ul class="ws-home-grid-items">
                 {% for whats_popular_item in whats_popular_items %}
                     <li class="ws-whats-popular-item">

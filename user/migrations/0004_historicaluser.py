@@ -9,7 +9,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("user", "0003_user_legacy_sso_user_id"),
     ]

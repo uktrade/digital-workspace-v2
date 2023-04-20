@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wagtailcore", "0060_fix_workflow_unique_constraint"),
         ("country_fact_sheet", "0005_auto_20210219_0746"),

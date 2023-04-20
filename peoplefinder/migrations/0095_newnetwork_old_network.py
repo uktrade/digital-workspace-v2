@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0094_alter_newnetwork_page"),
     ]

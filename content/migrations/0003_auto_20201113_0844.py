@@ -12,7 +12,6 @@ import content.blocks
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wagtailimages", "0022_uploadedimage"),
         ("working_at_dit", "0002_auto_20201113_0844"),
