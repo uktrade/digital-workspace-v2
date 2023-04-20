@@ -48,3 +48,4 @@ RUN pip install --no-cache-dir poetry
 RUN poetry install --with dev
 
 COPY . ./
+WORKDIR /app/src
