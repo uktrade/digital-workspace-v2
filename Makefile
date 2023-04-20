@@ -59,6 +59,27 @@ help:
 	@echo "$(CLR_Y)setup_v2_user --email=someone@example.com$(CLR__) : Create/enable Django user with v2 search flag"
 	@echo "$(CLR_Y)data-countries$(CLR__) : Import the countries data"
 
+#
+# Makefile variables
+#
+
+# Run a command in a new container
+wagtail-run = docker-compose run --rm wagtail
+# Run a command in an existing container
+wagtail-exec = docker-compose exec wagtail
+# run on existing container if available otherwise a new one
+wagtail := ${if $(shell docker ps -q -f name=wagtail),$(wagtail-exec),$(wagtail-run)}
+
+# Run a command in a new container (don't start dependencies)
+wagtail-no-deps = docker-compose run --rm wagtail --no-deps
+# Run tests in a new container named 'testrunner'
+testrunner = docker-compose run --rm --name testrunner wagtail
+
+chown = $(wagtail-exec) chown $(shell id -u):$(shell id -g)
+
+try:
+	$(wagtail) bash
+
 
 #
 # Container management
@@ -82,45 +103,36 @@ down:
 down-all:
 	docker-compose --profile playwright down
 
-# Run a command in a new container
-wagtail-run = docker-compose run --rm wagtail
-# Run a command in a new container (don't start dependencies)
-wagtail-run-no-deps = $(wagtail-run-no-deps)
-# Run a command in an existing container
-wagtail-exec = docker-compose exec wagtail
-# Run tests in a new container named 'testrunner'
-testrunner = docker-compose run --rm --name testrunner wagtail
-
 #
 # Linting
 #
 
 check:
-	$(wagtail-run-no-deps) black --check .
-	$(wagtail-run-no-deps) ruff check .
-	$(wagtail-run-no-deps) djlint --check .
+	$(wagtail-no-deps) black --check .
+	$(wagtail-no-deps) ruff check .
+	$(wagtail-no-deps) djlint --check .
 	! git --no-pager grep -rni fixme -- ':!./Makefile' ':!./.circleci/config.yml'
 
 fix:
-	$(wagtail-run-no-deps) black .
-	$(wagtail-run-no-deps) ruff check --fix .
-	$(wagtail-run-no-deps) djlint --reformat .
+	$(wagtail-no-deps) black .
+	$(wagtail-no-deps) ruff check --fix .
+	$(wagtail-no-deps) djlint --reformat .
 
 #
 # Dev utility
 #
 
 shell:
-	$(wagtail-exec) python manage.py shell_plus
+	$(wagtail) python manage.py shell_plus
 
 bash:
-	$(wagtail-exec) bash
+	$(wagtail) bash
 
 psql:
 	PGPASSWORD='postgres' psql -h localhost -U postgres
 
 requirements:
-	$(wagtail-exec) poetry export --without-hashes --output requirements.txt
+	$(wagtail) poetry export --without-hashes --output requirements.txt
 
 clean:
 	npm run clean
@@ -152,36 +164,34 @@ first-use:
 	make local-setup
 
 superuser:
-	$(wagtail-exec) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
+	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
 
 #
 # Django
 #
 
-chown = $(wagtail-exec) chown $(shell id -u):$(shell id -g)
-
 makemigrations:
-	$(wagtail-exec) python manage.py makemigrations
+	$(wagtail) python manage.py makemigrations
 	$(chown) */migrations/*
 
 empty-migration:
-	$(wagtail-exec) python manage.py makemigrations --empty $(app)
+	$(wagtail) python manage.py makemigrations --empty $(app)
 	$(chown) */migrations/*
 
 checkmigrations:
-	$(wagtail-run) python manage.py makemigrations --check
+	$(wagtail) python manage.py makemigrations --check
 
 migrate:
-	$(wagtail-exec) python manage.py migrate
+	$(wagtail) python manage.py migrate
 
 collectstatic:
-	$(wagtail-exec) python manage.py collectstatic
+	$(wagtail) python manage.py collectstatic
 
 findstatic:
-	$(wagtail-exec) python manage.py findstatic $(app)
+	$(wagtail) python manage.py findstatic $(app)
 
 fixtree:
-	$(wagtail-exec) python manage.py fixtree
+	$(wagtail) python manage.py fixtree
 
 #
 # Testing
@@ -215,7 +225,7 @@ e2e-codegen:
 #
 
 compilescss:
-	$(wagtail-exec) python manage.py compilescss
+	$(wagtail) python manage.py compilescss
 
 webpack:
 	npm run dev
@@ -225,28 +235,28 @@ webpack:
 #
 
 elevate:
-	$(wagtail-exec) python manage.py elevate_sso_user_permissions --email=$(email)
+	$(wagtail) python manage.py elevate_sso_user_permissions --email=$(email)
 
 menus:
-	$(wagtail-exec) python manage.py create_menus
+	$(wagtail) python manage.py create_menus
 
 index:
-	$(wagtail-exec) python manage.py update_index
+	$(wagtail) python manage.py update_index
 
 listlinks:
-	$(wagtail-exec) python manage.py list_links
+	$(wagtail) python manage.py list_links
 
 wagtail-groups:
-	$(wagtail-exec) python manage.py create_groups
+	$(wagtail) python manage.py create_groups
 
 pf-groups:
-	$(wagtail-exec) python manage.py create_people_finder_groups
+	$(wagtail) python manage.py create_people_finder_groups
 
 create_section_homepages:
-	$(wagtail-exec) python manage.py create_section_homepages
+	$(wagtail) python manage.py create_section_homepages
 
 setup_v2_user:
-	$(wagtail-exec) python manage.py setup_v2_user $(email)
+	$(wagtail) python manage.py setup_v2_user $(email)
 
 data-countries:
-	$(wagtail-exec) python manage.py loaddata countries.json
+	$(wagtail) python manage.py loaddata countries.json
