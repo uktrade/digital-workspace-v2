@@ -61,8 +61,6 @@ poetry = "^1.4.2"
 # Linters
 black = "^23.3.0"
 djlint = "^1.23.2"
-isort = "^5.12.0"
-pydocstyle = "^6.3.0"
 ruff = "^0.0.262"
 # Testing
 pytest = "^7.3.1"
@@ -99,12 +97,26 @@ omit = [
     "e2e_tests/*",
 ]
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-skip_gitignore = true
-line_length = 88
-lines_after_imports = 2
+[tool.ruff]
+extend-select = ["B", "S"]
+ignore = ["B904", "E501", "N818", "S101"]
+extend-exclude = [
+    "manage.py",
+    "*/migrations/*",
+    "# Not actually Python",
+    "node_modules/",
+    "assets/",
+    "media/",
+    "static/",
+    "*/test/*",
+    ".venv/",
+    "bin/",
+    "hawk-api-access-test.py",
+    ".pythonrc.py"
+]
+
+[tool.ruff.isort]
+lines-after-imports = 2
 
 [tool.djlint]
 extension="html"
