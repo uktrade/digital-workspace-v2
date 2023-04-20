@@ -16,7 +16,9 @@ def remove_orphan_keyword_and_phrases():
         "search_keyword_or_phrase__pk",
     )
 
-    SearchKeywordOrPhrase.objects.exclude(pk__in=exclude_look_up_ids,).exclude(
+    SearchKeywordOrPhrase.objects.exclude(
+        pk__in=exclude_look_up_ids,
+    ).exclude(
         pk__in=pin_look_up_ids,
     ).delete()
 
