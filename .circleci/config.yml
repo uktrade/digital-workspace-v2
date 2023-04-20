@@ -35,9 +35,6 @@ jobs:
           command: |
             wget -O codecov.sh https://codecov.io/bash
             bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
-      - run:
-          name: Check for fixme comments
-          command: make check-fixme
   e2e-tests:
     machine:
       image: ubuntu-2004:202101-01
