@@ -7,7 +7,6 @@ import peoplefinder.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0058_alter_auditlog_options"),
     ]

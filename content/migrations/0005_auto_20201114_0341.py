@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("working_at_dit", "0002_auto_20201113_0844"),
         ("content", "0004_sitealertbanner"),

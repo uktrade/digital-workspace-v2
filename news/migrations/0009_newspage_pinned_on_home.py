@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("news", "0008_newspage_perm_sec_as_author"),
     ]

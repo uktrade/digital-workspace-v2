@@ -35,7 +35,6 @@ def insert_grade_data(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0007_auto_20210308_1344"),
     ]

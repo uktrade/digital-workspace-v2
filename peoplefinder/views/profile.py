@@ -12,8 +12,8 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, FormView, UpdateView
+from django.views.generic.detail import DetailView, SingleObjectMixin
+from django.views.generic.edit import FormView, UpdateView
 
 from peoplefinder.forms.profile import (
     ProfileForm,
@@ -227,15 +227,15 @@ class ProfileLeavingDitView(SuccessMessageMixin, ProfileView, FormView):
 
 
 @method_decorator(transaction.atomic, name="post")
-class ProfileDeleteView(ProfileView, DeleteView):
+class ProfileDeleteView(SingleObjectMixin, ProfileView):
     model = Person
     slug_url_kwarg = "profile_slug"
     success_url = reverse_lazy("delete-confirmation")
 
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         person = self.get_object()
 
-        if request.user == person.user:
+        if request.user.pk == person.user.pk:
             raise CannotDeleteOwnProfileError()
 
         self.request.session["profile_name"] = person.full_name

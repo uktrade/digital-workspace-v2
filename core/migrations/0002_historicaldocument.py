@@ -8,7 +8,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wagtailcore", "0062_comment_models_and_pagesubscription"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),

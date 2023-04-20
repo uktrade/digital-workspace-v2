@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wagtailcore", "0060_fix_workflow_unique_constraint"),
         ("wagtailmenus", "0023_remove_use_specific"),

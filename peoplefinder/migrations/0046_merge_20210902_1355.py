@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0041_alter_team_slug"),
         ("peoplefinder", "0045_rename_uuid_person_slug"),

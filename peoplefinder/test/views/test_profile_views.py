@@ -4,6 +4,7 @@ import pytest
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import Group, Permission
 from django.core.management import call_command
+from django.db.utils import IntegrityError
 from django.test.client import Client
 from django.urls import reverse
 from pytest_django.asserts import assertContains
@@ -231,6 +232,15 @@ def test_profile_detail_view(state):
     )
     response = state.client.get(view_url)
     assert response.status_code == 200
+
+
+def test_cannot_be_own_manager(state):
+    assert state.person.manager is None
+    state.person.save()
+
+    state.person.manager = state.person
+    with pytest.raises(IntegrityError):
+        state.person.save()
 
 
 def test_profile_edit_view(state):

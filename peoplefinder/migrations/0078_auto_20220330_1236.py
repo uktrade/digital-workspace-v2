@@ -12,7 +12,6 @@ def insert_edited_or_confirmed_at(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0077_person_edited_or_confirmed_at"),
     ]

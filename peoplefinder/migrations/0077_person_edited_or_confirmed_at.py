@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0076_merge_0064_auto_20220315_1622_0075_auto_20220318_1051"),
     ]

@@ -24,7 +24,6 @@ def insert_learning_skills_data(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0016_auto_20210610_1016"),
     ]

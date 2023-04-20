@@ -31,7 +31,6 @@ def insert_networks_data(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0019_auto_20210610_1042"),
     ]

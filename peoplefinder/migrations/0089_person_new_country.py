@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("countries", "0004_country_type"),
         ("peoplefinder", "0088_alter_team_leaders_ordering"),

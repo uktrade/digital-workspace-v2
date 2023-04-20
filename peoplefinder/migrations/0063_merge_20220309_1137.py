@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0060_auto_20220307_1733"),
         ("peoplefinder", "0062_alter_legacyauditlog_options"),

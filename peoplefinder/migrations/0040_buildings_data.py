@@ -19,7 +19,6 @@ def insert_buildings_data(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("peoplefinder", "0039_auto_20210901_1137"),
     ]
