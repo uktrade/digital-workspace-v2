@@ -55,6 +55,7 @@ requests = "^2.28.2"
 boto3 = "^1.26.115"
 pyjwt = {extras = ["crypto"], version = "^2.6.0"}
 django-taggit = "^3.1.0"
+ruff = "^0.0.262"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.4.2"
