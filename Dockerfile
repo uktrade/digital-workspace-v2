@@ -1,4 +1,4 @@
-FROM gcr.io/sre-docker-registry/py-node:3.11-18-focal
+FROM gcr.io/sre-docker-registry/py-node:3.11-18-jammy
 
 ENV POETRY_VIRTUALENVS_CREATE=false
 
