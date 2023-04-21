@@ -13,28 +13,20 @@ jobs:
           name: build containers
           command: make build
       - run:
-          name: install npm packages
-          command: |
-            nvm install 18
-            npm ci
+          name: check linting
+          command: make check
       - run:
-          name: build webpack
-          command: npm run build
+          name: run containers
+          command: docker-compose up -d
       - run:
           name: check for missing migrations
           command: make checkmigrations
       - run:
-          name: run black (code formatting check)
-          command: make black-check
-      - run:
-          name: run isort
-          command: make isort-check
-      - run:
-          name: run flake8 (coding standards compliance test)
-          command: make flake8
-      - run:
-          name: run containers
-          command: docker-compose up -d
+          name: build frontend
+          command: |
+            nvm install 18
+            npm ci
+            npm run build
       - run:
           name: run unit tests
           command: make test
@@ -43,9 +35,6 @@ jobs:
           command: |
             wget -O codecov.sh https://codecov.io/bash
             bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
-      - run:
-          name: Check for fixme comments
-          command: make check-fixme
   e2e-tests:
     machine:
       image: ubuntu-2004:202101-01
@@ -56,11 +45,11 @@ jobs:
           name: Copy env file
           command: cp .env.ci .env
       - run:
-          name: install npm packages
-          command: npm ci
-      - run:
-          name: build webpack
-          command: npm run build
+          name: build frontend
+          command: |
+            nvm install 18
+            npm ci
+            npm run build
       - run:
           name: build containers
           command: make build-all
@@ -68,7 +57,7 @@ jobs:
           name: run e2e tests (playwright)
           command: make test-e2e
       - run:
-          name: Publish unit test coverage
+          name: Publish e2e test coverage
           command: |
             wget -O codecov.sh https://codecov.io/bash
             bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"

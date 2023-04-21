@@ -3,7 +3,7 @@
 
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
-        {% include "includes/attribution.html" with page=page %}
+    {% include "includes/attribution.html" with page=page %}
     {% for block in page.body %}
         {% include_block block %}
     {% endfor %}
@@ -13,9 +13,7 @@
     <ul class="govuk-list">
         {% for page_topic in page_topics %}
             <li>
-                <a class="govuk-link" href="{{ page_topic.topic.url }}">
-                    {{ page_topic.topic.title }}
-                </a>
+                <a class="govuk-link" href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a>
             </li>
         {% endfor %}
     </ul>

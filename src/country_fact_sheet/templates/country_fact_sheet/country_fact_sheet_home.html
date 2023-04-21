@@ -11,7 +11,9 @@
     {% if page.hmtc_region_factsheets_collection %}
         <h2 class="govuk-heading-m">{{ page.hmtc_region_factsheets_heading }}</h2>
         {% for doc in hmtc_region_factsheets %}
-            <p><a class="govuk-link" href="{{ doc.url }}">{{ doc.title }}</a></p>
+            <p>
+                <a class="govuk-link" href="{{ doc.url }}">{{ doc.title }}</a>
+            </p>
         {% empty %}
             <p>There are no factsheets in this collection.</p>
         {% endfor %}
@@ -20,7 +22,9 @@
     {% if page.group_factsheets_collection %}
         <h2 class="govuk-heading-m">{{ page.group_factsheets_heading }}</h2>
         {% for doc in group_factsheets %}
-            <p><a class="govuk-link" href="{{ doc.url }}">{{ doc.title }}</a></p>
+            <p>
+                <a class="govuk-link" href="{{ doc.url }}">{{ doc.title }}</a>
+            </p>
         {% empty %}
             <p>There are no factsheets in this collection.</p>
         {% endfor %}

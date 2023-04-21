@@ -1,6 +1,10 @@
 {% extends 'peoplefinder/page.html' %}
-{% block title %}Search results for '{{ form.cleaned_data.query }}'{% endblock title %}
-{% block location %}Search results{% endblock location %}
+{% block title %}
+    Search results for '{{ form.cleaned_data.query }}'
+{% endblock title %}
+{% block location %}
+    Search results
+{% endblock location %}
 {% block content %}
     {% if total_matches %}
         <h1 class="govuk-heading-l">{{ total_matches }} search results for '{{ query }}'</h1>
@@ -14,17 +18,13 @@
             <form action="{% url 'people-and-teams-search' %}" method="GET">
                 <input type="hidden" name="query" value="{{ form.cleaned_data.query }}">
                 <fieldset class="govuk-fieldset mb-20">
-                    <legend class="govuk-fieldset__legend">
-                        Filter by:
-                    </legend>
+                    <legend class="govuk-fieldset__legend">Filter by:</legend>
                     <div class="govuk-checkboxes">
                         {% for checkbox in form.filters %}
                             <div class="govuk-checkboxes__item">
                                 {{ checkbox.tag }}
                                 <label class="govuk-label govuk-checkboxes__label"
-                                       for="{{ checkbox.id_for_label }}">
-                                    {{ checkbox.choice_label }}
-                                </label>
+                                       for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
                             </div>
                         {% endfor %}
                     </div>

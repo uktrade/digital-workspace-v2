@@ -7,8 +7,8 @@
 {% block location %}{{ team.name }}{% endblock %}
 
 {% block content %}
-<span class="govuk-caption-l">{{ team.short_name }}</span>
-<h1 class="govuk-heading-l">All sub-teams</h1>
+    <span class="govuk-caption-l">{{ team.short_name }}</span>
+    <h1 class="govuk-heading-l">All sub-teams</h1>
 
-{% sub_teams_tree team %}
+    {% sub_teams_tree team %}
 {% endblock %}

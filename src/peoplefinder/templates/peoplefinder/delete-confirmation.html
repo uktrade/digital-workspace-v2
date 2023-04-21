@@ -7,18 +7,21 @@
 
 {% block content %}
 
-  <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-    <div class="govuk-notification-banner__header">
-      <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-        Success
-      </h2>
+    <div class="govuk-notification-banner govuk-notification-banner--success"
+         role="alert"
+         aria-labelledby="govuk-notification-banner-title"
+         data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title"
+                id="govuk-notification-banner-title">Success</h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <h3 class="govuk-notification-banner__heading">Profile for {{ profile_name }} deleted</h3>
+            <p class="govuk-body">
+                The selected profile has been deleted. Click here to go to the peoplefinder homepage: <a class="govuk-button govuk-button--secondary"
+    href="{% url 'people-home' %}">Homepage</a>.
+            </p>
+        </div>
     </div>
-    <div class="govuk-notification-banner__content">
-      <h3 class="govuk-notification-banner__heading">
-        Profile for {{ profile_name }} deleted
-      </h3>
-      <p class="govuk-body">The selected profile has been deleted. Click here to go to the peoplefinder homepage: <a class="govuk-button govuk-button--secondary" href="{% url 'people-home' %}">Homepage</a>.</p>
-    </div>
-  </div>
 
 {% endblock %}

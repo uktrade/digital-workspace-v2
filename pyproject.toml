@@ -55,17 +55,14 @@ requests = "^2.28.2"
 boto3 = "^1.26.115"
 pyjwt = {extras = ["crypto"], version = "^2.6.0"}
 django-taggit = "^3.1.0"
+ruff = "^0.0.262"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.4.2"
 # Linters
 black = "^23.3.0"
-isort = "^5.12.0"
-flake8 = "^6.0.0"
-flake8-bandit = "^4.1.1"
-flake8-bugbear = "^23.3.23"
 djlint = "^1.23.2"
-pydocstyle = "^6.3.0"
+ruff = "^0.0.262"
 # Testing
 pytest = "^7.3.1"
 pytest-django = "^4.5.2"
@@ -101,17 +98,29 @@ omit = [
     "e2e_tests/*",
 ]
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-skip_gitignore = true
-line_length = 88
-lines_after_imports = 2
+[tool.ruff]
+extend-select = ["B", "S"]
+ignore = ["B904", "E501", "N818", "S101"]
+extend-exclude = [
+    "manage.py",
+    "*/migrations/*",
+    "# Not actually Python",
+    "node_modules/",
+    "assets/",
+    "media/",
+    "static/",
+    "*/test/*",
+    ".venv/",
+    "bin/",
+    "hawk-api-access-test.py",
+    ".pythonrc.py"
+]
+
+[tool.ruff.isort]
+lines-after-imports = 2
 
 [tool.djlint]
 extension="html"
 profile="django"
-format_js=false
-format_css=false
 ignore="T002,H006,H017,H023"
 preserve_blank_lines=true
