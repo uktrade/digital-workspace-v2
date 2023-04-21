@@ -7,7 +7,7 @@ ENV POETRY_VIRTUALENVS_CREATE=false
 
 COPY pyproject.toml poetry.lock ./
 
-RUN poetry install --with dev
+RUN poetry install --with dev -vvv
 
 COPY . ./
 WORKDIR /app/src
