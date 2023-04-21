@@ -1,12 +1,6 @@
 ---
 applications:
   - name: digital-workspace-v2
-    processes:
-    - type: web
-      command: python manage.py migrate --noinput && python manage.py collectstatic --noinput && waitress-serve --port=$PORT config.wsgi:application
-    - type: worker
-      command: celery -A config worker -l info
-    path: ./src/
     buildpacks:
       - https://github.com/cloudfoundry/nodejs-buildpack.git
       - https://github.com/cloudfoundry/python-buildpack.git
