@@ -3,9 +3,18 @@
 <nav class="govuk-pagination" role="navigation" aria-label="results">
     {% if paginated_set.has_previous %}
         <div class="govuk-pagination__prev">
-            <a class="govuk-link govuk-pagination__link" href="{% get_pagination_url paginated_set.previous_page_number %}" rel="prev">
-                <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
-                    <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+            <a class="govuk-link govuk-pagination__link"
+               href="{% get_pagination_url paginated_set.previous_page_number %}"
+               rel="prev">
+                <svg class="govuk-pagination__icon govuk-pagination__icon--prev"
+                     xmlns="http://www.w3.org/2000/svg"
+                     height="13"
+                     width="15"
+                     aria-hidden="true"
+                     focusable="false"
+                     viewBox="0 0 15 13">
+                    <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z">
+                    </path>
                 </svg>
                 <span class="govuk-pagination__link-title">Previous</span>
             </a>
@@ -15,23 +24,37 @@
         {% for num in paginated_set|get_elided_page_range %}
             {% if num == paginated_set.number %}
                 <li class="govuk-pagination__item govuk-pagination__item--current">
-                    <a class="govuk-link govuk-pagination__link" href="{% get_pagination_url num %}" aria-label="Page {{ num }}" aria-current="page">{{ num }}</a>
+                    <a class="govuk-link govuk-pagination__link"
+                       href="{% get_pagination_url num %}"
+                       aria-label="Page {{ num }}"
+                       aria-current="page">{{ num }}</a>
                 </li>
             {% elif num == paginated_set.paginator.ELLIPSIS %}
                 <li class="govuk-pagination__item govuk-pagination__item--ellipses">&ctdot;</li>
             {% else %}
                 <li class="govuk-pagination__item">
-                    <a class="govuk-link govuk-pagination__link" href="{% get_pagination_url num %}" aria-label="Page {{ num }}">{{ num }}</a>
+                    <a class="govuk-link govuk-pagination__link"
+                       href="{% get_pagination_url num %}"
+                       aria-label="Page {{ num }}">{{ num }}</a>
                 </li>
             {% endif %}
         {% endfor %}
     </ul>
     {% if paginated_set.has_next %}
         <div class="govuk-pagination__next">
-            <a class="govuk-link govuk-pagination__link" href="{% get_pagination_url paginated_set.next_page_number %}" rel="next">
+            <a class="govuk-link govuk-pagination__link"
+               href="{% get_pagination_url paginated_set.next_page_number %}"
+               rel="next">
                 <span class="govuk-pagination__link-title">Next</span>
-                <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
-                    <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+                <svg class="govuk-pagination__icon govuk-pagination__icon--next"
+                     xmlns="http://www.w3.org/2000/svg"
+                     height="13"
+                     width="15"
+                     aria-hidden="true"
+                     focusable="false"
+                     viewBox="0 0 15 13">
+                    <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z">
+                    </path>
                 </svg>
             </a>
         </div>

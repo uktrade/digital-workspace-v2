@@ -5,7 +5,9 @@
         <div class="govuk-width-container">
             <p class="govuk-body" role="alert">
                 {% if active_site_alert.banner_link %}
-                    <a id="site-alert-banner-link" target="_blank" href="{{ active_site_alert.banner_link }}">{{ active_site_alert.banner_text }}</a>
+                    <a id="site-alert-banner-link"
+                       target="_blank"
+                       href="{{ active_site_alert.banner_link }}">{{ active_site_alert.banner_text }}</a>
                 {% else %}
                     {{ active_site_alert.banner_text }}
                 {% endif %}

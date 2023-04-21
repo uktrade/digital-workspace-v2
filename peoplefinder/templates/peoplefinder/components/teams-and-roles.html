@@ -16,11 +16,9 @@ Context:
         {% endfor %}
     </div>
 
-    <button
-        class="govuk-button govuk-button--secondary"
-        hx-get="{% url 'roles' profile.slug %}"
-        hx-target="#roles"
-        hx-swap="beforeend"
-        data-testid="add-role"
-    >Add role</button>
+    <button class="govuk-button govuk-button--secondary"
+            hx-get="{% url 'roles' profile.slug %}"
+            hx-target="#roles"
+            hx-swap="beforeend"
+            data-testid="add-role">Add role</button>
 </div>

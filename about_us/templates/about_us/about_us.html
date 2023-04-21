@@ -11,12 +11,14 @@
         </div>
         {% if page_topics.count > 0 %}
             <div class="govuk-grid-column-one-third ws-related-topics">
-                    <h2 class="govuk-heading-m">Related topics</h2>
-                    <ul class="govuk-list">
-                        {% for page_topic in page_topics %}
-                            <li><a class="govuk-link" href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a></li>
-                        {% endfor %}
-                    </ul>
+                <h2 class="govuk-heading-m">Related topics</h2>
+                <ul class="govuk-list">
+                    {% for page_topic in page_topics %}
+                        <li>
+                            <a class="govuk-link" href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
         {% endif %}
     </div>

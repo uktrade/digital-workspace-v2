@@ -16,16 +16,17 @@
 
 <details class="govuk-details" data-module="govuk-details">
     <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-            Markdown help
-        </span>
+        <span class="govuk-details__summary-text">Markdown help</span>
     </summary>
     <div class="govuk-details__text">
         <h2 class="govuk-heading-s">Lists</h2>
         <kbd>
-            * list item<br>
-            * another list item<br>
-            &nbsp;&nbsp;* a nested list item<br>
+            * list item
+            <br>
+            * another list item
+            <br>
+            &nbsp;&nbsp;* a nested list item
+            <br>
         </kbd>
         <h2 class="govuk-heading-s">Links</h2>
         <kbd>[Link title](https://www.gov.uk)</kbd>
@@ -34,9 +35,7 @@
 
 <details class="govuk-details" data-module="govuk-details">
     <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-            Team links help
-        </span>
+        <span class="govuk-details__summary-text">Team links help</span>
     </summary>
     <div class="govuk-details__text">
         A link to a team must be in the format <kbd>/teams/team-slug-goes-here/</kbd>,
@@ -45,12 +44,5 @@
 </details>
 
 {% if not is_root_team %}
-    <team-select
-        name="parent_team"
-        url="{% url 'team-select' %}"
-        selected-team-id="{{ parent_team.id }}"
-        current-team-id="{{ form.instance.id }}"
-        editing="true"
-        disable-current-team="true"
-    ></team-select>
+    <team-select name="parent_team" url="{% url 'team-select' %}" selected-team-id="{{ parent_team.id }}" current-team-id="{{ form.instance.id }}" editing="true" disable-current-team="true"></team-select>
 {% endif %}
