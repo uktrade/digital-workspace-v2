@@ -132,7 +132,7 @@ psql:
 	PGPASSWORD='postgres' psql -h localhost -U postgres
 
 requirements:
-	$(wagtail) poetry export --without-hashes --output requirements.txt
+	$(wagtail) poetry export --without-hashes --output ../requirements.txt
 
 clean:
 	npm run clean
