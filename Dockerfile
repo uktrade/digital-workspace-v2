@@ -1,4 +1,4 @@
-FROM gcr.io/sre-docker-registry/py-node:3.11-18
+FROM gcr.io/sre-docker-registry/py-node:3.11-18-focal
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
