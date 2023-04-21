@@ -1,4 +1,4 @@
-FROM sre-docker-registry/py-node:3.11-18-jammy
+FROM gcr.io/sre-docker-registry/py-node:3.11-18-focal
 
 WORKDIR /app
 
