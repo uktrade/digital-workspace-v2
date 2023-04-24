@@ -1,6 +1,7 @@
 import tweepy
 from django.conf import settings
 from tweepy.auth import OAuthHandler
+from sentry_sdk import capture_exception
 
 
 def get_tweets():
@@ -33,7 +34,7 @@ def get_tweets():
                 exclude_replies=True,
             ).items(5):
                 tweets.append(status)
-    except tweepy.errors.NotFound:
-        pass
+    except Exception as e:
+        capture_exception(e)
 
     return tweets
