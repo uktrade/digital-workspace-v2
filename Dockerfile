@@ -1,4 +1,4 @@
-FROM gcr.io/sre-docker-registry/py-node@sha256:2b5b2a2c5ecd8b739c6a7ff1c357eea949af95bd2a1e1601609d56f074e6dff6
+FROM gcr.io/sre-docker-registry/py-node:3.11-18-jammy
 
 ENV POETRY_VIRTUALENVS_CREATE=false
 
