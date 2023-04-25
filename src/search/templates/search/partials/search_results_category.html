@@ -44,6 +44,6 @@
     {% if is_limited %}
         <a href="{% url 'search:category' search_category %}?query={{ search_query }}"
            class="govuk-button govuk-button--secondary"
-           onclick="gtm_data_then_click(this, { 'event': 'search-ui', 'search_ui': 'see_all_{{ search_category }}' })">See all {{ search_category }} results</a>
+           onclick="dataLayer.push({ 'event': 'search-ui', 'search_ui': 'see_all_{{ search_category }}' })">See all {{ search_category }} results</a>
     {% endif %}
 </div>
