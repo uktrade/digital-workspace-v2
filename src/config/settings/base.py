@@ -10,10 +10,11 @@ from sentry_sdk.integrations.redis import RedisIntegration
 
 # Set directories to be used across settings
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 
 # Read environment variables using `django-environ`, use `.env` if it exists
 env = environ.Env()
-env_file = os.path.join(BASE_DIR, ".env")
+env_file = os.path.join(PROJECT_ROOT_DIR, ".env")
 if os.path.exists(env_file):
     env.read_env(env_file)
 env.read_env()
@@ -237,17 +238,26 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "assets"),
+    os.path.join(PROJECT_ROOT_DIR, "assets"),
 ]
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(PROJECT_ROOT_DIR, "static")
 STATIC_URL = "/static/"
 
 # TODO - investigate media config
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(PROJECT_ROOT_DIR, "media")
 MEDIA_URL = "https://static.workspace.trade.gov.uk/wp-content/"
+
+WEBPACK_LOADER = {
+    "DEFAULT": {
+        "CACHE": not DEBUG,
+        "STATS_FILE": os.path.join(PROJECT_ROOT_DIR, "webpack-stats.json"),
+        "POLL_INTERVAL": 0.1,
+        "IGNORE": [r".+\.hot-update.js", r".+\.map"],
+    }
+}
 
 # Configure Wagtail
 WAGTAIL_SITE_NAME = "Digital Workspace"
