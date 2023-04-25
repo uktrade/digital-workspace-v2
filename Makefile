@@ -24,6 +24,7 @@ help:
 	@echo "$(CLR_Y)shell$(CLR__) : Open a Django shell"
 	@echo "$(CLR_Y)bash$(CLR__) : Run bash in the wagtail container"
 	@echo "$(CLR_Y)psql$(CLR__) : Run the psql shell against the DB container"
+	@echo "$(CLR_Y)check-requirements$(CLR__) : Check whether requirements.txt needs re-generation based on pyproject.toml"
 	@echo "$(CLR_Y)requirements$(CLR__) : Export the requirements to requirements.txt"
 	@echo "$(CLR_Y)clean$(CLR__) : Clean up python cache and webpack assets"
 	@echo "$(CLR_Y)local-setup$(CLR__) : Run the local setup commands for the host machine interpreter"
@@ -131,8 +132,11 @@ bash:
 psql:
 	PGPASSWORD='postgres' psql -h localhost -U postgres
 
+check-requirements:
+	$(wagtail-no-deps) poetry export --without-hashes | cmp -- requirements.txt -
+
 requirements:
-	$(wagtail) poetry export --without-hashes --output ../requirements.txt
+	$(wagtail-no-deps) poetry export --without-hashes --output ../requirements.txt
 
 clean:
 	npm run clean
