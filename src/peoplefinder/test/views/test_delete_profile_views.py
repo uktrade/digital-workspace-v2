@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from django.contrib.auth.models import Permission
 from django.test.client import Client
 from django.urls import reverse
+from pytest_django.asserts import assertRedirects
 
 from peoplefinder.models import Person, Team
 from peoplefinder.services.person import PersonService
@@ -172,3 +173,27 @@ def test_delete_view_with_other_users_profile(state):
     assert status_code == 302
     assert next_url == reverse("delete-confirmation")
     assert not Person.active.filter(pk=other_person.pk).exists()
+
+
+def test_delete_profile_with_no_user(state):
+    other_user = UserFactory(
+        first_name="Other",
+        last_name="User",
+        email="other.user@example.com",
+        legacy_sso_user_id=None,
+        username="other.user-11111111@example.com",
+        sso_contact_email="other.user@example.com",
+    )
+    other_user.save()
+    other_person = PersonService().create_user_profile(other_user)
+
+    # remove the user from the profile
+    other_person.user = None
+    other_person.save()
+
+    # try to delete the profile
+    response = state.client.post(
+        reverse("profile-delete", kwargs={"profile_slug": other_person.slug}),
+        follow=True,
+    )
+    assertRedirects(response, reverse("delete-confirmation"), 302)
