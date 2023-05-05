@@ -235,7 +235,7 @@ class ProfileDeleteView(SingleObjectMixin, ProfileView):
     def post(self, request, *args, **kwargs):
         person = self.get_object()
 
-        if request.user.pk == person.user.pk:
+        if person.user and request.user.pk == person.user.pk:
             raise CannotDeleteOwnProfileError()
 
         self.request.session["profile_name"] = person.full_name
