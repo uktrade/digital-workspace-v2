@@ -19,6 +19,6 @@ urlpatterns = [
             pattern_name="search:category", permanent=True, query_string=True
         ),
     ),
+    path("<str:category>/", search, name="category"),
     path("", search, name="home"),
-    path("<str:category>", search, name="category"),
 ]
