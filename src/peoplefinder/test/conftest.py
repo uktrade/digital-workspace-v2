@@ -35,6 +35,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
         call_command("create_test_teams")
         call_command("create_user_profiles")
         call_command("create_people_finder_groups")
+        call_command("create_section_homepages")
 
         user_john_smith.refresh_from_db()
 
@@ -56,6 +57,39 @@ def django_db_setup(django_db_setup, django_db_blocker):
 @pytest.fixture
 def normal_user(db):
     return User.objects.get(username="johnsmith")
+
+
+@pytest.fixture
+def another_normal_user(db, django_db_blocker):
+    """
+    Useful when you need a user that's nopt the one you're logged in as
+    """
+    with django_db_blocker.unblock():
+        # Jane Smith - another normal user
+        user_jane_smith, _ = User.objects.get_or_create(
+            username="janesmith",
+            first_name="Jane",
+            last_name="Smith",
+            email="jane.smith@example.com",
+            legacy_sso_user_id="jane-smith-sso-user-id",
+            is_staff=False,
+            is_superuser=False,
+        )
+        PersonService().create_user_profile(user_jane_smith)
+
+        call_command("create_test_teams")
+        team_spacex = Team.objects.get(slug="spacex")
+
+        user_jane_smith.profile.roles.get_or_create(
+            team=team_spacex,
+            job_title="Software Engineer",
+        )
+
+        PersonService().profile_updated(None, user_jane_smith.profile, user_jane_smith)
+
+        call_command("update_index")
+
+        return user_jane_smith
 
 
 @pytest.fixture

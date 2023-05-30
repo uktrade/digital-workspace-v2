@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import RedirectView
 
-from .views import home_view, search_v2
+from .views import search
 
 
 app_name = "search"
@@ -17,6 +17,6 @@ urlpatterns = [
         permanent=True,
         query_string=True
     )),
-    path("", home_view, name="home"),
-    path("<str:category>", search_v2, name="category"),
+    path("", search, name="home"),
+    path("<str:category>", search, name="category"),
 ]

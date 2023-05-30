@@ -84,7 +84,6 @@ def search_count(context, *, category):
 
     search_vector = SEARCH_VECTORS[category](request)
     hits = search_vector.search(query).count()
-    # hits += len(search_vector.pinned(query))
 
     # combined total for not just pages but people and teams
     if category == "all_pages":
