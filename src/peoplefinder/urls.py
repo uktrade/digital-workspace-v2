@@ -1,5 +1,4 @@
 from django.urls import include, path
-from django.views.generic import RedirectView
 from rest_framework import routers
 
 from peoplefinder.views.activity_stream import ActivityStreamViewSet

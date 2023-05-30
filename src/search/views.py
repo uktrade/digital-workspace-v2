@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 @require_http_methods(["GET"])
-def search(request: HttpRequest, category: str=None) -> HttpResponse:
+def search(request: HttpRequest, category: str = None) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
 

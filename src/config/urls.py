@@ -37,11 +37,15 @@ urlpatterns = [
     # Peoplefinder
     path("people/", include(people_urlpatterns)),
     path("teams/", include(teams_urlpatterns)),
-    path("people-and-teams/search/", RedirectView.as_view(
-        url='/search/people',
-        permanent=True,
-        query_string=True,
-    ), name="people-and-teams-search"),
+    path(
+        "people-and-teams/search/",
+        RedirectView.as_view(
+            url="/search/people",
+            permanent=True,
+            query_string=True,
+        ),
+        name="people-and-teams-search",
+    ),
     path("peoplefinder/api/", include(api_urlpatterns)),
     path("sitemap.xml", sitemap),
     # Feedback

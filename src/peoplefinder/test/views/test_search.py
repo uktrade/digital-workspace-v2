@@ -54,11 +54,11 @@ class TestSearchView:
     def test_search_for_person(self, another_normal_user):
         r = self._search("jane")
 
-        assert b'pf-person-search-result' in r.content
-        assert b'pf-team-card' not in r.content
+        assert b"pf-person-search-result" in r.content
+        assert b"pf-team-card" not in r.content
 
         assert str(another_normal_user.profile.slug) in str(r.content)
-        assert b'(1)' in r.content
+        assert b"(1)" in r.content
 
     # Currently no teams-only search exists
 
@@ -66,22 +66,22 @@ class TestSearchView:
     def test_search_for_team(self, another_normal_user):
         r = self._search("software")
 
-        assert b'pf-person-search-result' in r.content
-        assert b'pf-team-card' in r.content
+        assert b"pf-person-search-result" in r.content
+        assert b"pf-team-card" in r.content
 
         # The normal_user is in the Software team.
         assert str(another_normal_user.profile.slug) in str(r.content)
-        assert b'/teams/software/' in r.content
-        assert b'(2)' in r.content
+        assert b"/teams/software/" in r.content
+        assert b"(2)" in r.content
 
     @pytest.mark.opensearch
     def test_search_for_multiple_teams(self):
         r = self._search("S", people=False)
 
-        assert b'pf-person-search-result' not in r.content
-        assert b'pf-team-card' in r.content
+        assert b"pf-person-search-result" not in r.content
+        assert b"pf-team-card" in r.content
 
-        assert b'/teams/software/' in r.content
-        assert b'/teams/spacex/' in r.content
+        assert b"/teams/software/" in r.content
+        assert b"/teams/spacex/" in r.content
 
-        assert b'(2)' in r.content
+        assert b"(2)" in r.content
