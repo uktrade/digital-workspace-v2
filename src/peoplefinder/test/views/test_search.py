@@ -25,7 +25,9 @@ class TestSearchView:
         r = self.client.get(
             reverse("people-and-teams-search"),
             {"query": query, "filters": filters},
+            follow=True,
         )
+        assert r.content == ""
 
         assert r.status_code == 200
 

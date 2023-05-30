@@ -1,4 +1,5 @@
 from django.urls import include, path
+from django.views.generic import RedirectView
 from rest_framework import routers
 
 from peoplefinder.views.activity_stream import ActivityStreamViewSet
@@ -25,7 +26,6 @@ from peoplefinder.views.profile import (
     get_profile_by_staff_sso_id,
 )
 from peoplefinder.views.role import RoleFormView, TeamSelectView
-from peoplefinder.views.search import search_view
 from peoplefinder.views.team import (
     TeamAddNewSubteamView,
     TeamDeleteView,
@@ -144,11 +144,6 @@ teams_urlpatterns = [
         TeamAddNewSubteamView.as_view(),
         name="team-add-new-subteam",
     ),
-]
-
-# TODO[DWPF-454] remove this ... and add a redirect?
-people_and_teams_urlpatterns = [
-    path("search/", search_view, name="people-and-teams-search"),
 ]
 
 router = routers.DefaultRouter()

@@ -261,8 +261,5 @@ pf-groups:
 create_section_homepages:
 	$(wagtail) python manage.py create_section_homepages
 
-setup_v2_user:
-	$(wagtail) python manage.py setup_v2_user $(email)
-
 data-countries:
 	$(wagtail) python manage.py loaddata countries.json

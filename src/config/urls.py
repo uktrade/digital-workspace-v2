@@ -13,7 +13,6 @@ from core.admin import admin_site
 from core.urls import urlpatterns as core_urlpatterns
 from peoplefinder.urls import (
     api_urlpatterns,
-    people_and_teams_urlpatterns,
     people_urlpatterns,
     teams_urlpatterns,
 )
@@ -38,7 +37,11 @@ urlpatterns = [
     # Peoplefinder
     path("people/", include(people_urlpatterns)),
     path("teams/", include(teams_urlpatterns)),
-    path("people-and-teams/", include(people_and_teams_urlpatterns)),
+    path("people-and-teams/search/", RedirectView.as_view(
+        url='/search/people',
+        permanent=True,
+        query_string=True,
+    ), name="people-and-teams-search"),
     path("peoplefinder/api/", include(api_urlpatterns)),
     path("sitemap.xml", sitemap),
     # Feedback

@@ -9,29 +9,15 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Search
 
-from content.models import ContentPage, SearchExclusionPageLookUp, SearchPinPageLookUp
 from search.templatetags.search import SEARCH_CATEGORIES
-
-from .utils import sanitize_search_query
 
 
 logger = logging.getLogger(__name__)
 
 
-def search_view(func):
-    @wraps(func)
-    def wrapper(request, *args, **kwargs):
-        return func(request, *args, **kwargs)
-
-    return wrapper
-
-
 # Views
 @require_http_methods(["GET"])
-@search_view
 def home_view(request: HttpRequest) -> HttpResponse:
     query = request.GET.get("query", "")
     return redirect(
@@ -40,7 +26,6 @@ def home_view(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["GET"])
-@search_view
 def search_v2(request: HttpRequest, category: str) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
