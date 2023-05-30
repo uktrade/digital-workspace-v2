@@ -11,6 +11,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONSTARTUP=.pythonrc.py
+ENV POETRY_VIRTUALENVS_CREATE=false
 
 # Install base
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -50,10 +51,6 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     apt-get install -y --no-install-recommends \
     nodejs
 
-# Install build tools
-RUN pip install pip-tools poetry
-RUN npm install -g yarn
-
 # Tidy up
 RUN \
     # Clean apt cache
@@ -63,13 +60,10 @@ RUN \
 
 WORKDIR /app
 
-ENV POETRY_VIRTUALENVS_CREATE=false
-
-WORKDIR /app
-
 COPY pyproject.toml poetry.lock ./
 
-# RUN pip install poetry
+RUN pip install poetry
+RUN poetry update
 RUN poetry install --with dev
 
 COPY . ./
