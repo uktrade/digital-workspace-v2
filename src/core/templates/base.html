@@ -69,17 +69,9 @@
         <a href="#main-content"
            data-module="govuk-skip-link"
            class="govuk-skip-link">Skip to main content</a>
-        {% if user.enable_v2_search %}
-            {% include "includes/header_searchv2.html" %}
-        {% else %}
-            {# @TODO [DWPF-454] Remove these legacy header templates and the if condition #}
-            {% include "includes/header.html" %}
-            {% include "includes/search_and_profile_bar.html" %}
-        {% endif %}
-        {% if user.enable_v2_search or "search" in request.get_full_path %}
-            {# @TODO [DWPF-454] Remove this banner and the template file #}
-            {% include "tags/search_beta_banner.html" %}
-        {% endif %}
+        {% include "includes/header_searchv2.html" %}
+        {# @TODO [DWPF-454] Remove this banner and the template file #}
+        {% include "tags/search_beta_banner.html" %}
         {% cookie_banner %}
         {% site_alert %}
         <div class="govuk-width-container">

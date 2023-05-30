@@ -20,7 +20,6 @@ class User(AbstractUser):
         null=True,
         blank=True,
     )
-    enable_v2_search = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

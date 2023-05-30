@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import home_view, search_v2, toggle_search_v2
+from .views import home_view, search_v2
 
 
 app_name = "search"
@@ -10,6 +10,4 @@ app_name = "search"
 urlpatterns = [
     path("v2/", home_view, name="home"),
     path("v2/<str:category>", search_v2, name="category"),
-    # TODO[DWPF-454] remove this URL
-    path("v2/toggle/<str:use_v2>", toggle_search_v2, name="toggle"),
 ]

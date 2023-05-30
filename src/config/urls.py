@@ -17,7 +17,6 @@ from peoplefinder.urls import (
     people_urlpatterns,
     teams_urlpatterns,
 )
-from search import views as search_views
 
 
 urlpatterns = [
@@ -34,8 +33,6 @@ urlpatterns = [
     path("admin/login/", RedirectView.as_view(url="/")),  # override Wagtail login
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
-    path("search/", search_views.search, name="search"),
-    # TODO[DWPF-454] remove this
     path("search/", include("search.urls")),
     path("pingdom/", include("pingdom.urls")),
     # Peoplefinder
