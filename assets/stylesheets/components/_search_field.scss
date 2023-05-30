@@ -9,21 +9,6 @@ $input-size: 40px;
     @return "%23"+$output;
 }
 
-// @TODO [DWPF-454] remove .nav-and-profile-bar, merge these with more general definitions
-.nav-and-profile-bar {
-    .govuk-width-container {
-        column-gap: 20px;
-
-        nav {
-            flex-grow: 5;
-        }
-
-        .site-search {
-            flex-grow: 10;
-        }
-    }
-}
-
 .search-form {
     display: flex;
     flex: 0 $input-size;
@@ -54,8 +39,6 @@ $input-size: 40px;
             // Ensure outline appears outside of the element
             outline-offset: 0;
         }
-
-        //max-width: 360px;
     }
 
     button {

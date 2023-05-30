@@ -1,8 +1,3 @@
-.nav-and-profile-bar {
-    background-color: $brand-color-navy;
-    border-top: 5px solid $brand-color-primary;
-}
-
 .people-finder-panel {
     display: flex;
     justify-content: flex-end;
@@ -27,6 +22,38 @@
                 box-shadow: none;
             }
         }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            @include govuk-font($size: 16, $weight: bold);
+            background: none;
+            padding: 0;
+            text-align: right;
+            color: govuk-colour("black");
+            font-weight: normal;
+            text-decoration-color: govuk-colour("black");
+
+            .salutation {
+                text-decoration: underline;
+            }
+
+            .profile-prompt {
+                @include govuk-font($size: 14);
+                display: block;
+                display: inline;
+                text-decoration: none;
+
+                span {
+                    display: inline-block;
+                }
+            }
+        }
+
+        .profile-image {
+            width: 40px;
+            height: 40px;
+        }
     }
 
     @include govuk-media-query($until: desktop, $media-type: "screen") {
@@ -38,49 +65,17 @@
             display: flex;
             column-gap: 5px;
 
-            .profile-prompt {
-                display: none;
+            .profile-details {
+
+                .profile-prompt {
+                    display: none;
+                }
             }
 
-            img {
+            .profile-image {
                 width: 20px;
                 height: 20px;
             }
         }
-    }
-
-    .profile-details {
-        display: flex;
-        flex-direction: column;
-        @include govuk-font($size: 16, $weight: bold);
-        background: none;
-        padding: 0;
-        text-align: right;
-        color: govuk-colour("black");
-        font-weight: normal;
-        text-decoration-color: govuk-colour("black");
-
-        .salutation {
-            text-decoration: underline;
-        }
-
-        .profile-prompt {
-            display: inline;
-            text-decoration: none;
-
-            span {
-                display: inline-block;
-            }
-        }
-    }
-
-    .profile-image {
-        width: 64px;
-        height: 64px;
-    }
-
-    .profile-prompt {
-        @include govuk-font($size: 14);
-        display: block;
     }
 }
