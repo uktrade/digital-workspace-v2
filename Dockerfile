@@ -1,14 +1,18 @@
-FROM gcr.io/sre-docker-registry/py-node:3.11-18-jammy
+FROM python:3.11-bullseye
 
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 ENV POETRY_VIRTUALENVS_CREATE=false
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock ./
+RUN pip install --upgrade pip
+RUN pip install poetry
 
-# RUN pip install poetry
+COPY poetry.lock pyproject.toml /app/
+
 RUN poetry install --with dev
 
-COPY . ./
+COPY . /app/
 
 WORKDIR /app/src
