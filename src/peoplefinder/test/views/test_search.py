@@ -1,8 +1,7 @@
 import pytest
+from pytest_django.asserts import assertContains, assertNotContains
 from django.core.management import call_command
 from django.urls import reverse
-
-from peoplefinder.models import Team
 
 
 class TestSearchView:
@@ -36,7 +35,7 @@ class TestSearchView:
     @pytest.mark.opensearch
     def test_updated_profile(self, another_normal_user):
         r = self._search("jane")
-        assert str(another_normal_user.profile.slug) in str(r.content)
+        assertContains(r, str(another_normal_user.profile.slug))
 
         another_normal_user.profile.first_name = "Tim"
         another_normal_user.profile.email = "tim.smith@example.com"
@@ -45,20 +44,20 @@ class TestSearchView:
         call_command("update_index")
 
         r = self._search("jane")
-        assert str(another_normal_user.profile.slug) not in str(r.content)
+        assertNotContains(r, str(another_normal_user.profile.slug))
 
         r = self._search("tim")
-        assert str(another_normal_user.profile.slug) in str(r.content)
+        assertContains(r, str(another_normal_user.profile.slug))
 
     @pytest.mark.opensearch
     def test_search_for_person(self, another_normal_user):
         r = self._search("jane")
 
-        assert b"pf-person-search-result" in r.content
-        assert b"pf-team-card" not in r.content
+        assertContains(r, "pf-person-search-result")
+        assertNotContains(r, "pf-team-card")
 
-        assert str(another_normal_user.profile.slug) in str(r.content)
-        assert b"(1)" in r.content
+        assertContains(r, str(another_normal_user.profile.slug))
+        assertContains(r, "(1)")
 
     # Currently no teams-only search exists
 
@@ -66,22 +65,22 @@ class TestSearchView:
     def test_search_for_team(self, another_normal_user):
         r = self._search("software")
 
-        assert b"pf-person-search-result" in r.content
-        assert b"pf-team-card" in r.content
+        assertContains(r, "pf-person-search-result")
+        assertContains(r, "pf-team-card")
 
         # The normal_user is in the Software team.
-        assert str(another_normal_user.profile.slug) in str(r.content)
-        assert b"/teams/software/" in r.content
-        assert b"(2)" in r.content
+        assertContains(r, str(another_normal_user.profile.slug))
+        assertContains(r, "/teams/software/")
+        assertContains(r, "(2)")
 
     @pytest.mark.opensearch
     def test_search_for_multiple_teams(self):
         r = self._search("S", people=False)
 
-        assert b"pf-person-search-result" not in r.content
-        assert b"pf-team-card" in r.content
+        assertNotContains(r, "pf-person-search-result")
+        assertContains(r, "pf-team-card")
 
-        assert b"/teams/software/" in r.content
-        assert b"/teams/spacex/" in r.content
+        assertContains(r, "/teams/software/")
+        assertContains(r, "/teams/spacex/")
 
-        assert b"(2)" in r.content
+        assertContains(r, "(2)")

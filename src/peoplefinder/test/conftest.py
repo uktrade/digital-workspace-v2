@@ -62,7 +62,7 @@ def normal_user(db):
 @pytest.fixture
 def another_normal_user(db, django_db_blocker):
     """
-    Useful when you need a user that's nopt the one you're logged in as
+    Useful when you need a user that's not the one you're logged in as
     """
     with django_db_blocker.unblock():
         # Jane Smith - another normal user
