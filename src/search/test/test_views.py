@@ -11,6 +11,6 @@ class TestSearchView(TestCase):
         c = Client()
 
         c.force_login(user)
-        response = c.get("/search/", {"query": ""})
+        response = c.get("/search/", {"query": ""}, follow=True)
 
         self.assertEqual(response.status_code, 200)

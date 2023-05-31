@@ -150,12 +150,14 @@ dump-db:
 	pg_dump digital_workspace -U postgres -h localhost -p 5432 -O -x -c -f dw.dump
 
 reset-db:
-	docker-compose kill db
-	rm -rf ./.db/
+	@docker-compose kill db
+	@rm -rf ./.db/
 	docker-compose start db
 
 first-use:
-	docker-compose --profile playwright down
+	@docker-compose --profile playwright down
+	make build
+	make up
 	make reset-db
 	make migrate
 	make data-countries
@@ -258,9 +260,6 @@ pf-groups:
 
 create_section_homepages:
 	$(wagtail) python manage.py create_section_homepages
-
-setup_v2_user:
-	$(wagtail) python manage.py setup_v2_user $(email)
 
 data-countries:
 	$(wagtail) python manage.py loaddata countries.json

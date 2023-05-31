@@ -9,39 +9,10 @@ $input-size: 40px;
     @return "%23"+$output;
 }
 
-// @TODO [DWPF-454] remove all instances of .search-and-profile-bar from codebase
-.search-and-profile-bar {
-    .govuk-width-container {
-        display: grid;
-        //width: auto;
-        grid-template-columns: repeat(2, 1fr);
-        column-gap: 20px;
-
-        input {
-            border: none;
-        }
-    }
-}
-
-// @TODO [DWPF-454] remove .nav-and-profile-bar, merge these with more general definitions
-.nav-and-profile-bar {
-    .govuk-width-container {
-        column-gap: 20px;
-
-        nav {
-            flex-grow: 5;
-        }
-
-        .site-search {
-            flex-grow: 10;
-        }
-    }
-}
-
 .search-form {
     display: flex;
     flex: 0 $input-size;
-    margin: 12px 0;
+    margin: 7px 0;
 
     input {
         // overly specific to prevent some overrides from outside
@@ -68,8 +39,6 @@ $input-size: 40px;
             // Ensure outline appears outside of the element
             outline-offset: 0;
         }
-
-        //max-width: 360px;
     }
 
     button {
@@ -104,7 +73,7 @@ $input-size: 40px;
 }
 
 .site-search {
-    position: absolute;
+        position: inherit;
     right: 0;
     top: -4px;
     align-items: center;
@@ -114,23 +83,9 @@ $input-size: 40px;
         button {
             background-color: $govuk-link-colour;
         }
-    }
-}
-
-// @TODO [DWPF-454] merge these overrides with the relevant base classes
-.search-v2 {
-    .site-search {
-        position: inherit;
-
-        .search-form {
             input {
                 border: none;
             }
-        }
-    }
-
-    .search-form {
-        margin: 7px 0;
     }
 }
 
@@ -147,28 +102,11 @@ $input-size: 40px;
         display: none;
     }
 
-    .search-and-profile-bar {
-        .govuk-width-container {
-            display: flow-root;
-        }
-    }
-
     // @TODO [DWPF-454] remove this rule
     .search-v2-banner {
 
         .govuk-phase-banner__content {
             line-height: 1.5;
         }
-    }
-}
-
-// @TODO [DWPF-454] remove this rule, it's only for the custom v2 opt-in banner
-.opt-in-invitation {
-    background-color: $tag-blue-background;
-    padding: 0 1em;
-    margin-top: 1em;
-
-    .govuk-phase-banner {
-        border-bottom: none;
     }
 }

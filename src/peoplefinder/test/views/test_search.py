@@ -1,8 +1,7 @@
 import pytest
+from pytest_django.asserts import assertContains, assertNotContains
 from django.core.management import call_command
 from django.urls import reverse
-
-from peoplefinder.models import Team
 
 
 class TestSearchView:
@@ -16,15 +15,17 @@ class TestSearchView:
     def _search(self, query, teams=True, people=True):
         filters = []
 
-        if teams:
-            filters.append("teams")
-
-        if people:
-            filters.append("people")
+        if people and not teams:
+            url = reverse("search:category", kwargs={"category": "people"})
+        elif teams and not people:
+            url = reverse("search:category", kwargs={"category": "teams"})
+        else:
+            url = reverse("search:category", kwargs={"category": "all"})
 
         r = self.client.get(
-            reverse("people-and-teams-search"),
+            url,
             {"query": query, "filters": filters},
+            follow=True,
         )
 
         assert r.status_code == 200
@@ -32,45 +33,54 @@ class TestSearchView:
         return r
 
     @pytest.mark.opensearch
-    def test_updated_profile(self, normal_user):
-        r = self._search("john")
-        assert r.context["person_matches"] == [normal_user.profile]
+    def test_updated_profile(self, another_normal_user):
+        r = self._search("jane")
+        assertContains(r, str(another_normal_user.profile.slug))
 
-        normal_user.profile.first_name = "Tim"
-        normal_user.profile.save()
+        another_normal_user.profile.first_name = "Tim"
+        another_normal_user.profile.email = "tim.smith@example.com"
+        another_normal_user.profile.save()
 
         call_command("update_index")
 
-        r = self._search("john")
-        assert r.context["person_matches"] == []
+        r = self._search("jane")
+        assertNotContains(r, str(another_normal_user.profile.slug))
 
         r = self._search("tim")
-        assert r.context["person_matches"] == [normal_user.profile]
+        assertContains(r, str(another_normal_user.profile.slug))
 
     @pytest.mark.opensearch
-    def test_search_for_person(self, normal_user):
-        r = self._search("john")
+    def test_search_for_person(self, another_normal_user):
+        r = self._search("jane")
 
-        assert r.context["person_matches"] == [normal_user.profile]
-        assert r.context["team_matches"] == []
-        assert r.context["total_matches"] == 1
+        assertContains(r, "pf-person-search-result")
+        assertNotContains(r, "pf-team-card")
+
+        assertContains(r, str(another_normal_user.profile.slug))
+        assertContains(r, "(1)")
+
+    # Currently no teams-only search exists
 
     @pytest.mark.opensearch
-    def test_search_for_team(self, normal_user):
+    def test_search_for_team(self, another_normal_user):
         r = self._search("software")
 
+        assertContains(r, "pf-person-search-result")
+        assertContains(r, "pf-team-card")
+
         # The normal_user is in the Software team.
-        assert r.context["person_matches"] == [normal_user.profile]
-        assert r.context["team_matches"] == [Team.objects.get(name="Software")]
-        assert r.context["total_matches"] == 2
+        assertContains(r, str(another_normal_user.profile.slug))
+        assertContains(r, "/teams/software/")
+        assertContains(r, "(2)")
 
     @pytest.mark.opensearch
     def test_search_for_multiple_teams(self):
         r = self._search("S", people=False)
 
-        assert r.context["person_matches"] == []
-        assert r.context["team_matches"] == [
-            Team.objects.get(name="SpaceX"),
-            Team.objects.get(name="Software"),
-        ]
-        assert r.context["total_matches"] == 2
+        assertNotContains(r, "pf-person-search-result")
+        assertContains(r, "pf-team-card")
+
+        assertContains(r, "/teams/software/")
+        assertContains(r, "/teams/spacex/")
+
+        assertContains(r, "(2)")

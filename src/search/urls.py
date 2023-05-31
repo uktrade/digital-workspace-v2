@@ -1,15 +1,24 @@
 from django.urls import path
+from django.views.generic import RedirectView
 
-from .views import home_view, search_v2, toggle_search_v2
+from .views import search
 
 
 app_name = "search"
 
-# TODO[DWPF-454] remove the /v2 segments
-# TODO[DWPF-454] implement a redirect from old URL patterns to new ones?
 urlpatterns = [
-    path("v2/", home_view, name="home"),
-    path("v2/<str:category>", search_v2, name="category"),
-    # TODO[DWPF-454] remove this URL
-    path("v2/toggle/<str:use_v2>", toggle_search_v2, name="toggle"),
+    path(
+        "v2/",
+        RedirectView.as_view(
+            pattern_name="search:home", permanent=True, query_string=True
+        ),
+    ),
+    path(
+        "v2/<str:category>/",
+        RedirectView.as_view(
+            pattern_name="search:category", permanent=True, query_string=True
+        ),
+    ),
+    path("<str:category>/", search, name="category"),
+    path("", search, name="home"),
 ]

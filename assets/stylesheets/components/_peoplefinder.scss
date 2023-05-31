@@ -186,12 +186,11 @@
   height: 100%;
   padding: 22.5px;
   border: 1px solid govuk-colour("mid-grey");
-  box-shadow: 7px 7px 0 govuk-colour("white"),
-    8px 8px 0 govuk-colour("mid-grey");
+  box-shadow: none;
 }
 
 .pf-team-card__name {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: bold;
   margin-top: 0px;
 
@@ -380,15 +379,4 @@
   > li {
     width: 50%;
   }
-}
-
-// @TODO [DWPF-454] remove .search-v2 class and merge all overrides into main declarations
-.search-v2 {
-    .pf-team-card {
-        box-shadow: none;
-    }
-
-    .pf-team-card__name {
-        font-size: 19px;
-    }
 }
