@@ -1,5 +1,5 @@
 <form class="search-form"
-      action="{% if search_url %}{{ search_url }}{% else %}{% url 'search' %}{% endif %}"
+      action="{% if search_url %}{{ search_url }}{% else %}{% url 'search:home' %}{% endif %}"
       method="get">
     <label for="search-site" class="govuk-visually-hidden">Search Digital Workspace</label>
     <input id="search-site"

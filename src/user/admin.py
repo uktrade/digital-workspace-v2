@@ -36,7 +36,6 @@ class SSOUserAdmin(UserAdmin):
                     "is_superuser",
                     "groups",
                     "user_permissions",
-                    "enable_v2_search",
                 )
             },
         ),

@@ -1,32 +1,11 @@
-// @TODO [DWPF-454] remove all instances of .search-and-profile-bar
-.search-and-profile-bar {
-    background-color: $brand-color-grey90;
-    background-image: url("../images/search-and-profile-bar-pattern.png");
-}
-
-.ws-search-and-profile-bar__search {
-    padding: govuk-spacing(2) 0;
-}
-
-.ws-search-and-profile-bar__profile {
-    padding: 0 0 0 govuk-spacing(3);
-
-    @include govuk-media-query($until: desktop) {
-        display: none;
-    }
-}
-
-.nav-and-profile-bar {
-    background-color: $brand-color-navy;
-    border-top: 5px solid $brand-color-primary;
-}
-
 .people-finder-panel {
     display: flex;
     justify-content: flex-end;
 
     .profile-link {
         display: flex;
+        align-items: center;
+        column-gap: 10px;
 
         &:link,
         &:hover,
@@ -36,59 +15,21 @@
 
         &:focus {
             @include govuk-focused-text;
-
-            .profile-details {
-                @include govuk-focused-text;
-            }
-        }
-    }
-
-    @include govuk-media-query($until: desktop, $media-type: "screen") {
-        .profile-link {
-            display: none;
-        }
-    }
-
-    .profile-details {
-        @include govuk-font($size: 16, $weight: bold);
-        background-color: darken($brand-color-grey90, 5%);
-        padding: govuk-spacing(2) govuk-spacing(3) govuk-spacing(2) govuk-spacing(6);
-        text-align: right;
-        color: govuk-colour("white");
-    }
-
-    .profile-image {
-        width: 64px;
-        height: 64px;
-    }
-
-    .profile-prompt {
-        @include govuk-font($size: 14);
-        display: block;
-    }
-}
-
-// @TODO [DWPF-454] remove .search-v2 class and merge all overrides into main declarations
-.search-v2 {
-    .people-finder-panel {
-        .profile-link {
-            align-items: center;
-            column-gap: 10px;
-        }
-
-        .profile-link:focus {
             box-shadow: none;
 
             .profile-details {
+                @include govuk-focused-text;
                 box-shadow: none;
             }
         }
 
         .profile-details {
-            padding: 0;
             display: flex;
             flex-direction: column;
+            @include govuk-font($size: 16, $weight: bold);
             background: none;
+            padding: 0;
+            text-align: right;
             color: govuk-colour("black");
             font-weight: normal;
             text-decoration-color: govuk-colour("black");
@@ -98,6 +39,8 @@
             }
 
             .profile-prompt {
+                @include govuk-font($size: 14);
+                display: block;
                 display: inline;
                 text-decoration: none;
 
@@ -114,23 +57,24 @@
     }
 
     @include govuk-media-query($until: desktop, $media-type: "screen") {
-        .people-finder-panel {
-            position: absolute;
-            top: 15px;
-            right: 0;
+        position: absolute;
+        top: 15px;
+        right: 0;
 
-            .profile-link {
-                display: flex;
-                column-gap: 5px;
+        .profile-link {
+            display: flex;
+            column-gap: 5px;
+
+            .profile-details {
 
                 .profile-prompt {
                     display: none;
                 }
+            }
 
-                img {
-                    width: 20px;
-                    height: 20px;
-                }
+            .profile-image {
+                width: 20px;
+                height: 20px;
             }
         }
     }
