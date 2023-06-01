@@ -25,14 +25,15 @@
     padding: 10px 0 6px 0;
 }
 
+header {
+    .govuk-width-container {
+        display: flex;
+        justify-content: space-between;
+    }
 
-.govuk-width-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-.govuk-width-container[hidden] {
-    display: none;
+    .govuk-width-container[hidden] {
+        display: none;
+    }
 }
 
 .govuk-header__logo {
