@@ -4,7 +4,9 @@ Search is handled by [OpenSearch](https://opensearch.org/), an [ElasticSearch](h
 
 This document outlines how that process is customised; the process is based on the setup used by [Github Doc's search](https://github.blog/2023-03-09-how-github-docs-new-search-works/).
 
-If you are simply looking for the boost values, head straight for the end of this document.
+This approach balances comprehensiveness (resurn all results) with a nuanced ability to tweak values for searches, so that the most relevant results should be first, and if not it's relatively easy to iteratively improve them.
+
+If you are simply looking for the boost calculations, head straight for the end of this document.
 
 ## Indexing
 
@@ -39,47 +41,88 @@ We use the standard [Snowball stemmer](https://snowballstem.org/) as recommended
 
 As we ask OpenSearch to return results (documents) relating to the user's query, we will apply a series of "boost" values to various different configurations of the results. OpenSearch uses these boost values to give each result a score, which is how the results get ranked (note that the score itself doen't matter; what matters is the relative scores of different results).
 
-Rather than send a single query to OpenSearch, we send a nested query, which allows us to ask for various types of match, all ranked according to their likelihood to be what the user is looking for.
+Rather than send a single query to OpenSearch, we send a set of similar queries which allows us to ask for various types of match, all ranked according to their likelihood to be what the user is looking for.
 
 An example is that we may ask for both and exact match and a fuzzy match for the same term in the same query, with the exact match having a higher score. Each search result will only be included once but this approach maximises the chances of a) returning results that match explicit (possibly advanced, complex) queries, and b) returning relevant results to broader, less explicit queries.
 
-### Single or multiple term
+In reality each query submitted by the user will result in at least 7 individual search operations, often 19, and perhaps more depending on filtering etc. These will be managed within a single query to OpenSearch, and turnaround times should not suffer as a result.
+
+### Single or multiple term; AND, OR and Phrase matching
+
+Searching for a single word or term is relatively simple; we want to search against each field and prioritise the fields with more importance, and where we have to use less processing (thereby giving priority to results that are exactly as typed by the suer, rather than e.g. word variants).
+
+When searching for terms containing multiple word we want to do all the above, but we also want to combine the words so that by default we search using *both* AND and OR strategies. Results for the AND search will be boosted higher than results for the OR search.
+
+Effectively a search for "paper aeroplane" should return any document containing either word; at the same time it should rank results containing both "paper" and "aeroplane" higher than results with only the word "paper" or the word "aeroplane".
+
+In addition, we also want to use "phrase" searching, where the set of words must all appear together in the same order; this is boosted above AND and OR matches as most relevant, and of course even more so if it's matched against unprocessed (explicit) fields.
 
 ### Fuzzy matching
 
-### AND and OR
+To take account of misspellings, we'll include [fuzzy matching](https://docs.wagtail.org/en/stable/topics/search/searching.html#fuzzy-matching) of terms so that "similar" words will be returned even when they don't exactly match any word or stem.
+
+Fuzzy matching will only be applied to document titles.
+
+In order that these results are always below any non-fuzzy matches, the boost values for these results will be fractional; when multiplied they will relatively lower the relevancy score of the results returned by this search.
 
 ### Filtering
 
+Non-text fields like dates etc
+
 ### Advanced search terms
+
+Maybe not needed with this comprehensive approach?
+
+### Dynamic boosting
+
+Check up on the Wagtail implementation for this and investigate what we want to do
 
 ## Document types
 
-### All pages
-
-### News pages
-
-### Tools
-
-## Field types
-
-### Title / headings / contents / data
+OpenSearch treats each potential result as a "document" - it doesn't distinguish between pages, people, tools, news pages, etc. It's therefore important in our combined search that our boost values work together as a whole, with the boosts appropriately scaled.
 
 # Boost values
 
 The following are the various base boost values we use in the search setup. When a search request is constructed, these values are multiplied together as appropriate for each specific type of query we send to OpenSearch.
 
-- BOOST_TITLE: 4.0  # Any match on a title field
-- BOOST_HEADINGS: 3.0  # Any match on a non-title heading field
-- BOOST_CONTENT: 1.0  # Any match wihin the content of the document
-- BOOST_PHRASE: 10.0  # Exact match on an entire search phrase
-- BOOST_AND: 2.5  # AND matches represent stronger links between terms than OR matches, they get this boost
-- BOOST_EXPLICIT: 3.5  # No stemming or synonyms used; matches are on unprocessed text
-- BOOST_FUZZY: 0.025  # Fuzzy handles basic misspellings gracefully but these results should be low in the list
+| Boost variable | Score | Description |
+|----------------|-------|-------------|
+| BOOST_TITLE | 4.0 | Any match on a title field|
+| BOOST_HEADINGS | 3.0 | Any match on a non-title heading field|
+| BOOST_CONTENT | 1.0 | Any match wihin the content of the document|
+| BOOST_PHRASE | 10.0 | Exact match on an entire search phrase|
+| BOOST_AND | 2.5 | AND matches represent stronger links between terms than OR matches, they get this boost|
+| BOOST_EXPLICIT | 3.5 | No stemming or synonyms used; matches are on unprocessed text|
+| BOOST_FUZZY | 0.025 | Fuzzy handles basic misspellings gracefully but these results should be low in the list|
+
+## Boost combinations
+
+| Field | Match Type | Boosts |
+|-------|------------|--------|
+|`title_explicit`| Exact Phrase | BOOST_EXPLICIT * BOOST_PHRASE * BOOST_TITLE |
+|`title`| Exact Phrase | BOOST_PHRASE * BOOST_TITLE |
+|`title_explicit`| AND | BOOST_EXPLICIT * BOOST_AND * BOOST_TITLE |
+|`title`| AND | BOOST_AND * BOOST_TITLE |
+|`title_explicit`| OR | BOOST_EXPLICIT * BOOST_TITLE |
+|`title`| OR | BOOST_TITLE |
+|`headings_explicit`| Exact Phrase | BOOST_EXPLICIT * BOOST_PHRASE * BOOST_HEADINGS |
+|`headings`| Exact Phrase | BOOST_PHRASE * BOOST_HEADINGS |
+|`headings_explicit`| AND | BOOST_EXPLICIT * BOOST_AND * BOOST_HEADINGS |
+|`headings`| AND | BOOST_AND * BOOST_HEADINGS |
+|`headings_explicit`| OR | BOOST_EXPLICIT * BOOST_HEADINGS |
+|`headings`| OR | BOOST_HEADINGS |
+|`content_explicit`| Exact Phrase | BOOST_EXPLICIT * BOOST_PHRASE * BOOST_CONTENT |
+|`content`| Exact Phrase | BOOST_PHRASE * BOOST_CONTENT |
+|`content_explicit`| AND | BOOST_EXPLICIT * BOOST_AND * BOOST_CONTENT |
+|`content`| AND | BOOST_AND * BOOST_CONTENT |
+|`content_explicit`| OR | BOOST_EXPLICIT * BOOST_CONTENT |
+|`content`| OR | BOOST_CONTENT |
+|`title`| OR | BOOST_FUZZY |
+
 
 ## Specific content types
 
-These content-specific boosts are applied to results in their own types and multiplied with any other boosts already applied. To
+~~These content-specific boosts are applied to results in their own types and multiplied with any other boosts already applied.~~
 
 ### News
 
@@ -89,26 +132,18 @@ These content-specific boosts are applied to results in their own types and mult
 
 - BOOST_EXACT
 
-## Boost combinations
+### Teams
 
-| Field | Match Type | Boosts |
-|-------|------------|--------|
-|`title_explicit`| Exact Phrase | BOOST_EXPLICIT * BOOST_PHRASE * BOOST_TITLE|
-|`title`| Exact Phrase | BOOST_PHRASE * BOOST_TITLE|
-|`title_explicit`| AND | BOOST_EXPLICIT * BOOST_AND * BOOST_TITLE|
-|`title`| AND | BOOST_AND * BOOST_TITLE|
-|`title_explicit`| OR | BOOST_EXPLICIT * BOOST_TITLE|
-|`title`| OR | BOOST_TITLE|
-|`headings_explicit`| Exact Phrase | BOOST_EXPLICIT * BOOST_PHRASE * BOOST_HEADINGS|
-|`headings`| Exact Phrase | BOOST_PHRASE * BOOST_HEADINGS|
-|`headings_explicit`| AND | BOOST_EXPLICIT * BOOST_AND * BOOST_HEADINGS|
-|`headings`| AND | BOOST_AND * BOOST_HEADINGS|
-|`headings_explicit`| OR | BOOST_EXPLICIT * BOOST_HEADINGS|
-|`headings`| OR | BOOST_HEADINGS|
-|`content_explicit`| Exact Phrase | BOOST_EXPLICIT * BOOST_PHRASE * BOOST_CONTENT|
-|`content`| Exact Phrase | BOOST_PHRASE * BOOST_CONTENT|
-|`content_explicit`| AND | BOOST_EXPLICIT * BOOST_AND * BOOST_CONTENT|
-|`content`| AND | BOOST_AND * BOOST_CONTENT|
-|`content_explicit`| OR | BOOST_EXPLICIT * BOOST_CONTENT|
-|`content`| OR | BOOST_CONTENT|
-|`title`| OR | BOOST_FUZZY|
+### People
+
+# Open questions
+
+- Teams - do we want to index e.g. all the job titles within the team?
+- Teams - do we want to index members' names so searhcing a person also returns their team?
+- Can we do anything to help find "teams' main pages" as per a piece of feedback?
+- People indexing probably deserves dedicated treatment re fields, boosting, fuzzy matching etc
+- News needs to prioritise recency - does all content?
+- What are all the different categories from an indexing point of view (e.g. is "working at DBT" content distinct from general content in any significant way?)
+- We add alt tags to content, right?
+- Do we index excepts any differently to content? Slightly higher boosted?
+-
