@@ -12,64 +12,6 @@ If you are simply looking for the boost calculations, head straight for the end 
 
 The first step is to control our search indexing in detail. Each searchable object type is listed below, along with the ORM fields that object contains that merit indexing; that is to say any data on that object that users may at any point use to search, refine or filter in order to find the result they are looking for.
 
-- ContentPage (N.B. all pages will inherit from / implement these fields)
-  - title
-  - body (mapped to "content" and "headings" in search index)
-  - live (don't index anything that isn't)
-  - slug (for filtering)
-  - owner (page's original creator - index this like People or Teams?)
-  - content_type (for filtering / internal classification)
-  - first_published_at (for filtering)
-  - last_published_at (for filtering)
-  - is_creatable (for filtering / internal classification)
-- PageWithTopics (most pages inherit from here)
-  - excerpt (see Q at end)
-  - topics ??
-- Network page
-  - is_peoplefinder_network (for filtering / internal classification)
-- NewsCategory
-  - category (mapped to title)
-  - lead_story ??
-- NewsPage
-  - pinned_on_home
-  - news_categories
-- Document (i.e. PDFs etc) ??
-- Person
-  - first_name
-  - last_name
-  - email
-  - contact_email
-  - roles (job_titles)
-  - team related field ???
-  - town_city_or_region ???
-  - regional_building ???
-  - international_building ???
-  - ~~location_in_building~~
-  - key_skills
-  - other_key_skills
-  - fluent_languages
-  - intermediate_languages
-  - learning_interests
-  - other_learning_interests
-  - networks
-  - professions
-  - additional_roles
-  - other_additional_roles
-  - buildings
-  - is_active (for filtering)
-  - country (for filtering)
-  - grade (for filtering)
-  - do_not_work_for_ditc (for filtering) ???
-- Team
-  - name
-  - abbreviation (can we do this with/without spaces to catch e.g. "UK DSE" vs "UKDSE")
-  - people ?
-  - description
-  - leaders ??
-  - job_titles ?
-- Topic ???
-- Tool (will this be a page?)
-
 ### Title, headings, content
 
 Each text field on every page and content type (as far as possible) will be combined into only 3 fields (actually 6, see the next section); `title`, `headings` and `content`. This is to minimise storage and retrieval times for OpenSearch, while separating the content into chunks that may be boosted independently.
@@ -178,6 +120,67 @@ The following are the various base boost values we use in the search setup. When
 ## Specific content types
 
 ~~These content-specific boosts are applied to results in their own types and multiplied with any other boosts already applied.~~
+
+Indexed fields are laid out below ~~along with a mapping to the relevbatn search field~~
+
+- ContentPage (N.B. all pages will inherit from / implement these fields)
+  - title
+  - body (mapped to "content" and "headings" in search index)
+  - live (don't index anything that isn't)
+  - slug (for filtering)
+  - owner (page's original creator - index this like People or Teams?)
+  - content_type (for filtering / internal classification)
+  - first_published_at (for filtering)
+  - last_published_at (for filtering)
+  - is_creatable (for filtering / internal classification)
+- PageWithTopics (most pages inherit from here)
+  - excerpt (see Q at end)
+  - topics ??
+- Network page
+  - is_peoplefinder_network (for filtering / internal classification)
+- NewsCategory
+  - category (mapped to title)
+  - lead_story ??
+- NewsPage
+  - pinned_on_home
+  - news_categories
+- Document (i.e. PDFs etc) ??
+- Person
+  - first_name
+  - last_name
+  - email
+  - contact_email
+  - roles (job_titles)
+  - team related field ???
+  - town_city_or_region ???
+  - regional_building ???
+  - international_building ???
+  - ~~location_in_building~~
+  - key_skills
+  - other_key_skills
+  - fluent_languages
+  - intermediate_languages
+  - learning_interests
+  - other_learning_interests
+  - networks
+  - professions
+  - additional_roles
+  - other_additional_roles
+  - buildings
+  - is_active (for filtering)
+  - country (for filtering)
+  - grade (for filtering)
+  - do_not_work_for_ditc (for filtering) ???
+- Team
+  - name
+  - abbreviation (can we do this with/without spaces to catch e.g. "UK DSE" vs "UKDSE")
+  - people ?
+  - description
+  - leaders ??
+  - job_titles ?
+- Topic ???
+- Tool (will this be a page?)
+
 
 ### News
 
