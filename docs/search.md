@@ -150,6 +150,7 @@ Indexed fields are laid out below ~~along with a mapping to the relevbatn search
   - last_name
   - email
   - contact_email
+  - profile_completness (for ordering?)
   - roles (job_titles)
   - team related field ???
   - town_city_or_region ???
