@@ -33,8 +33,7 @@ The first step is to control our search indexing in detail. Each searchable obje
 - NewsPage
   - pinned_on_home
   - news_categories
-- Document (i.e. PDFs etc)
-  -
+- Document (i.e. PDFs etc) ??
 - Person
   - first_name
   - last_name
@@ -203,6 +202,3 @@ The following are the various base boost values we use in the search setup. When
 - We add alt tags to content, right?
 - Do we index excepts any differently to content? Slightly higher boosted?
 -
-
-
-https://github.com/uktrade/digital-workspace-v2/blob/44eb6b8d4e0113897847b7fb20ddfeea2d5c7b91/docs/search.md
