@@ -12,8 +12,64 @@ If you are simply looking for the boost calculations, head straight for the end 
 
 The first step is to control our search indexing in detail. Each searchable object type is listed below, along with the ORM fields that object contains that merit indexing; that is to say any data on that object that users may at any point use to search, refine or filter in order to find the result they are looking for.
 
-- BasePage (N.B. all pages will inherit from / implement these fields)
-  - Title
+- ContentPage (N.B. all pages will inherit from / implement these fields)
+  - title
+  - body (mapped to "content" and "headings" in search index)
+  - live (don't index anything that isn't)
+  - slug (for filtering)
+  - owner (page's original creator - index this like People or Teams?)
+  - content_type (for filtering / internal classification)
+  - first_published_at (for filtering)
+  - last_published_at (for filtering)
+  - is_creatable (for filtering / internal classification)
+- PageWithTopics (most pages inherit from here)
+  - excerpt (see Q at end)
+  - topics ??
+- Network page
+  - is_peoplefinder_network (for filtering / internal classification)
+- NewsCategory
+  - category (mapped to title)
+  - lead_story ??
+- NewsPage
+  - pinned_on_home
+  - news_categories
+- Document (i.e. PDFs etc)
+  -
+- Person
+  - first_name
+  - last_name
+  - email
+  - contact_email
+  - roles (job_titles)
+  - team related field ???
+  - town_city_or_region ???
+  - regional_building ???
+  - international_building ???
+  - ~~location_in_building~~
+  - key_skills
+  - other_key_skills
+  - fluent_languages
+  - intermediate_languages
+  - learning_interests
+  - other_learning_interests
+  - networks
+  - professions
+  - additional_roles
+  - other_additional_roles
+  - buildings
+  - is_active (for filtering)
+  - country (for filtering)
+  - grade (for filtering)
+  - do_not_work_for_ditc (for filtering) ???
+- Team
+  - name
+  - abbreviation (can we do this with/without spaces to catch e.g. "UK DSE" vs "UKDSE")
+  - people ?
+  - description
+  - leaders ??
+  - job_titles ?
+- Topic ???
+- Tool (will this be a page?)
 
 ### Title, headings, content
 
@@ -117,7 +173,7 @@ The following are the various base boost values we use in the search setup. When
 |`content`| AND | BOOST_AND * BOOST_CONTENT |
 |`content_explicit`| OR | BOOST_EXPLICIT * BOOST_CONTENT |
 |`content`| OR | BOOST_CONTENT |
-|`title`| OR | BOOST_FUZZY |
+|`title`| OR / Fuzzy | BOOST_FUZZY |
 
 
 ## Specific content types
@@ -147,3 +203,6 @@ The following are the various base boost values we use in the search setup. When
 - We add alt tags to content, right?
 - Do we index excepts any differently to content? Slightly higher boosted?
 -
+
+
+https://github.com/uktrade/digital-workspace-v2/blob/44eb6b8d4e0113897847b7fb20ddfeea2d5c7b91/docs/search.md
