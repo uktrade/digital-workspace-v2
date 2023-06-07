@@ -1,4 +1,4 @@
-name: "Update Requirements"
+name: "Dependabot Requirements"
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "dependabot/**"
 
 jobs:
-  generate-requirements:
+  generate:
     runs-on: ubuntu-latest
     permissions:
       contents: write
