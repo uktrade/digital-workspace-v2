@@ -8,21 +8,24 @@ on:
 jobs:
   generate-requirements:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
       - name: Install poetry
         run: |
           pip install --upgrade pip
           pip install poetry
-          poetry install --with dev
       - name: Generate requirements
         run: |
           poetry export --without-hashes --output requirements.txt
       - name: Commit requirements.txt
         run: |
-          git config --global user.name 'Your Name'
+          git config --global user.name 'GitHub Actions'
           git config --global user.email 'your-username@users.noreply.github.com'
           git commit -am "Automated update of requirements.txt"
           git push
