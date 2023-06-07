@@ -30,6 +30,3 @@ jobs:
           git config --global user.email 'your-username@users.noreply.github.com'
           git commit -am "Automated update of requirements.txt"
           git push
-    #   - uses: stefanzweifel/git-auto-commit-action@v4
-    #     with:
-    #       commit_message: Auto-update requirements.txt
