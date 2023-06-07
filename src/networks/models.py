@@ -90,12 +90,6 @@ class NetworkForm(WagtailAdminPageForm):
 
 
 class Network(ContentPage):
-    excerpt = models.CharField(
-        max_length=700,
-        blank=True,
-        null=True,
-    )
-
     is_creatable = True
 
     parent_page_types = [
@@ -105,7 +99,6 @@ class Network(ContentPage):
     subpage_types = ["networks.Network"]
 
     content_panels = ContentPage.content_panels + [
-        FieldPanel("excerpt"),
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]

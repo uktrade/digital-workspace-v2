@@ -6,6 +6,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, Subquery
+from django.forms import widgets
+from django.utils.text import Truncator
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
@@ -104,13 +106,6 @@ class ContentPage(BasePage):
     is_creatable = False
     show_in_menus = True
 
-    # This field is used in search indexing as
-    #  we can't change the search_analyzer property
-    # of the default title field
-    search_title = models.CharField(
-        max_length=255,
-    )
-
     legacy_guid = models.CharField(
         blank=True, null=True, max_length=255, help_text="""Wordpress GUID"""
     )
@@ -147,6 +142,13 @@ class ContentPage(BasePage):
         use_json_field=True,
     )
 
+    excerpt = models.CharField(
+        max_length=700,
+        blank=True,
+        null=True,
+        help_text="A summary of the page to be shown in search results."
+    )
+
     pinned_phrases = models.CharField(
         blank=True,
         null=True,
@@ -165,20 +167,25 @@ class ContentPage(BasePage):
         "from search results for these terms",
     )
 
-    body_no_html = models.TextField(
+    #
+    # Search
+    # Specific fields and settings to manage search. Extra fields are generally
+    # defined to make custom and specific indexing as defined in /docs/search.md
+    #
+
+    search_title = models.CharField(
+        max_length=255,
+    )
+
+    search_headings = models.TextField(
         blank=True,
         null=True,
     )
 
-    @property
-    def preview_text(self):
-        if self.body_no_html:
-            parts = self.body_no_html.split(" ")
-            return " ".join(parts[0:40])
-
-        return None
-
-    subpage_types = []
+    search_content = models.TextField(
+        blank=True,
+        null=True,
+    )
 
     search_fields = Page.search_fields + [
         index.SearchField(
@@ -190,18 +197,32 @@ class ContentPage(BasePage):
             },
         ),
         index.SearchField(
-            "body_no_html",
-            partial_match=True,
-            es_extra={
-                "search_analyzer": "stop_and_synonyms",
-            },
+            "search_headings",
+
         ),
-        index.AutocompleteField("body_no_html"),
+        index.SearchField(
+            "search_content",
+
+        ),
         index.AutocompleteField("search_title"),
         index.FilterField("slug"),
     ]
 
+    def _generate_search_field_content(self):
+        body_string = str(self.body)
+        soup = BeautifulSoup(body_string, "html.parser")
+        self.search_title = self.title
+        self.search_headings = " ".join([soup.h2, soup.h3, soup.h4, soup.h5])
+        self.search_content = " ".join([p.text for p in soup.find_all('p')])
+
+    #
+    # Wagtail admin configuration
+    #
+
+    subpage_types = []
+
     content_panels = Page.content_panels + [
+        FieldPanel("excerpt", widget=widgets.Textarea),
         FieldPanel("body"),
     ]
 
@@ -213,31 +234,19 @@ class ContentPage(BasePage):
     ]
 
     def full_clean(self, *args, **kwargs):
-        # Required so we can override
-        # search analyzer (see above)
-        self.search_title = self.title
+        self._generate_search_field_content()
+
+        if self.excerpt is None:
+            self.excerpt = Truncator(self.search_content).words(40)
 
         super().full_clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        body_string = str(self.body)
-
-        self.body_no_html = BeautifulSoup(body_string, "html.parser").text
-
-        # Required so we can override
-        # search analyzer (see above)
-        # self.search_title = self.title #
-
         if self.id:
             manage_excluded(self, self.excluded_phrases)
             manage_pinned(self, self.pinned_phrases)
 
         return super().save(*args, **kwargs)
-
-    #
-    # def get_children(self):
-    #     children = super().get_children()
-    #     return children.order_by('-last_published_at')
 
 
 class SearchKeywordOrPhrase(models.Model):
