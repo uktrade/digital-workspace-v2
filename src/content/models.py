@@ -7,7 +7,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, Subquery
 from django.forms import widgets
-from django.utils.text import Truncator
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
@@ -16,7 +15,7 @@ from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 from content import blocks
-from content.utils import manage_excluded, manage_pinned
+from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
 from search.utils import split_query
 from user.models import User as UserModel
@@ -212,8 +211,16 @@ class ContentPage(BasePage):
         body_string = str(self.body)
         soup = BeautifulSoup(body_string, "html.parser")
         self.search_title = self.title
-        self.search_headings = " ".join([soup.h2, soup.h3, soup.h4, soup.h5])
-        self.search_content = " ".join([p.text for p in soup.find_all('p')])
+        self.search_headings = " ".join(
+            [tag.string or '' for tag in soup.find_all(
+                ['h2', 'h3', 'h4', 'h5']
+            )]
+        )
+        self.search_content = " ".join(
+            [tag.string or '' for tag in soup.find_all(
+                ['p', 'a', 'li', 'figcaption', 'blockquote', 'dd', 'dt']
+            )]
+        )
 
     #
     # Wagtail admin configuration
@@ -237,7 +244,7 @@ class ContentPage(BasePage):
         self._generate_search_field_content()
 
         if self.excerpt is None:
-            self.excerpt = Truncator(self.search_content).words(40)
+            self.excerpt = truncate_words_and_chars(self.search_content, 40, 700)
 
         super().full_clean(*args, **kwargs)
 

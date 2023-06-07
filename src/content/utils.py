@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
+from django.utils.text import Truncator
 
 
 def remove_orphan_keyword_and_phrases():
@@ -117,3 +118,12 @@ def manage_excluded(obj, excluded_phrases_string):
             )
 
     remove_orphan_keyword_and_phrases()
+
+
+def truncate_words_and_chars(text, words, chars, truncate=None):
+    """
+    Truncates the given text to the _minimum_ value of both words and chars,
+    at a word ending
+    """
+    result = Truncator(text).chars(chars, '')
+    return Truncator(result).words(words, truncate)
