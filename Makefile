@@ -14,9 +14,9 @@ help:
 	@echo "$(CLR_Y)build$(CLR__) : Build the app's docker containers"
 	@echo "$(CLR_Y)up$(CLR__) : Start the app's docker containers"
 	@echo "$(CLR_Y)down$(CLR__) : Stop the app's docker containers"
-	@echo "$(CLR_Y)build-all$(CLR__) : Build all docker containers (inc. testrunner)"
-	@echo "$(CLR_Y)up-all$(CLR__) : Start all docker containers in the background (inc. testrunner)"
-	@echo "$(CLR_Y)down-all$(CLR__) : Stop all docker containers (inc. testrunner)"
+	@echo "$(CLR_Y)build-all$(CLR__) : Build all docker containers (inc. testrunner, opensearch dash)"
+	@echo "$(CLR_Y)up-all$(CLR__) : Start all docker containers in the background (inc. testrunner, opensearch dash)"
+	@echo "$(CLR_Y)down-all$(CLR__) : Stop all docker containers (inc. testrunner, opensearch dash)"
 	@echo "\n$(CLR_G)Linting$(CLR__)"
 	@echo "$(CLR_Y)check$(CLR__) : Run black, ruff and djlint in 'check' modes, and scan for 'fixme' comments"
 	@echo "$(CLR_Y)fix$(CLR__) : Run black, ruff and djlint in 'fix' modes"
@@ -90,19 +90,19 @@ build:
 	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose build
 
 build-all:
-	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose --profile playwright build
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose --profile playwright --profile opensearch build
 
 up:
 	docker-compose up
 
 up-all:
-	docker-compose --profile playwright up -d
+	docker-compose --profile playwright --profile opensearch up -d
 
 down:
 	docker-compose down
 
 down-all:
-	docker-compose --profile playwright down
+	docker-compose --profile playwright --profile opensearch down
 
 #
 # Linting
@@ -155,7 +155,7 @@ reset-db:
 	docker-compose start db
 
 first-use:
-	@docker-compose --profile playwright down
+	@docker-compose --profile playwright --profile opensearch down
 	make build
 	make up
 	make reset-db
