@@ -8,6 +8,7 @@ on:
 jobs:
   generate-requirements:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
