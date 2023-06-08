@@ -14,13 +14,20 @@ class Tool(PageWithTopics):
         blank=True,
         max_length=2048,
     )
+    long_description = models.CharField(
+        null=True,
+        blank=True,
+        max_length=2048,
+    )
 
     parent_page_types = ["tools.ToolsHome"]
     subpage_types = []  # Should not be able to create children
 
     content_panels = PageWithTopics.content_panels + [
         FieldPanel("redirect_url"),
+        FieldPanel("long_description"),
     ]
+
 
     def serve(self, request):
         return redirect(self.redirect_url)
