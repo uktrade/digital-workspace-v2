@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
 from django.template.response import TemplateResponse
@@ -141,23 +142,23 @@ class NewsPage(PageWithTopics):
         "featured article.",
     )
 
+    @property
+    def search_categories(self):
+        return " ".join(self.news_categories.all().values_list("news_category__category", flat=True))
+
     search_fields = ContentPage.search_fields + [
-        index.RelatedFields("news_categories", [
-            index.RelatedFields("news_category", [
-                index.SearchField(
-                    "category",
-                    es_extra={
-                        "search_analyzer": "simple",
-                    },
-                ),
-                index.AutocompleteField(
-                    "category",
-                    es_extra={
-                        "search_analyzer": "snowball",
-                    },
-                ),
-            ]),
-        ]),
+        index.SearchField(
+            "search_categories",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.AutocompleteField(
+            "news_category",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
         index.FilterField("pinned_on_home"),
     ]
 
