@@ -312,19 +312,16 @@ WAGTAILSEARCH_BACKENDS = {
                 },
                 "analysis": {
                     "filter": {
-                        "search_stop_words": {"type": "stop", "stopwords": stop_words},
-                        "search_synonyms": {
-                            "type": "synonym",
-                            "lenient": True,
-                            "synonyms": synonyms,
+                        "english_snowball": {
+                            "type": "snowball",
+                            "language": "English"
                         },
                     },
                     "analyzer": {
-                        "stop_and_synonyms": {
-                            "tokenizer": "lowercase",
+                        "snowball": {
+                            "tokenizer": "standard",
                             "filter": [
-                                "search_stop_words",
-                                "search_synonyms",
+                                "english_snowball",
                             ],
                         },
                     },

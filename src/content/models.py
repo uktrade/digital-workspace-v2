@@ -189,22 +189,54 @@ class ContentPage(BasePage):
     search_fields = Page.search_fields + [
         index.SearchField(
             "search_title",
-            partial_match=True,
-            boost=2,
             es_extra={
-                "search_analyzer": "stop_and_synonyms",
+                "search_analyzer": "simple",
             },
         ),
         index.SearchField(
             "search_headings",
-
+            es_extra={
+                "search_analyzer": "simple",
+            },
         ),
         index.SearchField(
             "search_content",
-
+            es_extra={
+                "search_analyzer": "simple",
+            },
         ),
-        index.AutocompleteField("search_title"),
+        index.SearchField(
+            "excerpt",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.AutocompleteField(
+            "search_title",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "search_headings",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "search_content",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "excerpt",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
         index.FilterField("slug"),
+        index.FilterField("is_creatable"),
     ]
 
     def _generate_search_field_content(self):

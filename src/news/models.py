@@ -142,7 +142,23 @@ class NewsPage(PageWithTopics):
     )
 
     search_fields = ContentPage.search_fields + [
-        index.SearchField("excerpt"),
+        index.RelatedFields("news_categories", [
+            index.RelatedFields("news_category", [
+                index.SearchField(
+                    "category",
+                    es_extra={
+                        "search_analyzer": "simple",
+                    },
+                ),
+                index.AutocompleteField(
+                    "category",
+                    es_extra={
+                        "search_analyzer": "snowball",
+                    },
+                ),
+            ]),
+        ]),
+        index.FilterField("pinned_on_home"),
     ]
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504

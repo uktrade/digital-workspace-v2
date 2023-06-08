@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel
+from wagtail.search import index
 
 from content.models import BasePage, ContentPage, Theme
 
@@ -118,6 +119,21 @@ class PageTopic(models.Model):
 
     panels = [
         FieldPanel("topic"),
+    ]
+
+    search_fields = ContentPage.search_fields + [
+        index.SearchField(
+            "topic",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.AutocompleteField(
+            "topic",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
     ]
 
     class Meta:
