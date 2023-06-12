@@ -476,27 +476,181 @@ class Person(index.Indexed, models.Model):
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
     search_fields = [
-        index.SearchField("first_name", partial_match=True, boost=10),
-        index.SearchField("last_name", partial_match=True, boost=10),
-        index.RelatedFields("roles", [index.SearchField("job_title")]),
-        index.SearchField("email"),
-        index.SearchField("contact_email"),
-        index.SearchField("primary_phone_number"),
-        index.SearchField("secondary_phone_number"),
-        index.SearchField("fluent_languages"),
-        index.SearchField("intermediate_languages"),
-        index.SearchField("town_city_or_region"),
-        index.SearchField("regional_building"),
-        index.SearchField("international_building"),
-        index.SearchField("location_in_building"),
-        index.RelatedFields("key_skills", [index.SearchField("name")]),
-        index.SearchField("other_key_skills"),
-        index.RelatedFields("learning_interests", [index.SearchField("name")]),
-        index.SearchField("other_learning_interests"),
-        index.RelatedFields("additional_roles", [index.SearchField("name")]),
-        index.SearchField("other_additional_roles"),
-        index.RelatedFields("networks", [index.SearchField("name")]),
+        index.SearchField(
+            "full_name",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.SearchField(
+            "email",
+            es_extra={
+                "search_analyzer": "keyword",
+            },
+        ),
+        index.SearchField(
+            "contact_email",
+            es_extra={
+                "search_analyzer": "keyword",
+            },
+        ),
+        index.SearchField(
+            "primary_phone_number",
+            es_extra={
+                "search_analyzer": "keyword",
+            },
+        ),
+        index.SearchField(
+            "secondary_phone_number",
+            es_extra={
+                "search_analyzer": "keyword",
+            },
+        ),
+        index.SearchField(
+            "town_city_or_region",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.SearchField(
+            "regional_building",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.SearchField(
+            "international_building",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.AutocompleteField(
+            "full_name",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "fluent_languages",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "intermediate_languages",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "town_city_or_region",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "other_key_skills",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "other_learning_interests",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "other_additional_roles",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "search_teams",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.AutocompleteField(
+            "search_teams",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.RelatedFields(
+            "roles",
+            [
+                index.SearchField(
+                    "job_title",
+                    es_extra={
+                        "search_analyzer": "simple",
+                    },
+                ),
+                index.AutocompleteField(
+                    "job_title",
+                    es_extra={
+                        "search_analyzer": "snowball",
+                    },
+                )
+            ]
+        ),
+        index.RelatedFields(
+            "key_skills",
+            [
+                index.AutocompleteField(
+                    "name",
+                    es_extra={
+                        "search_analyzer": "snowball",
+                    },
+                )
+            ]
+        ),
+        index.RelatedFields(
+            "learning_interests",
+            [
+                index.SearchField(
+                    "name",
+                    es_extra={
+                        "search_analyzer": "snowball",
+                    },
+                )
+            ]
+        ),
+        index.RelatedFields(
+            "additional_roles",
+            [
+                index.SearchField(
+                    "name",
+                    es_extra={
+                        "search_analyzer": "simple",
+                    },
+                ),
+                index.AutocompleteField(
+                    "name",
+                    es_extra={
+                        "search_analyzer": "snowball",
+                    },
+                )
+            ]
+        ),
+        index.RelatedFields(
+            "networks",
+            [
+                index.AutocompleteField(
+                    "name",
+                    es_extra={
+                        "search_analyzer": "snowball",
+                    },
+                )
+            ]
+        ),
+        index.FilterField("has_photo"),
+        index.FilterField("profile_completion_amount"),
         index.FilterField("is_active"),
+        index.FilterField("professions"),
+        index.FilterField("grade"),
+        index.FilterField("do_not_work_for_dit"),
     ]
 
     def __str__(self) -> str:
@@ -540,6 +694,30 @@ class Person(index.Indexed, models.Model):
         return ", ".join(
             filter(None, [self.fluent_languages, self.intermediate_languages])
         )
+
+    @property
+    def profile_completion_amount(self) -> float:
+        """
+        A little hacky, because completion is defined on the QS - used for search indexing
+        """
+        profile_with_completion = Person.objects.with_profile_completion().get(pk=self.pk)
+        return profile_with_completion.profile_completion
+
+    @property
+    def has_photo(self) -> bool:
+        return bool(self.photo)
+
+    @property
+    def search_teams(self):
+        """
+        Indexable string of team names and abbreviations
+        """
+        teams = self.roles.all()
+        names = teams.values_list("team__name", flat=True)
+        names_str = " ".join(list([n or "" for n in names]))
+        abbrs = teams.values_list("team__abbreviation", flat=True)
+        abbrs_str = " ".join(list([a or "" for a in abbrs]))
+        return f"{names_str} {abbrs_str}"
 
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
@@ -659,8 +837,48 @@ class Team(index.Indexed, models.Model):
 
     # TODO: PFM-239 - boost doesn't work https://github.com/wagtail/wagtail/issues/5422
     search_fields = [
-        index.SearchField("name", partial_match=True, boost=10),
-        index.SearchField("abbreviation", boost=20),
+        index.SearchField(
+            "name",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.SearchField(
+            "abbreviation",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.SearchField(
+            "description",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.SearchField(
+            "roles_in_team",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.AutocompleteField(
+            "name",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "description",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.AutocompleteField(
+            "roles_in_team",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
     ]
 
     def __str__(self) -> str:
@@ -688,6 +906,10 @@ class Team(index.Indexed, models.Model):
         order_by += ["person__last_name", "person__first_name"]
 
         yield from self.members.active().filter(head_of_team=True).order_by(*order_by)
+
+    @property
+    def roles_in_team(self) -> list[str]:
+        return list(TeamMember.objects.filter(team=self).values_list("job_title", flat=True))
 
 
 class ActiveTeamMemberManager(models.Manager):

@@ -141,16 +141,16 @@ Indexed fields are laid out below ~~along with a mapping to the relevbatn search
   - news_categories
 - Document (i.e. PDFs etc) ??
 - Person
-  - first_name
-  - last_name
+  - full_name
   - email
   - contact_email
-  - profile_completness (for ordering?)
+  - profile_completness (for ordering)
+  - has_photo (for ordering)
   - roles (job_titles)
-  - team related field ???
-  - town_city_or_region ???
-  - regional_building ???
-  - international_building ???
+  - team related field
+  - town_city_or_region
+  - regional_building
+  - international_building
   - ~~location_in_building~~
   - key_skills
   - other_key_skills

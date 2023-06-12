@@ -324,6 +324,11 @@ WAGTAILSEARCH_BACKENDS = {
                                 "english_snowball",
                             ],
                         },
+                        # "no_spaces": {
+                        #     "type": "pattern",
+                        #     "pattern": "",
+                        #     "lowercase": True
+                        # }
                     },
                 },
             }
