@@ -75,6 +75,21 @@ class NewsCategory(models.Model):
     )
     history = history = HistoricalRecords()
 
+    search_fields = ContentPage.search_fields + [
+        index.SearchField(
+            "category",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.AutocompleteField(
+            "category",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+    ]
+
     def __str__(self):
         return self.category
 
@@ -154,7 +169,7 @@ class NewsPage(PageWithTopics):
             },
         ),
         index.AutocompleteField(
-            "news_category",
+            "search_categories",
             es_extra={
                 "search_analyzer": "snowball",
             },

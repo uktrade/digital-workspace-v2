@@ -126,23 +126,18 @@ Indexed fields are laid out below ~~along with a mapping to the relevbatn search
 - ContentPage (N.B. all pages will inherit from / implement these fields)
   - title
   - body (mapped to "content" and "headings" in search index)
-  - live (don't index anything that isn't)
-  - slug (for filtering)
-  - owner (page's original creator - index this like People or Teams?)
-  - content_type (for filtering / internal classification)
-  - first_published_at (for filtering)
-  - last_published_at (for filtering)
-  - is_creatable (for filtering / internal classification)
+  - live filter
+  - slug filter (??)
+  - first_published_at filter
+  - last_published_at filter
+- PageTopic
+  - topic
 - PageWithTopics (most pages inherit from here)
-  - excerpt (see Q at end)
-  - topics ??
+  - topics
 - Network page
-  - is_peoplefinder_network (for filtering / internal classification)
 - NewsCategory
-  - category (mapped to title)
-  - lead_story ??
+  - category title
 - NewsPage
-  - pinned_on_home
   - news_categories
 - Document (i.e. PDFs etc) ??
 - Person
@@ -168,10 +163,10 @@ Indexed fields are laid out below ~~along with a mapping to the relevbatn search
   - additional_roles
   - other_additional_roles
   - buildings
-  - is_active (for filtering)
-  - country (for filtering)
-  - grade (for filtering)
-  - do_not_work_for_ditc (for filtering) ???
+  - is_active filter
+  - country filter
+  - grade filter
+  - do_not_work_for_ditc filter ???
 - Team
   - name
   - abbreviation (can we do this with/without spaces to catch e.g. "UK DSE" vs "UKDSE")
@@ -204,7 +199,7 @@ Indexed fields are laid out below ~~along with a mapping to the relevbatn search
 - News needs to prioritise recency - does all content?
 - What are all the different categories from an indexing point of view (e.g. is "working at DBT" content distinct from general content in any significant way?)
 - We add alt tags to content, right?
-- Do we index excepts any differently to content? Slightly higher boosted?
+- Do we index excerpts any differently to content? Slightly higher boosted?
 - Index excerpts with their own boost variable
 - some sort of self-serve debug (why doesnt something turn up)
 - people - boosts on having profile pic and profile completeness

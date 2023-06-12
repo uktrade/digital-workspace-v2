@@ -141,6 +141,26 @@ class PageTopic(models.Model):
 
 
 class PageWithTopics(ContentPage):
+
+    @property
+    def search_topics(self):
+        return " ".join(self.topics.all().values_list("topic__title", flat=True))
+
+    search_fields = ContentPage.search_fields + [
+        index.SearchField(
+            "search_topics",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
+        index.AutocompleteField(
+            "search_topics",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+    ]
+
     content_panels = ContentPage.content_panels + [
         InlinePanel("topics", label="Topics"),
     ]

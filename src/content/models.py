@@ -235,7 +235,7 @@ class ContentPage(BasePage):
                 "search_analyzer": "snowball",
             },
         ),
-        index.FilterField("slug"),
+        # index.FilterField("slug"),
         index.FilterField("is_creatable"),
     ]
 
