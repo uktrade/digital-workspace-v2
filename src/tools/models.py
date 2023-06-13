@@ -1,7 +1,7 @@
 from django import forms
 from django.db import models
 from django.shortcuts import redirect
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldPanel, HelpPanel, MultiFieldPanel
 
 from content.models import ContentPage
 from working_at_dit.models import PageWithTopics
@@ -58,14 +58,14 @@ class Tool(PageWithTopics, IrapDataAbstract):
 
     content_panels = PageWithTopics.content_panels + [
         FieldPanel("redirect_url"),
-        FieldPanel("long_description"),
+        HelpPanel("long_description"),
         MultiFieldPanel(
             [
                 FieldPanel("product_irap_reference_number", widget=readonly_widget),
                 FieldPanel("product_name", widget=readonly_widget),
                 FieldPanel("functionality", widget=readonly_widget),
             ],
-            heading="IRAP Fields",
+            heading="IRAP Fields (Read Only)",
             classname="collapsed",
         )
 
