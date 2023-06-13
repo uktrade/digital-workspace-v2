@@ -190,20 +190,22 @@ Indexed fields are laid out below ~~along with a mapping to the relevbatn search
 
 ### People
 
-# Open questions
+# Resolved Questions
 
 - Teams - do we want to index e.g. all the job titles within the team? (Y)
 - Teams - do we want to index members' names so searhcing a person also returns their team? (N)
 - Can we do anything to help find "teams' main pages" as per a piece of feedback? Not a real thing - it was private (but maybe change private to hidden)
-- People indexing probably deserves dedicated treatment re fields, boosting, fuzzy matching etc
-- News needs to prioritise recency - does all content?
-- What are all the different categories from an indexing point of view (e.g. is "working at DBT" content distinct from general content in any significant way?)
-- We add alt tags to content, right?
-- Do we index excerpts any differently to content? Slightly higher boosted?
+- index people against role and team membership
 - Index excerpts with their own boost variable
+- We add alt tags (actually figcaptions) to content
+- people search maybe actually works ok at the moment
+
+# Open questions
+
+- People indexing probably deserves dedicated treatment re fields, boosting, fuzzy matching etc
+- What are all the different categories from an indexing point of view (e.g. is "working at DBT" content distinct from general content in any significant way?)
+- Do we index excerpts any differently to content? Slightly higher boosted?
 - some sort of self-serve debug (why doesnt something turn up)
 - people - boosts on having profile pic and profile completeness
-- people search maybe actually works ok at the moment
-- index people against role and team membership
 - do we need UI to show the matching field - so when you search people against team name you can see why they match
--
+- News needs to prioritise recency - does all content?

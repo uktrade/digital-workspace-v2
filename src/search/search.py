@@ -4,19 +4,51 @@ from peoplefinder.models import Person, Team
 from tools.models import Tool
 from working_at_dit.models import PoliciesAndGuidanceHome
 
+from typing import Any, Collection, Dict
+
 
 class SearchVector:
-    def __init__(self, request):
+    def __init__(self, request, annotate_score=False):
         self.request = request
+        self.annotate_score = annotate_score
+        print(f"annotate: {annotate_score}")
+
+    def _wagtail_search(self, queryset, query, *args, **kwargs):
+        """
+        Allows e.g. score annotation without polluting overriden search method
+        """
+        if self.annotate_score:
+            return queryset.search(query, *args, **kwargs).annotate_score("_score")
+
+        return queryset.search(query, *args, **kwargs)
+
+    def build_query(
+        self,
+        query: str,
+        *args: Collection,
+        **kwargs: Dict[str, Any]
+    ) -> list[Any, list, Dict[str, Any]]:
+        """
+        Allows overriding of the query structure passed to the Wagtail
+        "search()" method
+        """
+        return query, args, kwargs
 
     def get_queryset(self):
         raise NotImplementedError
 
-    def search(self, query, *args, **kwargs):
-        return self.get_queryset().search(query, *args, operator="and", **kwargs)
-
     def pinned(self, query):
         return []
+
+    def search(self, query, *args, **kwargs):
+        query, args, kwargs = self.build_query(
+            query,
+            *args,
+            operator="and",
+            **kwargs
+        )
+        queryset = self.get_queryset()
+        return self._wagtail_search(queryset, query, *args, **kwargs)
 
 
 class PagesSearchVector(SearchVector):
@@ -25,15 +57,18 @@ class PagesSearchVector(SearchVector):
     def get_queryset(self):
         return self.page_model.objects.public().live()
 
-    def search(self, query, *args, **kwargs):
-        return (
-            self.get_queryset()
-            .not_pinned(query)
-            .search(query, *args, operator="and", **kwargs)
-        )
-
     def pinned(self, query):
         return self.get_queryset().pinned(query)
+
+    def search(self, query, *args, **kwargs):
+        query, args, kwargs = self.build_query(
+            query,
+            *args,
+            operator="and",
+            **kwargs
+        )
+        queryset = self.get_queryset().not_pinned(query)
+        return self._wagtail_search(queryset, query, *args, **kwargs)
 
 
 class AllPagesSearchVector(PagesSearchVector):

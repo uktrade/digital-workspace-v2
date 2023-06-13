@@ -1,0 +1,16 @@
+<div class="search-results__category">
+    {% if show_heading %}<h3 class="govuk-heading-s">{{ count }} {{ result_type_display }}</h3>{% endif %}
+    {{ page }}
+    <div class="search-results__list">
+
+        {% for object in search_results %}
+            {% include search_results_item_template with type=search_category section=search_category %}
+        {% endfor %}
+
+    </div>
+{% comment %}
+    {% if search_results.has_other_pages %}
+        {% include 'includes/pagination_v2.html' with paginated_set=search_results %}
+    {% endif %}
+{% endcomment %}
+</div>

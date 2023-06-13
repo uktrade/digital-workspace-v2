@@ -30,3 +30,22 @@ def search(request: HttpRequest, category: str = None) -> HttpResponse:
     }
 
     return TemplateResponse(request, "search/search.html", context=context)
+
+
+def explore(request: HttpRequest) -> HttpResponse:
+    """
+    Administrative view for exploring search options, boosts, etc
+    """
+    query = request.GET.get("query", "")
+    page = request.GET.get("page", "1")
+
+    context = {
+        "search_url": reverse("search:explore"),
+        "search_query": query,
+        "search_category": "all",
+        "page": page,
+        "boost_variables": [{"name": "SEARCH_BOOST_PAGE_TITLE", "value": 20}],
+        "sub_queries": [{"id": 1, "value": "{match_all: {}}"}],
+    }
+
+    return TemplateResponse(request, "search/explore.html", context=context)

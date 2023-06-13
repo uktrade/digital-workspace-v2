@@ -1,0 +1,87 @@
+
+{% extends "1_col_content.html" %}
+{% load search_explore %}
+
+
+{% comment %}
+context:
+    search_url
+    search_query
+    search_category
+    page
+{% endcomment %}
+{% block title %}
+    Explore search options for '{{ search_query }}'
+{% endblock title %}
+{% block location %}
+    Search
+{% endblock location %}
+
+{% block content %}
+
+
+
+
+
+
+<div class="govuk-grid-column-full">
+    <h1>Boost variables</h1>
+    <ul>
+        {% for boost in boost_variables %}
+        <li>{{ boost.name }}: {{ boost.value }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Subqueries</h1>
+    <ul>
+        {% for query in sub_queries %}
+        <li>{{ query.id }}: {{ query.value }}</li>
+        {% endfor %}
+    </ul>
+
+    {% include 'search/partials/search_form.html' %}
+
+    <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
+          Combined pages
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+      {% search_category category='all_pages' show_heading=True %}
+    </div>
+  </div>
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+          People
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
+      {% search_category category='people' show_heading=True %}
+    </div>
+  </div>
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-3">
+          Teams
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-3" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-3">
+      {% search_category category='teams' show_heading=True %}
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
+{% endblock content %}
