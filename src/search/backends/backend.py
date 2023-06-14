@@ -2,17 +2,9 @@ from wagtail.search.backend.elasticsearch7 import (
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
 )
-from wagtail.search.query import MATCH_NONE, SearchQuery
+from wagtail.search.query import MATCH_NONE
 
-
-class Only(SearchQuery):
-    def __init__(self, subquery: SearchQuery, boost: float, fields: list[str]):
-        self.subquery = subquery
-        self.boost = boost
-        self.fields = fields
-
-    def __repr__(self):
-        return "<Only {} >".format(repr(self.subquery))
+from src.search.backends.query import Only
 
 
 class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
