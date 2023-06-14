@@ -1,5 +1,8 @@
-from wagtail.search.query import SearchQuery, MATCH_NONE
-from wagtail.search.backend.elasticsearch7 import Elasticsearch7SearchQueryCompiler, Elasticsearch7SearchBackend
+from wagtail.search.backend.elasticsearch7 import (
+    Elasticsearch7SearchBackend,
+    Elasticsearch7SearchQueryCompiler,
+)
+from wagtail.search.query import MATCH_NONE, SearchQuery
 
 
 class Only(SearchQuery):
@@ -15,7 +18,7 @@ class Only(SearchQuery):
 class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
     def _compile_query(self, query, field, boost=1.0):
         if not isinstance(query, Only):
-            return super()._compile_query(self, query, field, boost):
+            return super()._compile_query(self, query, field, boost)
 
         if field in query.fields:
             return self._compile_query(query.subquery, field, boost)
