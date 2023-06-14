@@ -336,6 +336,30 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
+SEARCH_BOOST_VARIABLES = {
+    "PAGE_TITLE": 4.0,
+    "PAGE_HEADINGS": 3.0,
+    "PAGE_EXCERPT": 2.0,
+    "PAGE_CONTENT": 1.0,
+    "PAGE_TOOLS_PHRASE_TITLE_EXPLICIT": 2.0,
+    "PAGE_GUIDANCE_PHRASE_TITLE_EXPLICIT": 2.0,
+    "PERSON_NAME": 4.0,
+    "PERSON_ROLE": 3.0,
+    "PERSON_TEAM": 2.0,
+    "PERSON_PROFILE_COMPLETENESS": 2.0,
+    "PERSON_HAS_PHOTO": 1.5,
+    "TEAM_NAME": 4.0,
+    "TEAM_ABBREVIATION": 4.0,
+    "TEAM_DESCRIPTION": 3.0,
+    "TEAM_ROLES": 2.0,
+    "SEARCH_PHRASE": 10.0,
+    "SEARCH_QUERY_AND": 2.5,
+    "SEARCH_QUERY_OR": 1.0,
+    "SEARCH_FUZZY": 0.025,
+    "ANALYZER_EXPLICIT": 3.5,
+    "ANALYZER_TOKENIZED": 3.5,
+}
+
 # Add a custom provider
 # Your custom provider must support oEmbed for this to work. You should be
 # able to find these details in the provider's documentation.

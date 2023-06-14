@@ -19,18 +19,11 @@
                 {{ role.job_title }} in <a class="govuk-link" href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a>
             {% endfor %}
         </p>
-        <p class="govuk-body-s ws-secondary-meta">Profile completion: {{ object.profile_completion_amount|floatformat:"0" }}%</p>
-        {% comment %}
-            {% if object.photo %}
-                <img src="{{ object.photo.url }}">
-            {% else %}
-                <img src="{% webpack_static 'no-photo-large.png' %}">
-            {% endif %}
-        {% endcomment %}
+        <p class="govuk-body-s ws-secondary-meta">Profile completion: {{ object.profile_completion_amount|floatformat:"0" }}%, Has photo: {{ object.has_photo }}</p>
     {% elif type == 'teams' %}
         <h3 class="govuk-heading-s">
             <span class="govuk-tag">{% score object %}</span>
-            <a class="govuk-link" href="{% url 'team-view' object.slug %}">{{ object.name }} {{ object.abbreviation }}</a>
+            <a class="govuk-link" href="{% url 'team-view' object.slug %}">{{ object.name }} {% if object.abbreviation %}<span class="govuk-tag--grey">{{ object.abbreviation }}</span>{% endif %}</a>
         </h3>
         <p class="govuk-body">
             {{ object.description|truncatewords:"40" }}

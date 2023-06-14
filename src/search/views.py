@@ -1,4 +1,5 @@
 import logging
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -39,13 +40,28 @@ def explore(request: HttpRequest) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
 
+    boost_vars = [{"name": f"SEARCH_BOOST_{k}", "value": v} for k, v in settings.SEARCH_BOOST_VARIABLES.items()]
+
     context = {
         "search_url": reverse("search:explore"),
         "search_query": query,
         "search_category": "all",
         "page": page,
-        "boost_variables": [{"name": "SEARCH_BOOST_PAGE_TITLE", "value": 20}],
-        "sub_queries": [{"id": 1, "value": "{match_all: {}}"}],
+        "boost_variables": boost_vars,
+        "sub_queries": [
+            {
+                "name": "pages",
+                "queries": [{"id": 1, "value": "{match_all: {}}"}]
+            },
+            {
+                "name": "people",
+                "queries": [{"id": 1, "value": "{match_all: {}}"}]
+            },
+            {
+                "name": "teams",
+                "queries": [{"id": 1, "value": "{match_all: {}}"}]
+            },
+        ],
     }
 
     return TemplateResponse(request, "search/explore.html", context=context)

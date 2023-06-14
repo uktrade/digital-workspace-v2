@@ -11,12 +11,12 @@ register = template.Library()
 
 
 SEARCH_VECTORS: dict[str, search_vectors.SearchVector] = {
-    "all_pages": search_vectors.AllPagesSearchVector,
-    "people": search_vectors.PeopleSearchVector,
-    "teams": search_vectors.TeamsSearchVector,
-    "guidance": search_vectors.GuidanceSearchVector,
-    "tools": search_vectors.ToolsSearchVector,
-    "news": search_vectors.NewsSearchVector,
+    "all_pages": search_vectors.NewAllPagesSearchVector,
+    "people": search_vectors.NewPeopleSearchVector,
+    "teams": search_vectors.NewTeamsSearchVector,
+    "guidance": search_vectors.NewGuidanceSearchVector,
+    "tools": search_vectors.NewToolsSearchVector,
+    "news": search_vectors.NewNewsSearchVector,
 }
 
 
@@ -40,8 +40,6 @@ def search_category(context, *, category, limit=None, show_heading=False):
     )
     if count != 1:
         result_type_display = result_type_display_plural
-
-    print(search_results[0].__dir__())
 
     return {
         "request": request,

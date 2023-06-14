@@ -1,7 +1,11 @@
+from django.conf import settings
+from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
+
 from content.models import ContentPage
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from tools.models import Tool
+from search.utils import split_query
 from working_at_dit.models import PoliciesAndGuidanceHome
 
 from typing import Any, Collection, Dict
@@ -11,7 +15,6 @@ class SearchVector:
     def __init__(self, request, annotate_score=False):
         self.request = request
         self.annotate_score = annotate_score
-        print(f"annotate: {annotate_score}")
 
     def _wagtail_search(self, queryset, query, *args, **kwargs):
         """
@@ -107,3 +110,86 @@ class PeopleSearchVector(SearchVector):
 class TeamsSearchVector(SearchVector):
     def get_queryset(self):
         return Team.objects.all().with_all_parents()
+
+
+#
+# New vectors for complex search alongside v2 - should get rolled in at end of
+# the indexing improvements workstream. Need to be alongside to run v2 and v2.5
+# queries side by side, e.g. for "explore" page
+#
+
+
+class NewAllPagesSearchVector(AllPagesSearchVector):
+    def build_query(
+        self,
+        query: str,
+        *args: Collection,
+        **kwargs: Dict[str, Any]
+    ) -> list[Any, list, Dict[str, Any]]:
+        phrase = Boost(
+            Phrase(query),
+            settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE']
+        )
+        fuzzy = Boost(
+            Fuzzy(query),
+            settings.SEARCH_BOOST_VARIABLES['SEARCH_FUZZY']
+        )
+        # Fuzzy requires partials off
+        kwargs['partial_match'] = False
+
+        query_parts = split_query(query)
+        args = []
+        for part in query_parts:
+            args += [PlainText(part)]
+        query_and = Boost(
+            PlainText(query),
+            settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND']
+        )
+        query_or = Boost(
+            PlainText(query),
+            settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR']
+        )
+
+        return phrase | query_and | query_or | fuzzy, args, kwargs
+
+    def search(self, query, *args, **kwargs):
+        query, args, kwargs = self.build_query(
+            query,
+            *args,
+            operator="and",
+            **kwargs
+        )
+        queryset = self.get_queryset()
+        return self._wagtail_search(queryset, query, *args, **kwargs)
+
+
+class NewGuidanceSearchVector(GuidanceSearchVector):
+    pass
+
+
+class NewNewsSearchVector(NewsSearchVector):
+    pass
+
+
+class NewToolsSearchVector(ToolsSearchVector):
+    pass
+
+
+class NewPeopleSearchVector(PeopleSearchVector):
+    def build_query(
+        self,
+        query: str,
+        *args: Collection,
+        **kwargs: Dict[str, Any]
+    ) -> list[Any, list, Dict[str, Any]]:
+
+        # exact_name = Phrase(query, fields=['full_name'])
+        # Fuzzy
+        query = Fuzzy(query)
+        kwargs['partial_match'] = False
+
+        return query, args, kwargs
+
+
+class NewTeamsSearchVector(TeamsSearchVector):
+    pass

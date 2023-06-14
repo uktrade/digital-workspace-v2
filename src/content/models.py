@@ -1,6 +1,7 @@
 from typing import Optional
 
 from bs4 import BeautifulSoup
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -189,52 +190,56 @@ class ContentPage(BasePage):
     search_fields = Page.search_fields + [
         index.SearchField(
             "search_title",
+            boost=settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'],
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
         index.SearchField(
             "search_headings",
+            boost=settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'],
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
         index.SearchField(
             "search_content",
+            boost=settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'],
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
         index.SearchField(
             "excerpt",
+            boost=settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'],
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
-        index.AutocompleteField(
-            "search_title",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "search_headings",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "search_content",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "excerpt",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
+        # index.AutocompleteField(
+        #     "search_title",
+        #     es_extra={
+        #         "search_analyzer": "snowball",
+        #     },
+        # ),
+        # index.AutocompleteField(
+        #     "search_headings",
+        #     es_extra={
+        #         "search_analyzer": "snowball",
+        #     },
+        # ),
+        # index.AutocompleteField(
+        #     "search_content",
+        #     es_extra={
+        #         "search_analyzer": "snowball",
+        #     },
+        # ),
+        # index.AutocompleteField(
+        #     "excerpt",
+        #     es_extra={
+        #         "search_analyzer": "snowball",
+        #     },
+        # ),
         # index.FilterField("slug"),
         index.FilterField("is_creatable"),
     ]
