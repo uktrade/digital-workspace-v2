@@ -1,5 +1,6 @@
 from tools.models import IrapToolData, IrapToolDataImport
 
+
 def diff_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[[], bool]:
     fields = new._meta.get_fields()
     changed = False
@@ -16,7 +17,7 @@ def diff_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[[], bool
                     "action": "change",
                     "key": field.name,
                     "from_value": old_value,
-                    "to_value": new_value
+                    "to_value": new_value,
                 }
             )
         return changed, changes
@@ -34,21 +35,20 @@ def process_import():
     IrapToolData.objects.update(
         after_import_status=IrapToolData.AfterImportStatus.DELETED,
         processed=False,
-        changed_fields=None
+        changed_fields=None,
     )
 
     imported_iraps = IrapToolDataImport.objects.all()
     for imported_irap in imported_iraps:
-        irap, created = \
-            IrapToolData.objects.get_or_create(
-                product_irap_reference_number = imported_irap.product_irap_reference_number
-            )
+        irap, created = IrapToolData.objects.get_or_create(
+            product_irap_reference_number=imported_irap.product_irap_reference_number
+        )
         if created:
             irap.product_name = imported_irap.product_name
             irap.functionality = imported_irap.functionality
             irap.AfterImportStatus = IrapToolData.AfterImportStatus.NEW
         else:
-            changed, changes = diff_irap_data( imported_irap,irap)
+            changed, changes = diff_irap_data(imported_irap, irap)
             if changed:
                 irap.AfterImportStatus = IrapToolData.AfterImportStatus.CHANGED
                 irap.changed_fields = changes
@@ -56,5 +56,3 @@ def process_import():
                 irap.AfterImportStatus = IrapToolData.AfterImportStatus.UNCHANGED
                 irap.reviewed = True
         irap.save()
-
-

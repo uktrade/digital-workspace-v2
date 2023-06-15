@@ -7,6 +7,7 @@ from wagtail.admin.panels import FieldPanel, HelpPanel, MultiFieldPanel
 from content.models import ContentPage
 from working_at_dit.models import PageWithTopics
 
+
 class IrapToolDataAbstract(models.Model):
     product_irap_reference_number = models.IntegerField(primary_key=True)
     product_name = models.CharField(
@@ -19,9 +20,11 @@ class IrapToolDataAbstract(models.Model):
         null=True,
         blank=True,
     )
+
     # TODO Add new fields that will be created later:  description and owner
     class Meta:
         abstract = True
+
 
 class IrapToolDataImport(IrapToolDataAbstract):
     pass
@@ -33,10 +36,10 @@ class IrapToolData(IrapToolDataAbstract):
         UNCHANGED = "unchanged", "Unchanged"
         CHANGED = "changed", "Changed"
         DELETED = "deleted", "Deleted"
-    after_import_status = \
-        models.CharField(max_length=9,
-                         choices=AfterImportStatus.choices,
-                         default=AfterImportStatus.NEW)
+
+    after_import_status = models.CharField(
+        max_length=9, choices=AfterImportStatus.choices, default=AfterImportStatus.NEW
+    )
     # Processed is changed to TRUE
     # when the content admin NEW, CHANGED and DELETED status
     reviewed = models.BooleanField(default=False)
@@ -66,11 +69,7 @@ class Tool(PageWithTopics):
     )
 
     # using the correct widget for your field type and desired effect
-    readonly_widget = forms.TextInput(
-        attrs = {
-            'disabled': 'true'
-        }
-    )
+    readonly_widget = forms.TextInput(attrs={"disabled": "true"})
 
     parent_page_types = ["tools.ToolsHome"]
     subpage_types = []  # Should not be able to create children
@@ -80,7 +79,6 @@ class Tool(PageWithTopics):
         HelpPanel("long_description"),
         FieldPanel("irap_tool", widget=readonly_widget),
     ]
-
 
     def serve(self, request):
         return redirect(self.redirect_url)
