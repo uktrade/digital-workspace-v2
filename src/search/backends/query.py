@@ -1,7 +1,7 @@
 from wagtail.search.query import MATCH_NONE, SearchQuery
 
 
-class Only(SearchQuery):
+class OnlyFields(SearchQuery):
     remapped_fields = None
 
     def __init__(self, subquery: SearchQuery, fields: list[str]):
@@ -9,4 +9,4 @@ class Only(SearchQuery):
         self.fields = fields
 
     def __repr__(self):
-        return "<Only {} >".format(repr(self.subquery))
+        return "<OnlyFields {} >".format(repr(self.subquery))

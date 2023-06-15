@@ -4,7 +4,7 @@ from wagtail.search.backends.elasticsearch7 import (
 )
 from wagtail.search.query import MATCH_NONE
 
-from search.backends.query import Only
+from search.backends.query import OnlyFields
 
 
 class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
@@ -41,9 +41,9 @@ class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
     def _compile_query(self, query, field, boost=1.0):
         """
-        Override the parent method to handle specifics of the Only SearchQuery
+        Override the parent method to handle specifics of the OnlyFields SearchQuery
         """
-        if not isinstance(query, Only):
+        if not isinstance(query, OnlyFields):
             return super()._compile_query(query, field, boost)
 
         if query.remapped_fields is None:
@@ -72,14 +72,14 @@ class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
     def get_inner_query(self):
         """
-        If we are using the Only SearchQuery anywhere and would otherwise be
+        If we are using the OnlyFields SearchQuery anywhere and would otherwise be
         using the self.mapping.all_field_name shortcut, we'll instead need to
         explicitly name each field so it can be assessed during query
         compilation
         """
         if (
             not self.remapped_fields and
-            self._query_contains(self.query, Only)
+            self._query_contains(self.query, OnlyFields)
         ):
             self.fields = [f.field_name for f in self.queryset.model.get_searchable_search_fields()]
             self.remapped_fields = self._remap_fields(self.fields)

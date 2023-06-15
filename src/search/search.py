@@ -5,7 +5,7 @@ from content.models import ContentPage
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from tools.models import Tool
-from search.backends.query import Only
+from search.backends.query import OnlyFields
 from search.utils import split_query
 from working_at_dit.models import PoliciesAndGuidanceHome
 
@@ -127,19 +127,19 @@ class NewAllPagesSearchVector(AllPagesSearchVector):
         *args: Collection,
         **kwargs: Dict[str, Any]
     ) -> list[Any, list, Dict[str, Any]]:
-        phrase = Only(
+        phrase = OnlyFields(
             Boost(
                 Phrase(query),
                 settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * 50
             ),
             fields=["search_title"]
-        ) | Only(
+        ) | OnlyFields(
             Boost(
                 Phrase(query),
                 settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS']
             ),
             fields=["search_headings"]
-        ) | Only(
+        ) | OnlyFields(
             Boost(
                 Phrase(query),
                 settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT']
