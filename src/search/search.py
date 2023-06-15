@@ -5,6 +5,7 @@ from content.models import ContentPage
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from tools.models import Tool
+from search.backends.query import Only
 from search.utils import split_query
 from working_at_dit.models import PoliciesAndGuidanceHome
 
@@ -126,30 +127,48 @@ class NewAllPagesSearchVector(AllPagesSearchVector):
         *args: Collection,
         **kwargs: Dict[str, Any]
     ) -> list[Any, list, Dict[str, Any]]:
-        phrase = Boost(
-            Phrase(query),
-            settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE']
-        )
-        fuzzy = Boost(
-            Fuzzy(query),
-            settings.SEARCH_BOOST_VARIABLES['SEARCH_FUZZY']
-        )
-        # Fuzzy requires partials off
-        kwargs['partial_match'] = False
-
-        query_parts = split_query(query)
-        args = []
-        for part in query_parts:
-            args += [PlainText(part)]
-        query_and = Boost(
-            PlainText(query),
-            settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND']
-        )
-        query_or = Boost(
-            PlainText(query),
-            settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR']
+        phrase = Only(
+            Boost(
+                Phrase(query),
+                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * 50
+            ),
+            fields=["content_contentpage__search_title"]
+        ) | Only(
+            Boost(
+                Phrase(query),
+                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS']
+            ),
+            fields=["content_contentpage__search_headings"]
+        ) | Only(
+            Boost(
+                Phrase(query),
+                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT']
+            ),
+            fields=["content_contentpage__search_content"]
         )
 
+        kwargs['fields'] = ["search_title", "search_headings", "search_content"]
+        # fuzzy = Boost(
+        #     Fuzzy(query),
+        #     settings.SEARCH_BOOST_VARIABLES['SEARCH_FUZZY']
+        # )
+        # # Fuzzy requires partials off
+        # kwargs['partial_match'] = False
+
+        # # query_parts = split_query(query)
+        # # args = []
+        # # for part in query_parts:
+        # #     args += [PlainText(part)]
+        # query_and = Boost(
+        #     PlainText(query),
+        #     settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND']
+        # )
+        # query_or = Boost(
+        #     PlainText(query),
+        #     settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR']
+        # )
+
+        return phrase, args, kwargs
         return phrase | query_and | query_or | fuzzy, args, kwargs
 
     def search(self, query, *args, **kwargs):

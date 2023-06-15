@@ -298,7 +298,7 @@ ELASTICSEARCH_DSL = {
 
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "wagtail.search.backends.elasticsearch7",
+        "BACKEND": "search.backends.backend.CustomSearchBackend",
         "AUTO_UPDATE": True,
         "ATOMIC_REBUILD": True,
         "URLS": [OPENSEARCH_URL],
@@ -463,7 +463,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stdout"],
-        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
+        "level": os.getenv("ROOT_LOG_LEVEL", "DEBUG"),
     },
     "loggers": {
         "django": {
@@ -498,7 +498,7 @@ LOGGING = {
             "handlers": [
                 "stdout",
             ],
-            "level": "INFO",
+            "level": "DEBUG",
         },
     },
 }
