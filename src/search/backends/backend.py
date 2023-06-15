@@ -71,6 +71,12 @@ class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         )
 
     def get_inner_query(self):
+        """
+        If we are using the Only SearchQuery anywhere and would otherwise be
+        using the self.mapping.all_field_name shortcut, we'll instead need to
+        explicitly name each field so it can be assessed during query
+        compilation
+        """
         if (
             not self.remapped_fields and
             self._query_contains(self.query, Only)
