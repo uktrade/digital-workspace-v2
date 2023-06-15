@@ -132,19 +132,19 @@ class NewAllPagesSearchVector(AllPagesSearchVector):
                 Phrase(query),
                 settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * 50
             ),
-            fields=["content_contentpage__search_title"]
+            fields=["search_title"]
         ) | Only(
             Boost(
                 Phrase(query),
                 settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS']
             ),
-            fields=["content_contentpage__search_headings"]
+            fields=["search_headings"]
         ) | Only(
             Boost(
                 Phrase(query),
                 settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT']
             ),
-            fields=["content_contentpage__search_content"]
+            fields=["search_content"]
         )
 
         kwargs['fields'] = ["search_title", "search_headings", "search_content"]
