@@ -147,7 +147,6 @@ class NewAllPagesSearchVector(AllPagesSearchVector):
             fields=["search_content"]
         )
 
-        kwargs['fields'] = ["search_title", "search_headings", "search_content"]
         # fuzzy = Boost(
         #     Fuzzy(query),
         #     settings.SEARCH_BOOST_VARIABLES['SEARCH_FUZZY']
