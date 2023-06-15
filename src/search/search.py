@@ -130,7 +130,7 @@ class NewAllPagesSearchVector(AllPagesSearchVector):
         phrase = OnlyFields(
             Boost(
                 Phrase(query),
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * 50
+                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE']
             ),
             fields=["search_title"]
         ) | OnlyFields(

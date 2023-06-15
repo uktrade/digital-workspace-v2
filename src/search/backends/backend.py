@@ -2,20 +2,27 @@ from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
 )
-from wagtail.search.query import MATCH_NONE
+from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
 
 from search.backends.query import OnlyFields
 
 
-class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
-    def __init__(self, *args, **kwargs):
-        """
-        Technically speaking this override doesn't do anything, it's more here
-        as a reminder to modify the underlying class in this way than anything
-        """
-        super().__init__(*args, **kwargs)
-        self.mapping = self.mapping_class(self.queryset.model)
-        self.remapped_fields = self._remap_fields(self.fields)
+class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
+    """
+    Acting as a placeholder for upstream merges to Wagtail in a PR; this class
+    doesn't change any behaviour but instead assigns responsibility for
+    particular aspects to smaller methods to make it easier to override. In the
+    PR maybe worth referencing https://github.com/wagtail/wagtail/issues/5422
+    """
+
+    # def __init__(self, *args, **kwargs):
+    #     """
+    #     This override doesn't do anything, it's just here as a reminder to
+    #     modify the underlying class in this way when creating the upstream PR
+    #     """
+    #     super().__init__(*args, **kwargs)
+    #     self.mapping = self.mapping_class(self.queryset.model)
+    #     self.remapped_fields = self._remap_fields(self.fields)
 
     def _remap_fields(self, fields):
         """
@@ -39,56 +46,104 @@ class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         return remapped_fields
 
+    def _join_and_compile_queries(self, query, fields, boost=1.0):
+        """
+        Handle a generalised situation of one or more queries that need
+        compilation and potentially joining as siblings. If more than one field
+        then compile a query for each field then combine with disjunction
+        max (or operator which takes the max score out of each of the
+        field queries)
+        """
+        if len(fields) == 1:
+            return self._compile_query(query, fields[0], boost)
+        else:
+
+            field_queries = []
+            for field in fields:
+                field_queries.append(self._compile_query(query, field, boost))
+
+            return {"dis_max": {"queries": field_queries}}
+
+    def get_inner_query(self):
+        """
+        This is a brittle override of the Elasticsearch7SearchQueryCompiler.
+        get_inner_query, acting as a standin for getting these changes merged
+        upstream. It exists in order to break out the _join_and_compile_queries
+        method
+        """
+        if self.remapped_fields:
+            fields = self.remapped_fields
+        elif self.partial_match:
+            fields = [
+                self.mapping.all_field_name,
+                self.mapping.edgengrams_field_name
+            ]
+        else:
+            fields = [self.mapping.all_field_name]
+
+        if len(fields) == 0:
+            # No fields. Return a query that'll match nothing
+            return {"bool": {"mustNot": {"match_all": {}}}}
+
+        # Handle MatchAll and PlainText separately as they were supported
+        # before "search query classes" was implemented and we'd like to
+        # keep the query the same as before
+        if isinstance(self.query, MatchAll):
+            return {"match_all": {}}
+
+        elif isinstance(self.query, PlainText):
+            return self._compile_plaintext_query(self.query, fields)
+
+        elif isinstance(self.query, Phrase):
+            return self._compile_phrase_query(self.query, fields)
+
+        elif isinstance(self.query, Fuzzy):
+            return self._compile_fuzzy_query(self.query, fields)
+
+        else:
+            return self._join_and_compile_queries(self.query, fields)
+
+
+class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
+    """
+    Acting as a placeholder for upstream merges to Wagtail in a separate PR to
+    the ExtendedSearchQueryCompiler; this exists to support the new OnlyFields
+    SearchQuery
+    """
+
     def _compile_query(self, query, field, boost=1.0):
         """
-        Override the parent method to handle specifics of the OnlyFields SearchQuery
+        Override the parent method to handle specifics of the OnlyFields
+        SearchQuery
         """
         if not isinstance(query, OnlyFields):
             return super()._compile_query(query, field, boost)
 
-        if query.remapped_fields is None:
-            query.remapped_fields = self._remap_fields(query.fields)
+        remapped_fields = self._remap_fields(query.fields)
 
-        if field in query.remapped_fields:
+        if field == self.mapping.all_field_name:
+            # We are using the "_all_text" field proxy (i.e. the search()
+            # method was called without the fields kwarg), but now we want to
+            # limit the downstream fields compiled to those explicitly defined
+            # in the OnlyFields query
+            return self._join_and_compile_queries(
+                query.subquery,
+                remapped_fields,
+                boost
+            )
+
+        elif field in remapped_fields:
+            # Fields were defined explicitly upstream, and we are dealing with
+            # one that's in the OnlyFields filter
             return self._compile_query(query.subquery, field, boost)
-        return self._compile_query(MATCH_NONE, field, boost)
 
-    def _query_contains(self, query, search_query_type):
-        """
-        Search the whole query tree to see if it contains the specified type of SearchQuery
-        """
-        if isinstance(query, search_query_type):
-            return True
-
-        if query.subqueries is None or len(query.subqueries) == 0:
-            return False
-
-        return any(
-            [
-                self._query_contains(child_query, search_query_type)
-                for child_query in query.subqueries
-            ]
-        )
-
-    def get_inner_query(self):
-        """
-        If we are using the OnlyFields SearchQuery anywhere and would otherwise be
-        using the self.mapping.all_field_name shortcut, we'll instead need to
-        explicitly name each field so it can be assessed during query
-        compilation
-        """
-        if (
-            not self.remapped_fields and
-            self._query_contains(self.query, OnlyFields)
-        ):
-            self.fields = [f.field_name for f in self.queryset.model.get_searchable_search_fields()]
-            self.remapped_fields = self._remap_fields(self.fields)
-
-        return super().get_inner_query()
+        else:
+            # Exclude this field from any further downstream compilation
+            return self._compile_query(MATCH_NONE, field, boost)
 
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):
-    query_compiler_class = CustomSearchQueryCompiler
+    query_compiler_class = OnlyFieldSearchQueryCompiler
 
 
 SearchBackend = CustomSearchBackend

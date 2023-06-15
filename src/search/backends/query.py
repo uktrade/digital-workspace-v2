@@ -1,4 +1,4 @@
-from wagtail.search.query import MATCH_NONE, SearchQuery
+from wagtail.search.query import SearchQuery
 
 
 class OnlyFields(SearchQuery):
