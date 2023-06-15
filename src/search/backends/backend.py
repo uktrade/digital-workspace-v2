@@ -40,6 +40,9 @@ class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         return remapped_fields
 
     def _compile_query(self, query, field, boost=1.0):
+        """
+        Override the parent method to handle specifics of the Only SearchQuery
+        """
         if not isinstance(query, Only):
             return super()._compile_query(query, field, boost)
 
@@ -51,6 +54,9 @@ class CustomSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         return self._compile_query(MATCH_NONE, field, boost)
 
     def _query_contains(self, query, search_query_type):
+        """
+        Search the whole query tree to see if it contains the specified type of SearchQuery
+        """
         if isinstance(query, search_query_type):
             return True
 
