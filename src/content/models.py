@@ -187,59 +187,71 @@ class ContentPage(BasePage):
         null=True,
     )
 
+    @property
+    def search_title_explicit(self):
+        return self.search_title
+
+    @property
+    def search_headings_explicit(self):
+        return self.search_headings
+
+    @property
+    def search_excerpt_explicit(self):
+        return self.excerpt
+
+    @property
+    def search_content_explicit(self):
+        return self.search_content
+
     search_fields = Page.search_fields + [
         index.SearchField(
             "search_title",
-            boost=settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'],
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
         index.SearchField(
             "search_headings",
-            boost=settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'],
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
         index.SearchField(
             "search_content",
-            boost=settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'],
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
         index.SearchField(
             "excerpt",
-            boost=settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'],
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
-        # index.AutocompleteField(
-        #     "search_title",
-        #     es_extra={
-        #         "search_analyzer": "snowball",
-        #     },
-        # ),
-        # index.AutocompleteField(
-        #     "search_headings",
-        #     es_extra={
-        #         "search_analyzer": "snowball",
-        #     },
-        # ),
-        # index.AutocompleteField(
-        #     "search_content",
-        #     es_extra={
-        #         "search_analyzer": "snowball",
-        #     },
-        # ),
-        # index.AutocompleteField(
-        #     "excerpt",
-        #     es_extra={
-        #         "search_analyzer": "snowball",
-        #     },
-        # ),
+        index.SearchField(
+            "search_title_explicit",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "search_headings_explicit",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "search_content_explicit",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "search_excerpt_explicit",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
         # index.FilterField("slug"),
         index.FilterField("is_creatable"),
     ]
