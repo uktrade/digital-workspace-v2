@@ -1,4 +1,5 @@
 from django import forms
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.shortcuts import redirect
 from wagtail.admin.panels import FieldPanel, HelpPanel, MultiFieldPanel
@@ -6,7 +7,7 @@ from wagtail.admin.panels import FieldPanel, HelpPanel, MultiFieldPanel
 from content.models import ContentPage
 from working_at_dit.models import PageWithTopics
 
-class IrapDataAbstract(models.Model):
+class IrapToolDataAbstract(models.Model):
     product_irap_reference_number = models.IntegerField(primary_key=True)
     product_name = models.CharField(
         max_length=2048,
@@ -18,22 +19,40 @@ class IrapDataAbstract(models.Model):
         null=True,
         blank=True,
     )
-    latest_accreditation_status = models.CharField(
-        max_length=128,
-        null=True,
-        blank=True,
-    )
-
+    # TODO Add new fields that will be created later:  description and owner
     class Meta:
         abstract = True
 
-class IrapData(IrapDataAbstract):
+class IrapToolDataImport(IrapToolDataAbstract):
     pass
 
 
-class Tool(PageWithTopics, IrapDataAbstract):
+class IrapToolData(IrapToolDataAbstract):
+    class AfterImportStatus(models.TextChoices):
+        NEW = "new", "new"
+        UNCHANGED = "unchanged", "Unchanged"
+        CHANGED = "changed", "Changed"
+        DELETED = "deleted", "Deleted"
+    after_import_status = \
+        models.CharField(max_length=9,
+                         choices=AfterImportStatus.choices,
+                         default=AfterImportStatus.NEW)
+    # Processed is changed to TRUE
+    # when the content admin NEW, CHANGED and DELETED status
+    reviewed = models.BooleanField(default=False)
+    reviewed_date = models.DateTimeField(null=True, blank=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    changed_fields = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
+
+
+class Tool(PageWithTopics):
     is_creatable = True
-    product_irap_reference_number = models.IntegerField(blank=True, null=True)
+    irap_tool = models.OneToOneField(
+        IrapToolData,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     redirect_url = models.CharField(
         null=True,
@@ -59,16 +78,7 @@ class Tool(PageWithTopics, IrapDataAbstract):
     content_panels = PageWithTopics.content_panels + [
         FieldPanel("redirect_url"),
         HelpPanel("long_description"),
-        MultiFieldPanel(
-            [
-                FieldPanel("product_irap_reference_number", widget=readonly_widget),
-                FieldPanel("product_name", widget=readonly_widget),
-                FieldPanel("functionality", widget=readonly_widget),
-            ],
-            heading="IRAP Fields (Read Only)",
-            classname="collapsed",
-        )
-
+        FieldPanel("irap_tool", widget=readonly_widget),
     ]
 
 
