@@ -524,6 +524,12 @@ class Person(index.Indexed, models.Model):
                 "search_analyzer": "simple",
             },
         ),
+        index.SearchField(
+            "profile_completion_amount",
+            es_extra={
+                "search_analyzer": "simple",
+            },
+        ),
         index.AutocompleteField(
             "full_name",
             es_extra={

@@ -389,7 +389,7 @@ class NewPeopleSearchVector(PeopleSearchVector):
         phrase_team = OnlyFields(
             Boost(
                 phrase_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PERSON_TEAM'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
             ),
             fields=["team"]
         )
@@ -400,12 +400,12 @@ class NewPeopleSearchVector(PeopleSearchVector):
         #     ),
         #     fields=["search_headings_explicit"]
         # )
-        phrase_excerpt = OnlyFields(
+        phrase_role = OnlyFields(
             Boost(
                 phrase_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PERSON_ROLE'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
             ),
-            fields=["excerpt"]
+            fields=["role"]
         )
         # phrase_excerpt_explicit = OnlyFields(
         #     Boost(
@@ -414,12 +414,12 @@ class NewPeopleSearchVector(PeopleSearchVector):
         #     ),
         #     fields=["search_excerpt_explicit"]
         # )
-        phrase_content = OnlyFields(
+        phrase_completeness = OnlyFields(
             Boost(
                 phrase_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+                settings.SEARCH_BOOST_VARIABLES['SEARCH_PHRASE'] * settings.SEARCH_BOOST_VARIABLES['PERSON_PROFILE_COMPLETENESS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
             ),
-            fields=["search_content"]
+            fields=["profile_completion_amount"]
         )
         # phrase_content_explicit = OnlyFields(
         #     Boost(
@@ -429,118 +429,118 @@ class NewPeopleSearchVector(PeopleSearchVector):
         #     fields=["search_content_explicit"]
         # )
 
-        query_and_title = OnlyFields(
-            Boost(
-                and_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
-            ),
-            fields=["search_title"]
-        )
-        # query_and_title_explicit = OnlyFields(
+        # query_and_title = OnlyFields(
         #     Boost(
         #         and_query,
-        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
+        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
         #     ),
-        #     fields=["search_title_explicit"]
+        #     fields=["search_title"]
         # )
-        query_and_headings = OnlyFields(
-            Boost(
-                and_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
-            ),
-            fields=["search_headings"]
-        )
-        # query_and_headings_explicit = OnlyFields(
+        # # query_and_title_explicit = OnlyFields(
+        # #     Boost(
+        # #         and_query,
+        # #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
+        # #     ),
+        # #     fields=["search_title_explicit"]
+        # # )
+        # query_and_headings = OnlyFields(
         #     Boost(
         #         and_query,
-        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
+        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
         #     ),
-        #     fields=["search_headings_explicit"]
+        #     fields=["search_headings"]
         # )
-        query_and_excerpt = OnlyFields(
-            Boost(
-                and_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
-            ),
-            fields=["excerpt"]
-        )
-        # query_and_excerpt_explicit = OnlyFields(
+        # # query_and_headings_explicit = OnlyFields(
+        # #     Boost(
+        # #         and_query,
+        # #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
+        # #     ),
+        # #     fields=["search_headings_explicit"]
+        # # )
+        # query_and_excerpt = OnlyFields(
         #     Boost(
         #         and_query,
-        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
+        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
         #     ),
-        #     fields=["search_excerpt_explicit"]
+        #     fields=["excerpt"]
         # )
-        query_and_content = OnlyFields(
-            Boost(
-                and_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
-            ),
-            fields=["search_content"]
-        )
-        # query_and_content_explicit = OnlyFields(
+        # # query_and_excerpt_explicit = OnlyFields(
+        # #     Boost(
+        # #         and_query,
+        # #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
+        # #     ),
+        # #     fields=["search_excerpt_explicit"]
+        # # )
+        # query_and_content = OnlyFields(
         #     Boost(
         #         and_query,
-        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
+        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
         #     ),
-        #     fields=["search_content_explicit"]
+        #     fields=["search_content"]
         # )
-        query_or_title = OnlyFields(
-            Boost(
-                or_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
-            ),
-            fields=["search_title"]
-        )
-        # query_or_title_explicit = OnlyFields(
+        # # query_and_content_explicit = OnlyFields(
+        # #     Boost(
+        # #         and_query,
+        # #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_AND'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
+        # #     ),
+        # #     fields=["search_content_explicit"]
+        # # )
+        # query_or_title = OnlyFields(
         #     Boost(
         #         or_query,
-        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
         #     ),
-        #     fields=["search_title_explicit"]
+        #     fields=["search_title"]
         # )
-        query_or_headings = OnlyFields(
-            Boost(
-                or_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
-            ),
-            fields=["search_headings"]
-        )
-        # query_or_headings_explicit = OnlyFields(
+        # # query_or_title_explicit = OnlyFields(
+        # #     Boost(
+        # #         or_query,
+        # #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_TITLE'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+        # #     ),
+        # #     fields=["search_title_explicit"]
+        # # )
+        # query_or_headings = OnlyFields(
         #     Boost(
         #         or_query,
-        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
         #     ),
-        #     fields=["search_headings_explicit"]
+        #     fields=["search_headings"]
         # )
-        query_or_excerpt = OnlyFields(
-            Boost(
-                or_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
-            ),
-            fields=["excerpt"]
-        )
-        # query_or_excerpt_explicit = OnlyFields(
+        # # query_or_headings_explicit = OnlyFields(
+        # #     Boost(
+        # #         or_query,
+        # #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_HEADINGS'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+        # #     ),
+        # #     fields=["search_headings_explicit"]
+        # # )
+        # query_or_excerpt = OnlyFields(
         #     Boost(
         #         or_query,
-        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
         #     ),
-        #     fields=["search_excerpt_explicit"]
+        #     fields=["excerpt"]
         # )
-        query_or_content = OnlyFields(
-            Boost(
-                or_query,
-                settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
-            ),
-            fields=["search_content"]
-        )
-        # query_or_content_explicit = OnlyFields(
+        # # query_or_excerpt_explicit = OnlyFields(
+        # #     Boost(
+        # #         or_query,
+        # #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_EXCERPT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+        # #     ),
+        # #     fields=["search_excerpt_explicit"]
+        # # )
+        # query_or_content = OnlyFields(
         #     Boost(
         #         or_query,
-        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+        #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_EXPLICIT']
         #     ),
-        #     fields=["search_content_explicit"]
+        #     fields=["search_content"]
         # )
+        # # query_or_content_explicit = OnlyFields(
+        # #     Boost(
+        # #         or_query,
+        # #         settings.SEARCH_BOOST_VARIABLES['SEARCH_QUERY_OR'] * settings.SEARCH_BOOST_VARIABLES['PAGE_CONTENT'] * settings.SEARCH_BOOST_VARIABLES['ANALYZER_TOKENIZED']
+        # #     ),
+        # #     fields=["search_content_explicit"]
+        # # )
 
         fuzzy = Boost(
             Fuzzy(query),
@@ -550,30 +550,30 @@ class NewPeopleSearchVector(PeopleSearchVector):
         kwargs['partial_match'] = False
 
         return (
-            phrase_title |
-            phrase_title_explicit |
-            phrase_headings |
-            phrase_headings_explicit |
-            phrase_excerpt |
-            phrase_excerpt_explicit |
-            phrase_content |
-            phrase_content_explicit |
-            query_and_title |
-            query_and_title_explicit |
-            query_and_headings |
-            query_and_headings_explicit |
-            query_and_excerpt |
-            query_and_excerpt_explicit |
-            query_and_content |
-            query_and_content_explicit |
-            query_or_title |
-            query_or_title_explicit |
-            query_or_headings |
-            query_or_headings_explicit |
-            query_or_excerpt |
-            query_or_excerpt_explicit |
-            query_or_content |
-            query_or_content_explicit |
+            phrase_name |
+            # phrase_title_explicit |
+            phrase_team |
+            # phrase_headings_explicit |
+            phrase_role |
+            # phrase_excerpt_explicit |
+            # phrase_content |
+            # phrase_content_explicit |
+            # query_and_title |
+            # query_and_title_explicit |
+            # query_and_headings |
+            # query_and_headings_explicit |
+            # query_and_excerpt |
+            # query_and_excerpt_explicit |
+            # query_and_content |
+            # query_and_content_explicit |
+            # query_or_title |
+            # query_or_title_explicit |
+            # query_or_headings |
+            # query_or_headings_explicit |
+            # query_or_excerpt |
+            # query_or_excerpt_explicit |
+            # query_or_content |
+            # query_or_content_explicit |
             fuzzy
         ), args, kwargs
 
