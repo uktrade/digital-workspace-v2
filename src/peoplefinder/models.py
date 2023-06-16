@@ -57,6 +57,10 @@ class Grade(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    @property
+    def name_explicit(self):
+        return self.name
+
 
 class KeySkill(models.Model):
     class Meta:
@@ -70,6 +74,10 @@ class KeySkill(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self) -> str:
+        return self.name
+
+    @property
+    def name_explicit(self):
         return self.name
 
 
@@ -91,6 +99,10 @@ class LearningInterest(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    @property
+    def name_explicit(self):
+        return self.name
+
 
 class Network(models.Model):
     class Meta:
@@ -104,6 +116,10 @@ class Network(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self) -> str:
+        return self.name
+
+    @property
+    def name_explicit(self):
         return self.name
 
 
@@ -129,6 +145,10 @@ class Profession(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    @property
+    def name_explicit(self):
+        return self.name
+
 
 class AdditionalRole(models.Model):
     class Meta:
@@ -146,6 +166,10 @@ class AdditionalRole(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self) -> str:
+        return self.name
+
+    @property
+    def name_explicit(self):
         return self.name
 
 
@@ -479,6 +503,12 @@ class Person(index.Indexed, models.Model):
         index.SearchField(
             "full_name",
             es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "full_name_explicit",
+            es_extra={
                 "search_analyzer": "simple",
             },
         ),
@@ -509,17 +539,35 @@ class Person(index.Indexed, models.Model):
         index.SearchField(
             "town_city_or_region",
             es_extra={
-                "search_analyzer": "simple",
+                "search_analyzer": "snowball",
             },
         ),
         index.SearchField(
             "regional_building",
             es_extra={
-                "search_analyzer": "simple",
+                "search_analyzer": "snowball",
             },
         ),
         index.SearchField(
             "international_building",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "fluent_languages",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "search_teams",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "search_teams_explicit",
             es_extra={
                 "search_analyzer": "simple",
             },
@@ -530,58 +578,10 @@ class Person(index.Indexed, models.Model):
                 "search_analyzer": "simple",
             },
         ),
-        index.AutocompleteField(
-            "full_name",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "fluent_languages",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "intermediate_languages",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "town_city_or_region",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "other_key_skills",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "other_learning_interests",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "other_additional_roles",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
         index.SearchField(
-            "search_teams",
+            "has_photo",
             es_extra={
                 "search_analyzer": "simple",
-            },
-        ),
-        index.AutocompleteField(
-            "search_teams",
-            es_extra={
-                "search_analyzer": "snowball",
             },
         ),
         index.RelatedFields(
@@ -590,13 +590,13 @@ class Person(index.Indexed, models.Model):
                 index.SearchField(
                     "job_title",
                     es_extra={
-                        "search_analyzer": "simple",
+                        "search_analyzer": "snowball",
                     },
                 ),
-                index.AutocompleteField(
-                    "job_title",
+                index.SearchField(
+                    "job_title_explicit",
                     es_extra={
-                        "search_analyzer": "snowball",
+                        "search_analyzer": "simple",
                     },
                 )
             ]
@@ -604,10 +604,16 @@ class Person(index.Indexed, models.Model):
         index.RelatedFields(
             "key_skills",
             [
-                index.AutocompleteField(
+                index.SearchField(
                     "name",
                     es_extra={
                         "search_analyzer": "snowball",
+                    },
+                ),
+                index.SearchField(
+                    "name_explicit",
+                    es_extra={
+                        "search_analyzer": "simple",
                     },
                 )
             ]
@@ -629,13 +635,13 @@ class Person(index.Indexed, models.Model):
                 index.SearchField(
                     "name",
                     es_extra={
-                        "search_analyzer": "simple",
+                        "search_analyzer": "snowball",
                     },
                 ),
-                index.AutocompleteField(
-                    "name",
+                index.SearchField(
+                    "name_explicit",
                     es_extra={
-                        "search_analyzer": "snowball",
+                        "search_analyzer": "simple",
                     },
                 )
             ]
@@ -643,10 +649,16 @@ class Person(index.Indexed, models.Model):
         index.RelatedFields(
             "networks",
             [
-                index.AutocompleteField(
+                index.SearchField(
                     "name",
                     es_extra={
                         "search_analyzer": "snowball",
+                    },
+                ),
+                index.SearchField(
+                    "name_explicit",
+                    es_extra={
+                        "search_analyzer": "simple",
                     },
                 )
             ]
@@ -656,6 +668,7 @@ class Person(index.Indexed, models.Model):
         index.FilterField("is_active"),
         index.FilterField("professions"),
         index.FilterField("grade"),
+        index.FilterField("networks"),
         index.FilterField("do_not_work_for_dit"),
     ]
 
@@ -692,6 +705,10 @@ class Person(index.Indexed, models.Model):
         return f"{self.first_name} {self.last_name}"
 
     @property
+    def full_name_explicit(self):
+        return self.full_name
+
+    @property
     def preferred_email(self) -> str:
         return self.contact_email or self.email
 
@@ -724,6 +741,10 @@ class Person(index.Indexed, models.Model):
         abbrs = teams.values_list("team__abbreviation", flat=True)
         abbrs_str = " ".join(list([a or "" for a in abbrs]))
         return f"{names_str} {abbrs_str}"
+
+    @property
+    def search_teams_explicit(self):
+        return self.search_teams
 
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
@@ -841,10 +862,15 @@ class Team(index.Indexed, models.Model):
 
     objects = TeamQuerySet.as_manager()
 
-    # TODO: PFM-239 - boost doesn't work https://github.com/wagtail/wagtail/issues/5422
     search_fields = [
         index.SearchField(
             "name",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "name_explicit",
             es_extra={
                 "search_analyzer": "simple",
             },
@@ -852,11 +878,23 @@ class Team(index.Indexed, models.Model):
         index.SearchField(
             "abbreviation",
             es_extra={
+                "search_analyzer": "snowball",  # to cover e.g. "UK DSE" vs "UKDSE"
+            },
+        ),
+        index.SearchField(
+            "abbreviation_explicit",
+            es_extra={
                 "search_analyzer": "simple",
             },
         ),
         index.SearchField(
             "description",
+            es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "description_explicit",
             es_extra={
                 "search_analyzer": "simple",
             },
@@ -864,25 +902,13 @@ class Team(index.Indexed, models.Model):
         index.SearchField(
             "roles_in_team",
             es_extra={
+                "search_analyzer": "snowball",
+            },
+        ),
+        index.SearchField(
+            "roles_in_team_explicit",
+            es_extra={
                 "search_analyzer": "simple",
-            },
-        ),
-        index.AutocompleteField(
-            "name",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "description",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.AutocompleteField(
-            "roles_in_team",
-            es_extra={
-                "search_analyzer": "snowball",
             },
         ),
     ]
@@ -916,6 +942,22 @@ class Team(index.Indexed, models.Model):
     @property
     def roles_in_team(self) -> list[str]:
         return list(TeamMember.objects.filter(team=self).values_list("job_title", flat=True))
+
+    @property
+    def name_explicit(self):
+        return self.name
+
+    @property
+    def abbreviation_explicit(self):
+        return self.abbreviation
+
+    @property
+    def description_explicit(self):
+        return self.description
+
+    @property
+    def roles_in_team_explicit(self):
+        return self.roles_in_team
 
 
 class ActiveTeamMemberManager(models.Manager):
@@ -953,6 +995,10 @@ class TeamMember(models.Model):
 
     def __str__(self) -> str:
         return f"{self.team} - {self.person}"
+
+    @property
+    def job_title_explicit(self):
+        return self.job_title
 
 
 class TeamTree(models.Model):
