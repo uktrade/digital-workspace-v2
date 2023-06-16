@@ -1,7 +1,5 @@
 {% extends "includes/child-links.html" %}
 
 {% block extra_fields %}
-    {% if child.long_description %}
-       <p class="govuk-body ws-excerpt">{{ child.long_description }}</p>
-    {% endif %}
+    {% if child.long_description %}<p class="govuk-body ws-excerpt">{{ child.long_description }}</p>{% endif %}
 {% endblock %}

@@ -7,7 +7,7 @@
                        href="{{ child.url }}">{{ child.title }}</a>
                 </h3>
                 <p class="govuk-body ws-excerpt">{{ child.excerpt }}</p>
-                {% block extra_fields %} {% endblock %}
+                {% block extra_fields %}{% endblock %}
                 <p class="govuk-body-s ws-updated-at">Updated {{ child.last_published_at }}</p>
             </div>
         {% endfor %}

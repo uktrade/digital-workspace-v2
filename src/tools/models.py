@@ -2,7 +2,7 @@ from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.shortcuts import redirect
-from wagtail.admin.panels import FieldPanel, HelpPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldPanel, HelpPanel
 
 from content.models import ContentPage
 from working_at_dit.models import PageWithTopics
