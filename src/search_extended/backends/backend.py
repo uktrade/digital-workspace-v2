@@ -4,7 +4,7 @@ from wagtail.search.backends.elasticsearch7 import (
 )
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
 
-from search.backends.query import OnlyFields
+from search_extended.backends.query import OnlyFields
 
 
 class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):

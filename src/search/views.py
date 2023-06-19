@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from search.templatetags.search import SEARCH_CATEGORIES
+from search_extended.settings import search_extended_settings
 
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,7 @@ def explore(request: HttpRequest) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
 
-    boost_vars = [{"name": f"SEARCH_BOOST_{k}", "value": v} for k, v in settings.SEARCH_BOOST_VARIABLES.items()]
+    boost_vars = [{"name": f"SEARCH_BOOST_{k}", "value": v} for k, v in search_extended_settings.BOOST_VARIABLES.items()]
 
     context = {
         "search_url": reverse("search:explore"),

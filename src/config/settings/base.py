@@ -97,6 +97,7 @@ LOCAL_APPS = [
     "core",
     "home",
     "content",
+    "search_extended",
     "search",
     "news",
     "working_at_dit",
@@ -298,7 +299,7 @@ ELASTICSEARCH_DSL = {
 
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "search.backends.backend.CustomSearchBackend",
+        "BACKEND": "search_extended.backends.backend.CustomSearchBackend",
         "AUTO_UPDATE": True,
         "ATOMIC_REBUILD": True,
         "URLS": [OPENSEARCH_URL],
@@ -336,35 +337,36 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
-SEARCH_BOOST_VARIABLES = {
-    "PAGE_TITLE": 4.0,
-    "PAGE_HEADINGS": 3.0,
-    "PAGE_EXCERPT": 2.0,
-    "PAGE_CONTENT": 1.0,
-    "PAGE_TOOLS_PHRASE_TITLE_EXPLICIT": 2.0,
-    "PAGE_GUIDANCE_PHRASE_TITLE_EXPLICIT": 2.0,
-    "PERSON_NAME": 4.0,
-    "PERSON_EMAIL_PHONE": 4.0,
-    "PERSON_ROLE": 3.0,
-    "PERSON_TEAM": 2.0,
-    "PERSON_LOCATION": 1.5,
-    "PERSON_SKILLS": 1.5,
-    "PERSON_LANGUAGES": 1.5,
-    "PERSON_NETWORKS": 1.5,
-    "PERSON_ADDITIONAL_ROLES": 0.8,
-    "PERSON_INTERESTS": 0.8,
-    "PERSON_PROFILE_COMPLETENESS": 2.0,
-    "PERSON_HAS_PHOTO": 1.5,
-    "TEAM_NAME": 4.0,
-    "TEAM_ABBREVIATION": 5.0,
-    "TEAM_DESCRIPTION": 3.0,
-    "TEAM_ROLES": 2.0,
-    "SEARCH_PHRASE": 10.0,
-    "SEARCH_QUERY_AND": 2.5,
-    "SEARCH_QUERY_OR": 1.0,
-    "SEARCH_FUZZY": 0.025,
-    "ANALYZER_EXPLICIT": 3.5,
-    "ANALYZER_TOKENIZED": 1.0,
+SEARCH_EXTENDED = {
+    "BOOST_VARIABLES": {
+        "PAGE_TITLE": 5.0,
+        "PAGE_HEADINGS": 3.0,
+        "PAGE_EXCERPT": 2.0,
+        "PAGE_CONTENT": 1.0,
+        "PAGE_TOOLS_PHRASE_TITLE_EXPLICIT": 2.0,
+        "PAGE_GUIDANCE_PHRASE_TITLE_EXPLICIT": 2.0,
+        "PERSON_NAME": 4.0,
+        "PERSON_EMAIL_PHONE": 4.0,
+        "PERSON_ROLE": 3.0,
+        "PERSON_TEAM": 2.0,
+        "PERSON_LOCATION": 1.5,
+        "PERSON_SKILLS": 1.5,
+        "PERSON_LANGUAGES": 1.5,
+        "PERSON_NETWORKS": 1.5,
+        "PERSON_ADDITIONAL_ROLES": 0.8,
+        "PERSON_INTERESTS": 0.8,
+        "PERSON_PROFILE_COMPLETENESS": 2.0,
+        "PERSON_HAS_PHOTO": 1.5,
+        "TEAM_NAME": 4.0,
+        "TEAM_ABBREVIATION": 5.0,
+        "TEAM_DESCRIPTION": 3.0,
+        "TEAM_ROLES": 2.0,
+        "SEARCH_PHRASE": 10.0,
+        "SEARCH_QUERY_AND": 2.5,
+        "SEARCH_QUERY_OR": 1.0,
+        "ANALYZER_EXPLICIT": 3.5,
+        "ANALYZER_TOKENIZED": 1.0,
+    }
 }
 
 # Add a custom provider

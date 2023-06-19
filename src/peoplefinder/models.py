@@ -15,6 +15,9 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search import index
 from wagtail.search.queryset import SearchableQuerySetMixin
 
+from search_extended.mixins import IndexedExtended
+from search_extended.types import AnalysisType, SearchQueryType
+
 
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
@@ -287,7 +290,7 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
-class Person(index.Indexed, models.Model):
+class Person(IndexedExtended, index.Indexed, models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -499,178 +502,362 @@ class Person(index.Indexed, models.Model):
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
-    search_fields = [
-        index.SearchField(
-            "full_name",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.SearchField(
-            "full_name_explicit",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        index.SearchField(
-            "email",
-            es_extra={
-                "search_analyzer": "keyword",
-            },
-        ),
-        index.SearchField(
-            "contact_email",
-            es_extra={
-                "search_analyzer": "keyword",
-            },
-        ),
-        index.SearchField(
-            "primary_phone_number",
-            es_extra={
-                "search_analyzer": "keyword",
-            },
-        ),
-        index.SearchField(
-            "secondary_phone_number",
-            es_extra={
-                "search_analyzer": "keyword",
-            },
-        ),
-        index.SearchField(
-            "town_city_or_region",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.SearchField(
-            "regional_building",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.SearchField(
-            "international_building",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.SearchField(
-            "fluent_languages",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.SearchField(
-            "search_teams",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.SearchField(
-            "search_teams_explicit",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        index.SearchField(
-            "profile_completion_amount",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        index.SearchField(
-            "has_photo",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        index.RelatedFields(
-            "roles",
-            [
-                index.SearchField(
-                    "job_title",
-                    es_extra={
-                        "search_analyzer": "snowball",
-                    },
-                ),
-                index.SearchField(
-                    "job_title_explicit",
-                    es_extra={
-                        "search_analyzer": "simple",
-                    },
-                )
+    search_field_mapping = {
+        "full_name": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+                AnalysisType.EXPLICIT,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
             ]
-        ),
-        index.RelatedFields(
-            "key_skills",
-            [
-                index.SearchField(
-                    "name",
-                    es_extra={
-                        "search_analyzer": "snowball",
-                    },
-                ),
-                index.SearchField(
-                    "name_explicit",
-                    es_extra={
-                        "search_analyzer": "simple",
-                    },
-                )
+        },
+        "email": {
+            "analysis": [
+                AnalysisType.KEYWORD,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
             ]
-        ),
-        index.RelatedFields(
-            "learning_interests",
-            [
-                index.SearchField(
-                    "name",
-                    es_extra={
-                        "search_analyzer": "snowball",
-                    },
-                )
+        },
+        "contact_email": {
+            "analysis": [
+                AnalysisType.KEYWORD,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
             ]
-        ),
-        index.RelatedFields(
-            "additional_roles",
-            [
-                index.SearchField(
-                    "name",
-                    es_extra={
-                        "search_analyzer": "snowball",
-                    },
-                ),
-                index.SearchField(
-                    "name_explicit",
-                    es_extra={
-                        "search_analyzer": "simple",
-                    },
-                )
+        },
+        "primary_phone_number": {
+            "analysis": [
+                AnalysisType.KEYWORD,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
             ]
-        ),
-        index.RelatedFields(
-            "networks",
-            [
-                index.SearchField(
-                    "name",
-                    es_extra={
-                        "search_analyzer": "snowball",
-                    },
-                ),
-                index.SearchField(
-                    "name_explicit",
-                    es_extra={
-                        "search_analyzer": "simple",
-                    },
-                )
+        },
+        "secondary_phone_number": {
+            "analysis": [
+                AnalysisType.KEYWORD,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
             ]
-        ),
-        index.FilterField("has_photo"),
-        index.FilterField("profile_completion_amount"),
-        index.FilterField("is_active"),
-        index.FilterField("professions"),
-        index.FilterField("grade"),
-        index.FilterField("networks"),
-        index.FilterField("do_not_work_for_dit"),
-    ]
+        },
+        "town_city_or_region": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "regional_building": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "international_building": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "fluent_languages": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "search_teams": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+                AnalysisType.EXPLICIT,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "profile_completion_amount": {
+            "analysis": [
+                AnalysisType.PROXIMITY,
+                AnalysisType.FILTER,
+            ],
+        },
+        "has_photo": {
+            "analysis": [
+                AnalysisType.PROXIMITY,
+                AnalysisType.FILTER,
+            ],
+        },
+        "roles": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+                AnalysisType.EXPLICIT,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "key_skills": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+                AnalysisType.EXPLICIT,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "learning_interests": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "additional_roles": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+                AnalysisType.EXPLICIT,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "networks": {
+            "analysis": [
+                AnalysisType.TOKENIZED,
+                AnalysisType.EXPLICIT,
+                AnalysisType.FILTER,
+            ],
+            "queries": [
+                SearchQueryType.PHRASE,
+                SearchQueryType.QUERY_AND,
+                SearchQueryType.QUERY_OR,
+            ]
+        },
+        "is_active": {
+            "analysis": [
+                AnalysisType.FILTER,
+            ],
+        },
+        "professions": {
+            "analysis": [
+                AnalysisType.FILTER,
+            ],
+        },
+        "grade": {
+            "analysis": [
+                AnalysisType.FILTER,
+            ],
+        },
+        "do_not_work_for_dit": {
+            "analysis": [
+                AnalysisType.FILTER,
+            ],
+        },
+    }
+
+    # search_fields = [
+    #     index.SearchField(
+    #         "full_name",
+    #         es_extra={
+    #             "search_analyzer": "snowball",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "full_name_explicit",
+    #         es_extra={
+    #             "search_analyzer": "simple",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "email",
+    #         es_extra={
+    #             "search_analyzer": "keyword",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "contact_email",
+    #         es_extra={
+    #             "search_analyzer": "keyword",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "primary_phone_number",
+    #         es_extra={
+    #             "search_analyzer": "keyword",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "secondary_phone_number",
+    #         es_extra={
+    #             "search_analyzer": "keyword",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "town_city_or_region",
+    #         es_extra={
+    #             "search_analyzer": "snowball",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "regional_building",
+    #         es_extra={
+    #             "search_analyzer": "snowball",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "international_building",
+    #         es_extra={
+    #             "search_analyzer": "snowball",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "fluent_languages",
+    #         es_extra={
+    #             "search_analyzer": "snowball",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "search_teams",
+    #         es_extra={
+    #             "search_analyzer": "snowball",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "search_teams_explicit",
+    #         es_extra={
+    #             "search_analyzer": "simple",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "profile_completion_amount",
+    #         es_extra={
+    #             "search_analyzer": "simple",
+    #         },
+    #     ),
+    #     index.SearchField(
+    #         "has_photo",
+    #         es_extra={
+    #             "search_analyzer": "simple",
+    #         },
+    #     ),
+    #     index.RelatedFields(
+    #         "roles",
+    #         [
+    #             index.SearchField(
+    #                 "job_title",
+    #                 es_extra={
+    #                     "search_analyzer": "snowball",
+    #                 },
+    #             ),
+    #             index.SearchField(
+    #                 "job_title_explicit",
+    #                 es_extra={
+    #                     "search_analyzer": "simple",
+    #                 },
+    #             )
+    #         ]
+    #     ),
+    #     index.RelatedFields(
+    #         "key_skills",
+    #         [
+    #             index.SearchField(
+    #                 "name",
+    #                 es_extra={
+    #                     "search_analyzer": "snowball",
+    #                 },
+    #             ),
+    #             index.SearchField(
+    #                 "name_explicit",
+    #                 es_extra={
+    #                     "search_analyzer": "simple",
+    #                 },
+    #             )
+    #         ]
+    #     ),
+    #     index.RelatedFields(
+    #         "learning_interests",
+    #         [
+    #             index.SearchField(
+    #                 "name",
+    #                 es_extra={
+    #                     "search_analyzer": "snowball",
+    #                 },
+    #             )
+    #         ]
+    #     ),
+    #     index.RelatedFields(
+    #         "additional_roles",
+    #         [
+    #             index.SearchField(
+    #                 "name",
+    #                 es_extra={
+    #                     "search_analyzer": "snowball",
+    #                 },
+    #             ),
+    #             index.SearchField(
+    #                 "name_explicit",
+    #                 es_extra={
+    #                     "search_analyzer": "simple",
+    #                 },
+    #             )
+    #         ]
+    #     ),
+    #     index.RelatedFields(
+    #         "networks",
+    #         [
+    #             index.SearchField(
+    #                 "name",
+    #                 es_extra={
+    #                     "search_analyzer": "snowball",
+    #                 },
+    #             ),
+    #             index.SearchField(
+    #                 "name_explicit",
+    #                 es_extra={
+    #                     "search_analyzer": "simple",
+    #                 },
+    #             )
+    #         ]
+    #     ),
+    #     index.FilterField("has_photo"),
+    #     index.FilterField("profile_completion_amount"),
+    #     index.FilterField("is_active"),
+    #     index.FilterField("professions"),
+    #     index.FilterField("grade"),
+    #     index.FilterField("networks"),
+    #     index.FilterField("do_not_work_for_dit"),
+    # ]
 
     def __str__(self) -> str:
         return self.full_name
