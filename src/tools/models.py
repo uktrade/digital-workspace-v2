@@ -9,6 +9,7 @@ from working_at_dit.models import PageWithTopics
 
 
 class IrapToolDataAbstract(models.Model):
+    # This abstract class matches the data imported from Data workspace
     product_irap_reference_number = models.IntegerField(primary_key=True)
     product_name = models.CharField(
         max_length=2048,
@@ -32,6 +33,10 @@ class IrapToolDataAbstract(models.Model):
 
 
 class IrapToolDataImport(IrapToolDataAbstract):
+    # The data from Data Workspace are copied here, and after are
+    # analysed and copied to the tool models.
+    # If something goes wrong during the import,
+    # the import will be aborted, and the tool data will still be correct
     pass
 
 
