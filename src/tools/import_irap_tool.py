@@ -2,6 +2,10 @@ from tools.models import IrapToolData, IrapToolDataImport, Tool
 
 
 def diff_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[[], bool]:
+    # Copies all the existing values to the previous values list,
+    # so they can be displayed to the tool admin when the changes
+    # are reviewed
+    
     fields = new._meta.get_fields()
     changed = False
     previous_values = []
@@ -13,7 +17,7 @@ def diff_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[[], bool
             setattr(new, field.name, new_value)
         previous_values.append(
             {
-                "key": field.name,
+                "field_name": field.name,
                 "previous_value": old_value,
             }
         )

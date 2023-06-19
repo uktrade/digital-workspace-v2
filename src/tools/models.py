@@ -31,9 +31,6 @@ class IrapToolDataAbstract(models.Model):
     #  description and condition of use
     class Meta:
         abstract = True
-        indexes = [
-            models.Index(fields=["product_irap_reference_number"]),
-        ]
 
 
 class IrapToolDataImport(IrapToolDataAbstract):
@@ -45,7 +42,7 @@ class IrapToolData(IrapToolDataAbstract):
         NEW = "new", "new"
         CHANGED = "changed", "Changed"
         DELETED = "deleted", "Deleted"
-        UNDELETED= "undeleted", "Undeleted"
+        UNDELETED = "undeleted", "Undeleted"
         REVIEWED = "reviewed", "Reviewed"
 
     after_import_status = models.CharField(
@@ -82,7 +79,7 @@ class Tool(PageWithTopics):
         max_length=2048,
     )
 
-    # using the correct widget for your field type and desired effect
+    # TODO Move it to a util file
     readonly_widget = forms.TextInput(attrs={"disabled": "true"})
 
     parent_page_types = ["tools.ToolsHome"]
@@ -90,7 +87,6 @@ class Tool(PageWithTopics):
 
     content_panels = PageWithTopics.content_panels + [
         FieldPanel("redirect_url"),
-        HelpPanel("long_description"),
         FieldPanel("irap_tool", widget=readonly_widget),
     ]
 
