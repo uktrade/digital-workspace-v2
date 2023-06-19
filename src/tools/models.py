@@ -9,7 +9,9 @@ from working_at_dit.models import PageWithTopics
 
 
 class IrapToolDataAbstract(models.Model):
-    product_irap_reference_number = models.IntegerField(primary_key=True)
+    product_irap_reference_number = models.IntegerField(
+        primary_key=True
+    )
     product_name = models.CharField(
         max_length=2048,
         null=True,
@@ -20,10 +22,18 @@ class IrapToolDataAbstract(models.Model):
         null=True,
         blank=True,
     )
+    date_due_for_re_accreditation = models.DateField(
+        null=True,
+        blank=True,
+    )
 
-    # TODO Add new fields that will be created later:  description and owner
+    # TODO Add new fields that will be created later:
+    #  description and condition of use
     class Meta:
         abstract = True
+        indexes = [
+            models.Index(fields=["product_irap_reference_number"]),
+        ]
 
 
 class IrapToolDataImport(IrapToolDataAbstract):
@@ -33,19 +43,23 @@ class IrapToolDataImport(IrapToolDataAbstract):
 class IrapToolData(IrapToolDataAbstract):
     class AfterImportStatus(models.TextChoices):
         NEW = "new", "new"
-        UNCHANGED = "unchanged", "Unchanged"
         CHANGED = "changed", "Changed"
         DELETED = "deleted", "Deleted"
+        UNDELETED= "undeleted", "Undeleted"
+        REVIEWED = "reviewed", "Reviewed"
 
     after_import_status = models.CharField(
         max_length=9, choices=AfterImportStatus.choices, default=AfterImportStatus.NEW
     )
-    # Processed is changed to TRUE
-    # when the content admin NEW, CHANGED and DELETED status
-    reviewed = models.BooleanField(default=False)
-    reviewed_date = models.DateTimeField(null=True, blank=True)
+    review_date = models.DateTimeField(null=True, blank=True)
+
+    imported = models.BooleanField(default=True)
+
     created_date = models.DateTimeField(auto_now_add=True)
-    changed_fields = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
+    previous_fields = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
+
+    def __str__(self):
+        return self.product_name
 
 
 class Tool(PageWithTopics):
