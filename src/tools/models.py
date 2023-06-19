@@ -41,7 +41,6 @@ class IrapToolDataImport(IrapToolDataAbstract):
 
 
 class IrapToolData(IrapToolDataAbstract):
-
     # UNDELETED is used for flagging an irap record that:
     # was present in import 1
     # was not present in import 2
