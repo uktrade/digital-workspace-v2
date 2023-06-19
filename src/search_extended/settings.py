@@ -34,23 +34,18 @@ class SearchExtendedSettings:
     EXPLICIT_INDEX_FIELDNAME_SUFFIX: str
 
     def __getattr__(self, attr):
-        # print("--------------------------------------")
-        # print(attr)
         # Check if set in ENV
         setting_value = self._get_from_env(attr)
-        # print(setting_value)
         if setting_value:
             return setting_value
 
         # Check if present in user settings
         setting_value = self._get_from_django_settings(attr)
-        # print(setting_value)
         if setting_value:
             return setting_value
 
         # Check if present in defaults
         default_value = self._get_from_defaults(attr)
-        # print(default_value)
         if default_value:
             return default_value
 

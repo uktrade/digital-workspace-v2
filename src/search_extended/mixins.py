@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from wagtail.search import index
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, MATCH_NONE
@@ -10,31 +11,6 @@ from typing import Any, Collection, Dict
 
 
 class MetaIndexedExtended(type(models.Model)):
-
-    @property
-    def search_fields(cls, *args, **kwargs):
-        index_fields = []
-        for field_name, field_mapping in cls.search_field_mapping.items():
-            if 'analysis' not in field_mapping:
-                index_fields += [index.SearchField(field_name)]
-
-            for field_type in field_mapping['analysis']:
-                if field_type == AnalysisType.FILTER:
-                    index_fields += [index.FilterField(field_name)]
-                else:
-                    analyzer_settings = search_extended_settings.ANALYZERS[field_type.value]
-                    field_name_suffix = analyzer_settings['index_fieldname_suffix'] or ""
-
-                    index_fields += [
-                        index.SearchField(
-                            f"{field_name}{field_name_suffix}",
-                            es_extra={
-                                "search_analyzer": analyzer_settings['es_analyzer'],
-                            },
-                        )
-                    ]
-
-        return index_fields
 
     def _get_inner_searchquery_for_querytype(
         self,
@@ -79,15 +55,18 @@ class MetaIndexedExtended(type(models.Model)):
                 analysis_type_boost = "ANALYZER_EXPLICIT"
             case AnalysisType.PROXIMITY:
                 analysis_type_boost = 1.0  # @TODO figure out how to add this
+            case AnalysisType.FILTER:
+                analysis_type_boost = 1.0  # @TODO figure out how to add this
             case _:
                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
 
-        field_boost = self.search_field_mapping[base_field_name]["boost_key"]
+        content_type = ContentType.objects.get_for_model(self)
+        field_boost_key = f"{content_type.app_label}.{content_type.model}.{base_field_name}"
 
         return (
             search_extended_settings.get_boost_value(query_type_boost) *
             search_extended_settings.get_boost_value(analysis_type_boost) *
-            search_extended_settings.get_boost_value(field_boost)
+            search_extended_settings.get_boost_value(field_boost_key)
         )
 
     def _get_searchquery_for_query_field_querytype_analysistype(
@@ -97,6 +76,9 @@ class MetaIndexedExtended(type(models.Model)):
         query_type: SearchQueryType,
         analysis_type: AnalysisType,
     ):
+        if analysis_type in (AnalysisType.FILTER, AnalysisType.PROXIMITY,):
+            return MATCH_NONE
+
         query = self._get_inner_searchquery_for_querytype(
             query_str,
             query_type,
@@ -124,16 +106,19 @@ class MetaIndexedExtended(type(models.Model)):
         all_queries = None
         for query_type in self.search_field_mapping[base_field_name]["queries"]:
             for analysis_type in self.search_field_mapping[base_field_name]["analysis"]:
-                search_query_obj = self._get_searchquery_for_query_field_querytype_analysistype(
-                    query_str,
-                    base_field_name,
-                    query_type,
-                    analysis_type
-                )
-                if all_queries is None:
-                    all_queries = search_query_obj
-                else:
-                    all_queries = all_queries | search_query_obj
+
+                if analysis_type not in (AnalysisType.FILTER, AnalysisType.PROXIMITY,):
+
+                    search_query_obj = self._get_searchquery_for_query_field_querytype_analysistype(
+                        query_str,
+                        base_field_name,
+                        query_type,
+                        analysis_type
+                    )
+                    if all_queries is None:
+                        all_queries = search_query_obj
+                    else:
+                        all_queries = all_queries | search_query_obj
 
         return all_queries
 
@@ -151,17 +136,30 @@ class MetaIndexedExtended(type(models.Model)):
 
         return all_queries
 
-    def get_search_query(
-        self,
-        query: str,
-        *args,
-        **kwargs
-    ) -> tuple[Any, Collection[Any], Dict[str, Any]]:
-        """
-        Allows overriding of the query structure passed to the Wagtail
-        "search()" method
-        """
-        return query, args, kwargs
+    @property
+    def search_fields(cls, *args, **kwargs):
+        index_fields = []
+        for field_name, field_mapping in cls.search_field_mapping.items():
+            if 'analysis' not in field_mapping:
+                index_fields += [index.SearchField(field_name)]
+
+            for field_type in field_mapping['analysis']:
+                if field_type == AnalysisType.FILTER:
+                    index_fields += [index.FilterField(field_name)]
+                else:
+                    analyzer_settings = search_extended_settings.ANALYZERS[field_type.value]
+                    field_name_suffix = analyzer_settings['index_fieldname_suffix'] or ""
+
+                    index_fields += [
+                        index.SearchField(
+                            f"{field_name}{field_name_suffix}",
+                            es_extra={
+                                "search_analyzer": analyzer_settings['es_analyzer'],
+                            },
+                        )
+                    ]
+
+        return index_fields
 
 
 class IndexedExtended(metaclass=MetaIndexedExtended):

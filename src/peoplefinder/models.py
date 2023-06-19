@@ -597,93 +597,93 @@ class Person(IndexedExtended, index.Indexed, models.Model):
                 SearchQueryType.QUERY_OR,
             ]
         },
-        "profile_completion_amount": {
-            "analysis": [
-                AnalysisType.PROXIMITY,
-                AnalysisType.FILTER,
-            ],
-        },
-        "has_photo": {
-            "analysis": [
-                AnalysisType.PROXIMITY,
-                AnalysisType.FILTER,
-            ],
-        },
-        "roles": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "key_skills": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "learning_interests": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "additional_roles": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "networks": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-                AnalysisType.FILTER,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "is_active": {
-            "analysis": [
-                AnalysisType.FILTER,
-            ],
-        },
-        "professions": {
-            "analysis": [
-                AnalysisType.FILTER,
-            ],
-        },
-        "grade": {
-            "analysis": [
-                AnalysisType.FILTER,
-            ],
-        },
-        "do_not_work_for_dit": {
-            "analysis": [
-                AnalysisType.FILTER,
-            ],
-        },
+        # "roles": {
+        #     "analysis": [
+        #         AnalysisType.TOKENIZED,
+        #         AnalysisType.EXPLICIT,
+        #     ],
+        #     "queries": [
+        #         SearchQueryType.PHRASE,
+        #         SearchQueryType.QUERY_AND,
+        #         SearchQueryType.QUERY_OR,
+        #     ]
+        # },
+        # "key_skills": {
+        #     "analysis": [
+        #         AnalysisType.TOKENIZED,
+        #         AnalysisType.EXPLICIT,
+        #     ],
+        #     "queries": [
+        #         SearchQueryType.PHRASE,
+        #         SearchQueryType.QUERY_AND,
+        #         SearchQueryType.QUERY_OR,
+        #     ]
+        # },
+        # "learning_interests": {
+        #     "analysis": [
+        #         AnalysisType.TOKENIZED,
+        #     ],
+        #     "queries": [
+        #         SearchQueryType.PHRASE,
+        #         SearchQueryType.QUERY_AND,
+        #         SearchQueryType.QUERY_OR,
+        #     ]
+        # },
+        # "additional_roles": {
+        #     "analysis": [
+        #         AnalysisType.TOKENIZED,
+        #         AnalysisType.EXPLICIT,
+        #     ],
+        #     "queries": [
+        #         SearchQueryType.PHRASE,
+        #         SearchQueryType.QUERY_AND,
+        #         SearchQueryType.QUERY_OR,
+        #     ]
+        # },
+        # "networks": {
+        #     "analysis": [
+        #         AnalysisType.TOKENIZED,
+        #         AnalysisType.EXPLICIT,
+        #         AnalysisType.FILTER,
+        #     ],
+        #     "queries": [
+        #         SearchQueryType.PHRASE,
+        #         SearchQueryType.QUERY_AND,
+        #         SearchQueryType.QUERY_OR,
+        #     ]
+        # },
+        # "profile_completion_amount": {
+        #     "analysis": [
+        #         AnalysisType.PROXIMITY,
+        #         AnalysisType.FILTER,
+        #     ],
+        # },
+        # "has_photo": {
+        #     "analysis": [
+        #         AnalysisType.PROXIMITY,
+        #         AnalysisType.FILTER,
+        #     ],
+        # },
+        # "is_active": {
+        #     "analysis": [
+        #         AnalysisType.FILTER,
+        #     ],
+        # },
+        # "professions": {
+        #     "analysis": [
+        #         AnalysisType.FILTER,
+        #     ],
+        # },
+        # "grade": {
+        #     "analysis": [
+        #         AnalysisType.FILTER,
+        #     ],
+        # },
+        # "do_not_work_for_dit": {
+        #     "analysis": [
+        #         AnalysisType.FILTER,
+        #     ],
+        # },
     }
 
     # search_fields = [

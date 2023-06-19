@@ -53,7 +53,7 @@ class PagesSearchVector(SearchVector):
         return self.get_queryset().pinned(query)
 
     def search(self, query, *args, **kwargs):
-        query, args, kwargs = self.page_model.get_search_query(
+        query, args, kwargs = self.page_model.get_all_searchqueries(
             query,
             *args,
             operator="and",
@@ -96,7 +96,7 @@ class PeopleSearchVector(SearchVector):
         return people
 
     def search(self, query, *args, **kwargs):
-        query, args, kwargs = Person.get_search_query(
+        query, args, kwargs = Person.get_all_searchqueries(
             query,
             *args,
             **kwargs
@@ -214,13 +214,11 @@ class NewToolsSearchVector(ToolsSearchVector):
 
 
 class NewPeopleSearchVector(PeopleSearchVector):
-    def build_query(
-        self,
-        query: str,
-        *args,
-        **kwargs
-    ):
-        return Person.get_search_query(query, *args, **kwargs)
+
+    def search(self, query, *args, **kwargs):
+        queryset = self.get_queryset()
+        query = Person.get_all_searchqueries(query, *args, **kwargs)
+        return self._wagtail_search(queryset, query, *args, **kwargs)
 
     # field_mapping = {
     #     "full_name": {
