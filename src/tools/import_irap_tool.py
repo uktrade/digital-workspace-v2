@@ -5,7 +5,7 @@ def diff_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[[], bool
     # Copies all the existing values to the previous values list,
     # so they can be displayed to the tool admin when the changes
     # are reviewed
-    
+
     fields = new._meta.get_fields()
     changed = False
     previous_values = []
@@ -26,9 +26,7 @@ def diff_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[[], bool
 
 def process_import():
     """To be called after the irap data has been imported successfully from DW"""
-    IrapToolData.objects.update(
-        imported = False
-    )
+    IrapToolData.objects.update(imported=False)
 
     imported_iraps = IrapToolDataImport.objects.all()
     for imported_irap in imported_iraps:
@@ -66,8 +64,8 @@ def process_import():
                 # mark it as deleted and let the tool administrator
                 # handle the page.
                 IrapToolData.objects.filter(imported=True).update(
-                    AfterImportStatus = IrapToolData.AfterImportStatus.DELETED,
-                    imported = True
+                    AfterImportStatus=IrapToolData.AfterImportStatus.DELETED,
+                    imported=True,
                 )
                 deleted_irap.save()
             else:

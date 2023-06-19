@@ -2,16 +2,14 @@ from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.shortcuts import redirect
-from wagtail.admin.panels import FieldPanel, HelpPanel
+from wagtail.admin.panels import FieldPanel
 
 from content.models import ContentPage
 from working_at_dit.models import PageWithTopics
 
 
 class IrapToolDataAbstract(models.Model):
-    product_irap_reference_number = models.IntegerField(
-        primary_key=True
-    )
+    product_irap_reference_number = models.IntegerField(primary_key=True)
     product_name = models.CharField(
         max_length=2048,
         null=True,
