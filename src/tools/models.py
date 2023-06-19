@@ -36,6 +36,13 @@ class IrapToolDataImport(IrapToolDataAbstract):
 
 
 class IrapToolData(IrapToolDataAbstract):
+
+    # UNDELETED is used for flagging an irap record that:
+    # was present in import 1
+    # was not present in import 2
+    # was present in import 3
+    # was not reviewed after import 2
+    # very unlikely situation
     class AfterImportStatus(models.TextChoices):
         NEW = "new", "new"
         CHANGED = "changed", "Changed"
