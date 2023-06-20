@@ -9,4 +9,4 @@ class OnlyFields(SearchQuery):
         self.fields = fields
 
     def __repr__(self):
-        return "<OnlyFields {} >".format(repr(self.subquery))
+        return "<OnlyFields {} fields=[{}]>".format(repr(self.subquery)," ".join([f"'{f}'" for f in self.fields]), )

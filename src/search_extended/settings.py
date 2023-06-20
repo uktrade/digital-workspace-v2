@@ -1,11 +1,12 @@
 import environ
 from django.conf import settings
 
+from typing import Any, Dict
+
 env = environ.Env()
 env.read_env()
 
 DEFAULTS = {
-    "EXPLICIT_INDEX_FIELDNAME_SUFFIX": "_explicit",
     "BOOST_VARIABLES": {
 
     },
@@ -13,14 +14,17 @@ DEFAULTS = {
         "TOKENIZED": {
             "es_analyzer": "snowball",
             "index_fieldname_suffix": None,
+            "query_types": ["PHRASE", "QUERY_AND", "QUERY_OR",],
         },
         "EXPLICIT": {
             "es_analyzer": "simple",
             "index_fieldname_suffix": "_explicit",
+            "query_types": ["PHRASE", "QUERY_AND", "QUERY_OR",],
         },
         "KEYWORD": {
             "es_analyzer": "keyword",
             "index_fieldname_suffix": "_keyword",
+            "query_types": ["PHRASE"],
         },
         "PROXIMITY": {
             "es_analyzer": "simple",
@@ -31,13 +35,12 @@ DEFAULTS = {
 
 
 class SearchExtendedSettings:
-    EXPLICIT_INDEX_FIELDNAME_SUFFIX: str
 
     def __getattr__(self, attr):
         # Check if set in ENV
-        setting_value = self._get_from_env(attr)
-        if setting_value:
-            return setting_value
+        # setting_value = self._get_from_env(attr)
+        # if setting_value:
+        #     return setting_value
 
         # Check if present in user settings
         setting_value = self._get_from_django_settings(attr)
@@ -53,9 +56,11 @@ class SearchExtendedSettings:
 
     def _get_from_env(self, attr, key=None):
         setting_name = "SEARCH_EXTENDED_" + attr
+        print(f">>>>>>>> {attr} <<<<<<<<<<<<< {key}")
         setting_value = env(setting_name, default=None)
-
+        print(setting_value)
         if setting_value is not None and key is not None:
+            print("WWWWTTTTTTTTTFFFFFFFFF")
             return getattr(setting_value, key, None)
         return setting_value
 

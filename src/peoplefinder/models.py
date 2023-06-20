@@ -503,100 +503,38 @@ class Person(IndexedExtended, index.Indexed, models.Model):
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
     search_field_mapping = {
-        "full_name": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "email": {
-            "analysis": [
-                AnalysisType.KEYWORD,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-            ]
-        },
-        "contact_email": {
-            "analysis": [
-                AnalysisType.KEYWORD,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-            ]
-        },
-        "primary_phone_number": {
-            "analysis": [
-                AnalysisType.KEYWORD,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-            ]
-        },
-        "secondary_phone_number": {
-            "analysis": [
-                AnalysisType.KEYWORD,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-            ]
-        },
-        "town_city_or_region": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "regional_building": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "international_building": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "fluent_languages": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
-        "search_teams": {
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR,
-            ]
-        },
+        "full_name": [
+            AnalysisType.TOKENIZED,
+            AnalysisType.EXPLICIT,
+        ],
+        "email": [
+            AnalysisType.KEYWORD,
+        ],
+        "contact_email": [
+            AnalysisType.KEYWORD,
+        ],
+        "primary_phone_number": [
+            AnalysisType.KEYWORD,
+        ],
+        "secondary_phone_number": [
+            AnalysisType.KEYWORD,
+        ],
+        "town_city_or_region": [
+            AnalysisType.TOKENIZED,
+        ],
+        "regional_building": [
+            AnalysisType.TOKENIZED,
+        ],
+        "international_building": [
+            AnalysisType.TOKENIZED,
+        ],
+        "fluent_languages": [
+            AnalysisType.TOKENIZED,
+        ],
+        "search_teams": [
+            AnalysisType.TOKENIZED,
+            AnalysisType.EXPLICIT,
+        ],
         # "roles": {
         #     "analysis": [
         #         AnalysisType.TOKENIZED,

@@ -5,6 +5,7 @@ from wagtail.search.backends.elasticsearch7 import (
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
 
 from search_extended.backends.query import OnlyFields
+from search_extended.settings import search_extended_settings
 
 
 class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
@@ -36,10 +37,22 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
             f.field_name: f
             for f in self.queryset.model.get_searchable_search_fields()
         }
+        field_suffixes = [
+            f["index_fieldname_suffix"] for f in search_extended_settings.ANALYZERS.values()
+        ]
         for field_name in fields:
             if field_name in searchable_fields:
+                search_field = searchable_fields[field_name]
+
+                # Internal workings of wagtail.SearchField mean the
+                # cls.field_name needs to be a valid ModelField name
+                for suffix in field_suffixes:
+                    if suffix is not None and suffix in field_name:
+                        search_field.field_name = field_name.replace(suffix, "")
+                        continue
+
                 field_name = self.mapping.get_field_column_name(
-                    searchable_fields[field_name]
+                    search_field
                 )
 
             remapped_fields.append(field_name)

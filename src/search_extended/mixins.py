@@ -76,8 +76,8 @@ class MetaIndexedExtended(type(models.Model)):
         query_type: SearchQueryType,
         analysis_type: AnalysisType,
     ):
-        if analysis_type in (AnalysisType.FILTER, AnalysisType.PROXIMITY,):
-            return MATCH_NONE
+        # if analysis_type in (AnalysisType.FILTER, AnalysisType.PROXIMITY,):
+        #     return MATCH_NONE
 
         query = self._get_inner_searchquery_for_querytype(
             query_str,
@@ -92,58 +92,106 @@ class MetaIndexedExtended(type(models.Model)):
 
         return OnlyFields(Boost(query, boost), fields=[field_name])
 
-    def _get_all_searchqueries_for_field(
-        self,
-        query_str: str,
-        base_field_name: str,
-    ):
-        if base_field_name not in self.search_field_mapping:
-            raise KeyError(f"{base_field_name} not found in self.search_field_mapping")
+    # def _get_all_searchqueries_for_field(
+    #     self,
+    #     query_str: str,
+    #     base_field_name: str,
+    # ):
+    #     if base_field_name not in self.search_field_mapping:
+    #         raise KeyError(f"{base_field_name} not found in self.search_field_mapping")
 
-        if "queries" not in self.search_field_mapping[base_field_name]:
-            return MATCH_NONE
+    #     all_queries = None
+    #     for analysis_type in self.search_field_mapping[base_field_name]:
+    #         match analysis_type:
+    #             case AnalysisType.EXPLICIT:
+    #                 query_types = (
+    #                     SearchQueryType.PHRASE,
+    #                     SearchQueryType.QUERY_AND,
+    #                     SearchQueryType.QUERY_OR,
+    #                 )
+    #             case AnalysisType.TOKENIZED:
+    #                 query_types = (
+    #                     SearchQueryType.PHRASE,
+    #                     SearchQueryType.QUERY_AND,
+    #                     SearchQueryType.QUERY_OR,
+    #                 )
+    #             case AnalysisType.KEYWORD:
+    #                 query_types = ()
+    #             case AnalysisType.PROXIMITY:
+    #                 query_types = ()
+    #             case AnalysisType.FILTER:
+    #                 query_types = ()
+    #             case _:
+    #                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
 
-        all_queries = None
-        for query_type in self.search_field_mapping[base_field_name]["queries"]:
-            for analysis_type in self.search_field_mapping[base_field_name]["analysis"]:
+    #         for query_type in query_types:
+    #                 search_query_obj = self._get_searchquery_for_query_field_querytype_analysistype(
+    #                     query_str,
+    #                     base_field_name,
+    #                     query_type,
+    #                     analysis_type
+    #                 )
+    #                 if all_queries is None:
+    #                     all_queries = search_query_obj
+    #                 else:
+    #                     all_queries = all_queries | search_query_obj
 
-                if analysis_type not in (AnalysisType.FILTER, AnalysisType.PROXIMITY,):
+    #     return all_queries
 
-                    search_query_obj = self._get_searchquery_for_query_field_querytype_analysistype(
-                        query_str,
-                        base_field_name,
-                        query_type,
-                        analysis_type
-                    )
-                    if all_queries is None:
-                        all_queries = search_query_obj
-                    else:
-                        all_queries = all_queries | search_query_obj
+    # def get_all_searchqueries(self, query_str: str):
+    #     all_queries = None
+    #     for base_field_name in self.search_field_mapping:
+    #         search_query_obj = self._get_all_searchqueries_for_field(
+    #             query_str,
+    #             base_field_name,
+    #         )
+    #         if all_queries is None:
+    #             all_queries = search_query_obj
+    #         else:
+    #             all_queries = all_queries | search_query_obj
 
-        return all_queries
+    #     print(all_queries)
+    #     return all_queries
 
-    def get_all_searchqueries(self, query_str: str):
-        all_queries = None
-        for base_field_name in self.search_field_mapping:
-            search_query_obj = self._get_all_searchqueries_for_field(
-                query_str,
-                base_field_name,
-            )
-            if all_queries is None:
-                all_queries = search_query_obj
-            else:
-                all_queries = all_queries | search_query_obj
+    def search_query(cls, query_str, *args, **kwargs):
+        """
+        Uses the search_field_mapping to derive the full nested SearchQuery
+        """
+        query = None
+        analyzer_settings = search_extended_settings.ANALYZERS
+        for field_name, field_mapping in cls.search_field_mapping.items():
+            if field_mapping is None or len(field_mapping) == 0:
+                field_mapping = [AnalysisType.TOKENIZED, ]
+            for field_type in field_mapping:
+                if field_type in (AnalysisType.FILTER, AnalysisType.PROXIMITY,):
+                    continue
+                else:
+                    field_analyzer_settings = analyzer_settings[field_type.value]
+                    field_name_suffix = field_analyzer_settings['index_fieldname_suffix'] or ""
 
-        return all_queries
+                    for query_type in field_analyzer_settings["query_types"]:
+                        query_part = cls._get_searchquery_for_query_field_querytype_analysistype(
+                            query_str,
+                            f"{field_name}{field_name_suffix}",
+                            SearchQueryType(query_type),
+                            field_type,
+                        )
+
+                        if query is None:
+                            query = query_part
+                        else:
+                            query = query | query_part
+        print(query)
+        return query
+
 
     @property
     def search_fields(cls, *args, **kwargs):
         index_fields = []
         for field_name, field_mapping in cls.search_field_mapping.items():
-            if 'analysis' not in field_mapping:
+            if field_mapping is None or len(field_mapping) == 0:
                 index_fields += [index.SearchField(field_name)]
-
-            for field_type in field_mapping['analysis']:
+            for field_type in field_mapping:
                 if field_type == AnalysisType.FILTER:
                     index_fields += [index.FilterField(field_name)]
                 else:

@@ -217,7 +217,7 @@ class NewPeopleSearchVector(PeopleSearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = Person.get_all_searchqueries(query, *args, **kwargs)
+        query = Person.search_query(query, *args, **kwargs)
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
     # field_mapping = {
