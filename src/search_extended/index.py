@@ -1,4 +1,6 @@
+import logging
 from django.contrib.contenttypes.models import ContentType
+from django.core import checks
 from django.db import models
 from wagtail.search import index
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, MATCH_NONE
@@ -9,8 +11,10 @@ from search_extended.types import AnalysisType, SearchQueryType
 
 from typing import Any, Collection, Dict
 
+logger = logging.getLogger(__name__)
 
-class MetaIndexedExtended(type(models.Model)):
+
+class MetaIndexed(type(models.Model)):
 
     def _get_inner_searchquery_for_querytype(
         self,
@@ -76,9 +80,6 @@ class MetaIndexedExtended(type(models.Model)):
         query_type: SearchQueryType,
         analysis_type: AnalysisType,
     ):
-        # if analysis_type in (AnalysisType.FILTER, AnalysisType.PROXIMITY,):
-        #     return MATCH_NONE
-
         query = self._get_inner_searchquery_for_querytype(
             query_str,
             query_type,
@@ -87,71 +88,7 @@ class MetaIndexedExtended(type(models.Model)):
         boost = self._get_boost_for_field_querytype_analysistype(base_field_name, query_type, analysis_type)
 
         field_name = base_field_name
-        if analysis_type == AnalysisType.EXPLICIT:
-            field_name += "_explicit"
-
         return OnlyFields(Boost(query, boost), fields=[field_name])
-
-    # def _get_all_searchqueries_for_field(
-    #     self,
-    #     query_str: str,
-    #     base_field_name: str,
-    # ):
-    #     if base_field_name not in self.search_field_mapping:
-    #         raise KeyError(f"{base_field_name} not found in self.search_field_mapping")
-
-    #     all_queries = None
-    #     for analysis_type in self.search_field_mapping[base_field_name]:
-    #         match analysis_type:
-    #             case AnalysisType.EXPLICIT:
-    #                 query_types = (
-    #                     SearchQueryType.PHRASE,
-    #                     SearchQueryType.QUERY_AND,
-    #                     SearchQueryType.QUERY_OR,
-    #                 )
-    #             case AnalysisType.TOKENIZED:
-    #                 query_types = (
-    #                     SearchQueryType.PHRASE,
-    #                     SearchQueryType.QUERY_AND,
-    #                     SearchQueryType.QUERY_OR,
-    #                 )
-    #             case AnalysisType.KEYWORD:
-    #                 query_types = ()
-    #             case AnalysisType.PROXIMITY:
-    #                 query_types = ()
-    #             case AnalysisType.FILTER:
-    #                 query_types = ()
-    #             case _:
-    #                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
-
-    #         for query_type in query_types:
-    #                 search_query_obj = self._get_searchquery_for_query_field_querytype_analysistype(
-    #                     query_str,
-    #                     base_field_name,
-    #                     query_type,
-    #                     analysis_type
-    #                 )
-    #                 if all_queries is None:
-    #                     all_queries = search_query_obj
-    #                 else:
-    #                     all_queries = all_queries | search_query_obj
-
-    #     return all_queries
-
-    # def get_all_searchqueries(self, query_str: str):
-    #     all_queries = None
-    #     for base_field_name in self.search_field_mapping:
-    #         search_query_obj = self._get_all_searchqueries_for_field(
-    #             query_str,
-    #             base_field_name,
-    #         )
-    #         if all_queries is None:
-    #             all_queries = search_query_obj
-    #         else:
-    #             all_queries = all_queries | search_query_obj
-
-    #     print(all_queries)
-    #     return all_queries
 
     def search_query(cls, query_str, *args, **kwargs):
         """
@@ -161,8 +98,10 @@ class MetaIndexedExtended(type(models.Model)):
         analyzer_settings = search_extended_settings.ANALYZERS
         for field_name, field_mapping in cls.search_field_mapping.items():
             if field_mapping is None or len(field_mapping) == 0:
-                field_mapping = [AnalysisType.TOKENIZED, ]
-            for field_type in field_mapping:
+                # Default to a single tokenized field, which is the standard approach
+                field_mapping = { "search": [AnalysisType.TOKENIZED, ] }
+
+            for field_type in field_mapping["search"]:
                 if field_type in (AnalysisType.FILTER, AnalysisType.PROXIMITY,):
                     continue
                 else:
@@ -181,17 +120,37 @@ class MetaIndexedExtended(type(models.Model)):
                             query = query_part
                         else:
                             query = query | query_part
-        print(query)
+
+        logger.debug(query)
         return query
 
+    def check(cls, **kwargs):
+        errors = super().check(**kwargs)
+        # errors.extend(cls._check_search_fields(**kwargs))
+        errors.append(checks.Error("Oy vey!"))
+        return errors
+
+    def _check_search_fields(cls, **kwargs):
+        errors = []
+        for field in cls.get_search_fields():
+            message = "{model}.search_fields contains non-existent field '{name}'"
+            if not cls._has_field(field.field_name):
+                errors.append(
+                    checks.Warning(
+                        message.format(model=cls.__name__, name=field.model_field_name),
+                        obj=cls,
+                        id="extendedsearch.W004",
+                    )
+                )
+        return errors
 
     @property
-    def search_fields(cls, *args, **kwargs):
+    def search_fields(cls):
         index_fields = []
         for field_name, field_mapping in cls.search_field_mapping.items():
             if field_mapping is None or len(field_mapping) == 0:
-                index_fields += [index.SearchField(field_name)]
-            for field_type in field_mapping:
+                index_fields += [SearchField(field_name)]
+            for field_type in field_mapping["search"]:
                 if field_type == AnalysisType.FILTER:
                     index_fields += [index.FilterField(field_name)]
                 else:
@@ -199,8 +158,9 @@ class MetaIndexedExtended(type(models.Model)):
                     field_name_suffix = analyzer_settings['index_fieldname_suffix'] or ""
 
                     index_fields += [
-                        index.SearchField(
+                        SearchField(
                             f"{field_name}{field_name_suffix}",
+                            model_field_name = field_name,
                             es_extra={
                                 "search_analyzer": analyzer_settings['es_analyzer'],
                             },
@@ -210,13 +170,59 @@ class MetaIndexedExtended(type(models.Model)):
         return index_fields
 
 
-class IndexedExtended(metaclass=MetaIndexedExtended):
-    search_field_mapping = None
+class Indexed(index.Indexed, metaclass=MetaIndexed):
+    def __init__(self, *args, search_field_mapping=None, **kwargs):
+        if search_field_mapping is None:
+            search_field_mapping = {}
 
-    def __init__(self, *args, **kwargs):
-        self.search_field_mapping = kwargs.pop('search_field_mapping', None)
-
-        if self.search_field_mapping is None:
-            self.search_field_mapping = {}
-
+        self.search_field_mapping = search_field_mapping
         return super().__init__(*args, **kwargs)
+
+
+class SearchField(index.SearchField):
+    def __init__(
+        self,
+        field_name,
+        boost=None,
+        partial_match=False,
+        model_field_name=None,
+        **kwargs
+    ):
+        self.model_field_name = model_field_name or field_name
+        super().__init__(field_name, boost=boost, partial_match=partial_match, **kwargs)
+
+    def get_field(self, cls):
+        return cls._meta.get_field(self.model_field_name)
+
+
+class AutocompleteField(index.AutocompleteField):
+    def __init__(
+        self,
+        field_name,
+        model_field_name=None,
+        **kwargs
+    ):
+        self.model_field_name = model_field_name or field_name
+        super().__init__(field_name, **kwargs)
+
+
+class FilterField(index.FilterField):
+    def __init__(
+        self,
+        field_name,
+        model_field_name=None,
+        **kwargs
+    ):
+        self.model_field_name = model_field_name or field_name
+        super().__init__(field_name, **kwargs)
+
+
+class RelatedFields(index.RelatedFields):
+    def __init__(
+        self,
+        field_name,
+        model_field_name=None,
+        **kwargs
+    ):
+        self.model_field_name = model_field_name or field_name
+        super().__init__(field_name, **kwargs)

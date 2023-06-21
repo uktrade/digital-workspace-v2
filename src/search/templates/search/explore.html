@@ -13,13 +13,14 @@
 {% block content %}
 
     <div class="govuk-grid-column-full">
+
         <h1 class="govuk-heading-m">Boost variables</h1>
         <ul>
             {% for boost in boost_variables %}
                 <li>{{ boost.name }}: {{ boost.value }}</li>
             {% endfor %}
         </ul>
-
+        {% comment "" %}
         <h1 class="govuk-heading-m">Subqueries</h1>
             {% for type in sub_queries %}
                 <h2 class="govuk-heading-s">{{ type.name|capfirst }}</h2>
@@ -29,7 +30,7 @@
                     {% endfor %}
                 </ul>
             {% endfor %}
-
+{% endcomment %}
         <h1 class="govuk-heading-m">Test area</h1>
         {% include 'search/partials/search_form.html' %}
 

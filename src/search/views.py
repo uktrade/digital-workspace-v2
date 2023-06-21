@@ -1,4 +1,5 @@
 import logging
+from django.contrib.auth.decorators import user_passes_test
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
@@ -34,6 +35,26 @@ def search(request: HttpRequest, category: str = None) -> HttpResponse:
     return TemplateResponse(request, "search/search.html", context=context)
 
 
+def can_explore_search():
+    allowed_user_emails = [
+        "marcel.kornblum@digital.trade.gov.uk",
+        "samuel.dudley@digital.trade.gov.uk",
+        "cameron.lamb@digital.trade.gov.uk",
+        "luisella.strona@trade.gov.uk",
+        "kristina.iankova@trade.gov.uk",
+        "sajid.arif@trade.gov.uk",
+        "alfie.dennen@trade.gov.uk",
+        "jonathan.anderson2@trade.gov.uk",
+        "elizabeth.ferguson@trade.gov.uk",
+        "naomi.cauchi@trade.gov.uk",
+        "jamil.ahmed@trade.gov.uk",
+        "aleesha.hussain@trade.gov.uk",
+        "ross.miller@digital.trade.gov.uk",
+    ]
+    return user_passes_test(lambda u: u.email in allowed_user_emails)
+
+
+@can_explore_search()
 def explore(request: HttpRequest) -> HttpResponse:
     """
     Administrative view for exploring search options, boosts, etc

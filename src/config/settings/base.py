@@ -345,7 +345,7 @@ SEARCH_EXTENDED = {
         "PAGE_CONTENT": 1.0,
         "PAGE_TOOLS_PHRASE_TITLE_EXPLICIT": 2.0,
         "PAGE_GUIDANCE_PHRASE_TITLE_EXPLICIT": 2.0,
-        "peoplefinder.person.full_name": 4.0,
+        "peoplefinder.person.full_name": 7.0,
         "peoplefinder.person.email": 4.0,
         "peoplefinder.person.role": 3.0,
         "peoplefinder.person.team": 2.0,
@@ -472,7 +472,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stdout"],
-        "level": os.getenv("ROOT_LOG_LEVEL", "DEBUG"),
+        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
     },
     "loggers": {
         "django": {

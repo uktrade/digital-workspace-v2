@@ -15,7 +15,7 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search import index
 from wagtail.search.queryset import SearchableQuerySetMixin
 
-from search_extended.mixins import IndexedExtended
+from search_extended.index import Indexed
 from search_extended.types import AnalysisType, SearchQueryType
 
 
@@ -290,7 +290,7 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
-class Person(IndexedExtended, index.Indexed, models.Model):
+class Person(Indexed, models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -503,49 +503,70 @@ class Person(IndexedExtended, index.Indexed, models.Model):
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
     search_field_mapping = {
-        "full_name": [
-            AnalysisType.TOKENIZED,
-            AnalysisType.EXPLICIT,
-        ],
-        "email": [
-            AnalysisType.KEYWORD,
-        ],
-        "contact_email": [
-            AnalysisType.KEYWORD,
-        ],
-        "primary_phone_number": [
-            AnalysisType.KEYWORD,
-        ],
-        "secondary_phone_number": [
-            AnalysisType.KEYWORD,
-        ],
-        "town_city_or_region": [
-            AnalysisType.TOKENIZED,
-        ],
-        "regional_building": [
-            AnalysisType.TOKENIZED,
-        ],
-        "international_building": [
-            AnalysisType.TOKENIZED,
-        ],
-        "fluent_languages": [
-            AnalysisType.TOKENIZED,
-        ],
-        "search_teams": [
-            AnalysisType.TOKENIZED,
-            AnalysisType.EXPLICIT,
-        ],
+        "full_name": {
+            "search": [
+                AnalysisType.TOKENIZED,
+                AnalysisType.EXPLICIT,
+            ],
+        },
+        "email": {
+            "search": [
+                AnalysisType.KEYWORD,
+            ],
+        },
+        "contact_email": {
+            "search": [
+                AnalysisType.KEYWORD,
+            ],
+        },
+        "primary_phone_number": {
+            "search": [
+                AnalysisType.KEYWORD,
+            ],
+        },
+        "secondary_phone_number": {
+            "search": [
+                AnalysisType.KEYWORD,
+            ],
+        },
+        "town_city_or_region": {
+            "search": [
+                AnalysisType.TOKENIZED,
+            ],
+        },
+        "regional_building": {
+            "search": [
+                AnalysisType.TOKENIZED,
+            ],
+        },
+        "international_building": {
+            "search": [
+                AnalysisType.TOKENIZED,
+            ],
+        },
+        "fluent_languages": {
+            "search": [
+                AnalysisType.TOKENIZED,
+            ],
+        },
+        "search_teams": {
+            "search": [
+                AnalysisType.TOKENIZED,
+                AnalysisType.EXPLICIT,
+            ],
+        },
+
+
+
         # "roles": {
-        #     "analysis": [
+        #     "search": [
         #         AnalysisType.TOKENIZED,
         #         AnalysisType.EXPLICIT,
         #     ],
-        #     "queries": [
-        #         SearchQueryType.PHRASE,
-        #         SearchQueryType.QUERY_AND,
-        #         SearchQueryType.QUERY_OR,
-        #     ]
         # },
+
+
+
         # "key_skills": {
         #     "analysis": [
         #         AnalysisType.TOKENIZED,

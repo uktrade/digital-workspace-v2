@@ -7,9 +7,7 @@ env = environ.Env()
 env.read_env()
 
 DEFAULTS = {
-    "BOOST_VARIABLES": {
-
-    },
+    "BOOST_VARIABLES": {},
     "ANALYZERS": {
         "TOKENIZED": {
             "es_analyzer": "snowball",
@@ -34,33 +32,38 @@ DEFAULTS = {
 }
 
 
-class SearchExtendedSettings:
+class NotFoundInSettings(Exception):
+    pass
 
+
+class SearchExtendedSettings:
     def __getattr__(self, attr):
         # Check if set in ENV
-        # setting_value = self._get_from_env(attr)
-        # if setting_value:
-        #     return setting_value
-
-        # Check if present in user settings
-        setting_value = self._get_from_django_settings(attr)
-        if setting_value:
+        try:
+            setting_value = self._get_from_env(attr)
             return setting_value
+        except NotFoundInSettings:
 
-        # Check if present in defaults
-        default_value = self._get_from_defaults(attr)
-        if default_value:
-            return default_value
+            # Check if present in user settings
+            try:
+                setting_value = self._get_from_django_settings(attr)
+                return setting_value
+            except NotFoundInSettings:
 
-        raise AttributeError(f"No value set for SEARCH_EXTENDED['{attr}']")
+                # Check if present in defaults
+                try:
+                    default_value = self._get_from_defaults(attr)
+                    return default_value
+                except NotFoundInSettings:
+                    raise AttributeError(f"No value set for SEARCH_EXTENDED['{attr}']")
 
     def _get_from_env(self, attr, key=None):
         setting_name = "SEARCH_EXTENDED_" + attr
-        print(f">>>>>>>> {attr} <<<<<<<<<<<<< {key}")
         setting_value = env(setting_name, default=None)
-        print(setting_value)
-        if setting_value is not None and key is not None:
-            print("WWWWTTTTTTTTTFFFFFFFFF")
+        if setting_value is None:
+            raise NotFoundInSettings()
+
+        if key is not None:
             return getattr(setting_value, key, None)
         return setting_value
 
@@ -70,11 +73,14 @@ class SearchExtendedSettings:
             if key is not None:
                 return getattr(django_settings[attr], key, None)
             return django_settings[attr]
-        return None
+        raise NotFoundInSettings()
 
     def _get_from_defaults(self, attr, key=None):
         default_value = DEFAULTS.get(attr, None)
-        if default_value is not None and attr in DEFAULTS:
+        if default_value is None:
+            raise NotFoundInSettings()
+
+        if attr in DEFAULTS:
             if key is not None:
                 return getattr(default_value, key, None)
             return default_value
@@ -86,21 +92,24 @@ class SearchExtendedSettings:
         """
         attr = "BOOST_VARIABLES"
         # Check if set in ENV
-        setting_value = self._get_from_env(attr, boost_key)
-        if setting_value:
-            return setting_value
+        try:
+            setting_value = self._get_from_env(attr, boost_key)
+        except NotFoundInSettings:
 
-        # Check if present in user settings
-        setting_value = self._get_from_django_settings(attr, boost_key)
-        if setting_value:
-            return setting_value
+            # Check if present in user settings
+            try:
+                setting_value = self._get_from_django_settings(attr, boost_key)
+            except NotFoundInSettings:
 
-        # Check if present in defaults
-        default_value = self._get_from_defaults(attr, boost_key)
-        if default_value:
-            return default_value
+                # Check if present in defaults
+                try:
+                    setting_value = self._get_from_defaults(attr, boost_key)
+                except NotFoundInSettings:
+                    setting_value = 1.0
+        if setting_value is None:
+            setting_value = 1.0
 
-        return 1.0
+        return setting_value
 
 
 search_extended_settings = SearchExtendedSettings()
