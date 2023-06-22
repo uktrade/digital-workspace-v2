@@ -12,10 +12,11 @@ from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
-from wagtail.search import index
+from wagtail.search.index import AutocompleteField, FilterField, Indexed, RelatedFields, SearchField
 from wagtail.search.queryset import SearchableQuerySetMixin
 
-from search_extended.index import Indexed
+from search_extended.index import RenamedFieldMixin
+from search_extended.managers import IndexedField, ModelIndexManager
 from search_extended.types import AnalysisType, SearchQueryType
 
 
@@ -281,6 +282,9 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
             ),
         )
 
+    def get_search_query(self, query_str):
+        return PersonIndexManager.get_search_query(query_str, self.model)
+
 
 def person_photo_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/{filename}"
@@ -288,6 +292,36 @@ def person_photo_path(instance, filename):
 
 def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
+
+
+class PersonIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField("full_name", tokenized=True, explicit=True),
+        IndexedField("email", keyword=True),
+        IndexedField("contact_email", keyword=True),
+        IndexedField("primary_phone_number", keyword=True),
+        IndexedField("secondary_phone_number", keyword=True),
+
+        # @TODO figure out RelatedFields
+        # IndexedField("roles", tokenized=True, explicit=True),
+        # IndexedField("key_skills", tokenized=True, explicit=True),
+        # IndexedField("learning_interests", tokenized=True,),
+        # IndexedField("additional_roles", tokenized=True, explicit=True),
+        # IndexedField("networks", tokenized=True, explicit=True, filter=True),
+
+        IndexedField("town_city_or_region", tokenized=True),
+        IndexedField("regional_building", tokenized=True),
+        IndexedField("international_building", tokenized=True),
+        IndexedField("fluent_languages", tokenized=True),
+        IndexedField("search_teams", tokenized=True, explicit=True),
+        IndexedField("has_photo", filter=True, proximity=True),
+        IndexedField("profile_completion_amount", filter=True, proximity=True),
+        IndexedField("is_active", filter=True),
+        IndexedField("professions", filter=True),
+        IndexedField("grade", filter=True),
+        IndexedField("networks", filter=True),
+        IndexedField("do_not_work_for_dit", filter=True),
+    ]
 
 
 class Person(Indexed, models.Model):
@@ -502,321 +536,7 @@ class Person(Indexed, models.Model):
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
-    search_field_mapping = {
-        "full_name": {
-            "search": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-        },
-        "email": {
-            "search": [
-                AnalysisType.KEYWORD,
-            ],
-        },
-        "contact_email": {
-            "search": [
-                AnalysisType.KEYWORD,
-            ],
-        },
-        "primary_phone_number": {
-            "search": [
-                AnalysisType.KEYWORD,
-            ],
-        },
-        "secondary_phone_number": {
-            "search": [
-                AnalysisType.KEYWORD,
-            ],
-        },
-        "town_city_or_region": {
-            "search": [
-                AnalysisType.TOKENIZED,
-            ],
-        },
-        "regional_building": {
-            "search": [
-                AnalysisType.TOKENIZED,
-            ],
-        },
-        "international_building": {
-            "search": [
-                AnalysisType.TOKENIZED,
-            ],
-        },
-        "fluent_languages": {
-            "search": [
-                AnalysisType.TOKENIZED,
-            ],
-        },
-        "search_teams": {
-            "search": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-        },
-
-
-
-        # "roles": {
-        #     "search": [
-        #         AnalysisType.TOKENIZED,
-        #         AnalysisType.EXPLICIT,
-        #     ],
-        # },
-
-
-
-        # "key_skills": {
-        #     "analysis": [
-        #         AnalysisType.TOKENIZED,
-        #         AnalysisType.EXPLICIT,
-        #     ],
-        #     "queries": [
-        #         SearchQueryType.PHRASE,
-        #         SearchQueryType.QUERY_AND,
-        #         SearchQueryType.QUERY_OR,
-        #     ]
-        # },
-        # "learning_interests": {
-        #     "analysis": [
-        #         AnalysisType.TOKENIZED,
-        #     ],
-        #     "queries": [
-        #         SearchQueryType.PHRASE,
-        #         SearchQueryType.QUERY_AND,
-        #         SearchQueryType.QUERY_OR,
-        #     ]
-        # },
-        # "additional_roles": {
-        #     "analysis": [
-        #         AnalysisType.TOKENIZED,
-        #         AnalysisType.EXPLICIT,
-        #     ],
-        #     "queries": [
-        #         SearchQueryType.PHRASE,
-        #         SearchQueryType.QUERY_AND,
-        #         SearchQueryType.QUERY_OR,
-        #     ]
-        # },
-        # "networks": {
-        #     "analysis": [
-        #         AnalysisType.TOKENIZED,
-        #         AnalysisType.EXPLICIT,
-        #         AnalysisType.FILTER,
-        #     ],
-        #     "queries": [
-        #         SearchQueryType.PHRASE,
-        #         SearchQueryType.QUERY_AND,
-        #         SearchQueryType.QUERY_OR,
-        #     ]
-        # },
-        # "profile_completion_amount": {
-        #     "analysis": [
-        #         AnalysisType.PROXIMITY,
-        #         AnalysisType.FILTER,
-        #     ],
-        # },
-        # "has_photo": {
-        #     "analysis": [
-        #         AnalysisType.PROXIMITY,
-        #         AnalysisType.FILTER,
-        #     ],
-        # },
-        # "is_active": {
-        #     "analysis": [
-        #         AnalysisType.FILTER,
-        #     ],
-        # },
-        # "professions": {
-        #     "analysis": [
-        #         AnalysisType.FILTER,
-        #     ],
-        # },
-        # "grade": {
-        #     "analysis": [
-        #         AnalysisType.FILTER,
-        #     ],
-        # },
-        # "do_not_work_for_dit": {
-        #     "analysis": [
-        #         AnalysisType.FILTER,
-        #     ],
-        # },
-    }
-
-    # search_fields = [
-    #     index.SearchField(
-    #         "full_name",
-    #         es_extra={
-    #             "search_analyzer": "snowball",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "full_name_explicit",
-    #         es_extra={
-    #             "search_analyzer": "simple",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "email",
-    #         es_extra={
-    #             "search_analyzer": "keyword",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "contact_email",
-    #         es_extra={
-    #             "search_analyzer": "keyword",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "primary_phone_number",
-    #         es_extra={
-    #             "search_analyzer": "keyword",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "secondary_phone_number",
-    #         es_extra={
-    #             "search_analyzer": "keyword",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "town_city_or_region",
-    #         es_extra={
-    #             "search_analyzer": "snowball",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "regional_building",
-    #         es_extra={
-    #             "search_analyzer": "snowball",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "international_building",
-    #         es_extra={
-    #             "search_analyzer": "snowball",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "fluent_languages",
-    #         es_extra={
-    #             "search_analyzer": "snowball",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "search_teams",
-    #         es_extra={
-    #             "search_analyzer": "snowball",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "search_teams_explicit",
-    #         es_extra={
-    #             "search_analyzer": "simple",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "profile_completion_amount",
-    #         es_extra={
-    #             "search_analyzer": "simple",
-    #         },
-    #     ),
-    #     index.SearchField(
-    #         "has_photo",
-    #         es_extra={
-    #             "search_analyzer": "simple",
-    #         },
-    #     ),
-    #     index.RelatedFields(
-    #         "roles",
-    #         [
-    #             index.SearchField(
-    #                 "job_title",
-    #                 es_extra={
-    #                     "search_analyzer": "snowball",
-    #                 },
-    #             ),
-    #             index.SearchField(
-    #                 "job_title_explicit",
-    #                 es_extra={
-    #                     "search_analyzer": "simple",
-    #                 },
-    #             )
-    #         ]
-    #     ),
-    #     index.RelatedFields(
-    #         "key_skills",
-    #         [
-    #             index.SearchField(
-    #                 "name",
-    #                 es_extra={
-    #                     "search_analyzer": "snowball",
-    #                 },
-    #             ),
-    #             index.SearchField(
-    #                 "name_explicit",
-    #                 es_extra={
-    #                     "search_analyzer": "simple",
-    #                 },
-    #             )
-    #         ]
-    #     ),
-    #     index.RelatedFields(
-    #         "learning_interests",
-    #         [
-    #             index.SearchField(
-    #                 "name",
-    #                 es_extra={
-    #                     "search_analyzer": "snowball",
-    #                 },
-    #             )
-    #         ]
-    #     ),
-    #     index.RelatedFields(
-    #         "additional_roles",
-    #         [
-    #             index.SearchField(
-    #                 "name",
-    #                 es_extra={
-    #                     "search_analyzer": "snowball",
-    #                 },
-    #             ),
-    #             index.SearchField(
-    #                 "name_explicit",
-    #                 es_extra={
-    #                     "search_analyzer": "simple",
-    #                 },
-    #             )
-    #         ]
-    #     ),
-    #     index.RelatedFields(
-    #         "networks",
-    #         [
-    #             index.SearchField(
-    #                 "name",
-    #                 es_extra={
-    #                     "search_analyzer": "snowball",
-    #                 },
-    #             ),
-    #             index.SearchField(
-    #                 "name_explicit",
-    #                 es_extra={
-    #                     "search_analyzer": "simple",
-    #                 },
-    #             )
-    #         ]
-    #     ),
-    #     index.FilterField("has_photo"),
-    #     index.FilterField("profile_completion_amount"),
-    #     index.FilterField("is_active"),
-    #     index.FilterField("professions"),
-    #     index.FilterField("grade"),
-    #     index.FilterField("networks"),
-    #     index.FilterField("do_not_work_for_dit"),
-    # ]
+    search_fields = PersonIndexManager()
 
     def __str__(self) -> str:
         return self.full_name
@@ -851,10 +571,6 @@ class Person(Indexed, models.Model):
         return f"{self.first_name} {self.last_name}"
 
     @property
-    def full_name_explicit(self):
-        return self.full_name
-
-    @property
     def preferred_email(self) -> str:
         return self.contact_email or self.email
 
@@ -887,10 +603,6 @@ class Person(Indexed, models.Model):
         abbrs = teams.values_list("team__abbreviation", flat=True)
         abbrs_str = " ".join(list([a or "" for a in abbrs]))
         return f"{names_str} {abbrs_str}"
-
-    @property
-    def search_teams_explicit(self):
-        return self.search_teams
 
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
@@ -968,7 +680,7 @@ You can update this description, by [updating your team information](https://wor
 """
 
 
-class Team(index.Indexed, models.Model):
+class Team(Indexed, models.Model):
     class LeadersOrdering(models.TextChoices):
         ALPHABETICAL = "alphabetical", "Alphabetical"
         CUSTOM = "custom", "Custom"
@@ -1009,49 +721,49 @@ class Team(index.Indexed, models.Model):
     objects = TeamQuerySet.as_manager()
 
     search_fields = [
-        index.SearchField(
+        SearchField(
             "name",
             es_extra={
                 "search_analyzer": "snowball",
             },
         ),
-        index.SearchField(
+        SearchField(
             "name_explicit",
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
-        index.SearchField(
+        SearchField(
             "abbreviation",
             es_extra={
                 "search_analyzer": "snowball",  # to cover e.g. "UK DSE" vs "UKDSE"
             },
         ),
-        index.SearchField(
+        SearchField(
             "abbreviation_explicit",
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
-        index.SearchField(
+        SearchField(
             "description",
             es_extra={
                 "search_analyzer": "snowball",
             },
         ),
-        index.SearchField(
+        SearchField(
             "description_explicit",
             es_extra={
                 "search_analyzer": "simple",
             },
         ),
-        index.SearchField(
+        SearchField(
             "roles_in_team",
             es_extra={
                 "search_analyzer": "snowball",
             },
         ),
-        index.SearchField(
+        SearchField(
             "roles_in_team_explicit",
             es_extra={
                 "search_analyzer": "simple",
