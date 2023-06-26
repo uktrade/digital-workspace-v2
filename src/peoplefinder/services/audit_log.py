@@ -131,7 +131,8 @@ def object_repr_diff(old: ObjectRepr, new: ObjectRepr) -> Diff:
     Note that this function only performs a superficial diff.
 
     This function will only diff the top level of the objects and performs a simple `!=`
-    check to see if the values differ. This means that if it comes across 2 lists tha  are not the same, it will simply output that the whole value has changed.
+    check to see if the values differ. This means that if it comes across 2 lists that
+      are not the same, it will simply output that the whole value has changed.
 
     These limitations are not an issue for the purpose of generating audit log diffs.
 

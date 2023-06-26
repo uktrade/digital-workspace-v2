@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                     ("processed_error", "Processed. Page not created, error(s) found."),
                     ("Found virus", "Processed. Found virus."),
                     ("processing", "Processing"),
-                    ("reviewed", "Processed and page created"),
+                    ("processed", "Processed and page created"),
                 ],
                 default="unprocessed",
                 max_length=100,
