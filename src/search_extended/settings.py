@@ -1,5 +1,6 @@
 import environ
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 from typing import Any, Dict
 
@@ -38,33 +39,36 @@ class NotFoundInSettings(Exception):
 
 class SearchExtendedSettings:
     def __getattr__(self, attr):
-        # Check if set in ENV
+        # # Check if set in ENV
+        # try:
+        #     setting_value = self._get_from_env(attr)
+        #     if setting_value is None:
+        #         print("AAARFGGG")
+        #     return setting_value
+        # except NotFoundInSettings:
+
+        # Check if present in user settings
         try:
-            setting_value = self._get_from_env(attr)
+            setting_value = self._get_from_django_settings(attr)
             return setting_value
         except NotFoundInSettings:
 
-            # Check if present in user settings
+            # Check if present in defaults
             try:
-                setting_value = self._get_from_django_settings(attr)
-                return setting_value
+                default_value = self._get_from_defaults(attr)
+                return default_value
             except NotFoundInSettings:
-
-                # Check if present in defaults
-                try:
-                    default_value = self._get_from_defaults(attr)
-                    return default_value
-                except NotFoundInSettings:
-                    raise AttributeError(f"No value set for SEARCH_EXTENDED['{attr}']")
+                raise AttributeError(f"No value set for SEARCH_EXTENDED['{attr}']")
 
     def _get_from_env(self, attr, key=None):
         setting_name = "SEARCH_EXTENDED_" + attr
-        setting_value = env(setting_name, default=None)
-        if setting_value is None:
+        try:
+            setting_value = env(setting_name)
+        except ImproperlyConfigured:
             raise NotFoundInSettings()
 
         if key is not None:
-            return getattr(setting_value, key, None)
+            return getattr(setting_value, key)
         return setting_value
 
     def _get_from_django_settings(self, attr, key=None):
@@ -91,21 +95,21 @@ class SearchExtendedSettings:
         Get the most specifically-defined boost value for the given key
         """
         attr = "BOOST_VARIABLES"
-        # Check if set in ENV
+        # # Check if set in ENV
+        # try:
+        #     setting_value = self._get_from_env(attr, boost_key)
+        # except NotFoundInSettings:
+
+        # Check if present in user settings
         try:
-            setting_value = self._get_from_env(attr, boost_key)
+            setting_value = self._get_from_django_settings(attr, boost_key)
         except NotFoundInSettings:
 
-            # Check if present in user settings
+            # Check if present in defaults
             try:
-                setting_value = self._get_from_django_settings(attr, boost_key)
+                setting_value = self._get_from_defaults(attr, boost_key)
             except NotFoundInSettings:
-
-                # Check if present in defaults
-                try:
-                    setting_value = self._get_from_defaults(attr, boost_key)
-                except NotFoundInSettings:
-                    setting_value = 1.0
+                setting_value = 1.0
         if setting_value is None:
             setting_value = 1.0
 

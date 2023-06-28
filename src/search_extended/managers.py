@@ -2,11 +2,11 @@ import logging
 from django.contrib.contenttypes.models import ContentType
 from django.core import checks
 from django.db import models
-from wagtail.search.index import FilterField, RelatedFields
+from wagtail.search.index import FilterField
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, MATCH_NONE
 
 from search_extended.backends.query import OnlyFields
-from search_extended.index import AutocompleteField, SearchField
+from search_extended.index import AutocompleteField, SearchField, RelatedFields
 from search_extended.settings import search_extended_settings as settings
 from search_extended.types import AnalysisType, SearchQueryType
 
@@ -16,6 +16,13 @@ logger = logging.getLogger(__name__)
 
 
 class QueryBuilder:
+
+    @classmethod
+    def _get_indexed_field_name(cls, model_field_name, analyzer):
+        analyzer_settings = settings.ANALYZERS[analyzer.value]
+        field_name_suffix = analyzer_settings['index_fieldname_suffix'] or ""
+        return f"{model_field_name}{field_name_suffix}"
+
     @classmethod
     def _get_inner_searchquery_for_querytype(
         cls,
@@ -26,6 +33,7 @@ class QueryBuilder:
             case SearchQueryType.PHRASE:
                 query = Phrase(query_str)
             case SearchQueryType.QUERY_AND:
+                # @TODO check the query_str merits and AND ?? - contains multiple words
                 query = PlainText(query_str, operator="and")
             case SearchQueryType.QUERY_OR:
                 query = PlainText(query_str, operator="or")
@@ -92,8 +100,49 @@ class QueryBuilder:
 
         boost = cls._get_boost_for_field_querytype_analysistype(base_field_name, model_class, query_type, analysis_type)
 
-        field_name = base_field_name
+        field_name = cls._get_indexed_field_name(base_field_name, analysis_type)
         return OnlyFields(Boost(query, boost), fields=[field_name])
+
+    @classmethod
+    def _add_to_query(cls, query, query_part):
+        if query is None:
+            return query_part
+        return query | query_part
+
+    @classmethod
+    def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
+        analyzer_settings = settings.ANALYZERS
+        subquery = None
+        if "related_fields" in field_mapping:
+            for related_field_mapping in field_mapping["related_fields"]:
+                # @TODO how to get a Nested Field query reliably?
+                subquery = cls._add_to_query(
+                    subquery,
+                    cls._get_search_query_from_mapping(query_str, model_class, related_field_mapping)
+                )
+
+        if "search" in field_mapping:
+            for analyzer in field_mapping["search"]:
+                print(f"generating queries for {analyzer_settings[analyzer.value]['query_types']}")
+                for query_type in analyzer_settings[analyzer.value]["query_types"]:
+                    subquery = cls._add_to_query(
+                        subquery,
+                        cls._get_searchquery_for_query_field_querytype_analysistype(
+                            query_str,
+                            model_class,
+                            field_mapping["model_field_name"],
+                            SearchQueryType(query_type),
+                            analyzer,
+                        )
+                    )
+        return subquery
+
+        # if "autocomplete" in field_mapping:
+        #     return cls._get_autocomplete_search_fields(field_mapping["model_field_name"], field_mapping["autocomplete"])
+
+        # if "filter" in field_mapping:
+        #     return cls._get_filterable_search_fields(field_mapping["model_field_name"], field_mapping["filter"])
+
 
     @classmethod
     def get_search_query(cls, query_str, model_class, *args, **kwargs):
@@ -101,29 +150,11 @@ class QueryBuilder:
         Uses the field mapping to derive the full nested SearchQuery
         """
         query = None
-        analyzer_settings = settings.ANALYZERS
         for field_mapping in cls.get_mapping():
-            # @TODO - RelatedFields!
-            if "search" in field_mapping:
-                for analyzer in field_mapping["search"]:
-                    for query_type in analyzer_settings[analyzer.value]["query_types"]:
-                        query_part = cls._get_searchquery_for_query_field_querytype_analysistype(
-                            query_str,
-                            model_class,
-                            field_mapping["model_field_name"],
-                            SearchQueryType(query_type),
-                            analyzer,
-                        )
-                        if query is None:
-                            query = query_part
-                        else:
-                            query = query | query_part
-
-            if "autocomplete" in field_mapping:
-                query_part = cls._get_autocomplete_search_fields(field_mapping["model_field_name"], field_mapping["autocomplete"])
-
-            if "filter" in field_mapping:
-                query_part = cls._get_filterable_search_fields(field_mapping["model_field_name"], field_mapping["filter"])
+            query = cls._add_to_query(
+                query,
+                cls._get_search_query_from_mapping(query_str, model_class, field_mapping)
+            )
 
         logger.debug(query)
         return query
@@ -135,12 +166,6 @@ class ModelIndexManager(QueryBuilder):
 
     def __new__(cls):
         return cls.get_search_fields()
-
-    @classmethod
-    def _get_indexed_field_name(cls, model_field_name, analyzer):
-        analyzer_settings = settings.ANALYZERS[analyzer.value]
-        field_name_suffix = analyzer_settings['index_fieldname_suffix'] or ""
-        return f"{model_field_name}{field_name_suffix}"
 
     @classmethod
     def _get_analyzer_name(cls, analyzer_type):
@@ -184,6 +209,41 @@ class ModelIndexManager(QueryBuilder):
         return [FilterField(model_field_name), ]
 
     @classmethod
+    def _get_related_fields(cls, model_field_name, mapping):
+        fields = []
+        for related_field_mapping in mapping:
+            fields += cls._get_search_fields_from_mapping(related_field_mapping)
+        return [RelatedFields(model_field_name, fields), ]
+
+    @classmethod
+    def _get_search_fields_from_mapping(cls, field_mapping):
+        if "related_fields" in field_mapping:
+            return cls._get_related_fields(
+                field_mapping["model_field_name"],
+                field_mapping["related_fields"]
+            )
+
+        if "search" in field_mapping:
+            return cls._get_searchable_search_fields(
+                field_mapping["model_field_name"],
+                field_mapping["search"]
+            )
+
+        if "autocomplete" in field_mapping:
+            return cls._get_autocomplete_search_fields(
+                field_mapping["model_field_name"],
+                field_mapping["autocomplete"]
+            )
+
+        if "filter" in field_mapping:
+            return cls._get_filterable_search_fields(
+                field_mapping["model_field_name"],
+                field_mapping["filter"]
+            )
+
+        return []
+
+    @classmethod
     def get_mapping(self):
         mapping = []
         for field in self.fields:
@@ -194,33 +254,19 @@ class ModelIndexManager(QueryBuilder):
     def get_search_fields(cls):
         index_fields = []
         for field_mapping in cls.get_mapping():
-            # @TODO - RelatedFields!
-            if "search" in field_mapping:
-                index_fields += cls._get_searchable_search_fields(field_mapping["model_field_name"], field_mapping["search"])
-
-            if "autocomplete" in field_mapping:
-                index_fields += cls._get_autocomplete_search_fields(field_mapping["model_field_name"], field_mapping["autocomplete"])
-
-            if "filter" in field_mapping:
-                index_fields += cls._get_filterable_search_fields(field_mapping["model_field_name"], field_mapping["filter"])
+            index_fields += cls._get_search_fields_from_mapping(field_mapping)
         return index_fields
 
 
-class BaseIndexedField:
+class AbstractBaseField:
     def __init__(
         self,
         name,
-        search=False,
-        autocomplete=False,
-        filter=False,
         model_field_name=None,
         **kwargs
     ):
         self.name = kwargs['name'] = name
         self.model_field_name = kwargs['model_field_name'] = model_field_name
-        self.search = kwargs['search'] = search
-        self.autocomplete = kwargs['autocomplete'] = autocomplete
-        self.filter = kwargs['filter'] = filter
         self.kwargs = kwargs
 
     def _get_base_mapping_object(self):
@@ -228,6 +274,29 @@ class BaseIndexedField:
             "name": self.name,
             "model_field_name": self.model_field_name or self.name
         }
+
+    def get_mapping(self):
+        return self._get_base_mapping_object()
+
+    @property
+    def mapping(self):
+        return self.get_mapping()
+
+
+class BaseIndexedField(AbstractBaseField):
+    def __init__(
+        self,
+        *args,
+        search=False,
+        autocomplete=False,
+        filter=False,
+        **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self.search = kwargs['search'] = search
+        self.autocomplete = kwargs['autocomplete'] = autocomplete
+        self.filter = kwargs['filter'] = filter
+        self.kwargs = kwargs
 
     def _get_search_mapping_object(self):
         return {
@@ -245,7 +314,7 @@ class BaseIndexedField:
         }
 
     def get_mapping(self):
-        mapping = self._get_base_mapping_object()
+        mapping = super().get_mapping()
         if self.search:
             mapping = mapping | self._get_search_mapping_object()
         if self.autocomplete:
@@ -253,10 +322,6 @@ class BaseIndexedField:
         if self.filter:
             mapping = mapping | self._get_filter_mapping_object()
         return mapping
-
-    @property
-    def mapping(self):
-        return self.get_mapping()
 
 
 class IndexedField(BaseIndexedField):
@@ -291,3 +356,28 @@ class IndexedField(BaseIndexedField):
         if self.proximity:
             mapping["search"] += [AnalysisType.PROXIMITY]
         return mapping
+
+
+class RelatedIndexedFields(AbstractBaseField):
+    def __init__(
+        self,
+        name,
+        related_fields,
+        *args,
+        **kwargs
+    ):
+        super().__init__(name, *args, **kwargs)
+        self.related_fields = kwargs['related_fields'] = related_fields
+        self.kwargs = kwargs
+
+    def _get_related_mapping_object(self):
+        fields = []
+        for field in self.related_fields:
+            fields += [field.get_mapping()]
+        return {
+            "related_fields": fields,
+        }
+
+    def get_mapping(self):
+        mapping = super().get_mapping()
+        return mapping | self._get_related_mapping_object()

@@ -16,7 +16,7 @@ from wagtail.search.index import AutocompleteField, FilterField, Indexed, Relate
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from search_extended.index import RenamedFieldMixin
-from search_extended.managers import IndexedField, ModelIndexManager
+from search_extended.managers import IndexedField, ModelIndexManager, RelatedIndexedFields
 from search_extended.types import AnalysisType, SearchQueryType
 
 
@@ -61,10 +61,6 @@ class Grade(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    @property
-    def name_explicit(self):
-        return self.name
-
 
 class KeySkill(models.Model):
     class Meta:
@@ -78,10 +74,6 @@ class KeySkill(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self) -> str:
-        return self.name
-
-    @property
-    def name_explicit(self):
         return self.name
 
 
@@ -103,10 +95,6 @@ class LearningInterest(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    @property
-    def name_explicit(self):
-        return self.name
-
 
 class Network(models.Model):
     class Meta:
@@ -120,10 +108,6 @@ class Network(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self) -> str:
-        return self.name
-
-    @property
-    def name_explicit(self):
         return self.name
 
 
@@ -149,10 +133,6 @@ class Profession(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    @property
-    def name_explicit(self):
-        return self.name
-
 
 class AdditionalRole(models.Model):
     class Meta:
@@ -170,10 +150,6 @@ class AdditionalRole(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self) -> str:
-        return self.name
-
-    @property
-    def name_explicit(self):
         return self.name
 
 
@@ -282,7 +258,7 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
             ),
         )
 
-    def get_search_query(self, query_str):
+    def get_search_query(self, query_str):  # @TODO is this the right place for this?
         return PersonIndexManager.get_search_query(query_str, self.model)
 
 
@@ -296,31 +272,40 @@ def person_photo_small_path(instance, filename):
 
 class PersonIndexManager(ModelIndexManager):
     fields = [
+        # IndexedField("full_name", tokenized=True),
         IndexedField("full_name", tokenized=True, explicit=True),
         IndexedField("email", keyword=True),
         IndexedField("contact_email", keyword=True),
         IndexedField("primary_phone_number", keyword=True),
         IndexedField("secondary_phone_number", keyword=True),
-
-        # @TODO figure out RelatedFields
-        # IndexedField("roles", tokenized=True, explicit=True),
-        # IndexedField("key_skills", tokenized=True, explicit=True),
-        # IndexedField("learning_interests", tokenized=True,),
-        # IndexedField("additional_roles", tokenized=True, explicit=True),
-        # IndexedField("networks", tokenized=True, explicit=True, filter=True),
-
+        IndexedField("search_titles", tokenized=True, explicit=True),
+        RelatedIndexedFields("roles", [
+            IndexedField("job_title", tokenized=True, explicit=True),
+        ]),
+        RelatedIndexedFields("key_skills", [
+            IndexedField("name", tokenized=True, explicit=True),
+        ]),
+        RelatedIndexedFields("learning_interests", [
+            IndexedField("name", tokenized=True),
+        ]),
+        RelatedIndexedFields("additional_roles", [
+            IndexedField("name", tokenized=True, explicit=True),
+        ]),
+        RelatedIndexedFields("networks", [
+            IndexedField("name", tokenized=True, explicit=True, filter=True),
+        ]),
         IndexedField("town_city_or_region", tokenized=True),
         IndexedField("regional_building", tokenized=True),
         IndexedField("international_building", tokenized=True),
         IndexedField("fluent_languages", tokenized=True),
         IndexedField("search_teams", tokenized=True, explicit=True),
-        IndexedField("has_photo", filter=True, proximity=True),
-        IndexedField("profile_completion_amount", filter=True, proximity=True),
-        IndexedField("is_active", filter=True),
-        IndexedField("professions", filter=True),
-        IndexedField("grade", filter=True),
-        IndexedField("networks", filter=True),
-        IndexedField("do_not_work_for_dit", filter=True),
+        # IndexedField("has_photo", filter=True, proximity=True),
+        # IndexedField("profile_completion_amount", filter=True, proximity=True),
+        # IndexedField("is_active", filter=True),
+        # IndexedField("professions", filter=True),
+        # IndexedField("grade", filter=True),
+        # IndexedField("networks", filter=True),
+        # IndexedField("do_not_work_for_dit", filter=True),
     ]
 
 
@@ -604,6 +589,10 @@ class Person(Indexed, models.Model):
         abbrs_str = " ".join(list([a or "" for a in abbrs]))
         return f"{names_str} {abbrs_str}"
 
+    @property
+    def search_titles(self):
+        return ", ".join(self.roles.all().values_list("job_title", flat=True))
+
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
 
@@ -673,6 +662,15 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
         )
 
 
+class TeamIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField("name", tokenized=True, explicit=True),
+        IndexedField("abbreviation", tokenized=True, explicit=True),
+        IndexedField("description", tokenized=True, explicit=True),
+        IndexedField("roles_in_team", tokenized=True, explicit=True),
+    ]
+
+
 # markdown
 DEFAULT_TEAM_DESCRIPTION = """Find out who is in the team and their contact details.
 
@@ -719,57 +717,7 @@ class Team(Indexed, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = TeamQuerySet.as_manager()
-
-    search_fields = [
-        SearchField(
-            "name",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        SearchField(
-            "name_explicit",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        SearchField(
-            "abbreviation",
-            es_extra={
-                "search_analyzer": "snowball",  # to cover e.g. "UK DSE" vs "UKDSE"
-            },
-        ),
-        SearchField(
-            "abbreviation_explicit",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        SearchField(
-            "description",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        SearchField(
-            "description_explicit",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        SearchField(
-            "roles_in_team",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        SearchField(
-            "roles_in_team_explicit",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-    ]
+    search_fields = TeamIndexManager()
 
     def __str__(self) -> str:
         return self.short_name
@@ -800,22 +748,6 @@ class Team(Indexed, models.Model):
     @property
     def roles_in_team(self) -> list[str]:
         return list(TeamMember.objects.filter(team=self).values_list("job_title", flat=True))
-
-    @property
-    def name_explicit(self):
-        return self.name
-
-    @property
-    def abbreviation_explicit(self):
-        return self.abbreviation
-
-    @property
-    def description_explicit(self):
-        return self.description
-
-    @property
-    def roles_in_team_explicit(self):
-        return self.roles_in_team
 
 
 class ActiveTeamMemberManager(models.Manager):
@@ -853,10 +785,6 @@ class TeamMember(models.Model):
 
     def __str__(self) -> str:
         return f"{self.team} - {self.person}"
-
-    @property
-    def job_title_explicit(self):
-        return self.job_title
 
 
 class TeamTree(models.Model):

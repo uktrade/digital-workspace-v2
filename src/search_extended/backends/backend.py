@@ -1,6 +1,8 @@
+from wagtail.search.backends.elasticsearch5 import get_model_root
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
+    Elasticsearch7Mapping,
 )
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
 
@@ -105,12 +107,19 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
             return self._join_and_compile_queries(self.query, fields)
 
 
+
+class DebugMapping(Elasticsearch7Mapping):
+    def get_field_column_name(self, field):
+        return super().get_field_column_name(field)
+
+
 class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
     """
     Acting as a placeholder for upstream merges to Wagtail in a separate PR to
     the ExtendedSearchQueryCompiler; this exists to support the new OnlyFields
     SearchQuery
     """
+    mapping_class = DebugMapping
 
     def _compile_query(self, query, field, boost=1.0):
         """
@@ -145,6 +154,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = OnlyFieldSearchQueryCompiler
+    mapping_class = DebugMapping
 
 
 SearchBackend = CustomSearchBackend
