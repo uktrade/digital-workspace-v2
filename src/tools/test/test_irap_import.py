@@ -129,3 +129,37 @@ class ImportIrapTestCase(TestCase):
             ).count(),
             1,
         )
+
+
+    def test_undelete(self):
+        self.populate_table(IrapToolDataImport)
+        self.populate_table(IrapToolData)
+        IrapToolData.objects.update(
+            after_import_status=IrapToolData.AfterImportStatus.REVIEWED
+        )
+        IrapToolData.objects.filter(product_irap_reference_number=FIRST_REFERENCE).update(
+            after_import_status=IrapToolData.AfterImportStatus.DELETED
+        )
+
+        process_import()
+
+        # No record has been deleted
+        self.assertEqual(
+            IrapToolData.objects.all().count(),
+            RECORD_CREATED,
+        )
+        undeleted_objs = IrapToolData.objects.filter(
+                after_import_status=IrapToolData.AfterImportStatus.UNDELETED
+            )
+#         But there is a record marked undeleted
+        self.assertEqual(
+            undeleted_objs.count(),
+            1,
+        )
+
+        self.assertEqual(
+            undeleted_objs.first().product_irap_reference_number,
+            FIRST_REFERENCE,
+        )
+
+
