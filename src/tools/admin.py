@@ -1,4 +1,3 @@
-
 from core.admin import admin_site
 from tools.models import IrapToolData, IrapToolDataImport, Tool
 

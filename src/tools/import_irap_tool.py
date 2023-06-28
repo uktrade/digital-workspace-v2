@@ -44,7 +44,9 @@ def process_import():
             match irap.after_import_status:
                 case IrapToolData.AfterImportStatus.REVIEWED:
                     if changed:
-                        irap.after_import_status = IrapToolData.AfterImportStatus.CHANGED
+                        irap.after_import_status = (
+                            IrapToolData.AfterImportStatus.CHANGED
+                        )
                         irap.previous_fields = changes
 
                 case IrapToolData.AfterImportStatus.DELETED:
@@ -57,16 +59,18 @@ def process_import():
 
     # Mark the deleted records: they exist in the irap table
     # but don't exist in the imported data
-    deleted_iraps = IrapToolData.objects.filter(imported=True)
+    deleted_iraps = IrapToolData.objects.filter(imported=False)
     for deleted_irap in deleted_iraps:
         if Tool.objects.filter(irap_tool=deleted_irap.pk):
             # If this deleted record was used in the tool page,
             # mark it as deleted and let the tool administrator
             # handle the page.
-            IrapToolData.objects.filter(imported=True).update(
-                after_import_status=IrapToolData.AfterImportStatus.DELETED,
-                imported=True,
-            )
+            # deleted_irap.update(
+            #     after_import_status=IrapToolData.AfterImportStatus.DELETED,
+            #     imported=True,
+            # )
+            deleted_irap.after_import_status=IrapToolData.AfterImportStatus.DELETED
+            deleted_irap.imported=True
             deleted_irap.save()
         else:
             # If the deleted record was not used in the tool page,
