@@ -33,8 +33,8 @@ class IrapToolDataAbstract(models.Model):
 
 
 class IrapToolDataImport(IrapToolDataAbstract):
-    # The data from Data Workspace are copied here, and after are
-    # analysed and copied to the tool models.
+    # The data from Data Workspace are copied here,and after are
+    # validated are copied to the tool models.
     # If something goes wrong during the import,
     # the import will be aborted, and the tool data will still be correct
     pass
@@ -62,6 +62,7 @@ class IrapToolData(IrapToolDataAbstract):
     imported = models.BooleanField(default=True)
 
     created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(null=True, blank=True)
     previous_fields = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
 
     def __str__(self):
@@ -88,15 +89,15 @@ class Tool(PageWithTopics):
         max_length=2048,
     )
 
-    # TODO Move it to a util file
-    readonly_widget = forms.TextInput(attrs={"disabled": "true"})
-
     parent_page_types = ["tools.ToolsHome"]
     subpage_types = []  # Should not be able to create children
 
     content_panels = PageWithTopics.content_panels + [
         FieldPanel("redirect_url"),
-        FieldPanel("irap_tool", widget=readonly_widget),
+        FieldPanel(
+            "irap_tool",
+            widget=forms.TextInput(attrs={"disabled": "true"}),
+        ),
     ]
 
     def serve(self, request):
