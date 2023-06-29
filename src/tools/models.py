@@ -9,6 +9,7 @@ from working_at_dit.models import PageWithTopics
 
 
 class IrapToolDataAbstract(models.Model):
+    # This abstract class matches the data imported from Data workspace
     product_irap_reference_number = models.IntegerField(primary_key=True)
     product_name = models.CharField(
         max_length=2048,
@@ -32,10 +33,20 @@ class IrapToolDataAbstract(models.Model):
 
 
 class IrapToolDataImport(IrapToolDataAbstract):
+    # The data from Data Workspace are copied here,and after are
+    # validated are copied to the tool models.
+    # If something goes wrong during the import,
+    # the import will be aborted, and the tool data will still be correct
     pass
 
 
 class IrapToolData(IrapToolDataAbstract):
+    # UNDELETED is used for flagging an irap record that:
+    # was present in import 1
+    # was not present in import 2
+    # was present in import 3
+    # was not reviewed after import 2
+    # very unlikely situation
     class AfterImportStatus(models.TextChoices):
         NEW = "new", "new"
         CHANGED = "changed", "Changed"
@@ -51,6 +62,7 @@ class IrapToolData(IrapToolDataAbstract):
     imported = models.BooleanField(default=True)
 
     created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(null=True, blank=True)
     previous_fields = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
 
     def __str__(self):
@@ -77,15 +89,15 @@ class Tool(PageWithTopics):
         max_length=2048,
     )
 
-    # TODO Move it to a util file
-    readonly_widget = forms.TextInput(attrs={"disabled": "true"})
-
     parent_page_types = ["tools.ToolsHome"]
     subpage_types = []  # Should not be able to create children
 
     content_panels = PageWithTopics.content_panels + [
         FieldPanel("redirect_url"),
-        FieldPanel("irap_tool", widget=readonly_widget),
+        FieldPanel(
+            "irap_tool",
+            widget=forms.TextInput(attrs={"disabled": "true"}),
+        ),
     ]
 
     def serve(self, request):
