@@ -42,8 +42,6 @@ class SearchExtendedSettings:
         # # Check if set in ENV
         # try:
         #     setting_value = self._get_from_env(attr)
-        #     if setting_value is None:
-        #         print("AAARFGGG")
         #     return setting_value
         # except NotFoundInSettings:
 

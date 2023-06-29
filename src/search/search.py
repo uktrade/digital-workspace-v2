@@ -1,13 +1,7 @@
-from django.conf import settings
-from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, MATCH_NONE
-
-
 from content.models import ContentPage
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from tools.models import Tool
-from search_extended.settings import search_extended_settings
-from search_extended.types import AnalysisType, SearchQueryType
 from working_at_dit.models import PoliciesAndGuidanceHome
 
 from typing import Any, Collection, Dict
@@ -85,7 +79,11 @@ class PeopleSearchVector(SearchVector):
         if not self.request.user.has_perm("peoplefinder.delete_person"):
             people = people.active()
 
-        people = people.prefetch_related("key_skills", "additional_roles", "teams")
+        people = people.prefetch_related(
+            "key_skills",
+            "additional_roles",
+            "teams"
+        )
 
         return people
 
@@ -107,7 +105,6 @@ class TeamsSearchVector(SearchVector):
 
 
 class NewAllPagesSearchVector(AllPagesSearchVector):
-
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset().not_pinned(query)
         query = self.page_model.objects.get_search_query(query, *args, **kwargs)
@@ -115,15 +112,15 @@ class NewAllPagesSearchVector(AllPagesSearchVector):
 
 
 class NewGuidanceSearchVector(GuidanceSearchVector):
-    pass
+    ...
 
 
 class NewNewsSearchVector(NewsSearchVector):
-    pass
+    ...
 
 
 class NewToolsSearchVector(ToolsSearchVector):
-    pass
+    ...
 
 
 class NewPeopleSearchVector(PeopleSearchVector):

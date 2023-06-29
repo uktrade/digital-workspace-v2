@@ -4,8 +4,9 @@ from django.conf import settings as dj_settings
 from django.core import checks
 from django.db import models
 from wagtail.search.index import FilterField
-from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, MATCH_NONE
+from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
 
+from search.utils import split_query
 from search_extended.backends.query import OnlyFields
 from search_extended.index import AutocompleteField, SearchField, RelatedFields
 from search_extended.settings import search_extended_settings as settings
@@ -30,12 +31,16 @@ class QueryBuilder:
         query_str: str,
         query_type: SearchQueryType,
     ):
+        query_parts = split_query(query_str)  # @TODO should really do this via wagtail parse_query_string (overridden?)
         match query_type:
             case SearchQueryType.PHRASE:
                 query = Phrase(query_str)
             case SearchQueryType.QUERY_AND:
                 # @TODO check the query_str merits an AND - does it contain multiple words?
-                query = PlainText(query_str, operator="and")
+                if len(query_parts) > 1:
+                    query = PlainText(query_str, operator="and")
+                else:
+                    query = None
             case SearchQueryType.QUERY_OR:
                 query = PlainText(query_str, operator="or")
             case _:
@@ -82,8 +87,6 @@ class QueryBuilder:
         # @TODO SORT THE SETTINGS STUFF OUT!!
         boost_settings = dj_settings.SEARCH_EXTENDED["BOOST_VARIABLES"]
 
-        print(f"BOOSTING {base_field_name}: {query_type_boost}({boost_settings[query_type_boost]}) * {analysis_type_boost}({boost_settings[analysis_type_boost]}) * {field_boost_key}({boost_settings[field_boost_key]})")
-
         return (
             boost_settings[query_type_boost] *
             boost_settings[analysis_type_boost] *
@@ -103,10 +106,20 @@ class QueryBuilder:
             query_str,
             query_type,
         )
+        if query is None:
+            return None
 
-        boost = cls._get_boost_for_field_querytype_analysistype(base_field_name, model_class, query_type, analysis_type)
+        boost = cls._get_boost_for_field_querytype_analysistype(
+            base_field_name,
+            model_class,
+            query_type,
+            analysis_type
+        )
 
-        field_name = cls._get_indexed_field_name(base_field_name, analysis_type)
+        field_name = cls._get_indexed_field_name(
+            base_field_name,
+            analysis_type
+        )
         return OnlyFields(Boost(query, boost), fields=[field_name])
 
     @classmethod
@@ -116,7 +129,12 @@ class QueryBuilder:
         return query | query_part
 
     @classmethod
-    def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
+    def _get_search_query_from_mapping(
+        cls,
+        query_str,
+        model_class,
+        field_mapping
+    ):
         analyzer_settings = settings.ANALYZERS
         subquery = None
         if "related_fields" in field_mapping:
@@ -124,34 +142,38 @@ class QueryBuilder:
                 # @TODO how to get a Nested Field query reliably?
                 subquery = cls._add_to_query(
                     subquery,
-                    cls._get_search_query_from_mapping(query_str, model_class, related_field_mapping)
+                    cls._get_search_query_from_mapping(
+                        query_str,
+                        model_class,
+                        related_field_mapping
+                    )
                 )
 
         if "search" in field_mapping:
             for analyzer in field_mapping["search"]:
-                # print(f"generating queries for {analyzer_settings[analyzer.value]['query_types']}")
                 for query_type in analyzer_settings[analyzer.value]["query_types"]:
-                    subquery = cls._add_to_query(
-                        subquery,
-                        cls._get_searchquery_for_query_field_querytype_analysistype(
+                    query_element = cls._get_searchquery_for_query_field_querytype_analysistype(
                             query_str,
                             model_class,
                             field_mapping["model_field_name"],
                             SearchQueryType(query_type),
                             analyzer,
                         )
-                    )
+                    if query_element is not None:
+                        subquery = cls._add_to_query(
+                            subquery,
+                            query_element,
+                        )
 
         if "autocomplete" in field_mapping:
             # @TODO sort this out!
-            subquery = MATCH_NONE
+            subquery = None
 
         if "filter" in field_mapping:
             # @TODO sort this out!
-            subquery = MATCH_NONE
+            subquery = None
 
         return subquery
-
 
     @classmethod
     def get_search_query(cls, query_str, model_class, *args, **kwargs):
@@ -160,10 +182,16 @@ class QueryBuilder:
         """
         query = None
         for field_mapping in cls.get_mapping():
-            query = cls._add_to_query(
-                query,
-                cls._get_search_query_from_mapping(query_str, model_class, field_mapping)
+            query_elements = cls._get_search_query_from_mapping(
+                query_str,
+                model_class,
+                field_mapping
             )
+            if query_elements is not None:
+                query = cls._add_to_query(
+                    query,
+                    query_elements,
+                )
 
         logger.debug(query)
         return query

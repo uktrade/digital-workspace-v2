@@ -148,7 +148,9 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
             return self._compile_query(query.subquery, field, boost)
 
         else:
-            # Exclude this field from any further downstream compilation
+            # Exclude this field from any further downstream compilation: it
+            # was defined in the search() method but has been excluded from
+            # this part of the tree with an OnlyFields filter
             return self._compile_query(MATCH_NONE, field, boost)
 
 
