@@ -33,7 +33,7 @@ class QueryBuilder:
             case SearchQueryType.PHRASE:
                 query = Phrase(query_str)
             case SearchQueryType.QUERY_AND:
-                # @TODO check the query_str merits and AND ?? - contains multiple words
+                # @TODO check the query_str merits an AND - does it contain multiple words?
                 query = PlainText(query_str, operator="and")
             case SearchQueryType.QUERY_OR:
                 query = PlainText(query_str, operator="or")
@@ -123,7 +123,7 @@ class QueryBuilder:
 
         if "search" in field_mapping:
             for analyzer in field_mapping["search"]:
-                print(f"generating queries for {analyzer_settings[analyzer.value]['query_types']}")
+                # print(f"generating queries for {analyzer_settings[analyzer.value]['query_types']}")
                 for query_type in analyzer_settings[analyzer.value]["query_types"]:
                     subquery = cls._add_to_query(
                         subquery,
@@ -135,13 +135,16 @@ class QueryBuilder:
                             analyzer,
                         )
                     )
+
+        if "autocomplete" in field_mapping:
+            # @TODO sort this out!
+            subquery = MATCH_NONE
+
+        if "filter" in field_mapping:
+            # @TODO sort this out!
+            subquery = MATCH_NONE
+
         return subquery
-
-        # if "autocomplete" in field_mapping:
-        #     return cls._get_autocomplete_search_fields(field_mapping["model_field_name"], field_mapping["autocomplete"])
-
-        # if "filter" in field_mapping:
-        #     return cls._get_filterable_search_fields(field_mapping["model_field_name"], field_mapping["filter"])
 
 
     @classmethod

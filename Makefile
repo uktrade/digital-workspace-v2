@@ -130,7 +130,7 @@ bash:
 	$(wagtail) bash
 
 psql:
-	PGPASSWORD='postgres' psql -h localhost -U postgres
+	PGPASSWORD='postgres' psql -h localhost -U postgres digital_workspace
 
 check-requirements:
 	$(wagtail-no-deps) poetry export --without-hashes | cmp -- requirements.txt -
@@ -166,6 +166,7 @@ first-use:
 	make wagtail-groups
 	make pf-groups
 	make superuser
+	make index
 	docker-compose up
 	make local-setup
 

@@ -299,13 +299,13 @@ class PersonIndexManager(ModelIndexManager):
         IndexedField("international_building", tokenized=True),
         IndexedField("fluent_languages", tokenized=True),
         IndexedField("search_teams", tokenized=True, explicit=True),
-        # IndexedField("has_photo", filter=True, proximity=True),
-        # IndexedField("profile_completion_amount", filter=True, proximity=True),
-        # IndexedField("is_active", filter=True),
-        # IndexedField("professions", filter=True),
-        # IndexedField("grade", filter=True),
-        # IndexedField("networks", filter=True),
-        # IndexedField("do_not_work_for_dit", filter=True),
+        IndexedField("has_photo", filter=True, proximity=True),
+        IndexedField("profile_completion_amount", filter=True, proximity=True),
+        IndexedField("is_active", filter=True),
+        IndexedField("professions", filter=True),
+        IndexedField("grade", filter=True),
+        IndexedField("networks", filter=True),
+        IndexedField("do_not_work_for_dit", filter=True),
     ]
 
 
