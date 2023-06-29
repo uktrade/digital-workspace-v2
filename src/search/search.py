@@ -53,12 +53,6 @@ class PagesSearchVector(SearchVector):
         return self.get_queryset().pinned(query)
 
     def search(self, query, *args, **kwargs):
-        query, args, kwargs = self.page_model.get_all_searchqueries(
-            query,
-            *args,
-            operator="and",
-            **kwargs
-        )
         queryset = self.get_queryset().not_pinned(query)
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
@@ -96,11 +90,6 @@ class PeopleSearchVector(SearchVector):
         return people
 
     def search(self, query, *args, **kwargs):
-        query, args, kwargs = Person.get_all_searchqueries(
-            query,
-            *args,
-            **kwargs
-        )
         queryset = self.get_queryset()
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
@@ -118,87 +107,11 @@ class TeamsSearchVector(SearchVector):
 
 
 class NewAllPagesSearchVector(AllPagesSearchVector):
-    pass
-    # field_mapping = {
-    #     "search_title": {
-    #         "boost_key": "PAGE_TITLE",
-    #         "analysis": [
-    #             AnalysisType.TOKENIZED,
-    #             AnalysisType.EXPLICIT,
-    #         ],
-    #         "queries": [
-    #             SearchQueryType.PHRASE,
-    #             SearchQueryType.QUERY_AND,
-    #             SearchQueryType.QUERY_OR
-    #         ]
-    #     },
-    #     "search_headings": {
-    #         "boost_key": "PAGE_HEADINGS",
-    #         "analysis": [
-    #             AnalysisType.TOKENIZED,
-    #             AnalysisType.EXPLICIT,
-    #         ],
-    #         "queries": [
-    #             SearchQueryType.PHRASE,
-    #             SearchQueryType.QUERY_AND,
-    #             SearchQueryType.QUERY_OR
-    #         ]
-    #     },
-    #     "search_excerpt": {
-    #         "boost_key": "PAGE_EXCERPT",
-    #         "analysis": [
-    #             AnalysisType.TOKENIZED,
-    #             AnalysisType.EXPLICIT,
-    #         ],
-    #         "queries": [
-    #             SearchQueryType.PHRASE,
-    #             SearchQueryType.QUERY_AND,
-    #             SearchQueryType.QUERY_OR
-    #         ]
-    #     },
-    #     "search_content": {
-    #         "boost_key": "PAGE_CONTENT",
-    #         "analysis": [
-    #             AnalysisType.TOKENIZED,
-    #             AnalysisType.EXPLICIT,
-    #         ],
-    #         "queries": [
-    #             SearchQueryType.PHRASE,
-    #             SearchQueryType.QUERY_AND,
-    #             SearchQueryType.QUERY_OR
-    #         ]
-    #     },
-    # }
 
-    # def build_query(
-    #     self,
-    #     query: str,
-    #     *args,
-    #     **kwargs
-    # ):
-    #     search_queries = self.get_all_searchqueries(query)
-    #     fuzzy = Boost(
-    #         Fuzzy(query),
-    #         search_extended_settings.get_boost_value("SEARCH_FUZZY")
-    #     )
-    #     # Fuzzy requires partials off
-    #     kwargs['partial_match'] = False
-
-    #     return (
-    #         search_queries |
-    #         fuzzy
-    #     ), args, kwargs
-
-    # def search(self, query, *args, **kwargs):
-    #     query, args, kwargs = self.build_query(
-    #         query,
-    #         *args,
-    #         operator="and",
-    #         **kwargs
-    #     )
-    #     # @TODO needs working on
-    #     queryset = self.get_queryset()  # removed  pinning / unpinning
-    #     return self._wagtail_search(queryset, query, *args, **kwargs)
+    def search(self, query, *args, **kwargs):
+        queryset = self.get_queryset().not_pinned(query)
+        query = self.page_model.objects.get_search_query(query, *args, **kwargs)
+        return self._wagtail_search(queryset, query, *args, **kwargs)
 
 
 class NewGuidanceSearchVector(GuidanceSearchVector):
@@ -214,7 +127,6 @@ class NewToolsSearchVector(ToolsSearchVector):
 
 
 class NewPeopleSearchVector(PeopleSearchVector):
-
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
         query = Person.objects.get_search_query(query, *args, **kwargs)
@@ -222,72 +134,7 @@ class NewPeopleSearchVector(PeopleSearchVector):
 
 
 class NewTeamsSearchVector(TeamsSearchVector):
-    field_mapping = {
-        "search_title": {
-            "boost_key": "PAGE_TITLE",
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR
-            ]
-        },
-        "search_headings": {
-            "boost_key": "PAGE_HEADINGS",
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR
-            ]
-        },
-        "search_excerpt": {
-            "boost_key": "PAGE_EXCERPT",
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR
-            ]
-        },
-        "search_content": {
-            "boost_key": "PAGE_CONTENT",
-            "analysis": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-            ],
-            "queries": [
-                SearchQueryType.PHRASE,
-                SearchQueryType.QUERY_AND,
-                SearchQueryType.QUERY_OR
-            ]
-        },
-    }
-
-    def build_query(
-        self,
-        query: str,
-        *args,
-        **kwargs
-    ):
-        search_queries = self.get_all_searchqueries(query)
-        fuzzy = Boost(
-            Fuzzy(query),
-            search_extended_settings.get_boost_value("SEARCH_FUZZY")
-        )
-        # Fuzzy requires partials off
-        kwargs['partial_match'] = False
-
-        return (
-            search_queries |
-            fuzzy
-        ), args, kwargs
+    def search(self, query, *args, **kwargs):
+        queryset = self.get_queryset()
+        query = Team.objects.get_search_query(query, *args, **kwargs)
+        return self._wagtail_search(queryset, query, *args, **kwargs)

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class SearchQueryType(Enum):
     PHRASE = "PHRASE"
     QUERY_AND = "QUERY_AND"

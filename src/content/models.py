@@ -19,6 +19,7 @@ from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
 from search.utils import split_query
+from search_extended.managers import IndexedField, ModelIndexManager, RelatedIndexedFields
 from user.models import User as UserModel
 
 
@@ -98,6 +99,19 @@ class ContentPageQuerySet(PageQuerySet):
 
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
+
+    def get_search_query(self, query_str):  # @TODO is this the right place for this?
+        return ContentPageIndexManager.get_search_query(query_str, self.model)
+
+
+class ContentPageIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField("search_title", tokenized=True, explicit=True),
+        IndexedField("search_headings", tokenized=True, explicit=True),
+        IndexedField("search_content", tokenized=True, explicit=True),
+        IndexedField("excerpt", tokenized=True, explicit=True),
+        IndexedField("is_creatable", filter=True),
+    ]
 
 
 class ContentPage(BasePage):
@@ -187,74 +201,7 @@ class ContentPage(BasePage):
         null=True,
     )
 
-    @property
-    def search_title_explicit(self):
-        return self.search_title
-
-    @property
-    def search_headings_explicit(self):
-        return self.search_headings
-
-    @property
-    def search_excerpt_explicit(self):
-        return self.excerpt
-
-    @property
-    def search_content_explicit(self):
-        return self.search_content
-
-    search_fields = Page.search_fields + [
-        index.SearchField(
-            "search_title",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        index.SearchField(
-            "search_headings",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        index.SearchField(
-            "search_content",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        index.SearchField(
-            "excerpt",
-            es_extra={
-                "search_analyzer": "simple",
-            },
-        ),
-        index.SearchField(
-            "search_title_explicit",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.SearchField(
-            "search_headings_explicit",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.SearchField(
-            "search_content_explicit",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        index.SearchField(
-            "search_excerpt_explicit",
-            es_extra={
-                "search_analyzer": "snowball",
-            },
-        ),
-        # index.FilterField("slug"),
-        index.FilterField("is_creatable"),
-    ]
+    search_fields = ContentPageIndexManager(BasePage.search_fields)
 
     def _generate_search_field_content(self):
         body_string = str(self.body)

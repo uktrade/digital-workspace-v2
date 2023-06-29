@@ -1,5 +1,6 @@
 import logging
 from django.contrib.contenttypes.models import ContentType
+from django.conf import settings as dj_settings
 from django.core import checks
 from django.db import models
 from wagtail.search.index import FilterField
@@ -78,10 +79,15 @@ class QueryBuilder:
         content_type = ContentType.objects.get_for_model(model_class)
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{base_field_name}"
 
+        # @TODO SORT THE SETTINGS STUFF OUT!!
+        boost_settings = dj_settings.SEARCH_EXTENDED["BOOST_VARIABLES"]
+
+        print(f"BOOSTING {base_field_name}: {query_type_boost}({boost_settings[query_type_boost]}) * {analysis_type_boost}({boost_settings[analysis_type_boost]}) * {field_boost_key}({boost_settings[field_boost_key]})")
+
         return (
-            settings.get_boost_value(query_type_boost) *
-            settings.get_boost_value(analysis_type_boost) *
-            settings.get_boost_value(field_boost_key)
+            boost_settings[query_type_boost] *
+            boost_settings[analysis_type_boost] *
+            boost_settings[field_boost_key]
         )
 
     @classmethod
@@ -163,11 +169,11 @@ class QueryBuilder:
         return query
 
 
-
 class ModelIndexManager(QueryBuilder):
     fields = []
 
-    def __new__(cls):
+    def __new__(cls, inherited_search_fields=None):
+        cls.inherited_search_fields = inherited_search_fields
         return cls.get_search_fields()
 
     @classmethod
@@ -256,6 +262,9 @@ class ModelIndexManager(QueryBuilder):
     @classmethod
     def get_search_fields(cls):
         index_fields = []
+        if cls.inherited_search_fields is not None:
+            index_fields = cls.inherited_search_fields
+
         for field_mapping in cls.get_mapping():
             index_fields += cls._get_search_fields_from_mapping(field_mapping)
         return index_fields

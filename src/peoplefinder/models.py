@@ -12,12 +12,10 @@ from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
-from wagtail.search.index import AutocompleteField, FilterField, Indexed, RelatedFields, SearchField
+from wagtail.search.index import Indexed
 from wagtail.search.queryset import SearchableQuerySetMixin
 
-from search_extended.index import RenamedFieldMixin
 from search_extended.managers import IndexedField, ModelIndexManager, RelatedIndexedFields
-from search_extended.types import AnalysisType, SearchQueryType
 
 
 # United Kingdom
@@ -272,7 +270,6 @@ def person_photo_small_path(instance, filename):
 
 class PersonIndexManager(ModelIndexManager):
     fields = [
-        # IndexedField("full_name", tokenized=True),
         IndexedField("full_name", tokenized=True, explicit=True),
         IndexedField("email", keyword=True),
         IndexedField("contact_email", keyword=True),
@@ -660,6 +657,9 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
                 ordering="-children__depth",
             )
         )
+
+    def get_search_query(self, query_str):  # @TODO is this the right place for this?
+        return TeamIndexManager.get_search_query(query_str, self.model)
 
 
 class TeamIndexManager(ModelIndexManager):
