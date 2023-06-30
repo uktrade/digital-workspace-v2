@@ -125,5 +125,5 @@ def truncate_words_and_chars(text, words, chars, truncate=None):
     Truncates the given text to the _minimum_ value of both words and chars,
     at a word ending
     """
-    result = Truncator(text).chars(chars, '')
+    result = Truncator(text).chars(chars, "")
     return Truncator(result).words(words, truncate)

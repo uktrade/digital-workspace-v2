@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             sql="UPDATE content_contentpage AS cp SET search_excerpt = (SELECT excerpt FROM working_at_dit_pagewithtopics AS wadpwt WHERE wadpwt.contentpage_ptr_id = cp.basepage_ptr_id);",
-            reverse_sql="UPDATE working_at_dit_pagewithtopics AS wadpwt SET excerpt = (SELECT search_excerpt FROM content_contentpage AS cp WHERE wadpwt.contentpage_ptr_id = cp.basepage_ptr_id);"
+            reverse_sql="UPDATE working_at_dit_pagewithtopics AS wadpwt SET excerpt = (SELECT search_excerpt FROM content_contentpage AS cp WHERE wadpwt.contentpage_ptr_id = cp.basepage_ptr_id);",
         ),
         migrations.RemoveField(
             model_name="pagewithtopics",

@@ -313,10 +313,7 @@ WAGTAILSEARCH_BACKENDS = {
                 },
                 "analysis": {
                     "filter": {
-                        "english_snowball": {
-                            "type": "snowball",
-                            "language": "English"
-                        },
+                        "english_snowball": {"type": "snowball", "language": "English"},
                     },
                     "analyzer": {
                         "snowball": {
@@ -351,7 +348,7 @@ SEARCH_EXTENDED = {
         "peoplefinder.person.primary_phone_number": 4.0,
         "peoplefinder.person.secondary_phone_number": 4.0,
         "peoplefinder.person.role": 3.0,
-        "peoplefinder.person.job_title": 3.0,   # is from a relatedfield
+        "peoplefinder.person.job_title": 3.0,  # is from a relatedfield
         "peoplefinder.person.search_titles": 3.0,
         "peoplefinder.person.team": 2.0,
         "peoplefinder.person.search_teams": 2.0,

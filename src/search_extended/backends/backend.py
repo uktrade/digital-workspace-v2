@@ -1,4 +1,3 @@
-from wagtail.search.backends.elasticsearch5 import get_model_root
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
@@ -7,7 +6,6 @@ from wagtail.search.backends.elasticsearch7 import (
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
 
 from search_extended.backends.query import OnlyFields
-from search_extended.settings import search_extended_settings
 
 
 class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
@@ -36,8 +34,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         remapped_fields = []
         searchable_fields = {
-            f.field_name: f
-            for f in self.queryset.model.get_searchable_search_fields()
+            f.field_name: f for f in self.queryset.model.get_searchable_search_fields()
         }
         for field_name in fields:
             if field_name in searchable_fields:
@@ -60,7 +57,6 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         if len(fields) == 1:
             return self._compile_query(query, fields[0], boost)
         else:
-
             field_queries = []
             for field in fields:
                 field_queries.append(self._compile_query(query, field, boost))
@@ -77,10 +73,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         if self.remapped_fields:
             fields = self.remapped_fields
         elif self.partial_match:
-            fields = [
-                self.mapping.all_field_name,
-                self.mapping.edgengrams_field_name
-            ]
+            fields = [self.mapping.all_field_name, self.mapping.edgengrams_field_name]
         else:
             fields = [self.mapping.all_field_name]
 
@@ -107,7 +100,6 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
             return self._join_and_compile_queries(self.query, fields)
 
 
-
 class DebugMapping(Elasticsearch7Mapping):
     def get_field_column_name(self, field):
         return super().get_field_column_name(field)
@@ -119,6 +111,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
     the ExtendedSearchQueryCompiler; this exists to support the new OnlyFields
     SearchQuery
     """
+
     mapping_class = DebugMapping
 
     def _compile_query(self, query, field, boost=1.0):
@@ -137,9 +130,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
             # limit the downstream fields compiled to those explicitly defined
             # in the OnlyFields query
             return self._join_and_compile_queries(
-                query.subquery,
-                remapped_fields,
-                boost
+                query.subquery, remapped_fields, boost
             )
 
         elif field in remapped_fields:

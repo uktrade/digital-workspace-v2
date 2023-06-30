@@ -35,9 +35,10 @@ def search_category(context, *, category, limit=None, show_heading=False):
     search_results_paginator = Paginator(search_results, main_search.PAGE_SIZE)
     search_results = search_results_paginator.page(page)
 
-    result_type_display, result_type_display_plural = main_search._get_result_type_displays(
-        category
-    )
+    (
+        result_type_display,
+        result_type_display_plural,
+    ) = main_search._get_result_type_displays(category)
     if count != 1:
         result_type_display = result_type_display_plural
 
@@ -58,4 +59,4 @@ def search_category(context, *, category, limit=None, show_heading=False):
 
 @register.simple_tag
 def score(obj):
-    return round(getattr(obj, '_score', '-'), 2)
+    return round(getattr(obj, "_score", "-"), 2)

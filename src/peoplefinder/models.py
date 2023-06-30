@@ -15,7 +15,11 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.index import Indexed
 from wagtail.search.queryset import SearchableQuerySetMixin
 
-from search_extended.managers import IndexedField, ModelIndexManager, RelatedIndexedFields
+from search_extended.managers import (
+    IndexedField,
+    ModelIndexManager,
+    RelatedIndexedFields,
+)
 
 
 # United Kingdom
@@ -276,21 +280,36 @@ class PersonIndexManager(ModelIndexManager):
         IndexedField("primary_phone_number", keyword=True),
         IndexedField("secondary_phone_number", keyword=True),
         IndexedField("search_titles", tokenized=True, explicit=True),
-        RelatedIndexedFields("roles", [
-            IndexedField("job_title", tokenized=True, explicit=True),
-        ]),
-        RelatedIndexedFields("key_skills", [
-            IndexedField("name", tokenized=True, explicit=True),
-        ]),
-        RelatedIndexedFields("learning_interests", [
-            IndexedField("name", tokenized=True),
-        ]),
-        RelatedIndexedFields("additional_roles", [
-            IndexedField("name", tokenized=True, explicit=True),
-        ]),
-        RelatedIndexedFields("networks", [
-            IndexedField("name", tokenized=True, explicit=True, filter=True),
-        ]),
+        RelatedIndexedFields(
+            "roles",
+            [
+                IndexedField("job_title", tokenized=True, explicit=True),
+            ],
+        ),
+        RelatedIndexedFields(
+            "key_skills",
+            [
+                IndexedField("name", tokenized=True, explicit=True),
+            ],
+        ),
+        RelatedIndexedFields(
+            "learning_interests",
+            [
+                IndexedField("name", tokenized=True),
+            ],
+        ),
+        RelatedIndexedFields(
+            "additional_roles",
+            [
+                IndexedField("name", tokenized=True, explicit=True),
+            ],
+        ),
+        RelatedIndexedFields(
+            "networks",
+            [
+                IndexedField("name", tokenized=True, explicit=True, filter=True),
+            ],
+        ),
         IndexedField("town_city_or_region", tokenized=True),
         IndexedField("regional_building", tokenized=True),
         IndexedField("international_building", tokenized=True),
@@ -567,7 +586,9 @@ class Person(Indexed, models.Model):
         """
         A little hacky, because completion is defined on the QS - used for search indexing
         """
-        profile_with_completion = Person.objects.with_profile_completion().get(pk=self.pk)
+        profile_with_completion = Person.objects.with_profile_completion().get(
+            pk=self.pk
+        )
         return profile_with_completion.profile_completion
 
     @property
@@ -747,7 +768,9 @@ class Team(Indexed, models.Model):
 
     @property
     def roles_in_team(self) -> list[str]:
-        return list(TeamMember.objects.filter(team=self).values_list("job_title", flat=True))
+        return list(
+            TeamMember.objects.filter(team=self).values_list("job_title", flat=True)
+        )
 
 
 class ActiveTeamMemberManager(models.Manager):

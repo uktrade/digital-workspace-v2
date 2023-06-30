@@ -141,7 +141,6 @@ class PageTopic(models.Model):
 
 
 class PageWithTopics(ContentPage):
-
     @property
     def search_topics(self):
         return " ".join(self.topics.all().values_list("topic__title", flat=True))

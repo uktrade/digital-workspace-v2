@@ -2,7 +2,6 @@ import environ
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from typing import Any, Dict
 
 env = environ.Env()
 env.read_env()
@@ -13,12 +12,20 @@ DEFAULTS = {
         "TOKENIZED": {
             "es_analyzer": "snowball",
             "index_fieldname_suffix": None,
-            "query_types": ["PHRASE", "QUERY_AND", "QUERY_OR",],
+            "query_types": [
+                "PHRASE",
+                "QUERY_AND",
+                "QUERY_OR",
+            ],
         },
         "EXPLICIT": {
             "es_analyzer": "simple",
             "index_fieldname_suffix": "_explicit",
-            "query_types": ["PHRASE", "QUERY_AND", "QUERY_OR",],
+            "query_types": [
+                "PHRASE",
+                "QUERY_AND",
+                "QUERY_OR",
+            ],
         },
         "KEYWORD": {
             "es_analyzer": "keyword",
@@ -29,7 +36,7 @@ DEFAULTS = {
             "es_analyzer": "simple",
             "index_fieldname_suffix": "_proximity",
         },
-    }
+    },
 }
 
 
@@ -50,7 +57,6 @@ class SearchExtendedSettings:
             setting_value = self._get_from_django_settings(attr)
             return setting_value
         except NotFoundInSettings:
-
             # Check if present in defaults
             try:
                 default_value = self._get_from_defaults(attr)
@@ -102,7 +108,6 @@ class SearchExtendedSettings:
         try:
             setting_value = self._get_from_django_settings(attr, boost_key)
         except NotFoundInSettings:
-
             # Check if present in defaults
             try:
                 setting_value = self._get_from_defaults(attr, boost_key)

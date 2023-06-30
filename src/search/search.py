@@ -4,11 +4,8 @@ from peoplefinder.models import Person, Team
 from tools.models import Tool
 from working_at_dit.models import PoliciesAndGuidanceHome
 
-from typing import Any, Collection, Dict
 
-
-class SearchVector():
-
+class SearchVector:
     def __init__(self, request, annotate_score=False):
         self.request = request
         self.annotate_score = annotate_score
@@ -18,11 +15,7 @@ class SearchVector():
         Allows e.g. score annotation without polluting overriden search method
         """
         if self.annotate_score:
-            return (
-                queryset
-                .search(query, *args, **kwargs)
-                .annotate_score("_score")
-            )
+            return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
         return queryset.search(query, *args, **kwargs)
 
@@ -79,11 +72,7 @@ class PeopleSearchVector(SearchVector):
         if not self.request.user.has_perm("peoplefinder.delete_person"):
             people = people.active()
 
-        people = people.prefetch_related(
-            "key_skills",
-            "additional_roles",
-            "teams"
-        )
+        people = people.prefetch_related("key_skills", "additional_roles", "teams")
 
         return people
 

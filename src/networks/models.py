@@ -1,5 +1,4 @@
 from django import forms
-from django.db import models
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.admin.panels import FieldPanel
 from wagtail.search import index

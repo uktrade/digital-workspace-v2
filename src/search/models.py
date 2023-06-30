@@ -27,6 +27,6 @@ class SearchSettings(models.Model):
         default_permissions = ()
 
         permissions = (
-            ('change_boost', 'Edit boost settings for search components'),
-            ('view_explore', 'View the global search explore page'),
+            ("change_boost", "Edit boost settings for search components"),
+            ("view_explore", "View the global search explore page"),
         )

@@ -1,7 +1,6 @@
 from typing import Optional
 
 from bs4 import BeautifulSoup
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -12,14 +11,16 @@ from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, PageQuerySet
-from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
 from search.utils import split_query
-from search_extended.managers import IndexedField, ModelIndexManager, RelatedIndexedFields
+from search_extended.managers import (
+    IndexedField,
+    ModelIndexManager,
+)
 from user.models import User as UserModel
 
 
@@ -160,7 +161,7 @@ class ContentPage(BasePage):
         max_length=700,
         blank=True,
         null=True,
-        help_text="A summary of the page to be shown in search results."
+        help_text="A summary of the page to be shown in search results.",
     )
 
     pinned_phrases = models.CharField(
@@ -208,14 +209,15 @@ class ContentPage(BasePage):
         soup = BeautifulSoup(body_string, "html.parser")
         self.search_title = self.title
         self.search_headings = " ".join(
-            [tag.string or '' for tag in soup.find_all(
-                ['h2', 'h3', 'h4', 'h5']
-            )]
+            [tag.string or "" for tag in soup.find_all(["h2", "h3", "h4", "h5"])]
         )
         self.search_content = " ".join(
-            [tag.string or '' for tag in soup.find_all(
-                ['p', 'a', 'li', 'figcaption', 'blockquote', 'dd', 'dt']
-            )]
+            [
+                tag.string or ""
+                for tag in soup.find_all(
+                    ["p", "a", "li", "figcaption", "blockquote", "dd", "dt"]
+                )
+            ]
         )
 
     #

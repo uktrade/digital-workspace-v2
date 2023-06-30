@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             sql="UPDATE content_contentpage AS cp SET search_excerpt = (SELECT excerpt FROM networks_network AS nn WHERE nn.contentpage_ptr_id = cp.basepage_ptr_id);",
-            reverse_sql="UPDATE networks_network AS nn SET excerpt = (SELECT search_excerpt FROM content_contentpage AS cp WHERE nn.contentpage_ptr_id = cp.basepage_ptr_id);"
+            reverse_sql="UPDATE networks_network AS nn SET excerpt = (SELECT search_excerpt FROM content_contentpage AS cp WHERE nn.contentpage_ptr_id = cp.basepage_ptr_id);",
         ),
         migrations.RemoveField(
             model_name="network",

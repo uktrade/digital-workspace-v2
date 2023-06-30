@@ -14,38 +14,42 @@
     {% if perms.search.view_explore %}
         <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-m">Configure</h1>
-            <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+            <div class="govuk-accordion"
+                 data-module="govuk-accordion"
+                 id="accordion-default">
                 <div class="govuk-accordion__section">
                     <div class="govuk-accordion__section-header">
                         <h2 class="govuk-accordion__section-heading">
-                        <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-                            <h3 class="govuk-heading-s">Boost variables</h3>
-                        </span>
+                            <span class="govuk-accordion__section-button"
+                                  id="accordion-default-heading-1">
+                                <h3 class="govuk-heading-s">Boost variables</h3>
+                            </span>
                         </h2>
                     </div>
-                    <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+                    <div id="accordion-default-content-1"
+                         class="govuk-accordion__section-content"
+                         aria-labelledby="accordion-default-heading-1">
                         <ul>
-                            {% for boost in boost_variables %}
-                                <li>{{ boost.name }}: {{ boost.value }}</li>
-                            {% endfor %}
+                            {% for boost in boost_variables %}<li>{{ boost.name }}: {{ boost.value }}</li>{% endfor %}
                         </ul>
                     </div>
                 </div>
                 <div class="govuk-accordion__section">
                     <div class="govuk-accordion__section-header">
                         <h2 class="govuk-accordion__section-heading">
-                        <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-                            <h3 class="govuk-heading-s">Subqueries</h3>
-                        </span>
+                            <span class="govuk-accordion__section-button"
+                                  id="accordion-default-heading-2">
+                                <h3 class="govuk-heading-s">Subqueries</h3>
+                            </span>
                         </h2>
                     </div>
-                    <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
+                    <div id="accordion-default-content-1"
+                         class="govuk-accordion__section-content"
+                         aria-labelledby="accordion-default-heading-2">
                         {% for type in sub_queries %}
                             <h2 class="govuk-heading-s">{{ type.name|capfirst }}</h2>
                             <ul>
-                                {% for query in type.queries %}
-                                    <li>{{ query.id }}: {{ query.value }}</li>
-                                {% endfor %}
+                                {% for query in type.queries %}<li>{{ query.id }}: {{ query.value }}</li>{% endfor %}
                             </ul>
                         {% endfor %}
                     </div>
@@ -55,7 +59,9 @@
             <h1 class="govuk-heading-m">Evaluate</h1>
             {% include 'search/partials/search_form.html' %}
 
-            <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+            <div class="govuk-accordion"
+                 data-module="govuk-accordion"
+                 id="accordion-default">
                 {% search_category category='all_pages' show_heading=True %}
                 {% search_category category='people' show_heading=True %}
                 {% search_category category='teams' show_heading=True %}
