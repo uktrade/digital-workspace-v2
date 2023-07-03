@@ -28,7 +28,7 @@ PROFILE_COMPLETION_FIELDS = [
     "email",
     "first_name",
     "last_name",
-    "roles",  # .all().exists()
+    "roles",  # Related objects
 ]
 
 
