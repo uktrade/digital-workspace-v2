@@ -96,20 +96,23 @@ class ImportIrapTestCase(TestCase):
         )
         # Remove one record from the import table
         product_irap_reference_number_to_be_deleted = FIRST_REFERENCE
-        IrapToolDataImport.objects.get(product_irap_reference_number=product_irap_reference_number_to_be_deleted).delete()
+        IrapToolDataImport.objects.get(
+            product_irap_reference_number=product_irap_reference_number_to_be_deleted
+        ).delete()
         self.assertEqual(
             IrapToolDataImport.objects.all().count(),
             RECORD_CREATED - 1,
         )
         # Create a pge referencing the tool to be deleted
-        obj_to_be_deleted = IrapToolData.objects.get(product_irap_reference_number=product_irap_reference_number_to_be_deleted)
+        obj_to_be_deleted = IrapToolData.objects.get(
+            product_irap_reference_number=product_irap_reference_number_to_be_deleted
+        )
         Tool.objects.create(
             irap_tool=obj_to_be_deleted,
             depth=1,
             title="Title",
             path="Path",
         )
-
 
         self.assertEqual(
             IrapToolData.objects.all().count(),
@@ -122,7 +125,7 @@ class ImportIrapTestCase(TestCase):
             IrapToolData.objects.all().count(),
             RECORD_CREATED,
         )
-#         But there is a record marked deleted
+        #         But there is a record marked deleted
         self.assertEqual(
             IrapToolData.objects.filter(
                 after_import_status=IrapToolData.AfterImportStatus.DELETED
@@ -130,16 +133,15 @@ class ImportIrapTestCase(TestCase):
             1,
         )
 
-
     def test_undelete(self):
         self.populate_table(IrapToolDataImport)
         self.populate_table(IrapToolData)
         IrapToolData.objects.update(
             after_import_status=IrapToolData.AfterImportStatus.REVIEWED
         )
-        IrapToolData.objects.filter(product_irap_reference_number=FIRST_REFERENCE).update(
-            after_import_status=IrapToolData.AfterImportStatus.DELETED
-        )
+        IrapToolData.objects.filter(
+            product_irap_reference_number=FIRST_REFERENCE
+        ).update(after_import_status=IrapToolData.AfterImportStatus.DELETED)
 
         process_import()
 
@@ -149,9 +151,9 @@ class ImportIrapTestCase(TestCase):
             RECORD_CREATED,
         )
         undeleted_objs = IrapToolData.objects.filter(
-                after_import_status=IrapToolData.AfterImportStatus.UNDELETED
-            )
-#         But there is a record marked undeleted
+            after_import_status=IrapToolData.AfterImportStatus.UNDELETED
+        )
+        #         But there is a record marked undeleted
         self.assertEqual(
             undeleted_objs.count(),
             1,
@@ -161,5 +163,3 @@ class ImportIrapTestCase(TestCase):
             undeleted_objs.first().product_irap_reference_number,
             FIRST_REFERENCE,
         )
-
-

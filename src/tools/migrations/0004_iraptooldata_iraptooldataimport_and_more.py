@@ -48,7 +48,6 @@ class Migration(migrations.Migration):
                 ("imported", models.BooleanField(default=True)),
                 ("created_date", models.DateTimeField(auto_now_add=True)),
                 ("updated_date", models.DateTimeField(blank=True, null=True)),
-
                 (
                     "previous_fields",
                     models.JSONField(

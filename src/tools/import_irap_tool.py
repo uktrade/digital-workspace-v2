@@ -26,9 +26,6 @@ def update_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[bool, 
     return changed, previous_values
 
 
-
-
-
 def process_import():
     """To be called after the irap data has been imported
     successfully from Data Workspace.
@@ -71,7 +68,9 @@ def process_import():
                     # if so, mark it as unchanged
                     older_values = irap.previous_fields
                     if older_values == changes:
-                        irap.after_import_status = IrapToolData.AfterImportStatus.REVIEWED
+                        irap.after_import_status = (
+                            IrapToolData.AfterImportStatus.REVIEWED
+                        )
                         irap.previous_fields = None
         irap.imported = True
         irap.save()
@@ -88,8 +87,8 @@ def process_import():
             #     after_import_status=IrapToolData.AfterImportStatus.DELETED,
             #     imported=True,
             # )
-            deleted_irap.after_import_status=IrapToolData.AfterImportStatus.DELETED
-            deleted_irap.imported=True
+            deleted_irap.after_import_status = IrapToolData.AfterImportStatus.DELETED
+            deleted_irap.imported = True
             deleted_irap.save()
         else:
             # If the deleted record was not used in the tool page,
