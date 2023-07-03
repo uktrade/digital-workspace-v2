@@ -14,12 +14,9 @@ class Indexed(index.Indexed):
         errors = []
         for field in cls.get_search_fields():
             message = "{model}.search_fields contains non-existent field '{name}'"
-            if (
-                not cls._has_field(field.field_name) and
-                (
-                    "kwargs" in field.__dir__() and
-                    not cls._has_field(field.kwargs["model_field_name"])
-                )
+            if not cls._has_field(field.field_name) and (
+                "kwargs" in field.__dir__()
+                and not cls._has_field(field.kwargs["model_field_name"])
             ):
                 errors.append(
                     checks.Warning(
