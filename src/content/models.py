@@ -17,10 +17,8 @@ from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
 from search.utils import split_query
-from search_extended.managers import (
-    IndexedField,
-    ModelIndexManager,
-)
+from extended_search.fields import IndexedField
+from extended_search.managers import ModelIndexManager
 from user.models import User as UserModel
 
 

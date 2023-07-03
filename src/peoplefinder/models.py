@@ -15,11 +15,8 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.index import Indexed
 from wagtail.search.queryset import SearchableQuerySetMixin
 
-from search_extended.managers import (
-    IndexedField,
-    ModelIndexManager,
-    RelatedIndexedFields,
-)
+from extended_search.fields import IndexedField, RelatedIndexedFields
+from extended_search.managers import ModelIndexManager
 
 
 # United Kingdom

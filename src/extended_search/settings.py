@@ -119,4 +119,4 @@ class SearchExtendedSettings:
         return setting_value
 
 
-search_extended_settings = SearchExtendedSettings()
+extended_search_settings = SearchExtendedSettings()

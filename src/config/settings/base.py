@@ -97,7 +97,7 @@ LOCAL_APPS = [
     "core",
     "home",
     "content",
-    "search_extended",
+    "extended_search",
     "search",
     "news",
     "working_at_dit",
@@ -299,7 +299,7 @@ ELASTICSEARCH_DSL = {
 
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "search_extended.backends.backend.CustomSearchBackend",
+        "BACKEND": "extended_search.backends.backend.CustomSearchBackend",
         "AUTO_UPDATE": True,
         "ATOMIC_REBUILD": True,
         "URLS": [OPENSEARCH_URL],
