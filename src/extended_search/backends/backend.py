@@ -1,4 +1,3 @@
-import inspect
 
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
@@ -137,9 +136,11 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
 #     return model
 
+
 class DebugMapping(Elasticsearch7Mapping):
     def get_field_column_name(self, field):
         return super().get_field_column_name(field)
+
 
 #     def get_field_mapping(self, field):
 #         if isinstance(field, RelatedFields):

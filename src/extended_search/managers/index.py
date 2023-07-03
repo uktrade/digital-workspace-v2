@@ -44,9 +44,7 @@ class ModelIndexManager(QueryBuilder):
 
     @classmethod
     def _get_autocomplete_search_fields(cls, model_field_name):
-        return[
-            AutocompleteField(model_field_name)
-        ]
+        return [AutocompleteField(model_field_name)]
 
     @classmethod
     def _get_filterable_search_fields(cls, model_field_name):

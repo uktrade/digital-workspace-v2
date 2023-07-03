@@ -1,6 +1,5 @@
 import logging
 
-from extended_search.settings import extended_search_settings as settings
 from extended_search.types import AnalysisType
 
 
