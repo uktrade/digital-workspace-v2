@@ -18,7 +18,7 @@ from content.utils import manage_excluded, manage_pinned, truncate_words_and_cha
 from core.utils import set_seen_cookie_banner
 from search.utils import split_query
 from extended_search.fields import IndexedField
-from extended_search.managers import ModelIndexManager
+from extended_search.managers.index import ModelIndexManager
 from user.models import User as UserModel
 
 

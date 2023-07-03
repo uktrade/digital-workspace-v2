@@ -16,7 +16,7 @@ from wagtail.search.index import Indexed
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from extended_search.fields import IndexedField, RelatedIndexedFields
-from extended_search.managers import ModelIndexManager
+from extended_search.managers.index import ModelIndexManager
 
 
 # United Kingdom
