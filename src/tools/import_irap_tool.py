@@ -1,7 +1,7 @@
 from tools.models import IrapToolData, IrapToolDataImport, Tool
 
 
-def update_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[bool, []]:
+def update_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[bool, {}, {}]:
     # Copies all the existing values to the previous values list,
     # so they can be displayed to the tool admin when the changes
     # are reviewed
@@ -10,21 +10,23 @@ def update_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[bool, 
 
     new_fields = new._meta.get_fields()
     changed = False
-    previous_values = []
+    previous_values = {}
     for field in new_fields:
         new_value = getattr(new, field.name)
         old_value = getattr(old, field.name)
         if old_value != new_value:
             changed = True
             setattr(old, field.name, new_value)
-        previous_values.append(
-            {
-                "field_name": field.name,
-                "previous_value": old_value,
-            }
-        )
+        previous_values[field.name] = old_value
+
     return changed, previous_values
 
+def are_field_identical(import_obj:IrapToolDataImport, old_values: dict) -> bool:
+
+    for key in old_values.keys():
+        if getattr(import_obj, key) != old_values[key]:
+            return False
+    return True
 
 def process_import():
     """To be called after the irap data has been imported
@@ -67,7 +69,7 @@ def process_import():
                     # check that the record has not been restored to what it was
                     # if so, mark it as unchanged
                     older_values = irap.previous_fields
-                    if older_values == changes:
+                    if are_field_identical(imported_irap, older_values):
                         irap.after_import_status = (
                             IrapToolData.AfterImportStatus.REVIEWED
                         )
