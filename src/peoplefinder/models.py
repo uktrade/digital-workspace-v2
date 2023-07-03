@@ -15,9 +15,21 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search import index
 from wagtail.search.queryset import SearchableQuerySetMixin
 
-
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
+
+
+PROFILE_COMPLETION_FIELDS = [
+    "country",
+    "town_city_or_region",
+    "primary_phone_number",
+    "manager",
+    "photo",
+    "email",
+    "first_name",
+    "last_name",
+    "roles",  # .all().exists()
+]
 
 
 class WorkdayQuerySet(models.QuerySet):
@@ -176,23 +188,31 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
     def with_profile_completion(self):
         # Each statement in this list should return 0 or 1 to represent whether that
         # field is complete.
-        fields = [
-            Case(When(country__isnull=False, then=1), default=0),
-            Case(When(town_city_or_region__isnull=False, then=1), default=0),
-            Case(When(primary_phone_number__isnull=False, then=1), default=0),
-            Case(When(manager__isnull=False, then=1), default=0),
-            Case(When(photo__isnull=False, then=1), default=0),
-            Case(When(email__isnull=False, then=1), default=0),
-            Case(When(first_name__isnull=False, then=1), default=0),
-            Case(When(last_name__isnull=False, then=1), default=0),
-            Case(
-                When(
-                    Exists(TeamMember.objects.filter(person_id=OuterRef("pk"))),
-                    then=1,
+        fields = []
+        for profile_completion_field in PROFILE_COMPLETION_FIELDS:
+            if profile_completion_field == "roles":
+                fields.append(
+                    Case(
+                        When(
+                            Exists(TeamMember.objects.filter(person_id=OuterRef("pk"))),
+                            then=1,
+                        ),
+                        default=0,
+                    ),
+                )
+                continue
+
+            fields.append(
+                Case(
+                    When(
+                        **{
+                            f"{profile_completion_field}__isnull": False,
+                            "then": 1,
+                        }
+                    ),
+                    default=0,
                 ),
-                default=0,
-            ),
-        ]
+            )
 
         # `sum(fields)` is the same as doing `fields[0] + field[1] + field[2]`.
         # This will create a SQL query which will add up the completed fields.
