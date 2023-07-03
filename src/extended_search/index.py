@@ -1,6 +1,8 @@
 import inspect
 import logging
 
+from abc import ABC, abstractmethod
+
 from django.core import checks
 from wagtail.search import index
 
@@ -30,7 +32,36 @@ class Indexed(index.Indexed):
     search_fields = []
 
 
-class RenamedFieldMixin:
+class AbstractSearchField(ABC):
+    """
+    Defines the abstractions on wagtailsearch.index.BaseField that the mixin
+    requires
+    """
+    kwargs = {}
+
+    @abstractmethod
+    def get_field(self, cls):
+        ...
+
+    @abstractmethod
+    def get_definition_model(self, cls):
+        ...
+
+    @abstractmethod
+    def get_value(self, obj):
+        ...
+
+
+class RenamedFieldMixin(AbstractSearchField):
+    """
+    Add this Mixin to wagtailsearch.index.BaseField and descendent classes to
+    support renaming the field. It does this by adding a "model_field_name"
+    kwarg that defaults to the field name.
+
+    This is useful if you want your model and index fields to have a many to
+    one relationship - e.g. if you are analyzing the same field multiple times.
+    """
+
     def get_field(self, cls):
         if "kwargs" in self.__dict__ and "model_field_name" in self.kwargs:
             return cls._meta.get_field(self.kwargs["model_field_name"])
