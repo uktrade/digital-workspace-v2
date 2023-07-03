@@ -32,9 +32,7 @@ class GetPeoplefinderProfileMiddleware:
 
         if request.user.is_authenticated:
             try:
-                profile = Person.objects.with_profile_completion().get(
-                    user=request.user
-                )
+                profile = Person.objects.get(user=request.user)
             except Person.DoesNotExist:
                 profile = None
 

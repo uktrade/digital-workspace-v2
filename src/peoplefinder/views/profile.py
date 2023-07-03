@@ -29,7 +29,6 @@ from peoplefinder.services.team import TeamService
 
 from .base import HtmxFormView, PeoplefinderView
 
-
 User = get_user_model()
 
 
@@ -61,7 +60,7 @@ class ProfileDetailView(ProfileView, DetailView):
     slug_url_kwarg = "profile_slug"
 
     def get_queryset(self):
-        return super().get_queryset().with_profile_completion()
+        return super().get_queryset()
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
