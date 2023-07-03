@@ -21,12 +21,13 @@ def update_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[bool, 
 
     return changed, previous_values
 
-def are_field_identical(import_obj:IrapToolDataImport, old_values: dict) -> bool:
 
+def are_field_identical(import_obj: IrapToolDataImport, old_values: dict) -> bool:
     for key in old_values.keys():
         if getattr(import_obj, key) != old_values[key]:
             return False
     return True
+
 
 def process_import():
     """To be called after the irap data has been imported

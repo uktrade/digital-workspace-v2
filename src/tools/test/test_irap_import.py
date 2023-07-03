@@ -164,7 +164,6 @@ class ImportIrapTestCase(TestCase):
             FIRST_REFERENCE,
         )
 
-
     def test_record_reset(self):
         # Only create one record in both tables
         IrapToolDataImport.objects.create(
@@ -176,23 +175,18 @@ class ImportIrapTestCase(TestCase):
             product_irap_reference_number=FIRST_REFERENCE,
             product_name="Product name original",
             functionality="Functionality",
-            after_import_status=IrapToolData.AfterImportStatus.REVIEWED
+            after_import_status=IrapToolData.AfterImportStatus.REVIEWED,
         )
         process_import()
-        irap_tool_data = IrapToolData.objects.get(product_irap_reference_number=FIRST_REFERENCE)
+        irap_tool_data = IrapToolData.objects.get(
+            product_irap_reference_number=FIRST_REFERENCE
+        )
 
         self.assertEqual(
-            irap_tool_data.after_import_status,
-            IrapToolData.AfterImportStatus.CHANGED
+            irap_tool_data.after_import_status, IrapToolData.AfterImportStatus.CHANGED
         )
-        self.assertEqual(
-            irap_tool_data.product_name,
-            "Product name changes"
-        )
-        self.assertNotEqual(
-            irap_tool_data.previous_fields,
-            None
-        )
+        self.assertEqual(irap_tool_data.product_name, "Product name changes")
+        self.assertNotEqual(irap_tool_data.previous_fields, None)
         IrapToolDataImport.objects.filter(
             product_irap_reference_number=FIRST_REFERENCE,
         ).update(
@@ -200,19 +194,16 @@ class ImportIrapTestCase(TestCase):
         )
 
         process_import()
-        irap_tool_data = IrapToolData.objects.get(product_irap_reference_number=FIRST_REFERENCE)
-
-        self.assertEqual(
-            irap_tool_data.product_name,
-            "Product name original"
+        irap_tool_data = IrapToolData.objects.get(
+            product_irap_reference_number=FIRST_REFERENCE
         )
+
+        self.assertEqual(irap_tool_data.product_name, "Product name original")
         # self.assertEqual(
         #     irap_tool_data.previous_fields,
         #     None
         # )
 
         self.assertEqual(
-            irap_tool_data.after_import_status,
-            IrapToolData.AfterImportStatus.REVIEWED
+            irap_tool_data.after_import_status, IrapToolData.AfterImportStatus.REVIEWED
         )
-
