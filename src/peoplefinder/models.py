@@ -12,9 +12,10 @@ from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
-from wagtail.search.index import Indexed
+# from wagtail.search.index import Indexed
 from wagtail.search.queryset import SearchableQuerySetMixin
 
+from extended_search.index import Indexed
 from extended_search.fields import IndexedField, RelatedIndexedFields
 from extended_search.managers.index import ModelIndexManager
 

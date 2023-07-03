@@ -1,9 +1,36 @@
 import inspect
 import logging
+
+from django.core import checks
 from wagtail.search import index
 
 
 logger = logging.getLogger(__name__)
+
+
+class Indexed(index.Indexed):
+    @classmethod
+    def _check_search_fields(cls, **kwargs):
+        errors = []
+        for field in cls.get_search_fields():
+            message = "{model}.search_fields contains non-existent field '{name}'"
+            if (
+                not cls._has_field(field.field_name) and
+                (
+                    "kwargs" in field.__dir__() and
+                    not cls._has_field(field.kwargs["model_field_name"])
+                )
+            ):
+                errors.append(
+                    checks.Warning(
+                        message.format(model=cls.__name__, name=field.field_name),
+                        obj=cls,
+                        id="wagtailsearch.W004",
+                    )
+                )
+        return errors
+
+    search_fields = []
 
 
 class RenamedFieldMixin:
