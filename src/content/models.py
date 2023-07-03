@@ -200,7 +200,7 @@ class ContentPage(BasePage):
         null=True,
     )
 
-    search_fields = ContentPageIndexManager(BasePage.search_fields)
+    search_fields = BasePage.search_fields + ContentPageIndexManager()
 
     def _generate_search_field_content(self):
         body_string = str(self.body)

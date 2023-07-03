@@ -1,3 +1,5 @@
+import inspect
+
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
@@ -5,12 +7,12 @@ from wagtail.search.backends.elasticsearch7 import (
 )
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
 
-from wagtail.search.index import (
-    AutocompleteField,
-    FilterField,
-    RelatedFields,
-    SearchField,
-)
+# from wagtail.search.index import (
+#     AutocompleteField,
+#     FilterField,
+#     RelatedFields,
+#     SearchField,
+# )
 
 from extended_search.backends.query import OnlyFields
 
@@ -112,60 +114,110 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 #
 
 
-def get_model_root(model):
-    """
-    This function finds the root model for any given model. The root model is
-    the highest concrete model that it descends from. If the model doesn't
-    descend from another concrete model then the model is it's own root model so
-    it is returned.
+# def get_model_root(model):
+#     """
+#     This function finds the root model for any given model. The root model is
+#     the highest concrete model that it descends from. If the model doesn't
+#     descend from another concrete model then the model is it's own root model so
+#     it is returned.
 
-    Examples:
-    >>> get_model_root(wagtailcore.Page)
-    wagtailcore.Page
+#     Examples:
+#     >>> get_model_root(wagtailcore.Page)
+#     wagtailcore.Page
 
-    >>> get_model_root(myapp.HomePage)
-    wagtailcore.Page
+#     >>> get_model_root(myapp.HomePage)
+#     wagtailcore.Page
 
-    >>> get_model_root(wagtailimages.Image)
-    wagtailimages.Image
-    """
-    if model._meta.parents:
-        parent_model = list(model._meta.parents.items())[0][0]
-        return get_model_root(parent_model)
+#     >>> get_model_root(wagtailimages.Image)
+#     wagtailimages.Image
+#     """
+#     if model._meta.parents:
+#         parent_model = list(model._meta.parents.items())[0][0]
+#         return get_model_root(parent_model)
 
-    return model
+#     return model
 
 class DebugMapping(Elasticsearch7Mapping):
-    # def get_field_column_name(self, field):
-    #     return super().get_field_column_name(field)
-
     def get_field_column_name(self, field):
-        # Fields in derived models get prefixed with their model name, fields
-        # in the root model don't get prefixed at all
-        # This is to prevent mapping clashes in cases where two page types have
-        # a field with the same name but a different type.
-        root_model = get_model_root(self.model)
-        definition_model = field.get_definition_model(self.model)
-        print(f">>>>>>>>> {root_model} <> {field} <> {definition_model} <<<<<<<<<<")
+        return super().get_field_column_name(field)
 
-        if definition_model != root_model:
-            prefix = (
-                definition_model._meta.app_label.lower()
-                + "_"
-                + definition_model.__name__.lower()
-                + "__"
-            )
-        else:
-            prefix = ""
+#     def get_field_mapping(self, field):
+#         if isinstance(field, RelatedFields):
+#             return super().get_field_mapping(field)
+#         else:
+#             mapping = {"type": self.type_map.get(field.get_type(self.model), "string")}
 
-        if isinstance(field, FilterField):
-            return prefix + field.get_attname(self.model) + "_filter"
-        elif isinstance(field, AutocompleteField):
-            return prefix + field.get_attname(self.model) + "_edgengrams"
-        elif isinstance(field, SearchField):
-            return prefix + field.get_attname(self.model)
-        elif isinstance(field, RelatedFields):
-            return prefix + field.field_name
+#             if isinstance(field, SearchField):
+#                 if mapping["type"] == "string":
+#                     mapping["type"] = self.text_type
+
+#                 if field.boost:
+#                     mapping["boost"] = field.boost
+
+#                 if field.partial_match:
+#                     mapping.update(self.edgengram_analyzer_config)
+
+#                 mapping["include_in_all"] = True
+
+#             if isinstance(field, AutocompleteField):
+#                 mapping["type"] = self.text_type
+#                 mapping["include_in_all"] = False
+#                 mapping.update(self.edgengram_analyzer_config)
+
+#             elif isinstance(field, FilterField):
+#                 if mapping["type"] == "string":
+#                     mapping["type"] = self.keyword_type
+
+#                 if self.set_index_not_analyzed_on_filter_fields:
+#                     # Not required on ES5 as that uses the "keyword" type for
+#                     # filtered string fields
+#                     mapping["index"] = "not_analyzed"
+
+#                 mapping["include_in_all"] = False
+
+#             if "es_extra" in field.kwargs:
+#                 for key, value in field.kwargs["es_extra"].items():
+#                     mapping[key] = value
+
+
+#             curframe = inspect.currentframe()
+#             calframe = inspect.getouterframes(curframe, 2)
+#             print(f"-> gfm:: {isinstance(field, SearchField)}, {mapping}")
+#             print(f"    {calframe[1][3]} ({calframe[1][1]}:{calframe[1][2]})")
+
+#             return self.get_field_column_name(field), mapping
+
+#     def get_field_column_name(self, field):
+#         # Fields in derived models get prefixed with their model name, fields
+#         # in the root model don't get prefixed at all
+#         # This is to prevent mapping clashes in cases where two page types have
+#         # a field with the same name but a different type.
+#         root_model = get_model_root(self.model)
+#         definition_model = field.get_definition_model(self.model)
+
+#         curframe = inspect.currentframe()
+#         calframe = inspect.getouterframes(curframe, 2)
+#         print(f">>>>>>>>> {root_model} <> {field} | {self.model} <> {definition_model} <<<<<<<<<<")
+#         print(f"    {calframe[1][3]} ({calframe[1][1]}:{calframe[1][2]})")
+
+#         if definition_model != root_model:
+#             prefix = (
+#                 definition_model._meta.app_label.lower()
+#                 + "_"
+#                 + definition_model.__name__.lower()
+#                 + "__"
+#             )
+#         else:
+#             prefix = ""
+
+#         if isinstance(field, FilterField):
+#             return prefix + field.get_attname(self.model) + "_filter"
+#         elif isinstance(field, AutocompleteField):
+#             return prefix + field.get_attname(self.model) + "_edgengrams"
+#         elif isinstance(field, SearchField):
+#             return prefix + field.get_attname(self.model)
+#         elif isinstance(field, RelatedFields):
+#             return prefix + field.field_name
 
 
 #

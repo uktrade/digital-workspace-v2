@@ -682,7 +682,7 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
 
 class TeamIndexManager(ModelIndexManager):
     fields = [
-        IndexedField("name", tokenized=True, explicit=True),
+        IndexedField("name", tokenized=True, explicit=True, autocomplete=True),
         IndexedField("abbreviation", tokenized=True, explicit=True),
         IndexedField("description", tokenized=True, explicit=True),
         IndexedField("roles_in_team", tokenized=True, explicit=True),
