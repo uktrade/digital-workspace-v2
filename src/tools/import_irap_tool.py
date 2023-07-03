@@ -1,10 +1,12 @@
 from tools.models import IrapToolData, IrapToolDataImport, Tool
 
 
-def diff_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[[], bool]:
+def update_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[bool, []]:
     # Copies all the existing values to the previous values list,
     # so they can be displayed to the tool admin when the changes
     # are reviewed
+    # The format may not be the best, but it can be reviewed when
+    # it  has to be displayed
 
     new_fields = new._meta.get_fields()
     changed = False
@@ -24,8 +26,15 @@ def diff_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[[], bool
     return changed, previous_values
 
 
+
+
+
 def process_import():
-    """To be called after the irap data has been imported successfully from DW"""
+    """To be called after the irap data has been imported
+    successfully from Data Workspace.
+    There is no validation on the new records, as any validation will
+    happen when the data is imported from DW
+    """
     IrapToolData.objects.update(imported=False)
 
     imported_iraps = IrapToolDataImport.objects.all()
@@ -40,7 +49,7 @@ def process_import():
             irap.functionality = imported_irap.functionality
             irap.after_import_status = IrapToolData.AfterImportStatus.NEW
         else:
-            changed, changes = diff_irap_data(irap, imported_irap)
+            changed, changes = update_irap_data(irap, imported_irap)
             match irap.after_import_status:
                 case IrapToolData.AfterImportStatus.REVIEWED:
                     if changed:
@@ -54,6 +63,16 @@ def process_import():
                     # but the deletion was not reviewed
                     irap.after_import_status = IrapToolData.AfterImportStatus.UNDELETED
                     irap.previous_fields = changes
+
+                case IrapToolData.AfterImportStatus.CHANGED:
+                    # This record was changed at last import,
+                    # but the changes were not reviewed
+                    # check that the record has not been restored to what it was
+                    # if so, mark it as unchanged
+                    older_values = irap.previous_fields
+                    if older_values == changes:
+                        irap.after_import_status = IrapToolData.AfterImportStatus.REVIEWED
+                        irap.previous_fields = None
         irap.imported = True
         irap.save()
 
