@@ -35,6 +35,13 @@
         </fieldset>
 
         <fieldset>
+            <h2 class="govuk-heading-m">Profile photo</h2>
+            <profile-photo name="photo" photo-url="
+            {% if profile.photo %}{{ profile.photo.url }}{% endif %}
+            " no-photo-url="{% webpack_static 'no-photo-large.png' %}" x-name="x" y-name="y" width-name="width" height-name="height" remove-photo-name="remove_photo"></profile-photo>
+        </fieldset>
+
+        <fieldset>
             <h2 class="govuk-heading-m">Email addresses</h2>
 
             {% include 'peoplefinder/components/input.html' with field=form.email %}
@@ -205,13 +212,6 @@
                     {% include 'peoplefinder/components/input.html' with field=form.previous_experience %}
                 </div>
             </details>
-        </fieldset>
-
-        <fieldset>
-            <h2 class="govuk-heading-m">Profile photo</h2>
-            <profile-photo name="photo" photo-url="
-            {% if profile.photo %}{{ profile.photo.url }}{% endif %}
-            " no-photo-url="{% webpack_static 'no-photo-large.png' %}" x-name="x" y-name="y" width-name="width" height-name="height" remove-photo-name="remove_photo"></profile-photo>
         </fieldset>
     </form>
 
