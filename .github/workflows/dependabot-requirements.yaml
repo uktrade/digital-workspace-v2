@@ -1,7 +1,9 @@
 name: "Dependabot Requirements"
 
 on:
-  push:
+  pull_request:
+    types:
+      - opened
     branches:
       - "dependabot/**"
 
