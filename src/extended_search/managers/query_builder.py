@@ -1,11 +1,10 @@
 import logging
-from django.conf import settings as dj_settings
 from django.db import models
 from wagtail.search.query import Boost, Phrase, PlainText
 
 from search.utils import split_query
 from extended_search.backends.query import OnlyFields
-from extended_search.settings import extended_search_settings as settings
+from extended_search.settings import DEFAULTS as settings
 from extended_search.types import AnalysisType, SearchQueryType
 
 
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 class QueryBuilder:
     @classmethod
     def _get_indexed_field_name(cls, model_field_name, analyzer):
-        analyzer_settings = settings.ANALYZERS[analyzer.value]
+        analyzer_settings = settings["ANALYZERS"][analyzer.value]
         field_name_suffix = analyzer_settings["index_fieldname_suffix"] or ""
         return f"{model_field_name}{field_name_suffix}"
 
@@ -84,7 +83,7 @@ class QueryBuilder:
         # )
 
         # @TODO SORT THE SETTINGS STUFF OUT!!
-        boost_settings = dj_settings.SEARCH_EXTENDED["BOOST_VARIABLES"]
+        boost_settings = settings["BOOST_VARIABLES"]
 
         return (
             boost_settings[query_type_boost]
@@ -128,7 +127,7 @@ class QueryBuilder:
 
     @classmethod
     def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
-        analyzer_settings = settings.ANALYZERS
+        analyzer_settings = settings["ANALYZERS"]
         subquery = None
         if "related_fields" in field_mapping:
             for related_field_mapping in field_mapping["related_fields"]:
