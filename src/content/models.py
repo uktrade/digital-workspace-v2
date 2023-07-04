@@ -113,9 +113,23 @@ class ContentPageIndexManager(ModelIndexManager):
             fuzzy=True,
             boost=5.0,
         ),
-        IndexedField("search_headings", tokenized=True, explicit=True),
-        IndexedField("search_content", tokenized=True, explicit=True),
-        IndexedField("excerpt", tokenized=True, explicit=True),
+        IndexedField(
+            "search_headings",
+            tokenized=True,
+            explicit=True,
+            boost=3.0,
+        ),
+        IndexedField(
+            "excerpt",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "search_content",
+            tokenized=True,
+            explicit=True,
+        ),
         IndexedField("is_creatable", filter=True),
     ]
 

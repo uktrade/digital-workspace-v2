@@ -336,10 +336,6 @@ WAGTAILSEARCH_BACKENDS = {
 
 SEARCH_EXTENDED = {
     "BOOST_VARIABLES": {
-        "content.contentpage.search_title": 5.0,
-        "content.contentpage.search_headings": 3.0,
-        "content.contentpage.excerpt": 2.0,
-        "content.contentpage.search_content": 1.0,
         "PAGE_TOOLS_PHRASE_TITLE_EXPLICIT": 2.0,
         "PAGE_GUIDANCE_PHRASE_TITLE_EXPLICIT": 2.0,
     }
