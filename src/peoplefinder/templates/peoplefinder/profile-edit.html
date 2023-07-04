@@ -14,8 +14,9 @@
 {% block content %}
     <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
 
+    <h2 class="govuk-heading-l">Your profile is {{ profile.profile_completion }}% complete</h2>
+
     {% if profile.profile_completion is not 100 %}
-        <h2 class="govuk-heading-l">Your profile is {{ profile.profile_completion }}% complete</h2>
         <p class="govuk-body">
             <span class="govuk-!-font-weight-bold">
                 Complete the following
@@ -25,14 +26,17 @@
             <span class="missing-profile-completion-fields">
                 {% for missing_profile_completion_field, field_label in missing_profile_completion_fields %}
                     <span class="missing-profile-completion-field"><a class="govuk-link"
-                       href="#core_field_id_{{ missing_profile_completion_field }}">{{ field_label }}</a></span>
+   href="#core_field_id_{{ missing_profile_completion_field }}">{{ field_label }}</a></span>
                 {% endfor %}
             </span>
         </p>
     {% endif %}
 
     <p class="govuk-body">
-        This is how you will appear in search results. Completing your profile makes it easier for colleagues to find you.
+        This is how you will appear in search results.
+        {% if profile.profile_completion is not 100 %}
+            Completing your profile makes it easier for colleagues to find you.
+        {% endif %}
     </p>
     <fieldset class="govuk-!-padding-3 govuk-!-margin-bottom-8">
         {% include 'peoplefinder/components/search-result-person.html' with person=object %}
