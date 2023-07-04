@@ -51,6 +51,7 @@ class QueryBuilder:
         model_class: models.Model,
         query_type: SearchQueryType,
         analysis_type: AnalysisType,
+        field_boost: float,
     ):
         match query_type:
             case SearchQueryType.PHRASE:
@@ -62,7 +63,8 @@ class QueryBuilder:
             case SearchQueryType.FUZZY:
                 query_type_boost = "SEARCH_FUZZY"
             case _:
-                raise ValueError(f"{query_type} must be a valid SearchQueryType")
+                raise ValueError(
+                    f"{query_type} must be a valid SearchQueryType")
 
         match analysis_type:
             case AnalysisType.EXPLICIT:
@@ -78,10 +80,10 @@ class QueryBuilder:
             case _:
                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
 
-        content_type = ContentType.objects.get_for_model(model_class)
-        field_boost_key = (
-            f"{content_type.app_label}.{content_type.model}.{base_field_name}"
-        )
+        # content_type = ContentType.objects.get_for_model(model_class)
+        # field_boost_key = (
+        #     f"{content_type.app_label}.{content_type.model}.{base_field_name}"
+        # )
 
         # @TODO SORT THE SETTINGS STUFF OUT!!
         boost_settings = dj_settings.SEARCH_EXTENDED["BOOST_VARIABLES"]
@@ -89,7 +91,7 @@ class QueryBuilder:
         return (
             boost_settings[query_type_boost]
             * boost_settings[analysis_type_boost]
-            * boost_settings[field_boost_key]
+            * field_boost  # @TODO this too!
         )
 
     @classmethod
@@ -100,6 +102,7 @@ class QueryBuilder:
         base_field_name: str,
         query_type: SearchQueryType,
         analysis_type: AnalysisType,
+        field_boost: float,
     ):
         query = cls._get_inner_searchquery_for_querytype(
             query_str,
@@ -109,7 +112,11 @@ class QueryBuilder:
             return None
 
         boost = cls._get_boost_for_field_querytype_analysistype(
-            base_field_name, model_class, query_type, analysis_type
+            base_field_name,
+            model_class,
+            query_type,
+            analysis_type,
+            field_boost,
         )
 
         field_name = cls._get_indexed_field_name(base_field_name, analysis_type)
@@ -145,6 +152,7 @@ class QueryBuilder:
                             field_mapping["model_field_name"],
                             SearchQueryType(query_type),
                             analyzer,
+                            field_mapping["boost"],
                         )
                     )
                     if query_element is not None:

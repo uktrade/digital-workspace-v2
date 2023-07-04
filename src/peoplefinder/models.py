@@ -273,54 +273,151 @@ def person_photo_small_path(instance, filename):
 
 class PersonIndexManager(ModelIndexManager):
     fields = [
-        IndexedField("full_name", tokenized=True, explicit=True),
-        IndexedField("email", keyword=True),
-        IndexedField("contact_email", keyword=True),
-        IndexedField("primary_phone_number", keyword=True),
-        IndexedField("secondary_phone_number", keyword=True),
-        IndexedField("search_titles", tokenized=True, explicit=True),
+        IndexedField(
+            "full_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "email",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "contact_email",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "primary_phone_number",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "secondary_phone_number",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "search_titles",
+            tokenized=True,
+            explicit=True,
+            boost=3.0,
+        ),
         RelatedIndexedFields(
             "roles",
             [
-                IndexedField("job_title", tokenized=True, explicit=True),
+                IndexedField(
+                    "job_title",
+                    tokenized=True,
+                    explicit=True,
+                    boost=3.0,
+                ),
             ],
         ),
         RelatedIndexedFields(
             "key_skills",
             [
-                IndexedField("name", tokenized=True, explicit=True),
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    boost=0.8,
+                ),
             ],
         ),
         RelatedIndexedFields(
             "learning_interests",
             [
-                IndexedField("name", tokenized=True),
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    boost=0.8,
+                ),
             ],
         ),
         RelatedIndexedFields(
             "additional_roles",
             [
-                IndexedField("name", tokenized=True, explicit=True),
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    boost=0.8,
+                ),
             ],
         ),
         RelatedIndexedFields(
             "networks",
             [
-                IndexedField("name", tokenized=True, explicit=True, filter=True),
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    filter=True,
+                    boost=1.5,
+                ),
             ],
         ),
-        IndexedField("town_city_or_region", tokenized=True),
-        IndexedField("regional_building", tokenized=True),
-        IndexedField("international_building", tokenized=True),
-        IndexedField("fluent_languages", tokenized=True),
-        IndexedField("search_teams", tokenized=True, explicit=True),
-        IndexedField("has_photo", filter=True, proximity=True),
-        IndexedField("profile_completion_amount", filter=True, proximity=True),
-        IndexedField("is_active", filter=True),
-        IndexedField("professions", filter=True),
-        IndexedField("grade", filter=True),
-        IndexedField("networks", filter=True),
-        IndexedField("do_not_work_for_dit", filter=True),
+        IndexedField(
+            "town_city_or_region",
+            tokenized=True,
+            boost=1.5,
+        ),
+        IndexedField(
+            "regional_building",
+            tokenized=True,
+        ),
+        IndexedField(
+            "international_building",
+            tokenized=True,
+        ),
+        IndexedField(
+            "fluent_languages",
+            tokenized=True,
+            boost=1.5,
+        ),
+        IndexedField(
+            "search_teams",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "has_photo",
+            filter=True,
+            proximity=True,
+            boost=1.5,
+        ),
+        IndexedField(
+            "profile_completion_amount",
+            filter=True,
+            proximity=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "is_active",
+            filter=True,
+        ),
+        IndexedField(
+            "professions",
+            filter=True,
+        ),
+        IndexedField(
+            "grade",
+            filter=True,
+        ),
+        IndexedField(
+            "networks",
+            filter=True,
+        ),
+        IndexedField(
+            "do_not_work_for_dit",
+            filter=True
+        ),
     ]
 
 
@@ -684,10 +781,28 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
 
 class TeamIndexManager(ModelIndexManager):
     fields = [
-        IndexedField("name", tokenized=True, explicit=True, autocomplete=True),
-        IndexedField("abbreviation", tokenized=True, explicit=True),
-        IndexedField("description", tokenized=True, explicit=True),
-        IndexedField("roles_in_team", tokenized=True, explicit=True),
+        IndexedField(
+            "name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+        ),
+        IndexedField(
+            "abbreviation",
+            tokenized=True,
+            explicit=True,
+        ),
+        IndexedField(
+            "description",
+            tokenized=True,
+            explicit=True,
+        ),
+        IndexedField(
+            "roles_in_team",
+            tokenized=True,
+            explicit=True
+        ),
     ]
 
 

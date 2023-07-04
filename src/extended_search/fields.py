@@ -7,15 +7,17 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractBaseField:
-    def __init__(self, name, model_field_name=None, **kwargs):
+    def __init__(self, name, model_field_name=None, boost=1.0, **kwargs):
         self.name = kwargs["name"] = name
-        self.model_field_name = kwargs["model_field_name"] = model_field_name
+        self.model_field_name = kwargs["model_field_name"] = model_field_name or name
+        self.boost = kwargs["boost"] = boost
         self.kwargs = kwargs
 
     def _get_base_mapping_object(self):
         return {
             "name": self.name,
-            "model_field_name": self.model_field_name or self.name,
+            "model_field_name": self.model_field_name,
+            "boost": self.boost,
         }
 
     def get_mapping(self):
@@ -27,15 +29,28 @@ class AbstractBaseField:
 
 
 class BaseIndexedField(AbstractBaseField):
-    def __init__(self, *args, search=False, autocomplete=False, filter=False, **kwargs):
+    def __init__(
+        self,
+        *args,
+        search=False,
+        autocomplete=False,
+        filter=False,
+        fuzzy=False,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         self.search = kwargs["search"] = search
         self.autocomplete = kwargs["autocomplete"] = autocomplete
         self.filter = kwargs["filter"] = filter
+        self.fuzzy = kwargs["fuzzy"] = fuzzy
         self.kwargs = kwargs
 
     def _get_search_mapping_object(self):
-        return {"search": None}
+        if self.fuzzy:
+            mapping = {"search": [AnalysisType.TOKENIZED, ], "fuzzy": None}
+        else:
+            mapping = {"search": []}
+        return mapping
 
     def _get_autocomplete_mapping_object(self):
         return {"autocomplete": None}
@@ -45,7 +60,7 @@ class BaseIndexedField(AbstractBaseField):
 
     def get_mapping(self):
         mapping = super().get_mapping()
-        if self.search:
+        if self.search or self.fuzzy:
             mapping = mapping | self._get_search_mapping_object()
         if self.autocomplete:
             mapping = mapping | self._get_autocomplete_mapping_object()
@@ -74,8 +89,8 @@ class IndexedField(BaseIndexedField):
             self.search = True
 
     def _get_search_mapping_object(self):
-        mapping = {"search": []}
-        if self.tokenized:
+        mapping = super()._get_search_mapping_object()
+        if self.tokenized and AnalysisType.TOKENIZED not in mapping["search"]:
             mapping["search"] += [AnalysisType.TOKENIZED]
         if self.explicit:
             mapping["search"] += [AnalysisType.EXPLICIT]
