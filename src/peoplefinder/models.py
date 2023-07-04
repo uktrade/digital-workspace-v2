@@ -784,18 +784,25 @@ class TeamIndexManager(ModelIndexManager):
             tokenized=True,
             explicit=True,
             autocomplete=True,
+            boost=4.0,
         ),
         IndexedField(
             "abbreviation",
             tokenized=True,
             explicit=True,
+            boost=4.0,
         ),
         IndexedField(
             "description",
             tokenized=True,
             explicit=True,
         ),
-        IndexedField("roles_in_team", tokenized=True, explicit=True),
+        IndexedField(
+            "roles_in_team",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
     ]
 
 

@@ -106,7 +106,13 @@ class ContentPageQuerySet(PageQuerySet):
 
 class ContentPageIndexManager(ModelIndexManager):
     fields = [
-        IndexedField("search_title", tokenized=True, explicit=True),
+        IndexedField(
+            "search_title",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=5.0,
+        ),
         IndexedField("search_headings", tokenized=True, explicit=True),
         IndexedField("search_content", tokenized=True, explicit=True),
         IndexedField("excerpt", tokenized=True, explicit=True),

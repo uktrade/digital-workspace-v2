@@ -7,7 +7,13 @@ env = environ.Env()
 env.read_env()
 
 DEFAULTS = {
-    "BOOST_VARIABLES": {},
+    "BOOST_VARIABLES": {
+        "SEARCH_PHRASE": 10.0,
+        "SEARCH_QUERY_AND": 2.5,
+        "SEARCH_QUERY_OR": 1.0,
+        "ANALYZER_EXPLICIT": 3.5,
+        "ANALYZER_TOKENIZED": 1.0,
+    },
     "ANALYZERS": {
         "TOKENIZED": {
             "es_analyzer": "snowball",

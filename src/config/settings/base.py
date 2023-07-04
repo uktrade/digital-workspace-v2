@@ -342,15 +342,6 @@ SEARCH_EXTENDED = {
         "content.contentpage.search_content": 1.0,
         "PAGE_TOOLS_PHRASE_TITLE_EXPLICIT": 2.0,
         "PAGE_GUIDANCE_PHRASE_TITLE_EXPLICIT": 2.0,
-        "peoplefinder.team.name": 4.0,
-        "peoplefinder.team.abbreviation": 5.0,
-        "peoplefinder.team.description": 3.0,
-        "peoplefinder.team.roles_in_team": 2.0,
-        "SEARCH_PHRASE": 10.0,
-        "SEARCH_QUERY_AND": 2.5,
-        "SEARCH_QUERY_OR": 1.0,
-        "ANALYZER_EXPLICIT": 3.5,
-        "ANALYZER_TOKENIZED": 1.0,
     }
 }
 
