@@ -1,6 +1,6 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% load humanize %}
+{% load humanize profile %}
 {% load webpack_static from webpack_loader %}
 
 {% block title %}{{ profile.full_name }}{% endblock %}
@@ -129,237 +129,239 @@
 
     <hr class="govuk-section-break govuk-section-break--visible">
 
-    {% if profile.pronouns or profile.contact_email or profile.primary_phone_number or profile.secondary_phone_number %}
-        <div class="govuk-summary-card">
-            <div class="govuk-summary-card__title-wrapper">
-                <h2 class="govuk-summary-card__title">Contact me</h2>
-            </div>
-            <div class="govuk-summary-card__content">
-                <dl class="govuk-summary-list">
-                    {% if profile.pronouns %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">My pronouns</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.pronouns }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
+    <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title">Contact me</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+                {% if profile.pronouns %}
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Preferred email</dt>
-                        {% if profile.contact_email %}
-                            <dd class="govuk-summary-list__value">
-                                <a href="mailto:{{ profile.contact_email }}"
-                                   class="govuk-link"
-                                   data-testid="preferred-email">{{ profile.contact_email }}</a>
-                            </dd>
-                        {% else %}
-                            <dd class="govuk-summary-list__value">
-                                <a href="mailto:{{ profile.email }}"
-                                   class="govuk-link"
-                                   data-testid="preferred-email">{{ profile.email }}</a>
-                            </dd>
-                        {% endif %}
+                        <dt class="govuk-summary-list__key">My pronouns</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.pronouns }}
+                        </dd>
                     </div>
+                {% endif %}
 
-                    {% if profile.primary_phone_number %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Preferred contact number</dt>
-                            <dd class="govuk-summary-list__value">
-                                <a href="tel:{{ profile.primary_phone_number }}" class="govuk-link">{{ profile.primary_phone_number }}</a>
-                            </dd>
-                        </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Preferred email</dt>
+                    {% if profile.contact_email %}
+                        <dd class="govuk-summary-list__value">
+                            <a href="mailto:{{ profile.contact_email }}"
+                               class="govuk-link"
+                               data-testid="preferred-email">{{ profile.contact_email }}</a>
+                        </dd>
+                    {% else %}
+                        <dd class="govuk-summary-list__value">
+                            <a href="mailto:{{ profile.email }}"
+                               class="govuk-link"
+                               data-testid="preferred-email">{{ profile.email }}</a>
+                        </dd>
                     {% endif %}
+                </div>
 
-                    {% if profile.secondary_phone_number %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Alternative contact number</dt>
-                            <dd class="govuk-summary-list__value">
-                                <a href="tel:{{ profile.secondary_phone_number }}" class="govuk-link">{{ profile.secondary_phone_number }}</a>
-                            </dd>
-                        </div>
-                    {% endif %}
-                </dl>
-            </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Preferred contact number</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if profile.primary_phone_number %}
+                            <a href="tel:{{ profile.primary_phone_number }}" class="govuk-link">{{ profile.primary_phone_number }}</a>
+                        {% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        {% profile_completion_field_link "primary_phone_number" profile %}
+                    </dd>
+                </div>
+
+                {% if profile.secondary_phone_number %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Alternative contact number</dt>
+                        <dd class="govuk-summary-list__value">
+                            <a href="tel:{{ profile.secondary_phone_number }}" class="govuk-link">{{ profile.secondary_phone_number }}</a>
+                        </dd>
+                    </div>
+                {% endif %}
+            </dl>
         </div>
-    {% endif %}
+    </div>
 
-    {% if profile.manager or profile.workdays.exists or profile.key_skills.exists or profile.other_key_skills or profile.fluent_languages or profile.intermediate_languages or profile.grade or profile.previous_experience or profile.learning_interests.exists or profile.other_learning_interests or profile.networks.exists or profile.professions.exists or profile.additional_roles.exists or profile.other_additional_roles %}
-        <div class="govuk-summary-card">
-            <div class="govuk-summary-card__title-wrapper">
-                <h2 class="govuk-summary-card__title">My role</h2>
-            </div>
-            <div class="govuk-summary-card__content">
-                <dl class="govuk-summary-list">
-                    {% if profile.manager %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">My manager</dt>
-                            <dd class="govuk-summary-list__value">
-                                <a href="{% url 'profile-view' profile.manager.slug %}"
-                                   class="govuk-link"
-                                   data-testid="manager">{{ profile.manager.full_name }}</a>
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.workdays.exists %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Days I work</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.get_workdays_display }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.key_skills.exists or profile.other_key_skills %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Skills</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.get_all_key_skills|join:", " }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.fluent_languages %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Fluent languages</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.fluent_languages }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.intermediate_languages %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Intermediate languages</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.intermediate_languages }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.grade %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Grade</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.grade }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.previous_experience %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Previous positions held</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.previous_experience|linebreaksbr }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.learning_interests.exists or profile.other_learning_interests %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">My learning and development interests</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.get_all_learning_interests|join:", " }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.networks.exists %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Networks I belong to</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.networks.all|join:", " }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.professions.exists %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Professions I belong to</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.professions.all|join:", " }}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.additional_roles.exists or profile.other_additional_roles %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">My additional roles and responsibilities</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.get_all_additional_roles|join:", " }}
-                            </dd>
-                        </div>
-                    {% endif %}
-                </dl>
-            </div>
+    <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title">My role</h2>
         </div>
-    {% endif %}
+        <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">My manager</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if profile.manager %}
+                            <a href="{% url 'profile-view' profile.manager.slug %}"
+                               class="govuk-link"
+                               data-testid="manager">{{ profile.manager.full_name }}</a>
+                        {% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        {% profile_completion_field_link "manager" profile %}
+                    </dd>
+                </div>
 
-    {% if profile.buildings or profile.location_in_building or profile.town_city_or_region or profile.country or profile.regional_building or profile.international_building %}
-        <div class="govuk-summary-card">
-            <div class="govuk-summary-card__title-wrapper">
-                <h2 class="govuk-summary-card__title">Where I work</h2>
-            </div>
-            <div class="govuk-summary-card__content">
-                <dl class="govuk-summary-list">
-                    {% if profile.buildings %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Place(s) I usually work</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.buildings.all|join:", " }}
-                            </dd>
-                        </div>
-                    {% endif %}
+                {% if profile.workdays.exists %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Days I work</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.get_workdays_display }}
+                        </dd>
+                    </div>
+                {% endif %}
 
-                    {% if profile.location_in_building %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Location in building</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.location_in_building }}
-                            </dd>
-                        </div>
-                    {% endif %}
+                {% if profile.key_skills.exists or profile.other_key_skills %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Skills</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.get_all_key_skills|join:", " }}
+                        </dd>
+                    </div>
+                {% endif %}
 
-                    {% if profile.town_city_or_region %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Town, city or region</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.town_city_or_region }}
-                            </dd>
-                        </div>
-                    {% endif %}
+                {% if profile.fluent_languages %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Fluent languages</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.fluent_languages }}
+                        </dd>
+                    </div>
+                {% endif %}
 
-                    {% if profile.country %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Country</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.country }}
-                            </dd>
-                        </div>
-                    {% endif %}
+                {% if profile.intermediate_languages %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Intermediate languages</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.intermediate_languages }}
+                        </dd>
+                    </div>
+                {% endif %}
 
-                    {% if profile.regional_building %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Other - UK regional</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.regional_building }}
-                            </dd>
-                        </div>
-                    {% endif %}
+                {% if profile.grade %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Grade</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.grade }}
+                        </dd>
+                    </div>
+                {% endif %}
 
-                    {% if profile.international_building %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Other - Overseas</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.international_building }}
-                            </dd>
-                        </div>
-                    {% endif %}
-                </dl>
-            </div>
+                {% if profile.previous_experience %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Previous positions held</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.previous_experience|linebreaksbr }}
+                        </dd>
+                    </div>
+                {% endif %}
+
+                {% if profile.learning_interests.exists or profile.other_learning_interests %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">My learning and development interests</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.get_all_learning_interests|join:", " }}
+                        </dd>
+                    </div>
+                {% endif %}
+
+                {% if profile.networks.exists %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Networks I belong to</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.networks.all|join:", " }}
+                        </dd>
+                    </div>
+                {% endif %}
+
+                {% if profile.professions.exists %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Professions I belong to</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.professions.all|join:", " }}
+                        </dd>
+                    </div>
+                {% endif %}
+
+                {% if profile.additional_roles.exists or profile.other_additional_roles %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">My additional roles and responsibilities</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.get_all_additional_roles|join:", " }}
+                        </dd>
+                    </div>
+                {% endif %}
+            </dl>
         </div>
-    {% endif %}
+    </div>
+
+    <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title">Where I work</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+                {% if profile.buildings %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Place(s) I usually work</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.buildings.all|join:", " }}
+                        </dd>
+                    </div>
+                {% endif %}
+
+                {% if profile.location_in_building %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Location in building</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.location_in_building }}
+                        </dd>
+                    </div>
+                {% endif %}
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Town, city or region</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if profile.town_city_or_region %}{{ profile.town_city_or_region }}{% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        {% profile_completion_field_link "town_city_or_region" profile %}
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Country</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if profile.country %}{{ profile.country }}{% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        {% profile_completion_field_link "country" profile %}
+                    </dd>
+                </div>
+
+                {% if profile.regional_building %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Other - UK regional</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.regional_building }}
+                        </dd>
+                    </div>
+                {% endif %}
+
+                {% if profile.international_building %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Other - Overseas</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.international_building }}
+                        </dd>
+                    </div>
+                {% endif %}
+            </dl>
+        </div>
+    </div>
 
     {% if perms.peoplefinder.view_auditlog %}
         <details class="govuk-details" data-module="govuk-details">
