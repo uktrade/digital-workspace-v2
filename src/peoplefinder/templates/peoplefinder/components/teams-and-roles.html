@@ -1,4 +1,4 @@
-{% load static %}
+{% load static profile %}
 
 {% comment %}
 Context:
@@ -9,7 +9,7 @@ Context:
 <script src="{% static 'peoplefinder/team-select.js' %}"></script>
 
 <div class="pf-roles">
-    <h2 class="govuk-heading-m">Teams and roles</h2>
+    <h2 class="govuk-heading-m">Teams and roles {% profile_completion_field_tag "roles" profile %}</h2>
     <div id="roles">
         {% for form in role_forms %}
             {% include 'peoplefinder/components/role-edit.html' with profile=profile role=form.instance form=form %}

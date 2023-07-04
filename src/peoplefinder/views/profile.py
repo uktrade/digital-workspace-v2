@@ -26,6 +26,10 @@ from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.image import ImageService
 from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
+from peoplefinder.utils import (
+    PROFILE_COMPLETION_FIELDS,
+    profile_completion_field_statuses,
+)
 
 from .base import HtmxFormView, PeoplefinderView
 
@@ -124,10 +128,17 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             profile=profile,
         )
 
+        field_statuses = profile_completion_field_statuses(profile)
+
         context.update(
             roles=roles,
             role_forms=role_forms,
             update_user_form=update_user_form,
+            missing_profile_completion_fields=[
+                (field, field.replace("_", " ").capitalize())
+                for field, field_status in field_statuses.items()
+                if not field_status
+            ],
         )
 
         return context

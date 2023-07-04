@@ -1,11 +1,15 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% load static %}
+{% load static profile %}
 {% load webpack_static from webpack_loader %}
 
-{% block title %}Edit profile{% endblock %}
+{% block title %}
+    Edit profile
+{% endblock title %}
 
-{% block location %}{{ profile.full_name }}{% endblock %}
+{% block location %}
+    {{ profile.full_name }}
+{% endblock location %}
 
 {% block content %}
     <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
@@ -18,7 +22,12 @@
                 <strong class="govuk-tag">Recommended</strong>
                 fields to reach 100%:
             </span>
-            <a class="govuk-link" href="#">Field 1</a>, <a class="govuk-link" href="#">Field 2</a>
+            <span class="missing-profile-completion-fields">
+                {% for missing_profile_completion_field, field_label in missing_profile_completion_fields %}
+                    <span class="missing-profile-completion-field"><a class="govuk-link"
+                       href="#core_field_id_{{ missing_profile_completion_field }}">{{ field_label }}</a></span>
+                {% endfor %}
+            </span>
         </p>
     {% endif %}
 
@@ -55,7 +64,7 @@
         </fieldset>
 
         <fieldset>
-            <h2 class="govuk-heading-m">Profile photo</h2>
+            <h2 class="govuk-heading-m">Profile photo {% profile_completion_field_tag "photo" profile %}</h2>
             <profile-photo name="photo" photo-url="
             {% if profile.photo %}{{ profile.photo.url }}{% endif %}
             " no-photo-url="{% webpack_static 'no-photo-large.png' %}" x-name="x" y-name="y" width-name="width" height-name="height" remove-photo-name="remove_photo"></profile-photo>
@@ -109,7 +118,7 @@
         </fieldset>
 
         <fieldset>
-            <h2 class="govuk-heading-m">Location and working patterns</h2>
+            <h2 id="cams-test" class="govuk-heading-m">Location and working patterns</h2>
 
             {% include 'peoplefinder/components/input.html' with field=form.country %}
 
@@ -145,7 +154,9 @@
             {% include 'peoplefinder/components/input.html' with field=form.grade %}
 
             <div class="govuk-form-group">
-                <label class="govuk-label" for="{{ form.manager.id_for_label }}">Manager</label>
+                <label class="govuk-label" for="{{ form.manager.id_for_label }}">
+                    Manager {% profile_completion_field_tag "manager" profile %}
+                </label>
                 {% include 'peoplefinder/components/manager/main.html' with profile=profile manager=profile.manager %}
             </div>
 
@@ -286,4 +297,4 @@
     <a class="govuk-button govuk-button--secondary"
        href="{% url 'profile-view' profile.slug %}">Cancel and go back</a>
 
-{% endblock %}
+{% endblock content %}
