@@ -5,13 +5,6 @@ from wagtail.search.backends.elasticsearch7 import (
 )
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
 
-# from wagtail.search.index import (
-#     AutocompleteField,
-#     FilterField,
-#     RelatedFields,
-#     SearchField,
-# )
-
 from extended_search.backends.query import OnlyFields
 
 
@@ -111,6 +104,15 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 # -----------------------------------------------------------------
 #
 
+# import inspect
+
+# from wagtail.search.index import (
+#     AutocompleteField,
+#     FilterField,
+#     RelatedFields,
+#     SearchField,
+# )
+
 
 # def get_model_root(model):
 #     """
@@ -179,13 +181,13 @@ class DebugMapping(Elasticsearch7Mapping):
 #                 for key, value in field.kwargs["es_extra"].items():
 #                     mapping[key] = value
 
-
 #             curframe = inspect.currentframe()
 #             calframe = inspect.getouterframes(curframe, 2)
-#             print(f"-> gfm:: {isinstance(field, SearchField)}, {mapping}")
+#             print(f"-> gfm:: {field}: {isinstance(field, SearchField)}, {mapping}")
 #             print(f"    {calframe[1][3]} ({calframe[1][1]}:{calframe[1][2]})")
 
 #             return self.get_field_column_name(field), mapping
+
 
 #     def get_field_column_name(self, field):
 #         # Fields in derived models get prefixed with their model name, fields

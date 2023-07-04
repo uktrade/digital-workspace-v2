@@ -1,7 +1,6 @@
+# type: ignore  (type checking is unhappy about the mixin referencing fields it doesnt define)
 import inspect
 import logging
-
-from abc import ABC, abstractmethod
 
 from django.core import checks
 from wagtail.search import index
@@ -32,28 +31,7 @@ class Indexed(index.Indexed):
     search_fields = []
 
 
-class AbstractSearchField(ABC):
-    """
-    Defines the abstractions on wagtailsearch.index.BaseField that the mixin
-    requires
-    """
-
-    kwargs = {}
-
-    @abstractmethod
-    def get_field(self, cls):
-        ...
-
-    @abstractmethod
-    def get_definition_model(self, cls):
-        ...
-
-    @abstractmethod
-    def get_value(self, obj):
-        ...
-
-
-class RenamedFieldMixin(AbstractSearchField):
+class RenamedFieldMixin:
     """
     Add this Mixin to wagtailsearch.index.BaseField and descendent classes to
     support renaming the field. It does this by adding a "model_field_name"
