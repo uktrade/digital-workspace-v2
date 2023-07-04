@@ -10,6 +10,15 @@
 {% block content %}
     <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
 
+    <h2 class="govuk-heading-l">Your profile is {{ profile.profile_completion|floatformat:0 }}% complete</h2>
+    <p class="govuk-body">
+        <span class="govuk-!-font-weight-bold">
+            Complete the following
+            <strong class="govuk-tag">Recommended</strong>
+            fields to reach 100%:
+        </span>
+        <a class="govuk-link" href="#">Field 1</a>, <a class="govuk-link" href="#">Field 2</a>
+    </p>
     <p class="govuk-body">
         This is how you will appear in search results. Completing your profile makes it easier for colleagues to find you.
     </p>
