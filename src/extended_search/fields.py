@@ -47,7 +47,12 @@ class BaseIndexedField(AbstractBaseField):
 
     def _get_search_mapping_object(self):
         if self.fuzzy:
-            mapping = {"search": [AnalysisType.TOKENIZED, ], "fuzzy": None}
+            mapping = {
+                "search": [
+                    AnalysisType.TOKENIZED,
+                ],
+                "fuzzy": None,
+            }
         else:
             mapping = {"search": []}
         return mapping

@@ -414,10 +414,7 @@ class PersonIndexManager(ModelIndexManager):
             "networks",
             filter=True,
         ),
-        IndexedField(
-            "do_not_work_for_dit",
-            filter=True
-        ),
+        IndexedField("do_not_work_for_dit", filter=True),
     ]
 
 
@@ -798,11 +795,7 @@ class TeamIndexManager(ModelIndexManager):
             tokenized=True,
             explicit=True,
         ),
-        IndexedField(
-            "roles_in_team",
-            tokenized=True,
-            explicit=True
-        ),
+        IndexedField("roles_in_team", tokenized=True, explicit=True),
     ]
 
 

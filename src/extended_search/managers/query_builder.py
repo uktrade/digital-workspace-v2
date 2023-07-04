@@ -1,5 +1,4 @@
 import logging
-from django.contrib.contenttypes.models import ContentType
 from django.conf import settings as dj_settings
 from django.db import models
 from wagtail.search.query import Boost, Phrase, PlainText
@@ -63,8 +62,7 @@ class QueryBuilder:
             case SearchQueryType.FUZZY:
                 query_type_boost = "SEARCH_FUZZY"
             case _:
-                raise ValueError(
-                    f"{query_type} must be a valid SearchQueryType")
+                raise ValueError(f"{query_type} must be a valid SearchQueryType")
 
         match analysis_type:
             case AnalysisType.EXPLICIT:

@@ -29,9 +29,7 @@ class ModelIndexManager(QueryBuilder):
             analyzers = [AnalysisType.TOKENIZED]
 
         for analyzer in analyzers:
-            index_field_name = cls._get_indexed_field_name(
-                model_field_name,
-                analyzer)
+            index_field_name = cls._get_indexed_field_name(model_field_name, analyzer)
             field = SearchField(
                 index_field_name,
                 model_field_name=model_field_name,
@@ -68,8 +66,7 @@ class ModelIndexManager(QueryBuilder):
         fields = []
         if "related_fields" in field_mapping:
             fields += cls._get_related_fields(
-                field_mapping["model_field_name"],
-                field_mapping["related_fields"]
+                field_mapping["model_field_name"], field_mapping["related_fields"]
             )
 
         if "search" in field_mapping:

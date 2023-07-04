@@ -22,9 +22,7 @@ class Indexed(index.Indexed):
             ):
                 errors.append(
                     checks.Warning(
-                        message.format(
-                            model=cls.__name__,
-                            name=field.field_name),
+                        message.format(model=cls.__name__, name=field.field_name),
                         obj=cls,
                         id="wagtailsearch.W004",
                     )
@@ -39,6 +37,7 @@ class AbstractSearchField(ABC):
     Defines the abstractions on wagtailsearch.index.BaseField that the mixin
     requires
     """
+
     kwargs = {}
 
     @abstractmethod
