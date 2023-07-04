@@ -304,7 +304,7 @@
         </div>
         <div class="govuk-summary-card__content">
             <dl class="govuk-summary-list">
-                {% if profile.buildings %}
+                {% if profile.buildings.all.exists %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Place(s) I usually work</dt>
                         <dd class="govuk-summary-list__value">

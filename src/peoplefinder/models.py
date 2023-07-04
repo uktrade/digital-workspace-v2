@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.aggregates import ArrayAgg, StringAgg
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import Case, Exists, F, Func, JSONField, OuterRef, Q, Value, When
+from django.db.models import Case, F, Func, JSONField, Q, Value, When
 from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils import timezone
@@ -527,7 +527,9 @@ class Person(index.Indexed, models.Model):
         return ", ".join(map(str, workdays))
 
     def save(self, *args, **kwargs):
-        self.profile_completion = get_profile_completion(person=self)
+        force_insert = kwargs.pop("force_insert", False)
+        if not force_insert:
+            self.profile_completion = get_profile_completion(person=self)
         return super().save(*args, **kwargs)
 
 

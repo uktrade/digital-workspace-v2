@@ -382,8 +382,9 @@
 }
 
 .missing-profile-completion-fields {
-  // Add a comma after each field except the last, unless there is only one.
-  > .missing-profile-completion-field:not(:last-child):not(:only-child):after {
-    content: ", ";
+  .comma {
+    &:last-child {
+      display: none;
+    }
   }
 }

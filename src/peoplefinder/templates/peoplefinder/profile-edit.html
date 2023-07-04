@@ -8,28 +8,30 @@
 {% endblock title %}
 
 {% block location %}
-    {{ profile.full_name }}
+    <a class="govuk-link" href="{% url 'profile-view' profile.slug %}">{{ profile.full_name }}</a>
 {% endblock location %}
 
 {% block content %}
+    <a href="{% url 'profile-view' profile.slug %}" class="govuk-back-link">Back to profile</a>
+
     <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
 
     <h2 class="govuk-heading-l">Your profile is {{ profile.profile_completion }}% complete</h2>
 
     {% if profile.profile_completion is not 100 %}
-        <p class="govuk-body">
-            <span class="govuk-!-font-weight-bold">
-                Complete the following
-                <strong class="govuk-tag">Recommended</strong>
-                fields to reach 100%:
-            </span>
-            <span class="missing-profile-completion-fields">
-                {% for missing_profile_completion_field, field_label in missing_profile_completion_fields %}
-                    <span class="missing-profile-completion-field"><a class="govuk-link"
-   href="#core_field_id_{{ missing_profile_completion_field }}">{{ field_label }}</a></span>
-                {% endfor %}
-            </span>
-        </p>
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                Complete the following fields to reach 100%:
+                <span class="missing-profile-completion-fields">
+                    {% for missing_profile_completion_field, field_label in missing_profile_completion_fields %}
+                        <a class="govuk-link"
+                           href="#core_field_id_{{ missing_profile_completion_field }}">{{ field_label }}</a><span class="comma">,</span>
+                    {% endfor %}
+                </span>
+            </strong>
+        </div>
     {% endif %}
 
     <p class="govuk-body">
@@ -53,7 +55,8 @@
 
         {% include 'peoplefinder/components/error-summary.html' with form=form %}
 
-        <fieldset>
+        <fieldset class="govuk-!-padding-3">
+            {% profile_field_anchor profile "first_name" "last_name" "pronouns" %}
             <h2 class="govuk-heading-m">Personal details</h2>
 
             {% include 'peoplefinder/components/input.html' with field=form.first_name %}
@@ -67,14 +70,16 @@
             </details>
         </fieldset>
 
-        <fieldset>
-            <h2 class="govuk-heading-m">Profile photo {% profile_completion_field_tag "photo" profile %}</h2>
+        <fieldset class="govuk-!-padding-3">
+            {% profile_field_anchor profile "photo" %}
+            <h2 class="govuk-heading-m">Profile photo</h2>
             <profile-photo name="photo" photo-url="
             {% if profile.photo %}{{ profile.photo.url }}{% endif %}
             " no-photo-url="{% webpack_static 'no-photo-large.png' %}" x-name="x" y-name="y" width-name="width" height-name="height" remove-photo-name="remove_photo"></profile-photo>
         </fieldset>
 
-        <fieldset>
+        <fieldset class="govuk-!-padding-3">
+            {% profile_field_anchor profile "email" "contact_email" %}
             <h2 class="govuk-heading-m">Email addresses</h2>
 
             {% include 'peoplefinder/components/input.html' with field=form.email %}
@@ -106,7 +111,8 @@
 
         </fieldset>
 
-        <fieldset>
+        <fieldset class="govuk-!-padding-3">
+            {% profile_field_anchor profile "primary_phone_number" "secondary_phone_number" %}
             <h2 class="govuk-heading-m">Contact details</h2>
 
             {% include 'peoplefinder/components/input.html' with field=form.primary_phone_number %}
@@ -121,8 +127,9 @@
             </details>
         </fieldset>
 
-        <fieldset>
-            <h2 id="cams-test" class="govuk-heading-m">Location and working patterns</h2>
+        <fieldset class="govuk-!-padding-3">
+            {% profile_field_anchor profile "country" "town_city_or_region" "buildings" "regional_building" "international_building" "location_in_building" "workdays" %}
+            <h2 class="govuk-heading-m">Location and working patterns</h2>
 
             {% include 'peoplefinder/components/input.html' with field=form.country %}
 
@@ -152,23 +159,23 @@
             </details>
         </fieldset>
 
-        <fieldset>
+        <fieldset class="govuk-!-padding-3">
+            {% profile_field_anchor profile "manager" "grade" %}
             <h2 class="govuk-heading-m">Grade and manager</h2>
 
             {% include 'peoplefinder/components/input.html' with field=form.grade %}
 
             <div class="govuk-form-group">
-                <label class="govuk-label" for="{{ form.manager.id_for_label }}">
-                    Manager {% profile_completion_field_tag "manager" profile %}
-                </label>
+                <label class="govuk-label" for="{{ form.manager.id_for_label }}">Manager</label>
                 {% include 'peoplefinder/components/manager/main.html' with profile=profile manager=profile.manager %}
             </div>
 
             {% include 'peoplefinder/components/checkbox.html' with field=form.do_not_work_for_dit %}
         </fieldset>
 
-        <fieldset>
-            <h2 class="govuk-heading-m">Skills, interests and networks</h2>
+        <fieldset class="govuk-!-padding-3">
+            {% profile_field_anchor profile "key_skills" "other_key_skills" "fluent_languages" "intermediate_languages" "learning_interests" "other_learning_interests" "networks" "professions" "additional_roles" "other_additional_roles" "previous_experience" %}
+            <h2 class="govuk-heading-m">Skills, interests and networks (optional)</h2>
 
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
@@ -250,19 +257,20 @@
         </fieldset>
     </form>
 
-    <fieldset class="mb-20">
+    <fieldset class="govuk-!-padding-3">
+        {% profile_field_anchor profile "roles" %}
         {% include 'peoplefinder/components/teams-and-roles.html' with profile=profile role_forms=role_forms %}
     </fieldset>
 
     {% if perms.peoplefinder.delete_person %}
-        <fieldset class="mb-20">
+        <fieldset class="govuk-!-padding-3">
             <h2 class="govuk-heading-m">SSO user</h2>
             {% include 'peoplefinder/components/update-user-form.html' with profile=profile form=update_user_form %}
         </fieldset>
     {% endif %}
 
     {% if request.user.is_superuser %}
-        <fieldset>
+        <fieldset class="govuk-!-padding-3">
             <h2 class="govuk-heading-m">Administrative options</h2>
 
             <details class="govuk-details" data-module="govuk-details">

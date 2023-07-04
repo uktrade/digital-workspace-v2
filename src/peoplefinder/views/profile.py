@@ -26,10 +26,7 @@ from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.image import ImageService
 from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
-from peoplefinder.utils import (
-    PROFILE_COMPLETION_FIELDS,
-    profile_completion_field_statuses,
-)
+from peoplefinder.utils import profile_completion_field_statuses
 
 from .base import HtmxFormView, PeoplefinderView
 
@@ -108,6 +105,9 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
     template_name = "peoplefinder/profile-edit.html"
     slug_url_kwarg = "profile_slug"
     success_message = "Your profile has been updated"
+
+    def get_success_url(self):
+        return reverse("profile-edit", kwargs={"profile_slug": self.object.slug})
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
