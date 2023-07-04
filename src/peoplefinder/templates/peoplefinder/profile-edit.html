@@ -10,7 +10,15 @@
 {% block content %}
     <script src="{% static 'peoplefinder/profile-photo.js' %}"></script>
 
+    <p class="govuk-body">
+        This is how you will appear in search results. Completing your profile makes it easier for colleagues to find you.
+    </p>
+    <fieldset class="govuk-!-padding-3 govuk-!-margin-bottom-8">
+        {% include 'peoplefinder/components/search-result-person.html' with person=object %}
+    </fieldset>
+
     <h1 class="govuk-heading-l">Edit profile</h1>
+
     <form id="edit-profile"
           class="ws-profile-edit-form"
           method="post"
