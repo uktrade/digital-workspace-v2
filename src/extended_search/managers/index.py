@@ -30,15 +30,14 @@ class ModelIndexManager(QueryBuilder):
 
         for analyzer in analyzers:
             index_field_name = cls._get_indexed_field_name(model_field_name, analyzer)
-            field = SearchField(
-                index_field_name,
-                model_field_name=model_field_name,
-                es_extra={
-                    "search_analyzer": cls._get_analyzer_name(analyzer),
-                },
-            )
             fields += [
-                field,
+                SearchField(
+                    index_field_name,
+                    model_field_name=model_field_name,
+                    es_extra={
+                        "search_analyzer": cls._get_analyzer_name(analyzer),
+                    },
+                ),
             ]
         return fields
 

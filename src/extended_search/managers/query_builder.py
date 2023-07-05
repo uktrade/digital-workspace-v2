@@ -121,8 +121,12 @@ class QueryBuilder:
 
     @classmethod
     def _add_to_query(cls, query, query_part):
+        if query_part is None:
+            return query  # even if this is _also_ None
+
         if query is None:
-            return query_part
+            return query_part  # the first node becomes the root
+
         return query | query_part
 
     @classmethod
@@ -152,11 +156,10 @@ class QueryBuilder:
                             field_mapping["boost"],
                         )
                     )
-                    if query_element is not None:
-                        subquery = cls._add_to_query(
-                            subquery,
-                            query_element,
-                        )
+                    subquery = cls._add_to_query(
+                        subquery,
+                        query_element,
+                    )
 
         if "autocomplete" in field_mapping:
             # @TODO sort this out!

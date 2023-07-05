@@ -45,6 +45,9 @@ class BaseIndexedField(AbstractBaseField):
         self.fuzzy = kwargs["fuzzy"] = fuzzy
         self.kwargs = kwargs
 
+        if fuzzy:
+            self.search = True
+
     def _get_search_mapping_object(self):
         if self.fuzzy:
             mapping = {
@@ -65,7 +68,7 @@ class BaseIndexedField(AbstractBaseField):
 
     def get_mapping(self):
         mapping = super().get_mapping()
-        if self.search or self.fuzzy:
+        if self.search:
             mapping = mapping | self._get_search_mapping_object()
         if self.autocomplete:
             mapping = mapping | self._get_autocomplete_mapping_object()

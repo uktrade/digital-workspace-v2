@@ -100,6 +100,12 @@ class SearchExtendedSettings:
             return default_value
         return default_value
 
+    def _get_from_admin(self, attr, key=None):
+        ...
+
+    def _get_from_indexedfield(self, attr, key=None):
+        ...
+
     def get_boost_value(self, boost_key):
         """
         Get the most specifically-defined boost value for the given key
