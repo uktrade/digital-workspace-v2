@@ -143,7 +143,7 @@ clean:
 	find . -name '__pycache__' -exec rm -rf {} +
 
 local-setup:
-	poetry install -G dev
+	poetry install --with dev
 	npm install
 
 dump-db:

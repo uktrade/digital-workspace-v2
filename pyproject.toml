@@ -75,6 +75,7 @@ bpython = "^0.24"
 django-extensions = "^3.2.1"
 werkzeug = "^2.2.3"
 blessings = "^1.7"
+pytest-mock = "^3.11.1"
 
 [build-system]
 requires = ["poetry-core"]
