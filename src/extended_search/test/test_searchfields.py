@@ -37,18 +37,23 @@ class TestRenamedFieldMixin:
         assert mock_model._meta.get_field.not_called_with("foo")
         assert mock_model._meta.get_field.called_with("barll")
 
+    @pytest.mark.xfail
     def test_get_field_uses_parent(self):
         ...
 
+    @pytest.mark.xfail
     def test_get_definition_model_uses_model_field_name(self):
         ...
 
+    @pytest.mark.xfail
     def test_get_definition_model_uses_parent(self):
         ...
 
+    @pytest.mark.xfail
     def test_get_value_uses_model_field_name(self):
         ...
 
+    @pytest.mark.xfail
     def test_get_value_uses_parent(self):
         ...
 
