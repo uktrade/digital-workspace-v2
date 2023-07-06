@@ -349,6 +349,14 @@ class PersonService:
                 # If the person doesn't have a PK then there can't be any relationships.
                 if not person._state.adding and person.roles.all().exists():
                     profile_completion_field_status = True
+            elif profile_completion_field == "location":
+                if any(
+                    [
+                        person.uk_office_location is not None,
+                        person.international_building is not None,
+                    ]
+                ):
+                    profile_completion_field_status = True
             elif getattr(person, profile_completion_field, None) is not None:
                 profile_completion_field_status = True
             statuses[profile_completion_field] = profile_completion_field_status
@@ -362,7 +370,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 45, (
+    assert len(Person._meta.get_fields()) == 47, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )

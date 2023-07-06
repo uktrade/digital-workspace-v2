@@ -9,6 +9,7 @@ services:
       - ./setup/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./.db:/var/lib/postgresql/data
     environment:
+      - POSTGRES_DB=digital_workspace
       - POSTGRES_PASSWORD=postgres
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]

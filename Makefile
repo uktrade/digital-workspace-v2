@@ -157,18 +157,19 @@ reset-db:
 first-use:
 	@docker-compose --profile playwright --profile opensearch down
 	make build
-	make up
 	make reset-db
+	sleep 1
 	make migrate
 	make data-countries
 	make menus
 	make create_section_homepages
 	make wagtail-groups
 	make pf-groups
+	make ingest-uk-staff-locations
 	make superuser
 	make index
-	docker-compose up
 	make local-setup
+	make up
 
 superuser:
 	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
@@ -264,3 +265,6 @@ create_section_homepages:
 
 data-countries:
 	$(wagtail) python manage.py loaddata countries.json
+
+ingest-uk-staff-locations:
+	$(wagtail) python manage.py ingest_uk_staff_locations

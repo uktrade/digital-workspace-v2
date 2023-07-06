@@ -13,3 +13,11 @@ class LegacyPeopleFinderRouter:
             return False
 
         return None
+
+
+class UkStaffLocationsRouter:
+    def allow_migrate(self, db, app_label, model_name=None, **hints):
+        if db == "uk_staff_locations":
+            return False
+
+        return None

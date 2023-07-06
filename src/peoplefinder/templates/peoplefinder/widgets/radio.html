@@ -1,0 +1,19 @@
+{% with id=widget.attrs.id %}
+    <div {% if id %}id="{{ id }}"{% endif %}
+         {% if widget.attrs.class %}class="{{ widget.attrs.class }}"{% endif %}>
+        {% for group, options, index in widget.optgroups %}
+            {% if group %}
+                <div>
+                    <label>{{ group }}</label>
+                    {% for option in options %}
+                        <div class="govuk-radios__item">{% include option.template_name with widget=option %}</div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% for option in options %}
+                    <div class="govuk-radios__item">{% include option.template_name with widget=option %}</div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endwith %}

@@ -7,7 +7,6 @@ from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
-
 # Set directories to be used across settings
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
@@ -216,7 +215,12 @@ if "postgres" in VCAP_SERVICES:
 else:
     DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASES = {"default": env.db()}
+DATABASES = {
+    "default": env.db(),
+    "uk_staff_locations": env.db("UK_STAFF_LOCATIONS_DATABASE_URL"),
+}
+
+DATABASE_ROUTERS = ["peoplefinder.routers.UkStaffLocationsRouter"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 

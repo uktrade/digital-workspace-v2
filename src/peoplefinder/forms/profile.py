@@ -4,8 +4,21 @@ from django.core.validators import ValidationError
 
 from peoplefinder.models import Person
 
-
 User = get_user_model()
+
+
+class GovUkRadioSelect(forms.RadioSelect):
+    template_name = "peoplefinder/widgets/radio.html"
+    option_template_name = "peoplefinder/widgets/radio_option.html"
+
+    def create_option(
+        self, name, value, label, selected, index, subindex=None, attrs=None
+    ):
+        option = super().create_option(
+            name, value, label, selected, index, subindex=subindex, attrs=attrs
+        )
+        option["attrs"]["class"] = "govuk-radios__input"
+        return option
 
 
 class ProfileForm(forms.ModelForm):
@@ -19,10 +32,8 @@ class ProfileForm(forms.ModelForm):
             "contact_email",
             "primary_phone_number",
             "secondary_phone_number",
-            "country",
-            "town_city_or_region",
-            "buildings",
-            "regional_building",
+            "uk_office_location",
+            "remote_working",
             "international_building",
             "location_in_building",
             "workdays",
@@ -49,7 +60,7 @@ class ProfileForm(forms.ModelForm):
             "networks": forms.CheckboxSelectMultiple,
             "professions": forms.CheckboxSelectMultiple,
             "additional_roles": forms.CheckboxSelectMultiple,
-            "buildings": forms.CheckboxSelectMultiple,
+            "remote_working": GovUkRadioSelect,
         }
 
     # Override manager to avoid using IDs and enforce the use of UUIDs (slugs).
@@ -104,18 +115,11 @@ class ProfileForm(forms.ModelForm):
         self.fields["secondary_phone_number"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
-        self.fields["country"].widget.attrs.update(
+        self.fields["uk_office_location"].widget.attrs.update(
             {"class": "govuk-select govuk-!-width-one-half"}
         )
-        self.fields["town_city_or_region"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half"}
-        )
-        self.fields["buildings"].widget.attrs.update(
-            {"class": "govuk-checkboxes__input"}
-        )
-        self.fields["regional_building"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half"}
-        )
+        remote_working_choices = self.fields["remote_working"].choices
+        self.fields["remote_working"].choices = remote_working_choices[1:]
         self.fields["international_building"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
