@@ -489,6 +489,8 @@ AUTHBROKER_ANONYMOUS_URL_NAMES = (
     "team-api-teams-list",
 )
 
+AUTHBROKER_INTROSPECTION_TOKEN = env("AUTHBROKER_INTROSPECTION_TOKEN", default="XXX")
+
 # There are some big pages with lots of content that need to send many fields.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 

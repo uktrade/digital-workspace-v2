@@ -44,6 +44,7 @@ class ProfileForm(forms.ModelForm):
             "photo",
         ]
         widgets = {
+            "email": forms.widgets.Select,
             "workdays": forms.CheckboxSelectMultiple,
             "key_skills": forms.CheckboxSelectMultiple,
             "learning_interests": forms.CheckboxSelectMultiple,
@@ -94,7 +95,10 @@ class ProfileForm(forms.ModelForm):
             {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["email"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half"}
+            {
+                "class": "govuk-input govuk-!-width-one-half",
+                "choices": self.get_email_choices(),
+            }
         )
         self.fields["contact_email"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
@@ -224,6 +228,16 @@ class ProfileForm(forms.ModelForm):
         self.validate_photo(cleaned_data["photo"])
 
         return cleaned_data
+
+    def get_email_choices(self):
+        verified_emails = PersonService.get_verified_emails(self.instance)
+        choices = []
+        if self.instance.email in verified_emails:
+            choices += (self.instance.email, self.instance.email)
+        choices += [
+            (email, email) for email in verified_emails if (email, email) not in choices
+        ]
+        return choices
 
     def validate_photo(self, photo):
         if not hasattr(photo, "image"):
