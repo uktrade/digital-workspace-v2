@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.core.validators import ValidationError
+from django.core.validators import ValidationError, validate_email
 
 from peoplefinder.models import Person
+from peoplefinder.services.person import PersonService
 
 
 User = get_user_model()
@@ -201,6 +202,21 @@ class ProfileForm(forms.ModelForm):
             raise ValidationError("Manager does not exist")
 
         return manager
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+
+        validate_email(email)
+
+        verified_emails = PersonService.get_verified_emails(self.instance)
+        if verified_emails == []:
+            raise Exception("Could not retrieve valid emails for this user")
+        if email not in verified_emails:
+            raise ValidationError(
+                "That email address has not been verified through SSO authentication"
+            )
+
+        return email
 
     def clean(self):
         cleaned_data = super().clean()
