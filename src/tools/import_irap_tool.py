@@ -2,7 +2,7 @@ from tools.models import IrapToolData, IrapToolDataImport, Tool
 
 
 def update_irap_data(old: IrapToolData, new: IrapToolDataImport) -> tuple[bool, {}, {}]:
-    # Copies all the existing values to the previous values list,
+    # Copies all the existing values to the previous values dictionary,
     # so they can be displayed to the tool admin when the changes
     # are reviewed
     # The format may not be the best, but it can be reviewed when
