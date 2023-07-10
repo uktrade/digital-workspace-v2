@@ -174,7 +174,7 @@ class TeamService:
         """
         root_team = self.get_root_team()
         full_team_tree = (
-            TeamTree.objects.select_related("child")
+            TeamTree.objects.select_related("child", "parent")
             .filter(depth=1)
             .order_by("child", "depth")
         )

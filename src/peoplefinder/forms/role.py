@@ -35,7 +35,10 @@ class RoleForm(forms.ModelForm):
         root_team = team_service.get_root_team()
 
         # Someone is trying to set a new head of the DIT.
-        if cleaned_data["team"] == root_team and cleaned_data["head_of_team"] is True:
+        if (
+            cleaned_data.get("team") == root_team
+            and cleaned_data.get("head_of_team") is True
+        ):
             # If there already is one, don't let them do it.
             if root_team.members.active().filter(head_of_team=True).exists():
                 self.add_error(None, f"There is already a head of the {root_team}")
