@@ -237,6 +237,10 @@ class ProfileForm(forms.ModelForm):
         choices += [
             (email, email) for email in verified_emails if (email, email) not in choices
         ]
+        if choices == []:
+            choices = [
+                (self.instance.email, self.instance.email),
+            ]
         return choices
 
     def validate_photo(self, photo):

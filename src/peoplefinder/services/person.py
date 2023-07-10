@@ -326,7 +326,6 @@ class PersonService:
 
         if response.status_code == 200:
             resp_json = response.json()
-            print(resp_json)
             return resp_json["emails"]
         else:
             logger.error(
