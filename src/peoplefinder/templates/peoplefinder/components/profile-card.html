@@ -14,7 +14,7 @@ context:
         <ul class="profile-details">
             {% if profile %}
                 <li class="profile-name">Hi {{ profile.first_name }}</li>
-                <li class="profile-completion">View your profile{% if profile.profile_completion < 100 %} ({{ profile.profile_completion|floatformat:0 }}% complete){% endif %}</li>
+                <li class="profile-completion">View your profile{% if profile.profile_completion < 100 %} ({{ profile.profile_completion }}% complete){% endif %}</li>
             {% else %}
                 <li class="profile-not-found">No profile found</li>
             {% endif %}

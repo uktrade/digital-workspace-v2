@@ -374,11 +374,7 @@ def get_profile_card(request, staff_sso_email_user_id):
         return HttpResponse(status=401)
 
     try:
-        person = (
-            Person.objects.with_profile_completion()
-            .filter(user__username=staff_sso_email_user_id)
-            .get()
-        )
+        person = Person.objects.filter(user__username=staff_sso_email_user_id).get()
     except (Person.DoesNotExist, Person.MultipleObjectsReturned):
         person = None
 
