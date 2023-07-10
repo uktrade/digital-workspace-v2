@@ -31,14 +31,13 @@ def get_profile_completion(person: "Person") -> int:
 def profile_completion_field_statuses(person: "Person") -> Dict[str, bool]:
     statuses: Dict[str, bool] = {}
     for profile_completion_field in PROFILE_COMPLETION_FIELDS:
+        profile_completion_field_status = False
         if profile_completion_field == "roles":
-            if person.roles.all().exists():
-                statuses[profile_completion_field] = True
-            else:
-                statuses[profile_completion_field] = False
+            # If the person doesn't have a PK then there can't be any relationships.
+            if person.pk and person.roles.all().exists():
+                profile_completion_field_status = True
             continue
-        if getattr(person, profile_completion_field, None) is not None:
-            statuses[profile_completion_field] = True
-        else:
-            statuses[profile_completion_field] = False
+        elif getattr(person, profile_completion_field, None) is not None:
+            profile_completion_field_status = True
+        statuses[profile_completion_field] = profile_completion_field_status
     return statuses

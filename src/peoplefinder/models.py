@@ -527,9 +527,7 @@ class Person(index.Indexed, models.Model):
         return ", ".join(map(str, workdays))
 
     def save(self, *args, **kwargs):
-        force_insert = kwargs.pop("force_insert", False)
-        if not force_insert:
-            self.profile_completion = get_profile_completion(person=self)
+        self.profile_completion = get_profile_completion(person=self)
         return super().save(*args, **kwargs)
 
 
