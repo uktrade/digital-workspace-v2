@@ -322,7 +322,7 @@ class PersonService:
         params = {"email": user_email}
         headers = {"Authorization": f"bearer {settings.AUTHBROKER_INTROSPECTION_TOKEN}"}
 
-        response = requests.get(url, params, headers=headers)
+        response = requests.get(url, params, headers=headers, timeout=5)
 
         if response.status_code == 200:
             resp_json = response.json()
