@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Dict, Optional
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -23,7 +23,6 @@ from peoplefinder.services.audit_log import (
 )
 from peoplefinder.tasks import person_update_notifier
 from user.models import User
-
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +51,19 @@ You can update any profile on Digital Workspace. Find out more at: https://works
 
 
 class PersonService:
+    # List of fields that contribute to profile completion and their weights.
+    PROFILE_COMPLETION_FIELDS: Dict[str, int] = {
+        "first_name": 0,
+        "last_name": 0,
+        "photo": 1,
+        "email": 0,
+        "primary_phone_number": 1,
+        "country": 1,
+        "town_city_or_region": 1,
+        "manager": 1,
+        "roles": 1,  # Related objects
+    }
+
     def create_user_profile(self, user: User) -> Person:
         """Create a profile for the given user if there isn't one.
 
@@ -314,6 +326,34 @@ class PersonService:
             personalisation=context,
         )
 
+    def get_profile_completion(self, person: "Person") -> int:
+        """
+        Profile completion is calculated by adding up the weights of the fields
+        that have been completed and dividing by the total of all the weights.
+        """
+        complete_fields = 0
+        field_statuses = self.profile_completion_field_statuses(person)
+        for field_status in field_statuses:
+            if field_statuses[field_status]:
+                complete_fields += self.PROFILE_COMPLETION_FIELDS[field_status]
+
+        total_field_weights = sum(self.PROFILE_COMPLETION_FIELDS.values())
+        percentage = (complete_fields / total_field_weights) * 100
+        return int(percentage)
+
+    def profile_completion_field_statuses(self, person: "Person") -> Dict[str, bool]:
+        statuses: Dict[str, bool] = {}
+        for profile_completion_field in self.PROFILE_COMPLETION_FIELDS:
+            profile_completion_field_status = False
+            if profile_completion_field == "roles":
+                # If the person doesn't have a PK then there can't be any relationships.
+                if not person._state.adding and person.roles.all().exists():
+                    profile_completion_field_status = True
+            elif getattr(person, profile_completion_field, None) is not None:
+                profile_completion_field_status = True
+            statuses[profile_completion_field] = profile_completion_field_status
+        return statuses
+
 
 class PersonAuditLogSerializer(AuditLogSerializer):
     model = Person
@@ -322,7 +362,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 44, (
+    assert len(Person._meta.get_fields()) == 45, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )

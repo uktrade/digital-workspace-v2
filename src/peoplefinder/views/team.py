@@ -15,7 +15,6 @@ from peoplefinder.services.team import TeamService
 
 from .base import PeoplefinderView
 
-
 # TODO: Potential to refactor for the common parts.
 
 
@@ -55,16 +54,12 @@ class TeamDetailView(DetailView, PeoplefinderView):
             # Warning: Multiple requests per sub-team. This might need optimising in the
             # future.
             for sub_team in context["sub_teams"]:
-                sub_team.avg_profile_completion = (
-                    Person.active.with_profile_completion()
-                    .filter(
-                        teams__in=[
-                            sub_team,
-                            *team_service.get_all_child_teams(sub_team),
-                        ]
-                    )
-                    .aggregate(Avg("profile_completion"))["profile_completion__avg"]
-                )
+                sub_team.avg_profile_completion = Person.active.filter(
+                    teams__in=[
+                        sub_team,
+                        *team_service.get_all_child_teams(sub_team),
+                    ]
+                ).aggregate(Avg("profile_completion"))["profile_completion__avg"]
 
         if self.request.user.has_perms(
             ["peoplefinder.change_team", "peoplefinder.view_auditlog"]

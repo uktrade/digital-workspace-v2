@@ -272,7 +272,6 @@ class PersonViewSet(ReadOnlyModelViewSet):
                 "additional_roles",
                 "buildings",
             )
-            .with_profile_completion()
             .defer("do_not_work_for_dit")
             .filter(pk__in=pks)
             .order_by(PERSON_ORDERING)

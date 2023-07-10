@@ -7,14 +7,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.aggregates import ArrayAgg, StringAgg
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import Case, Exists, F, Func, JSONField, OuterRef, Q, Value, When
+from django.db.models import Case, F, Func, JSONField, Q, Value, When
 from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search import index
 from wagtail.search.queryset import SearchableQuerySetMixin
-
 
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
@@ -172,36 +171,6 @@ class ActivePeopleManager(models.Manager):
 class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
     def active(self):
         return self.exclude(is_active=False)
-
-    def with_profile_completion(self):
-        # Each statement in this list should return 0 or 1 to represent whether that
-        # field is complete.
-        fields = [
-            Case(When(country__isnull=False, then=1), default=0),
-            Case(When(town_city_or_region__isnull=False, then=1), default=0),
-            Case(When(primary_phone_number__isnull=False, then=1), default=0),
-            Case(When(manager__isnull=False, then=1), default=0),
-            Case(When(photo__isnull=False, then=1), default=0),
-            Case(When(email__isnull=False, then=1), default=0),
-            Case(When(first_name__isnull=False, then=1), default=0),
-            Case(When(last_name__isnull=False, then=1), default=0),
-            Case(
-                When(
-                    Exists(TeamMember.objects.filter(person_id=OuterRef("pk"))),
-                    then=1,
-                ),
-                default=0,
-            ),
-        ]
-
-        # `sum(fields)` is the same as doing `fields[0] + field[1] + field[2]`.
-        # This will create a SQL query which will add up the completed fields.
-        completed = sum(fields)
-        # We need the `total` as a float so that the SQL calculates the decimal
-        # percentage correctly.
-        total = float(len(fields))
-
-        return self.annotate(profile_completion=(completed / total) * 100)
 
     def get_annotated(self):
         return self.annotate(
@@ -471,6 +440,7 @@ class Person(index.Indexed, models.Model):
         validators=[validate_virus_check_result],
     )
     login_count = models.IntegerField(default=0)
+    profile_completion = models.IntegerField(default=0)
 
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
@@ -553,6 +523,12 @@ class Person(index.Indexed, models.Model):
 
         # "Monday, Tuesday, Wednesday, ..."
         return ", ".join(map(str, workdays))
+
+    def save(self, *args, **kwargs):
+        from peoplefinder.services.person import PersonService
+
+        self.profile_completion = PersonService().get_profile_completion(person=self)
+        return super().save(*args, **kwargs)
 
 
 class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):

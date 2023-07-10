@@ -14,7 +14,6 @@ def person_update_notifier(person_id):
 
     person = (
         Person.objects.get_annotated()
-        .with_profile_completion()
         .defer(
             "photo",
             "do_not_work_for_dit",

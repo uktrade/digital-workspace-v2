@@ -29,7 +29,6 @@ from peoplefinder.services.team import TeamService
 
 from .base import HtmxFormView, PeoplefinderView
 
-
 User = get_user_model()
 
 
@@ -59,9 +58,6 @@ class ProfileDetailView(ProfileView, DetailView):
     context_object_name = "profile"
     template_name = "peoplefinder/profile.html"
     slug_url_kwarg = "profile_slug"
-
-    def get_queryset(self):
-        return super().get_queryset().with_profile_completion()
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -106,6 +102,9 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
     slug_url_kwarg = "profile_slug"
     success_message = "Your profile has been updated"
 
+    def get_success_url(self):
+        return reverse("profile-edit", kwargs={"profile_slug": self.object.slug})
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({"request": self.request})
@@ -125,10 +124,17 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             profile=profile,
         )
 
+        field_statuses = PersonService().profile_completion_field_statuses(profile)
+
         context.update(
             roles=roles,
             role_forms=role_forms,
             update_user_form=update_user_form,
+            missing_profile_completion_fields=[
+                (field, field.replace("_", " ").capitalize())
+                for field, field_status in field_statuses.items()
+                if not field_status
+            ],
         )
 
         return context

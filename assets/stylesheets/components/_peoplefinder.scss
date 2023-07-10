@@ -380,3 +380,11 @@
     width: 50%;
   }
 }
+
+.missing-profile-completion-fields {
+  .comma {
+    &:last-child {
+      display: none;
+    }
+  }
+}
