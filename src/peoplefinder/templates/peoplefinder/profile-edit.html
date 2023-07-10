@@ -18,7 +18,7 @@
 
     <h2 class="govuk-heading-l">Your profile is {{ profile.profile_completion }}% complete</h2>
 
-    {% if profile.profile_completion is not 100 %}
+    {% if profile.profile_completion < 100 %}
         <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
@@ -36,7 +36,7 @@
 
     <p class="govuk-body">
         This is how you will appear in search results.
-        {% if profile.profile_completion is not 100 %}
+        {% if profile.profile_completion < 100 %}
             Completing your profile makes it easier for colleagues to find you.
         {% endif %}
     </p>

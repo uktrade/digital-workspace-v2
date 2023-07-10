@@ -2,13 +2,15 @@
 
 from django.db import migrations, models
 
-from peoplefinder.utils import get_profile_completion
+from peoplefinder.services.person import PersonService
 
 
 def populate_profile_completion(apps, schema_editor):
     Person = apps.get_model("peoplefinder", "Person")
     for person in Person.objects.all():
-        person.profile_completion = get_profile_completion(person=person)
+        person.profile_completion = PersonService().get_profile_completion(
+            person=person
+        )
         person.save()
 
 

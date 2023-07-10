@@ -15,8 +15,6 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search import index
 from wagtail.search.queryset import SearchableQuerySetMixin
 
-from peoplefinder.utils import get_profile_completion
-
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
 
@@ -527,7 +525,9 @@ class Person(index.Indexed, models.Model):
         return ", ".join(map(str, workdays))
 
     def save(self, *args, **kwargs):
-        self.profile_completion = get_profile_completion(person=self)
+        from peoplefinder.services.person import PersonService
+
+        self.profile_completion = PersonService().get_profile_completion(person=self)
         return super().save(*args, **kwargs)
 
 

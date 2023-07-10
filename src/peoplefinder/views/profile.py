@@ -60,9 +60,6 @@ class ProfileDetailView(ProfileView, DetailView):
     template_name = "peoplefinder/profile.html"
     slug_url_kwarg = "profile_slug"
 
-    def get_queryset(self):
-        return super().get_queryset()
-
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
 
