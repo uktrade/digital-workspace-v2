@@ -119,6 +119,7 @@ THIRD_PARTY_APPS = [
     "django_chunk_upload_handlers",
     "django_audit_log_middleware",
     "rest_framework",
+    "django_celery_beat",
     "crispy_forms",
     "crispy_forms_gds",
     "django_feedback_govuk",
@@ -217,10 +218,12 @@ else:
 
 DATABASES = {
     "default": env.db(),
-    "uk_staff_locations": env.db("UK_STAFF_LOCATIONS_DATABASE_URL"),
 }
+if "UK_STAFF_LOCATIONS_DATABASE_URL" in env:
+    DATABASES["uk_staff_locations"] = env.db("UK_STAFF_LOCATIONS_DATABASE_URL")
 
-DATABASE_ROUTERS = ["peoplefinder.routers.UkStaffLocationsRouter"]
+
+DATABASE_ROUTERS = ["peoplefinder.routers.IngestedModelsRouter"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -417,6 +420,12 @@ if "redis" in VCAP_SERVICES:
     )
 else:
     CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
+
+# Celery
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_RESULT_SERIALIZER = "json"
 
 CACHES = {
     "default": {

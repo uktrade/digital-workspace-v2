@@ -22,9 +22,11 @@ def profile_field_anchor(profile, *field_names) -> Union[SafeString, str]:
 
 @register.inclusion_tag("peoplefinder/partials/profile-completion-field-link.html")
 def profile_completion_field_actions(field_name, profile) -> Union[SafeString, str]:
-    human_readable_field_name = field_name.replace("_", " ")
-    if profile_field := Person._meta.get_field(field_name):
+    try:
+        profile_field = Person._meta.get_field(field_name)
         human_readable_field_name = profile_field.verbose_name
+    except Exception:
+        human_readable_field_name = field_name.replace("_", " ")
 
     context: Dict[str, Any] = {
         "show_link": False,

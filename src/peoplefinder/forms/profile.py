@@ -115,6 +115,17 @@ class ProfileForm(forms.ModelForm):
         self.fields["secondary_phone_number"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
+
+        uk_office_locations = self.fields["uk_office_location"].queryset
+        self.fields["uk_office_location"].queryset = uk_office_locations.filter(
+            organisation__in=[
+                "Department for International Trade",
+                "Department for Business, Energy and Industrial Strategy",
+            ]
+        ).order_by(
+            "city",
+            "name",
+        )
         self.fields["uk_office_location"].widget.attrs.update(
             {"class": "govuk-select govuk-!-width-one-half"}
         )

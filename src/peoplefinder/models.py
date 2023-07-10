@@ -175,12 +175,13 @@ class UkStaffLocation(IngestedModel):
         ]
         ordering = ["name"]
 
-    code = models.CharField(max_length=30)
-    name = models.CharField(max_length=40)
-    city = models.CharField(max_length=55)
+    code = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    organisation = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return f"{self.city} - {self.name}"
+        return self.name
 
 
 class ActivePeopleManager(models.Manager):

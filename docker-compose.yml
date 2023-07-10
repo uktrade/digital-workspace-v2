@@ -55,10 +55,16 @@ services:
       - redis
       - opensearch
       - celery
+      - celery-beat
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.local
     stdin_open: true
     tty: true
+
+  redis:
+    image: redis:buster
+    ports:
+      - "6379:6379"
 
   celery:
     image: digital_workspace/wagtail:latest
@@ -70,10 +76,17 @@ services:
       - redis
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.local
-  redis:
-    image: redis:buster
-    ports:
-      - "6379:6379"
+
+  celery-beat:
+    image: digital_workspace/wagtail:latest
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+    volumes:
+      - .:/app
+    command: poetry run celery -A config.celery beat -l INFO
+    depends_on:
+      - db
+      - redis
 
   playwright:
     build:
