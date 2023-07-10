@@ -9,7 +9,7 @@ Context:
 <script src="{% static 'peoplefinder/team-select.js' %}"></script>
 
 <div class="pf-roles">
-    <h2 class="govuk-heading-m">Teams and roles {% profile_field_anchor "roles" profile %}</h2>
+    <h2 class="govuk-heading-m">Teams and roles {% profile_field_anchor profile "roles" %}</h2>
     <div id="roles">
         {% for form in role_forms %}
             {% include 'peoplefinder/components/role-edit.html' with profile=profile role=form.instance form=form %}
