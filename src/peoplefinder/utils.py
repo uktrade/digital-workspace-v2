@@ -36,7 +36,6 @@ def profile_completion_field_statuses(person: "Person") -> Dict[str, bool]:
             # If the person doesn't have a PK then there can't be any relationships.
             if person.pk and person.roles.all().exists():
                 profile_completion_field_status = True
-            continue
         elif getattr(person, profile_completion_field, None) is not None:
             profile_completion_field_status = True
         statuses[profile_completion_field] = profile_completion_field_status
