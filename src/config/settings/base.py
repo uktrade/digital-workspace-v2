@@ -487,6 +487,7 @@ AUTHBROKER_ANONYMOUS_URL_NAMES = (
     "person-api-people-list",
     "person-api-people-detail",
     "team-api-teams-list",
+    "profile-get-card",
 )
 
 # There are some big pages with lots of content that need to send many fields.

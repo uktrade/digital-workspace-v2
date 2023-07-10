@@ -2,6 +2,10 @@ import io
 from pathlib import Path
 
 from django.contrib import messages
+from django.template.response import TemplateResponse
+from django.utils.decorators import decorator_from_middleware
+from django_hawk.middleware import HawkResponseMiddleware
+from django_hawk.utils import DjangoHawkAuthenticationFailed, authenticate_request
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -14,6 +18,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
+from webpack_loader.utils import get_static
 
 from peoplefinder.forms.profile import (
     ProfileForm,
@@ -359,3 +364,30 @@ def get_profile_by_staff_sso_id(request, staff_sso_id):
     person = get_object_or_404(Person, user__legacy_sso_user_id=staff_sso_id)
 
     return redirect(person)
+
+
+@decorator_from_middleware(HawkResponseMiddleware)
+def get_profile_card(request, staff_sso_email_user_id):
+    try:
+        authenticate_request(request=request)
+    except DjangoHawkAuthenticationFailed:
+        return HttpResponse(status=401)
+
+    try:
+        person = (
+            Person.objects.with_profile_completion()
+            .filter(user__username=staff_sso_email_user_id)
+            .get()
+        )
+    except (Person.DoesNotExist, Person.MultipleObjectsReturned):
+        person = None
+
+    return TemplateResponse(
+        request,
+        "peoplefinder/components/profile-card.html",
+        {
+            "profile": person,
+            "profile_url": request.build_absolute_uri(person.get_absolute_url()),
+            "no_photo_url": request.build_absolute_uri(get_static("no-photo.png")),
+        },
+    )

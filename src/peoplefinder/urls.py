@@ -23,6 +23,7 @@ from peoplefinder.views.profile import (
     ProfileLegacyView,
     ProfileUpdateUserView,
     get_profile_by_staff_sso_id,
+    get_profile_card,
 )
 from peoplefinder.views.role import RoleFormView, TeamSelectView
 from peoplefinder.views.team import (
@@ -118,6 +119,11 @@ people_urlpatterns = [
         "<uuid:profile_slug>/update-user/",
         ProfileUpdateUserView.as_view(),
         name="profile-update-user",
+    ),
+    path(
+        "<str:staff_sso_email_user_id>/card",
+        get_profile_card,
+        name="profile-get-card",
     ),
     path(
         "get-by-staff-sso-id/<str:staff_sso_id>/",
