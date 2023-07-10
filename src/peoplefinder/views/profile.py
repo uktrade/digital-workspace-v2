@@ -26,7 +26,6 @@ from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.image import ImageService
 from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
-from peoplefinder.utils import profile_completion_field_statuses
 
 from .base import HtmxFormView, PeoplefinderView
 
@@ -125,7 +124,7 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             profile=profile,
         )
 
-        field_statuses = profile_completion_field_statuses(profile)
+        field_statuses = PersonService().profile_completion_field_statuses(profile)
 
         context.update(
             roles=roles,

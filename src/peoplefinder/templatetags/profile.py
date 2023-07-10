@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.safestring import SafeString
 
 from peoplefinder.models import Person
-from peoplefinder.utils import profile_completion_field_statuses
+from peoplefinder.services.person import PersonService
 
 register = template.Library()
 
@@ -35,7 +35,7 @@ def profile_completion_field_link(field_name, profile) -> Union[SafeString, str]
         ),
     }
 
-    field_statuses = profile_completion_field_statuses(profile)
+    field_statuses = PersonService().profile_completion_field_statuses(profile)
     if not field_statuses.get(field_name, False):
         context.update(show_link=True)
     return context
