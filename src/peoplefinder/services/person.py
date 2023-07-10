@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import Dict, Optional
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -23,9 +23,6 @@ from peoplefinder.services.audit_log import (
 )
 from peoplefinder.tasks import person_update_notifier
 from user.models import User
-
-if TYPE_CHECKING:
-    from peoplefinder.models import Person
 
 logger = logging.getLogger(__name__)
 
