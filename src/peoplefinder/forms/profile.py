@@ -44,7 +44,7 @@ class ProfileForm(forms.ModelForm):
             "photo",
         ]
         widgets = {
-            "email": forms.widgets.Select,
+            "email": forms.Select,
             "workdays": forms.CheckboxSelectMultiple,
             "key_skills": forms.CheckboxSelectMultiple,
             "learning_interests": forms.CheckboxSelectMultiple,
@@ -232,14 +232,12 @@ class ProfileForm(forms.ModelForm):
         choices = []
         if self.instance.email in verified_emails:
             choices += [
-                (self.instance.email, self.instance.email),
+                self.instance.email,
             ]
-        choices += [
-            (email, email) for email in verified_emails if (email, email) not in choices
-        ]
-        if choices == []:
+        choices += [email for email in verified_emails if email not in choices]
+        if not choices:
             choices = [
-                (self.instance.email, self.instance.email),
+                self.instance.email,
             ]
         return choices
 
