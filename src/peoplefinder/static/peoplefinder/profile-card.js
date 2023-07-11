@@ -16,7 +16,7 @@
    * @returns {String}
    */
   function getStaffSsoUrl() {
-    const metaName = "peoplefinder:staff-sso-url";
+    const metaName = "profile-card-url";
     const meta = document.querySelector(`meta[name="${metaName}"]`);
 
     return meta.content;
