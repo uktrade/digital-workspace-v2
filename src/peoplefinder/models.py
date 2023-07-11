@@ -321,7 +321,7 @@ class Person(index.Indexed, models.Model):
     email = models.EmailField(
         "Main work email address",
         help_text=(
-            "Enter your own official work email address provided by the"
+            "Choose your own official work email address provided by the"
             " organisation you are directly employed by or contracted to."
         ),
     )
