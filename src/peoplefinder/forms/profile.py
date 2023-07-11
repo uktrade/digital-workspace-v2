@@ -97,7 +97,7 @@ class ProfileForm(forms.ModelForm):
         self.fields["email"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
-        self.fields["email"].choices = (self.get_email_choices(),)
+        self.fields["email"].choices = self.get_email_choices()
         self.fields["contact_email"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
