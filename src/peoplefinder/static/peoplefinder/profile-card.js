@@ -15,7 +15,7 @@
    *
    * @returns {String}
    */
-  function getStaffSsoUrl() {
+  function getProfileCardUrl() {
     const metaName = "profile-card-url";
     const meta = document.querySelector(`meta[name="${metaName}"]`);
 
@@ -27,7 +27,7 @@
    * @returns {Node}
    */
   async function getProfileCard() {
-    const url = getStaffSsoUrl() + "/profile/";
+    const url = getProfileCardUrl();
 
     const response = await fetch(url, {
       credentials: "include",
