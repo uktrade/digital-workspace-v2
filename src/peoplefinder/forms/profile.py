@@ -44,7 +44,7 @@ class ProfileForm(forms.ModelForm):
             "photo",
         ]
         widgets = {
-            "email": forms.widgets.Select,
+            # "email": forms.widgets.Select,
             "workdays": forms.CheckboxSelectMultiple,
             "key_skills": forms.CheckboxSelectMultiple,
             "learning_interests": forms.CheckboxSelectMultiple,
@@ -97,7 +97,7 @@ class ProfileForm(forms.ModelForm):
         self.fields["email"].widget.attrs.update(
             {
                 "class": "govuk-input govuk-!-width-one-half",
-                "choices": self.get_email_choices(),
+                # "choices": self.get_email_choices(),
             }
         )
         self.fields["contact_email"].widget.attrs.update(
