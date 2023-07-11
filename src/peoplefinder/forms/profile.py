@@ -7,7 +7,6 @@ from peoplefinder.services.person import PersonService
 
 
 User = get_user_model()
-email_choice_field = forms.ChoiceField(widget=forms.Select)
 
 
 class ProfileForm(forms.ModelForm):
@@ -45,7 +44,7 @@ class ProfileForm(forms.ModelForm):
             "photo",
         ]
         widgets = {
-            "email": email_choice_field,
+            # "email": forms.Select,
             "workdays": forms.CheckboxSelectMultiple,
             "key_skills": forms.CheckboxSelectMultiple,
             "learning_interests": forms.CheckboxSelectMultiple,
@@ -96,9 +95,9 @@ class ProfileForm(forms.ModelForm):
             {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["email"].widget.attrs.update(
-            {"class": "govuk-select govuk-!-width-one-half"}
+            {"class": "govuk-input govuk-!-width-one-half"}
         )
-        self.fields["email"].choices = self.get_email_choices()
+        # self.fields["email"].choices = self.get_email_choices()
         self.fields["contact_email"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
