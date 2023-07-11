@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("peoplefinder", "0102_remove_person_manager_cannot_be_self_and_more"),
+        ("peoplefinder", "0103_person_profile_completion"),
     ]
 
     operations = [
