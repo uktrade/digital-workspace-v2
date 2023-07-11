@@ -358,7 +358,7 @@ class PersonService:
     @staticmethod
     def get_verified_emails(person: Person) -> list[str]:
         user_email = person.user.email  # @TODO prefer UUID if we can get it from SSO
-        url = f"{settings.AUTHBROKER_URL}api/v1/user/emails/"
+        url = f"{settings.AUTHBROKER_URL}/api/v1/user/emails/"
         params = {"email": user_email}
         headers = {"Authorization": f"bearer {settings.AUTHBROKER_INTROSPECTION_TOKEN}"}
 
