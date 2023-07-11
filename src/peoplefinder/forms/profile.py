@@ -97,9 +97,9 @@ class ProfileForm(forms.ModelForm):
         self.fields["email"].widget.attrs.update(
             {
                 "class": "govuk-input govuk-!-width-one-half",
-                "choices": self.get_email_choices(),
             }
         )
+        self.fields["email"].choices = (self.get_email_choices(),)
         self.fields["contact_email"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
@@ -217,7 +217,7 @@ class ProfileForm(forms.ModelForm):
             raise Exception("Could not retrieve valid emails for this user")
         if email not in verified_emails:
             raise ValidationError(
-                "That email address has not been verified through SSO authentication"
+                "Email address must be officially assigned and verified by SSO authentication"
             )
 
         return email
@@ -233,7 +233,9 @@ class ProfileForm(forms.ModelForm):
         verified_emails = PersonService.get_verified_emails(self.instance)
         choices = []
         if self.instance.email in verified_emails:
-            choices += (self.instance.email, self.instance.email)
+            choices += [
+                (self.instance.email, self.instance.email),
+            ]
         choices += [
             (email, email) for email in verified_emails if (email, email) not in choices
         ]
