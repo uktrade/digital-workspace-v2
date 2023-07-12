@@ -11,51 +11,64 @@ from extended_search.index import (
 )
 
 
-class TestIndexed:
-    @pytest.mark.xfail
-    def test_check_search_fields_uses_model_field_name(self):
-        ...
-        # class TestModel(Indexed):
-        #     search_fields = [SearchField("foo")]
-
-        # TestModel._meta = mocker.mock()
-
-        # assert TestModel._check_search_fields() == []
-
-
 class TestRenamedFieldMixin:
     def test_get_field_uses_model_field_name(self, mocker):
-        mock_model = mocker.MagicMock()
+        mock_model = mocker.Mock()
         mock_model._meta.get_field.return_value = None
         original_field = index.SearchField("foo")
         original_field.get_field(mock_model)
-        assert mock_model._meta.get_field.called_with("foo")
+        mock_model._meta.get_field.assert_called_once_with("foo")
 
         mock_model.reset_mock()
         field = SearchField("foo", model_field_name="bar")
         field.get_field(mock_model)
-        assert mock_model._meta.get_field.not_called_with("foo")
-        assert mock_model._meta.get_field.called_with("barll")
+        mock_model._meta.get_field.assert_called_once_with("bar")
 
-    @pytest.mark.xfail
-    def test_get_field_uses_parent(self):
-        ...
+    def test_get_field_uses_parent(self, mocker):
+        mock_model = mocker.Mock()
+        mock_model._meta.get_field.return_value = None
+        parent_method = mocker.patch(
+            "wagtail.search.index.SearchField.get_field", return_value=True
+        )
+        field = SearchField("foo", model_field_name="bar")
+        field.get_field(mock_model)
+        parent_method.assert_not_called()
 
-    @pytest.mark.xfail
-    def test_get_definition_model_uses_model_field_name(self):
-        ...
+        field = SearchField("foo")
+        field.get_field(mock_model)
+        parent_method.assert_called_once()
 
-    @pytest.mark.xfail
-    def test_get_definition_model_uses_parent(self):
-        ...
+    def test_get_definition_model_uses_parent_and_model_field_name(self, mocker):
+        mock_model = mocker.Mock()
+        parent_method = mocker.patch(
+            "wagtail.search.index.SearchField.get_definition_model", return_value=None
+        )
+        field = SearchField("foo")
+        result = field.get_definition_model(mock_model)
+        parent_method.assert_called_once()
+        assert result is None
 
-    @pytest.mark.xfail
-    def test_get_value_uses_model_field_name(self):
-        ...
+        mock_base = mocker.Mock()
+        mock_base.bar = True
+        mocker.patch("inspect.getmro", return_value=[mock_base])
+        field = SearchField("foo", model_field_name="bar")
+        result = field.get_definition_model(mock_model)
+        assert result == mock_base
 
-    @pytest.mark.xfail
-    def test_get_value_uses_parent(self):
-        ...
+    def test_get_value_uses_parent_and_model_field_name(self, mocker):
+        mock_model = mocker.Mock()
+        mock_model.bar = "baz"
+        parent_method = mocker.patch(
+            "wagtail.search.index.SearchField.get_value", return_value=None
+        )
+        field = SearchField("foo")
+        result = field.get_value(mock_model)
+        parent_method.assert_called_once()
+        assert result is None
+
+        field = SearchField("foo", model_field_name="bar")
+        result = field.get_value(mock_model)
+        assert result == "baz"
 
 
 class TestAutocompleteField:

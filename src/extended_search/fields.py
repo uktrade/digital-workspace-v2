@@ -39,31 +39,38 @@ class BaseIndexedField(AbstractBaseField):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
-        self.search = kwargs["search"] = search
-        self.autocomplete = kwargs["autocomplete"] = autocomplete
-        self.filter = kwargs["filter"] = filter
-        self.fuzzy = kwargs["fuzzy"] = fuzzy
-        self.kwargs = kwargs
+        self.search = self.kwargs["search"] = search
+        self.autocomplete = self.kwargs["autocomplete"] = autocomplete
+        self.filter = self.kwargs["filter"] = filter
+        self.fuzzy = self.kwargs["fuzzy"] = fuzzy
 
         if fuzzy:
             self.search = True
 
     def _get_search_mapping_object(self):
+        if not self.search:
+            return {}
+
+        mapping = {"search": []}
+
         if self.fuzzy:
-            mapping = {
-                "search": [
-                    AnalysisType.TOKENIZED,
-                ],
-                "fuzzy": None,
-            }
-        else:
-            mapping = {"search": []}
+            mapping["search"] = [
+                AnalysisType.TOKENIZED,
+            ]
+            mapping["fuzzy"] = None
+
         return mapping
 
     def _get_autocomplete_mapping_object(self):
+        if not self.autocomplete:
+            return {}
+
         return {"autocomplete": None}
 
     def _get_filter_mapping_object(self):
+        if not self.filter:
+            return {}
+
         return {"filter": None}
 
     def get_mapping(self):
@@ -84,16 +91,18 @@ class IndexedField(BaseIndexedField):
         tokenized=False,
         explicit=False,
         keyword=False,
-        proximity=False,  # @TODO How to implement this?
+        proximity=False,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
-        self.tokenized = kwargs["tokenized"] = tokenized
-        self.explicit = kwargs["explicit"] = explicit
-        self.keyword = kwargs["keyword"] = keyword
-        self.proximity = kwargs["proximity"] = proximity
+        self.tokenized = self.kwargs["tokenized"] = tokenized
+        self.explicit = self.kwargs["explicit"] = explicit
+        self.keyword = self.kwargs["keyword"] = keyword
+        self.proximity = self.kwargs["proximity"] = proximity
 
-        if tokenized or explicit or keyword:
+        if (
+            tokenized or explicit or keyword or proximity
+        ):  # @TODO does proximity need search?
             self.search = True
 
     def _get_search_mapping_object(self):
@@ -112,8 +121,7 @@ class IndexedField(BaseIndexedField):
 class RelatedIndexedFields(AbstractBaseField):
     def __init__(self, name, related_fields, *args, **kwargs):
         super().__init__(name, *args, **kwargs)
-        self.related_fields = kwargs["related_fields"] = related_fields
-        self.kwargs = kwargs
+        self.related_fields = self.kwargs["related_fields"] = related_fields
 
     def _get_related_mapping_object(self):
         fields = []
