@@ -260,7 +260,7 @@ class TestIndexedField:
         assert field.proximity == False
 
         field = IndexedField("foo", proximity=True)
-        assert field.search == True
+        assert field.search == False
         assert field.proximity == True
         assert field.tokenized == False
         assert field.explicit == False
@@ -281,7 +281,7 @@ class TestIndexedField:
 
         field = IndexedField("foo", proximity=True)
         mapping = field._get_search_mapping_object()
-        assert mapping == {"search": [AnalysisType.PROXIMITY]}
+        assert mapping == {}
 
         field = IndexedField(
             "foo", tokenized=True, explicit=True, keyword=True, proximity=True
@@ -292,7 +292,7 @@ class TestIndexedField:
                 AnalysisType.TOKENIZED,
                 AnalysisType.EXPLICIT,
                 AnalysisType.KEYWORD,
-                AnalysisType.PROXIMITY,
+                # AnalysisType.PROXIMITY,
             ]
         }
 

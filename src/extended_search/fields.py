@@ -100,9 +100,7 @@ class IndexedField(BaseIndexedField):
         self.keyword = self.kwargs["keyword"] = keyword
         self.proximity = self.kwargs["proximity"] = proximity
 
-        if (
-            tokenized or explicit or keyword or proximity
-        ):  # @TODO does proximity need search?
+        if tokenized or explicit or keyword:  # @TODO does proximity need search?
             self.search = True
 
     def _get_search_mapping_object(self):
@@ -113,8 +111,8 @@ class IndexedField(BaseIndexedField):
             mapping["search"] += [AnalysisType.EXPLICIT]
         if self.keyword:
             mapping["search"] += [AnalysisType.KEYWORD]
-        if self.proximity:
-            mapping["search"] += [AnalysisType.PROXIMITY]
+        # if self.proximity:
+        #     mapping["search"] += [AnalysisType.PROXIMITY]  # @TODO proximity
         return mapping
 
 
