@@ -3,7 +3,6 @@ import inspect
 import logging
 
 from django.core import checks
-from django.core.exceptions import FieldDoesNotExist
 from wagtail.search import index
 
 
