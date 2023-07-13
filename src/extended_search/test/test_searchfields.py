@@ -6,7 +6,6 @@ from extended_search.index import (
     SearchField,
     RelatedFields,
     AutocompleteField,
-    Indexed,
     RenamedFieldMixin,
 )
 
@@ -36,6 +35,35 @@ class TestRenamedFieldMixin:
 
         field = SearchField("foo")
         field.get_field(mock_model)
+        parent_method.assert_called_once()
+
+    def test_get_attname_uses_field_name_not_model_field_name(self, mocker):
+        mock_field = mocker.Mock()
+        mock_field.attname = "baz"
+        mock_model = mocker.Mock()
+        mock_model._meta.get_field.return_value = mock_field
+        original_field = index.SearchField("foo")
+        assert original_field.get_attname(mock_model) == "baz"
+
+        field = SearchField("foo")
+        assert field.get_attname(mock_model) == "baz"
+
+        field = SearchField("foo", model_field_name="bar")
+        assert field.field_name == "foo"
+        assert field.kwargs["model_field_name"] == "bar"
+        assert field.get_attname(mock_model) == "foo"
+
+    def test_get_attname_uses_parent(self, mocker):
+        mock_model = mocker.Mock()
+        parent_method = mocker.patch(
+            "wagtail.search.index.SearchField.get_attname", return_value=True
+        )
+        field = SearchField("foo", model_field_name="bar")
+        field.get_attname(mock_model)
+        parent_method.assert_not_called()
+
+        field = SearchField("foo")
+        field.get_attname(mock_model)
         parent_method.assert_called_once()
 
     def test_get_definition_model_uses_parent_and_model_field_name(self, mocker):

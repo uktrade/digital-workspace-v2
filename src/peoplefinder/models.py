@@ -352,17 +352,16 @@ class PersonIndexManager(ModelIndexManager):
             "search_teams",
             tokenized=True,
             explicit=True,
+            fuzzy=True,
             boost=2.0,
         ),
         IndexedField(
             "has_photo",
-            filter=True,
             proximity=True,
             boost=1.5,
         ),
         IndexedField(
             "profile_completion",
-            filter=True,
             proximity=True,
             boost=2.0,
         ),
@@ -663,6 +662,10 @@ class Person(Indexed, models.Model):
     def search_titles(self):
         return ", ".join(self.roles.all().values_list("job_title", flat=True))
 
+    @property
+    def search_email(self):
+        return self.email
+
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
 
@@ -755,6 +758,7 @@ class TeamIndexManager(ModelIndexManager):
             "abbreviation",
             tokenized=True,
             explicit=True,
+            keyword=True,
             boost=4.0,
         ),
         IndexedField(

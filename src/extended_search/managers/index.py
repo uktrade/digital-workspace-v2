@@ -35,7 +35,7 @@ class ModelIndexManager(QueryBuilder):
                     index_field_name,
                     model_field_name=model_field_name,
                     es_extra={
-                        "search_analyzer": cls._get_analyzer_name(analyzer),
+                        "analyzer": cls._get_analyzer_name(analyzer),
                     },
                 ),
             ]

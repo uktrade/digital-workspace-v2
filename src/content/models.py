@@ -131,6 +131,7 @@ class ContentPageIndexManager(ModelIndexManager):
             explicit=True,
         ),
         IndexedField("is_creatable", filter=True),
+        IndexedField("last_published_at", proximity=True),
     ]
 
 

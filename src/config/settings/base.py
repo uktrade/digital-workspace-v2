@@ -313,20 +313,33 @@ WAGTAILSEARCH_BACKENDS = {
                 },
                 "analysis": {
                     "filter": {
-                        "english_snowball": {"type": "snowball", "language": "English"},
+                        "english_snowball": {
+                            "type": "snowball",
+                            "language": "english",
+                        },
+                        "remove_spaces": {
+                            "type": "pattern_replace",
+                            "pattern": "[ ()+]",
+                            "replacement": "",
+                        },
                     },
                     "analyzer": {
                         "snowball": {
                             "tokenizer": "standard",
                             "filter": [
                                 "english_snowball",
+                                "stop",
+                                "lowercase",
+                                "asciifolding",
                             ],
                         },
-                        # "no_spaces": {
-                        #     "type": "pattern",
-                        #     "pattern": "",
-                        #     "lowercase": True
-                        # }
+                        # Used for keyword fields like acronyms and phone
+                        # numbers - use with caution (it removes whitespace and
+                        # tokenizes everything else into a single token)
+                        "no_spaces": {
+                            "tokenizer": "keyword",
+                            "filter": "remove_spaces",
+                        },
                     },
                 },
             }

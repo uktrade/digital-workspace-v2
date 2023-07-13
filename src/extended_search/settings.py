@@ -39,13 +39,13 @@ DEFAULTS = {
             ],
         },
         "KEYWORD": {
-            "es_analyzer": "keyword",
+            "es_analyzer": "no_spaces",
             "index_fieldname_suffix": "_keyword",
             "query_types": ["PHRASE"],
         },
-        "PROXIMITY": {
-            "es_analyzer": "simple",
-            "index_fieldname_suffix": "_proximity",
+        "PROXIMITY": {  # @TODO think this needs cleanup to work more like Fuzzy - i.e. built into query but analyzed as a FileterField
+            "es_analyzer": "keyword",
+            "index_fieldname_suffix": None,
         },
     },
 }

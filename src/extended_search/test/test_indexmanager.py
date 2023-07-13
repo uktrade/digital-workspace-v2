@@ -160,7 +160,7 @@ class TestModelIndexManager:
         assert type(result[0]) == SearchField
         assert result[0].field_name == "bar"
         assert result[0].kwargs["model_field_name"] == "foo"
-        assert result[0].kwargs["es_extra"] == {"search_analyzer": "baz"}
+        assert result[0].kwargs["es_extra"] == {"analyzer": "baz"}
         # uses help methods
         mock_fieldname.assert_called_once_with(
             "foo",

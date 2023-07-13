@@ -3,6 +3,7 @@ import inspect
 import logging
 
 from django.core import checks
+from django.core.exceptions import FieldDoesNotExist
 from wagtail.search import index
 
 
@@ -42,11 +43,30 @@ class RenamedFieldMixin:
     """
 
     def get_field(self, cls):
+        """
+        Returns the underlying model's field_name in preference to the name assigned, which may include the analysis type suffix
+        """
         if "kwargs" in self.__dict__ and "model_field_name" in self.kwargs:
             return cls._meta.get_field(self.kwargs["model_field_name"])
         return super().get_field(cls)
 
+    def get_attname(self, cls):
+        """
+        Returns the assigned field name (including the analysis type suffix) in preference to the underlying model's field_name, but only if they differ in kwargs - i.e. the field is not a property, but does have a different name to the model attribute
+        """
+        if (
+            "kwargs" in self.__dict__
+            and "model_field_name" in self.kwargs
+            and self.kwargs["model_field_name"] != self.field_name
+        ):
+            return self.field_name
+
+        return super().get_attname(cls)
+
     def get_definition_model(self, cls):
+        """
+        Returns the correct base class if it wasn't found because of a field naming discrepancy
+        """
         base_cls = super().get_definition_model(cls)
         if (
             base_cls is None
@@ -59,6 +79,9 @@ class RenamedFieldMixin:
         return base_cls
 
     def get_value(self, obj):
+        """
+        Returns the value from the model's field if it wasnt found because of a naming discrepancy
+        """
         value = super().get_value(obj)
         if (
             value is None

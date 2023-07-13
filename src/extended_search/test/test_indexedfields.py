@@ -121,7 +121,7 @@ class TestBaseIndexedField:
             "search": [
                 AnalysisType.TOKENIZED,
             ],
-            "fuzzy": None,
+            "fuzzy": [],
         }
 
     def test_get_autocomplete_mapping_object_format(self):
@@ -129,14 +129,14 @@ class TestBaseIndexedField:
         assert field._get_autocomplete_mapping_object() == {}
 
         field = BaseIndexedField("foo", autocomplete=True)
-        assert field._get_autocomplete_mapping_object() == {"autocomplete": None}
+        assert field._get_autocomplete_mapping_object() == {"autocomplete": []}
 
     def test_get_filter_mapping_object_format(self):
         field = BaseIndexedField("foo")
         assert field._get_filter_mapping_object() == {}
 
         field = BaseIndexedField("foo", filter=True)
-        assert field._get_filter_mapping_object() == {"filter": None}
+        assert field._get_filter_mapping_object() == {"filter": []}
 
     def test_get_mapping_uses_sub_methods(self, mocker):
         mock_func = mocker.patch(
