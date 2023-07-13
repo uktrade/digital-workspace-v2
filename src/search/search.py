@@ -14,20 +14,22 @@ class SearchVector:
         """
         Allows e.g. score annotation without polluting overriden search method
         """
-        if self.annotate_score:
-            return queryset.search(query, *args, **kwargs).annotate_score("_score")
+        return_method = queryset.search(query, *args, **kwargs)
 
-        return queryset.search(query, *args, **kwargs)
+        if self.annotate_score:
+            return_method = return_method.annotate_score("_score")
+
+        return return_method
 
     def get_queryset(self):
         raise NotImplementedError
 
-    def pinned(self, query):
-        return []
-
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        return self._wagtail_search(queryset, query, *args, operator="and", **kwargs)
+
+    def pinned(self, query):
+        return []
 
 
 class PagesSearchVector(SearchVector):

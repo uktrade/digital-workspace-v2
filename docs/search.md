@@ -1,8 +1,8 @@
 # How search works
 
-Search is handled by [OpenSearch](https://opensearch.org/), an [ElasticSearch](https://www.elastic.co/) clone that runs as a service on AWS. Indexing and querying is managed by [Wagtail's in-built search](https://docs.wagtail.org/en/stable/topics/search/index.html) functionality.
+Search is handled by [OpenSearch](https://opensearch.org/), an [ElasticSearch](https://www.elastic.co/) clone that runs as a service on AWS. Indexing and querying is managed by an extension to [Wagtail's in-built search](https://docs.wagtail.org/en/stable/topics/search/index.html) functionality.
 
-This document outlines how that process is customised; the process is based on the setup used by [Github Doc's search](https://github.blog/2023-03-09-how-github-docs-new-search-works/).
+This document outlines how that process is customised; the original process is based on the setup used by [Github Doc's search](https://github.blog/2023-03-09-how-github-docs-new-search-works/).
 
 This approach balances comprehensiveness (resurn all results) with a nuanced ability to tweak values for searches, so that the most relevant results should be first, and if not it's relatively easy to iteratively improve them.
 
@@ -12,11 +12,11 @@ If you are simply looking for the boost calculations, head straight for the end 
 
 The first step is to control our search indexing in detail. Each searchable object type is listed below, along with the ORM fields that object contains that merit indexing; that is to say any data on that object that users may at any point use to search, refine or filter in order to find the result they are looking for.
 
-### Title, headings, content
+### Title, headings, excerpt and content
 
-Each text field on every page and content type (as far as possible) will be combined into only 3 fields (actually 6, see the next section); `title`, `headings` and `content`. This is to minimise storage and retrieval times for OpenSearch, while separating the content into chunks that may be boosted independently.
+Each content editable text field on every page and content type (as far as possible) will be combined into only 4 fields (actually 8, see the next section); `title`, `headings`, `excerpt` and `content`. This is to minimise storage and retrieval times for OpenSearch, while separating the content into chunks that may be boosted independently.
 
-Matches on document titles should be more relevant than matches on heading, which are more relevant than matches within the body content. At the same time matches anywhere within the content should be equally ranked, and (for simplicity) we treat matches in any heading as equally valid.
+Matches on document titles should be more relevant than matches on heading, which are more relevant than matches on the excerpt, which in turn are more relevant than matches within the body content. At the same time matches anywhere within the content should be equally ranked, and (for simplicity) we treat matches in any heading as equally valid.
 
 As an example, a page containing headings "How to sign up" and "Quick start" would be indexed as a document with the `headings` field contents being "How to sign up Quick start".
 
@@ -24,15 +24,15 @@ Note that fields containing metadata for filtering etc will also be present on t
 
 ### Explicit fields
 
-Each text field on each of the models above will be indexed twice; first as a raw, unprocessed field with an `_explicit` suffix, and also as a stemmed and procesed field using the standard field name. Non-text fields will be indexed unprocessed with no suffix.
+Each text field on each of the models above will be indexed twice; first as a raw, unprocessed field with an `_explicit` suffix, and also as a stemmed and procesed field using the standard field name (this "tokenized" approach is the Wagtail default). Non-text fields will be indexed unprocessed with no suffix.
 
-As an example, a `Page` model with a `title` field would be indexed as a `Page` document in OpenSearch, containing both `title` and `title_explicit` fields. The `title` field will support misspellings and stemmings (see below) while the `title_explicit` field will support prioritising results containing exact matches.
+As an example, a `Page` model with a `title` field would be indexed as a `Page` document in OpenSearch, containing both `title` and `title_explicit` fields. The `title` field will support misspellings and stemmings (see below) while the `title_explicit` field exists in order to be able to prioritise results containing exact matches.
 
 ### Stemming
 
 Stemming maps different forms of the same word to a common "stem" - for example, the English stemmer maps *connection*, *connections*, *connective*, *connected*, and *connecting* to *connect*. So a search for *connected* would also find documents which only have the other forms.
 
-We use the standard [Snowball stemmer](https://snowballstem.org/) as recommended by ElasticSearch, OpenSearch and Wagtail, as well as the Github Docs team. It supports English language synonyms as well as stemming different forms of the same word, and it tries to avoid stemming similar words with different meanings as the same stem (even when they're based ont he same root word).
+We use the standard [Snowball stemmer](https://snowballstem.org/) (English version) as recommended by ElasticSearch, OpenSearch and Wagtail, as well as the Github Docs team. It supports English language synonyms as well as stemming different forms of the same word, and it tries to avoid stemming similar words with different meanings as the same stem (even when they're based on the same root word).
 
 ## Retrieval
 
@@ -44,9 +44,11 @@ An example is that we may ask for both and exact match and a fuzzy match for the
 
 In reality each query submitted by the user will result in at least 7 individual search operations, often 19, and perhaps more depending on filtering etc. These will be managed within a single query to OpenSearch, and turnaround times should not suffer as a result.
 
+Note that this means we have very large DSL strctures representing our search queries to OpenSearch.
+
 ### Single or multiple term; AND, OR and Phrase matching
 
-Searching for a single word or term is relatively simple; we want to search against each field and prioritise the fields with more importance, and where we have to use less processing (thereby giving priority to results that are exactly as typed by the suer, rather than e.g. word variants).
+Searching for a single word or term is relatively simple; we want to search against each field and prioritise the fields with more importance, and where we have to use less processing (thereby giving priority to results that are exactly as typed by the user, rather than e.g. word variants).
 
 When searching for terms containing multiple word we want to do all the above, but we also want to combine the words so that by default we search using *both* AND and OR strategies. Results for the AND search will be boosted higher than results for the OR search.
 
@@ -58,21 +60,25 @@ In addition, we also want to use "phrase" searching, where the set of words must
 
 To take account of misspellings, we'll include [fuzzy matching](https://docs.wagtail.org/en/stable/topics/search/searching.html#fuzzy-matching) of terms so that "similar" words will be returned even when they don't exactly match any word or stem.
 
-Fuzzy matching will only be applied to document titles.
+Fuzzy matching will only be applied to Page titles and key fields on other records, like Person names.
 
 In order that these results are always below any non-fuzzy matches, the boost values for these results will be fractional; when multiplied they will relatively lower the relevancy score of the results returned by this search.
 
 ### Filtering
 
-Non-text fields like dates etc
+Non-text fields like dates etc will be indexed to support the results being filtered by these values.
 
 ### Advanced search terms
 
-Maybe not needed with this comprehensive approach?
+This multi-dimensional approach to search, with a complex set of queries representing various different ways to retrieve each given search term, avoids the need for "advanced search" queries being exposed to the user. As such, users will not benefit from trying to use keyword like "AND" or boolean symbols like "-" in their search queries.
 
-### Dynamic boosting
+### How boosting is applied
 
-Check up on the Wagtail implementation for this and investigate what we want to do
+As per the latest approach implemented by OpenSearch, no boosting is applied at index time - all boost values are calculated at retrieval time and applied in depth to each query.
+
+TO calculate a query's boost value, the specific boost components for the field type, the analysis type, and the query type (i.e. phrase vs AND vs OR vs fuzzy) are multiplied together. In some cases extra values may be multiplied in to account for e.g. prioritising an exact match of a Tools page over other types.
+
+This calculated value is then applied to a specific query, and this query is merged with the others in the matrix we're applying to create an overall DSL that's sent to OpenSearch. The bossts are applied to the subqueries, resulting in a set of results for which the scores have all been calculated according to the various vboosts applied.
 
 ## Document types
 
@@ -82,6 +88,8 @@ OpenSearch treats each potential result as a "document" - it doesn't distinguish
 
 The following are the various base boost values we use in the search setup. When a search request is constructed, these values are multiplied together as appropriate for each specific type of query we send to OpenSearch.
 
+Please note the intention is that these can be modified in a dedicated part of the admin system; these values are therefore only defaults, and based on the GitHub blog post referenced above.
+
 | Boost variable | Score | Description |
 |----------------|-------|-------------|
 | BOOST_TITLE | 4.0 | Any match on a title field|
@@ -89,10 +97,13 @@ The following are the various base boost values we use in the search setup. When
 | BOOST_CONTENT | 1.0 | Any match wihin the content of the document|
 | BOOST_PHRASE | 10.0 | Exact match on an entire search phrase|
 | BOOST_AND | 2.5 | AND matches represent stronger links between terms than OR matches, they get this boost|
-| BOOST_EXPLICIT | 3.5 | No stemming or synonyms used; matches are on unprocessed text|
 | BOOST_FUZZY | 0.025 | Fuzzy handles basic misspellings gracefully but these results should be low in the list|
+| BOOST_EXPLICIT | 3.5 | No stemming or synonyms used; matches are on unprocessed text|
+| BOOST_TOKENIZED | 1.0 | Default; stemming and synonyms used for broader matching|
 
 ## Boost combinations
+
+These are basic combinations for a generic page type, to illustrate the process.
 
 | Field | Match Type | Boosts |
 |-------|------------|--------|
@@ -116,6 +127,10 @@ The following are the various base boost values we use in the search setup. When
 |`content`| OR | BOOST_CONTENT |
 |`title`| OR / Fuzzy | BOOST_FUZZY |
 
+
+# Notes
+
+The rest of this document is notes for implementation and not documentation
 
 ## Specific content types
 

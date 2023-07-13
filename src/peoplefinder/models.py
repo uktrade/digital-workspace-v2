@@ -361,7 +361,7 @@ class PersonIndexManager(ModelIndexManager):
             boost=1.5,
         ),
         IndexedField(
-            "profile_completion_amount",
+            "profile_completion",
             filter=True,
             proximity=True,
             boost=2.0,
@@ -642,16 +642,6 @@ class Person(Indexed, models.Model):
         return ", ".join(
             filter(None, [self.fluent_languages, self.intermediate_languages])
         )
-
-    @property
-    def profile_completion_amount(self) -> float:
-        """
-        A little hacky, because completion is defined on the QS - used for search indexing
-        """
-        profile_with_completion = Person.objects.with_profile_completion().get(
-            pk=self.pk
-        )
-        return profile_with_completion.profile_completion
 
     @property
     def has_photo(self) -> bool:

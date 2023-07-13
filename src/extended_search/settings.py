@@ -2,6 +2,11 @@ import environ
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
+#
+# DEFUNCT ALREADY
+# This whole file and approach is going to be torn down and re-implemented from
+# the ground up in the next PR
+#
 
 env = environ.Env()
 env.read_env()
