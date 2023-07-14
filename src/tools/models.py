@@ -93,6 +93,7 @@ class Tool(PageWithTopics):
     subpage_types = []  # Should not be able to create children
 
     content_panels = PageWithTopics.content_panels + [
+        FieldPanel("long_description"),
         FieldPanel("redirect_url"),
         FieldPanel(
             "irap_tool",
