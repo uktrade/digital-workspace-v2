@@ -1,8 +1,11 @@
+from typing import Set
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.validators import ValidationError
+from django.forms.models import ModelChoiceField
 
-from peoplefinder.models import Person
+from peoplefinder.models import Person, UkStaffLocation
 
 User = get_user_model()
 
@@ -19,6 +22,40 @@ class GovUkRadioSelect(forms.RadioSelect):
         )
         option["attrs"]["class"] = "govuk-radios__input"
         return option
+
+
+class GroupedModelChoiceIterator(forms.models.ModelChoiceIterator):
+    def __init__(self, field: "GroupedModelChoiceField") -> None:
+        super().__init__(field)
+        self.group_field: str = field.group_field
+
+    def __iter__(self):
+        if self.field.empty_label is not None:
+            yield ("", self.field.empty_label)
+
+        queryset = self.queryset
+        groups = sorted(set(queryset.values_list(self.group_field, flat=True)))
+        output = []
+        for group in groups:
+            group_queryset = queryset.filter(**{self.group_field: group})
+            output.append((group, [self.choice(obj) for obj in group_queryset]))
+
+        yield from output
+
+
+class GroupedModelChoiceField(forms.ModelChoiceField):
+    iterator = GroupedModelChoiceIterator
+    group_field = None
+    groups: Set[str] = set()
+
+    def __init__(
+        self,
+        *args,
+        group_field: str,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.group_field = group_field
 
 
 class ProfileForm(forms.ModelForm):
@@ -71,6 +108,22 @@ class ProfileForm(forms.ModelForm):
     width = forms.IntegerField(required=False)
     height = forms.IntegerField(required=False)
     remove_photo = forms.BooleanField(required=False)
+    uk_office_location = GroupedModelChoiceField(
+        queryset=UkStaffLocation.objects.all()
+        .filter(
+            organisation__in=[
+                "Department for International Trade",
+                "Department for Business, Energy and Industrial Strategy",
+            ]
+        )
+        .order_by(
+            "city",
+            "name",
+        ),
+        label="What is your office location?",
+        help_text="Your base location as per your contract.",
+        group_field="city",
+    )
 
     # These fields are disabled by default as only a superuser can edit them. Disabled
     # fields cannot be tampered with and will fall back to their initial value.
@@ -114,17 +167,6 @@ class ProfileForm(forms.ModelForm):
         )
         self.fields["secondary_phone_number"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
-        )
-
-        uk_office_locations = self.fields["uk_office_location"].queryset
-        self.fields["uk_office_location"].queryset = uk_office_locations.filter(
-            organisation__in=[
-                "Department for International Trade",
-                "Department for Business, Energy and Industrial Strategy",
-            ]
-        ).order_by(
-            "city",
-            "name",
         )
         self.fields["uk_office_location"].widget.attrs.update(
             {"class": "govuk-select govuk-!-width-one-half"}
