@@ -2,14 +2,15 @@ name: "Dependabot Requirements"
 
 on:
   pull_request:
-    types:
-      - opened
+    # types:
+    #   - opened
     branches:
-      - "dependabot/**"
+      - main
 
 jobs:
   generate:
     runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
     permissions:
       contents: write
 
@@ -17,7 +18,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - name: Install poetry
         run: |
           pip install --upgrade pip
