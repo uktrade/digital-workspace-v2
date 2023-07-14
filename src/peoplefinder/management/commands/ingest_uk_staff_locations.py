@@ -1,7 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.db import connections
 
-from peoplefinder.models import UkStaffLocation
 from peoplefinder.services.uk_staff_locations import UkStaffLocationService
 
 

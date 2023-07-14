@@ -222,7 +222,6 @@ DATABASES = {
 if "UK_STAFF_LOCATIONS_DATABASE_URL" in env:
     DATABASES["uk_staff_locations"] = env.db("UK_STAFF_LOCATIONS_DATABASE_URL")
 
-
 DATABASE_ROUTERS = ["peoplefinder.routers.IngestedModelsRouter"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
