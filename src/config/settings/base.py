@@ -354,7 +354,7 @@ SEARCH_EXTENDED = {
             "page_guidance_phrase_title_explicit": 2.0,
         },
         "query_types": {
-            "search_phrase": 20.5,
+            "phrase": 20.5,
         },
     }
 }

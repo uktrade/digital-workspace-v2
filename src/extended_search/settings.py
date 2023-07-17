@@ -69,8 +69,8 @@ class Settings(ChainMap):
 
     Settings are returned in priority order (high to low):
     1. DB settings
-    2. Model IndexField definitions
-    3. ENV variables
+    2. ENV variables
+    3. Model IndexField definitions
     4. Django settings
     5. Defaults in app
 
@@ -129,15 +129,15 @@ class Settings(ChainMap):
         print("trying to get overridable setting", self._get_prefixed_key(key))
         # get from DB
         # or
-        # get from field level (if applicable)
-        if "__" in key:
-            print("field key??", key)
-        # or
         # get from ENV
         try:
             return env(self._get_prefixed_key(key))
         except ImproperlyConfigured:
             ...
+        # or
+        # get from field level (if applicable)
+        if "__" in key:
+            print("field key??", key)
 
         # Fall back to overall settings ChainMap (i.e. from file or default values)
         return None
