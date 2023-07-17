@@ -61,10 +61,7 @@ class RenamedFieldMixin:
         """
         Returns the assigned field name (including the analysis type suffix) in preference to the underlying model's field_name, but only if they differ in kwargs - i.e. the field is not a property, but does have a different name to the model attribute
         """
-        if (
-            self.model_field_name is not None
-            and self.model_field_name != self.field_name
-        ):
+        if self.model_field_name and self.model_field_name != self.field_name:
             return self.field_name
 
         return super().get_attname(cls)
@@ -73,21 +70,21 @@ class RenamedFieldMixin:
         """
         Returns the correct base class if it wasn't found because of a field naming discrepancy
         """
-        base_cls = super().get_definition_model(cls)
-        if base_cls is None and self.model_field_name:
-            for base_cls in inspect.getmro(cls):
-                if self.model_field_name in base_cls.__dict__:
-                    return base_cls
-        return base_cls
+        if base_cls := super().get_definition_model(cls):
+            return base_cls
+
+        for base_cls in inspect.getmro(cls):
+            if self.model_field_name in base_cls.__dict__:
+                return base_cls
 
     def get_value(self, obj):
         """
         Returns the value from the model's field if it wasnt found because of a naming discrepancy
         """
-        value = super().get_value(obj)
-        if value is None and self.model_field_name:
-            value = getattr(obj, self.model_field_name, None)
-        return value
+        if value := super().get_value(obj):
+            return value
+
+        return getattr(obj, self.model_field_name, None)
 
 
 class SearchField(RenamedFieldMixin, index.SearchField):
