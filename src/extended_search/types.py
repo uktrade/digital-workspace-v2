@@ -2,15 +2,15 @@ from enum import Enum
 
 
 class SearchQueryType(Enum):
-    PHRASE = "PHRASE"
-    QUERY_AND = "QUERY_AND"
-    QUERY_OR = "QUERY_OR"
-    FUZZY = "FUZZY"
+    PHRASE = "phrase"
+    QUERY_AND = "query_and"
+    QUERY_OR = "query_or"
+    FUZZY = "fuzzy"
 
 
 class AnalysisType(Enum):
-    TOKENIZED = "TOKENIZED"
-    FILTER = "FILTER"
-    EXPLICIT = "EXPLICIT"
-    KEYWORD = "KEYWORD"
-    PROXIMITY = "PROXIMITY"
+    TOKENIZED = "tokenized"
+    FILTER = "filter"
+    EXPLICIT = "explicit"
+    KEYWORD = "keyword"
+    PROXIMITY = "proximity"

@@ -348,9 +348,14 @@ WAGTAILSEARCH_BACKENDS = {
 }
 
 SEARCH_EXTENDED = {
-    "BOOST_VARIABLES": {
-        "PAGE_TOOLS_PHRASE_TITLE_EXPLICIT": 2.0,
-        "PAGE_GUIDANCE_PHRASE_TITLE_EXPLICIT": 2.0,
+    "boost_parts": {
+        "extras": {
+            "page_tools_phrase_title_explicit": 2.0,
+            "page_guidance_phrase_title_explicit": 2.0,
+        },
+        "query_types": {
+            "search_phrase": 20.5,
+        },
     }
 }
 

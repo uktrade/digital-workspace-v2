@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class QueryBuilder:
     @classmethod
     def _get_indexed_field_name(cls, model_field_name, analyzer):
-        analyzer_settings = settings["ANALYZERS"][analyzer.value]
+        analyzer_settings = settings["analyzers"][analyzer.value]
         field_name_suffix = analyzer_settings["index_fieldname_suffix"] or ""
         return f"{model_field_name}{field_name_suffix}"
 
@@ -53,23 +53,23 @@ class QueryBuilder:
     ):
         match query_type:
             case SearchQueryType.PHRASE:
-                query_type_boost = "SEARCH_PHRASE"
+                query_type_boost = "search_phrase"
             case SearchQueryType.QUERY_AND:
-                query_type_boost = "SEARCH_QUERY_AND"
+                query_type_boost = "search_query_and"
             case SearchQueryType.QUERY_OR:
-                query_type_boost = "SEARCH_QUERY_OR"
+                query_type_boost = "search_query_or"
             case SearchQueryType.FUZZY:
-                query_type_boost = "SEARCH_FUZZY"
+                query_type_boost = "search_fuzzy"
             case _:
                 raise ValueError(f"{query_type} must be a valid SearchQueryType")
 
         match analysis_type:
             case AnalysisType.EXPLICIT:
-                analysis_type_boost = "ANALYZER_EXPLICIT"
+                analysis_type_boost = "analyzer_explicit"
             case AnalysisType.TOKENIZED:
-                analysis_type_boost = "ANALYZER_TOKENIZED"
+                analysis_type_boost = "analyzer_tokenized"
             case AnalysisType.KEYWORD:
-                analysis_type_boost = "ANALYZER_EXPLICIT"
+                analysis_type_boost = "analyzer_explicit"
             case AnalysisType.PROXIMITY:
                 analysis_type_boost = 1.0  # @TODO figure out how to add this
             case AnalysisType.FILTER:
@@ -83,7 +83,7 @@ class QueryBuilder:
         # )
 
         # @TODO SORT THE SETTINGS STUFF OUT!!
-        boost_settings = settings["BOOST_VARIABLES"]
+        boost_settings = settings["boost_parts"]
 
         return (
             boost_settings[query_type_boost]
@@ -131,7 +131,7 @@ class QueryBuilder:
 
     @classmethod
     def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
-        analyzer_settings = settings["ANALYZERS"]
+        analyzer_settings = settings["analyzers"]
         subquery = None
         if "related_fields" in field_mapping:
             for related_field_mapping in field_mapping["related_fields"]:

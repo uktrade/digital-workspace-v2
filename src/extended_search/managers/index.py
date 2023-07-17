@@ -19,7 +19,7 @@ class ModelIndexManager(QueryBuilder):
 
     @classmethod
     def _get_analyzer_name(cls, analyzer_type):
-        analyzer_settings = settings.ANALYZERS[analyzer_type.value]
+        analyzer_settings = settings.analyzers[analyzer_type.value]
         return analyzer_settings["es_analyzer"]
 
     @classmethod

@@ -42,7 +42,7 @@ def explore(request: HttpRequest) -> HttpResponse:
 
     boost_vars = [
         {"name": f"SEARCH_BOOST_{k}", "value": v}
-        for k, v in extended_search_settings.BOOST_VARIABLES.items()
+        for k, v in extended_search_settings.boost_parts.items()
     ]
 
     context = {
