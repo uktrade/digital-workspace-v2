@@ -1,10 +1,11 @@
 from django import forms
-from django.db import models
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.admin.panels import FieldPanel
 
 import peoplefinder.models as pf_models
 from content.models import ContentPage
+from extended_search.fields import IndexedField
+from extended_search.managers.index import ModelIndexManager
 
 
 class NetworksHome(ContentPage):
@@ -89,13 +90,17 @@ class NetworkForm(WagtailAdminPageForm):
         return page
 
 
-class Network(ContentPage):
-    excerpt = models.CharField(
-        max_length=700,
-        blank=True,
-        null=True,
-    )
+class NetworkIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "search_topics",
+            tokenized=True,
+            explicit=True,
+        ),
+    ]
 
+
+class Network(ContentPage):
     is_creatable = True
 
     parent_page_types = [
@@ -105,11 +110,16 @@ class Network(ContentPage):
     subpage_types = ["networks.Network"]
 
     content_panels = ContentPage.content_panels + [
-        FieldPanel("excerpt"),
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]
     base_form_class = NetworkForm
+
+    @property
+    def search_topics(self):
+        return " ".join(self.topics.all().values_list("topic__title", flat=True))
+
+    search_fields = ContentPage.search_fields + NetworkIndexManager()
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

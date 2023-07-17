@@ -9,11 +9,12 @@ from modelcluster.fields import ParentalKey
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 from content.models import BasePage, ContentPage
 from core.utils import set_seen_cookie_banner
+from extended_search.fields import IndexedField
+from extended_search.managers.index import ModelIndexManager
 from news.forms import CommentForm
 from working_at_dit.models import PageWithTopics
 
@@ -51,6 +52,16 @@ class Comment(models.Model):
     ]
 
 
+class NewsCategoryIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "category",
+            tokenized=True,
+            explicit=True,
+        ),
+    ]
+
+
 @register_snippet
 class NewsCategory(models.Model):
     class Meta:
@@ -73,6 +84,8 @@ class NewsCategory(models.Model):
         blank=True,
     )
     history = history = HistoricalRecords()
+
+    search_fields = ContentPage.search_fields + NewsCategoryIndexManager()
 
     def __str__(self):
         return self.category
@@ -108,6 +121,20 @@ class NewsPageNewsCategory(models.Model):
         unique_together = ("news_page", "news_category")
 
 
+class NewsPageIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "search_categories",
+            autocomplete=True,
+            tokenized=True,
+        ),
+        IndexedField(
+            "pinned_on_home",
+            filter=True,
+        ),
+    ]
+
+
 class NewsPage(PageWithTopics):
     is_creatable = True
     parent_page_types = ["news.NewsHome"]
@@ -141,9 +168,13 @@ class NewsPage(PageWithTopics):
         "featured article.",
     )
 
-    search_fields = ContentPage.search_fields + [
-        index.SearchField("excerpt"),
-    ]
+    @property
+    def search_categories(self):
+        return " ".join(
+            self.news_categories.all().values_list("news_category__category", flat=True)
+        )
+
+    search_fields = ContentPage.search_fields + NewsPageIndexManager()
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504
         FieldPanel("preview_image"),

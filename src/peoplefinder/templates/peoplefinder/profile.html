@@ -168,9 +168,7 @@
                             <a href="tel:{{ profile.primary_phone_number }}" class="govuk-link">{{ profile.primary_phone_number }}</a>
                         {% endif %}
                     </dd>
-                    <dd class="govuk-summary-list__actions">
-                        {% profile_completion_field_link "primary_phone_number" profile %}
-                    </dd>
+                    {% profile_completion_field_actions "primary_phone_number" profile %}
                 </div>
 
                 {% if profile.secondary_phone_number %}
@@ -200,9 +198,7 @@
                                data-testid="manager">{{ profile.manager.full_name }}</a>
                         {% endif %}
                     </dd>
-                    <dd class="govuk-summary-list__actions">
-                        {% profile_completion_field_link "manager" profile %}
-                    </dd>
+                    {% profile_completion_field_actions "manager" profile %}
                 </div>
 
                 {% if profile.workdays.exists %}
@@ -327,9 +323,7 @@
                     <dd class="govuk-summary-list__value">
                         {% if profile.town_city_or_region %}{{ profile.town_city_or_region }}{% endif %}
                     </dd>
-                    <dd class="govuk-summary-list__actions">
-                        {% profile_completion_field_link "town_city_or_region" profile %}
-                    </dd>
+                    {% profile_completion_field_actions "town_city_or_region" profile %}
                 </div>
 
                 <div class="govuk-summary-list__row">
@@ -337,9 +331,7 @@
                     <dd class="govuk-summary-list__value">
                         {% if profile.country %}{{ profile.country }}{% endif %}
                     </dd>
-                    <dd class="govuk-summary-list__actions">
-                        {% profile_completion_field_link "country" profile %}
-                    </dd>
+                    {% profile_completion_field_actions "country" profile %}
                 </div>
 
                 {% if profile.regional_building %}

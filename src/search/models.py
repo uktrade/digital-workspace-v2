@@ -15,3 +15,18 @@ class ExcludeFromSearch(models.Model):
     panels = [
         FieldPanel("term"),
     ]
+
+
+class SearchSettings(models.Model):
+    class Meta:
+        # No database table creation or deletion operations will be performed
+        # for this model.
+        managed = False
+
+        # disable "add", "change", "delete" and "view" default permissions
+        default_permissions = ()
+
+        permissions = (
+            ("change_boost", "Edit boost settings for search components"),
+            ("view_explore", "View the global search explore page"),
+        )

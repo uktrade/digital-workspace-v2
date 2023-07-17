@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import RedirectView
 
-from .views import search
+from .views import explore, search
 
 
 app_name = "search"
@@ -19,6 +19,7 @@ urlpatterns = [
             pattern_name="search:category", permanent=True, query_string=True
         ),
     ),
+    path("explore/", explore, name="explore"),
     path("<str:category>/", search, name="category"),
     path("", search, name="home"),
 ]

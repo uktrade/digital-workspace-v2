@@ -4,7 +4,7 @@
 <header class="govuk-header govuk-header--ws search-v2"
         role="banner"
         data-module="govuk-header">
-    <div class="govuk-header__container govuk-width-container">
+    <div class="govuk-header__container govuk-width-container flex">
         <div class="govuk-header__logo govuk-header__logo--ws gov-grid-column-one-third">
             <a href="/" class="govuk-header__link govuk-header__link--homepage">
                 <span class="govuk-header__logotype govuk-header__logotype--ws">
@@ -31,7 +31,7 @@
                     hidden>Menu</button>
         </div>
         <div class="nav-and-profile-bar">
-            <div class="govuk-width-container">
+            <div class="govuk-width-container flex">
                 <nav aria-label="Top Level Navigation" class="govuk-header__navigation">
                     {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
                 </nav>
