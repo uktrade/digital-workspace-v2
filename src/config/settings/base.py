@@ -97,6 +97,7 @@ LOCAL_APPS = [
     "core",
     "home",
     "content",
+    "extended_search",
     "search",
     "news",
     "working_at_dit",
@@ -298,7 +299,7 @@ ELASTICSEARCH_DSL = {
 
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "wagtail.search.backends.elasticsearch7",
+        "BACKEND": "extended_search.backends.backend.CustomSearchBackend",
         "AUTO_UPDATE": True,
         "ATOMIC_REBUILD": True,
         "URLS": [OPENSEARCH_URL],
@@ -312,25 +313,44 @@ WAGTAILSEARCH_BACKENDS = {
                 },
                 "analysis": {
                     "filter": {
-                        "search_stop_words": {"type": "stop", "stopwords": stop_words},
-                        "search_synonyms": {
-                            "type": "synonym",
-                            "lenient": True,
-                            "synonyms": synonyms,
+                        "english_snowball": {
+                            "type": "snowball",
+                            "language": "english",
+                        },
+                        "remove_spaces": {
+                            "type": "pattern_replace",
+                            "pattern": "[ ()+]",
+                            "replacement": "",
                         },
                     },
                     "analyzer": {
-                        "stop_and_synonyms": {
-                            "tokenizer": "lowercase",
+                        "snowball": {
+                            "tokenizer": "standard",
                             "filter": [
-                                "search_stop_words",
-                                "search_synonyms",
+                                "english_snowball",
+                                "stop",
+                                "lowercase",
+                                "asciifolding",
                             ],
+                        },
+                        # Used for keyword fields like acronyms and phone
+                        # numbers - use with caution (it removes whitespace and
+                        # tokenizes everything else into a single token)
+                        "no_spaces": {
+                            "tokenizer": "keyword",
+                            "filter": "remove_spaces",
                         },
                     },
                 },
             }
         },
+    }
+}
+
+SEARCH_EXTENDED = {
+    "BOOST_VARIABLES": {
+        "PAGE_TOOLS_PHRASE_TITLE_EXPLICIT": 2.0,
+        "PAGE_GUIDANCE_PHRASE_TITLE_EXPLICIT": 2.0,
     }
 }
 

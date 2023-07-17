@@ -1,22 +1,24 @@
 from typing import Optional
 
-from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, Subquery
+from django.forms import widgets
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, PageQuerySet
-from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 
 from content import blocks
-from content.utils import manage_excluded, manage_pinned
+from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
 from search.utils import split_query
+from extended_search.fields import IndexedField
+from extended_search.index import Indexed
+from extended_search.managers.index import ModelIndexManager
 from user.models import User as UserModel
 
 
@@ -50,7 +52,7 @@ class Theme(models.Model):
         ordering = ["-title"]
 
 
-class BasePage(Page):
+class BasePage(Page, Indexed):
     legacy_path = models.CharField(
         max_length=500,
         blank=True,
@@ -97,19 +99,46 @@ class ContentPageQuerySet(PageQuerySet):
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
 
+    def get_search_query(self, query_str):  # @TODO is this the right place for this?
+        return ContentPageIndexManager.get_search_query(query_str, self.model)
+
+
+class ContentPageIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "search_title",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=5.0,
+        ),
+        IndexedField(
+            "search_headings",
+            tokenized=True,
+            explicit=True,
+            boost=3.0,
+        ),
+        IndexedField(
+            "excerpt",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "search_content",
+            tokenized=True,
+            explicit=True,
+        ),
+        IndexedField("is_creatable", filter=True),
+        IndexedField("last_published_at", proximity=True),
+    ]
+
 
 class ContentPage(BasePage):
     objects = PageManager.from_queryset(ContentPageQuerySet)()
 
     is_creatable = False
     show_in_menus = True
-
-    # This field is used in search indexing as
-    #  we can't change the search_analyzer property
-    # of the default title field
-    search_title = models.CharField(
-        max_length=255,
-    )
 
     legacy_guid = models.CharField(
         blank=True, null=True, max_length=255, help_text="""Wordpress GUID"""
@@ -147,6 +176,13 @@ class ContentPage(BasePage):
         use_json_field=True,
     )
 
+    excerpt = models.CharField(
+        max_length=700,
+        blank=True,
+        null=True,
+        help_text="A summary of the page to be shown in search results.",
+    )
+
     pinned_phrases = models.CharField(
         blank=True,
         null=True,
@@ -165,43 +201,48 @@ class ContentPage(BasePage):
         "from search results for these terms",
     )
 
-    body_no_html = models.TextField(
+    #
+    # Search
+    # Specific fields and settings to manage search. Extra fields are generally
+    # defined to make custom and specific indexing as defined in /docs/search.md
+    #
+
+    search_title = models.CharField(
+        max_length=255,
+    )
+
+    search_headings = models.TextField(
         blank=True,
         null=True,
     )
 
-    @property
-    def preview_text(self):
-        if self.body_no_html:
-            parts = self.body_no_html.split(" ")
-            return " ".join(parts[0:40])
+    search_content = models.TextField(
+        blank=True,
+        null=True,
+    )
 
-        return None
+    search_fields = BasePage.search_fields + ContentPageIndexManager()
+
+    def _generate_search_field_content(self):
+        self.search_title = self.title
+        self.search_headings = ""
+        self.search_content = ""
+        for block in self.body:
+            if block.block_type in ["heading2", "heading3", "heading4", "heading5"]:
+                self.search_headings += f" {block.value}"
+            elif block.block_type == "text_section":
+                self.search_content += f" {block.value}"
+            elif block.block_type == "image":
+                self.search_content += f" {block.value['caption']}"
+
+    #
+    # Wagtail admin configuration
+    #
 
     subpage_types = []
 
-    search_fields = Page.search_fields + [
-        index.SearchField(
-            "search_title",
-            partial_match=True,
-            boost=2,
-            es_extra={
-                "search_analyzer": "stop_and_synonyms",
-            },
-        ),
-        index.SearchField(
-            "body_no_html",
-            partial_match=True,
-            es_extra={
-                "search_analyzer": "stop_and_synonyms",
-            },
-        ),
-        index.AutocompleteField("body_no_html"),
-        index.AutocompleteField("search_title"),
-        index.FilterField("slug"),
-    ]
-
     content_panels = Page.content_panels + [
+        FieldPanel("excerpt", widget=widgets.Textarea),
         FieldPanel("body"),
     ]
 
@@ -213,31 +254,19 @@ class ContentPage(BasePage):
     ]
 
     def full_clean(self, *args, **kwargs):
-        # Required so we can override
-        # search analyzer (see above)
-        self.search_title = self.title
+        self._generate_search_field_content()
+
+        if self.excerpt is None:
+            self.excerpt = truncate_words_and_chars(self.search_content, 40, 700)
 
         super().full_clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        body_string = str(self.body)
-
-        self.body_no_html = BeautifulSoup(body_string, "html.parser").text
-
-        # Required so we can override
-        # search analyzer (see above)
-        # self.search_title = self.title #
-
         if self.id:
             manage_excluded(self, self.excluded_phrases)
             manage_pinned(self, self.pinned_phrases)
 
         return super().save(*args, **kwargs)
-
-    #
-    # def get_children(self):
-    #     children = super().get_children()
-    #     return children.order_by('-last_published_at')
 
 
 class SearchKeywordOrPhrase(models.Model):

@@ -1,0 +1,22 @@
+
+<div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+        <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button"
+                  id="accordion-default-heading-1">
+                <h3 class="govuk-heading-s">{{ result_type_display|capfirst }} ({{ count }})</h3>
+            </span>
+        </h2>
+    </div>
+    <div id="accordion-default-content-1"
+         class="govuk-accordion__section-content"
+         aria-labelledby="accordion-default-heading-1">
+        <div class="search-results__list">
+
+            {% for object in search_results %}
+                {% include search_results_item_template with type=search_category section=search_category %}
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
