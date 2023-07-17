@@ -78,13 +78,6 @@ class RenamedFieldMixin:
                 if self.model_field_name in base_cls.__dict__:
                     return base_cls
 
-        # base_cls = super().get_definition_model(cls)
-        # if base_cls is None and self.model_field_name:
-        #     for base_cls in inspect.getmro(cls):
-        #         if self.model_field_name in base_cls.__dict__:
-        #             return base_cls
-        # return base_cls
-
     def get_value(self, obj):
         """
         Returns the value from the model's field if it wasnt found because of a naming discrepancy
