@@ -73,9 +73,17 @@ class RenamedFieldMixin:
         if base_cls := super().get_definition_model(cls):
             return base_cls
 
-        for base_cls in inspect.getmro(cls):
-            if self.model_field_name in base_cls.__dict__:
-                return base_cls
+        if self.model_field_name:
+            for base_cls in inspect.getmro(cls):
+                if self.model_field_name in base_cls.__dict__:
+                    return base_cls
+
+        # base_cls = super().get_definition_model(cls)
+        # if base_cls is None and self.model_field_name:
+        #     for base_cls in inspect.getmro(cls):
+        #         if self.model_field_name in base_cls.__dict__:
+        #             return base_cls
+        # return base_cls
 
     def get_value(self, obj):
         """
@@ -84,7 +92,8 @@ class RenamedFieldMixin:
         if value := super().get_value(obj):
             return value
 
-        return getattr(obj, self.model_field_name, None)
+        if self.model_field_name:
+            return getattr(obj, self.model_field_name, None)
 
 
 class SearchField(RenamedFieldMixin, index.SearchField):
