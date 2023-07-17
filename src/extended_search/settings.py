@@ -3,6 +3,7 @@ from collections.abc import Mapping
 import environ
 
 from django.conf import settings as django_settings
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -68,9 +69,12 @@ class Settings(ChainMap):
     Approach taken from https://github.com/neutrinoceros/deep_chainmap
 
     Settings are returned in priority order (high to low):
+
+    --[Individual settings]--
     1. DB settings
     2. ENV variables
     3. Model IndexField definitions
+    --[Whole or part dict settings]--
     4. Django settings
     5. Defaults in app
 
@@ -86,7 +90,7 @@ class Settings(ChainMap):
             return super().__init__(*args, **kwargs)
 
         self.defaults = DEFAULT_SETTINGS
-        self.django_settings = self.get_file_settings()
+        self.django_settings = getattr(django_settings, SETTINGS_KEY, {})
         return super().__init__(self.django_settings, self.defaults)
 
     def __getitem__(self, key):
@@ -101,9 +105,19 @@ class Settings(ChainMap):
             return Settings(
                 *(submap[key] for submap in submaps), prefix=self._get_prefixed_key(key)
             )
-        if value := self.get_overriden_single_item(key):
+        if value := self.get_overridden_single_item(key):
             return value
         return super().__getitem__(key)
+
+    def __missing__(self, key):
+        """
+        Some keys (field boost parts, extras) aren't typically set in a dict but
+        may exist somewhere else; we need to intercept the default behaviour in
+        case of this
+        """
+        if value := self.get_overridden_single_item(key):
+            return value
+        return super().__missing__(key)
 
     def _get_prefixed_key(self, key):
         """
@@ -121,29 +135,55 @@ class Settings(ChainMap):
             return f"{self.prefix}__{key}"
         return key
 
-    def get_overriden_single_item(self, key):
-        """
-        Allows for settings defined as single items to jump into the overrides,
-        either from ENV or from e.g. field definitions
-        """
-        print("trying to get overridable setting", self._get_prefixed_key(key))
-        # get from DB
-        # or
-        # get from ENV
+    def _get_value_from_db(self, key):
+        prefixed_key = self._get_prefixed_key(key)
+        #  @TODO
+        return None
+
+    def _get_value_from_env(self, key):
         try:
             return env(self._get_prefixed_key(key))
         except ImproperlyConfigured:
             ...
-        # or
-        # get from field level (if applicable)
-        if "__" in key:
-            print("field key??", key)
 
+    def _get_value_from_field_definition(self, key):
+        """
+        Requires the key to be in the format `app_name.model_class.field_name`
+        """
+        key_elements = key.split(".")
+        if len(key_elements) == 3:
+            try:
+                content_type = ContentType.objects.get_by_natural_key(
+                    key_elements[0], key_elements[1]
+                )
+            except ContentType.DoesNotExist:
+                # Not a validly defined field key
+                return None
+
+            model = content_type.model_class()
+            try:
+                for field in model.search_fields:
+                    if field.field_name == key_elements[2]:
+                        return getattr(field, "boost", None)
+            except AttributeError:
+                return None
+
+    def get_overridden_single_item(self, key):
+        """
+        Allows for settings defined as single items to jump into the overrides,
+        either from ENV or from e.g. field definitions
+        """
+        # get from DB
+        if value := self._get_value_from_db(key):
+            return value
+        # or get from ENV
+        if value := self._get_value_from_env(key):
+            return value
+        # or get from field level (if applicable)
+        if value := self._get_value_from_field_definition(key):
+            return value
         # Fall back to overall settings ChainMap (i.e. from file or default values)
         return None
-
-    def get_file_settings(self):
-        return getattr(django_settings, SETTINGS_KEY, {})
 
 
 class SearchExtendedSettings:

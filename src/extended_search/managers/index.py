@@ -23,7 +23,7 @@ class ModelIndexManager(QueryBuilder):
         return analyzer_settings["es_analyzer"]
 
     @classmethod
-    def _get_searchable_search_fields(cls, model_field_name, analyzers):
+    def _get_searchable_search_fields(cls, model_field_name, analyzers, boost):
         fields = []
         if len(analyzers) == 0:
             analyzers = [AnalysisType.TOKENIZED]
@@ -37,6 +37,7 @@ class ModelIndexManager(QueryBuilder):
                     es_extra={
                         "analyzer": cls._get_analyzer_name(analyzer),
                     },
+                    boost=boost,
                 ),
             ]
         return fields
@@ -70,7 +71,9 @@ class ModelIndexManager(QueryBuilder):
 
         if "search" in field_mapping:
             fields += cls._get_searchable_search_fields(
-                field_mapping["model_field_name"], field_mapping["search"]
+                field_mapping["model_field_name"],
+                field_mapping["search"],
+                field_mapping["boost"],
             )
 
         if "autocomplete" in field_mapping:
