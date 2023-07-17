@@ -62,6 +62,7 @@ class PersonService:
         "town_city_or_region": 1,
         "manager": 1,
         "location": 1,
+        "remote_working": 1,
         "roles": 1,  # Related objects
     }
 

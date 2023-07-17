@@ -123,6 +123,8 @@ class ProfileForm(forms.ModelForm):
         label="What is your office location?",
         help_text="Your base location as per your contract.",
         group_field="city",
+        empty_label="Select your office location",
+        required=False,
     )
 
     # These fields are disabled by default as only a superuser can edit them. Disabled
