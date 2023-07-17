@@ -53,7 +53,7 @@ class Theme(models.Model):
         ordering = ["-title"]
 
 
-class BasePage(Page, Indexed):
+class BasePage(Indexed, Page):
     legacy_path = models.CharField(
         max_length=500,
         blank=True,

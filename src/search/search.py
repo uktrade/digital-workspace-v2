@@ -43,7 +43,7 @@ class PagesSearchVector(SearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset().not_pinned(query)
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        return self._wagtail_search(queryset, query, *args, operator="and", **kwargs)
 
 
 class AllPagesSearchVector(PagesSearchVector):
@@ -80,7 +80,7 @@ class PeopleSearchVector(SearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        return self._wagtail_search(queryset, query, *args, operator="and", **kwargs)
 
 
 class TeamsSearchVector(SearchVector):

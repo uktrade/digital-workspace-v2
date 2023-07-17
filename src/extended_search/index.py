@@ -15,9 +15,8 @@ class Indexed(index.Indexed):
         errors = []
         for field in cls.get_search_fields():
             message = "{model}.search_fields contains non-existent field '{name}'"
-            if not cls._has_field(field.field_name) and (
-                "kwargs" in field.__dict__
-                and not cls._has_field(field.kwargs["model_field_name"])
+            if not cls._has_field(field.field_name) and not cls._has_field(
+                field._get_model_field_name()
             ):
                 errors.append(
                     checks.Warning(
@@ -41,23 +40,26 @@ class RenamedFieldMixin:
     one relationship - e.g. if you are analyzing the same field multiple times.
     """
 
+    def _get_model_field_name(self):
+        try:
+            return self.kwargs["model_field_name"]
+        except AttributeError:
+            return None
+
     def get_field(self, cls):
         """
         Returns the underlying model's field_name in preference to the name assigned, which may include the analysis type suffix
         """
-        if "kwargs" in self.__dict__ and "model_field_name" in self.kwargs:
-            return cls._meta.get_field(self.kwargs["model_field_name"])
+        if field := cls._meta.get_field(self._get_model_field_name()):
+            return field
+
         return super().get_field(cls)
 
     def get_attname(self, cls):
         """
         Returns the assigned field name (including the analysis type suffix) in preference to the underlying model's field_name, but only if they differ in kwargs - i.e. the field is not a property, but does have a different name to the model attribute
         """
-        if (
-            "kwargs" in self.__dict__
-            and "model_field_name" in self.kwargs
-            and self.kwargs["model_field_name"] != self.field_name
-        ):
+        if self._get_model_field_name() != self.field_name:
             return self.field_name
 
         return super().get_attname(cls)
@@ -66,28 +68,19 @@ class RenamedFieldMixin:
         """
         Returns the correct base class if it wasn't found because of a field naming discrepancy
         """
-        base_cls = super().get_definition_model(cls)
-        if (
-            base_cls is None
-            and "kwargs" in self.__dict__
-            and "model_field_name" in self.kwargs
-        ):
+        if not (base_cls := super().get_definition_model(cls)):
             for base_cls in inspect.getmro(cls):
-                if self.kwargs["model_field_name"] in base_cls.__dict__:
+                if self._get_model_field_name() in base_cls.__dict__:
                     return base_cls
+
         return base_cls
 
     def get_value(self, obj):
         """
         Returns the value from the model's field if it wasnt found because of a naming discrepancy
         """
-        value = super().get_value(obj)
-        if (
-            value is None
-            and "kwargs" in self.__dict__
-            and "model_field_name" in self.kwargs
-        ):
-            value = getattr(obj, self.kwargs["model_field_name"], None)
+        if not (value := super().get_value(obj)):
+            value = getattr(obj, self._get_model_field_name(), None)
         return value
 
 

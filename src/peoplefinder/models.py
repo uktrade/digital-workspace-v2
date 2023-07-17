@@ -662,10 +662,6 @@ class Person(Indexed, models.Model):
     def search_titles(self):
         return ", ".join(self.roles.all().values_list("job_title", flat=True))
 
-    @property
-    def search_email(self):
-        return self.email
-
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
 
