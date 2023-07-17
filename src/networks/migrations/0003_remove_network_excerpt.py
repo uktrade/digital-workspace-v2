@@ -3,6 +3,20 @@
 from django.db import migrations
 
 
+def copy_excerpts_to_parent(apps, schema_editor):
+    Network = apps.get_model("networks", "Network")
+    for network in Network.objects.filter(excerpt__isnull=False):
+        network.contentpage.search_excerpt = network.excerpt
+        network.contentpage.save()
+
+
+def copy_excerpts_from_parent(apps, schema_editor):
+    Network = apps.get_model("networks", "Network")
+    for network in Network.objects.all():
+        network.excerpt = network.contentpage.search_excerpt
+        network.save()
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("networks", "0002_network_excerpt"),
@@ -10,10 +24,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            sql="UPDATE content_contentpage AS cp SET search_excerpt = (SELECT excerpt FROM networks_network AS nn WHERE nn.contentpage_ptr_id = cp.basepage_ptr_id);",
-            reverse_sql="UPDATE networks_network AS nn SET excerpt = (SELECT search_excerpt FROM content_contentpage AS cp WHERE nn.contentpage_ptr_id = cp.basepage_ptr_id);",
-        ),
+        migrations.RunPython(copy_excerpts_to_parent, copy_excerpts_from_parent),
         migrations.RemoveField(
             model_name="network",
             name="excerpt",

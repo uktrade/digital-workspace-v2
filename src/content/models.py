@@ -1,6 +1,5 @@
 from typing import Optional
 
-from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -53,7 +52,7 @@ class Theme(models.Model):
         ordering = ["-title"]
 
 
-class BasePage(Indexed, Page):
+class BasePage(Page, Indexed):
     legacy_path = models.CharField(
         max_length=500,
         blank=True,
@@ -225,20 +224,16 @@ class ContentPage(BasePage):
     search_fields = BasePage.search_fields + ContentPageIndexManager()
 
     def _generate_search_field_content(self):
-        body_string = str(self.body)
-        soup = BeautifulSoup(body_string, "html.parser")
         self.search_title = self.title
-        self.search_headings = " ".join(
-            [tag.string or "" for tag in soup.find_all(["h2", "h3", "h4", "h5"])]
-        )
-        self.search_content = " ".join(
-            [
-                tag.string or ""
-                for tag in soup.find_all(
-                    ["p", "a", "li", "figcaption", "blockquote", "dd", "dt"]
-                )
-            ]
-        )
+        self.search_headings = ""
+        self.search_content = ""
+        for block in self.body:
+            if block.block_type in ["heading2", "heading3", "heading4", "heading5"]:
+                self.search_headings += f" {block.value}"
+            elif block.block_type == "text_section":
+                self.search_content += f" {block.value}"
+            elif block.block_type == "image":
+                self.search_content += f" {block.value['caption']}"
 
     #
     # Wagtail admin configuration

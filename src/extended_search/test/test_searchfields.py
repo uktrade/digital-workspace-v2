@@ -42,6 +42,7 @@ class TestRenamedFieldMixin:
         mock_field.attname = "baz"
         mock_model = mocker.Mock()
         mock_model._meta.get_field.return_value = mock_field
+
         original_field = index.SearchField("foo")
         assert original_field.get_attname(mock_model) == "baz"
 

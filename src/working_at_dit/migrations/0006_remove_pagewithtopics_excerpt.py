@@ -3,6 +3,20 @@
 from django.db import migrations
 
 
+def copy_excerpts_to_parent(apps, schema_editor):
+    PageWithTopics = apps.get_model("working_at_dit", "PageWithTopics")
+    for pwt in PageWithTopics.objects.filter(excerpt__isnull=False):
+        pwt.contentpage.search_excerpt = pwt.excerpt
+        pwt.contentpage.save()
+
+
+def copy_excerpts_from_parent(apps, schema_editor):
+    PageWithTopics = apps.get_model("working_at_dit", "PageWithTopics")
+    for pwt in PageWithTopics.objects.all():
+        pwt.excerpt = pwt.contentpage.search_excerpt
+        pwt.save()
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("working_at_dit", "0005_rebrand_to_dbt"),
@@ -10,10 +24,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL(
-            sql="UPDATE content_contentpage AS cp SET search_excerpt = (SELECT excerpt FROM working_at_dit_pagewithtopics AS wadpwt WHERE wadpwt.contentpage_ptr_id = cp.basepage_ptr_id);",
-            reverse_sql="UPDATE working_at_dit_pagewithtopics AS wadpwt SET excerpt = (SELECT search_excerpt FROM content_contentpage AS cp WHERE wadpwt.contentpage_ptr_id = cp.basepage_ptr_id);",
-        ),
+        migrations.RunPython(copy_excerpts_to_parent, copy_excerpts_from_parent),
         migrations.RemoveField(
             model_name="pagewithtopics",
             name="excerpt",
