@@ -19,11 +19,11 @@ class ModelIndexManager(QueryBuilder):
 
     @classmethod
     def _get_analyzer_name(cls, analyzer_type):
-        analyzer_settings = settings.analyzers[analyzer_type.value]
+        analyzer_settings = settings["analyzers"][analyzer_type.value]
         return analyzer_settings["es_analyzer"]
 
     @classmethod
-    def _get_searchable_search_fields(cls, model_field_name, analyzers, boost):
+    def _get_searchable_search_fields(cls, model_field_name, analyzers, boost=1.0):
         fields = []
         if len(analyzers) == 0:
             analyzers = [AnalysisType.TOKENIZED]

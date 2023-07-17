@@ -92,10 +92,10 @@ class TestModelIndexManager:
         mock_filter.assert_not_called()
 
         mock_related.reset_mock()
-        mapping = {"model_field_name": "foo", "search": "--SOMETHING--"}
+        mapping = {"model_field_name": "foo", "search": "--SOMETHING--", "boost": 12.9}
         assert ["SEARCH"] == ModelIndexManager._get_search_fields_from_mapping(mapping)
         mock_related.assert_not_called()
-        mock_search.assert_called_once_with("foo", "--SOMETHING--")
+        mock_search.assert_called_once_with("foo", "--SOMETHING--", 12.9)
         mock_autocomplete.assert_not_called()
         mock_filter.assert_not_called()
 
@@ -122,6 +122,7 @@ class TestModelIndexManager:
             "search": "--NOTHING--",
             "autocomplete": "--SOMETHING--",
             "filter": "--ANYTHING--",
+            "boost": 22.5,
         }
         assert [
             "RELATED",
@@ -130,7 +131,7 @@ class TestModelIndexManager:
             "FILTER",
         ] == ModelIndexManager._get_search_fields_from_mapping(mapping)
         mock_related.assert_called_once_with("foo", "--EVERYTHING--")
-        mock_search.assert_called_once_with("foo", "--NOTHING--")
+        mock_search.assert_called_once_with("foo", "--NOTHING--", 22.5)
         mock_autocomplete.assert_called_once_with("foo")
         mock_filter.assert_called_once_with("foo")
 
@@ -155,10 +156,11 @@ class TestModelIndexManager:
             "extended_search.managers.index.ModelIndexManager._get_analyzer_name",
             return_value="baz",
         )
-        result = ModelIndexManager._get_searchable_search_fields("foo", [])
+        result = ModelIndexManager._get_searchable_search_fields("foo", [], 3.2)
         assert len(result) == 1
         assert type(result[0]) == SearchField
         assert result[0].field_name == "bar"
+        assert result[0].boost == 3.2
         assert result[0].kwargs["model_field_name"] == "foo"
         assert result[0].kwargs["es_extra"] == {"analyzer": "baz"}
         # uses help methods
@@ -178,7 +180,10 @@ class TestModelIndexManager:
             "extended_search.managers.index.ModelIndexManager._get_analyzer_name",
             return_value="baz",
         )
-        assert len(ModelIndexManager._get_searchable_search_fields("foo", [])) == 1
+        assert (
+            len(ModelIndexManager._get_searchable_search_fields("foo", [], boost=22.5))
+            == 1
+        )
         assert (
             len(ModelIndexManager._get_searchable_search_fields("foo", ["first"])) == 1
         )

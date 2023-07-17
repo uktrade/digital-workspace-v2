@@ -2,9 +2,9 @@ import pytest
 
 from extended_search.settings import (
     extended_search_settings,
-    DEFAULTS,
+    DEFAULT_SETTINGS,
     SettingNotFound,
-    SearchExtendedSettings,
+    Settings,
 )
 
 
@@ -16,7 +16,7 @@ class TestDefaults:
         ...
 
 
-class TestSearchExtendedSettings:
+class TestSettings:
     def test_get_from_env_retrieves_env_var(self):
         ...
 

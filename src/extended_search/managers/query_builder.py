@@ -4,7 +4,7 @@ from wagtail.search.query import Boost, Phrase, PlainText
 
 from search.utils import split_query
 from extended_search.backends.query import OnlyFields
-from extended_search.settings import DEFAULTS as settings
+from extended_search.settings import extended_search_settings as settings
 from extended_search.types import AnalysisType, SearchQueryType
 
 

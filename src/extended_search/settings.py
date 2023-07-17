@@ -56,8 +56,6 @@ DEFAULT_SETTINGS = {
     },
 }
 
-DEFAULTS = DEFAULT_SETTINGS
-
 
 class SettingNotFound(Exception):
     pass
@@ -186,85 +184,4 @@ class Settings(ChainMap):
         return None
 
 
-class SearchExtendedSettings:
-    def __getattr__(self, attr):
-        # # Check if set in ENV
-        # try:
-        #     setting_value = self._get_from_env(attr)
-        #     return setting_value
-        # except SettingNotFound:
-
-        # Check if present in user settings
-        try:
-            setting_value = self._get_from_django_settings(attr)
-            return setting_value
-        except SettingNotFound:
-            # Check if present in defaults
-            try:
-                default_value = self._get_from_defaults(attr)
-                return default_value
-            except SettingNotFound:
-                raise AttributeError(f"No value set for SEARCH_EXTENDED['{attr}']")
-
-    def _get_from_env(self, attr, key=None):
-        setting_name = "SEARCH_EXTENDED_" + attr
-        try:
-            setting_value = env(setting_name)
-        except ImproperlyConfigured:
-            raise SettingNotFound()
-
-        if key is not None:
-            return getattr(setting_value, key)
-        return setting_value
-
-    def _get_from_django_settings(self, attr, key=None):
-        file_settings = getattr(django_settings, "SEARCH_EXTENDED", {})
-        if attr in file_settings:
-            if key is not None:
-                return getattr(file_settings[attr], key, None)
-            return file_settings[attr]
-        raise SettingNotFound()
-
-    def _get_from_defaults(self, attr, key=None):
-        default_value = DEFAULTS.get(attr, None)
-        if default_value is None:
-            raise SettingNotFound()
-
-        if attr in DEFAULTS:
-            if key is not None:
-                return getattr(default_value, key, None)
-            return default_value
-        return default_value
-
-    def _get_from_admin(self, attr, key=None):
-        ...
-
-    def _get_from_indexedfield(self, attr, key=None):
-        ...
-
-    def get_boost_value(self, boost_key):
-        """
-        Get the most specifically-defined boost value for the given key
-        """
-        attr = "boost_parts"
-        # # Check if set in ENV
-        # try:
-        #     setting_value = self._get_from_env(attr, boost_key)
-        # except SettingNotFound:
-
-        # Check if present in user settings
-        try:
-            setting_value = self._get_from_django_settings(attr, boost_key)
-        except SettingNotFound:
-            # Check if present in defaults
-            try:
-                setting_value = self._get_from_defaults(attr, boost_key)
-            except SettingNotFound:
-                setting_value = 1.0
-        if setting_value is None:
-            setting_value = 1.0
-
-        return setting_value
-
-
-extended_search_settings = SearchExtendedSettings()
+extended_search_settings = Settings()
