@@ -10,7 +10,7 @@ class TestAnalysisType:
 
     def test_contains_all_valid_options(self):
         assert AnalysisType("tokenized") == AnalysisType.TOKENIZED
-        assert AnalysisType("FILTER") == AnalysisType.FILTER
+        assert AnalysisType("filter") == AnalysisType.FILTER
         assert AnalysisType("explicit") == AnalysisType.EXPLICIT
         assert AnalysisType("keyword") == AnalysisType.KEYWORD
         assert AnalysisType("proximity") == AnalysisType.PROXIMITY
@@ -18,7 +18,7 @@ class TestAnalysisType:
             assert AnalysisType("ANYTHING") == AnalysisType.ANYTHING
         assert [t.value for t in AnalysisType] == [
             "tokenized",
-            "FILTER",
+            "filter",
             "explicit",
             "keyword",
             "proximity",
@@ -33,7 +33,7 @@ class TestSearchQueryType:
         assert SearchQueryType("phrase") == SearchQueryType.PHRASE
         assert SearchQueryType("query_and") == SearchQueryType.QUERY_AND
         assert SearchQueryType("query_or") == SearchQueryType.QUERY_OR
-        assert SearchQueryType("FUZZY") == SearchQueryType.FUZZY
+        assert SearchQueryType("fuzzy") == SearchQueryType.FUZZY
         with pytest.raises(
             ValueError, match="'ANYTHING' is not a valid SearchQueryType"
         ):
@@ -42,5 +42,5 @@ class TestSearchQueryType:
             "phrase",
             "query_and",
             "query_or",
-            "FUZZY",
+            "fuzzy",
         ]
