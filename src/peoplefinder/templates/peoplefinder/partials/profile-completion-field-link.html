@@ -1,3 +1,5 @@
 {% if show_link %}
-    <a class="govuk-button govuk-!-margin-0" href="{{ profile_edit_url }}">Add {{ human_readable_field_name }}</a>
+    <dd class="govuk-summary-list__actions">
+        <a class="govuk-button govuk-!-margin-0" href="{{ profile_edit_url }}">Add {{ human_readable_field_name }}</a>
+    </dd>
 {% endif %}
