@@ -6,11 +6,14 @@ from django.conf import settings as django_settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 
+from extended_search.models import Setting
+
 
 env = environ.Env()
 env.read_env()
 
 SETTINGS_KEY = "SEARCH_EXTENDED"
+NESTING_SEPARATOR = "__"
 DEFAULT_SETTINGS = {
     "boost_parts": {
         "query_types": {
@@ -22,8 +25,13 @@ DEFAULT_SETTINGS = {
             "explicit": 3.5,
             "tokenized": 1.0,
         },
-        "fields": {},
-        "extras": {},
+        "fields": {
+            # In the format appname.modelclass.indexedfieldname
+            # e.g. "core.basepage.title_explicit": 5.0
+        },
+        "extras": {
+            # Useful when wanting to add specific overrides to queries
+        },
     },
     "analyzers": {
         "tokenized": {
@@ -98,23 +106,24 @@ class Settings(ChainMap):
         """
         submaps = [mapping for mapping in self.maps if key in mapping]
         if not submaps:
+            if value := self.get_overridden_single_item(key):
+                return value
             return self.__missing__(key)
+
         if isinstance(submaps[0][key], Mapping):
             return Settings(
                 *(submap[key] for submap in submaps), prefix=self._get_prefixed_key(key)
             )
+
         if value := self.get_overridden_single_item(key):
             return value
+
         return super().__getitem__(key)
 
     def __missing__(self, key):
-        """
-        Some keys (field boost parts, extras) aren't typically set in a dict but
-        may exist somewhere else; we need to intercept the default behaviour in
-        case of this
-        """
-        if value := self.get_overridden_single_item(key):
-            return value
+        # Check if we're using a flat key that wasn't overridden from the dicts
+        if key in self.all_keys:
+            return self._get_dict_value_for_prefixed_key(key, self)
         return super().__missing__(key)
 
     def _get_prefixed_key(self, key):
@@ -130,19 +139,53 @@ class Settings(ChainMap):
         SEARCH_EXTENDED__boost_parts__search_phrase=2.5
         """
         if self.prefix:
-            return f"{self.prefix}__{key}"
+            return f"{self.prefix}{NESTING_SEPARATOR}{key}"
         return key
 
+    def _get_dict_value_for_prefixed_key(self, key, dict):
+        key_elements = key.split(NESTING_SEPARATOR)
+        if len(key_elements) == 1:
+            return dict[key]
+
+        sub_key = key_elements.pop(0)
+        if sub_key not in dict:
+            raise KeyError(key)
+
+        return self._get_dict_value_for_prefixed_key(
+            NESTING_SEPARATOR.join(key_elements), dict[sub_key]
+        )
+
+    def _get_keys_from_dict(self, dict, prefix):
+        keys = []
+        for key in dict.keys():
+            key_str = f"{prefix}{NESTING_SEPARATOR}{key}" if prefix else key
+            if isinstance(dict[key], Mapping):
+                keys += self._get_keys_from_dict(dict[key], key_str)
+            else:
+                keys += [
+                    key_str,
+                ]
+        return keys
+
     def _get_value_from_db(self, key):
-        prefixed_key = self._get_prefixed_key(key)
-        #  @TODO
-        return None
+        try:
+            setting = Setting.objects.get(key=self._get_prefixed_key(key))
+            return setting.value
+        except Setting.DoesNotExist:
+            return None
 
     def _get_value_from_env(self, key):
         try:
-            return env(self._get_prefixed_key(key))
+            # Check for a leaf-level key
+            return env(
+                f"{SETTINGS_KEY}{NESTING_SEPARATOR}{self._get_prefixed_key(key)}"
+            )
         except ImproperlyConfigured:
-            ...
+            try:
+                # check for a full string concatenated key
+                return env(f"{SETTINGS_KEY}{NESTING_SEPARATOR}{key}")
+            except ImproperlyConfigured:
+                ...
 
     def _get_value_from_field_definition(self, key):
         """
@@ -164,7 +207,7 @@ class Settings(ChainMap):
                     if field.field_name == key_elements[2]:
                         return getattr(field, "boost", None)
             except AttributeError:
-                return None
+                ...
 
     def get_overridden_single_item(self, key):
         """
@@ -180,8 +223,12 @@ class Settings(ChainMap):
         # or get from field level (if applicable)
         if value := self._get_value_from_field_definition(key):
             return value
-        # Fall back to overall settings ChainMap (i.e. from file or default values)
+
         return None
+
+    @property
+    def all_keys(self):
+        return self._get_keys_from_dict(self, "")
 
 
 extended_search_settings = Settings()
