@@ -1,6 +1,7 @@
 from collections import ChainMap
 from collections.abc import Mapping
 import environ
+import os
 
 from django.conf import settings as django_settings
 from django.contrib.contenttypes.models import ContentType
@@ -10,8 +11,13 @@ from extended_search.index import RelatedFields
 from extended_search.models import Setting
 
 
+env_file_path = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+    ".env",
+)
 env = environ.Env()
-env.read_env()
+env.read_env(env_file_path)
+
 
 SETTINGS_KEY = "SEARCH_EXTENDED"
 NESTING_SEPARATOR = "__"
@@ -221,7 +227,7 @@ class Settings(NestedChainMap):
             )
             return setting.value
         except Setting.DoesNotExist:
-            return None
+            ...
 
     def _get_value_from_env(self, key):
         try:
