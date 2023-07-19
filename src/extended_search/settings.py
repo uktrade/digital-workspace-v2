@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 
 from extended_search.index import RelatedFields
-from extended_search.models import Setting
+from extended_search import models
 
 
 env_file_path = os.path.join(
@@ -183,9 +183,9 @@ class NestedChainMap(ChainMap):
         return None
 
 
-class Settings(NestedChainMap):
+class SearchSettings(NestedChainMap):
     """
-    Settings are returned in priority order (high to low):
+    SearchSettings are returned in priority order (high to low):
 
     --[Individual settings]--
     1. DB settings
@@ -196,7 +196,7 @@ class Settings(NestedChainMap):
     5. Defaults in app
 
     Note that settings in the DB, IndexField and ENV are set one by one, while
-    those in the Django Settings and the defaults are created as (either full
+    those in the Django SearchSettings and the defaults are created as (either full
     or partial/sparse) dicts.
     """
 
@@ -222,11 +222,11 @@ class Settings(NestedChainMap):
 
     def _get_value_from_db(self, key):
         try:
-            setting = Setting.objects.get(
+            setting = models.Setting.objects.get(
                 key=self._get_prefixed_key_name(key, self.prefix)
             )
             return setting.value
-        except Setting.DoesNotExist:
+        except models.Setting.DoesNotExist:
             ...
 
     def _get_value_from_env(self, key):
@@ -303,4 +303,4 @@ class Settings(NestedChainMap):
         return None
 
 
-extended_search_settings = Settings()
+extended_search_settings = SearchSettings()
