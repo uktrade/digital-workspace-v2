@@ -207,17 +207,20 @@ class TestModelIndexManager:
     def test_get_related_fields_returns_extended_relatedfields(self, mocker):
         mock_func = mocker.patch(
             "extended_search.managers.index.ModelIndexManager._get_search_fields_from_mapping",
-            return_value=["bar"],
+            return_value=["SearchFieldObject <bar>"],
         )
-        result = ModelIndexManager._get_related_fields("foo", ["baz"])
-        mock_func.assert_called_once_with("baz")
+        result = ModelIndexManager._get_related_fields("foo", [{"field_name": "baz"}])
+        mock_func.assert_called_once_with({"field_name": "baz", "related_field": "foo"})
         assert type(result) == list
         assert type(result[0]) == RelatedFields
         assert result[0].field_name == "foo"
-        assert result[0].fields == ["bar"]
+        assert result[0].fields == ["SearchFieldObject <bar>"]
 
         mock_func.reset_mock()
-        result = ModelIndexManager._get_related_fields("foo", ["baz", "bam", "foobar"])
+        result = ModelIndexManager._get_related_fields(
+            "foo",
+            [{"field_name": "baz"}, {"field_name": "bam"}, {"field_name": "foobar"}],
+        )
         assert mock_func.call_count == 3
         assert len(result[0].fields) == 3
 
