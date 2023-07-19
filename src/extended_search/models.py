@@ -19,5 +19,8 @@ class Setting(models.Model):
         help_text="Setting value",
     )
 
+    class Meta:
+        permissions = (("view_explore", "View the global search explore page"),)
+
     def __str__(self):
         return self.key

@@ -275,61 +275,61 @@ class PersonIndexManager(ModelIndexManager):
             explicit=True,
             boost=3.0,
         ),
-        RelatedIndexedFields(
-            "roles",
-            [
-                IndexedField(
-                    "job_title",
-                    tokenized=True,
-                    explicit=True,
-                    boost=3.0,
-                ),
-            ],
-        ),
-        RelatedIndexedFields(
-            "key_skills",
-            [
-                IndexedField(
-                    "name",
-                    tokenized=True,
-                    explicit=True,
-                    boost=0.8,
-                ),
-            ],
-        ),
-        RelatedIndexedFields(
-            "learning_interests",
-            [
-                IndexedField(
-                    "name",
-                    tokenized=True,
-                    boost=0.8,
-                ),
-            ],
-        ),
-        RelatedIndexedFields(
-            "additional_roles",
-            [
-                IndexedField(
-                    "name",
-                    tokenized=True,
-                    explicit=True,
-                    boost=0.8,
-                ),
-            ],
-        ),
-        RelatedIndexedFields(
-            "networks",
-            [
-                IndexedField(
-                    "name",
-                    tokenized=True,
-                    explicit=True,
-                    filter=True,
-                    boost=1.5,
-                ),
-            ],
-        ),
+        # RelatedIndexedFields(
+        #     "roles",
+        #     [
+        #         IndexedField(
+        #             "job_title",
+        #             tokenized=True,
+        #             explicit=True,
+        #             boost=3.0,
+        #         ),
+        #     ],
+        # ),
+        # RelatedIndexedFields(
+        #     "key_skills",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             explicit=True,
+        #             boost=0.8,
+        #         ),
+        #     ],
+        # ),
+        # RelatedIndexedFields(
+        #     "learning_interests",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             boost=0.8,
+        #         ),
+        #     ],
+        # ),
+        # RelatedIndexedFields(
+        #     "additional_roles",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             explicit=True,
+        #             boost=0.8,
+        #         ),
+        #     ],
+        # ),
+        # RelatedIndexedFields(
+        #     "networks",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             explicit=True,
+        #             filter=True,
+        #             boost=1.5,
+        #         ),
+        #     ],
+        # ),
         IndexedField(
             "town_city_or_region",
             tokenized=True,

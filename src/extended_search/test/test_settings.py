@@ -3,7 +3,6 @@ import pytest
 from extended_search.settings import (
     extended_search_settings,
     DEFAULT_SETTINGS,
-    SettingNotFound,
     Settings,
 )
 
