@@ -6,10 +6,9 @@ from extended_search.models import Setting
 from extended_search.settings import extended_search_settings
 
 
-KEY_CHOICES = [(k, k) for k in extended_search_settings.all_keys]
-
-
 class SettingAdminForm(forms.ModelForm):
+    KEY_CHOICES = [(k, k) for k in extended_search_settings.all_keys]
+
     key = forms.ChoiceField(choices=KEY_CHOICES)
 
     class Meta:
