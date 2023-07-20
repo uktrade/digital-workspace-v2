@@ -259,12 +259,15 @@ class ContentPage(BasePage):
 
         super().full_clean(*args, **kwargs)
 
+    def generate_excerpt(self):
+        content = "".join(
+            [str(b.value) for b in self.body if b.block_type == "text_section"]
+        )
+        self.excerpt = truncate_words_and_chars(strip_tags(content), 40, 700)
+
     def save(self, *args, **kwargs):
         if self.excerpt is None:
-            content = "".join(
-                [str(b.value) for b in self.body if b.block_type == "text_section"]
-            )
-            self.excerpt = truncate_words_and_chars(str(content), 40, 700)
+            self.generate_excerpt()
 
         if self.id:
             manage_excluded(self, self.excluded_phrases)
