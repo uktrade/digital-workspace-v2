@@ -5,6 +5,8 @@
            href="{% pageurl object %}"
            onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% pageurl object %}', 'search_result_selected_type': '{{ type }}', 'search_result_selected_section': '{{ section }}', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }} })">{{ object.title }}</a>
     </h3>
+    <pre>{{ object }}</pre>
+    <pre>{{ object.search_content }}</pre>
     <p class="govuk-body">{{ object.excerpt }}</p>
     <p class="govuk-body-s ws-secondary-meta">Updated: {{ object.last_published_at }}</p>
 </div>

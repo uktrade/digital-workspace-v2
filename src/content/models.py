@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, Subquery
 from django.forms import widgets
+from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
@@ -229,9 +230,9 @@ class ContentPage(BasePage):
         self.search_content = ""
         for block in self.body:
             if block.block_type in ["heading2", "heading3", "heading4", "heading5"]:
-                self.search_headings += f" {block.value}"
+                self.search_headings += f" {strip_tags(block.value)}"
             elif block.block_type == "text_section":
-                self.search_content += f" {block.value}"
+                self.search_content += f" {strip_tags(block.value)}"
             elif block.block_type == "image":
                 self.search_content += f" {block.value['caption']}"
 
@@ -256,12 +257,15 @@ class ContentPage(BasePage):
     def full_clean(self, *args, **kwargs):
         self._generate_search_field_content()
 
-        if self.excerpt is None:
-            self.excerpt = truncate_words_and_chars(self.search_content, 40, 700)
-
         super().full_clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        if self.excerpt is None:
+            content = "".join(
+                [str(b.value) for b in self.body if b.block_type == "text_section"]
+            )
+            self.excerpt = truncate_words_and_chars(str(content), 40, 700)
+
         if self.id:
             manage_excluded(self, self.excluded_phrases)
             manage_pinned(self, self.pinned_phrases)
