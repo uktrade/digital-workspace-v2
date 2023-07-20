@@ -1,6 +1,7 @@
 from collections import ChainMap
 from collections.abc import Mapping
 import environ
+from psycopg2.errors import UndefinedTable
 import os
 
 from django.conf import settings as django_settings
@@ -226,7 +227,7 @@ class SearchSettings(NestedChainMap):
                 key=self._get_prefixed_key_name(key, self.prefix)
             )
             return setting.value
-        except models.Setting.DoesNotExist:
+        except (models.Setting.DoesNotExist, UndefinedTable):
             ...
 
     def _get_value_from_env(self, key):
@@ -251,6 +252,7 @@ class SearchSettings(NestedChainMap):
         if len(key_elements) >= 3:
             app_name, model_class, *field_name_parts = key_elements
             field_name = ".".join(field_name_parts)
+
             try:
                 content_type = ContentType.objects.get_by_natural_key(
                     app_name, model_class
@@ -258,6 +260,7 @@ class SearchSettings(NestedChainMap):
             except ContentType.DoesNotExist:
                 # Not a validly defined field key
                 return None
+
             model = content_type.model_class()
             fields = getattr(model, "search_fields", [])
             for field in fields:
