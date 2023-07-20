@@ -7,6 +7,7 @@ import os
 from django.conf import settings as django_settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
+from django.db.utils import ProgrammingError
 
 from extended_search.index import RelatedFields
 from extended_search import models
@@ -227,7 +228,10 @@ class SearchSettings(NestedChainMap):
                 key=self._get_prefixed_key_name(key, self.prefix)
             )
             return setting.value
-        except (models.Setting.DoesNotExist, UndefinedTable):
+        except models.Setting.DoesNotExist:
+            ...
+        # avoid issue at runtime on un-migrated DBs
+        except (UndefinedTable, ProgrammingError):
             ...
 
     def _get_value_from_env(self, key):
