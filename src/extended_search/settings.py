@@ -6,8 +6,10 @@ import os
 
 from django.conf import settings as django_settings
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import AppRegistryNotReady, ImproperlyConfigured
 from django.db.utils import ProgrammingError
+
+from wagtail.search.index import get_indexed_models
 
 from extended_search.index import RelatedFields
 from extended_search import models
@@ -283,6 +285,35 @@ class SearchSettings(NestedChainMap):
                     ):
                         return boost
 
+    def _get_all_indexed_fields(self):
+        fields = {}
+        try:
+            for model_cls in get_indexed_models():
+                for search_field in model_cls.search_fields:
+                    definition_cls = search_field.get_definition_model(model_cls)
+                    if definition_cls not in fields:
+                        fields[definition_cls] = set()
+                    fields[definition_cls].add(search_field)
+        except AppRegistryNotReady:
+            ...
+
+        return fields
+
+    def get_all_field_keys(self, include_prefix=True):
+        key_prefix = ""
+        if include_prefix:
+            key_prefix = (
+                f"boost_parts{self.nesting_separator}fields{self.nesting_separator}"
+            )
+
+        field_dict = self._get_all_indexed_fields()
+        keys = []
+        for k, v in field_dict.items():
+            field_name_model = f"{k._meta.app_label}.{k._meta.model_name}"
+            for search_field in v:
+                keys.append(f"{key_prefix}{field_name_model}.{search_field.field_name}")
+        return keys
+
     def _get_boost_value_if_matching_field(self, field_name_key, field):
         try:
             field_name = field.model_field_name
@@ -308,6 +339,15 @@ class SearchSettings(NestedChainMap):
             return value
 
         return None
+
+    @property
+    def all_keys(self):
+        """
+        Returns a combined list including implemented fields
+        """
+        dict_keys = self._get_all_prefixed_keys_from_nested_maps(self, "")
+        field_keys = self.get_all_field_keys()
+        return dict_keys + field_keys
 
 
 extended_search_settings = SearchSettings()
