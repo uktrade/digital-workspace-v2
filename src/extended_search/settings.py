@@ -213,6 +213,16 @@ class SearchSettings(NestedChainMap):
         self.django_settings = getattr(django_settings, SETTINGS_KEY, {})
         return super().__init__(self.django_settings, self.defaults)
 
+    def __getitem__(self, key):
+        if self.prefix and "fields" in self.prefix:
+            if self.maps[0] == {}:
+                field_keys = self.get_all_field_keys(False)
+                for field_key in field_keys:
+                    value = self._get_value_from_field_definition(field_key)
+                    self.maps[0][field_key] = value
+
+        return super().__getitem__(key)
+
     def __missing__(self, key):
         # if it's a field key we search specifically for it, or default to 1.0
         original_key = key
