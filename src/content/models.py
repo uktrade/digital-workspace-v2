@@ -1,3 +1,4 @@
+import html
 from typing import Optional
 
 from django.contrib.auth import get_user_model
@@ -263,7 +264,9 @@ class ContentPage(BasePage):
         content = "".join(
             [str(b.value) for b in self.body if b.block_type == "text_section"]
         )
-        self.excerpt = truncate_words_and_chars(strip_tags(content), 40, 700)
+        self.excerpt = truncate_words_and_chars(
+            html.unescape(strip_tags(content)), 40, 700
+        )
 
     def save(self, *args, **kwargs):
         if self.excerpt is None:
