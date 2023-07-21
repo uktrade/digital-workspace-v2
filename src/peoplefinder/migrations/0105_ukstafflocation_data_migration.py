@@ -39,7 +39,7 @@ def update_uk_office_location(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("peoplefinder", "0103_person_profile_completion"),
+        ("peoplefinder", "0104_ukstafflocation_person_remote_working_and_more"),
     ]
 
     operations = [

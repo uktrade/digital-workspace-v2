@@ -157,6 +157,7 @@ reset-db:
 first-use:
 	@docker-compose --profile playwright --profile opensearch down
 	make build
+	docker compose up -d db
 	make reset-db
 	sleep 1
 	make migrate
