@@ -12,12 +12,15 @@ def update_uk_office_location(apps, schema_editor):
     horse_guards_building = Building.objects.get(code="horse_guards")
     old_admiralty_building = Building.objects.get(code="old_admiralty")
 
-    horse_guards_location = UkStaffLocation.objects.get(
-        name="1 Horse Guards Road, London"
-    )
-    old_admiralty_building_location = UkStaffLocation.objects.get(
-        name="Old Admiralty Building, London"
-    )
+    try:
+        horse_guards_location = UkStaffLocation.objects.get(
+            name="1 Horse Guards Road, London"
+        )
+        old_admiralty_building_location = UkStaffLocation.objects.get(
+            name="Old Admiralty Building, London"
+        )
+    except UkStaffLocation.DoesNotExist:
+        return None
 
     # Update the uk_office_location field for people that are in one building
     # and NOT the other.
