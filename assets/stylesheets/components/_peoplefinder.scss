@@ -295,22 +295,34 @@
     max-height: 800px;
     overflow-y: auto;
     margin-bottom: 20px;
-    border: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
   }
 
   &__teams > ul {
     padding-left: 1rem;
+  }
+  &__teams > .govuk-radios--small .govuk-radios__item {
+    float: none;
+  }
+  &__teams__team {
+    display: inline-flex;
+    align-items: center;
+  }
+  &__teams__team span {
+    margin-right: 1rem;
   }
 
   svg {
     pointer-events: none;
   }
 
-  li > span {
+  li > div > span {
     cursor: pointer;
   }
 
-  li[data-open] > span > svg {
+  li[data-open] > div > span > svg {
     transform: rotate(90deg);
   }
 

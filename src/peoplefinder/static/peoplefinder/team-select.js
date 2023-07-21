@@ -101,16 +101,14 @@
         (this.getAttribute("disable-current-team") || "false") === "true" ? true : false;
 
       this.innerHTML = `
-        <div class="team-select">
-          <div id="current-team">
-            <div class="govuk-body" id="team-name"></div>
-            <input
-              class="govuk-button govuk-button--secondary"
-              type="button"
-              id="change-team"
-              value="Change team"
-            >
-          </div>
+      <div class="team-select">
+          <div class="govuk-body" id="team-name"></div>
+          <input
+            class="govuk-button govuk-button--secondary"
+            type="button"
+            id="change-team"
+            value="Change team"
+          >
           <div id="team-selector">
             <div class="govuk-form-group">
               <label class="govuk-label">Search for a team</label>
@@ -120,15 +118,14 @@
                 id="team-search"
                 placeholder="New Corporate Tools"
               >
+              <div class="team-select__teams" id="teams"></div>
             </div>
-            <div class="team-select__teams" id="teams"></div>
           </div>
         </div>
       `;
 
-      this.selectedTeamEl = this.querySelector("#current-team");
-      this.changeTeamEl = this.querySelector("#change-team");
       this.teamNameEl = this.querySelector("#team-name");
+      this.changeTeamEl = this.querySelector("#change-team");
       this.teamSelectorEl = this.querySelector("#team-selector");
       this.teamSearchEl = this.querySelector("#team-search");
       this.teamsEl = this.querySelector("#teams");
@@ -136,7 +133,7 @@
       if (!this.editing) {
         this.teamSelectorEl.style.display = "none";
       } else {
-        this.selectedTeamEl.style.display = "none";
+        this.changeTeamEl.style.display = "none";
       }
 
       this.getTeamSelectData(url).then((data) => {
@@ -190,6 +187,8 @@
       let tree = new Map();
 
       const rootUl = document.createElement("ul");
+      rootUl.classList.add("govuk-radios", "govuk-radios--small");
+      rootUl.dataset.module = "govuk-radios";
 
       tree.set(null, rootUl);
 
@@ -222,7 +221,11 @@
       const li = document.createElement("li");
       li.dataset.teamId = team.team_id;
 
+      const input_wrapper = document.createElement("div");
+      input_wrapper.classList.add("team-select__teams__team");
       const toggle = document.createElement("span");
+      const radio_item = document.createElement("div");
+      radio_item.classList.add("govuk-radios__item");
 
       if (children.length) {
         toggle.dataset.action = TEAM_SELECT_ACTION.EXPAND_TEAM;
@@ -232,27 +235,40 @@
         toggle.append(squareIcon());
       }
 
-      li.append(toggle);
+      input_wrapper.append(toggle);
 
       const label = document.createElement("label");
+      label.classList.add("govuk-label", "govuk-radios__label");
+      label.dataset.action = TEAM_SELECT_ACTION.SELECT_TEAM;
+      label.dataset.teamId = team.team_id;
+      label.for = team.team_id;
+
       const input = document.createElement("input");
+      input.classList.add("govuk-radios__input");
+      input.dataset.action = TEAM_SELECT_ACTION.SELECT_TEAM;
+      input.dataset.teamId = team.team_id;
       input.type = "radio";
       input.name = this.name;
       input.value = team.team_id;
+      input.id = team.team_id;
 
       if (isSelectedTeam) {
         input.checked = true;
       }
 
-      label.append(input, team.team_name);
+      label.append(team.team_name);
 
-      li.append(label);
+      radio_item.append(input);
+      radio_item.append(label);
+
+      input_wrapper.append(radio_item);
+      li.append(input_wrapper);
 
       return li;
     }
 
     handleChangeTeam(e) {
-      this.selectedTeamEl.style.display = "none";
+      this.changeTeamEl.style.display = "none";
       this.teamSelectorEl.style.display = "block";
     }
 
@@ -263,6 +279,7 @@
         case TEAM_SELECT_ACTION.SELECT_TEAM:
           this.selectedTeamId = parseInt(el.dataset.teamId);
           this.selectedTeam = this.teams.find((team) => team.team_id === this.selectedTeamId);
+          this.teamNameEl.innerHTML = this.selectedTeam.team_name;
           break;
         case TEAM_SELECT_ACTION.EXPAND_TEAM:
           this.toggleTeam(el.dataset.teamId);

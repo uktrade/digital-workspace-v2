@@ -38,7 +38,7 @@ class TeamEditPage(PeoplefinderPage):
 
     @name.setter
     def name(self, value: str) -> None:
-        self.page.get_by_label("Team name").fill(value)
+        self.page.get_by_label("Team name (required)").fill(value)
 
     @property
     def abbreviation(self) -> str:
