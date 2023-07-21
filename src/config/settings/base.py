@@ -97,7 +97,6 @@ LOCAL_APPS = [
     "core",
     "home",
     "content",
-    "extended_search",
     "search",
     "news",
     "working_at_dit",
@@ -161,7 +160,15 @@ DJANGO_APPS = [
     "django.contrib.sitemaps",
 ]
 
-INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + WAGTAIL_APPS + DJANGO_APPS
+INSTALLED_APPS = (
+    LOCAL_APPS
+    + THIRD_PARTY_APPS
+    + WAGTAIL_APPS
+    + DJANGO_APPS
+    + [
+        "extended_search",  # must be last because it depends on models being loaded into memory
+    ]
+)
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -462,7 +469,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stdout"],
-        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
+        "level": os.getenv("ROOT_LOG_LEVEL", "DEBUG"),
     },
     "loggers": {
         "django": {
@@ -497,7 +504,13 @@ LOGGING = {
             "handlers": [
                 "stdout",
             ],
-            "level": "INFO",
+            "level": "DEBUG",
+        },
+        "environ": {
+            "handlers": [
+                "stdout",
+            ],
+            "level": "DEBUG",
         },
     },
 }

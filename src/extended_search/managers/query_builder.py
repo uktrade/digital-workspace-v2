@@ -80,7 +80,7 @@ class QueryBuilder:
                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
 
         content_type = ContentType.objects.get_for_model(model_class)
-        field_name = field_mapping["name"]
+        field_name = base_field_name  # cls._get_indexed_field_name(base_field_name, analysis_type)
         if "related_field" in field_mapping:
             field_name = f"{field_mapping['related_field']}.{field_name}"
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"

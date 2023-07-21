@@ -24,6 +24,7 @@ env.read_env(env_file_path)
 
 
 SETTINGS_KEY = "SEARCH_EXTENDED"
+FIELDS_CACHE_KEY = "EXTENDED_SEARCH_SETTINGS_FIELDS"
 NESTING_SEPARATOR = "__"
 DEFAULT_SETTINGS = {
     "boost_parts": {
@@ -211,28 +212,13 @@ class SearchSettings(NestedChainMap):
 
         self.defaults = DEFAULT_SETTINGS
         self.django_settings = getattr(django_settings, SETTINGS_KEY, {})
-        return super().__init__(self.django_settings, self.defaults)
+        # fields and env_vars will be properly initialised by AppConfig.ready()
+        self.fields = {"boost_parts": {"fields": {}}}
+        self.env_vars = {}
 
-    def __getitem__(self, key):
-        if self.prefix and "fields" in self.prefix:
-            if self.maps[0] == {}:
-                field_keys = self.get_all_field_keys(False)
-                for field_key in field_keys:
-                    value = self._get_value_from_field_definition(field_key)
-                    self.maps[0][field_key] = value
-
-        return super().__getitem__(key)
-
-    def __missing__(self, key):
-        # if it's a field key we search specifically for it, or default to 1.0
-        original_key = key
-        if f"{self.nesting_separator}fields" in key:
-            key = key.split(self.nesting_separator)[-1:][0]
-
-        if value := self._get_value_from_field_definition(key):
-            return value
-
-        return super().__missing__(original_key)
+        super().__init__(
+            self.env_vars, self.fields, self.django_settings, self.defaults
+        )
 
     def _get_value_from_db(self, key):
         try:
@@ -246,118 +232,58 @@ class SearchSettings(NestedChainMap):
         except (UndefinedTable, ProgrammingError):
             ...
 
-    def _get_value_from_env(self, key):
-        try:
-            # Check for a leaf-level key
-            return env(
-                f"{SETTINGS_KEY}{self.nesting_separator}{self._get_prefixed_key_name(key, self.prefix)}"
-            )
-        except ImproperlyConfigured:
-            try:
-                # check for a full string concatenated key
-                return env(f"{SETTINGS_KEY}{self.nesting_separator}{key}")
-            except ImproperlyConfigured:
-                ...
-
-    def _get_value_from_field_definition(self, key):
-        """
-        Requires the key to be in the format `app_name.model_class.field_name`
-        """
-        key_elements = key.split(".")
-        # fields can have a dot-notation name if RelatedFields
-        if len(key_elements) >= 3:
-            app_name, model_class, *field_name_parts = key_elements
-            field_name = ".".join(field_name_parts)
-
-            try:
-                content_type = ContentType.objects.get_by_natural_key(
-                    app_name, model_class
-                )
-            except ContentType.DoesNotExist:
-                # Not a validly defined field key
-                return None
-
-            model = content_type.model_class()
-            fields = getattr(model, "search_fields", [])
-            for field in fields:
-                if (
-                    isinstance(field, RelatedFields)
-                    and field.model_field_name == field_name_parts[0]
-                ):
-                    for related_field in field.fields:
-                        if boost := self._get_boost_value_if_matching_field(
-                            field_name_parts[1], related_field
-                        ):
-                            return boost
-                else:
-                    if boost := self._get_boost_value_if_matching_field(
-                        field_name, field
-                    ):
-                        return boost
-
     def _get_all_indexed_fields(self):
         fields = {}
-        try:
-            for model_cls in get_indexed_models():
-                for search_field in model_cls.search_fields:
-                    definition_cls = search_field.get_definition_model(model_cls)
-                    if definition_cls not in fields:
-                        fields[definition_cls] = set()
-                    fields[definition_cls].add(search_field)
-        except AppRegistryNotReady:
-            ...
+        for model_cls in get_indexed_models():
+            for search_field in model_cls.search_fields:
+                definition_cls = search_field.get_definition_model(model_cls)
+                if definition_cls not in fields:
+                    fields[definition_cls] = set()
+                fields[definition_cls].add(search_field)
 
         return fields
 
-    def get_all_field_keys(self, include_prefix=True):
-        key_prefix = ""
-        if include_prefix:
-            key_prefix = (
-                f"boost_parts{self.nesting_separator}fields{self.nesting_separator}"
-            )
-
+    def initialise_field_dict(self):
         field_dict = self._get_all_indexed_fields()
-        keys = []
-        for k, v in field_dict.items():
-            field_name_model = f"{k._meta.app_label}.{k._meta.model_name}"
-            for search_field in v:
-                keys.append(f"{key_prefix}{field_name_model}.{search_field.field_name}")
-        return keys
+        for model, fields in field_dict.items():
+            model_name_str = f"{model._meta.app_label}.{model._meta.model_name}"
+            for search_field in fields:
+                field_name_str = getattr(
+                    search_field, "model_field_name", search_field.field_name
+                )
+                field_key = f"{model_name_str}.{field_name_str}"
 
-    def _get_boost_value_if_matching_field(self, field_name_key, field):
-        try:
-            field_name = field.model_field_name
-        except AttributeError:
-            field_name = field.field_name
+                self.fields["boost_parts"]["fields"][field_key] = getattr(
+                    search_field, "boost", 1.0
+                )
 
-        if field_name_key == field_name:
-            return getattr(field, "boost", 1.0)
+    def initialise_env_dict(self):
+        for key in self.all_keys:
+            try:
+                # check for a full string concatenated key
+                value = env(f"{SETTINGS_KEY}{self.nesting_separator}{key}")
+
+                if value:
+                    key_elements = key.split(self.nesting_separator)
+                    sub_dict = self.env_vars
+                    for key in key_elements:
+                        if key != key_elements[len(key_elements) - 1]:
+                            if key not in sub_dict:
+                                sub_dict[key] = {}
+                            sub_dict = sub_dict[key]
+                        else:
+                            sub_dict[key] = value
+            except ImproperlyConfigured:
+                ...
 
     def _getitem_overriding_maps(self, key):
         """
-        Allows for settings defined as single items to jump into the overrides,
-        either from ENV or from e.g. field definitions
+        Allows for settings defined as single items in the DB to override
         """
-        # get from DB
         if value := self._get_value_from_db(key):
-            return value
-        # or get from ENV
-        if value := self._get_value_from_env(key):
-            return value
-        # or get from field level (if applicable)
-        if value := self._get_value_from_field_definition(key):
             return value
 
         return None
-
-    @property
-    def all_keys(self):
-        """
-        Returns a combined list including implemented fields
-        """
-        dict_keys = self._get_all_prefixed_keys_from_nested_maps(self, "")
-        field_keys = self.get_all_field_keys()
-        return dict_keys + field_keys
 
 
 extended_search_settings = SearchSettings()
