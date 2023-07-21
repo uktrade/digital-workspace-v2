@@ -6,14 +6,14 @@ from django.db import migrations
 def copy_excerpts_to_parent(apps, schema_editor):
     Network = apps.get_model("networks", "Network")
     for network in Network.objects.filter(excerpt__isnull=False):
-        network.contentpage.search_excerpt = network.excerpt
-        network.contentpage.save()
+        network.search_excerpt = network.excerpt
+        network.save()
 
 
 def copy_excerpts_from_parent(apps, schema_editor):
     Network = apps.get_model("networks", "Network")
     for network in Network.objects.all():
-        network.excerpt = network.contentpage.search_excerpt
+        network.excerpt = network.search_excerpt
         network.save()
 
 
