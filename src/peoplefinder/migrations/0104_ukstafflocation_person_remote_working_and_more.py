@@ -2,14 +2,23 @@
 
 import django.db.models.deletion
 from django.db import migrations, models
+from django.db.models import Count
 
 
 def update_remote_working(apps, schema_editor):
     Person = apps.get_model("peoplefinder", "Person")
     Building = apps.get_model("peoplefinder", "Building")
     remote_building = Building.objects.get(code="home")
-    remote_people = Person.objects.filter(buildings=remote_building)
-    remote_people.update(remote_working="remote_worker")
+
+    people_annotated = Person.objects.annotate(
+        building_count=Count("buildings"),
+    )
+
+    remote_people = people_annotated.filter(buildings=remote_building)
+    # Update people who work from home only
+    remote_people.filter(building_count=1).update(remote_working="remote_worker")
+    # Update people who work from home and office
+    remote_people.filter(building_count__gte=2).update(remote_working="split")
 
 
 class Migration(migrations.Migration):
