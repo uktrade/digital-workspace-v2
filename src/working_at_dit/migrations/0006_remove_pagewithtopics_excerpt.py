@@ -6,14 +6,14 @@ from django.db import migrations
 def copy_excerpts_to_parent(apps, schema_editor):
     PageWithTopics = apps.get_model("working_at_dit", "PageWithTopics")
     for pwt in PageWithTopics.objects.filter(excerpt__isnull=False):
-        pwt.contentpage.search_excerpt = pwt.excerpt
-        pwt.contentpage.save()
+        pwt.search_excerpt = pwt.excerpt
+        pwt.save()
 
 
 def copy_excerpts_from_parent(apps, schema_editor):
     PageWithTopics = apps.get_model("working_at_dit", "PageWithTopics")
     for pwt in PageWithTopics.objects.all():
-        pwt.excerpt = pwt.contentpage.search_excerpt
+        pwt.excerpt = pwt.search_excerpt
         pwt.save()
 
 
