@@ -10,10 +10,7 @@ def fill_empty_excerpts(apps, schema_editor):
     ContentPage = apps.get_model("content", "ContentPage")
     for page in ContentPage.objects.filter(excerpt__isnull=True):
         try:
-            content = "".join(
-                [str(b.value) for b in page.body if b.block_type == "text_section"]
-            )
-            page.excerpt = truncate_words_and_chars(strip_tags(content), 40, 700)
+            page.generate_excerpt()
             page.save()
         except ValidationError:
             ...
