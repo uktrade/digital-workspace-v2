@@ -469,7 +469,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stdout"],
-        "level": os.getenv("ROOT_LOG_LEVEL", "DEBUG"),
+        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
     },
     "loggers": {
         "django": {

@@ -5,13 +5,11 @@ from psycopg2.errors import UndefinedTable
 import os
 
 from django.conf import settings as django_settings
-from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import AppRegistryNotReady, ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured
 from django.db.utils import ProgrammingError
 
 from wagtail.search.index import get_indexed_models
 
-from extended_search.index import RelatedFields
 from extended_search import models
 
 
@@ -100,8 +98,6 @@ class NestedChainMap(ChainMap):
         submaps = [mapping for mapping in self.maps if key in mapping]
         # No matching dict found for key
         if not submaps:
-            if value := self._getitem_overriding_maps(key):
-                return value
             return self.__missing__(key)
 
         if isinstance(submaps[0][key], Mapping):
@@ -111,9 +107,6 @@ class NestedChainMap(ChainMap):
                 *(submap[key] for submap in submaps),
                 prefix=self._get_prefixed_key_name(key, self.prefix),
             )
-
-        if value := self._getitem_overriding_maps(key):
-            return value
 
         return super().__getitem__(key)
 
@@ -178,15 +171,6 @@ class NestedChainMap(ChainMap):
             self.nesting_separator.join(key_elements), dict[sub_key]
         )
 
-    def _getitem_overriding_maps(self, key):
-        """
-        Placeholder for implementing non-dict overrides of specfic keys - i.e.
-        if we want to be able to have a method that supports overriding a deep
-        single key we don't need to artificially create a deep nested dict and
-        add it to the ChainMap, we can support it here instead...
-        """
-        return None
-
 
 class SearchSettings(NestedChainMap):
     """
@@ -212,25 +196,19 @@ class SearchSettings(NestedChainMap):
 
         self.defaults = DEFAULT_SETTINGS
         self.django_settings = getattr(django_settings, SETTINGS_KEY, {})
-        # fields and env_vars will be properly initialised by AppConfig.ready()
+        # fields, db and env_vars will be properly initialised by AppConfig.ready()
         self.fields = {"boost_parts": {"fields": {}}}
         self.env_vars = {}
+        self.db_vars = {}
+        self.queryset = models.Setting.objects.all()
 
         super().__init__(
-            self.env_vars, self.fields, self.django_settings, self.defaults
+            self.db_vars,
+            self.env_vars,
+            self.fields,
+            self.django_settings,
+            self.defaults,
         )
-
-    def _get_value_from_db(self, key):
-        try:
-            setting = models.Setting.objects.get(
-                key=self._get_prefixed_key_name(key, self.prefix)
-            )
-            return setting.value
-        except models.Setting.DoesNotExist:
-            ...
-        # avoid issue at runtime on un-migrated DBs
-        except (UndefinedTable, ProgrammingError):
-            ...
 
     def _get_all_indexed_fields(self):
         fields = {}
@@ -276,14 +254,21 @@ class SearchSettings(NestedChainMap):
             except ImproperlyConfigured:
                 ...
 
-    def _getitem_overriding_maps(self, key):
-        """
-        Allows for settings defined as single items in the DB to override
-        """
-        if value := self._get_value_from_db(key):
-            return value
-
-        return None
+    def initialise_db_dict(self):
+        try:
+            self.queryset = models.Setting.objects.all()
+            for obj in self.queryset:
+                key_elements = obj.key.split(self.nesting_separator)
+                sub_dict = self.db_vars
+                for key in key_elements:
+                    if key != key_elements[len(key_elements) - 1]:
+                        if key not in sub_dict:
+                            sub_dict[key] = {}
+                        sub_dict = sub_dict[key]
+                    else:
+                        sub_dict[key] = obj.value
+        except (UndefinedTable, ProgrammingError):
+            ...
 
 
 extended_search_settings = SearchSettings()
