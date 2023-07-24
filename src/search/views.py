@@ -46,6 +46,8 @@ def explore(request: HttpRequest) -> HttpResponse:
         if "boost_parts" in k
     ]
 
+    # boost_vars = extended_search_settings["boost_parts"]["fields"]
+
     context = {
         "search_url": reverse("search:explore"),
         "search_query": query,

@@ -22,7 +22,6 @@ env.read_env(env_file_path)
 
 
 SETTINGS_KEY = "SEARCH_EXTENDED"
-FIELDS_CACHE_KEY = "EXTENDED_SEARCH_SETTINGS_FIELDS"
 NESTING_SEPARATOR = "__"
 DEFAULT_SETTINGS = {
     "boost_parts": {
@@ -113,7 +112,7 @@ class NestedChainMap(ChainMap):
     def __missing__(self, key):
         # Check if we're using a flat key that wasn't overridden from the dicts
         if key in self.all_keys:
-            return self._getitem_from_maps_for_prefixed_key(key, self)
+            return self._getitem_from_nested_maps_for_prefixed_key(key, self)
         return super().__missing__(key)
 
     def _get_prefixed_key_name(self, key, prefix):
@@ -153,7 +152,7 @@ class NestedChainMap(ChainMap):
         """
         return self._get_all_prefixed_keys_from_nested_maps(self, "")
 
-    def _getitem_from_maps_for_prefixed_key(self, key, dict):
+    def _getitem_from_nested_maps_for_prefixed_key(self, key, dict):
         """
         Splits a flattened / prefixed key into parts, and uses those to traverse
         the dict-like ChainMap of settings. Functions as a flattened __getitem__
@@ -167,7 +166,7 @@ class NestedChainMap(ChainMap):
         if sub_key not in dict:
             raise KeyError(key)
 
-        return self._getitem_from_maps_for_prefixed_key(
+        return self._getitem_from_nested_maps_for_prefixed_key(
             self.nesting_separator.join(key_elements), dict[sub_key]
         )
 
