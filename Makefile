@@ -208,7 +208,7 @@ test:
 	$(testrunner) pytest -m "not e2e" --reuse-db $(tests)
 
 test-e2e: up-all
-	docker-compose exec playwright poetry run pytest -m "e2e"
+	docker-compose exec playwright poetry run pytest -m "e2e" $(tests)
 	docker-compose stop playwright
 
 test-all:
