@@ -1,5 +1,4 @@
 from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
 
 from extended_search.models import Setting
 from extended_search.settings import extended_search_settings
