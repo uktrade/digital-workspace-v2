@@ -337,28 +337,54 @@ class TestSearchSettings:
         } == instance.fields
 
     def test_initialise_env_dict(self, mocker):
-        assert True is False
+        mock_env = mocker.patch("extended_search.settings.env")
+        mocker.patch(
+            "extended_search.settings.NestedChainMap._get_all_prefixed_keys_from_nested_maps",
+            return_value=[],
+        )  # for all_keys
+        instance = SearchSettings()
+        assert instance.env_vars == {}
+        instance.initialise_env_dict()
+        assert instance.env_vars == {}
+
+        mock_env.side_effect = ["value", "other"]
+        mocker.patch(
+            "extended_search.settings.NestedChainMap._get_all_prefixed_keys_from_nested_maps",
+            return_value=["top__middle__key", "top__second"],
+        )  # for all_keys
+        instance.initialise_env_dict()
+        assert mock_env.call_count == 2
+        assert instance.env_vars == {
+            "top": {
+                "middle": {"key": "value"},
+                "second": "other",
+            },
+        }
+        mock_env.assert_any_call(f"{SETTINGS_KEY}__top__middle__key")
+        mock_env.assert_any_call(f"{SETTINGS_KEY}__top__second")
+        assert mock_env.call_count == 2
 
     @pytest.mark.django_db
     def test_initialise_db_dict(self):
         instance = SearchSettings()
         assert instance.db_vars == {}
         assert Setting.objects.all().count() == 0
-        instance.initialise_field_dict()
+        instance.initialise_db_dict()
         assert instance.db_vars == {}
 
-        # Setting.objects.create(key="test.field.name", value="test")
-        # assert Setting.objects.all().count() == 1
-        # setting = Setting.objects.first()
-        # assert setting.key == "test.field.name"
-        # assert setting.value == "test"
-        # instance.initialise_field_dict()
-        # assert instance.db_vars == {"test.field.name": "test"}
+        Setting.objects.create(key="test.field.name", value="test")
+        assert Setting.objects.all().count() == 1
+        instance.initialise_db_dict()
+        assert instance.db_vars == {"test.field.name": "test"}
+
+        instance.db_vars = {}
+        Setting.objects.all().delete()
         Setting.objects.create(
             key="boost_parts__fields__test.field.name", value="trial"
         )
+        assert Setting.objects.all().count() == 1
+        instance.initialise_db_dict()
         assert instance.db_vars == {
-            "test.field.name": "test",
             "boost_parts": {"fields": {"test.field.name": "trial"}},
         }
 
