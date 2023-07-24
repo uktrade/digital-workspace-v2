@@ -150,7 +150,9 @@ class QueryBuilder:
 
         if "search" in field_mapping:
             for analyzer in field_mapping["search"]:
-                for query_type in settings[f"analyzers__{analyzer.value}__query_types"]:
+                for query_type in search_settings[
+                    f"analyzers__{analyzer.value}__query_types"
+                ]:
                     query_element = (
                         cls._get_searchquery_for_query_field_querytype_analysistype(
                             query_str,
