@@ -269,11 +269,28 @@ class PersonIndexManager(ModelIndexManager):
             keyword=True,
             boost=4.0,
         ),
+        # Flattened relatedfields...
         IndexedField(
             "search_titles",
             tokenized=True,
             explicit=True,
             boost=3.0,
+        ),
+        IndexedField(
+            "search_skills",
+            tokenized=True,
+        ),
+        IndexedField(
+            "search_interests",
+            tokenized=True,
+        ),
+        IndexedField(
+            "search_additional_roles",
+            tokenized=True,
+        ),
+        IndexedField(
+            "search_networks",
+            tokenized=True,
         ),
         # RelatedIndexedFields(
         #     "roles",
@@ -661,6 +678,22 @@ class Person(Indexed, models.Model):
     @property
     def search_titles(self):
         return ", ".join(self.roles.all().values_list("job_title", flat=True))
+
+    @property
+    def search_skills(self):
+        return ", ".join(self.key_skills.all().values_list("name", flat=True))
+
+    @property
+    def search_interests(self):
+        return ", ".join(self.learning_interests.all().values_list("name", flat=True))
+
+    @property
+    def search_additional_roles(self):
+        return ", ".join(self.additional_roles.all().values_list("name", flat=True))
+
+    @property
+    def search_networks(self):
+        return ", ".join(self.networks.all().values_list("name", flat=True))
 
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()

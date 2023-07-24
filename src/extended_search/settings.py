@@ -221,6 +221,7 @@ class SearchSettings(NestedChainMap):
         return fields
 
     def initialise_field_dict(self):
+        self.fields = {"boost_parts": {"fields": {}}}
         field_dict = self._get_all_indexed_fields()
         for model, fields in field_dict.items():
             model_name_str = f"{model._meta.app_label}.{model._meta.model_name}"
@@ -235,6 +236,7 @@ class SearchSettings(NestedChainMap):
                 )
 
     def initialise_env_dict(self):
+        self.env_vars = {}
         for key in self.all_keys:
             try:
                 # check for a full string concatenated key
@@ -255,6 +257,7 @@ class SearchSettings(NestedChainMap):
 
     def initialise_db_dict(self):
         try:
+            self.db_vars = {}
             self.queryset = models.Setting.objects.all()
             for obj in self.queryset:
                 key_elements = obj.key.split(self.nesting_separator)

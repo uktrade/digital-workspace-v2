@@ -9,6 +9,4 @@ def update_searchsetting_queryset(sender, **kwargs):
 
 
 post_save.connect(update_searchsetting_queryset, sender=Setting)
-post_delete.connect(
-    update_searchsetting_queryset, sender=Setting
-)  # this seems to fire too early? not having an effect...
+post_delete.connect(update_searchsetting_queryset, sender=Setting)
