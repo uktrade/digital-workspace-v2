@@ -4,7 +4,7 @@ from wagtail.search.index import FilterField
 
 from extended_search.index import AutocompleteField, SearchField, RelatedFields
 from extended_search.managers.query_builder import QueryBuilder
-from extended_search.settings import extended_search_settings as settings
+from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType
 
 
@@ -19,7 +19,7 @@ class ModelIndexManager(QueryBuilder):
 
     @classmethod
     def _get_analyzer_name(cls, analyzer_type):
-        analyzer_settings = settings["analyzers"][analyzer_type.value]
+        analyzer_settings = search_settings["analyzers"][analyzer_type.value]
         return analyzer_settings["es_analyzer"]
 
     @classmethod

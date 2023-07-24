@@ -7,14 +7,15 @@ from extended_search.settings import extended_search_settings
 
 
 class SettingAdminForm(forms.ModelForm):
-    # doesn't contain fields at the time this is run...
-    KEY_CHOICES = [(k, k) for k in extended_search_settings.all_keys]
-
-    key = forms.ChoiceField(choices=KEY_CHOICES)
+    key = forms.ChoiceField(choices=[])
 
     class Meta:
         model = Setting
         fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["key"].choices = [(k, k) for k in extended_search_settings.all_keys]
 
 
 class SettingAdmin(admin.ModelAdmin):

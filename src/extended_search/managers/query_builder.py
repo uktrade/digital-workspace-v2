@@ -5,7 +5,7 @@ from wagtail.search.query import Boost, Phrase, PlainText
 
 from search.utils import split_query
 from extended_search.backends.query import OnlyFields
-from extended_search.settings import extended_search_settings as settings
+from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
 
 
@@ -16,7 +16,8 @@ class QueryBuilder:
     @classmethod
     def _get_indexed_field_name(cls, model_field_name, analyzer):
         field_name_suffix = (
-            settings[f"analyzers__{analyzer.value}__index_fieldname_suffix"] or ""
+            search_settings[f"analyzers__{analyzer.value}__index_fieldname_suffix"]
+            or ""
         )
         return f"{model_field_name}{field_name_suffix}"
 
@@ -86,9 +87,9 @@ class QueryBuilder:
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
 
         return (
-            float(settings[f"boost_parts__query_types__{query_type_boost}"])
-            * float(settings[f"boost_parts__analyzers__{analysis_type_boost}"])
-            * float(settings[f"boost_parts__fields__{field_boost_key}"])
+            float(search_settings[f"boost_parts__query_types__{query_type_boost}"])
+            * float(search_settings[f"boost_parts__analyzers__{analysis_type_boost}"])
+            * float(search_settings[f"boost_parts__fields__{field_boost_key}"])
         )
 
     @classmethod
