@@ -116,7 +116,7 @@
                 class="govuk-input"
                 type="search"
                 id="team-search"
-                placeholder="New Corporate Tools"
+                placeholder="Start typing to search"
               >
               <div class="team-select__teams" id="teams"></div>
             </div>
