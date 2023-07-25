@@ -1,7 +1,7 @@
 from typing import Iterator, Optional, TypedDict
 
 from django.contrib.postgres.aggregates import ArrayAgg
-from django.db import connection, models, transaction
+from django.db import connection, transaction
 from django.db.models import (
     Case,
     CharField,
