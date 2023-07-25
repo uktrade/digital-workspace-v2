@@ -172,16 +172,6 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 }
 
         return match_query
-        # if len(fields) == 1:
-        #     return {"match_phrase": {fields[0]: query.query_string}}
-        # else:
-        #     return {
-        #         "multi_match": {
-        #             "query": query.query_string,
-        #             "fields": fields,
-        #             "type": "phrase",
-        #         }
-        #     }
 
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):

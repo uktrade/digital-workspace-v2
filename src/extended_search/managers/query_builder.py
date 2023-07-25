@@ -3,7 +3,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from wagtail.search.query import Boost, Phrase, PlainText
 
-from search.utils import split_query
 from extended_search.backends.query import OnlyFields
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
@@ -29,9 +28,6 @@ class QueryBuilder:
     ):
         # split can be super basic word split since we don't support advanced search
         query_parts = query_str.split()
-        # query_parts = split_query(
-        #     query_str
-        # )  # @TODO should really do this via wagtail parse_query_string (overridden?)
         match query_type:
             case SearchQueryType.PHRASE:
                 query = Phrase(query_str)
