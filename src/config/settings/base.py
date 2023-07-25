@@ -510,7 +510,7 @@ LOGGING = {
             "handlers": [
                 "stdout",
             ],
-            "level": "DEBUG",
+            "level": "WARN",
         },
     },
 }
