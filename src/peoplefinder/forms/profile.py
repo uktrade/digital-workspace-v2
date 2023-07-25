@@ -1,11 +1,60 @@
+from typing import Set
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.validators import ValidationError
 
-from peoplefinder.models import Person
-
+from peoplefinder.models import Person, UkStaffLocation
 
 User = get_user_model()
+
+
+class GovUkRadioSelect(forms.RadioSelect):
+    template_name = "peoplefinder/widgets/radio.html"
+    option_template_name = "peoplefinder/widgets/radio_option.html"
+
+    def create_option(
+        self, name, value, label, selected, index, subindex=None, attrs=None
+    ):
+        option = super().create_option(
+            name, value, label, selected, index, subindex=subindex, attrs=attrs
+        )
+        option["attrs"]["class"] = "govuk-radios__input"
+        return option
+
+
+class GroupedModelChoiceIterator(forms.models.ModelChoiceIterator):
+    def __init__(self, field: "GroupedModelChoiceField") -> None:
+        super().__init__(field)
+        self.group_field: str = field.group_field
+
+    def __iter__(self):
+        if self.field.empty_label is not None:
+            yield ("", self.field.empty_label)
+
+        queryset = self.queryset
+        groups = sorted(set(queryset.values_list(self.group_field, flat=True)))
+        output = []
+        for group in groups:
+            group_queryset = queryset.filter(**{self.group_field: group})
+            output.append((group, [self.choice(obj) for obj in group_queryset]))
+
+        yield from output
+
+
+class GroupedModelChoiceField(forms.ModelChoiceField):
+    iterator = GroupedModelChoiceIterator
+    group_field = None
+    groups: Set[str] = set()
+
+    def __init__(
+        self,
+        *args,
+        group_field: str,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.group_field = group_field
 
 
 class ProfileForm(forms.ModelForm):
@@ -19,10 +68,8 @@ class ProfileForm(forms.ModelForm):
             "contact_email",
             "primary_phone_number",
             "secondary_phone_number",
-            "country",
-            "town_city_or_region",
-            "buildings",
-            "regional_building",
+            "uk_office_location",
+            "remote_working",
             "international_building",
             "location_in_building",
             "workdays",
@@ -49,7 +96,7 @@ class ProfileForm(forms.ModelForm):
             "networks": forms.CheckboxSelectMultiple,
             "professions": forms.CheckboxSelectMultiple,
             "additional_roles": forms.CheckboxSelectMultiple,
-            "buildings": forms.CheckboxSelectMultiple,
+            "remote_working": GovUkRadioSelect,
         }
 
     # Override manager to avoid using IDs and enforce the use of UUIDs (slugs).
@@ -60,6 +107,24 @@ class ProfileForm(forms.ModelForm):
     width = forms.IntegerField(required=False)
     height = forms.IntegerField(required=False)
     remove_photo = forms.BooleanField(required=False)
+    uk_office_location = GroupedModelChoiceField(
+        queryset=UkStaffLocation.objects.all()
+        .filter(
+            organisation__in=[
+                "Department for International Trade",
+                "Department for Business, Energy and Industrial Strategy",
+            ]
+        )
+        .order_by(
+            "city",
+            "name",
+        ),
+        label="What is your office location?",
+        help_text="Your base location as per your contract.",
+        group_field="city",
+        empty_label="Select your office location",
+        required=False,
+    )
 
     # These fields are disabled by default as only a superuser can edit them. Disabled
     # fields cannot be tampered with and will fall back to their initial value.
@@ -104,18 +169,11 @@ class ProfileForm(forms.ModelForm):
         self.fields["secondary_phone_number"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
-        self.fields["country"].widget.attrs.update(
+        self.fields["uk_office_location"].widget.attrs.update(
             {"class": "govuk-select govuk-!-width-one-half"}
         )
-        self.fields["town_city_or_region"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half"}
-        )
-        self.fields["buildings"].widget.attrs.update(
-            {"class": "govuk-checkboxes__input"}
-        )
-        self.fields["regional_building"].widget.attrs.update(
-            {"class": "govuk-input govuk-!-width-one-half"}
-        )
+        remote_working_choices = self.fields["remote_working"].choices
+        self.fields["remote_working"].choices = remote_working_choices[1:]
         self.fields["international_building"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
