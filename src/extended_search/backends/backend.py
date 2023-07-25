@@ -109,11 +109,20 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def _compile_query(self, query, field, boost=1.0):
         """
         Override the parent method to handle specifics of the OnlyFields
-        SearchQuery
+        SearchQuery, and allow boosting of Fuzy and Phrase queries
         """
-        if not isinstance(query, OnlyFields):
+        if not isinstance(query, (Fuzzy, Phrase, OnlyFields)):
             return super()._compile_query(query, field, boost)
 
+        # Overrides the existing functionality only to be able to pass Boost
+        # values to Fuzzy and Phrase types as well as PlainText
+        if isinstance(query, Fuzzy):
+            return self._compile_fuzzy_query(query, [field], boost)
+
+        elif isinstance(query, Phrase):
+            return self._compile_phrase_query(query, [field], boost)
+
+        # Handle OnlyFields
         remapped_fields = self._remap_fields(query.fields)
 
         if field == self.mapping.all_field_name:
@@ -135,6 +144,44 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
             # was defined in the search() method but has been excluded from
             # this part of the tree with an OnlyFields filter
             return self._compile_query(MATCH_NONE, field, boost)
+
+    def _compile_fuzzy_query(self, query, fields, boost=1.0):
+        """
+        Support boosting
+        """
+        match_query = super()._compile_fuzzy_query(query, fields)
+
+        if boost != 1.0:
+            match_query["match"][fields[0]]["boost"] = boost
+
+        return match_query
+
+    def _compile_phrase_query(self, query, fields, boost=1.0):
+        """
+        Support boosting
+        """
+        match_query = super()._compile_phrase_query(query, fields)
+
+        if boost != 1.0:
+            if "multi_match" in match_query:
+                match_query["multi_match"]["boost"] = boost
+            else:
+                match_query["match_phrase"][fields[0]] = {
+                    "query": match_query["match_phrase"][fields[0]],
+                    "boost": boost,
+                }
+
+        return match_query
+        # if len(fields) == 1:
+        #     return {"match_phrase": {fields[0]: query.query_string}}
+        # else:
+        #     return {
+        #         "multi_match": {
+        #             "query": query.query_string,
+        #             "fields": fields,
+        #             "type": "phrase",
+        #         }
+        #     }
 
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):

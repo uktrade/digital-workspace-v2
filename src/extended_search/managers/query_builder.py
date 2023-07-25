@@ -27,14 +27,16 @@ class QueryBuilder:
         query_str: str,
         query_type: SearchQueryType,
     ):
-        query_parts = split_query(
-            query_str
-        )  # @TODO should really do this via wagtail parse_query_string (overridden?)
+        # split can be super basic word split since we don't support advanced search
+        query_parts = query_str.split()
+        # query_parts = split_query(
+        #     query_str
+        # )  # @TODO should really do this via wagtail parse_query_string (overridden?)
         match query_type:
             case SearchQueryType.PHRASE:
                 query = Phrase(query_str)
             case SearchQueryType.QUERY_AND:
-                # @TODO check the query_str merits an AND - does it contain multiple words?
+                # check the query_str merits an AND - does it contain multiple words?
                 if len(query_parts) > 1:
                     query = PlainText(query_str, operator="and")
                 else:
