@@ -97,7 +97,6 @@ LOCAL_APPS = [
     "core",
     "home",
     "content",
-    "extended_search",
     "search",
     "news",
     "working_at_dit",
@@ -161,7 +160,15 @@ DJANGO_APPS = [
     "django.contrib.sitemaps",
 ]
 
-INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + WAGTAIL_APPS + DJANGO_APPS
+INSTALLED_APPS = (
+    LOCAL_APPS
+    + THIRD_PARTY_APPS
+    + WAGTAIL_APPS
+    + DJANGO_APPS
+    + [
+        "extended_search",  # must be last because it depends on models being loaded into memory
+    ]
+)
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -348,9 +355,14 @@ WAGTAILSEARCH_BACKENDS = {
 }
 
 SEARCH_EXTENDED = {
-    "BOOST_VARIABLES": {
-        "PAGE_TOOLS_PHRASE_TITLE_EXPLICIT": 2.0,
-        "PAGE_GUIDANCE_PHRASE_TITLE_EXPLICIT": 2.0,
+    "boost_parts": {
+        "extras": {
+            "page_tools_phrase_title_explicit": 2.0,
+            "page_guidance_phrase_title_explicit": 2.0,
+        },
+        "query_types": {
+            "phrase": 20.5,
+        },
     }
 }
 
@@ -492,7 +504,13 @@ LOGGING = {
             "handlers": [
                 "stdout",
             ],
-            "level": "INFO",
+            "level": "DEBUG",
+        },
+        "environ": {
+            "handlers": [
+                "stdout",
+            ],
+            "level": "DEBUG",
         },
     },
 }

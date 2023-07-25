@@ -74,8 +74,15 @@ class RenamedFieldMixin:
             return base_cls
 
         if self.model_field_name:
+            field_name = self.model_field_name
+
+            # fields can have a dot-notation name if RelatedFields
+            name_parts = field_name.split(".")
+            if len(name_parts) > 1:
+                field_name = name_parts[0]
+
             for base_cls in inspect.getmro(cls):
-                if self.model_field_name in base_cls.__dict__:
+                if field_name in base_cls.__dict__:
                     return base_cls
 
     def get_value(self, obj):

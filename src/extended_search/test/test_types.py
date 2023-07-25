@@ -9,19 +9,19 @@ class TestAnalysisType:
         assert issubclass(AnalysisType, Enum)
 
     def test_contains_all_valid_options(self):
-        assert AnalysisType("TOKENIZED") == AnalysisType.TOKENIZED
-        assert AnalysisType("FILTER") == AnalysisType.FILTER
-        assert AnalysisType("EXPLICIT") == AnalysisType.EXPLICIT
-        assert AnalysisType("KEYWORD") == AnalysisType.KEYWORD
-        assert AnalysisType("PROXIMITY") == AnalysisType.PROXIMITY
+        assert AnalysisType("tokenized") == AnalysisType.TOKENIZED
+        assert AnalysisType("filter") == AnalysisType.FILTER
+        assert AnalysisType("explicit") == AnalysisType.EXPLICIT
+        assert AnalysisType("keyword") == AnalysisType.KEYWORD
+        assert AnalysisType("proximity") == AnalysisType.PROXIMITY
         with pytest.raises(ValueError, match="'ANYTHING' is not a valid AnalysisType"):
             assert AnalysisType("ANYTHING") == AnalysisType.ANYTHING
         assert [t.value for t in AnalysisType] == [
-            "TOKENIZED",
-            "FILTER",
-            "EXPLICIT",
-            "KEYWORD",
-            "PROXIMITY",
+            "tokenized",
+            "filter",
+            "explicit",
+            "keyword",
+            "proximity",
         ]
 
 
@@ -30,17 +30,17 @@ class TestSearchQueryType:
         assert issubclass(SearchQueryType, Enum)
 
     def test_contains_all_valid_options(self):
-        assert SearchQueryType("PHRASE") == SearchQueryType.PHRASE
-        assert SearchQueryType("QUERY_AND") == SearchQueryType.QUERY_AND
-        assert SearchQueryType("QUERY_OR") == SearchQueryType.QUERY_OR
-        assert SearchQueryType("FUZZY") == SearchQueryType.FUZZY
+        assert SearchQueryType("phrase") == SearchQueryType.PHRASE
+        assert SearchQueryType("query_and") == SearchQueryType.QUERY_AND
+        assert SearchQueryType("query_or") == SearchQueryType.QUERY_OR
+        assert SearchQueryType("fuzzy") == SearchQueryType.FUZZY
         with pytest.raises(
             ValueError, match="'ANYTHING' is not a valid SearchQueryType"
         ):
             assert SearchQueryType("ANYTHING") == SearchQueryType.ANYTHING
         assert [t.value for t in SearchQueryType] == [
-            "PHRASE",
-            "QUERY_AND",
-            "QUERY_OR",
-            "FUZZY",
+            "phrase",
+            "query_and",
+            "query_or",
+            "fuzzy",
         ]

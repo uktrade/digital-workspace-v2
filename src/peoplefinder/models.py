@@ -16,7 +16,7 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from extended_search.index import Indexed
-from extended_search.fields import IndexedField, RelatedIndexedFields
+from extended_search.fields import IndexedField  # , RelatedIndexedFields
 from extended_search.managers.index import ModelIndexManager
 
 # United Kingdom
@@ -269,67 +269,84 @@ class PersonIndexManager(ModelIndexManager):
             keyword=True,
             boost=4.0,
         ),
+        # Flattened relatedfields...
         IndexedField(
             "search_titles",
             tokenized=True,
             explicit=True,
             boost=3.0,
         ),
-        RelatedIndexedFields(
-            "roles",
-            [
-                IndexedField(
-                    "job_title",
-                    tokenized=True,
-                    explicit=True,
-                    boost=3.0,
-                ),
-            ],
+        IndexedField(
+            "search_skills",
+            tokenized=True,
         ),
-        RelatedIndexedFields(
-            "key_skills",
-            [
-                IndexedField(
-                    "name",
-                    tokenized=True,
-                    explicit=True,
-                    boost=0.8,
-                ),
-            ],
+        IndexedField(
+            "search_interests",
+            tokenized=True,
         ),
-        RelatedIndexedFields(
-            "learning_interests",
-            [
-                IndexedField(
-                    "name",
-                    tokenized=True,
-                    boost=0.8,
-                ),
-            ],
+        IndexedField(
+            "search_additional_roles",
+            tokenized=True,
         ),
-        RelatedIndexedFields(
-            "additional_roles",
-            [
-                IndexedField(
-                    "name",
-                    tokenized=True,
-                    explicit=True,
-                    boost=0.8,
-                ),
-            ],
+        IndexedField(
+            "search_networks",
+            tokenized=True,
         ),
-        RelatedIndexedFields(
-            "networks",
-            [
-                IndexedField(
-                    "name",
-                    tokenized=True,
-                    explicit=True,
-                    filter=True,
-                    boost=1.5,
-                ),
-            ],
-        ),
+        # RelatedIndexedFields(
+        #     "roles",
+        #     [
+        #         IndexedField(
+        #             "job_title",
+        #             tokenized=True,
+        #             explicit=True,
+        #             boost=3.0,
+        #         ),
+        #     ],
+        # ),
+        # RelatedIndexedFields(
+        #     "key_skills",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             explicit=True,
+        #             boost=0.8,
+        #         ),
+        #     ],
+        # ),
+        # RelatedIndexedFields(
+        #     "learning_interests",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             boost=0.8,
+        #         ),
+        #     ],
+        # ),
+        # RelatedIndexedFields(
+        #     "additional_roles",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             explicit=True,
+        #             boost=0.8,
+        #         ),
+        #     ],
+        # ),
+        # RelatedIndexedFields(
+        #     "networks",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             explicit=True,
+        #             filter=True,
+        #             boost=1.5,
+        #         ),
+        #     ],
+        # ),
         IndexedField(
             "town_city_or_region",
             tokenized=True,
@@ -661,6 +678,22 @@ class Person(Indexed, models.Model):
     @property
     def search_titles(self):
         return ", ".join(self.roles.all().values_list("job_title", flat=True))
+
+    @property
+    def search_skills(self):
+        return ", ".join(self.key_skills.all().values_list("name", flat=True))
+
+    @property
+    def search_interests(self):
+        return ", ".join(self.learning_interests.all().values_list("name", flat=True))
+
+    @property
+    def search_additional_roles(self):
+        return ", ".join(self.additional_roles.all().values_list("name", flat=True))
+
+    @property
+    def search_networks(self):
+        return ", ".join(self.networks.all().values_list("name", flat=True))
 
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()

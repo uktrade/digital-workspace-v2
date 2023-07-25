@@ -41,8 +41,9 @@ def explore(request: HttpRequest) -> HttpResponse:
     page = request.GET.get("page", "1")
 
     boost_vars = [
-        {"name": f"SEARCH_BOOST_{k}", "value": v}
-        for k, v in extended_search_settings.BOOST_VARIABLES.items()
+        {"name": k, "value": extended_search_settings[k]}
+        for k in extended_search_settings.all_keys
+        if "boost_parts" in k
     ]
 
     context = {
