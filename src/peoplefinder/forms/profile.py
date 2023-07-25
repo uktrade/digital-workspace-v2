@@ -3,7 +3,6 @@ from typing import Set
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.validators import ValidationError
-from django.forms.models import ModelChoiceField
 
 from peoplefinder.models import Person, UkStaffLocation
 
