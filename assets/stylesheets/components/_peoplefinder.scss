@@ -198,7 +198,7 @@
     text-decoration: none;
 
     &:hover {
-        text-decoration: underline;
+      text-decoration: underline;
     }
   }
 }
@@ -287,54 +287,58 @@
   color: govuk-colour("red");
 }
 
-// Team select web component styles
-.team-select__teams {
-  margin-bottom: 20px;
-  border: 2px solid black;
+// Team select
+.team-select {
+  &__teams {
+    max-height: 25em;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+  }
+
+  &__teams > ul {
+    padding-left: 1rem;
+  }
+  &__teams > .govuk-radios--small .govuk-radios__item {
+    float: none;
+  }
+  &__teams__team {
+    display: inline-flex;
+    align-items: center;
+  }
+  &__teams__team span {
+    margin-right: 1.2rem;
+  }
+  &__teams__team span:hover svg polygon {
+    fill: black;
+  }
+
+  svg {
+    pointer-events: none;
+  }
+
+  li > div > span {
+    cursor: pointer;
+  }
+
+  li[data-open] > div > span > svg {
+    transform: rotate(90deg);
+  }
+
+  ul[data-team-id]:not([data-open]) {
+    display: none;
+  }
+
+  .filtered ul[data-team-id]:not([data-match]),
+  .filtered li[data-team-id]:not([data-match]) {
+    display: none;
+  }
 
   ul {
     list-style: none;
-    margin: 0;
-    padding: 0;
   }
-
-  li {
-    padding-top: 10px;
-    padding-bottom: 10px;
-
-    &:not(:last-child) {
-      border-bottom: 1px solid govuk-colour("light-grey");
-    }
-  }
-
-  a {
-    text-decoration: none;
-  }
-}
-
-.team-select__branch-team {
-  padding-left: 2rem;
-}
-
-.team-select__leaf-team {
-  padding-left: 2rem;
-}
-
-.team-select__current-team {
-  color: govuk-colour("dark-grey");
-  text-decoration: line-through;
-}
-
-.team-select__nav-up {
-  padding-left: 5px;
-
-  &::before {
-    content: "‹ ";
-  }
-}
-
-.team-select__nav-down::after {
-  content: " ›";
 }
 
 // Search results
@@ -365,10 +369,10 @@
       .govuk-link {
         text-decoration: none;
 
-            &:hover {
-                text-decoration: underline;
-            }
+        &:hover {
+          text-decoration: underline;
         }
+      }
     }
   }
 }

@@ -24,6 +24,10 @@ class ProfileViewPage(PeoplefinderPage):
 
 
 class ProfileEditPage(PeoplefinderPage):
+    def goto_profile_view_page(self):
+        self.page.get_by_text("Back to profile").click()
+        return ProfileViewPage(self.page)
+
     @property
     def first_name(self):
         return self.page.get_attribute("input[name=first_name]", "value")
