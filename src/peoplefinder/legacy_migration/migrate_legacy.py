@@ -1,4 +1,9 @@
 """
+Migrating legacy data from the old People Finder.
+
+Here is the initial PR that added the migration code:
+https://github.com/uktrade/digital-workspace-v2/pull/115
+
 Order of table migrations:
   1. Groups -> Team
   2. People -> Person
@@ -25,7 +30,12 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 from django.utils.timezone import make_aware
 
-from peoplefinder.legacy_models import Groups, Memberships, People, Versions
+from peoplefinder.legacy_migration.legacy_models import (
+    Groups,
+    Memberships,
+    People,
+    Versions,
+)
 from peoplefinder.models import (
     AdditionalRole,
     AuditLog,
@@ -45,7 +55,6 @@ from peoplefinder.models import (
 from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
 from user.models import User
-
 
 BATCH_SIZE = 100
 

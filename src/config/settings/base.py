@@ -7,7 +7,6 @@ from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
-
 # Set directories to be used across settings
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
@@ -120,6 +119,7 @@ THIRD_PARTY_APPS = [
     "django_chunk_upload_handlers",
     "django_audit_log_middleware",
     "rest_framework",
+    "django_celery_beat",
     "crispy_forms",
     "crispy_forms_gds",
     "django_feedback_govuk",
@@ -216,7 +216,13 @@ if "postgres" in VCAP_SERVICES:
 else:
     DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASES = {"default": env.db()}
+DATABASES = {
+    "default": env.db(),
+}
+if "UK_STAFF_LOCATIONS_DATABASE_URL" in env:
+    DATABASES["uk_staff_locations"] = env.db("UK_STAFF_LOCATIONS_DATABASE_URL")
+
+DATABASE_ROUTERS = ["peoplefinder.routers.IngestedModelsRouter"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -413,6 +419,12 @@ if "redis" in VCAP_SERVICES:
     )
 else:
     CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
+
+# Celery
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_RESULT_SERIALIZER = "json"
 
 CACHES = {
     "default": {

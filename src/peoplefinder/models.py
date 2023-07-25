@@ -12,11 +12,11 @@ from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils import timezone
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
-
 from wagtail.search.queryset import SearchableQuerySetMixin
 
-from extended_search.index import Indexed
+from core.models import IngestedModel
 from extended_search.fields import IndexedField  # , RelatedIndexedFields
+from extended_search.index import Indexed
 from extended_search.managers.index import ModelIndexManager
 
 # United Kingdom
@@ -162,6 +162,23 @@ class Building(models.Model):
 
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=40)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class UkStaffLocation(IngestedModel):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["code"], name="unique_location_code"),
+            models.UniqueConstraint(fields=["name"], name="unique_location_name"),
+        ]
+        ordering = ["name"]
+
+    code = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    organisation = models.CharField(max_length=255)
 
     def __str__(self) -> str:
         return self.name
@@ -356,15 +373,11 @@ class PersonIndexManager(ModelIndexManager):
         #     ],
         # ),
         IndexedField(
-            "town_city_or_region",
-            tokenized=True,
-        ),
-        IndexedField(
-            "regional_building",
-            tokenized=True,
-        ),
-        IndexedField(
             "international_building",
+            tokenized=True,
+        ),
+        IndexedField(
+            "search_location",
             tokenized=True,
         ),
         IndexedField(
@@ -480,6 +493,38 @@ class Person(Indexed, models.Model):
         blank=True,
         related_name="+",
     )
+    buildings.system_check_deprecated_details = {
+        "msg": ("Person.buildings been deprecated."),
+        "hint": "Use Person.uk_office_location and Person.remote_working instead.",
+        "id": "peoplefinder.Person.E001",
+    }
+    uk_office_location = models.ForeignKey(
+        "UkStaffLocation",
+        verbose_name="What is your office location?",
+        help_text="Your base location as per your contract",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    class RemoteWorking(models.TextChoices):
+        REMOTE_WORKER = (
+            "remote_worker",
+            "I work primarily from home (remote worker)",
+        )
+        SPLIT = (
+            "split",
+            "I split my time between home and the office(s)",
+        )
+
+    remote_working = models.CharField(
+        verbose_name="Where do you usually work?",
+        blank=True,
+        null=True,
+        max_length=80,
+        choices=RemoteWorking.choices,
+    )
 
     slug = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     legacy_slug = models.CharField(
@@ -544,6 +589,11 @@ class Person(Indexed, models.Model):
     regional_building = models.CharField(
         "UK regional building or location", max_length=130, null=True, blank=True
     )
+    regional_building.system_check_deprecated_details = {
+        "msg": ("Person.regional_building been deprecated."),
+        "hint": "Use Person.uk_office_location and Person.remote_working instead.",
+        "id": "peoplefinder.Person.E001",
+    }
     international_building = models.CharField(
         "International building or location", max_length=110, null=True, blank=True
     )
@@ -704,6 +754,10 @@ class Person(Indexed, models.Model):
     @property
     def search_buildings(self):
         return ", ".join(self.buildings.all().values_list("name", flat=True))
+
+    @property
+    def search_location(self):
+        return ", ".join(self.uk_office_location.all().values_list("name", flat=True))
 
     @property
     def search_grade(self):

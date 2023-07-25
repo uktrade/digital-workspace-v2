@@ -128,22 +128,17 @@
         </fieldset>
 
         <fieldset class="govuk-!-padding-3">
-            {% profile_field_anchor profile "country" "town_city_or_region" "buildings" "regional_building" "international_building" "location_in_building" "workdays" %}
+            {% profile_field_anchor profile "location" "remote_working" "international_building" "location_in_building" "workdays" %}
             <h2 class="govuk-heading-m">Location and working patterns</h2>
 
-            {% include 'peoplefinder/components/input.html' with field=form.country %}
-
-            {% include 'peoplefinder/components/input.html' with field=form.town_city_or_region %}
-
-            {% include 'peoplefinder/components/checkboxes.html' with field=form.buildings %}
+            {% include 'peoplefinder/components/input.html' with field=form.uk_office_location %}
+            {% include 'peoplefinder/components/input.html' with field=form.remote_working %}
 
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">Add UK regional or international location (if applicable)</span>
+                    <span class="govuk-details__summary-text">Add international location (if applicable)</span>
                 </summary>
                 <div class="govuk-details__text">
-                    {% include 'peoplefinder/components/input.html' with field=form.regional_building %}
-
                     {% include 'peoplefinder/components/input.html' with field=form.international_building %}
                 </div>
             </details>
