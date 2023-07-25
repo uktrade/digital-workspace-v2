@@ -98,6 +98,8 @@ class ModelIndexManager(QueryBuilder):
             mapping += [
                 field.mapping,
             ]
+        print(f"** MAPPING for {cls} **")
+        print(mapping)
         return mapping
 
     @classmethod

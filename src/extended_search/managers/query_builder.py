@@ -161,18 +161,28 @@ class QueryBuilder:
                             field_mapping,
                         )
                     )
+                    print(f"  -> created {query_element} from {field_mapping}")
                     subquery = cls._add_to_query(
                         subquery,
                         query_element,
                     )
+                    print(f"  ->> subquery is {subquery}")
 
         if "autocomplete" in field_mapping:
             # @TODO sort this out!
-            subquery = None
+            query_element = None
+            subquery = cls._add_to_query(
+                subquery,
+                query_element,
+            )
 
         if "filter" in field_mapping:
             # @TODO sort this out!
-            subquery = None
+            query_element = None
+            subquery = cls._add_to_query(
+                subquery,
+                query_element,
+            )
 
         return subquery
 

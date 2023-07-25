@@ -36,7 +36,7 @@ class PagesSearchVector(SearchVector):
     page_model = None
 
     def get_queryset(self):
-        return self.page_model.objects.public().live()
+        return self.page_model.objects.public_or_login().live()
 
     def pinned(self, query):
         return self.get_queryset().pinned(query)
