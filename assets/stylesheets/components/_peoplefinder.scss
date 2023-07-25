@@ -313,6 +313,9 @@
   &__teams__team span {
     margin-right: 1.2rem;
   }
+  &__teams__team span:hover svg polygon {
+    fill: black;
+  }
 
   svg {
     pointer-events: none;
