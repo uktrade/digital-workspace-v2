@@ -138,6 +138,7 @@
 
       this.getTeamSelectData(url).then((data) => {
         this.teams = data;
+        this.teams.reverse();
         this.rootTeam = this.teams.find((team) => !team.parent_id);
         this.selectedTeam = this.teams.find((team) => team.team_id === this.selectedTeamId);
 
