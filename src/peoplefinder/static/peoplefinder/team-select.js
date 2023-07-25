@@ -281,6 +281,13 @@
           this.selectedTeamId = parseInt(el.dataset.teamId);
           this.selectedTeam = this.teams.find((team) => team.team_id === this.selectedTeamId);
           this.teamNameEl.innerHTML = this.selectedTeam.team_name;
+          this.querySelectorAll("input[type=radio]").forEach((input) => {
+            if (input.id === el.dataset.teamId) {
+              input.checked = true;
+            } else {
+              input.checked = false;
+            }
+          });
           break;
         case TEAM_SELECT_ACTION.EXPAND_TEAM:
           this.toggleTeam(el.dataset.teamId);
