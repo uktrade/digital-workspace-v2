@@ -292,6 +292,14 @@ class PersonIndexManager(ModelIndexManager):
             "search_networks",
             tokenized=True,
         ),
+        IndexedField(
+            "search_grade",
+            explicit=True,
+        ),
+        IndexedField(
+            "search_buildings",
+            tokenized=True,
+        ),
         # RelatedIndexedFields(
         #     "roles",
         #     [
@@ -350,7 +358,6 @@ class PersonIndexManager(ModelIndexManager):
         IndexedField(
             "town_city_or_region",
             tokenized=True,
-            boost=1.5,
         ),
         IndexedField(
             "regional_building",
@@ -363,7 +370,6 @@ class PersonIndexManager(ModelIndexManager):
         IndexedField(
             "fluent_languages",
             tokenized=True,
-            boost=1.5,
         ),
         IndexedField(
             "search_teams",
@@ -694,6 +700,14 @@ class Person(Indexed, models.Model):
     @property
     def search_networks(self):
         return ", ".join(self.networks.all().values_list("name", flat=True))
+
+    @property
+    def search_buildings(self):
+        return ", ".join(self.buildings.all().values_list("name", flat=True))
+
+    @property
+    def search_grade(self):
+        return self.grade.name
 
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
