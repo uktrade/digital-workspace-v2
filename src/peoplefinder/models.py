@@ -536,6 +536,7 @@ class Person(Indexed, models.Model):
         ),
     )
     pronouns = models.CharField(max_length=40, null=True, blank=True)
+    name_pronunciation = models.CharField(max_length=100, null=True, blank=True)
     contact_email = models.EmailField(
         "Contact email address",
         null=True,
