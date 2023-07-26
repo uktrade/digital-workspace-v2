@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-
+from django.conf import settings
 
 class ExtendedSearchConfig(AppConfig):
     name = "extended_search"
@@ -10,4 +10,5 @@ class ExtendedSearchConfig(AppConfig):
 
         search_settings.initialise_field_dict()
         search_settings.initialise_env_dict()
-        search_settings.initialise_db_dict()
+        if settings.APP_ENV != "test":
+            search_settings.initialise_db_dict()
