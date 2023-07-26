@@ -498,13 +498,17 @@ class Person(Indexed, models.Model):
     )
 
     class RemoteWorking(models.TextChoices):
+        OFFICE_WORKER = (
+            "office_worker",
+            "I work primarily from the office",
+        )
         REMOTE_WORKER = (
             "remote_worker",
             "I work primarily from home (remote worker)",
         )
         SPLIT = (
             "split",
-            "I split my time between home and the office(s)",
+            "I split my time between home and the office",
         )
 
     remote_working = models.CharField(
