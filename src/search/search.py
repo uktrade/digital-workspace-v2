@@ -96,6 +96,11 @@ class TeamsSearchVector(SearchVector):
 
 
 class NewAllPagesSearchVector(AllPagesSearchVector):
+    def _wagtail_search(self, queryset, query, *args, **kwargs):
+        return queryset.search(
+            query, *args, partial_match=False, **kwargs
+        ).annotate_score("_score")
+
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset().not_pinned(query)
         query = self.page_model.objects.get_search_query(query, *args, **kwargs)
@@ -115,6 +120,11 @@ class NewToolsSearchVector(ToolsSearchVector):
 
 
 class NewPeopleSearchVector(PeopleSearchVector):
+    def _wagtail_search(self, queryset, query, *args, **kwargs):
+        return queryset.search(
+            query, *args, partial_match=False, **kwargs
+        ).annotate_score("_score")
+
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
         query = Person.objects.get_search_query(query, *args, **kwargs)
@@ -122,6 +132,11 @@ class NewPeopleSearchVector(PeopleSearchVector):
 
 
 class NewTeamsSearchVector(TeamsSearchVector):
+    def _wagtail_search(self, queryset, query, *args, **kwargs):
+        return queryset.search(
+            query, *args, partial_match=False, **kwargs
+        ).annotate_score("_score")
+
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
         query = Team.objects.get_search_query(query, *args, **kwargs)

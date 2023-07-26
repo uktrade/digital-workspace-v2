@@ -126,7 +126,7 @@ class ContentPageQuerySet(PageQuerySet):
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
 
-    def get_search_query(self, query_str):  # @TODO is this the right place for this?
+    def get_search_query(self, query_str):
         return ContentPageIndexManager.get_search_query(query_str, self.model)
 
 

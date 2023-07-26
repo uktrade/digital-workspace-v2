@@ -1,7 +1,7 @@
 import logging
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from wagtail.search.query import Boost, Phrase, PlainText
+from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
 
 from extended_search.backends.query import OnlyFields
 from extended_search.settings import extended_search_settings as search_settings
@@ -39,6 +39,8 @@ class QueryBuilder:
                     query = None
             case SearchQueryType.QUERY_OR:
                 query = PlainText(query_str, operator="or")
+            case SearchQueryType.FUZZY:
+                query = Fuzzy(query_str)
             case _:
                 raise ValueError(f"{query_type} must be a valid SearchQueryType")
         return query
@@ -169,17 +171,15 @@ class QueryBuilder:
                         query_element,
                     )
 
-        if "autocomplete" in field_mapping:
-            # @TODO sort this out!
-            query_element = None
-            subquery = cls._add_to_query(
-                subquery,
-                query_element,
+        if "fuzzy" in field_mapping:
+            query_element = cls._get_searchquery_for_query_field_querytype_analysistype(
+                query_str,
+                model_class,
+                field_mapping["model_field_name"],
+                SearchQueryType("fuzzy"),
+                AnalysisType("tokenized"),
+                field_mapping,
             )
-
-        if "filter" in field_mapping:
-            # @TODO sort this out!
-            query_element = None
             subquery = cls._add_to_query(
                 subquery,
                 query_element,

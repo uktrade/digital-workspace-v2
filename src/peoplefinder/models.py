@@ -244,7 +244,7 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
             ),
         )
 
-    def get_search_query(self, query_str):  # @TODO is this the right place for this?
+    def get_search_query(self, query_str):
         return PersonIndexManager.get_search_query(query_str, self.model)
 
 
@@ -388,7 +388,6 @@ class PersonIndexManager(ModelIndexManager):
             "search_teams",
             tokenized=True,
             explicit=True,
-            fuzzy=True,
             boost=2.0,
         ),
         IndexedField(
@@ -837,7 +836,7 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
             )
         )
 
-    def get_search_query(self, query_str):  # @TODO is this the right place for this?
+    def get_search_query(self, query_str):
         return TeamIndexManager.get_search_query(query_str, self.model)
 
 
