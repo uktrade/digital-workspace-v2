@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 from django.conf import settings
 
+
 class ExtendedSearchConfig(AppConfig):
     name = "extended_search"
 
