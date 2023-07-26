@@ -481,7 +481,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stdout"],
-        "level": os.getenv("ROOT_LOG_LEVEL", "DEBUG"),
+        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
     },
     "loggers": {
         "django": {
@@ -516,13 +516,13 @@ LOGGING = {
             "handlers": [
                 "stdout",
             ],
-            "level": "DEBUG",
+            "level": os.getenv("OPENSEARCH_LOG_LEVEL", "INFO"),
         },
         "environ": {
             "handlers": [
                 "stdout",
             ],
-            "level": "WARN",
+            "level": os.getenv("ENVIRON_LOG_LEVEL", "INFO"),
         },
     },
 }
