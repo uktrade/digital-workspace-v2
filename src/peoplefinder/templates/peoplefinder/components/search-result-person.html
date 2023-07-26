@@ -25,48 +25,34 @@
         </div>
         <div class="pf-person-search-result__details__item govuk-body">
             {% for role in person.roles.all %}
-                {{ role.job_title }} in <a class="govuk-link"
-    href="{% url 'team-view' role.team.slug %}"
-    onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'team-view' role.team.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }} })">
-                {{ role.team.name }}
-            </a>
-            <br>
-        {% endfor %}
-    </div>
-    <div class="pf-person-search-result__details__item"
-         data-detail="email"
-         data-detail-additional>
-        <a class="govuk-link"
-           href="mailto:{{ person.preferred_email }}"
-           onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }}, 'search_result_selected_action': 'email'})">
-            {{ person.preferred_email }}
-        </a>
-    </div>
-    {% if person.primary_phone_number %}
+                {{ role.job_title }} in
+                <a class="govuk-link"
+                   href="{% url 'team-view' role.team.slug %}"
+                   onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'team-view' role.team.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }} })">
+                    {{ role.team.name }}
+                </a>
+                <br>
+            {% endfor %}
+        </div>
         <div class="pf-person-search-result__details__item"
-             data-detail="phone"
+             data-detail="email"
              data-detail-additional>
             <a class="govuk-link"
-               href="tel:{{ person.primary_phone_number }}"
-               onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }}, 'search_result_selected_action': 'phone'})">
-                {{ person.primary_phone_number }}
+               href="mailto:{{ person.preferred_email }}"
+               onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }}, 'search_result_selected_action': 'email'})">
+                {{ person.preferred_email }}
             </a>
         </div>
-    {% endif %}
-    {% comment %} {% if person.all_languages %}
-        <div class="pf-person-search-result__details__item search-v2-hide govuk-body-s">
-            <strong>Languages:</strong> {{ person.all_languages }}
-        </div>
-    {% endif %} {% endcomment %}
-    {% comment %} {% if person.key_skills.exists or person.other_key_skills %}
-        <div class="pf-person-search-result__details__item search-v2-hide govuk-body-s">
-            <strong>Key skills:</strong> {{ person.get_all_key_skills|join:", " }}
-        </div>
-    {% endif %} {% endcomment %}
-    {% comment %} {% if person.learning_interests.exists or person.other_learning_interests %}
-        <div class="pf-person-search-result__details__item search-v2-hide govuk-body-s">
-            <strong>Learning and development interests:</strong> {{ person.get_all_learning_interests|join:", " }}
-        </div>
-    {% endif %} {% endcomment %}
-</div>
+        {% if person.primary_phone_number %}
+            <div class="pf-person-search-result__details__item"
+                 data-detail="phone"
+                 data-detail-additional>
+                <a class="govuk-link"
+                   href="tel:{{ person.primary_phone_number }}"
+                   onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }}, 'search_result_selected_action': 'phone'})">
+                    {{ person.primary_phone_number }}
+                </a>
+            </div>
+        {% endif %}
+    </div>
 </div>
