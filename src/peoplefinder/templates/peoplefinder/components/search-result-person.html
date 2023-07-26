@@ -53,20 +53,20 @@
             </a>
         </div>
     {% endif %}
-    {% if person.all_languages %}
+    {% comment %} {% if person.all_languages %}
         <div class="pf-person-search-result__details__item search-v2-hide govuk-body-s">
             <strong>Languages:</strong> {{ person.all_languages }}
         </div>
-    {% endif %}
-    {% if person.key_skills.exists or person.other_key_skills %}
+    {% endif %} {% endcomment %}
+    {% comment %} {% if person.key_skills.exists or person.other_key_skills %}
         <div class="pf-person-search-result__details__item search-v2-hide govuk-body-s">
             <strong>Key skills:</strong> {{ person.get_all_key_skills|join:", " }}
         </div>
-    {% endif %}
-    {% if person.learning_interests.exists or person.other_learning_interests %}
+    {% endif %} {% endcomment %}
+    {% comment %} {% if person.learning_interests.exists or person.other_learning_interests %}
         <div class="pf-person-search-result__details__item search-v2-hide govuk-body-s">
             <strong>Learning and development interests:</strong> {{ person.get_all_learning_interests|join:", " }}
         </div>
-    {% endif %}
+    {% endif %} {% endcomment %}
 </div>
 </div>
