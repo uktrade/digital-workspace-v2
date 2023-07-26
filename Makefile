@@ -96,13 +96,13 @@ up:
 	docker-compose up
 
 up-all:
-	docker-compose --profile playwright --profile opensearch up -d
+	docker-compose --profile playwright --profile opensearch --profile celery-beat up -d
 
 down:
 	docker-compose down
 
 down-all:
-	docker-compose --profile playwright --profile opensearch down
+	docker-compose --profile playwright --profile opensearch --profile celery-beat down
 
 #
 # Linting
@@ -150,12 +150,12 @@ dump-db:
 	pg_dump digital_workspace -U postgres -h localhost -p 5432 -O -x -c -f dw.dump
 
 reset-db:
-	@docker-compose kill db
-	@rm -rf ./.db/
-	docker-compose start db
+	docker-compose stop db
+	rm -rf ./.db/
+	docker-compose up -d db
 
 first-use:
-	@docker-compose --profile playwright --profile opensearch down
+	docker-compose --profile playwright --profile opensearch --profile celery-beat down
 	make build
 	make reset-db
 	sleep 1
@@ -209,7 +209,7 @@ test:
 	$(testrunner) pytest -m "not e2e" --reuse-db $(tests)
 
 test-e2e: up-all
-	docker-compose exec playwright poetry run pytest -m "e2e"
+	docker-compose exec playwright poetry run pytest -m "e2e" $(tests)
 	docker-compose stop playwright
 
 test-all:

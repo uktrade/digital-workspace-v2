@@ -3,13 +3,14 @@ from django.core.management.base import BaseCommand
 from peoplefinder.models import Team
 from peoplefinder.services.team import TeamService
 
-
 TREE_HELP = """Team tree:
 .
 └── SpaceX
     ├── Astronauts
     ├── Engineering
     │   └── Software
+    │       └── Backend
+    │           └── Lead developer and technical architect
     ├── Human Resources
     └── Catering
         └── Bakery
@@ -34,6 +35,12 @@ class Command(BaseCommand):
         )
         software, software_created = Team.objects.get_or_create(
             name="Software", slug="software"
+        )
+        backend, backend_created = Team.objects.get_or_create(
+            name="Backend", slug="backend"
+        )
+        lead_dev, lead_dev_created = Team.objects.get_or_create(
+            name="Lead developer and technical architect", slug="lead-dev"
         )
         hr, hr_created = Team.objects.get_or_create(
             name="Human Resources", abbreviation="HR", slug="human-resources"
@@ -60,6 +67,14 @@ class Command(BaseCommand):
         if software_created:
             team_service.add_team(software, engineering)
             team_service.team_created(software, created_by=None)
+
+        if backend_created:
+            team_service.add_team(backend, software)
+            team_service.team_created(backend, created_by=None)
+
+        if lead_dev_created:
+            team_service.add_team(lead_dev, backend)
+            team_service.team_created(lead_dev, created_by=None)
 
         if hr_created:
             team_service.add_team(hr, spacex)

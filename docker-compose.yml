@@ -55,7 +55,6 @@ services:
       - redis
       - opensearch
       - celery
-      - celery-beat
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.local
     stdin_open: true
@@ -83,6 +82,8 @@ services:
       - DJANGO_SETTINGS_MODULE=config.settings.local
     volumes:
       - .:/app
+    profiles:
+      - celery-beat
     command: poetry run celery -A config.celery beat -l INFO
     depends_on:
       - db
