@@ -150,14 +150,13 @@ dump-db:
 	pg_dump digital_workspace -U postgres -h localhost -p 5432 -O -x -c -f dw.dump
 
 reset-db:
-	@docker-compose kill db
-	@rm -rf ./.db/
-	docker-compose start db
+	docker-compose stop db
+	rm -rf ./.db/
+	docker-compose up -d db
 
 first-use:
-	@docker-compose --profile playwright --profile opensearch --profile celery-beat down
+	docker-compose --profile playwright --profile opensearch --profile celery-beat down
 	make build
-	docker compose up -d db
 	make reset-db
 	sleep 1
 	make migrate
