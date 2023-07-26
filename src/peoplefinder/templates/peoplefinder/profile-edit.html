@@ -56,7 +56,7 @@
         {% include 'peoplefinder/components/error-summary.html' with form=form %}
 
         <fieldset class="govuk-!-padding-3">
-            {% profile_field_anchor profile "first_name" "last_name" "pronouns" %}
+            {% profile_field_anchor profile "first_name" "last_name" "pronouns" "name_pronunciation" %}
             <h2 class="govuk-heading-m">Personal details</h2>
 
             {% include 'peoplefinder/components/input.html' with field=form.first_name %}
@@ -67,6 +67,13 @@
                     <span class="govuk-details__summary-text">Add pronouns (optional)</span>
                 </summary>
                 <div class="govuk-details__text">{% include 'peoplefinder/components/input.html' with field=form.pronouns %}</div>
+            </details>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">Add name pronunciation (optional)</span>
+                </summary>
+                <div class="govuk-details__text">{% include 'peoplefinder/components/input.html' with field=form.name_pronunciation %}</div>
             </details>
         </fieldset>
 
