@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
 
+from extended_search.managers import get_indexed_field_name
 from extended_search.backends.query import OnlyFields
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
@@ -13,20 +14,12 @@ logger = logging.getLogger(__name__)
 
 class QueryBuilder:
     @classmethod
-    def _get_indexed_field_name(cls, model_field_name, analyzer):
-        field_name_suffix = (
-            search_settings[f"analyzers__{analyzer.value}__index_fieldname_suffix"]
-            or ""
-        )
-        return f"{model_field_name}{field_name_suffix}"
-
-    @classmethod
     def _get_inner_searchquery_for_querytype(
         cls,
         query_str: str,
         query_type: SearchQueryType,
     ):
-        # split can be super basic word split since we don't support advanced search
+        # split can be super basic since we don't support advanced search
         query_parts = query_str.split()
         match query_type:
             case SearchQueryType.PHRASE:
@@ -65,6 +58,9 @@ class QueryBuilder:
                 query_boost_key = "fuzzy"
             case _:
                 raise ValueError(f"{query_type} must be a valid SearchQueryType")
+        query_boost = float(
+            search_settings["boost_parts"]["query_types"][query_boost_key]  # type: ignore
+        )
 
         match analysis_type:
             case AnalysisType.EXPLICIT:
@@ -79,19 +75,15 @@ class QueryBuilder:
                 analysis_boost_key = 1.0  # @TODO figure out how to add this
             case _:
                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
-
-        content_type = ContentType.objects.get_for_model(model_class)
-        field_name = base_field_name  # cls._get_indexed_field_name(base_field_name, analysis_type)
-        if "related_field" in field_mapping:
-            field_name = f"{field_mapping['related_field']}.{field_name}"
-        field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
-
-        query_boost = float(
-            search_settings["boost_parts"]["query_types"][query_boost_key]  # type: ignore
-        )
         analyzer_boost = float(
             search_settings["boost_parts"]["analyzers"][analysis_boost_key]  # type: ignore
         )
+
+        content_type = ContentType.objects.get_for_model(model_class)
+        field_name = base_field_name  # get_indexed_field_name(base_field_name, analysis_type) @TODO investigate
+        if "related_field" in field_mapping:
+            field_name = f"{field_mapping['related_field']}.{field_name}"
+        field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
         field_boost = float(
             search_settings["boost_parts"]["fields"][field_boost_key]  # type: ignore
         )
@@ -123,7 +115,7 @@ class QueryBuilder:
             field_mapping,
         )
 
-        field_name = cls._get_indexed_field_name(base_field_name, analysis_type)
+        field_name = get_indexed_field_name(base_field_name, analysis_type)
         return OnlyFields(Boost(query, boost), fields=[field_name])
 
     @classmethod
@@ -186,22 +178,3 @@ class QueryBuilder:
             )
 
         return subquery
-
-    @classmethod
-    def get_search_query(cls, query_str, model_class, *args, **kwargs):
-        """
-        Uses the field mapping to derive the full nested SearchQuery
-        """
-        query = None
-        for field_mapping in cls.get_mapping():
-            query_elements = cls._get_search_query_from_mapping(
-                query_str, model_class, field_mapping
-            )
-            if query_elements is not None:
-                query = cls._add_to_query(
-                    query,
-                    query_elements,
-                )
-
-        logger.debug(query)
-        return query

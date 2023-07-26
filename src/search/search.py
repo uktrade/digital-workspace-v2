@@ -1,8 +1,10 @@
-from content.models import ContentPage
+from content.models import ContentPage, ContentPageIndexManager
 from news.models import NewsPage
-from peoplefinder.models import Person, Team
+from peoplefinder.models import Person, Team, PersonIndexManager, TeamIndexManager
 from tools.models import Tool
 from working_at_dit.models import PoliciesAndGuidanceHome
+
+from extended_search.managers import get_search_query
 
 
 class SearchVector:
@@ -103,7 +105,10 @@ class NewAllPagesSearchVector(AllPagesSearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset().not_pinned(query)
-        query = self.page_model.objects.get_search_query(query, *args, **kwargs)
+
+        query = get_search_query(
+            ContentPageIndexManager, query, ContentPage, *args, **kwargs
+        )
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
 
@@ -127,7 +132,7 @@ class NewPeopleSearchVector(PeopleSearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = Person.objects.get_search_query(query, *args, **kwargs)
+        query = get_search_query(PersonIndexManager, query, Person, *args, **kwargs)
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
 
@@ -139,5 +144,5 @@ class NewTeamsSearchVector(TeamsSearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = Team.objects.get_search_query(query, *args, **kwargs)
+        query = get_search_query(TeamIndexManager, query, Team, *args, **kwargs)
         return self._wagtail_search(queryset, query, *args, **kwargs)

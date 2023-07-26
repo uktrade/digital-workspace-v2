@@ -244,9 +244,6 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
             ),
         )
 
-    def get_search_query(self, query_str):
-        return PersonIndexManager.get_search_query(query_str, self.model)
-
 
 def person_photo_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/{filename}"
@@ -835,9 +832,6 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
                 ordering="-children__depth",
             )
         )
-
-    def get_search_query(self, query_str):
-        return TeamIndexManager.get_search_query(query_str, self.model)
 
 
 class TeamIndexManager(ModelIndexManager):

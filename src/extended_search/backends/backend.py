@@ -109,7 +109,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def _compile_query(self, query, field, boost=1.0):
         """
         Override the parent method to handle specifics of the OnlyFields
-        SearchQuery, and allow boosting of Fuzy and Phrase queries
+        SearchQuery, and allow boosting of Fuzzy and Phrase queries
         """
         if not isinstance(query, (Fuzzy, Phrase, OnlyFields)):
             return super()._compile_query(query, field, boost)
