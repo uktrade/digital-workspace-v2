@@ -96,13 +96,13 @@ up:
 	docker-compose up
 
 up-all:
-	docker-compose --profile playwright --profile opensearch up -d
+	docker-compose --profile playwright --profile opensearch --profile celery-beat up -d
 
 down:
 	docker-compose down
 
 down-all:
-	docker-compose --profile playwright --profile opensearch down
+	docker-compose --profile playwright --profile opensearch --profile celery-beat down
 
 #
 # Linting
@@ -155,7 +155,7 @@ reset-db:
 	docker-compose start db
 
 first-use:
-	@docker-compose --profile playwright --profile opensearch down
+	@docker-compose --profile playwright --profile opensearch --profile celery-beat down
 	make build
 	docker compose up -d db
 	make reset-db
