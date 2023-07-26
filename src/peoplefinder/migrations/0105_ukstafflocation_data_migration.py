@@ -23,7 +23,9 @@ def update_uk_office_location(apps, schema_editor):
         return None
 
     # Only update profiles that haven't set the uk_office_location field
-    people_with_no_office_location = Person.objects.filter(uk_office_location__isnull=True)
+    people_with_no_office_location = Person.objects.filter(
+        uk_office_location__isnull=True
+    )
 
     # Update the uk_office_location field for people that are in one building
     # and NOT the other.
