@@ -31,19 +31,19 @@ class TestManagerInit:
         assert get_indexed_field_name("foo", analyzer) == "foobar"
 
     def test_get_search_query_from_mapping_uses_settings_and_submethods(self):
-        ...
+        assert False
 
     def test_get_search_query_from_mapping_gets_right_number_of_subqueries(self):
-        ...
+        assert False
 
     def test_get_search_query_from_mapping_handles_relatedfields(self):
-        ...
+        assert False
 
     def test_get_search_query_from_mapping_handles_searchfield(self):
-        ...
+        assert False
 
     def test_get_search_query_from_mapping_handles_fuzzy(self):
-        ...
+        assert False
 
     def test_get_search_query_uses_mapping(self, mocker):
         mock_map = mocker.patch(
