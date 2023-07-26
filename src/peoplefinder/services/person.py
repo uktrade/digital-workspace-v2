@@ -59,7 +59,6 @@ class PersonService:
         "email": 0,
         "primary_phone_number": 1,
         "country": 1,
-        "town_city_or_region": 1,
         "manager": 1,
         "location": 1,
         "remote_working": 1,
