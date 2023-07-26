@@ -1,7 +1,5 @@
 import pytest
 
-import unittest
-
 from extended_search.fields import (
     AbstractBaseField,
     BaseIndexedField,
@@ -81,10 +79,10 @@ class TestBaseIndexedField:
         assert field.name == "foo"
         assert field.model_field_name == field.name
         assert field.boost == 1.0
-        assert field.search == False
-        assert field.autocomplete == False
-        assert field.filter == False
-        assert field.fuzzy == False
+        assert not field.search
+        assert not field.autocomplete
+        assert not field.filter
+        assert not field.fuzzy
 
         field = BaseIndexedField(
             "foo", search=True, autocomplete=True, filter=True, fuzzy=True
@@ -98,16 +96,16 @@ class TestBaseIndexedField:
             "filter": True,
             "fuzzy": True,
         } == field.kwargs
-        assert field.search == True
-        assert field.autocomplete == True
-        assert field.filter == True
-        assert field.fuzzy == True
+        assert field.search
+        assert field.autocomplete
+        assert field.filter
+        assert field.fuzzy
 
         field = BaseIndexedField("foo", fuzzy=True)
-        assert field.search == True
-        assert field.autocomplete == False
-        assert field.filter == False
-        assert field.fuzzy == True
+        assert field.search
+        assert not field.autocomplete
+        assert not field.filter
+        assert field.fuzzy
 
     def test_get_search_mapping_object_format(self):
         field = BaseIndexedField("foo")
@@ -202,14 +200,14 @@ class TestIndexedField:
         assert field.name == "foo"
         assert field.model_field_name == field.name
         assert field.boost == 1.0
-        assert field.search == False
-        assert field.autocomplete == False
-        assert field.filter == False
-        assert field.fuzzy == False
-        assert field.tokenized == False
-        assert field.explicit == False
-        assert field.keyword == False
-        assert field.proximity == False
+        assert not field.search
+        assert not field.autocomplete
+        assert not field.filter
+        assert not field.fuzzy
+        assert not field.tokenized
+        assert not field.explicit
+        assert not field.keyword
+        assert not field.proximity
 
         field = IndexedField(
             "foo",
@@ -232,39 +230,39 @@ class TestIndexedField:
             "keyword": True,
             "proximity": True,
         } == field.kwargs
-        assert field.tokenized == True
-        assert field.explicit == True
-        assert field.keyword == True
-        assert field.proximity == True
+        assert field.tokenized
+        assert field.explicit
+        assert field.keyword
+        assert field.proximity
 
     def test_init_params_set_search_param_when_needed(self):
         field = IndexedField("foo", tokenized=True)
-        assert field.search == True
-        assert field.tokenized == True
-        assert field.explicit == False
-        assert field.keyword == False
-        assert field.proximity == False
+        assert field.search
+        assert field.tokenized
+        assert not field.explicit
+        assert not field.keyword
+        assert not field.proximity
 
         field = IndexedField("foo", explicit=True)
-        assert field.search == True
-        assert field.explicit == True
-        assert field.tokenized == False
-        assert field.keyword == False
-        assert field.proximity == False
+        assert field.search
+        assert field.explicit
+        assert not field.tokenized
+        assert not field.keyword
+        assert not field.proximity
 
         field = IndexedField("foo", keyword=True)
-        assert field.search == True
-        assert field.keyword == True
-        assert field.tokenized == False
-        assert field.explicit == False
-        assert field.proximity == False
+        assert field.search
+        assert field.keyword
+        assert not field.tokenized
+        assert not field.explicit
+        assert not field.proximity
 
         field = IndexedField("foo", proximity=True)
-        assert field.search == False
-        assert field.proximity == True
-        assert field.tokenized == False
-        assert field.explicit == False
-        assert field.keyword == False
+        assert not field.search
+        assert field.proximity
+        assert not field.tokenized
+        assert not field.explicit
+        assert not field.keyword
 
     def test_get_search_mapping_object_format(self):
         field = IndexedField("foo", tokenized=True)

@@ -6,8 +6,8 @@ class ExtendedSearchConfig(AppConfig):
     name = "extended_search"
 
     def ready(self):
-        from extended_search.settings import extended_search_settings as search_settings
         import extended_search.signals  # noqa
+        from extended_search.settings import extended_search_settings as search_settings
 
         search_settings.initialise_field_dict()
         search_settings.initialise_env_dict()

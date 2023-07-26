@@ -1,12 +1,10 @@
-import pytest
-from django.db import models
 from wagtail.search import index
 
 from extended_search.index import (
-    SearchField,
-    RelatedFields,
     AutocompleteField,
+    RelatedFields,
     RenamedFieldMixin,
+    SearchField,
 )
 
 

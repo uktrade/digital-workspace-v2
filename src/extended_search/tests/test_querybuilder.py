@@ -1,7 +1,6 @@
 import pytest
 
-from extended_search.managers.query_builder import QueryBuilder
-
+from extended_search.managers.query_builder import QueryBuilder  # noqa
 
 pytestmark = pytest.mark.xfail
 
