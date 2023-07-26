@@ -82,38 +82,35 @@ class BasePage(Page, Indexed):
 
 
 class ContentPageQuerySet(PageQuerySet):
-    def public_or_login(self):
-        return self.exclude(self.restricted_q(["password", "groups"]))
-
     def restricted_q(self, restriction_type):
         from wagtail.models import PageViewRestriction, BaseViewRestriction
 
+        if type(restriction_type) == str:
+            restriction_type = [
+                restriction_type,
+            ]
+
         RESTRICTION_CHOICES = BaseViewRestriction.RESTRICTION_CHOICES
-
-        # validate against RESTRICTION_CHOICES
-
-        queryset = PageViewRestriction.objects.filter(
-            restriction_type__in=restriction_type
-        )
+        types = [t for t, _ in RESTRICTION_CHOICES if t in restriction_type]
 
         q = Q()
-        for restriction in queryset.select_related("page").all():
+        for restriction in (
+            PageViewRestriction.objects.filter(restriction_type__in=types)
+            .select_related("page")
+            .all()
+        ):
             q |= self.descendant_of_q(restriction.page, inclusive=True)
 
         # do not match any page if no private section exists.
         return q if q else Q(pk__in=[])
 
-    # def public(self):
-    #     """
-    #     Filters the QuerySet to only contain pages that are not in a private
-    #     section and their descendants.
-    #     """
-    #     return self.exclude(self.private_q())
-
     def pinned_q(self, query):
         pinned = SearchPinPageLookUp.objects.filter_by_query(query)
 
         return Q(pk__in=Subquery(pinned.values("object_id")))
+
+    def public_or_login(self):
+        return self.exclude(self.restricted_q(["password", "groups"]))
 
     def pinned(self, query):
         return self.filter(self.pinned_q(query))

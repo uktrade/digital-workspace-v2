@@ -54,27 +54,27 @@ class QueryBuilder:
     ):
         match query_type:
             case SearchQueryType.PHRASE:
-                query_type_boost = "phrase"
+                query_boost_key = "phrase"
             case SearchQueryType.QUERY_AND:
-                query_type_boost = "query_and"
+                query_boost_key = "query_and"
             case SearchQueryType.QUERY_OR:
-                query_type_boost = "query_or"
+                query_boost_key = "query_or"
             case SearchQueryType.FUZZY:
-                query_type_boost = "fuzzy"
+                query_boost_key = "fuzzy"
             case _:
                 raise ValueError(f"{query_type} must be a valid SearchQueryType")
 
         match analysis_type:
             case AnalysisType.EXPLICIT:
-                analysis_type_boost = "explicit"
+                analysis_boost_key = "explicit"
             case AnalysisType.TOKENIZED:
-                analysis_type_boost = "tokenized"
+                analysis_boost_key = "tokenized"
             case AnalysisType.KEYWORD:
-                analysis_type_boost = "explicit"
+                analysis_boost_key = "explicit"
             case AnalysisType.PROXIMITY:
-                analysis_type_boost = 1.0  # @TODO figure out how to add this
+                analysis_boost_key = 1.0  # @TODO figure out how to add this
             case AnalysisType.FILTER:
-                analysis_type_boost = 1.0  # @TODO figure out how to add this
+                analysis_boost_key = 1.0  # @TODO figure out how to add this
             case _:
                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
 
@@ -84,11 +84,17 @@ class QueryBuilder:
             field_name = f"{field_mapping['related_field']}.{field_name}"
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
 
-        return (
-            float(search_settings[f"boost_parts__query_types__{query_type_boost}"])
-            * float(search_settings[f"boost_parts__analyzers__{analysis_type_boost}"])
-            * float(search_settings[f"boost_parts__fields__{field_boost_key}"])
+        query_boost = float(
+            search_settings["boost_parts"]["query_types"][query_boost_key]  # type: ignore
         )
+        analyzer_boost = float(
+            search_settings["boost_parts"]["analyzers"][analysis_boost_key]  # type: ignore
+        )
+        field_boost = float(
+            search_settings["boost_parts"]["fields"][field_boost_key]  # type: ignore
+        )
+
+        return query_boost * analyzer_boost * field_boost
 
     @classmethod
     def _get_searchquery_for_query_field_querytype_analysistype(
@@ -133,11 +139,8 @@ class QueryBuilder:
         subquery = None
         if "related_fields" in field_mapping:
             for related_field_mapping in field_mapping["related_fields"]:
-                # # @TODO how to get a Nested Field query reliably?
+                # @TODO how to get a Nested Field query reliably?
                 related_field_mapping["related_field"] = field_mapping["name"]
-                # related_field_mapping[
-                #     "name"
-                # ] = f"{field_mapping['name']}.{related_field_mapping['name']}"
 
                 subquery = cls._add_to_query(
                     subquery,
@@ -161,12 +164,10 @@ class QueryBuilder:
                             field_mapping,
                         )
                     )
-                    print(f"  -> created {query_element} from {field_mapping}")
                     subquery = cls._add_to_query(
                         subquery,
                         query_element,
                     )
-                    print(f"  ->> subquery is {subquery}")
 
         if "autocomplete" in field_mapping:
             # @TODO sort this out!
