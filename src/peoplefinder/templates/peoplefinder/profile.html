@@ -246,6 +246,23 @@
                     </div>
                 {% endif %}
 
+                {% if roles %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">My role(s)</dt>
+                        <dd class="govuk-summary-list__value">
+                            {% for role in roles %}
+                                {% if role.job_title %}
+                                    {{ role.job_title }} in
+                                {% else %}
+                                    Member of
+                                {% endif %}
+                                <a class="govuk-link" href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a>
+                                <br>
+                            {% endfor %}
+                        </dd>
+                    </div>
+                {% endif %}
+
                 {% if profile.previous_experience %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Previous positions held</dt>
