@@ -101,7 +101,6 @@ class ContentPageQuerySet(PageQuerySet):
         ):
             q |= self.descendant_of_q(restriction.page, inclusive=True)
 
-        # do not match any page if no private section exists.
         return q if q else Q(pk__in=[])
 
     def pinned_q(self, query):
