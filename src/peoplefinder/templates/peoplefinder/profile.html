@@ -201,15 +201,6 @@
                     {% profile_completion_field_actions "manager" profile %}
                 </div>
 
-                {% if profile.workdays.exists %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Days I work</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.get_workdays_display }}
-                        </dd>
-                    </div>
-                {% endif %}
-
                 {% if profile.key_skills.exists or profile.other_key_skills %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">Skills</dt>
@@ -313,27 +304,17 @@
 
     <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">Where I work</h2>
+            <h2 class="govuk-summary-card__title">Where to find me</h2>
         </div>
         <div class="govuk-summary-card__content">
             <dl class="govuk-summary-list">
-                {% if profile.buildings.all.exists %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Place(s) I usually work</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.buildings.all|join:", " }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if profile.location_in_building %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Location in building</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.location_in_building }}
-                        </dd>
-                    </div>
-                {% endif %}
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Where I work</dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if profile.remote_working %}{{ profile.get_remote_working_display }}{% endif %}
+                    </dd>
+                    {% profile_completion_field_actions "remote_working" profile %}
+                </div>
 
                 {% if profile.uk_office_location or profile.international_building %}
                     {% if profile.uk_office_location %}
@@ -341,13 +322,15 @@
                             <dt class="govuk-summary-list__key">Office location</dt>
                             <dd class="govuk-summary-list__value">
                                 {{ profile.uk_office_location }}
+                                <br>
+                                {{ profile.location_in_building }}
                             </dd>
                         </div>
                     {% endif %}
 
                     {% if profile.international_building %}
                         <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Other - Overseas</dt>
+                            <dt class="govuk-summary-list__key">International location</dt>
                             <dd class="govuk-summary-list__value">
                                 {{ profile.international_building }}
                             </dd>
@@ -362,13 +345,14 @@
                     </div>
                 {% endif %}
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Working</dt>
-                    <dd class="govuk-summary-list__value">
-                        {% if profile.remote_working %}{{ profile.get_remote_working_display }}{% endif %}
-                    </dd>
-                    {% profile_completion_field_actions "remote_working" profile %}
-                </div>
+                {% if profile.workdays.exists %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Days I work</dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ profile.get_workdays_display }}
+                        </dd>
+                    </div>
+                {% endif %}
             </dl>
         </div>
     </div>
