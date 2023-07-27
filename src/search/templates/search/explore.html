@@ -29,9 +29,33 @@
                     <div id="accordion-default-content-1"
                          class="govuk-accordion__section-content"
                          aria-labelledby="accordion-default-heading-1">
-                        <ul>
-                            {% for boost in boost_variables %}<li>{{ boost.name }}: {{ boost.value }}</li>{% endfor %}
-                        </ul>
+                        <div class="govuk-summary-card">
+                            <div class="govuk-summary-card__content">
+                                <dl class="govuk-summary-list">
+                                    {% for boost in boost_variables %}
+                                        <div class="govuk-summary-list__row">
+                                            <dt class="govuk-summary-list__key" style="width:75%">{{ boost.name }}</dt>
+                                            <dd class="govuk-summary-list__value">
+                                                {% if perms.extended_search.change_setting %}
+                                                    <form method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="key" value="{{ boost.name }}">
+                                                        <input type="text"
+                                                               name="value"
+                                                               value="{{ boost.value }}"
+                                                               class="govuk-input"
+                                                               style="width:4em">
+                                                        <input type="submit" value="Save" class="govuk-button">
+                                                    </form>
+                                                {% else %}
+                                                    {{ boost.value }}
+                                                {% endif %}
+                                            </dd>
+                                        </div>
+                                    {% endfor %}
+                                </dl>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="govuk-accordion__section">
