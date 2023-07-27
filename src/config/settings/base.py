@@ -516,13 +516,13 @@ LOGGING = {
             "handlers": [
                 "stdout",
             ],
-            "level": "DEBUG",
+            "level": os.getenv("OPENSEARCH_LOG_LEVEL", "INFO"),
         },
         "environ": {
             "handlers": [
                 "stdout",
             ],
-            "level": "DEBUG",
+            "level": os.getenv("ENVIRON_LOG_LEVEL", "INFO"),
         },
     },
 }

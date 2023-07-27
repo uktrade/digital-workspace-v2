@@ -4,6 +4,7 @@ from wagtail.search.index import FilterField
 from extended_search.index import AutocompleteField, SearchField, RelatedFields
 from extended_search.managers.index import ModelIndexManager
 from extended_search.managers.query_builder import QueryBuilder
+from extended_search.models import Setting
 from extended_search.types import AnalysisType
 
 
@@ -149,7 +150,7 @@ class TestModelIndexManager:
 
     def test_get_searchable_search_fields_returns_extended_searchfields(self, mocker):
         mock_fieldname = mocker.patch(
-            "extended_search.managers.query_builder.QueryBuilder._get_indexed_field_name",
+            "extended_search.managers.index.get_indexed_field_name",
             return_value="bar",
         )
         mock_analyzer = mocker.patch(
@@ -173,7 +174,7 @@ class TestModelIndexManager:
 
     def test_get_searchable_search_fields_returns_field_per_analyzer(self, mocker):
         mocker.patch(
-            "extended_search.managers.query_builder.QueryBuilder._get_indexed_field_name",
+            "extended_search.managers.index.get_indexed_field_name",
             return_value="bar",
         )
         mocker.patch(
@@ -224,6 +225,11 @@ class TestModelIndexManager:
         assert mock_func.call_count == 3
         assert len(result[0].fields) == 3
 
-    @pytest.mark.xfail
+    @pytest.mark.django_db
     def test_get_analyzer_name_retrieves_value_from_settings(self):
-        assert True is False
+        Setting.objects.create(key="analyzers__tokenized__es_analyzer", value="foo")
+        assert AnalysisType.TOKENIZED.value == "tokenized"
+        assert ModelIndexManager._get_analyzer_name(AnalysisType.TOKENIZED) == "foo"
+        Setting.objects.create(key="analyzers__explicit__es_analyzer", value="bar")
+        assert AnalysisType.EXPLICIT.value == "explicit"
+        assert ModelIndexManager._get_analyzer_name(AnalysisType.EXPLICIT) == "bar"

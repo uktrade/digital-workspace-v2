@@ -82,10 +82,34 @@ class BasePage(Page, Indexed):
 
 
 class ContentPageQuerySet(PageQuerySet):
+    def restricted_q(self, restriction_type):
+        from wagtail.models import PageViewRestriction, BaseViewRestriction
+
+        if type(restriction_type) == str:
+            restriction_type = [
+                restriction_type,
+            ]
+
+        RESTRICTION_CHOICES = BaseViewRestriction.RESTRICTION_CHOICES
+        types = [t for t, _ in RESTRICTION_CHOICES if t in restriction_type]
+
+        q = Q()
+        for restriction in (
+            PageViewRestriction.objects.filter(restriction_type__in=types)
+            .select_related("page")
+            .all()
+        ):
+            q |= self.descendant_of_q(restriction.page, inclusive=True)
+
+        return q if q else Q(pk__in=[])
+
     def pinned_q(self, query):
         pinned = SearchPinPageLookUp.objects.filter_by_query(query)
 
         return Q(pk__in=Subquery(pinned.values("object_id")))
+
+    def public_or_login(self):
+        return self.exclude(self.restricted_q(["password", "groups"]))
 
     def pinned(self, query):
         return self.filter(self.pinned_q(query))
@@ -100,9 +124,6 @@ class ContentPageQuerySet(PageQuerySet):
 
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
-
-    def get_search_query(self, query_str):  # @TODO is this the right place for this?
-        return ContentPageIndexManager.get_search_query(query_str, self.model)
 
 
 class ContentPageIndexManager(ModelIndexManager):

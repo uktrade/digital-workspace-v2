@@ -29,6 +29,7 @@ DEFAULT_SETTINGS = {
             "phrase": 10.0,
             "query_and": 2.5,
             "query_or": 1.0,
+            "fuzzy": 0.8,
         },
         "analyzers": {
             "explicit": 3.5,
