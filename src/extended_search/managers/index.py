@@ -3,6 +3,7 @@ import logging
 from wagtail.search.index import FilterField
 
 from extended_search.index import AutocompleteField, SearchField, RelatedFields
+from extended_search.managers import get_indexed_field_name
 from extended_search.managers.query_builder import QueryBuilder
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType
@@ -29,7 +30,7 @@ class ModelIndexManager(QueryBuilder):
             analyzers = [AnalysisType.TOKENIZED]
 
         for analyzer in analyzers:
-            index_field_name = cls._get_indexed_field_name(model_field_name, analyzer)
+            index_field_name = get_indexed_field_name(model_field_name, analyzer)
             fields += [
                 SearchField(
                     index_field_name,
@@ -98,6 +99,7 @@ class ModelIndexManager(QueryBuilder):
             mapping += [
                 field.mapping,
             ]
+        logger.debug(mapping)
         return mapping
 
     @classmethod
