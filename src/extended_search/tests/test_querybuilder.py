@@ -1,4 +1,6 @@
 import pytest
+
+from unittest.mock import call
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
 
 from content.models import ContentPage
@@ -30,21 +32,6 @@ class TestManagerInit:
         )
         assert get_indexed_field_name("foo", analyzer) == "foobar"
 
-    def test_get_search_query_from_mapping_uses_settings_and_submethods(self):
-        assert False
-
-    def test_get_search_query_from_mapping_gets_right_number_of_subqueries(self):
-        assert False
-
-    def test_get_search_query_from_mapping_handles_relatedfields(self):
-        assert False
-
-    def test_get_search_query_from_mapping_handles_searchfield(self):
-        assert False
-
-    def test_get_search_query_from_mapping_handles_fuzzy(self):
-        assert False
-
     def test_get_search_query_uses_mapping(self, mocker):
         mock_map = mocker.patch(
             "extended_search.managers.index.ModelIndexManager.get_mapping",
@@ -54,11 +41,12 @@ class TestManagerInit:
             "extended_search.managers.query_builder.QueryBuilder._get_search_query_from_mapping",
             return_value=[],
         )
-        assert get_search_query(ModelIndexManager, "query", ContentPage) == None
+        assert get_search_query(ModelIndexManager, "query", ContentPage) is None
         mock_map.assert_called_once_with()
 
         mock_map.return_value = ["--one--"]
-        assert get_search_query(ModelIndexManager, "query", ContentPage) == "--one--"
+        mock_q.return_value = "--query--"
+        assert get_search_query(ModelIndexManager, "query", ContentPage) == "--query--"
         mock_q.assert_called_once_with("query", ContentPage, "--one--")
 
 
@@ -110,7 +98,7 @@ class TestQueryBuilder:
     @pytest.mark.django_db
     def test_get_boost_for_field_querytype_analysistype_handles_types(self):
         Setting.objects.create(
-            key=f"boost_parts__fields__content.contentpage.title", value=555.55
+            key="boost_parts__fields__content.contentpage.title", value=555.55
         )
         query_boost = float(
             extended_search_settings["boost_parts"]["query_types"]["phrase"]
@@ -245,3 +233,194 @@ class TestQueryBuilder:
             set(["a", "b"]),
             set(["c", "d"]),
         ) == set(["a", "b", "c", "d"])
+
+    @pytest.mark.django_db
+    def test_get_search_query_from_mapping_uses_settings_and_submethods(self, mocker):
+        query_outputs = [
+            set(["--query--"]),
+            set(["--query-2--"]),
+            set(["--query-3--"]),
+            set(["--query-4--"]),
+            set(["--query-5--"]),
+            set(["--query-6--"]),
+        ]
+        mock_query = mocker.patch(
+            "extended_search.managers.query_builder.QueryBuilder._get_searchquery_for_query_field_querytype_analysistype",
+            side_effect=query_outputs,
+        )
+        mapping = {}
+        assert (
+            QueryBuilder._get_search_query_from_mapping("query", ContentPage, mapping)
+            is None
+        )
+        mock_query.assert_not_called()
+
+        # FUZZY
+        mock_query.reset_mock()
+        mock_query.side_effect = query_outputs
+        mapping = {
+            "fuzzy": [],
+            "model_field_name": "--name--",
+        }
+        result = QueryBuilder._get_search_query_from_mapping(
+            "query", ContentPage, mapping
+        )
+        assert result == set(["--query--"])
+        mock_query.assert_called_once_with(
+            "query",
+            ContentPage,
+            "--name--",
+            SearchQueryType.FUZZY,
+            AnalysisType.TOKENIZED,
+            mapping,
+        )
+
+        # SEARCH
+        mock_query.reset_mock()
+        mock_query.side_effect = query_outputs
+        assert extended_search_settings[
+            f"analyzers__{AnalysisType.TOKENIZED.value}__query_types"
+        ] == [
+            "phrase",
+            "query_and",
+            "query_or",
+        ]
+        assert extended_search_settings[
+            f"analyzers__{AnalysisType.EXPLICIT.value}__query_types"
+        ] == [
+            "phrase",
+            "query_and",
+            "query_or",
+        ]
+        mapping = {
+            "search": [AnalysisType.EXPLICIT],
+            "model_field_name": "--name--",
+        }
+        result = QueryBuilder._get_search_query_from_mapping(
+            "query", ContentPage, mapping
+        )
+        assert mock_query.call_count == 3
+        mock_query.assert_has_calls(
+            [
+                call(
+                    "query",
+                    ContentPage,
+                    "--name--",
+                    SearchQueryType.PHRASE,
+                    AnalysisType.EXPLICIT,
+                    mapping,
+                ),
+                call(
+                    "query",
+                    ContentPage,
+                    "--name--",
+                    SearchQueryType.QUERY_AND,
+                    AnalysisType.EXPLICIT,
+                    mapping,
+                ),
+                call(
+                    "query",
+                    ContentPage,
+                    "--name--",
+                    SearchQueryType.QUERY_OR,
+                    AnalysisType.EXPLICIT,
+                    mapping,
+                ),
+            ]
+        )
+
+        mock_query.reset_mock()
+        mock_query.side_effect = query_outputs
+        mapping = {
+            "search": [AnalysisType.TOKENIZED],
+            "model_field_name": "--name--",
+        }
+        result = QueryBuilder._get_search_query_from_mapping(
+            "query", ContentPage, mapping
+        )
+        assert mock_query.call_count == 3
+        mock_query.assert_has_calls(
+            [
+                call(
+                    "query",
+                    ContentPage,
+                    "--name--",
+                    SearchQueryType.PHRASE,
+                    AnalysisType.TOKENIZED,
+                    mapping,
+                ),
+                call(
+                    "query",
+                    ContentPage,
+                    "--name--",
+                    SearchQueryType.QUERY_AND,
+                    AnalysisType.TOKENIZED,
+                    mapping,
+                ),
+                call(
+                    "query",
+                    ContentPage,
+                    "--name--",
+                    SearchQueryType.QUERY_OR,
+                    AnalysisType.TOKENIZED,
+                    mapping,
+                ),
+            ]
+        )
+
+        mock_query.reset_mock()
+        mock_query.side_effect = query_outputs
+        mapping = {
+            "search": [AnalysisType.TOKENIZED, AnalysisType.EXPLICIT],
+            "model_field_name": "--name--",
+        }
+        result = QueryBuilder._get_search_query_from_mapping(
+            "query", ContentPage, mapping
+        )
+        assert mock_query.call_count == 6
+
+        # RELATED
+        mock_query.reset_mock()
+        mock_query.side_effect = query_outputs
+        mapping = {
+            "related_fields": [
+                {
+                    "search": [AnalysisType.TOKENIZED],
+                    "model_field_name": "--related-name--",
+                },
+                {
+                    "search": [AnalysisType.TOKENIZED],
+                    "model_field_name": "--other-related-name--",
+                },
+            ],
+            "model_field_name": "--model-field-name--",
+            "name": "--name--",
+        }
+        result = QueryBuilder._get_search_query_from_mapping(
+            "query", ContentPage, mapping
+        )
+        assert mock_query.call_count == 6
+        mock_query.assert_any_call(
+            "query",
+            ContentPage,
+            "--related-name--",
+            SearchQueryType.PHRASE,
+            AnalysisType.TOKENIZED,
+            {
+                "search": [AnalysisType.TOKENIZED],
+                "model_field_name": "--related-name--",
+                "related_field": "--name--",
+            },
+        )
+        mock_query.assert_any_call(
+            "query",
+            ContentPage,
+            "--other-related-name--",
+            SearchQueryType.PHRASE,
+            AnalysisType.TOKENIZED,
+            {
+                "search": [AnalysisType.TOKENIZED],
+                "model_field_name": "--other-related-name--",
+                "related_field": "--name--",
+            },
+        )
