@@ -77,18 +77,16 @@ def explore(request: HttpRequest) -> HttpResponse:
     ]
     for mapping in ContentPageIndexManager.get_mapping():
         field = ContentPageIndexManager._get_search_query_from_mapping(
-            "dummy_query", ContentPage, mapping
+            query, ContentPage, mapping
         )
         get_query_info(subqueries["pages"], field, mapping, analyzer_field_suffices)
     for mapping in PersonIndexManager.get_mapping():
         field = PersonIndexManager._get_search_query_from_mapping(
-            "dummy_query", Person, mapping
+            query, Person, mapping
         )
         get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
     for mapping in TeamIndexManager.get_mapping():
-        field = TeamIndexManager._get_search_query_from_mapping(
-            "dummy_query", Team, mapping
-        )
+        field = TeamIndexManager._get_search_query_from_mapping(query, Team, mapping)
         get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
 
     context = {
