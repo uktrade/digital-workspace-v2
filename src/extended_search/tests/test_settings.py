@@ -258,12 +258,12 @@ class TestSearchSettings:
         mock_searchfield_2.get_definition_model.return_value = "--model--"
         mock_searchfield_3 = mocker.MagicMock()
         mock_searchfield_3.get_definition_model.return_value = "--second-model--"
-        mock_model_1.search_fields = [
+        mock_model_1.get_searchable_search_fields.return_value = [
             mock_searchfield_1,
             mock_searchfield_2,
             mock_searchfield_2,
         ]
-        mock_model_2.search_fields = [
+        mock_model_2.get_searchable_search_fields.return_value = [
             mock_searchfield_3,
         ]
         mock_get_models.return_value = [
