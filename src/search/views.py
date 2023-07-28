@@ -1,15 +1,28 @@
 import logging
+
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from search.templatetags.search import SEARCH_CATEGORIES
+from wagtail.search.query import Or, Phrase, PlainText, Fuzzy
+
+from content.models import ContentPage, ContentPageIndexManager
+from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
+from extended_search.backends.query import OnlyFields
+from extended_search.models import Setting as SearchSetting
 from extended_search.settings import extended_search_settings
+from search.templatetags.search import SEARCH_CATEGORIES
 
 
 logger = logging.getLogger(__name__)
+
+
+def can_view_explore():
+    return user_passes_test(lambda u: u.has_perm("extended_search.view_explore"))
 
 
 @require_http_methods(["GET"])
@@ -33,10 +46,21 @@ def search(request: HttpRequest, category: str = None) -> HttpResponse:
     return TemplateResponse(request, "search/search.html", context=context)
 
 
+@can_view_explore()
 def explore(request: HttpRequest) -> HttpResponse:
     """
     Administrative view for exploring search options, boosts, etc
     """
+    if request.method == "POST":
+        if not request.user.has_perm("extended_search.change_setting"):
+            messages.error(request, "You are not authorised to edit settings")
+
+        key = request.POST.get("key")
+        value = request.POST.get("value")
+
+        SearchSetting.objects.update_or_create(key=key, defaults={"value": value})
+        messages.info(request, f"Setting '{key}' saved")
+
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
 
@@ -46,17 +70,70 @@ def explore(request: HttpRequest) -> HttpResponse:
         if "boost_parts" in k
     ]
 
+    subqueries = {"pages": [], "people": [], "teams": []}
+    analyzer_field_suffices = [
+        (k, v["index_fieldname_suffix"])
+        for k, v in extended_search_settings["analyzers"].items()
+    ]
+    for mapping in ContentPageIndexManager.get_mapping():
+        field = ContentPageIndexManager._get_search_query_from_mapping(
+            "dummy_query", ContentPage, mapping
+        )
+        get_query_info(subqueries["pages"], field, mapping, analyzer_field_suffices)
+    for mapping in PersonIndexManager.get_mapping():
+        field = PersonIndexManager._get_search_query_from_mapping(
+            "dummy_query", Person, mapping
+        )
+        get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
+    for mapping in TeamIndexManager.get_mapping():
+        field = TeamIndexManager._get_search_query_from_mapping(
+            "dummy_query", Team, mapping
+        )
+        get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
+
     context = {
         "search_url": reverse("search:explore"),
         "search_query": query,
         "search_category": "all",
         "page": page,
         "boost_variables": boost_vars,
-        "sub_queries": [
-            {"name": "pages", "queries": [{"id": 1, "value": "{match_all: {}}"}]},
-            {"name": "people", "queries": [{"id": 1, "value": "{match_all: {}}"}]},
-            {"name": "teams", "queries": [{"id": 1, "value": "{match_all: {}}"}]},
-        ],
+        "sub_queries": subqueries,
     }
 
     return TemplateResponse(request, "search/explore.html", context=context)
+
+
+def get_query_info(fields, field, mapping, suffix_map):
+    if field is None:
+        return fields
+
+    if isinstance(field, Or):
+        for f in field.subqueries:
+            fields = get_query_info(fields, f, mapping, suffix_map)
+
+    elif isinstance(field, OnlyFields):
+        core_field = field.subquery.subquery
+
+        analyzer_name = "tokenizer"
+        for analyzer, suffix in suffix_map:
+            if suffix and suffix in field.fields[0]:
+                analyzer_name = analyzer
+
+        if isinstance(core_field, Phrase):
+            query_type = "phrase"
+        elif isinstance(core_field, Fuzzy):
+            query_type = "fuzzy"
+        elif isinstance(core_field, PlainText):
+            if core_field.operator == "and":
+                query_type = "query_and"
+            else:
+                query_type = "query_or"
+        fields.append(
+            {
+                "query_type": query_type,
+                "field": mapping["model_field_name"],
+                "analyzer": analyzer_name,
+                "boost": field.subquery.boost,
+            }
+        )
+    return fields
