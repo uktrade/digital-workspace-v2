@@ -505,10 +505,6 @@ class Person(Indexed, models.Model):
     )
 
     class RemoteWorking(models.TextChoices):
-        OFFICE_WORKER = (
-            "office_worker",
-            "I work primarily from the office",
-        )
         REMOTE_WORKER = (
             "remote_worker",
             "I work primarily from home (remote worker)",
