@@ -20,7 +20,7 @@
             {% endfor %}
         </p>
         <p class="govuk-body-s ws-secondary-meta">
-            Profile completion: {{ object.profile_completion_amount|floatformat:"0" }}%, Has photo: {{ object.has_photo }}
+            Profile completion: {{ object.profile_completion|floatformat:"0" }}%, Has photo: {{ object.has_photo }}
         </p>
     {% elif type == 'teams' %}
         <h3 class="govuk-heading-s">

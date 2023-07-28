@@ -245,9 +245,6 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
             ),
         )
 
-    def get_search_query(self, query_str):  # @TODO is this the right place for this?
-        return PersonIndexManager.get_search_query(query_str, self.model)
-
 
 def person_photo_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/{filename}"
@@ -310,6 +307,14 @@ class PersonIndexManager(ModelIndexManager):
             "search_networks",
             tokenized=True,
         ),
+        IndexedField(
+            "search_grade",
+            explicit=True,
+        ),
+        IndexedField(
+            "search_buildings",
+            tokenized=True,
+        ),
         # RelatedIndexedFields(
         #     "roles",
         #     [
@@ -370,15 +375,17 @@ class PersonIndexManager(ModelIndexManager):
             tokenized=True,
         ),
         IndexedField(
+            "search_location",
+            tokenized=True,
+        ),
+        IndexedField(
             "fluent_languages",
             tokenized=True,
-            boost=1.5,
         ),
         IndexedField(
             "search_teams",
             tokenized=True,
             explicit=True,
-            fuzzy=True,
             boost=2.0,
         ),
         IndexedField(
@@ -754,6 +761,18 @@ class Person(Indexed, models.Model):
     def search_networks(self):
         return ", ".join(self.networks.all().values_list("name", flat=True))
 
+    @property
+    def search_buildings(self):
+        return ", ".join(self.buildings.all().values_list("name", flat=True))
+
+    @property
+    def search_location(self):
+        return ", ".join(self.uk_office_location.all().values_list("name", flat=True))
+
+    @property
+    def search_grade(self):
+        return self.grade.name
+
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
 
@@ -827,9 +846,6 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
                 ordering="-children__depth",
             )
         )
-
-    def get_search_query(self, query_str):  # @TODO is this the right place for this?
-        return TeamIndexManager.get_search_query(query_str, self.model)
 
 
 class TeamIndexManager(ModelIndexManager):
