@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("peoplefinder", "0105_ukstafflocation_data_migration"),
+        ("peoplefinder", "0106_alter_person_remote_working"),
     ]
 
     operations = [

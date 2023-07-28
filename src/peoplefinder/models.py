@@ -11,6 +11,7 @@ from django.db.models import Case, F, Func, JSONField, Q, Value, When
 from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
@@ -542,9 +543,12 @@ class Person(Indexed, models.Model):
     pronouns = models.CharField(max_length=40, null=True, blank=True)
     name_pronunciation = models.CharField(
         "A phonetic representation of your name",
+        help_text=mark_safe(
+            "<a href='https://workspace.trade.gov.uk/news-and-views/say-my-name/'>Tips for writing your name phonetically</a>"
+        ),
         max_length=110,
         null=True,
-        blank=True
+        blank=True,
     )
     contact_email = models.EmailField(
         "Contact email address",

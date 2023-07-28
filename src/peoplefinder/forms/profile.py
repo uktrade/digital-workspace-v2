@@ -158,6 +158,9 @@ class ProfileForm(forms.ModelForm):
         self.fields["pronouns"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
+        self.fields["name_pronunciation"].widget.attrs.update(
+            {"class": "govuk-input govuk-!-width-one-half"}
+        )
         self.fields["email"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
