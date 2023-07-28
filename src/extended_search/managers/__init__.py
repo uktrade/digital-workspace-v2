@@ -12,17 +12,17 @@ def get_indexed_field_name(model_field_name, analyzer):
     return f"{model_field_name}{field_name_suffix}"
 
 
-def get_search_query(cls, query_str, model_class, *args, **kwargs):
+def get_search_query(index_manager, query_str, model_class, *args, **kwargs):
     """
     Uses the field mapping to derive the full nested SearchQuery
     """
     query = None
-    for field_mapping in cls.get_mapping():
-        query_elements = cls._get_search_query_from_mapping(
+    for field_mapping in index_manager.get_mapping():
+        query_elements = index_manager._get_search_query_from_mapping(
             query_str, model_class, field_mapping
         )
         if query_elements is not None:
-            query = cls._add_to_query(
+            query = index_manager._add_to_query(
                 query,
                 query_elements,
             )

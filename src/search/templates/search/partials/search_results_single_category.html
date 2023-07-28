@@ -2,12 +2,8 @@
 
 {% if search_category in "guidance,tools,news" %}
     <div class="search-results__all">
-        <div class="left-col">
-        {% endif %}
-
-        {% search_category category=search_category %}
-
-        {% if search_category in "guidance,tools,news" %}
-        </div>
+        <div class="left-col">{% search_category category=search_category %}</div>
     </div>
+{% else %}
+    {% search_category category=search_category %}
 {% endif %}

@@ -213,7 +213,7 @@ class SearchSettings(NestedChainMap):
     def _get_all_indexed_fields(self):
         fields = {}
         for model_cls in get_indexed_models():
-            for search_field in model_cls.search_fields:
+            for search_field in model_cls.get_searchable_search_fields():
                 definition_cls = search_field.get_definition_model(model_cls)
                 if definition_cls not in fields:
                     fields[definition_cls] = set()
