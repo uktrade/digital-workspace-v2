@@ -1,5 +1,5 @@
 from content.models import ContentPage, ContentPageIndexManager
-from news.models import NewsPage
+from news.models import NewsPage, NewsPageIndexManager
 from peoplefinder.models import Person, Team, PersonIndexManager, TeamIndexManager
 from tools.models import Tool
 from working_at_dit.models import PoliciesAndGuidanceHome
@@ -16,7 +16,7 @@ class SearchVector:
         """
         Allows e.g. score annotation without polluting overriden search method
         """
-        return_method = queryset.search(query, *args, **kwargs)
+        return_method = queryset.search(query, *args, partial_match=False, **kwargs)
 
         if self.annotate_score:
             return_method = return_method.annotate_score("_score")
@@ -36,24 +36,31 @@ class SearchVector:
 
 class PagesSearchVector(SearchVector):
     page_model = None
+    page_index_manager = None
 
     def get_queryset(self):
         return self.page_model.objects.public_or_login().live()
+
+    def get_query(self, query_str):
+        return get_search_query(self.page_index_manager, query_str, self.page_model)
 
     def pinned(self, query):
         return self.get_queryset().pinned(query)
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset().not_pinned(query)
+        query = self.get_query(query)
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
 
 class AllPagesSearchVector(PagesSearchVector):
     page_model = ContentPage
+    page_index_manager = ContentPageIndexManager
 
 
 class GuidanceSearchVector(PagesSearchVector):
     page_model = ContentPage
+    page_index_manager = ContentPageIndexManager
 
     def get_queryset(self):
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()
@@ -63,10 +70,12 @@ class GuidanceSearchVector(PagesSearchVector):
 
 class NewsSearchVector(PagesSearchVector):
     page_model = NewsPage
+    page_index_manager = NewsPageIndexManager
 
 
 class ToolsSearchVector(PagesSearchVector):
     page_model = Tool
+    # @TODO !!
 
 
 class PeopleSearchVector(SearchVector):
@@ -95,33 +104,6 @@ class TeamsSearchVector(SearchVector):
 # the indexing improvements workstream. Need to be alongside to run v2 and v2.5
 # queries side by side, e.g. for "explore" page
 #
-
-
-class NewAllPagesSearchVector(AllPagesSearchVector):
-    def _wagtail_search(self, queryset, query, *args, **kwargs):
-        return queryset.search(
-            query, *args, partial_match=False, **kwargs
-        ).annotate_score("_score")
-
-    def search(self, query, *args, **kwargs):
-        queryset = self.get_queryset().not_pinned(query)
-
-        query = get_search_query(
-            ContentPageIndexManager, query, ContentPage, *args, **kwargs
-        )
-        return self._wagtail_search(queryset, query, *args, **kwargs)
-
-
-class NewGuidanceSearchVector(GuidanceSearchVector):
-    ...
-
-
-class NewNewsSearchVector(NewsSearchVector):
-    ...
-
-
-class NewToolsSearchVector(ToolsSearchVector):
-    ...
 
 
 class NewPeopleSearchVector(PeopleSearchVector):
