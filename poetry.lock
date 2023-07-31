@@ -3552,12 +3552,12 @@ resolved_reference = "26299945870b5bf44bcd14daa8898595962bcee6"
 
 [[package]]
 name = "wagtail-draftail-anchors"
-version = "0.5.0"
+version = "0.6.0"
 description = "A Draftail extension to add anchor identifiers to rich text"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "wagtail_draftail_anchors-0.5.0-py3-none-any.whl", hash = "sha256:6edf1776e057917ac5fbae5590476de4e892359c9c60c2bbd348c466922b8df3"},
+    {file = "wagtail_draftail_anchors-0.6.0-py3-none-any.whl", hash = "sha256:02d09da0f1e46a155e2d62b06d64902e73d3413cc4de5ac9604ca35afdeea9ce"},
 ]
 
 [package.dependencies]
@@ -3888,4 +3888,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3d0c5bbfa8f7c5154b928db8a66c93c187eb6fea927dd0bc9bb0b272f8fa311f"
+content-hash = "9c66bedf3be2e40b080dac5e9d2b4065e228142d46be13f476a3c75fd0947819"
