@@ -538,8 +538,8 @@ class Person(Indexed, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     edited_or_confirmed_at = models.DateTimeField(default=timezone.now)
 
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=80)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
     email = models.EmailField(
         "Main work email address",
         help_text=(
@@ -553,7 +553,7 @@ class Person(Indexed, models.Model):
         help_text=mark_safe(
             "<a href='https://workspace.trade.gov.uk/news-and-views/say-my-name/'>Tips for writing your name phonetically</a>"
         ),
-        max_length=110,
+        max_length=200,
         null=True,
         blank=True,
     )
