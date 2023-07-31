@@ -5,6 +5,8 @@ from django.shortcuts import redirect
 from wagtail.admin.panels import FieldPanel
 
 from content.models import ContentPage
+from extended_search.fields import IndexedField
+from extended_search.managers.index import ModelIndexManager
 from working_at_dit.models import PageWithTopics
 
 
@@ -67,6 +69,20 @@ class IrapToolData(IrapToolDataAbstract):
 
     def __str__(self):
         return self.product_name
+
+
+class TeamIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "search_title",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            keyword=True,
+            boost=4.0,
+        ),
+    ]
 
 
 class Tool(PageWithTopics):

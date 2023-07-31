@@ -104,12 +104,10 @@ class NewAllPagesSearchVector(AllPagesSearchVector):
         ).annotate_score("_score")
 
     def search(self, query, *args, **kwargs):
-        queryset = self.get_queryset().not_pinned(query)
-
         query = get_search_query(
             ContentPageIndexManager, query, ContentPage, *args, **kwargs
         )
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        return self._wagtail_search(self.get_queryset(), query, *args, **kwargs)
 
 
 class NewGuidanceSearchVector(GuidanceSearchVector):
