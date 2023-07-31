@@ -291,6 +291,7 @@
           break;
         case TEAM_SELECT_ACTION.EXPAND_TEAM:
           this.toggleTeam(el.dataset.teamId);
+          break;
         default:
           break;
       }
