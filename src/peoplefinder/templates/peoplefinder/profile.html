@@ -18,9 +18,7 @@
         </div>
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l mb-0" data-testid="full-name">{{ profile.full_name }}</h1>
-            {% if profile.name_pronunciation%}
-                <p class="govuk-body-s">{{ profile.name_pronunciation }}</p>
-            {% endif %}
+            {% if profile.name_pronunciation %}<p class="govuk-body-s">{{ profile.name_pronunciation }}</p>{% endif %}
             {% if not profile.is_active %}
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -86,13 +84,13 @@
 
                     {% if perms.peoplefinder.delete_person and request.user != profile.user %}
                         <form action="{% url 'profile-delete' profile.slug %}"
-                                method="post"
-                                onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
+                              method="post"
+                              onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
                             {% csrf_token %}
                             <input type="submit"
-                                    class="govuk-button govuk-button--warning"
-                                    id="delete-profile"
-                                    value="Delete profile" />
+                                   class="govuk-button govuk-button--warning"
+                                   id="delete-profile"
+                                   value="Delete profile" />
                         </form>
                     {% endif %}
                 {% elif perms.peoplefinder.delete_person %}
@@ -144,7 +142,7 @@
                         </dd>
                     </div>
                 {% endif %}
-                
+ 
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">Preferred email</dt>
                     {% if profile.contact_email %}
