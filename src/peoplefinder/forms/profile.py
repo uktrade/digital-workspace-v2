@@ -88,7 +88,7 @@ class ProfileForm(forms.ModelForm):
             "other_additional_roles",
             "previous_experience",
             "photo",
-            "name_pronunciation"
+            "name_pronunciation",
         ]
         widgets = {
             "workdays": forms.CheckboxSelectMultiple,
