@@ -135,7 +135,8 @@ class NewPeopleSearchVector(PeopleSearchVector):
         autocomplete_results = set(
             self.get_queryset().autocomplete(query).annotate_score("_score")
         )
-        return results | autocomplete_results
+        all_results = results | autocomplete_results
+        return sorted(all_results, key=lambda x: x._score, reverse=True)
 
 
 class NewTeamsSearchVector(TeamsSearchVector):
