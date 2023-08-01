@@ -15,7 +15,7 @@ class SearchVector:
         """
         Allows e.g. score annotation without polluting overriden search method
         """
-        return_method = queryset.search(query, *args, partial_match=False, **kwargs)
+        return_method = queryset.search(query, *args, **kwargs)
 
         if self.annotate_score:
             return_method = return_method.annotate_score("_score")
