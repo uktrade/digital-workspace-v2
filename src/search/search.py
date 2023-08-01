@@ -101,12 +101,10 @@ class NewAllPagesSearchVector(AllPagesSearchVector):
         return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
     def search(self, query, *args, **kwargs):
-        queryset = self.get_queryset().not_pinned(query)
-
         query = get_search_query(
             ContentPageIndexManager, query, ContentPage, *args, **kwargs
         )
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        return self._wagtail_search(self.get_queryset(), query, *args, **kwargs)
 
 
 class NewGuidanceSearchVector(GuidanceSearchVector):
@@ -127,8 +125,13 @@ class NewPeopleSearchVector(PeopleSearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = get_search_query(PersonIndexManager, query, Person, *args, **kwargs)
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        query_obj = get_search_query(PersonIndexManager, query, Person, *args, **kwargs)
+        results = set(self._wagtail_search(queryset, query_obj, *args, **kwargs))
+        autocomplete_results = set(
+            self.get_queryset().autocomplete(query).annotate_score("_score")
+        )
+        all_results = results | autocomplete_results
+        return sorted(all_results, key=lambda x: x._score, reverse=True)
 
 
 class NewTeamsSearchVector(TeamsSearchVector):
