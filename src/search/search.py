@@ -130,8 +130,12 @@ class NewPeopleSearchVector(PeopleSearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = get_search_query(PersonIndexManager, query, Person, *args, **kwargs)
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        query_obj = get_search_query(PersonIndexManager, query, Person, *args, **kwargs)
+        results = self._wagtail_search(queryset, query_obj, *args, **kwargs)
+        results = list(results) + list(
+            self.get_queryset().autocomplete(query).annotate_score("_score")
+        )
+        return results
 
 
 class NewTeamsSearchVector(TeamsSearchVector):
