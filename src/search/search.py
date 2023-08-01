@@ -1,10 +1,9 @@
 from content.models import ContentPage, ContentPageIndexManager
+from extended_search.managers import get_search_query
 from news.models import NewsPage, NewsPageIndexManager
-from peoplefinder.models import Person, Team, PersonIndexManager, TeamIndexManager
+from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
 from tools.models import Tool, ToolIndexManager
 from working_at_dit.models import PoliciesAndGuidanceHome
-
-from extended_search.managers import get_search_query
 
 
 class SearchVector:

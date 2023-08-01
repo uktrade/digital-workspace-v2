@@ -6,6 +6,7 @@ from wagtail.admin.panels import FieldPanel
 
 from content.models import ContentPage
 from extended_search.managers.index import ModelIndexManager
+from extended_search.fields import IndexedField
 from working_at_dit.models import PageWithTopics
 
 
@@ -71,7 +72,17 @@ class IrapToolData(IrapToolDataAbstract):
 
 
 class ToolIndexManager(ModelIndexManager):
-    ...
+    fields = [
+        IndexedField(
+            "search_title",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            keyword=True,
+            boost=10.0,
+        ),
+    ]
 
 
 class Tool(PageWithTopics):
