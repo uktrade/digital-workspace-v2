@@ -3,9 +3,13 @@
 {% load humanize profile %}
 {% load webpack_static from webpack_loader %}
 
-{% block title %}{{ profile.full_name }}{% endblock %}
+{% block title %}
+    {{ profile.full_name }}
+{% endblock title %}
 
-{% block location %}{{ profile.full_name }}{% endblock %}
+{% block location %}
+    {{ profile.full_name }}
+{% endblock location %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -441,4 +445,4 @@
             </div>
         </details>
     {% endif %}
-{% endblock %}
+{% endblock content %}
