@@ -551,7 +551,7 @@ class Person(Indexed, models.Model):
     name_pronunciation = models.CharField(
         "A phonetic representation of your name",
         help_text=mark_safe(  # noqa: S308
-            "<a class='govuk-link' href='/news-and-views/say-my-name/'>"
+            "<a class='govuk-link' href='/news-and-views/say-my-name/' target='_blank' rel='noreferrer'>"
             "Tips for writing your name phonetically</a>"
         ),
         max_length=200,
