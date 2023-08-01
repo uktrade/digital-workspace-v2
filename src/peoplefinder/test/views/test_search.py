@@ -1,7 +1,7 @@
 import pytest
-from pytest_django.asserts import assertContains, assertNotContains
 from django.core.management import call_command
 from django.urls import reverse
+from pytest_django.asserts import assertContains, assertNotContains
 
 
 class TestSearchView:
@@ -73,6 +73,12 @@ class TestSearchView:
         assertContains(r, "/teams/software/")
         assertContains(r, "(2)")
 
+    @pytest.mark.skip(
+        reason=(
+            "Partial searches are not yet supported, see Search Improvements"
+            " PR https://github.com/uktrade/digital-workspace-v2/pull/416"
+        )
+    )
     @pytest.mark.opensearch
     def test_search_for_multiple_teams(self):
         r = self._search("S", people=False)
