@@ -71,7 +71,7 @@ class IrapToolData(IrapToolDataAbstract):
         return self.product_name
 
 
-class TeamIndexManager(ModelIndexManager):
+class ToolIndexManager(ModelIndexManager):
     fields = [
         IndexedField(
             "search_title",
@@ -80,7 +80,7 @@ class TeamIndexManager(ModelIndexManager):
             explicit=True,
             autocomplete=True,
             keyword=True,
-            boost=4.0,
+            boost=10.0,
         ),
     ]
 
@@ -104,6 +104,8 @@ class Tool(PageWithTopics):
         blank=True,
         max_length=2048,
     )
+
+    search_fields = PageWithTopics.search_fields + ToolIndexManager()
 
     parent_page_types = ["tools.ToolsHome"]
     subpage_types = []  # Should not be able to create children
