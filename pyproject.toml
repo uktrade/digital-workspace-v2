@@ -27,10 +27,10 @@ django_log_formatter_ecs = "^0.0.5"
 django-staff-sso-client = "^4.1.1"
 notifications-python-client = "^8.0.0"
 # Wagtail
-wagtail = "^4.2.2"
-wagtailmedia = "^0.13.0"
-wagtailmenus = "^3.1.7"
-wagtail-draftail-anchors = "^0.5.0"
+wagtail = "^5.0.1"
+wagtailmedia = "^0.14.2"
+wagtailmenus = "^3.1.8"
+wagtail-draftail-anchors = "^0.6.0"
 wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag="v0.3.0" }
 # OpenSearch
 elasticsearch = "<7.14.0"  # highest version for OpenSearch support

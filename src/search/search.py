@@ -1,10 +1,9 @@
 from content.models import ContentPage, ContentPageIndexManager
+from extended_search.managers import get_search_query
 from news.models import NewsPage
-from peoplefinder.models import Person, Team, PersonIndexManager, TeamIndexManager
+from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
 from tools.models import Tool
 from working_at_dit.models import PoliciesAndGuidanceHome
-
-from extended_search.managers import get_search_query
 
 
 class SearchVector:
@@ -99,9 +98,7 @@ class TeamsSearchVector(SearchVector):
 
 class NewAllPagesSearchVector(AllPagesSearchVector):
     def _wagtail_search(self, queryset, query, *args, **kwargs):
-        return queryset.search(
-            query, *args, partial_match=False, **kwargs
-        ).annotate_score("_score")
+        return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
     def search(self, query, *args, **kwargs):
         query = get_search_query(
@@ -124,9 +121,7 @@ class NewToolsSearchVector(ToolsSearchVector):
 
 class NewPeopleSearchVector(PeopleSearchVector):
     def _wagtail_search(self, queryset, query, *args, **kwargs):
-        return queryset.search(
-            query, *args, partial_match=False, **kwargs
-        ).annotate_score("_score")
+        return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
@@ -141,9 +136,7 @@ class NewPeopleSearchVector(PeopleSearchVector):
 
 class NewTeamsSearchVector(TeamsSearchVector):
     def _wagtail_search(self, queryset, query, *args, **kwargs):
-        return queryset.search(
-            query, *args, partial_match=False, **kwargs
-        ).annotate_score("_score")
+        return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()

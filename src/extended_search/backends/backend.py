@@ -71,8 +71,8 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         """
         if self.remapped_fields:
             fields = self.remapped_fields
-        elif self.partial_match:
-            fields = [self.mapping.all_field_name, self.mapping.edgengrams_field_name]
+        # elif self.partial_match:
+        #     fields = [self.mapping.all_field_name, self.mapping.edgengrams_field_name]
         else:
             fields = [self.mapping.all_field_name]
 
