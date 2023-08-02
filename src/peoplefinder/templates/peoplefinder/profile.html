@@ -328,8 +328,10 @@
                             <dt class="govuk-summary-list__key">Office location</dt>
                             <dd class="govuk-summary-list__value">
                                 {{ profile.uk_office_location }}
-                                <br>
-                                {{ profile.location_in_building }}
+                                {% if profile.location_in_building %}
+                                    <br>
+                                    {{ profile.location_in_building }}
+                                {% endif %}
                             </dd>
                         </div>
                     {% endif %}
