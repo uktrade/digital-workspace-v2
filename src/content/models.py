@@ -159,7 +159,7 @@ class ContentPageIndexManager(ModelIndexManager):
             explicit=True,
         ),
         IndexedField("is_creatable", filter=True),
-        IndexedField("last_published_at", proximity=True),
+        IndexedField("published_date", proximity=True),
     ]
 
 
@@ -251,6 +251,10 @@ class ContentPage(BasePage):
     )
 
     search_fields = BasePage.search_fields + ContentPageIndexManager()
+
+    @property
+    def published_date(self):
+        return self.last_published_at
 
     def _generate_search_field_content(self):
         self.search_title = self.title
