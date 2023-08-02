@@ -88,6 +88,7 @@ class ProfileForm(forms.ModelForm):
             "other_additional_roles",
             "previous_experience",
             "photo",
+            "name_pronunciation",
         ]
         widgets = {
             "workdays": forms.CheckboxSelectMultiple,
@@ -155,6 +156,9 @@ class ProfileForm(forms.ModelForm):
             {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["pronouns"].widget.attrs.update(
+            {"class": "govuk-input govuk-!-width-one-half"}
+        )
+        self.fields["name_pronunciation"].widget.attrs.update(
             {"class": "govuk-input govuk-!-width-one-half"}
         )
         self.fields["email"].widget.attrs.update(
