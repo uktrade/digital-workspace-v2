@@ -3,9 +3,13 @@
 {% load humanize profile %}
 {% load webpack_static from webpack_loader %}
 
-{% block title %}{{ profile.full_name }}{% endblock %}
+{% block title %}
+    {{ profile.full_name }}
+{% endblock title %}
 
-{% block location %}{{ profile.full_name }}{% endblock %}
+{% block location %}
+    {{ profile.full_name }}
+{% endblock location %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -115,14 +119,16 @@
                 </p>
             </div>
 
-            {% if request.user == profile.user %}
-                <p class="govuk-body-s">
-                    Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.
-                </p>
-            {% else %}
-                <p class="govuk-body-s">
-                    Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.
-                </p>
+            {% if profile.is_active %}
+                {% if request.user == profile.user %}
+                    <p class="govuk-body-s">
+                        Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.
+                    </p>
+                {% else %}
+                    <p class="govuk-body-s">
+                        Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.
+                    </p>
+                {% endif %}
             {% endif %}
         </div>
     </div>
@@ -441,4 +447,4 @@
             </div>
         </details>
     {% endif %}
-{% endblock %}
+{% endblock content %}
