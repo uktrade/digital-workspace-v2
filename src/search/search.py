@@ -1,10 +1,9 @@
 from content.models import ContentPage, ContentPageIndexManager
+from extended_search.managers import get_search_query
 from news.models import NewsPage
-from peoplefinder.models import Person, Team, PersonIndexManager, TeamIndexManager
+from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
 from tools.models import Tool
 from working_at_dit.models import PoliciesAndGuidanceHome
-
-from extended_search.managers import get_search_query
 
 
 class SearchVector:
@@ -14,7 +13,7 @@ class SearchVector:
 
     def _wagtail_search(self, queryset, query, *args, **kwargs):
         """
-        Allows e.g. score annotation without polluting overriden search method
+        Allows e.g. score annotation without polluting overridden search method
         """
         return_method = queryset.search(query, *args, **kwargs)
 
@@ -99,17 +98,13 @@ class TeamsSearchVector(SearchVector):
 
 class NewAllPagesSearchVector(AllPagesSearchVector):
     def _wagtail_search(self, queryset, query, *args, **kwargs):
-        return queryset.search(
-            query, *args, partial_match=False, **kwargs
-        ).annotate_score("_score")
+        return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
     def search(self, query, *args, **kwargs):
-        queryset = self.get_queryset().not_pinned(query)
-
         query = get_search_query(
             ContentPageIndexManager, query, ContentPage, *args, **kwargs
         )
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        return self._wagtail_search(self.get_queryset(), query, *args, **kwargs)
 
 
 class NewGuidanceSearchVector(GuidanceSearchVector):
@@ -126,21 +121,22 @@ class NewToolsSearchVector(ToolsSearchVector):
 
 class NewPeopleSearchVector(PeopleSearchVector):
     def _wagtail_search(self, queryset, query, *args, **kwargs):
-        return queryset.search(
-            query, *args, partial_match=False, **kwargs
-        ).annotate_score("_score")
+        return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = get_search_query(PersonIndexManager, query, Person, *args, **kwargs)
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        query_obj = get_search_query(PersonIndexManager, query, Person, *args, **kwargs)
+        results = set(self._wagtail_search(queryset, query_obj, *args, **kwargs))
+        autocomplete_results = set(
+            self.get_queryset().autocomplete(query).annotate_score("_score")
+        )
+        all_results = results | autocomplete_results
+        return sorted(all_results, key=lambda x: x._score, reverse=True)
 
 
 class NewTeamsSearchVector(TeamsSearchVector):
     def _wagtail_search(self, queryset, query, *args, **kwargs):
-        return queryset.search(
-            query, *args, partial_match=False, **kwargs
-        ).annotate_score("_score")
+        return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()

@@ -35,6 +35,11 @@ RICH_TEXT_FEATURES = [
 ]
 
 
+def strip_tags_with_spaces(string):
+    spaced = string.replace("><", "> <")
+    return strip_tags(spaced)
+
+
 @register_snippet
 class Theme(models.Model):
     title = models.CharField(max_length=255)
@@ -139,6 +144,7 @@ class ContentPageIndexManager(ModelIndexManager):
             "search_headings",
             tokenized=True,
             explicit=True,
+            fuzzy=True,
             boost=3.0,
         ),
         IndexedField(
@@ -254,7 +260,7 @@ class ContentPage(BasePage):
             if block.block_type in ["heading2", "heading3", "heading4", "heading5"]:
                 self.search_headings += f" {strip_tags(block.value)}"
             elif block.block_type == "text_section":
-                self.search_content += f" {strip_tags(block.value)}"
+                self.search_content += f" {strip_tags_with_spaces(str(block.value))}"
             elif block.block_type == "image":
                 self.search_content += f" {block.value['caption']}"
 
@@ -278,20 +284,21 @@ class ContentPage(BasePage):
 
     def full_clean(self, *args, **kwargs):
         self._generate_search_field_content()
+        self._generate_excerpt()
 
         super().full_clean(*args, **kwargs)
 
-    def generate_excerpt(self):
+    def _generate_excerpt(self):
         content = "".join(
             [str(b.value) for b in self.body if b.block_type == "text_section"]
         )
         self.excerpt = truncate_words_and_chars(
-            html.unescape(strip_tags(content)), 40, 700
+            html.unescape(strip_tags_with_spaces(content)), 40, 700
         )
 
     def save(self, *args, **kwargs):
         if self.excerpt is None:
-            self.generate_excerpt()
+            self._generate_excerpt()
 
         if self.id:
             manage_excluded(self, self.excluded_phrases)
