@@ -306,10 +306,11 @@
   }
   &__teams__team {
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
   }
   &__teams__team span {
     margin-right: 1.2rem;
+    padding-top: 11px;
   }
   &__teams__team span:hover svg polygon {
     fill: black;
