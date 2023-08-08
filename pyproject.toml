@@ -22,7 +22,7 @@ djangorestframework = "^3.14.0"
 django-audit-log-middleware = "^0.0.4"
 django-hawk-drf = "^1.1.0"
 django-chunk-upload-handlers = "^0.0.13"
-django-feedback-govuk = "0.1.4"
+django-feedback-govuk = "^0.2.1"
 django_log_formatter_ecs = "^0.0.5"
 django-staff-sso-client = "^4.1.1"
 notifications-python-client = "^8.0.0"
@@ -31,9 +31,9 @@ wagtail = "^5.0.1"
 wagtailmedia = "^0.14.2"
 wagtailmenus = "^3.1.8"
 wagtail-draftail-anchors = "^0.6.0"
-wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag="v0.3.0" }
+wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag = "v0.3.0" }
 # OpenSearch
-elasticsearch = "<7.14.0"  # highest version for OpenSearch support
+elasticsearch = "<7.14.0"         # highest version for OpenSearch support
 elasticsearch-dsl = "^7.4.0"
 django-elasticsearch-dsl = "^7.3"
 # Peoplefinder
@@ -53,7 +53,7 @@ bleach = "^6.0.0"
 elastic-apm = "^6.15.1"
 requests = "^2.28.2"
 boto3 = "^1.26.115"
-pyjwt = {extras = ["crypto"], version = "^2.6.0"}
+pyjwt = { extras = ["crypto"], version = "^2.6.0" }
 django-taggit = "^3.1.0"
 django-celery-beat = "^2.5.0"
 
@@ -93,11 +93,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-omit = [
-    "*/migrations/*",
-    "*/test/*",
-    "e2e_tests/*",
-]
+omit = ["*/migrations/*", "*/test/*", "e2e_tests/*"]
 
 [tool.ruff]
 extend-select = ["B", "S"]
@@ -114,14 +110,14 @@ extend-exclude = [
     ".venv/",
     "bin/",
     "hawk-api-access-test.py",
-    ".pythonrc.py"
+    ".pythonrc.py",
 ]
 
 [tool.ruff.isort]
 lines-after-imports = 2
 
 [tool.djlint]
-extension="html"
-profile="django"
-ignore="T002,H006,H017,H023"
-preserve_blank_lines=true
+extension = "html"
+profile = "django"
+ignore = "T002,H006,H017,H023"
+preserve_blank_lines = true
