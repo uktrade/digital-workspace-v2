@@ -3,6 +3,6 @@
 {% load feedback_tags %}
 {% block content %}
     <div class="beta-feedback govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">{% feedback_submit %}</div>
+        <div class="govuk-grid-column-two-thirds">{% feedback_submit form_id=form_id %}</div>
     </div>
 {% endblock content %}
