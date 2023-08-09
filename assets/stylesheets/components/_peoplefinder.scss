@@ -342,6 +342,35 @@
   }
 }
 
+.team-search-input-wrapper {
+  display: flex;
+  border: 2px solid govuk-colour("black");
+
+  .team-search-input {
+    flex-grow: 2;
+    border: none;
+  }
+
+  button {
+    border: none;
+    color: $govuk-link-colour;
+    background: none;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    width: 7rem;
+
+    &:hover {
+      text-decoration: underline;
+      color: $govuk-link-hover-colour;
+    }
+
+    &:focus {
+      @include govuk-focused-text;
+    }
+  }
+}
+
 // Search results
 .pf-person-search-result {
   display: flex;

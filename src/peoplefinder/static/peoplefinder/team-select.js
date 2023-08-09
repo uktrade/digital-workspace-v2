@@ -92,6 +92,7 @@
       this.handleChangeTeam = this.handleChangeTeam.bind(this);
       this.handleSelectTeam = this.handleSelectTeam.bind(this);
       this.handleTeamSearch = this.handleTeamSearch.bind(this);
+      this.clearSearchInput = this.clearSearchInput.bind(this);
     }
 
     connectedCallback() {
@@ -112,12 +113,15 @@
           <div id="team-selector">
             <div class="govuk-form-group">
               <label class="govuk-label">Search for a team</label>
-              <input
-                class="govuk-input"
-                type="search"
-                id="team-search"
-                placeholder="Start typing to search"
-              >
+              <div class="team-search-input-wrapper">
+                <input
+                  class="govuk-input team-search-input"
+                  type="text"
+                  id="team-search"
+                  placeholder="Start typing to search"
+                />
+                <button type="button" id="clear-search-btn">Clear search</button>
+              </div>
               <div class="team-select__teams" id="teams"></div>
             </div>
           </div>
@@ -128,6 +132,7 @@
       this.changeTeamEl = this.querySelector("#change-team");
       this.teamSelectorEl = this.querySelector("#team-selector");
       this.teamSearchEl = this.querySelector("#team-search");
+      this.clearSearchBtn = this.querySelector("#clear-search-btn");
       this.teamsEl = this.querySelector("#teams");
 
       if (!this.editing) {
@@ -163,6 +168,7 @@
       this.teamsEl.addEventListener("click", this.handleSelectTeam);
       this.changeTeamEl.addEventListener("click", this.handleChangeTeam);
       this.teamSearchEl.addEventListener("input", debounce(this.handleTeamSearch, 300));
+      this.clearSearchBtn.addEventListener("click", this.clearSearchInput);
     }
 
     getTeamSelectData(url) {
@@ -383,6 +389,10 @@
 
     immediateChildrenOfTeam(parentTeam) {
       return this.teams.filter((team) => team.parent_id === parentTeam.team_id);
+    }
+
+    clearSearchInput() {
+      this.teamSearchEl.value = '';
     }
   }
 
