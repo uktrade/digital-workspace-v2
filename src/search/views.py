@@ -1,22 +1,20 @@
 import logging
 
-from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-
-from wagtail.search.query import Or, Phrase, PlainText, Fuzzy
+from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
 from content.models import ContentPage, ContentPageIndexManager
-from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
 from extended_search.backends.query import OnlyFields
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import extended_search_settings
+from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
 from search.templatetags.search import SEARCH_CATEGORIES
-
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +39,10 @@ def search(request: HttpRequest, category: str = None) -> HttpResponse:
         "search_query": query,
         "search_category": category,
         "page": page,
+        "search_feedback_initial": {
+            "search_query": query,
+            "search_data": {"category": category},
+        },
     }
 
     return TemplateResponse(request, "search/search.html", context=context)

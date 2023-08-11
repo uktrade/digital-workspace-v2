@@ -94,6 +94,7 @@ ALLOWED_HOSTS = ["*"]
 # Set up Django
 LOCAL_APPS = [
     "core",
+    "feedback",
     "home",
     "content",
     "search",
@@ -603,9 +604,29 @@ DJANGO_FEEDBACK_GOVUK = {
         "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
     ),
     "COPY": {
-        "SUBMIT_TITLE": "Give your feedback on the beta search experience",
-        "FIELD_SATISFACTION_LEGEND": "How do you feel about your search experience today?",
-        "FIELD_COMMENT_LEGEND": "Tell us why you gave that rating",
+        "SUBMIT_TITLE": "Providing feedback on your experience will help us improve the service",
+        "FIELD_SATISFACTION_LEGEND": "How satisfied are you with Digital Workspace?",
+        "FIELD_COMMENT_LEGEND": "How could we improve this service?",
         "FIELD_COMMENT_HINT": "If you do not want to be contacted about more research opportunities, you can let us know here.",
+    },
+    "FEEDBACK_FORMS": {
+        "default": {
+            "model": "django_feedback_govuk.models.Feedback",
+            "form": "django_feedback_govuk.forms.FeedbackForm",
+            "view": "django_feedback_govuk.views.FeedbackView",
+        },
+        "search-v1": {
+            "model": "feedback.models.SearchFeedbackV1",
+            "form": "feedback.forms.SearchFeedbackV1Form",
+            "view": "django_feedback_govuk.views.FeedbackView",
+        },
+        "search-v2": {
+            "model": "feedback.models.SearchFeedbackV2",
+            "form": "feedback.forms.SearchFeedbackV2Form",
+            "view": "feedback.views.SearchFeedbackV2FormView",
+            "copy": {
+                "SUBMIT_TITLE": None,
+            },
+        },
     },
 }

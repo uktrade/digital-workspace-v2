@@ -1,8 +1,8 @@
 {% extends "1_col_content.html" %}
-{% comment %} @TODO [DWPF-454] remove the package and this template {% endcomment %}
+
 {% load feedback_tags %}
 {% block content %}
     <div class="beta-feedback govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">{% feedback_confirm %}</div>
+        <div class="govuk-grid-column-two-thirds">{% feedback_confirm form_id=form_id %}</div>
     </div>
 {% endblock content %}
