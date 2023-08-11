@@ -120,7 +120,7 @@
                   id="team-search"
                   placeholder="Start typing to search"
                 />
-                <button type="button" id="clear-search-btn">Clear search</button>
+                <button type="button" class="govuk-body" id="clear-search-btn">Clear search</button>
               </div>
               <div class="team-select__teams" id="teams"></div>
             </div>
@@ -159,6 +159,9 @@
         this.teamNameEl.innerHTML = this.selectedTeam.team_name;
 
         this.updateTeams();
+        
+        // In all scenarios we always want the root team to be expanded
+        this.toggleTeam(this.rootTeam.team_id, true);
 
         for (const team of this.parentsOfTeam(this.selectedTeam)) {
           this.toggleTeam(team.team_id, true);
@@ -393,6 +396,7 @@
 
     clearSearchInput() {
       this.teamSearchEl.value = '';
+      this.handleTeamSearch(new Event("clear"));
     }
   }
 
