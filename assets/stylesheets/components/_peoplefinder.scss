@@ -306,10 +306,11 @@
   }
   &__teams__team {
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
   }
   &__teams__team span {
     margin-right: 1.2rem;
+    padding-top: 11px;
   }
   &__teams__team span:hover svg polygon {
     fill: black;
@@ -338,6 +339,34 @@
 
   ul {
     list-style: none;
+  }
+}
+
+.team-search-input-wrapper {
+  display: flex;
+  border: 2px solid govuk-colour("black");
+
+  .team-search-input {
+    border: none;
+  }
+
+  button {
+    border: none;
+    color: $govuk-link-colour;
+    background: none;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    width: 9rem;
+
+    &:hover {
+      text-decoration: underline;
+      color: $govuk-link-hover-colour;
+    }
+
+    &:focus {
+      @include govuk-focused-text;
+    }
   }
 }
 
