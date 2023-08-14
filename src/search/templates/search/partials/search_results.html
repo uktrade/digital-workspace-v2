@@ -91,7 +91,7 @@
                     method: "POST",
                     body: formData,
                 }).then((response) => {
-                    if (response.ok) {
+                    if (!response.ok) {
                         throw new Error("There was an issue submitting your feedback.");
                     }
 
