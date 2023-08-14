@@ -8,11 +8,18 @@
 		}
 
     &:focus {
-		@include govuk-focused-text;
-	}
+			@include govuk-focused-text;
+		}
 
-	svg {
-		display: none;
-	}
+		svg {
+			display: none;
+		}
   }
+}
+
+.govuk-footer__licence-description-wrapper {
+	display: flex;
+	column-gap: 1rem;
+	row-gap: 0.5rem;
+	flex-wrap: wrap;
 }
