@@ -1034,13 +1034,13 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-feedback-govuk"
-version = "0.2.6"
+version = "0.2.7"
 description = "A Django app to gather and send internal Government staff feedback"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "django_feedback_govuk-0.2.6-py3-none-any.whl", hash = "sha256:bff508385b2bca344ef2309b064354bff052c04374c8ce6cea5e43a903ee35d0"},
-    {file = "django_feedback_govuk-0.2.6.tar.gz", hash = "sha256:6df24d003640bd98ed7d0d6139f9dcdc7e87ccc3871dc95b276f639e2513c21e"},
+    {file = "django_feedback_govuk-0.2.7-py3-none-any.whl", hash = "sha256:3f60f3d5d7e98547a43af6ed5c9ab51af91d0868add7c6c176444c36a57ac0ce"},
+    {file = "django_feedback_govuk-0.2.7.tar.gz", hash = "sha256:d545b7c2b685fb212f2a540928e5be9bcdbbf69063bab4ddfcd0cd10bc45f9b2"},
 ]
 
 [package.dependencies]
