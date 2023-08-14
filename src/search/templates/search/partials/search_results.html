@@ -4,7 +4,6 @@
     {% if search_query %}
         <div id="search-feedback"">
             <h1 class="govuk-heading-m">Search results for “{{ search_query }}”</h1>
-            {% comment %}
             <div class="search-feedback-header govuk-!-padding-1 govuk-!-padding-left-2 govuk-!-margin-bottom-4">
                 <div class="govuk-body-s govuk-body--inverse govuk-!-margin-bottom-0 govuk-!-margin-right-2">
                     Are these results useful?
@@ -12,7 +11,6 @@
                 <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-left-1" onclick="pageWasUseful();">Yes</button>
                 <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-left-1" onclick="pageWasNotUseful();">No</button>
             </div>
-            {% endcomment %}
         </div>
     {% else %}
         <h1 class="govuk-heading-m">Start typing to search</h1>
@@ -26,7 +24,7 @@
         {% include 'search/partials/search_results_single_category.html' %}
     {% endif %}
 </div>
-{% comment %}
+
 <dialog id="search-feedback-dialog">
     {% feedback_submit form_id="search-v2" initial=search_feedback_initial %}
     <script>
@@ -104,4 +102,3 @@
             }
 </script>
 </dialog>
-{% endcomment %}
