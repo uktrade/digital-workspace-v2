@@ -25,6 +25,31 @@ class Indexed(index.Indexed):
                         id="wagtailsearch.W004",
                     )
                 )
+
+        parent_fields = []
+        for parent_cls in cls.__bases__:
+            parent_fields += getattr(parent_cls, "search_fields", [])
+        model_fields = []
+        for field in cls.get_search_fields():
+            model_field_name = getattr(field, "model_field_name", None)
+            if not model_field_name:
+                model_field_name = field.field_name
+            if field not in parent_fields and model_field_name not in model_fields:
+                message = "indexed field '{name}' is defined in {model} and {parent}"
+                definition_model = field.get_definition_model(cls)
+                if definition_model != cls:
+                    errors.append(
+                        checks.Warning(
+                            message.format(
+                                model=cls.__name__,
+                                name=field.field_name,
+                                parent=definition_model.__name__,
+                            ),
+                            obj=cls,
+                            id="extended_search.E001",
+                        )
+                    )
+                    model_fields.append(model_field_name)
         return errors
 
     search_fields = []

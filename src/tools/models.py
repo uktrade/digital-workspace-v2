@@ -5,8 +5,8 @@ from django.shortcuts import redirect
 from wagtail.admin.panels import FieldPanel
 
 from content.models import ContentPage
-from extended_search.fields import IndexedField
 from extended_search.managers.index import ModelIndexManager
+from extended_search.fields import IndexedField
 from working_at_dit.models import PageWithTopics
 
 
@@ -74,7 +74,7 @@ class IrapToolData(IrapToolDataAbstract):
 class ToolIndexManager(ModelIndexManager):
     fields = [
         IndexedField(
-            "search_title",
+            "search_tool_name",
             fuzzy=True,
             tokenized=True,
             explicit=True,
@@ -106,6 +106,10 @@ class Tool(PageWithTopics):
     )
 
     search_fields = PageWithTopics.search_fields + ToolIndexManager()
+
+    @property
+    def search_tool_name(self):
+        return self.title
 
     parent_page_types = ["tools.ToolsHome"]
     subpage_types = []  # Should not be able to create children
