@@ -3,9 +3,13 @@
 {% load humanize profile %}
 {% load webpack_static from webpack_loader %}
 
-{% block title %}{{ profile.full_name }}{% endblock %}
+{% block title %}
+    {{ profile.full_name }}
+{% endblock title %}
 
-{% block location %}{{ profile.full_name }}{% endblock %}
+{% block location %}
+    {{ profile.full_name }}
+{% endblock location %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -18,7 +22,7 @@
         </div>
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l mb-0" data-testid="full-name">{{ profile.full_name }}</h1>
-
+            {% if profile.name_pronunciation %}<p class="govuk-body-s">{{ profile.name_pronunciation }}</p>{% endif %}
             {% if not profile.is_active %}
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -27,18 +31,6 @@
                         This profile is inactive since {{ profile.became_inactive|naturaltime }}.
                     </strong>
                 </div>
-            {% endif %}
-
-            {% if profile.is_stale %}
-                <div class="govuk-warning-text">
-                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">
-                        <span class="govuk-warning-text__assistive">Warning</span>
-                        This profile was last edited {{ profile.edited_or_confirmed_at|naturaltime }}.
-                    </strong>
-                </div>
-            {% else %}
-                <p class="govuk-body-s">Last edited {{ profile.edited_or_confirmed_at|naturalday:"j F Y" }}</p>
             {% endif %}
 
             {% if profile.profile_completion < 100 %}
@@ -82,47 +74,60 @@
                 </p>
             {% endfor %}
 
-            <div class="govuk-button-group">
-                <p>
-                    {% if profile.is_active %}
-                        <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
+            <div class="govuk-button-group govuk-!-margin-0">
+                {% if profile.is_active %}
+                    <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
 
-                        {% if profile.is_stale and request.user == profile.user %}
-                            <button class="govuk-button govuk-button--secondary"
-                                    hx-post="{% url 'profile-confirm-details' profile.slug %}"
-                                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-                                Confirm my details are still correct
-                            </button>
-                        {% endif %}
-
-                        {% if perms.peoplefinder.delete_person and request.user != profile.user %}
-                            <form action="{% url 'profile-delete' profile.slug %}"
-                                  method="post"
-                                  onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
-                                {% csrf_token %}
-                                <input type="submit"
-                                       class="govuk-button govuk-button--warning"
-                                       id="delete-profile"
-                                       value="Delete profile" />
-                            </form>
-                        {% endif %}
-                    {% elif perms.peoplefinder.delete_person %}
-                        <button class="govuk-button"
-                                hx-post="{% url 'profile-activate' profile.slug %}"
-                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                                hx-confirm="Are you sure you want to activate this profile?">Activate profile</button>
+                    {% if profile.is_stale and request.user == profile.user %}
+                        <button class="govuk-button govuk-button--secondary"
+                                hx-post="{% url 'profile-confirm-details' profile.slug %}"
+                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                            Confirm my details are still correct
+                        </button>
                     {% endif %}
-                </p>
-            </div>
 
-            {% if request.user == profile.user %}
-                <p class="govuk-body-s">
-                    Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.
-                </p>
+                    {% if perms.peoplefinder.delete_person and request.user != profile.user %}
+                        <form action="{% url 'profile-delete' profile.slug %}"
+                              method="post"
+                              onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
+                            {% csrf_token %}
+                            <input type="submit"
+                                   class="govuk-button govuk-button--warning"
+                                   id="delete-profile"
+                                   value="Delete profile" />
+                        </form>
+                    {% endif %}
+                {% elif perms.peoplefinder.delete_person %}
+                    <button class="govuk-button"
+                            hx-post="{% url 'profile-activate' profile.slug %}"
+                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                            hx-confirm="Are you sure you want to activate this profile?">Activate profile</button>
+                {% endif %}
+
+            </div>
+            {% if profile.is_stale %}
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__assistive">Warning</span>
+                        This profile was last edited {{ profile.edited_or_confirmed_at|naturaltime }}.
+                    </strong>
+                </div>
             {% else %}
-                <p class="govuk-body-s">
-                    Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.
-                </p>
+                <p class="govuk-body-s">Last edited {{ profile.edited_or_confirmed_at|naturalday:"j F Y" }}</p>
+            {% endif %}
+
+
+            {% if profile.is_active %}
+                {% if request.user == profile.user %}
+                    <p class="govuk-body-s">
+                        Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.
+                    </p>
+                {% else %}
+                    <p class="govuk-body-s">
+                        Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.
+                    </p>
+                {% endif %}
             {% endif %}
         </div>
     </div>
@@ -322,8 +327,10 @@
                             <dt class="govuk-summary-list__key">Office location</dt>
                             <dd class="govuk-summary-list__value">
                                 {{ profile.uk_office_location }}
-                                <br>
-                                {{ profile.location_in_building }}
+                                {% if profile.location_in_building %}
+                                    <br>
+                                    {{ profile.location_in_building }}
+                                {% endif %}
                             </dd>
                         </div>
                     {% endif %}
@@ -439,4 +446,4 @@
             </div>
         </details>
     {% endif %}
-{% endblock %}
+{% endblock content %}

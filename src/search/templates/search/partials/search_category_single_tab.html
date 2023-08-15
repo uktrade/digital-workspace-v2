@@ -2,7 +2,9 @@
 {% search_count category=search_count_category as hits %}
 <a href="{% url 'search:category' name %}?query={{ search_query }}"
    class="govuk-!-font-size-19 govuk-link govuk-link--no-underline govuk-link--no-visited-state"
-   {% if search_category == name %}data-selected{% endif %}>{{ name|title }}&nbsp;({{ hits }})</a>
+   {% if search_category == name %}data-selected{% endif %}
+   data-search-category-name="{{ name }}"
+   data-search-category-hits="{{ hits }}">{{ name|title }}&nbsp;({{ hits }})</a>
 
 <script lang="javascript">
     document.onload = dataLayer.push({

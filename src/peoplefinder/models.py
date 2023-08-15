@@ -11,6 +11,7 @@ from django.db.models import Case, F, Func, JSONField, Q, Value, When
 from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
@@ -537,8 +538,8 @@ class Person(Indexed, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     edited_or_confirmed_at = models.DateTimeField(default=timezone.now)
 
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=80)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
     email = models.EmailField(
         "Main work email address",
         help_text=(
@@ -547,6 +548,16 @@ class Person(Indexed, models.Model):
         ),
     )
     pronouns = models.CharField(max_length=40, null=True, blank=True)
+    name_pronunciation = models.CharField(
+        "A phonetic representation of your name",
+        help_text=mark_safe(  # noqa: S308
+            "<a class='govuk-link' href='/news-and-views/say-my-name/' target='_blank' rel='noreferrer'>"
+            "Tips for writing your name phonetically</a>"
+        ),
+        max_length=200,
+        null=True,
+        blank=True,
+    )
     contact_email = models.EmailField(
         "Contact email address",
         null=True,

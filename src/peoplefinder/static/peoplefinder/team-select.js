@@ -92,6 +92,7 @@
       this.handleChangeTeam = this.handleChangeTeam.bind(this);
       this.handleSelectTeam = this.handleSelectTeam.bind(this);
       this.handleTeamSearch = this.handleTeamSearch.bind(this);
+      this.clearSearchInput = this.clearSearchInput.bind(this);
     }
 
     connectedCallback() {
@@ -112,12 +113,15 @@
           <div id="team-selector">
             <div class="govuk-form-group">
               <label class="govuk-label">Search for a team</label>
-              <input
-                class="govuk-input"
-                type="search"
-                id="team-search"
-                placeholder="Start typing to search"
-              >
+              <div class="team-search-input-wrapper">
+                <input
+                  class="govuk-input team-search-input"
+                  type="text"
+                  id="team-search"
+                  placeholder="Start typing to search"
+                />
+                <button type="button" class="govuk-body" id="clear-search-btn">Clear search</button>
+              </div>
               <div class="team-select__teams" id="teams"></div>
             </div>
           </div>
@@ -128,6 +132,7 @@
       this.changeTeamEl = this.querySelector("#change-team");
       this.teamSelectorEl = this.querySelector("#team-selector");
       this.teamSearchEl = this.querySelector("#team-search");
+      this.clearSearchBtn = this.querySelector("#clear-search-btn");
       this.teamsEl = this.querySelector("#teams");
 
       if (!this.editing) {
@@ -154,6 +159,9 @@
         this.teamNameEl.innerHTML = this.selectedTeam.team_name;
 
         this.updateTeams();
+        
+        // In all scenarios we always want the root team to be expanded
+        this.toggleTeam(this.rootTeam.team_id, true);
 
         for (const team of this.parentsOfTeam(this.selectedTeam)) {
           this.toggleTeam(team.team_id, true);
@@ -163,6 +171,7 @@
       this.teamsEl.addEventListener("click", this.handleSelectTeam);
       this.changeTeamEl.addEventListener("click", this.handleChangeTeam);
       this.teamSearchEl.addEventListener("input", debounce(this.handleTeamSearch, 300));
+      this.clearSearchBtn.addEventListener("click", this.clearSearchInput);
     }
 
     getTeamSelectData(url) {
@@ -383,6 +392,11 @@
 
     immediateChildrenOfTeam(parentTeam) {
       return this.teams.filter((team) => team.parent_id === parentTeam.team_id);
+    }
+
+    clearSearchInput() {
+      this.teamSearchEl.value = '';
+      this.handleTeamSearch(new Event("clear"));
     }
   }
 

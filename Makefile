@@ -158,7 +158,7 @@ first-use:
 	docker-compose --profile playwright --profile opensearch --profile celery-beat down
 	make build
 	make reset-db
-	sleep 1
+	sleep 3
 	make migrate
 	make data-countries
 	make menus

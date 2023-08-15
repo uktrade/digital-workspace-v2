@@ -13,7 +13,7 @@ class SearchVector:
 
     def _wagtail_search(self, queryset, query, *args, **kwargs):
         """
-        Allows e.g. score annotation without polluting overriden search method
+        Allows e.g. score annotation without polluting overridden search method
         """
         return_method = queryset.search(query, *args, **kwargs)
 
