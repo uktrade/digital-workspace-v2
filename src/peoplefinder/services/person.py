@@ -22,6 +22,7 @@ from peoplefinder.services.audit_log import (
     ObjectRepr,
 )
 from peoplefinder.tasks import person_update_notifier
+from peoplefinder.types import EditSections
 from user.models import User
 
 logger = logging.getLogger(__name__)
@@ -53,16 +54,59 @@ You can update any profile on Digital Workspace. Find out more at: https://works
 class PersonService:
     # List of fields that contribute to profile completion and their weights.
     PROFILE_COMPLETION_FIELDS: Dict[str, int] = {
-        "first_name": 0,
-        "last_name": 0,
-        "photo": 1,
-        "email": 0,
-        "primary_phone_number": 1,
-        "country": 1,
-        "manager": 1,
-        "location": 1,
-        "remote_working": 1,
-        "roles": 1,  # Related objects
+        "first_name": {
+            "weight": 0,
+            "edit_section": EditSections.PERSONAL,
+        },
+        "last_name": {
+            "weight": 0,
+            "edit_section": EditSections.PERSONAL,
+        },
+        "photo": {
+            "weight": 1,
+            "edit_section": EditSections.PERSONAL,
+            "form_id": "photo-form-group",
+        },
+        "email": {
+            "weight": 1,
+            "edit_section": EditSections.CONTACT,
+        },
+        "contact_email": {
+            "weight": 1,
+            "edit_section": EditSections.CONTACT,
+        },
+        "primary_phone_number": {
+            "weight": 1,
+            "edit_section": EditSections.CONTACT,
+        },
+        "location": {
+            "weight": 1,
+            "or_fields": [
+                "uk_office_location",
+                "international_building",
+            ],
+            "edit_section": EditSections.LOCATION,
+            "form_id": "id_uk_office_location",
+        },
+        "remote_working": {
+            "weight": 1,
+            "edit_section": EditSections.LOCATION,
+            "form_id": "id_remote_working_1",
+        },
+        "manager": {
+            "weight": 1,
+            "or_fields": [
+                "manager",
+                "do_not_work_for_dit",
+            ],
+            "edit_section": EditSections.TEAMS,
+            "form_id": "manager-component",
+        },
+        "roles": {  # Related objects
+            "weight": 1,
+            "edit_section": EditSections.TEAMS,
+            "form_id": "team-and-role-heading",
+        },
     }
 
     def create_user_profile(self, user: User) -> Person:
@@ -336,32 +380,58 @@ class PersonService:
         field_statuses = self.profile_completion_field_statuses(person)
         for field_status in field_statuses:
             if field_statuses[field_status]:
-                complete_fields += self.PROFILE_COMPLETION_FIELDS[field_status]
+                complete_fields += self.PROFILE_COMPLETION_FIELDS[field_status][
+                    "weight"
+                ]
 
-        total_field_weights = sum(self.PROFILE_COMPLETION_FIELDS.values())
+        total_field_weights = sum(
+            [f["weight"] for f in self.PROFILE_COMPLETION_FIELDS.values()]
+        )
         percentage = (complete_fields / total_field_weights) * 100
         return int(percentage)
 
     def profile_completion_field_statuses(self, person: "Person") -> Dict[str, bool]:
         statuses: Dict[str, bool] = {}
-        for profile_completion_field in self.PROFILE_COMPLETION_FIELDS:
-            profile_completion_field_status = False
+        for (
+            profile_completion_field,
+            pcf_dict,
+        ) in self.PROFILE_COMPLETION_FIELDS.items():
             if profile_completion_field == "roles":
                 # If the person doesn't have a PK then there can't be any relationships.
                 if not person._state.adding and person.roles.all().exists():
-                    profile_completion_field_status = True
-            elif profile_completion_field == "location":
+                    statuses[profile_completion_field] = True
+                    continue
+
+            if "or_fields" in pcf_dict:
                 if any(
                     [
-                        person.uk_office_location is not None,
-                        person.international_building is not None,
+                        getattr(person, or_field) is not None
+                        for or_field in pcf_dict["or_fields"]
                     ]
                 ):
-                    profile_completion_field_status = True
-            elif getattr(person, profile_completion_field, None) is not None:
-                profile_completion_field_status = True
-            statuses[profile_completion_field] = profile_completion_field_status
+                    statuses[profile_completion_field] = True
+                    continue
+            field_value = getattr(person, profile_completion_field, None)
+            if field_value not in ["", None]:
+                statuses[profile_completion_field] = True
+                continue
+
+            statuses[profile_completion_field] = False
         return statuses
+
+    def get_profile_completion_field_edit_section(
+        self, field_name: str
+    ) -> EditSections:
+        return self.PROFILE_COMPLETION_FIELDS.get(field_name, {}).get(
+            "edit_section",
+            EditSections.PERSONAL,
+        )
+
+    def get_profile_completion_field_form_id(self, field_name: str) -> EditSections:
+        return self.PROFILE_COMPLETION_FIELDS.get(field_name, {}).get(
+            "form_id",
+            "id_" + field_name,
+        )
 
 
 class PersonAuditLogSerializer(AuditLogSerializer):

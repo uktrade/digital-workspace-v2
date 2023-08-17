@@ -11,6 +11,9 @@ $govuk-image-url-function: frontend-image-url;
 
 @import "~govuk-frontend/govuk/all";
 
+$moj-assets-path: "/static/moj-frontend/";
+@import "~@ministryofjustice/frontend/moj/all";
+
 // Variables
 @import "vars/colors";
 

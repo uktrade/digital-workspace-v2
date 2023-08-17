@@ -1,13 +1,20 @@
 import io
 from pathlib import Path
+from typing import Any, Dict
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, reverse
+from django.forms.models import BaseModelForm
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    HttpResponseForbidden,
+    HttpResponseRedirect,
+)
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -15,17 +22,24 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
 
-from peoplefinder.forms.profile import (
-    ProfileForm,
-    ProfileLeavingDitForm,
-    ProfileUpdateUserForm,
+from peoplefinder.forms.crispy_helper import RoleFormsetFormHelper
+from peoplefinder.forms.profile import ProfileLeavingDitForm, ProfileUpdateUserForm
+from peoplefinder.forms.profile_edit import (
+    PersonalProfileAdminForm,
+    PersonalProfileContactForm,
+    PersonalProfileEditForm,
+    PersonalProfileLocationForm,
+    PersonalProfileSkillsForm,
+    PersonalProfileTeamsForm,
+    PersonalProfileTeamsFormset,
 )
-from peoplefinder.forms.role import RoleForm
+from peoplefinder.forms.role import RoleFormsetForm
 from peoplefinder.models import Person
 from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.image import ImageService
 from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
+from peoplefinder.types import EditSections
 
 from .base import HtmxFormView, PeoplefinderView
 
@@ -93,17 +107,73 @@ class ProfileDetailView(ProfileView, DetailView):
         return context
 
 
+def profile_edit_blank_teams_form(
+    request: HttpRequest, *args, **kwargs
+) -> HttpResponse:
+    prefix = request.GET["prefix"] + "-" + request.GET["new_form_number"]
+    profile_slug = kwargs["profile_slug"]
+    person = Person.objects.get(slug=profile_slug)
+    form = RoleFormsetForm(
+        initial={"person": person},
+        prefix=prefix,
+    )
+    return render(
+        request,
+        "peoplefinder/components/profile/edit/profile-edit-teams-blank-form.html",
+        {"form": form},
+    )
+
+
+def redirect_to_profile_edit(request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    edit_section_kwargs = kwargs.copy()
+    edit_section_kwargs["edit_section"] = "personal"
+    return redirect(reverse("profile-edit-section", kwargs=edit_section_kwargs))
+
+
 @method_decorator(transaction.atomic, name="post")
 class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
     model = Person
     context_object_name = "profile"
-    form_class = ProfileForm
     template_name = "peoplefinder/profile-edit.html"
     slug_url_kwarg = "profile_slug"
     success_message = "Your profile has been updated"
 
+    form_classes = {
+        EditSections.PERSONAL: PersonalProfileEditForm,
+        EditSections.CONTACT: PersonalProfileContactForm,
+        EditSections.TEAMS: PersonalProfileTeamsForm,
+        EditSections.LOCATION: PersonalProfileLocationForm,
+        EditSections.SKILLS: PersonalProfileSkillsForm,
+        EditSections.ADMIN: PersonalProfileAdminForm,
+    }
+
+    def get_form_class(self) -> type[BaseModelForm]:
+        return self.form_classes[self.edit_section]
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        self.edit_section = EditSections(
+            kwargs.get(
+                "edit_section",
+                EditSections.PERSONAL.value,
+            )
+        )
+
+        if self.edit_section == EditSections.ADMIN and not request.user.is_superuser:
+            return HttpResponseForbidden()
+
+        self.teams_formset = None
+        if self.edit_section == EditSections.TEAMS:
+            self.teams_formset = self.get_teams_formset(self.request)
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
-        return reverse("profile-edit", kwargs={"profile_slug": self.object.slug})
+        return reverse(
+            "profile-edit-section",
+            kwargs={
+                "profile_slug": self.object.slug,
+                "edit_section": self.edit_section.value,
+            },
+        )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -117,8 +187,6 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
 
-        role_forms = [RoleForm(instance=role) for role in roles]
-
         update_user_form = ProfileUpdateUserForm(
             initial={"username": profile.user and profile.user.username},
             profile=profile,
@@ -126,29 +194,107 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
 
         field_statuses = PersonService().profile_completion_field_statuses(profile)
 
+        edit_sections = [section for section in EditSections]
+        if not self.request.user.is_superuser:
+            edit_sections.remove(EditSections.ADMIN)
+
         context.update(
+            page_title=f"Edit profile: {self.edit_section.label}",
+            current_edit_section=self.edit_section,
+            edit_sections=edit_sections,
+            profile_slug=profile.slug,
             roles=roles,
-            role_forms=role_forms,
             update_user_form=update_user_form,
             missing_profile_completion_fields=[
-                (field, field.replace("_", " ").capitalize())
+                (
+                    reverse(
+                        "profile-edit-section",
+                        kwargs={
+                            "profile_slug": profile.slug,
+                            "edit_section": PersonService().get_profile_completion_field_edit_section(
+                                field
+                            ),
+                        },
+                    )
+                    + "#"
+                    + PersonService().get_profile_completion_field_form_id(field),
+                    field.replace("_", " ").capitalize(),
+                )
                 for field, field_status in field_statuses.items()
                 if not field_status
             ],
         )
 
+        if self.edit_section == EditSections.TEAMS:
+            context.update(
+                teams_formset=self.teams_formset,
+                teams_formset_helper=RoleFormsetFormHelper(),
+                teams_formset_blank_form_url=reverse(
+                    "profile-edit-blank-teams-form",
+                    kwargs={"profile_slug": self.object.slug},
+                )
+                + "?prefix="
+                + self.teams_formset.prefix,
+            )
+
         return context
 
+    def get_teams_formset(self, request: HttpRequest) -> PersonalProfileTeamsFormset:
+        self.object = self.get_object()
+        teams_formset_kwargs = {
+            "prefix": "teams",
+            "initial": [
+                {
+                    "person": self.object,
+                    "team": None,
+                    "job_title": None,
+                    "head_of_team": False,
+                }
+            ],
+            "queryset": self.object.roles.all(),
+        }
+        if request.method == "POST":
+            teams_formset = PersonalProfileTeamsFormset(
+                request.POST,
+                request.FILES,
+                **teams_formset_kwargs,
+            )
+        else:
+            teams_formset = PersonalProfileTeamsFormset(
+                **teams_formset_kwargs,
+            )
+
+        return teams_formset
+
+    def form_invalid(self, form):
+        """If the form is invalid, render the invalid form."""
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                teams_formset=self.teams_formset,
+            )
+        )
+
     def form_valid(self, form):
-        # saves the form
+        # Check if the teams formset is valid
+        if self.edit_section == EditSections.TEAMS:
+            if not self.teams_formset.is_valid():
+                return self.form_invalid(form)
+
+        # Saves the form
         response = super().form_valid(form)
 
-        PersonService.update_groups_and_permissions(
-            person=self.object,
-            is_person_admin=form.cleaned_data["is_person_admin"],
-            is_team_admin=form.cleaned_data["is_team_admin"],
-            is_superuser=form.cleaned_data["is_superuser"],
-        )
+        # Saves the teams formset
+        if self.teams_formset:
+            self.teams_formset.save()
+
+        if isinstance(form, PersonalProfileAdminForm):
+            PersonService.update_groups_and_permissions(
+                person=self.object,
+                is_person_admin=form.cleaned_data["is_person_admin"],
+                is_team_admin=form.cleaned_data["is_team_admin"],
+                is_superuser=form.cleaned_data["is_superuser"],
+            )
 
         if "photo" in form.changed_data:
             self.crop_photo(form)
@@ -195,6 +341,15 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
         with io.BytesIO() as photo_content:
             resized_photo_small.save(photo_content, format=photo_ext)
             profile.photo_small.save(photo_path.name, content=photo_content)
+
+    def get_field_locations(self):
+        field_locations: Dict[str, EditSections] = {}
+
+        for edit_section, form_class in self.form_classes.items():
+            for field_name in form_class.base_fields.keys():
+                field_locations[field_name] = edit_section
+
+        return field_locations
 
 
 class ProfileLeavingDitView(SuccessMessageMixin, ProfileView, FormView):
