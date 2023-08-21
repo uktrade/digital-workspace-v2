@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load markdown %}
+{% load webpack_static from webpack_loader %}
+
+{% block title %}
+    Organogram: {{ team.name }}
+{% endblock title %}
+
+{% block main_content %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-link" href="/">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">Organogram</li>
+            <li class="govuk-breadcrumbs__list-item">{{ team.name }}</li>
+        </ol>
+    </div>
+
+    {% if focus == "team" and parent_team %}
+        <div style="display:flex; justify-content:center">
+            <div class="pf-team-card" style="max-width:33%">
+                <p class="govuk-body-s mb-0">
+                    <a class="govuk-link"
+                       href="{% url 'organogram-team' parent_team.slug %}">{{ parent_team.name }}</a>
+                </p>
+                {% comment %} <p class="govuk-body-s">
+                    Leader:
+                    {% for member in parent_team.leaders %}
+                        <a href="{% url 'organogram-person' member.person.slug %}">{{ member.person.full_name }}</a>
+                    {% endfor %}
+                </p>
+                <p>
+                    <a href="{% url 'team-view' parent_team.slug %}" class="govuk-link">View team details</a>
+                </p> {% endcomment %}
+            </div>
+        </div>
+        <div style="display:flex; justify-content:center">|</div>
+    {% endif %}
+
+    <div style="display:flex; justify-content:center">
+        <div class="pf-team-card" style="border:3px solid black">
+            <p class="pf-team-card__name mb-10">
+                <a class="govuk-link" href="{% url 'organogram-team' team.slug %}">{{ team.name }}</a>
+            </p>
+            <p class="govuk-body-s">
+                Leader(s):
+                {% for member in team.leaders %}
+                    <div style="display:flex; gap:5px">
+                        {% if member.person.photo %}
+                            <img src="{{ member.person.photo.url }}" style="width:40px; height:40px;">
+                        {% else %}
+                            <img src="{% webpack_static 'no-photo-large.png' %}"
+                                 style="width:40px;
+                                        height:40px">
+                        {% endif %}
+                        <div>
+                            {% if not member.person.is_active %}
+                                <div>
+                                    <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <a class="govuk-link govuk-body-s govuk-!-font-weight-bold"
+                                   href="{% url 'organogram-person' member.person.slug %}">
+                                    {{ member.person.full_name }}
+                                </a>
+                            </div>
+                            <div class="govuk-body-s">{{ member.job_title }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </p>
+            <p class="govuk-body-s">
+                {% for member in team.members.active %}
+                    {% if member not in team.leaders %}
+
+                        <div style="display:flex; gap:5px">
+                            {% if member.person.photo %}
+                                <img src="{{ member.person.photo.url }}" style="width:40px; height:40px;">
+                            {% else %}
+                                <img src="{% webpack_static 'no-photo-large.png' %}"
+                                     style="width:40px;
+                                            height:40px">
+                            {% endif %}
+                            <div>
+                                {% if not member.person.is_active %}
+                                    <div>
+                                        <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <a class="govuk-link govuk-body-s govuk-!-font-weight-bold"
+                                       href="{% url 'organogram-person' member.person.slug %}">
+                                        {{ member.person.full_name }}
+                                    </a>
+                                </div>
+                                <div class="govuk-body-s">{{ member.job_title }}</div>
+                            </div>
+                        </div>
+
+                    {% endif %}
+                {% endfor %}
+            </p>
+            <p>
+                <a href="{% url 'team-view' team.slug %}" class="govuk-link">View team details</a>
+            </p>
+            {% comment %} {% for member in team_members %}
+                <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
+            {% endfor %} {% endcomment %}
+        </div>
+    </div>
+
+    {% if focus == "team" and child_teams %}
+        <div style="display:flex;
+                    justify-content:center;
+                    gap:5px;
+                    overflow-x:scroll;
+                    overflow-y: hidden">
+            {% for child_team in child_teams %}
+                <div style="max-width:33%; text-align:center">
+                    |
+                    <br>
+                    <div class="pf-team-card">
+                        <p class="govuk-body-s mb-0">
+                            <a class="govuk-link" href="{% url 'organogram-team' child_team.slug %}">{{ child_team.name }}</a>
+                        </p>
+                        {% comment %} <p class="govuk-body-s">
+                            Leader:
+                            {% for member in child_team.leaders %}
+                                <a href="{% url 'organogram-person' member.person.slug %}">{{ member.person.full_name }}</a>
+                            {% endfor %}
+                        </p>
+                        <p>
+                            <a href="{% url 'team-view' child_team.slug %}" class="govuk-link">View team details</a>
+                        </p> {% endcomment %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div style="clear:both">&nbsp;</div>
+    {% endif %}
+    {% comment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            {% if team.abbreviation %}
+                <span class="govuk-caption-l" data-testid="abbreviation">{{ team.abbreviation }}</span>
+            {% endif %}
+            <h1 class="govuk-heading-l" data-testid="name">{{ team.name }}</h1>
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <h2 class="govuk-heading-s">Team leader{{ team.leaders|length|pluralize }}</h2>
+            <div>
+                {% for member in team.leaders %}
+                    {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-s">About the team</h2>
+            <div class="govuk-body" data-testid="description">{{ team.description|markdown }}</div>
+            <div>
+                <a class="govuk-button govuk-button--secondary" href="{% url 'organogram-team' team.slug %}" data-testid="edit-team">View in organogram</a>
+            </div>
+            <div>
+                {% if perms.peoplefinder.change_team %}
+                    <a class="govuk-button govuk-button--secondary" href="{% url 'team-edit' team.slug %}" data-testid="edit-team">Edit team</a>
+                {% endif %}
+                {% if perms.peoplefinder.add_team %}
+                    <a class="govuk-button govuk-button--secondary" href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
+                {% endif %}
+            </div>
+            {% if perms.peoplefinder.delete_team %}
+                {% if can_team_be_deleted %}
+                    <a class="govuk-button govuk-button--warning" href="{% url 'team-delete' team.slug %}">Delete team</a>
+                {% else %}
+                    {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            {% if sub_teams %}
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-one-half">
+                        <h2 class="govuk-heading-m">Teams within {{ team.short_name }}</h2>
+                    </div>
+                    <div class="govuk-grid-column-one-half text-right separated">
+                        <a class="govuk-link inline-block" href="{% url 'team-people' team.slug %}">View all people</a>
+                        <a class="govuk-link inline-block" href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
+                        <a class="govuk-link inline-block" href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
+                    </div>
+                </div>
+                <ul class="pf-team-cards">
+                    {% for team in sub_teams %}
+                        <li>{% include 'peoplefinder/components/team-card.html' with team=team %}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
+                <ul class="pf-team-member-cards">
+                    {% for member in members %}
+                        <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {% endcomment %}
+
+
+{% endblock main_content %}

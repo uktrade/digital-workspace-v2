@@ -34,6 +34,7 @@ from peoplefinder.views.team import (
     TeamPeopleView,
     TeamTreeView,
 )
+from peoplefinder.views.organogram import OrganogramPersonView, OrganogramTeamView
 
 
 people_urlpatterns = [
@@ -50,6 +51,11 @@ people_urlpatterns = [
         name="profile-legacy-view",
     ),
     path("<uuid:profile_slug>/edit/", ProfileEditView.as_view(), name="profile-edit"),
+    path(
+        "<uuid:profile_slug>/organogram/",
+        OrganogramPersonView.as_view(),
+        name="organogram-person",
+    ),
     # Manager component
     path(
         "<uuid:profile_slug>/edit/manager/",
@@ -132,6 +138,7 @@ teams_urlpatterns = [
     path("<slug>/edit", TeamEditView.as_view(), name="team-edit"),
     path("<slug>/delete", TeamDeleteView.as_view(), name="team-delete"),
     path("<slug>/tree", TeamTreeView.as_view(), name="team-tree"),
+    path("<slug>/organogram", OrganogramTeamView.as_view(), name="organogram-team"),
     path("<slug>/people", TeamPeopleView.as_view(), name="team-people"),
     path(
         "<slug>/people-outside-subteams",
