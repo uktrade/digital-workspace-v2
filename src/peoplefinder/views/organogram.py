@@ -6,17 +6,6 @@ from peoplefinder.services.team import TeamService
 from peoplefinder.views.base import PeoplefinderView
 
 
-# class OrganogramPersonView(TemplateView):
-#     template_name = "peoplefinder/organogram.html"
-
-
-# class OrganogramTeamView(TemplateView):
-#     template_name = "peoplefinder/organogram.html"
-
-#     def get(self, slug=None):
-#         ...
-
-
 class OrganogramView(DetailView, PeoplefinderView):
     template_name = "peoplefinder/organogram.html"
 
@@ -50,19 +39,16 @@ class OrganogramPersonView(OrganogramView):
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
 
+        context["focus"] = "person"
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
-
-        context["focus"] = "person"
         context["roles"] = roles
-        context["title"] = profile.full_name
+        context["manager"] = profile.manager
+        context["manages_profiles"] = self.get_queryset().filter(manager=profile)
 
         if roles:
-            # TODO: How do we know which team to select as the main one?
             team = roles[0].team
             context["team"] = team
-            # TODO: `parent_teams` is common to all views. Perhaps we should
-            # refactor this into a common base view or mixin?
             context["parent_teams"] = list(TeamService().get_all_parent_teams(team)) + [
                 team
             ]

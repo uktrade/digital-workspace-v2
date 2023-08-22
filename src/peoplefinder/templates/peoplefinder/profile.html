@@ -78,6 +78,11 @@
                 {% if profile.is_active %}
                     <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
 
+                    <a class="govuk-link govuk-body-s govuk-!-font-weight-bold"
+                        href="{% url 'organogram-person' profile.slug %}">
+                        View in organogram
+                    </a>
+
                     {% if profile.is_stale and request.user == profile.user %}
                         <button class="govuk-button govuk-button--secondary"
                                 hx-post="{% url 'profile-confirm-details' profile.slug %}"

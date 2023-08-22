@@ -13,12 +13,18 @@
                 <a class="govuk-link" href="/">Home</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">Organogram</li>
-            <li class="govuk-breadcrumbs__list-item">{{ team.name }}</li>
+            <li class="govuk-breadcrumbs__list-item">
+                {% if focus == "team" %}
+                    {{ team.name }}
+                {% elif focus == "person" %}
+                    {{ profile.full_name }}
+                {% endif %}
+            </li>
         </ol>
     </div>
 
-    {% if focus == "team" and parent_team %}
-        <div style="display:flex; justify-content:center">
+    <div style="display:flex; justify-content:center">
+        {% if focus == "team" and parent_team %}
             <div class="pf-team-card" style="max-width:33%">
                 <p class="govuk-body-s mb-0">
                     <a class="govuk-link"
@@ -34,81 +40,130 @@
                     <a href="{% url 'team-view' parent_team.slug %}" class="govuk-link">View team details</a>
                 </p> {% endcomment %}
             </div>
-        </div>
-        <div style="display:flex; justify-content:center">|</div>
-    {% endif %}
+        {% elif focus == "person" and manager %}
+            <div class="pf-team-card" style="max-width:33%">
+                <p class="govuk-body-s mb-0">
+                    <a class="govuk-link" href="{% url 'organogram-person' manager.slug %}">{{ manager.full_name }}</a>
+                </p>
+            </div>
+        {% endif %}
+    </div>
+    <div style="display:flex; justify-content:center">|</div>
 
     <div style="display:flex; justify-content:center">
-        <div class="pf-team-card" style="border:3px solid black">
-            <p class="pf-team-card__name mb-10">
-                <a class="govuk-link" href="{% url 'organogram-team' team.slug %}">{{ team.name }}</a>
-            </p>
-            <p class="govuk-body-s">
-                Leader(s):
-                {% for member in team.leaders %}
-                    <div style="display:flex; gap:5px">
-                        {% if member.person.photo %}
-                            <img src="{{ member.person.photo.url }}" style="width:40px; height:40px;">
-                        {% else %}
-                            <img src="{% webpack_static 'no-photo-large.png' %}"
-                                 style="width:40px;
-                                        height:40px">
-                        {% endif %}
-                        <div>
-                            {% if not member.person.is_active %}
-                                <div>
-                                    <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
-                                </div>
-                            {% endif %}
-                            <div>
-                                <a class="govuk-link govuk-body-s govuk-!-font-weight-bold"
-                                   href="{% url 'organogram-person' member.person.slug %}">
-                                    {{ member.person.full_name }}
-                                </a>
-                            </div>
-                            <div class="govuk-body-s">{{ member.job_title }}</div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </p>
-            <p class="govuk-body-s">
-                {% for member in team.members.active %}
-                    {% if member not in team.leaders %}
-
-                        <div style="display:flex; gap:5px">
-                            {% if member.person.photo %}
-                                <img src="{{ member.person.photo.url }}" style="width:40px; height:40px;">
-                            {% else %}
-                                <img src="{% webpack_static 'no-photo-large.png' %}"
-                                     style="width:40px;
-                                            height:40px">
-                            {% endif %}
-                            <div>
-                                {% if not member.person.is_active %}
-                                    <div>
-                                        <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
-                                    </div>
+        {% if focus == "team" %}
+            <div class="pf-team-card" style="border:3px solid black">
+                <p class="pf-team-card__name mb-10">
+                    <a class="govuk-link" href="{% url 'organogram-team' team.slug %}">{{ team.name }}</a>
+                </p>
+                <p class="govuk-body-s">
+                    Leader(s):
+                    <div style="display:flex;
+                                flex-wrap:wrap;
+                                gap:5px;
+                                border-bottom: 1px solid gray;
+                                padding-bottom:10px">
+                        {% for member in team.leaders %}
+                            <div style="display:flex; gap:5px; border: 1px dotted gray">
+                                {% if member.person.photo %}
+                                    <img src="{{ member.person.photo.url }}" style="width:40px; height:40px;">
+                                {% else %}
+                                    <img src="{% webpack_static 'no-photo-large.png' %}"
+                                         style="width:40px;
+                                                height:40px">
                                 {% endif %}
                                 <div>
-                                    <a class="govuk-link govuk-body-s govuk-!-font-weight-bold"
-                                       href="{% url 'organogram-person' member.person.slug %}">
-                                        {{ member.person.full_name }}
-                                    </a>
+                                    {% if not member.person.is_active %}
+                                        <div>
+                                            <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <a class="govuk-link govuk-body-s govuk-!-font-weight-bold"
+                                           href="{% url 'organogram-person' member.person.slug %}">
+                                            {{ member.person.full_name }}
+                                        </a>
+                                    </div>
+                                    <div class="govuk-body-s">{{ member.job_title }}</div>
                                 </div>
-                                <div class="govuk-body-s">{{ member.job_title }}</div>
                             </div>
-                        </div>
+                        {% endfor %}
+                    </div>
+                </p>
+                <p class="govuk-body-s">
+                    <div style="display:flex; flex-wrap:wrap; gap:5px;">
+                        {% for member in team.members.active %}
+                            {% if member not in team.leaders %}
 
+                                <div style="display:flex; gap:5px; border: 1px dotted gray;">
+                                    {% if member.person.photo %}
+                                        <img src="{{ member.person.photo.url }}" style="width:40px; height:40px;">
+                                    {% else %}
+                                        <img src="{% webpack_static 'no-photo-large.png' %}"
+                                             style="width:40px;
+                                                    height:40px">
+                                    {% endif %}
+                                    <div>
+                                        {% if not member.person.is_active %}
+                                            <div>
+                                                <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <a class="govuk-link govuk-body-s govuk-!-font-weight-bold"
+                                               href="{% url 'organogram-person' member.person.slug %}">
+                                                {{ member.person.full_name }}
+                                            </a>
+                                        </div>
+                                        <div class="govuk-body-s">{{ member.job_title }}</div>
+                                    </div>
+                                </div>
+
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </p>
+                <p>
+                    <a href="{% url 'team-view' team.slug %}" class="govuk-link">View details</a>
+                </p>
+            </div>
+
+        {% elif focus == "person" %}
+            <div style="display:flex; gap:5px; border: 3px solid black;">
+                {% if profile.photo %}
+                    <img src="{{ profile.photo.url }}" style="width:40px; height:40px;">
+                {% else %}
+                    <img src="{% webpack_static 'no-photo-large.png' %}"
+                         style="width:40px;
+                                height:40px">
+                {% endif %}
+                <div>
+                    {% if not profile.is_active %}
+                        <div>
+                            <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
+                        </div>
                     {% endif %}
-                {% endfor %}
-            </p>
-            <p>
-                <a href="{% url 'team-view' team.slug %}" class="govuk-link">View team details</a>
-            </p>
-            {% comment %} {% for member in team_members %}
-                <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
-            {% endfor %} {% endcomment %}
-        </div>
+                    <div>
+                        <a class="govuk-link govuk-body govuk-!-font-weight-bold"
+                           href="{% url 'organogram-person' profile.slug %}">{{ profile.full_name }}</a>
+                    </div>
+                    <div class="govuk-body-s">
+                        {% for role in roles %}
+                            {% if role.job_title %}
+                                {{ role.job_title }} in
+                            {% else %}
+                                Member of
+                            {% endif %}
+                            <a class="govuk-link" href="{% url 'organogram-team' role.team.slug %}">{{ role.team.name }}</a>
+                            <br>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <a href="{% url 'profile-view' profile.slug %}" class="govuk-link">View details</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 
     {% if focus == "team" and child_teams %}
@@ -139,7 +194,28 @@
             {% endfor %}
         </div>
         <div style="clear:both">&nbsp;</div>
+    {% elif focus == "person" and manages_profiles %}
+        <div style="display:flex;
+                    justify-content:center;
+                    gap:5px;
+                    overflow-x:scroll;
+                    overflow-y: hidden">
+            {% for profile in manages_profiles %}
+                <div style="max-width:33%; text-align:center">
+                    |
+                    <br>
+                    <div class="pf-team-card">
+                        <p class="govuk-body-s mb-0">
+                            <a class="govuk-link" href="{% url 'organogram-person' profile.slug %}">{{ profile.full_name }}</a>
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div style="clear:both">&nbsp;</div>
     {% endif %}
+
+    <pre>{% debug %}</pre>
     {% comment %}
 
 
