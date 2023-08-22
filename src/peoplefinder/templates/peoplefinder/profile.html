@@ -15,14 +15,27 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             {% if profile.photo %}
-                <img src="{{ profile.photo.url }}" width="100%">
+                {% if is_ee %}
+                {% else %}
+                    <div {% profile_photo_attrs profile %}>
+                        <img src="{{ profile.photo.url }}" width="100%">
+                    </div>
+                {% endif %}
             {% else %}
                 <img src="{% webpack_static 'no-photo-large.png' %}" width="100%">
             {% endif %}
         </div>
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l mb-0" data-testid="full-name">{{ profile.full_name }}</h1>
-            {% if profile.name_pronunciation %}<p class="govuk-body-s">{{ profile.name_pronunciation }}</p>{% endif %}
+            {% if profile.name_pronunciation or profile.pronouns %}
+                <p class="govuk-body-s">
+                    {% if profile.name_pronunciation %}{{ profile.name_pronunciation }}{% endif %}
+                    {% if profile.pronouns %}
+                        {% if profile.name_pronunciation %}<br>{% endif %}
+                        ({{ profile.pronouns }})
+                    {% endif %}
+                </p>
+            {% endif %}
             {% if not profile.is_active %}
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -42,6 +55,10 @@
                     </strong>
                 </div>
             {% endif %}
+
+            {% for role in roles %}
+                {% include "peoplefinder/components/profile-role.html" with role=role %}
+            {% endfor %}
 
             <dl class="ws-profile__primary-contact-list govuk-body-l">
                 <dt class="govuk-visually-hidden">Preferred email</dt>
@@ -63,17 +80,6 @@
                 {% endif %}
             </dl>
 
-            {% for role in roles %}
-                <p class="govuk-body-m" data-testid="role">
-                    {% if role.job_title %}
-                        <strong>{{ role.job_title }}</strong> in
-                    {% else %}
-                        Member of
-                    {% endif %}
-                    <a class="govuk-link" href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a>
-                </p>
-            {% endfor %}
-
             <div class="govuk-button-group govuk-!-margin-0">
                 {% if profile.is_active %}
                     <a class="govuk-button" href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
@@ -88,6 +94,7 @@
 
                     {% if perms.peoplefinder.delete_person and request.user != profile.user %}
                         <form action="{% url 'profile-delete' profile.slug %}"
+                              style="display: contents"
                               method="post"
                               onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
                             {% csrf_token %}
@@ -132,237 +139,38 @@
         </div>
     </div>
 
-    <hr class="govuk-section-break govuk-section-break--visible">
-
-    <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">Contact me</h2>
-        </div>
-        <div class="govuk-summary-card__content">
-            <dl class="govuk-summary-list">
-                {% if profile.pronouns %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">My pronouns</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.pronouns }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Preferred email</dt>
-                    {% if profile.contact_email %}
-                        <dd class="govuk-summary-list__value">
-                            <a href="mailto:{{ profile.contact_email }}"
-                               class="govuk-link"
-                               data-testid="preferred-email">{{ profile.contact_email }}</a>
-                        </dd>
-                    {% else %}
-                        <dd class="govuk-summary-list__value">
-                            <a href="mailto:{{ profile.email }}"
-                               class="govuk-link"
-                               data-testid="preferred-email">{{ profile.email }}</a>
-                        </dd>
-                    {% endif %}
+    {% for profile_section in profile_sections %}
+        {% if is_users_profile or profile_section.values %}
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">{{ profile_section.title }}</h2>
+                    <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                            <a class="govuk-link" href="{{ profile_section.url }}">
+                                Edit<span class="govuk-visually-hidden">{{ profile_section.title }}</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Preferred contact number</dt>
-                    <dd class="govuk-summary-list__value">
-                        {% if profile.primary_phone_number %}
-                            <a href="tel:{{ profile.primary_phone_number }}" class="govuk-link">{{ profile.primary_phone_number }}</a>
-                        {% endif %}
-                    </dd>
-                    {% profile_completion_field_actions "primary_phone_number" profile %}
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        {% for profile_value in profile_section.values %}
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">{{ profile_value.0 }}</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ profile_value.1 }}
+                                </dd>
+                            </div>
+                        {% empty %}
+                            <strong>You haven't added any information here.</strong>
+                            <br>
+                            Add information to help colleagues get to know you.
+                        {% endfor %}
+                    </dl>
                 </div>
-
-                {% if profile.secondary_phone_number %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Alternative contact number</dt>
-                        <dd class="govuk-summary-list__value">
-                            <a href="tel:{{ profile.secondary_phone_number }}" class="govuk-link">{{ profile.secondary_phone_number }}</a>
-                        </dd>
-                    </div>
-                {% endif %}
-            </dl>
-        </div>
-    </div>
-
-    <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">My role</h2>
-        </div>
-        <div class="govuk-summary-card__content">
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">My manager</dt>
-                    <dd class="govuk-summary-list__value">
-                        {% if profile.manager %}
-                            <a href="{% url 'profile-view' profile.manager.slug %}"
-                               class="govuk-link"
-                               data-testid="manager">{{ profile.manager.full_name }}</a>
-                        {% endif %}
-                    </dd>
-                    {% profile_completion_field_actions "manager" profile %}
-                </div>
-
-                {% if profile.key_skills.exists or profile.other_key_skills %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Skills</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.get_all_key_skills|join:", " }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if profile.fluent_languages %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Fluent languages</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.fluent_languages }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if profile.intermediate_languages %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Intermediate languages</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.intermediate_languages }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if profile.grade %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Grade</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.grade }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if roles %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">My role(s)</dt>
-                        <dd class="govuk-summary-list__value">
-                            {% for role in roles %}
-                                {% if role.job_title %}
-                                    {{ role.job_title }} in
-                                {% else %}
-                                    Member of
-                                {% endif %}
-                                <a class="govuk-link" href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a>
-                                <br>
-                            {% endfor %}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if profile.previous_experience %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Previous positions held</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.previous_experience|linebreaksbr }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if profile.learning_interests.exists or profile.other_learning_interests %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">My learning and development interests</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.get_all_learning_interests|join:", " }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if profile.networks.exists %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Networks I belong to</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.networks.all|join:", " }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if profile.professions.exists %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Professions I belong to</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.professions.all|join:", " }}
-                        </dd>
-                    </div>
-                {% endif %}
-
-                {% if profile.additional_roles.exists or profile.other_additional_roles %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">My additional roles and responsibilities</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.get_all_additional_roles|join:", " }}
-                        </dd>
-                    </div>
-                {% endif %}
-            </dl>
-        </div>
-    </div>
-
-    <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">Where to find me</h2>
-        </div>
-        <div class="govuk-summary-card__content">
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Where I work</dt>
-                    <dd class="govuk-summary-list__value">
-                        {% if profile.remote_working %}{{ profile.get_remote_working_display }}{% endif %}
-                    </dd>
-                    {% profile_completion_field_actions "remote_working" profile %}
-                </div>
-
-                {% if profile.uk_office_location or profile.international_building %}
-                    {% if profile.uk_office_location %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Office location</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.uk_office_location }}
-                                {% if profile.location_in_building %}
-                                    <br>
-                                    {{ profile.location_in_building }}
-                                {% endif %}
-                            </dd>
-                        </div>
-                    {% endif %}
-
-                    {% if profile.international_building %}
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">International location</dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ profile.international_building }}
-                            </dd>
-                        </div>
-                    {% endif %}
-                {% else %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Location</dt>
-                        <dd class="govuk-summary-list__value">
-                        </dd>
-                        {% profile_completion_field_actions "location" profile %}
-                    </div>
-                {% endif %}
-
-                {% if profile.workdays.exists %}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Days I work</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.get_workdays_display }}
-                        </dd>
-                    </div>
-                {% endif %}
-            </dl>
-        </div>
-    </div>
+            </div>
+        {% endif %}
+    {% endfor %}
 
     {% if perms.peoplefinder.view_auditlog %}
         <details class="govuk-details" data-module="govuk-details">
