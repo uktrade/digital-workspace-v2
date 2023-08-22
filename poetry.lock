@@ -1034,20 +1034,19 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-feedback-govuk"
-version = "0.2.7"
+version = "0.2.8"
 description = "A Django app to gather and send internal Government staff feedback"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "django_feedback_govuk-0.2.7-py3-none-any.whl", hash = "sha256:3f60f3d5d7e98547a43af6ed5c9ab51af91d0868add7c6c176444c36a57ac0ce"},
-    {file = "django_feedback_govuk-0.2.7.tar.gz", hash = "sha256:d545b7c2b685fb212f2a540928e5be9bcdbbf69063bab4ddfcd0cd10bc45f9b2"},
+    {file = "django_feedback_govuk-0.2.8-py3-none-any.whl", hash = "sha256:bf136d296c7f584b2463fa7fbad58fe6efaf7b9ac310d787add12fa8aeaf4959"},
+    {file = "django_feedback_govuk-0.2.8.tar.gz", hash = "sha256:7eae1f3841bae0353860bfbcb4b86656e88a3adbcfbfa2460b8efbac1ca79269"},
 ]
 
 [package.dependencies]
 crispy-forms-gds = ">=0.2.4,<0.3.0"
 Django = ">=3.2,<4.3"
 django-crispy-forms = ">=1.9,<2.0"
-notifications-python-client = ">=8.0.0,<9.0.0"
 
 [[package]]
 name = "django-filter"
