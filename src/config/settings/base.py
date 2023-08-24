@@ -183,6 +183,7 @@ MIDDLEWARE = [
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "core.middleware.GetPeoplefinderProfileMiddleware",
+    "core.middleware.TimezoneMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "django_audit_log_middleware.AuditLogMiddleware",
 ]
@@ -236,8 +237,9 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_URL = reverse_lazy("authbroker_client:login")
 LOGIN_REDIRECT_URL = "/"
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-gb"
 TIME_ZONE = "UTC"
+LOCAL_TIME_ZONE = "Europe/London"
 USE_I18N = True
 USE_TZ = True
 
