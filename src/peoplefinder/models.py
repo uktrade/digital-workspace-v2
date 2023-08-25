@@ -13,10 +13,11 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
+from wagtail.search import index
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
-from extended_search.fields import IndexedField  # , RelatedIndexedFields
+from extended_search.fields import IndexedField, RelatedIndexedFields
 from extended_search.index import Indexed
 from extended_search.managers.index import ModelIndexManager
 
@@ -285,12 +286,12 @@ class PersonIndexManager(ModelIndexManager):
             boost=4.0,
         ),
         # Flattened relatedfields...
-        IndexedField(
-            "search_titles",
-            tokenized=True,
-            explicit=True,
-            boost=3.0,
-        ),
+        # IndexedField(
+        #     "search_titles",
+        #     tokenized=True,
+        #     explicit=True,
+        #     boost=3.0,
+        # ),
         IndexedField(
             "search_skills",
             tokenized=True,
@@ -315,17 +316,17 @@ class PersonIndexManager(ModelIndexManager):
             "search_buildings",
             tokenized=True,
         ),
-        # RelatedIndexedFields(
-        #     "roles",
-        #     [
-        #         IndexedField(
-        #             "job_title",
-        #             tokenized=True,
-        #             explicit=True,
-        #             boost=3.0,
-        #         ),
-        #     ],
-        # ),
+        RelatedIndexedFields(
+            "roles",
+            [
+                IndexedField(
+                    "job_title",
+                    tokenized=True,
+                    explicit=True,
+                    boost=3.0,
+                ),
+            ],
+        ),
         # RelatedIndexedFields(
         #     "key_skills",
         #     [
@@ -682,7 +683,9 @@ class Person(Indexed, models.Model):
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
-    search_fields = PersonIndexManager()
+    search_fields = [
+        index.RelatedFields("key_skills", [index.SearchField("name")]),
+    ] + PersonIndexManager()
 
     def __str__(self) -> str:
         return self.full_name

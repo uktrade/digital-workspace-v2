@@ -81,8 +81,8 @@ class QueryBuilder:
 
         content_type = ContentType.objects.get_for_model(model_class)
         field_name = base_field_name  # get_indexed_field_name(base_field_name, analysis_type) @TODO investigate
-        if "related_field" in field_mapping:
-            field_name = f"{field_mapping['related_field']}.{field_name}"
+        if "parent_model_field" in field_mapping:
+            field_name = f"{field_mapping['parent_model_field']}.{field_name}"
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
         field_boost = float(
             search_settings["boost_parts"]["fields"][field_boost_key]  # type: ignore
@@ -116,6 +116,8 @@ class QueryBuilder:
         )
 
         field_name = get_indexed_field_name(base_field_name, analysis_type)
+        if "parent_model_field" in field_mapping:
+            field_name = f"{field_mapping['parent_model_field']}.{field_name}"
         return OnlyFields(Boost(query, boost), fields=[field_name])
 
     @classmethod
@@ -134,7 +136,7 @@ class QueryBuilder:
         if "related_fields" in field_mapping:
             for related_field_mapping in field_mapping["related_fields"]:
                 # @TODO how to get a Nested Field query reliably?
-                related_field_mapping["related_field"] = field_mapping["name"]
+                related_field_mapping["parent_model_field"] = field_mapping["name"]
 
                 subquery = cls._add_to_query(
                     subquery,
