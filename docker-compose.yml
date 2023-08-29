@@ -59,7 +59,7 @@ services:
       cache_from:
         - digital_workspace/wagtail:latest
     image: digital_workspace/wagtail:latest
-    command: poetry run python manage.py runserver_plus 0.0.0.0:8000
+    command: poetry run python manage.py runserver 0.0.0.0:8000
     # mimics production
     # command: waitress-serve --port=8000 config.wsgi:application
     volumes:

@@ -68,10 +68,7 @@ class ModelIndexManager(QueryBuilder):
         fields = []
         model_field_name = field_mapping["model_field_name"]
         if "related_field" in field_mapping:
-            model_field_name = (
-                # f"{field_mapping['related_field']}.{field_mapping['model_field_name']}"
-                f"{field_mapping['model_field_name']}"
-            )
+            model_field_name = f"{field_mapping['model_field_name']}"
 
         if "related_fields" in field_mapping:
             fields += cls._get_related_fields(
