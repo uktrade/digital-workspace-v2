@@ -52,14 +52,6 @@ class Indexed(index.Indexed):
                     model_fields.append(model_field_name)
         return errors
 
-    @classmethod
-    def get_related_search_fields(cls):
-        return [
-            field
-            for field in cls.get_search_fields()
-            if isinstance(field, RelatedFields)
-        ]
-
     search_fields = []
 
 

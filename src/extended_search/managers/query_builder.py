@@ -4,7 +4,7 @@ from django.db import models
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
 
 from extended_search.managers import get_indexed_field_name
-from extended_search.backends.query import OnlyFields
+from extended_search.backends.query import Nested, OnlyFields
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
 
@@ -81,7 +81,7 @@ class QueryBuilder:
 
         content_type = ContentType.objects.get_for_model(model_class)
         field_name = base_field_name  # get_indexed_field_name(base_field_name, analysis_type) @TODO investigate
-        if "parent_model_field" in field_mapping:
+        if field_mapping["parent_model_field"]:
             field_name = f"{field_mapping['parent_model_field']}.{field_name}"
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
         field_boost = float(
@@ -116,7 +116,7 @@ class QueryBuilder:
         )
 
         field_name = get_indexed_field_name(base_field_name, analysis_type)
-        if "parent_model_field" in field_mapping:
+        if field_mapping["parent_model_field"]:
             field_name = f"{field_mapping['parent_model_field']}.{field_name}"
         return OnlyFields(Boost(query, boost), fields=[field_name])
 
@@ -135,15 +135,13 @@ class QueryBuilder:
         subquery = None
         if "related_fields" in field_mapping:
             for related_field_mapping in field_mapping["related_fields"]:
-                # @TODO how to get a Nested Field query reliably?
-                related_field_mapping["parent_model_field"] = field_mapping["name"]
-
                 subquery = cls._add_to_query(
                     subquery,
                     cls._get_search_query_from_mapping(
                         query_str, model_class, related_field_mapping
                     ),
                 )
+            subquery = Nested(subquery=subquery, path=field_mapping["model_field_name"])
 
         if "search" in field_mapping:
             for analyzer in field_mapping["search"]:
