@@ -81,7 +81,10 @@ class QueryBuilder:
 
         content_type = ContentType.objects.get_for_model(model_class)
         field_name = base_field_name  # get_indexed_field_name(base_field_name, analysis_type) @TODO investigate
-        if field_mapping["parent_model_field"]:
+        if (
+            "parent_model_field" in field_mapping
+            and field_mapping["parent_model_field"]
+        ):
             field_name = f"{field_mapping['parent_model_field']}.{field_name}"
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
         field_boost = float(
@@ -116,7 +119,10 @@ class QueryBuilder:
         )
 
         field_name = get_indexed_field_name(base_field_name, analysis_type)
-        if field_mapping["parent_model_field"]:
+        if (
+            "parent_model_field" in field_mapping
+            and field_mapping["parent_model_field"]
+        ):
             field_name = f"{field_mapping['parent_model_field']}.{field_name}"
         return OnlyFields(Boost(query, boost), fields=[field_name])
 

@@ -47,6 +47,7 @@ class TestAbstractBaseField:
             "name": field.name,
             "model_field_name": field.model_field_name,
             "boost": field.boost,
+            "parent_model_field": None,
         } == field._get_base_mapping_object()
 
     def test_get_mapping_uses_get_base_mapping_object(self):
@@ -321,11 +322,22 @@ class TestRelatedIndexedFields:
     def test_get_related_mapping_object_format(self, mocker):
         mock_field = mocker.Mock()
         mock_second_field = mocker.Mock()
-        mock_field.get_mapping.return_value = "--FOO--"
-        mock_second_field.get_mapping.return_value = "--BAR--"
+        mock_field.get_mapping.return_value = {"field_name": "--FOO--"}
+        mock_second_field.get_mapping.return_value = {"field_name": "--BAR--"}
         field = RelatedIndexedFields("foo", [mock_field, mock_second_field])
         mapping = field._get_related_mapping_object()
-        assert {"related_fields": ["--FOO--", "--BAR--"]} == mapping
+        assert {
+            "related_fields": [
+                {
+                    "field_name": "--FOO--",
+                    "parent_model_field": "foo",
+                },
+                {
+                    "field_name": "--BAR--",
+                    "parent_model_field": "foo",
+                },
+            ]
+        } == mapping
 
     def test_get_mapping_uses_sub_methods(self, mocker):
         mock_func = mocker.patch(

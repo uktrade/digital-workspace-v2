@@ -285,29 +285,6 @@ class PersonIndexManager(ModelIndexManager):
             keyword=True,
             boost=4.0,
         ),
-        # Flattened relatedfields...
-        # IndexedField(
-        #     "search_titles",
-        #     tokenized=True,
-        #     explicit=True,
-        #     boost=3.0,
-        # ),
-        IndexedField(
-            "search_skills",
-            tokenized=True,
-        ),
-        IndexedField(
-            "search_interests",
-            tokenized=True,
-        ),
-        IndexedField(
-            "search_additional_roles",
-            tokenized=True,
-        ),
-        IndexedField(
-            "search_networks",
-            tokenized=True,
-        ),
         IndexedField(
             "search_grade",
             explicit=True,
@@ -327,50 +304,50 @@ class PersonIndexManager(ModelIndexManager):
                 ),
             ],
         ),
-        # RelatedIndexedFields(
-        #     "key_skills",
-        #     [
-        #         IndexedField(
-        #             "name",
-        #             tokenized=True,
-        #             explicit=True,
-        #             boost=0.8,
-        #         ),
-        #     ],
-        # ),
-        # RelatedIndexedFields(
-        #     "learning_interests",
-        #     [
-        #         IndexedField(
-        #             "name",
-        #             tokenized=True,
-        #             boost=0.8,
-        #         ),
-        #     ],
-        # ),
-        # RelatedIndexedFields(
-        #     "additional_roles",
-        #     [
-        #         IndexedField(
-        #             "name",
-        #             tokenized=True,
-        #             explicit=True,
-        #             boost=0.8,
-        #         ),
-        #     ],
-        # ),
-        # RelatedIndexedFields(
-        #     "networks",
-        #     [
-        #         IndexedField(
-        #             "name",
-        #             tokenized=True,
-        #             explicit=True,
-        #             filter=True,
-        #             boost=1.5,
-        #         ),
-        #     ],
-        # ),
+        RelatedIndexedFields(
+            "key_skills",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    boost=0.8,
+                ),
+            ],
+        ),
+        RelatedIndexedFields(
+            "learning_interests",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    boost=0.8,
+                ),
+            ],
+        ),
+        RelatedIndexedFields(
+            "additional_roles",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    boost=0.8,
+                ),
+            ],
+        ),
+        RelatedIndexedFields(
+            "networks",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    filter=True,
+                    boost=1.5,
+                ),
+            ],
+        ),
         IndexedField(
             "international_building",
             tokenized=True,
@@ -683,9 +660,7 @@ class Person(Indexed, models.Model):
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
-    search_fields = [
-        index.RelatedFields("key_skills", [index.SearchField("name")]),
-    ] + PersonIndexManager()
+    search_fields = PersonIndexManager()
 
     def __str__(self) -> str:
         return self.full_name
@@ -744,26 +719,6 @@ class Person(Indexed, models.Model):
         abbrs = teams.values_list("team__abbreviation", flat=True)
         abbrs_str = " ".join(list([a or "" for a in abbrs]))
         return f"{names_str} {abbrs_str}"
-
-    @property
-    def search_titles(self):
-        return ", ".join(self.roles.all().values_list("job_title", flat=True))
-
-    @property
-    def search_skills(self):
-        return ", ".join(self.key_skills.all().values_list("name", flat=True))
-
-    @property
-    def search_interests(self):
-        return ", ".join(self.learning_interests.all().values_list("name", flat=True))
-
-    @property
-    def search_additional_roles(self):
-        return ", ".join(self.additional_roles.all().values_list("name", flat=True))
-
-    @property
-    def search_networks(self):
-        return ", ".join(self.networks.all().values_list("name", flat=True))
 
     @property
     def search_buildings(self):
