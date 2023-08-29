@@ -248,7 +248,7 @@ class TestQueryBuilder:
             "extended_search.managers.query_builder.QueryBuilder._get_searchquery_for_query_field_querytype_analysistype",
             side_effect=query_outputs,
         )
-        mock_nested = mocker.patch(
+        mocker.patch(
             "extended_search.managers.query_builder.Nested",
         )
         mapping = {}

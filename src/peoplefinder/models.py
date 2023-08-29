@@ -13,7 +13,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
-from wagtail.search import index
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
