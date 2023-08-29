@@ -1,5 +1,6 @@
 from config.celery import celery_app
 from peoplefinder.services.uk_staff_locations import UkStaffLocationService
+from src.core import utils
 
 
 @celery_app.task(bind=True)
@@ -21,3 +22,12 @@ def ingest_uk_staff_locations(self):
         f"Updated: {updated}\n"
         f"Deleted: {deleted}\n"
     )
+
+
+@celery_app.task(bind=True)
+def schedule_feedback_email_notification():
+    feedback_received = utils.is_feedback_received_past_24hrs()
+    if not feedback_received:
+        return
+    message = utils.send_feedback_notification()
+    print(f"Message: {message}")

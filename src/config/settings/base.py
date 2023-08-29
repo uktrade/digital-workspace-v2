@@ -596,15 +596,15 @@ HIDE_NEWS = env.bool("HIDE_NEWS", False)
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["gds"]
 CRISPY_TEMPLATE_PACK = "gds"
 
+# Feedback notifications email
+FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID = env("FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID")
+FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS = env.list(
+    "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
+)
+
 # Feedback
 DJANGO_FEEDBACK_GOVUK = {
     "SERVICE_NAME": "the beta experience",
-    "FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID": env(
-        "FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID"
-    ),
-    "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS": env.list(
-        "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
-    ),
     "COPY": {
         "SUBMIT_TITLE": "Providing feedback on your experience will help us improve the service",
         "FIELD_SATISFACTION_LEGEND": "How satisfied are you with Digital Workspace?",
