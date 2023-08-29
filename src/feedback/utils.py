@@ -25,9 +25,9 @@ def send_feedback_notification():
 
     for email_recipient in email_recipients:
         message = notification_client.send_email_notification(
-            email_address = email_recipient,
-            template_id = settings.FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID,
-            personalisation = {
+            email_address=email_recipient,
+            template_id=settings.FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID,
+            personalisation={
                 # TODO: if email template has dynamic content add key-values pair here
             },
         )
