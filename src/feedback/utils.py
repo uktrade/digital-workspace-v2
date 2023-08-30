@@ -5,13 +5,10 @@ from django.conf import settings
 from notifications_python_client.notifications import NotificationsAPIClient
 
 
-def is_feedback_received_past_24hrs():
-    current_datetime = timezone.now()
-    time_difference = timedelta(days=1)
-    is_feedback_received = BaseFeedback.objects.filter(
-        submitted_at__gte=current_datetime - time_difference
+def has_received_feedback_within_24hrs():
+    return BaseFeedback.objects.filter(
+        submitted_at__gte=timezone.now() - timedelta(days=1)
     ).exists()
-    return is_feedback_received
 
 
 def send_feedback_notification():

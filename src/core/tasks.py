@@ -26,7 +26,7 @@ def ingest_uk_staff_locations(self):
 
 @celery_app.task(bind=True)
 def schedule_feedback_email_notification():
-    feedback_received = utils.is_feedback_received_past_24hrs()
+    feedback_received = utils.has_received_feedback_within_24hrs()
     if not feedback_received:
         return
     message = utils.send_feedback_notification()
