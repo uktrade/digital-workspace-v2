@@ -2,9 +2,11 @@ from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
 )
+from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
 
-from extended_search.backends.query import OnlyFields
+from extended_search.backends.query import Nested, OnlyFields
+from extended_search.index import RelatedFields
 
 
 class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
@@ -33,13 +35,25 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         remapped_fields = []
         searchable_fields = {
-            f.field_name: f for f in self.queryset.model.get_searchable_search_fields()
+            f.field_name: f
+            for f in self.queryset.model.search_fields
+            if isinstance(f, SearchField) or isinstance(f, RelatedFields)
         }
         for field_name in fields:
             if field_name in searchable_fields:
                 field_name = self.mapping.get_field_column_name(
                     searchable_fields[field_name]
                 )
+            else:
+                field_name_parts = field_name.split(".")
+                if (
+                    len(field_name_parts) == 2
+                    and field_name_parts[0] in searchable_fields
+                ):
+                    field_name = self.mapping.get_field_column_name(
+                        searchable_fields[field_name_parts[0]]
+                    )
+                    field_name = f"{field_name}.{field_name_parts[1]}"
 
             remapped_fields.append(field_name)
 
@@ -109,7 +123,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
         Override the parent method to handle specifics of the OnlyFields
         SearchQuery, and allow boosting of Fuzzy and Phrase queries
         """
-        if not isinstance(query, (Fuzzy, Phrase, OnlyFields)):
+        if not isinstance(query, (Fuzzy, Phrase, OnlyFields, Nested)):
             return super()._compile_query(query, field, boost)
 
         # Overrides the existing functionality only to be able to pass Boost
@@ -120,8 +134,16 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
         elif isinstance(query, Phrase):
             return self._compile_phrase_query(query, [field], boost)
 
+        # Handle Nested fields for RelatedFields on models
+        elif isinstance(query, Nested):
+            return self._compile_nested_query(query, [field], boost)
+
         # Handle OnlyFields
         remapped_fields = self._remap_fields(query.fields)
+
+        # Handle RelatedFields passing a list at this point
+        if isinstance(field, list) and len(field) == 1:
+            field = field[0]
 
         if field == self.mapping.all_field_name:
             # We are using the "_all_text" field proxy (i.e. the search()
@@ -170,6 +192,17 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 }
 
         return match_query
+
+    def _compile_nested_query(self, query, fields, boost=1.0):
+        """
+        Add OS DSL elements to support Nested fields
+        """
+        return {
+            "nested": {
+                "path": query.path,
+                "query": self._compile_query(query.subquery, fields, boost),
+            }
+        }
 
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):

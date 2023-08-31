@@ -248,6 +248,9 @@ class TestQueryBuilder:
             "extended_search.managers.query_builder.QueryBuilder._get_searchquery_for_query_field_querytype_analysistype",
             side_effect=query_outputs,
         )
+        mocker.patch(
+            "extended_search.managers.query_builder.Nested",
+        )
         mapping = {}
         assert (
             QueryBuilder._get_search_query_from_mapping("query", ContentPage, mapping)
@@ -387,10 +390,12 @@ class TestQueryBuilder:
                 {
                     "search": [AnalysisType.TOKENIZED],
                     "model_field_name": "--related-name--",
+                    "parent_model_field": "--model-field-name--",
                 },
                 {
                     "search": [AnalysisType.TOKENIZED],
                     "model_field_name": "--other-related-name--",
+                    "parent_model_field": "--model-field-name--",
                 },
             ],
             "model_field_name": "--model-field-name--",
@@ -399,7 +404,7 @@ class TestQueryBuilder:
         result = QueryBuilder._get_search_query_from_mapping(
             "query", ContentPage, mapping
         )
-        assert mock_query.call_count == 6
+        assert mock_query.call_count == 6  # tokenized => 3, x2 fields
         mock_query.assert_any_call(
             "query",
             ContentPage,
@@ -409,7 +414,7 @@ class TestQueryBuilder:
             {
                 "search": [AnalysisType.TOKENIZED],
                 "model_field_name": "--related-name--",
-                "related_field": "--name--",
+                "parent_model_field": "--model-field-name--",
             },
         )
         mock_query.assert_any_call(
@@ -421,6 +426,6 @@ class TestQueryBuilder:
             {
                 "search": [AnalysisType.TOKENIZED],
                 "model_field_name": "--other-related-name--",
-                "related_field": "--name--",
+                "parent_model_field": "--model-field-name--",
             },
         )
