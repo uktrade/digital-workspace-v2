@@ -211,7 +211,7 @@ class TestModelIndexManager:
             return_value=["SearchFieldObject <bar>"],
         )
         result = ModelIndexManager._get_related_fields("foo", [{"field_name": "baz"}])
-        mock_func.assert_called_once_with({"field_name": "baz", "related_field": "foo"})
+        mock_func.assert_called_once_with({"field_name": "baz"})
         assert type(result) == list
         assert type(result[0]) == RelatedFields
         assert result[0].field_name == "foo"
