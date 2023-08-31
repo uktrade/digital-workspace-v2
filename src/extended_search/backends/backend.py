@@ -2,9 +2,11 @@ from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
 )
+from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
 
 from extended_search.backends.query import Nested, OnlyFields
+from extended_search.index import RelatedFields
 
 
 class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
@@ -33,11 +35,10 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         remapped_fields = []
         searchable_fields = {
-            f.field_name: f for f in self.queryset.model.get_searchable_search_fields()
+            f.field_name: f
+            for f in self.queryset.model.search_fields
+            if isinstance(f, SearchField) or isinstance(f, RelatedFields)
         }
-        if hasattr(self.queryset.model, "get_related_search_fields"):
-            for f in self.queryset.model.get_related_search_fields():
-                searchable_fields[f.field_name] = f
         for field_name in fields:
             if field_name in searchable_fields:
                 field_name = self.mapping.get_field_column_name(
@@ -45,12 +46,14 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
                 )
             else:
                 field_name_parts = field_name.split(".")
-                if len(field_name_parts) == 2:
-                    if field_name_parts[0] in searchable_fields:
-                        field_name = self.mapping.get_field_column_name(
-                            searchable_fields[field_name]
-                        )
-                        field_name = f"{field_name}.{field_name_parts[1]}"
+                if (
+                    len(field_name_parts) == 2
+                    and field_name_parts[0] in searchable_fields
+                ):
+                    field_name = self.mapping.get_field_column_name(
+                        searchable_fields[field_name_parts[0]]
+                    )
+                    field_name = f"{field_name}.{field_name_parts[1]}"
 
             remapped_fields.append(field_name)
 
