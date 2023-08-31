@@ -1,7 +1,8 @@
 version: 0.2
 
-# env:
-#   variables:
+env:
+  variables:
+    BUILDER_VERSION: 0.2.395-full
 
 phases:
 #   install:
