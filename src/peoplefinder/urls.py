@@ -23,8 +23,10 @@ from peoplefinder.views.profile import (
     ProfileLegacyView,
     ProfileUpdateUserView,
     get_profile_by_staff_sso_id,
+    profile_edit_blank_teams_form,
+    redirect_to_profile_edit,
 )
-from peoplefinder.views.role import RoleFormView, TeamSelectView
+from peoplefinder.views.role import TeamSelectView
 from peoplefinder.views.team import (
     TeamAddNewSubteamView,
     TeamDeleteView,
@@ -35,7 +37,6 @@ from peoplefinder.views.team import (
     TeamTreeView,
 )
 from peoplefinder.views.organogram import OrganogramView
-
 
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
@@ -50,11 +51,24 @@ people_urlpatterns = [
         ProfileLegacyView.as_view(),
         name="profile-legacy-view",
     ),
-    path("<uuid:profile_slug>/edit/", ProfileEditView.as_view(), name="profile-edit"),
+    # designed to be viewed inside an iframe
     path(
         "<uuid:profile_slug>/organogram/",
         OrganogramView.as_view(),
         name="organogram-person",
+    ),
+
+    # Redirects to profile-edit-section with edit_section=personal
+    path(
+        "<uuid:profile_slug>/blank-teams-form/",
+        profile_edit_blank_teams_form,
+        name="profile-edit-blank-teams-form",
+    ),
+    # Redirects to profile-edit-section with edit_section=personal
+    path(
+        "<uuid:profile_slug>/edit/",
+        redirect_to_profile_edit,
+        name="profile-edit",
     ),
     # Manager component
     path(
@@ -89,12 +103,11 @@ people_urlpatterns = [
             ]
         ),
     ),
-    # Roles
-    path("<uuid:profile_slug>/edit/roles/", RoleFormView.as_view(), name="roles"),
+    # Edit sections
     path(
-        "<uuid:profile_slug>/edit/roles/<int:role_pk>/",
-        RoleFormView.as_view(),
-        name="role",
+        "<uuid:profile_slug>/edit/<str:edit_section>/",
+        ProfileEditView.as_view(),
+        name="profile-edit-section",
     ),
     # Leaving DIT
     path(

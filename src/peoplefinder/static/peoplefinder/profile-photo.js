@@ -64,55 +64,50 @@ class ProfilePhoto extends HTMLElement {
       : "No current profile photo";
 
     this.innerHTML = `
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-one-third">
-                    <h3 class="govuk-heading-s" id="photo-heading">${photoHeadingText}</h3>
-                    <div>
-                        <img
-                            src="${this.photoUrl || this.noPhotoUrl}"
-                            id="profile-photo"
-                            style="display: block; max-width: 100%;"
-                        >
-                    </div>
-                </div>
-                <div class="govuk-grid-column-two-thirds">
-                    <div class="govuk-form-group" id="photo-form-group">
-                        <label class="govuk-label" for="photo">
-                            Choose a new profile photo
-                        </label>
-                        <div class="govuk-hint">
-                            Choose a picture that helps others recognise you.
-                            Your picture must be at least 500 by 500 pixels and no more than 8MB.
-                            Once you have chosen a picture, you will be able to crop it.
-                        </div>
-                        <div id="photo-errors"></div>
-                        <input
-                            class="govuk-file-upload"
-                            type="file"
-                            name="${this.name}"
-                            id="photo"
-                        >
-                        <button type="button" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" id="clear-image" style="display: none;">Clear image</button>
-                        <div class="govuk-checkboxes govuk-checkboxes--small" id="remove-photo" style="display: none;">
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="remove-photo" name="${
-                                  this.removePhotoName
-                                }" type="checkbox" value="True">
-                                <label class="govuk-label govuk-checkboxes__label" for="remove-photo">
-                                    Remove photo
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <input type="hidden" name="${this.cropFieldNames.x}">
-                <input type="hidden" name="${this.cropFieldNames.y}">
-                <input type="hidden" name="${this.cropFieldNames.width}">
-                <input type="hidden" name="${this.cropFieldNames.height}">
-            </div>
-        `;
+      <h3 class="govuk-heading-s" id="photo-heading">${photoHeadingText}</h3>
+      <div style="max-width: 300px;">
+        <img
+            src="${this.photoUrl || this.noPhotoUrl}"
+            id="profile-photo"
+            style="display: block; max-width: 100%;"
+        >
+      </div>
+      <div class="govuk-form-group" id="photo-form-group">
+        <label class="govuk-label" for="photo">
+          Choose a new profile photo
+        </label>
+        <div class="govuk-hint">
+          Choose a picture that helps others recognise you.
+          Your picture must be at least 500 by 500 pixels and no more than 8MB.
+          Once you have chosen a picture, you will be able to crop it.
+        </div>
+        <div id="photo-errors"></div>
+        <input
+          class="govuk-file-upload"
+          type="file"
+          name="${this.name}"
+          id="photo"
+        >
+        <br>
+        <button type="button" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" id="clear-image" style="display: none;">Clear image</button>
+        <div class="govuk-checkboxes govuk-checkboxes--small" id="remove-photo-wrapper" style="display: none;">
+          <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="remove-photo" name="${
+              this.removePhotoName
+            }" type="checkbox" value="True">
+            <label class="govuk-label govuk-checkboxes__label" for="remove-photo">
+              Remove photo
+            </label>
+          </div>
+        </div>
+      </div>
+      <div>
+          <input type="hidden" name="${this.cropFieldNames.x}">
+          <input type="hidden" name="${this.cropFieldNames.y}">
+          <input type="hidden" name="${this.cropFieldNames.width}">
+          <input type="hidden" name="${this.cropFieldNames.height}">
+      </div>
+    `;
 
     this.photoHeadingEl = this.querySelector("#photo-heading");
     this.photoImgEl = this.querySelector("#profile-photo");
@@ -120,6 +115,7 @@ class ProfilePhoto extends HTMLElement {
     this.photoErrorsEl = this.querySelector("#photo-errors");
     this.photoInputEl = this.querySelector("#photo");
     this.clearImageEl = this.querySelector("#clear-image");
+    this.removePhotoWrapperEl = this.querySelector("#remove-photo-wrapper");
     this.removePhotoEl = this.querySelector("#remove-photo");
     this.xEl = this.querySelector(`[name="${this.cropFieldNames.x}"]`);
     this.yEl = this.querySelector(`[name="${this.cropFieldNames.y}"]`);
@@ -129,7 +125,8 @@ class ProfilePhoto extends HTMLElement {
     );
 
     if (this.photoUrl) {
-      this.removePhotoEl.style.display = "block";
+      // this.removePhotoWrapperEl.style.display = "block";
+      this.clearImageEl.style.display = "inline";
     }
 
     this.photoInputEl.addEventListener("change", this.handleChangePhoto);
@@ -222,6 +219,9 @@ class ProfilePhoto extends HTMLElement {
 
     reader.readAsDataURL(file);
 
+    // Mark the photo for upload
+    this.removePhotoEl.checked = false;
+
     this.photoHeadingEl.innerHTML = "Crop new profile photo";
     this.clearImageEl.style.display = "inline";
   }
@@ -241,8 +241,13 @@ class ProfilePhoto extends HTMLElement {
     this.yEl.value = "";
     this.widthEl.value = "";
     this.heightEl.value = "";
-    this.photoImgEl.src = this.photoUrl || this.noPhotoUrl;
+    this.photoImgEl.src = this.noPhotoUrl;
     this.clearImageEl.style.display = "none";
+
+    // Mark the photo for deletion
+    this.removePhotoEl.checked = true;
+
+    this.photoHeadingEl.innerHTML = "No current profile photo";
   }
 
   setErrors(errors) {

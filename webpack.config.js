@@ -28,12 +28,23 @@ module.exports = {
 
   module: {
     rules: [
-      // Use asset-modules to handle image assets
+
+      // Copy all images and fonts to the output directory ignoring moj assets
       {
         test: /\.(png|jpe?g|gif|woff2?|svg|ico)$/i,
+        exclude: /@ministryofjustice\/frontend\/moj\/assets\/.*\.(png|jpe?g|gif|svg)$/i,
         type: 'asset/resource',
         generator: {
           filename: '[name][ext]',
+        },
+      },
+
+      // Copy MOJ assets into a custom output directory
+      {
+        test: /@ministryofjustice\/frontend\/moj\/assets\/.*\.(png|jpe?g|gif|svg)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'moj/[name][ext]',
         },
       },
 

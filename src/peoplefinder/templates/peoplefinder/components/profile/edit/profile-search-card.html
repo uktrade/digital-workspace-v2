@@ -1,0 +1,9 @@
+<p class="govuk-body">
+    This is how you will appear in search results.
+    {% if profile.profile_completion < 100 %}
+        Completing your profile makes it easier for colleagues to find you.
+    {% endif %}
+</p>
+<fieldset class="govuk-!-padding-3 govuk-!-margin-bottom-8">
+    {% include 'peoplefinder/components/search-result-person.html' with person=object %}
+</fieldset>

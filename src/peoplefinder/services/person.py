@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Optional
+from typing import Dict, List, Optional, Tuple
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -9,6 +9,8 @@ from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
+from django.utils.html import strip_tags
+from django.utils.safestring import mark_safe
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.management.commands.create_people_finder_groups import (
@@ -22,6 +24,7 @@ from peoplefinder.services.audit_log import (
     ObjectRepr,
 )
 from peoplefinder.tasks import person_update_notifier
+from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
 
 logger = logging.getLogger(__name__)
@@ -53,16 +56,104 @@ You can update any profile on Digital Workspace. Find out more at: https://works
 class PersonService:
     # List of fields that contribute to profile completion and their weights.
     PROFILE_COMPLETION_FIELDS: Dict[str, int] = {
-        "first_name": 0,
-        "last_name": 0,
-        "photo": 1,
-        "email": 0,
-        "primary_phone_number": 1,
-        "country": 1,
-        "manager": 1,
-        "location": 1,
-        "remote_working": 1,
-        "roles": 1,  # Related objects
+        "first_name": {
+            "weight": 0,
+            "edit_section": EditSections.PERSONAL,
+        },
+        "last_name": {
+            "weight": 0,
+            "edit_section": EditSections.PERSONAL,
+        },
+        "photo": {
+            "weight": 1,
+            "edit_section": EditSections.PERSONAL,
+            "form_id": "photo-form-group",
+        },
+        "email": {
+            "weight": 1,
+            "edit_section": EditSections.CONTACT,
+        },
+        "contact_email": {
+            "weight": 1,
+            "edit_section": EditSections.CONTACT,
+        },
+        "primary_phone_number": {
+            "weight": 1,
+            "edit_section": EditSections.CONTACT,
+        },
+        "location": {
+            "weight": 1,
+            "or_fields": [
+                "uk_office_location",
+                "international_building",
+            ],
+            "edit_section": EditSections.LOCATION,
+            "form_id": "id_uk_office_location",
+        },
+        "remote_working": {
+            "weight": 1,
+            "edit_section": EditSections.LOCATION,
+            "form_id": "id_remote_working_1",
+        },
+        "manager": {
+            "weight": 1,
+            "or_fields": [
+                "manager",
+                "do_not_work_for_dit",
+            ],
+            "edit_section": EditSections.TEAMS,
+            "form_id": "manager-component",
+        },
+        "roles": {  # Related objects
+            "weight": 1,
+            "edit_section": EditSections.TEAMS,
+            "form_id": "team-and-role-heading",
+        },
+    }
+    # Map of profile sections to edit sections and fields.
+    PROFILE_SECTION_MAPPING = {
+        ProfileSections.CONTACT: {
+            "edit_section": EditSections.CONTACT,
+            "fields": [
+                ("contact_email", "Preferred email"),
+                ("primary_phone_number", "Contact number"),
+            ],
+        },
+        ProfileSections.ROLE: {
+            "edit_section": EditSections.TEAMS,
+            "fields": [
+                ("get_manager_display", "My manager"),
+                ("get_grade_display", "Grade"),
+                ("get_roles_display", "My role(s)"),
+            ],
+        },
+        ProfileSections.LOCATION: {
+            "edit_section": EditSections.LOCATION,
+            "fields": [
+                ("get_remote_working_display", "Where I work"),
+                ("get_office_location_display", "Office location"),
+                ("get_workdays_display", "Days I work"),
+            ],
+        },
+        ProfileSections.ABOUT: {
+            "edit_section": EditSections.SKILLS,
+            "fields": [
+                ("get_key_skills_display", "My skills"),
+                ("fluent_languages", "Fluent languages"),
+                ("intermediate_languages", "Non-fluent languages"),
+                (
+                    "get_learning_interests_display",
+                    "My learning and development interests",
+                ),
+                ("get_networks_display", "My networks"),
+                ("get_professions_display", "My professions"),
+                (
+                    "get_additional_roles_display",
+                    "My further roles and responsibilities",
+                ),
+                ("previous_experience", "My previous experience"),
+            ],
+        },
     }
 
     def create_user_profile(self, user: User) -> Person:
@@ -336,32 +427,90 @@ class PersonService:
         field_statuses = self.profile_completion_field_statuses(person)
         for field_status in field_statuses:
             if field_statuses[field_status]:
-                complete_fields += self.PROFILE_COMPLETION_FIELDS[field_status]
+                complete_fields += self.PROFILE_COMPLETION_FIELDS[field_status][
+                    "weight"
+                ]
 
-        total_field_weights = sum(self.PROFILE_COMPLETION_FIELDS.values())
+        total_field_weights = sum(
+            [f["weight"] for f in self.PROFILE_COMPLETION_FIELDS.values()]
+        )
         percentage = (complete_fields / total_field_weights) * 100
         return int(percentage)
 
     def profile_completion_field_statuses(self, person: "Person") -> Dict[str, bool]:
         statuses: Dict[str, bool] = {}
-        for profile_completion_field in self.PROFILE_COMPLETION_FIELDS:
-            profile_completion_field_status = False
+        for (
+            profile_completion_field,
+            pcf_dict,
+        ) in self.PROFILE_COMPLETION_FIELDS.items():
             if profile_completion_field == "roles":
                 # If the person doesn't have a PK then there can't be any relationships.
                 if not person._state.adding and person.roles.all().exists():
-                    profile_completion_field_status = True
-            elif profile_completion_field == "location":
+                    statuses[profile_completion_field] = True
+                    continue
+
+            if "or_fields" in pcf_dict:
                 if any(
-                    [
-                        person.uk_office_location is not None,
-                        person.international_building is not None,
-                    ]
+                    [getattr(person, or_field) for or_field in pcf_dict["or_fields"]]
                 ):
-                    profile_completion_field_status = True
-            elif getattr(person, profile_completion_field, None) is not None:
-                profile_completion_field_status = True
-            statuses[profile_completion_field] = profile_completion_field_status
+                    statuses[profile_completion_field] = True
+                    continue
+
+            field_value = getattr(person, profile_completion_field, None)
+
+            if field_value:
+                statuses[profile_completion_field] = True
+                continue
+
+            statuses[profile_completion_field] = False
         return statuses
+
+    def get_profile_completion_field_edit_section(
+        self, field_name: str
+    ) -> EditSections:
+        return self.PROFILE_COMPLETION_FIELDS.get(field_name, {}).get(
+            "edit_section",
+            EditSections.PERSONAL,
+        )
+
+    def get_profile_completion_field_form_id(self, field_name: str) -> EditSections:
+        return self.PROFILE_COMPLETION_FIELDS.get(field_name, {}).get(
+            "form_id",
+            "id_" + field_name,
+        )
+
+    def get_profile_section_mapping(
+        self, profile_section: ProfileSections
+    ) -> Dict[str, str]:
+        return self.PROFILE_SECTION_MAPPING.get(profile_section, {})
+
+    def get_profile_section_values(
+        self, person: "Person", profile_section: ProfileSections
+    ) -> List[Tuple[str, str]]:
+        profile_section_fields = self.get_profile_section_mapping(
+            profile_section,
+        ).get("fields", [])
+        values = []
+        for field_name, field_label in profile_section_fields:
+            field_value = getattr(person, field_name)
+
+            if isinstance(field_value, str):
+                # Replace newlines with "<br>".
+                field_value = mark_safe(  # noqa: S308
+                    strip_tags(field_value).replace("\n", "<br>")
+                )
+
+            if callable(field_value):
+                field_value = field_value()
+
+            if field_value not in [None, ""]:
+                values.append(
+                    (
+                        field_label,
+                        field_value,
+                    )
+                )
+        return values
 
 
 class PersonAuditLogSerializer(AuditLogSerializer):
