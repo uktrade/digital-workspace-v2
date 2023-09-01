@@ -515,20 +515,28 @@ class Person(Indexed, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     edited_or_confirmed_at = models.DateTimeField(default=timezone.now)
 
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
+    first_name = models.CharField(
+        max_length=200,
+        help_text=(
+            "If you enter a preferred name below, this name will be hidden to others"
+        ),
+    )
+    last_name = models.CharField(
+        max_length=200,
+    )
     email = models.EmailField(
         "Main work email address",
         help_text=(
-            "Enter your own official work email address provided by the"
-            " organisation you are directly employed by or contracted to."
+            "The work email address provided by the organisation you are"
+            " directly employed by or contracted to. This is the email you use"
+            " to log into Digital Workspace."
         ),
     )
     pronouns = models.CharField(max_length=40, null=True, blank=True)
     name_pronunciation = models.CharField(
-        "A phonetic representation of your name",
+        "How to pronounce your full name",
         help_text=mark_safe(  # noqa: S308
-            "<a class='govuk-link' href='/news-and-views/say-my-name/' target='_blank' rel='noreferrer'>"
+            "A phonetic representation of your name.<br><a class='govuk-link' href='/news-and-views/say-my-name/' target='_blank' rel='noreferrer'>"
             "Tips for writing your name phonetically</a>"
         ),
         max_length=200,
@@ -536,36 +544,29 @@ class Person(Indexed, models.Model):
         blank=True,
     )
     contact_email = models.EmailField(
-        "Contact email address",
+        "Preferred email address",
         null=True,
         blank=True,
         help_text=(
-            "Enter the email address your colleagues should contact you on, for"
-            " example, a jobshare or Private Office mailbox. This will be shown on your"
-            " profile instead of your main work email address. Do not enter a personal"
-            " email address, or a work email address that is not safe for official"
-            " information."
+            "Complete if you want to show a different email address on your"
+            " profile for example a jobshare or Private Office mailbox. Do not"
+            " enter a personal email address, or work email address that is not"
+            " safe for official information."
         ),
     )
     primary_phone_number = models.CharField(
-        "Preferred contact number",
+        "Contact number",
         max_length=42,
         null=True,
         blank=True,
-        help_text=(
-            "Enter your preferred contact telephone number. Include your country"
-            " dialling code."
-        ),
+        help_text="Include your country dialling code.",
     )
     secondary_phone_number = models.CharField(
         "Alternative contact number",
         max_length=160,
         null=True,
         blank=True,
-        help_text=(
-            "Enter an alternative contact telephone number. Include your country"
-            " dialling code."
-        ),
+        help_text="Include your country dialling code.",
     )
     town_city_or_region = models.CharField(
         "Town, city or region",
@@ -575,7 +576,10 @@ class Person(Indexed, models.Model):
         help_text="For example, London",
     )
     regional_building = models.CharField(
-        "UK regional building or location", max_length=130, null=True, blank=True
+        "UK regional building or location",
+        max_length=130,
+        null=True,
+        blank=True,
     )
     regional_building.system_check_deprecated_details = {
         "msg": ("Person.regional_building been deprecated."),
@@ -583,16 +587,19 @@ class Person(Indexed, models.Model):
         "id": "peoplefinder.Person.E001",
     }
     international_building = models.CharField(
-        "International building or location", max_length=110, null=True, blank=True
+        "International location",
+        max_length=110,
+        null=True,
+        blank=True,
+        help_text="Complete if you work outside the UK.",
     )
     location_in_building = models.CharField(
-        "Where in the building do you work?",
+        "Location in the building",
         max_length=130,
         null=True,
         blank=True,
         help_text=(
-            "Skip this question if you work in a Foreign and Commonwealth Office (FCO)"
-            " building"
+            "If you sit in a particular area, you can let colleagues know here."
         ),
     )
     do_not_work_for_dit = models.BooleanField(
