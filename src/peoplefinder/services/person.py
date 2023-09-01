@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Optional
+from typing import Dict, List, Optional, Tuple
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -9,6 +9,8 @@ from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
+from django.utils.html import strip_tags
+from django.utils.safestring import mark_safe
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.management.commands.create_people_finder_groups import (
@@ -22,7 +24,7 @@ from peoplefinder.services.audit_log import (
     ObjectRepr,
 )
 from peoplefinder.tasks import person_update_notifier
-from peoplefinder.types import EditSections
+from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
 
 logger = logging.getLogger(__name__)
@@ -106,6 +108,51 @@ class PersonService:
             "weight": 1,
             "edit_section": EditSections.TEAMS,
             "form_id": "team-and-role-heading",
+        },
+    }
+    # Map of profile sections to edit sections and fields.
+    PROFILE_SECTION_MAPPING = {
+        ProfileSections.CONTACT: {
+            "edit_section": EditSections.CONTACT,
+            "fields": [
+                ("contact_email", "Preferred email"),
+                ("primary_phone_number", "Contact number"),
+            ],
+        },
+        ProfileSections.ROLE: {
+            "edit_section": EditSections.TEAMS,
+            "fields": [
+                ("get_manager_display", "My manager"),
+                ("get_grade_display", "Grade"),
+                ("get_roles_display", "My role(s)"),
+            ],
+        },
+        ProfileSections.LOCATION: {
+            "edit_section": EditSections.LOCATION,
+            "fields": [
+                ("get_remote_working_display", "Where I work"),
+                ("get_office_location_display", "Office location"),
+                ("get_workdays_display", "Days I work"),
+            ],
+        },
+        ProfileSections.ABOUT: {
+            "edit_section": EditSections.SKILLS,
+            "fields": [
+                ("get_key_skills_display", "My skills"),
+                ("fluent_languages", "Fluent languages"),
+                ("intermediate_languages", "Non-fluent languages"),
+                (
+                    "get_learning_interests_display",
+                    "My learning and development interests",
+                ),
+                ("get_networks_display", "My networks"),
+                ("get_professions_display", "My professions"),
+                (
+                    "get_additional_roles_display",
+                    "My further roles and responsibilities",
+                ),
+                ("previous_experience", "My previous experience"),
+            ],
         },
     }
 
@@ -404,15 +451,14 @@ class PersonService:
 
             if "or_fields" in pcf_dict:
                 if any(
-                    [
-                        getattr(person, or_field) is not None
-                        for or_field in pcf_dict["or_fields"]
-                    ]
+                    [getattr(person, or_field) for or_field in pcf_dict["or_fields"]]
                 ):
                     statuses[profile_completion_field] = True
                     continue
+
             field_value = getattr(person, profile_completion_field, None)
-            if field_value not in ["", None]:
+
+            if field_value:
                 statuses[profile_completion_field] = True
                 continue
 
@@ -432,6 +478,39 @@ class PersonService:
             "form_id",
             "id_" + field_name,
         )
+
+    def get_profile_section_mapping(
+        self, profile_section: ProfileSections
+    ) -> Dict[str, str]:
+        return self.PROFILE_SECTION_MAPPING.get(profile_section, {})
+
+    def get_profile_section_values(
+        self, person: "Person", profile_section: ProfileSections
+    ) -> List[Tuple[str, str]]:
+        profile_section_fields = self.get_profile_section_mapping(
+            profile_section,
+        ).get("fields", [])
+        values = []
+        for field_name, field_label in profile_section_fields:
+            field_value = getattr(person, field_name)
+
+            if isinstance(field_value, str):
+                # Replace newlines with "<br>".
+                field_value = mark_safe(  # noqa: S308
+                    strip_tags(field_value).replace("\n", "<br>")
+                )
+
+            if callable(field_value):
+                field_value = field_value()
+
+            if field_value not in [None, ""]:
+                values.append(
+                    (
+                        field_label,
+                        field_value,
+                    )
+                )
+        return values
 
 
 class PersonAuditLogSerializer(AuditLogSerializer):

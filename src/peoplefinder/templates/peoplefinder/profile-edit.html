@@ -1,6 +1,6 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% load static profile crispy_forms_tags crispy_forms_gds %}
+{% load static crispy_forms_tags crispy_forms_gds %}
 {% load webpack_static from webpack_loader %}
 
 {% block title %}
@@ -13,7 +13,6 @@
 
 {% block content %}
     <a href="{% url 'profile-view' profile.slug %}" class="govuk-back-link">Back to profile</a>
-
 
     {% include "peoplefinder/components/profile/edit/profile-completion.html" %}
 
