@@ -30,11 +30,6 @@
             <h2 class="govuk-heading-s">About the team</h2>
             <div class="govuk-body" data-testid="description">{{ team.description|markdown }}</div>
             <div>
-                <a class="govuk-button govuk-button--secondary"
-                   href="{% url 'organogram-team' team.slug %}"
-                   data-testid="team-organogram">View in organogram</a>
-            </div>
-            <div>
                 {% if perms.peoplefinder.change_team %}
                     <a class="govuk-button govuk-button--secondary"
                        href="{% url 'team-edit' team.slug %}"
