@@ -486,7 +486,7 @@ class PersonService:
 
     def get_profile_section_values(
         self, person: "Person", profile_section: ProfileSections
-    ) -> List[Tuple[str, str]]:
+    ) -> List[Tuple[str, str, str]]:
         profile_section_fields = self.get_profile_section_mapping(
             profile_section,
         ).get("fields", [])
@@ -506,6 +506,7 @@ class PersonService:
             if field_value not in [None, ""]:
                 values.append(
                     (
+                        field_name,
                         field_label,
                         field_value,
                     )
