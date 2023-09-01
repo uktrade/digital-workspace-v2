@@ -1,10 +1,13 @@
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import DetailView
+from django.utils.decorators import method_decorator
 
 from peoplefinder.models import Person
 from peoplefinder.services.team import TeamService
 from peoplefinder.views.base import PeoplefinderView
 
 
+@method_decorator(xframe_options_sameorigin, name="dispatch")
 class OrganogramView(DetailView, PeoplefinderView):
     template_name = "peoplefinder/organogram.html"
     model = Person

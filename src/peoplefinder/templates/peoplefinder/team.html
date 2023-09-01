@@ -53,6 +53,34 @@
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-half">
+                    <h2 class="govuk-heading-m">Direct members of {{ team.short_name }}</h2>
+                </div>
+                <div class="govuk-grid-column-one-half text-right separated">
+                    <a class="govuk-link inline-block"
+                       href="{% url 'team-people' team.slug %}">View all sub-team members</a>
+                </div>
+
+            </div>
+
+            {% include 'peoplefinder/components/pagination.html' with page=team_members page_numbers=page_numbers page_obj_name='people' %}
+
+            <ul class="pf-team-member-cards">
+                {% for member in team_members %}
+                    <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
+                {% endfor %}
+            </ul>
+
+            {% include 'peoplefinder/components/pagination.html' with page=team_members page_numbers=page_numbers page_obj_name='people' %}
+        </div>
+    </div>
+
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             {% if sub_teams %}
@@ -62,11 +90,7 @@
                     </div>
                     <div class="govuk-grid-column-one-half text-right separated">
                         <a class="govuk-link inline-block"
-                           href="{% url 'team-people' team.slug %}">View all people</a>
-                        <a class="govuk-link inline-block"
                            href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
-                        <a class="govuk-link inline-block"
-                           href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
                     </div>
                 </div>
                 <ul class="pf-team-cards">

@@ -25,6 +25,7 @@ class TeamDetailView(DetailView, PeoplefinderView):
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
+        page = self.request.GET.get("page", 1)
 
         team = context["team"]
         team_service = TeamService()
@@ -66,7 +67,19 @@ class TeamDetailView(DetailView, PeoplefinderView):
         ):
             context["team_audit_log"] = AuditLogService.get_audit_log(team)
 
+        members = self.get_team_members(team, context["sub_teams"])
+        paginator = Paginator(members, 40)
+        context["team_members"] = paginator.page(page)
+        context["page_numbers"] = list(paginator.get_elided_page_range(page))
+
         return context
+
+    def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
+        return (
+            TeamMember.active.filter(Q(team=team) | Q(team__in=sub_teams))
+            .order_by("person__first_name", "person__last_name")
+            .distinct("person", "person__first_name", "person__last_name")
+        )
 
 
 @method_decorator(transaction.atomic, name="post")
