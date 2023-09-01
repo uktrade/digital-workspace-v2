@@ -18,6 +18,7 @@ class AbstractBaseField:
             "name": self.name,
             "model_field_name": self.model_field_name,
             "boost": self.boost,
+            "parent_model_field": None,  # when is not None, field is Related
         }
 
     def get_mapping(self):
@@ -133,7 +134,9 @@ class RelatedIndexedFields(AbstractBaseField):
     def _get_related_mapping_object(self):
         fields = []
         for field in self.related_fields:
-            fields += [field.get_mapping()]
+            field_mapping = field.get_mapping()
+            field_mapping["parent_model_field"] = self.model_field_name
+            fields += [field_mapping]
         return {
             "related_fields": fields,
         }
