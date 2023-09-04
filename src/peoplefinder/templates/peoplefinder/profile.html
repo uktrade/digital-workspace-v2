@@ -35,6 +35,8 @@
                         ({{ profile.pronouns }})
                     {% endif %}
                 </p>
+            {% else %}
+                <div class="govuk-!-padding-bottom-4"></div>
             {% endif %}
             {% if not profile.is_active %}
                 <div class="govuk-warning-text">
