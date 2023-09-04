@@ -16,7 +16,10 @@ class RoleFormHelper(FormHelper):
                 legend="Team",
             ),
             Fieldset(
-                "job_title",
+                Field(
+                    "job_title",
+                    data_testid="job-title",
+                ),
                 "head_of_team",
                 legend_size=Size.SMALL,
                 legend="Job title",
@@ -46,5 +49,6 @@ class RoleFormsetFormHelper(RoleFormHelper):
                     """
                 ),
                 data_formset_form="",
+                data_testid="role-formset",
             ),
         )

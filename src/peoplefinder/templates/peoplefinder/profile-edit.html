@@ -57,11 +57,12 @@
                     <div data-formset="{{ teams_formset.prefix }}">
                         {% crispy teams_formset teams_formset_helper %}
                         <button class="govuk-button govuk-button--secondary"
-                                data-formset-add="{{ teams_formset_blank_form_url }}">Add a role</button>
+                                data-formset-add="{{ teams_formset_blank_form_url }}"
+                                data-testid="add-role">Add a role</button>
                     </div>
                 {% endif %}
                 <br>
-                <button class="govuk-button" type="submit">Save section</button>
+                <button class="govuk-button" type="submit" data-testid="save-profile">Save section</button>
             </form>
             <p class="govuk-body-s">
                 All the information on your profile will be visible to DBT staff and contractors on
