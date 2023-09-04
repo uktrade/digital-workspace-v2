@@ -422,6 +422,10 @@
   }
 }
 
+.profile-secondary {
+  color: $govuk-secondary-text-colour;
+}
+
 .profile-photo {
   --bubble-color: rgba(var(--color-1), var(--color-2), var(--color-3), 0.1);
 
