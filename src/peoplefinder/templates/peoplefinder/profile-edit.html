@@ -1,6 +1,6 @@
 {% extends 'peoplefinder/page.html' %}
 
-{% load static profile crispy_forms_tags crispy_forms_gds %}
+{% load static crispy_forms_tags crispy_forms_gds %}
 {% load webpack_static from webpack_loader %}
 
 {% block title %}
@@ -13,7 +13,6 @@
 
 {% block content %}
     <a href="{% url 'profile-view' profile.slug %}" class="govuk-back-link">Back to profile</a>
-
 
     {% include "peoplefinder/components/profile/edit/profile-completion.html" %}
 
@@ -58,11 +57,12 @@
                     <div data-formset="{{ teams_formset.prefix }}">
                         {% crispy teams_formset teams_formset_helper %}
                         <button class="govuk-button govuk-button--secondary"
-                                data-formset-add="{{ teams_formset_blank_form_url }}">Add a role</button>
+                                data-formset-add="{{ teams_formset_blank_form_url }}"
+                                data-testid="add-role">Add a role</button>
                     </div>
                 {% endif %}
                 <br>
-                <button class="govuk-button" type="submit">Save section</button>
+                <button class="govuk-button" type="submit" data-testid="save-profile">Save section</button>
             </form>
             <p class="govuk-body-s">
                 All the information on your profile will be visible to DBT staff and contractors on

@@ -1,5 +1,5 @@
 import uuid
-from typing import Iterator
+from typing import Iterator, Optional
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -9,8 +9,10 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import Case, F, Func, JSONField, Q, Value, When
 from django.db.models.functions import Concat
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
@@ -736,7 +738,13 @@ class Person(Indexed, models.Model):
 
     @property
     def search_grade(self):
-        return self.grade.name
+        return self.get_grade_display()
+
+    def save(self, *args, **kwargs):
+        from peoplefinder.services.person import PersonService
+
+        self.profile_completion = PersonService().get_profile_completion(person=self)
+        return super().save(*args, **kwargs)
 
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
@@ -751,11 +759,86 @@ class Person(Indexed, models.Model):
         # "Monday, Tuesday, Wednesday, ..."
         return ", ".join(map(str, workdays))
 
-    def save(self, *args, **kwargs):
-        from peoplefinder.services.person import PersonService
+    def get_office_location_display(self) -> Optional[str]:
+        if self.uk_office_location:
+            return mark_safe(  # noqa: S308
+                self.uk_office_location.name
+                + "<br>"
+                + strip_tags(self.location_in_building)
+            )
+        if self.international_building:
+            return self.international_building
+        return None
 
-        self.profile_completion = PersonService().get_profile_completion(person=self)
-        return super().save(*args, **kwargs)
+    def get_manager_display(self) -> Optional[str]:
+        if self.manager:
+            return mark_safe(  # noqa: S308
+                render_to_string(
+                    "peoplefinder/components/profile-link.html",
+                    {
+                        "profile": self.manager,
+                        "data_testid": "manager",
+                    },
+                )
+            )
+        return None
+
+    def get_roles_display(self) -> Optional[str]:
+        output = ""
+        for role in self.roles.select_related("team").all():
+            output += render_to_string(
+                "peoplefinder/components/profile-role.html", {"role": role}
+            )
+        return mark_safe(output)  # noqa: S308
+
+    def get_grade_display(self) -> Optional[str]:
+        if self.grade:
+            return self.grade.name
+        return None
+
+    def get_key_skills_display(self) -> Optional[str]:
+        if self.key_skills.exists() or self.other_key_skills:
+            skills_list = []
+            skills_list += self.key_skills.values_list("name", flat=True)
+            if self.other_key_skills:
+                skills_list.append(self.other_key_skills)
+            return ", ".join(skills_list)
+
+        return None
+
+    def get_learning_interests_display(self) -> Optional[str]:
+        if self.learning_interests.exists() or self.other_learning_interests:
+            interests_list = []
+            interests_list += self.learning_interests.values_list("name", flat=True)
+            if self.other_learning_interests:
+                interests_list.append(self.other_learning_interests)
+            return ", ".join(interests_list)
+
+        return None
+
+    def get_networks_display(self) -> Optional[str]:
+        if self.networks.exists():
+            return ", ".join(self.networks.values_list("name", flat=True))
+
+        return None
+
+    def get_professions_display(self) -> Optional[str]:
+        if self.professions.exists():
+            return ", ".join(self.professions.values_list("name", flat=True))
+
+        return None
+
+    def get_additional_roles_display(self) -> Optional[str]:
+        if self.additional_roles.exists() or self.other_additional_roles:
+            additional_roles_list = []
+            additional_roles_list += self.additional_roles.values_list(
+                "name", flat=True
+            )
+            if self.other_additional_roles:
+                additional_roles_list.append(self.other_additional_roles)
+            return ", ".join(additional_roles_list)
+
+        return None
 
 
 class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):

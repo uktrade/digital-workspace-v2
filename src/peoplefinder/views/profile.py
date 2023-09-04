@@ -25,13 +25,13 @@ from django.views.generic.edit import FormView, UpdateView
 from peoplefinder.forms.crispy_helper import RoleFormsetFormHelper
 from peoplefinder.forms.profile import ProfileLeavingDitForm, ProfileUpdateUserForm
 from peoplefinder.forms.profile_edit import (
-    PersonalProfileAdminForm,
-    PersonalProfileContactForm,
+    AdminProfileEditForm,
+    ContactProfileEditForm,
+    LocationProfileEditForm,
     PersonalProfileEditForm,
-    PersonalProfileLocationForm,
-    PersonalProfileSkillsForm,
-    PersonalProfileTeamsForm,
-    PersonalProfileTeamsFormset,
+    SkillsProfileEditForm,
+    TeamsProfileEditForm,
+    TeamsProfileEditFormset,
 )
 from peoplefinder.forms.role import RoleFormsetForm
 from peoplefinder.models import Person
@@ -39,7 +39,7 @@ from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.image import ImageService
 from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
-from peoplefinder.types import EditSections
+from peoplefinder.types import EditSections, ProfileSections
 
 from .base import HtmxFormView, PeoplefinderView
 
@@ -79,6 +79,7 @@ class ProfileDetailView(ProfileView, DetailView):
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
 
+        context["is_users_profile"] = bool(self.request.user == profile.user)
         context["roles"] = roles
         context["title"] = profile.full_name
 
@@ -103,6 +104,30 @@ class ProfileDetailView(ProfileView, DetailView):
                 "updated_at",
                 "edited_or_confirmed_at",
             ]
+
+        profile_sections = []
+        for profile_section in ProfileSections:
+            profile_sections.append(
+                {
+                    "title": profile_section.label,
+                    "url": reverse(
+                        "profile-edit-section",
+                        kwargs={
+                            "profile_slug": profile.slug,
+                            "edit_section": (
+                                PersonService().get_profile_section_mapping(
+                                    profile_section
+                                )["edit_section"]
+                            ),
+                        },
+                    ),
+                    "values": PersonService().get_profile_section_values(
+                        profile,
+                        profile_section,
+                    ),
+                }
+            )
+        context.update(profile_sections=profile_sections)
 
         return context
 
@@ -140,11 +165,11 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
 
     form_classes = {
         EditSections.PERSONAL: PersonalProfileEditForm,
-        EditSections.CONTACT: PersonalProfileContactForm,
-        EditSections.TEAMS: PersonalProfileTeamsForm,
-        EditSections.LOCATION: PersonalProfileLocationForm,
-        EditSections.SKILLS: PersonalProfileSkillsForm,
-        EditSections.ADMIN: PersonalProfileAdminForm,
+        EditSections.CONTACT: ContactProfileEditForm,
+        EditSections.TEAMS: TeamsProfileEditForm,
+        EditSections.LOCATION: LocationProfileEditForm,
+        EditSections.SKILLS: SkillsProfileEditForm,
+        EditSections.ADMIN: AdminProfileEditForm,
     }
 
     def get_form_class(self) -> type[BaseModelForm]:
@@ -177,7 +202,7 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update({"request": self.request})
+        kwargs.update({"request_user": self.request.user})
 
         return kwargs
 
@@ -239,7 +264,7 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
 
         return context
 
-    def get_teams_formset(self, request: HttpRequest) -> PersonalProfileTeamsFormset:
+    def get_teams_formset(self, request: HttpRequest) -> TeamsProfileEditFormset:
         self.object = self.get_object()
         teams_formset_kwargs = {
             "prefix": "teams",
@@ -254,13 +279,13 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             "queryset": self.object.roles.all(),
         }
         if request.method == "POST":
-            teams_formset = PersonalProfileTeamsFormset(
+            teams_formset = TeamsProfileEditFormset(
                 request.POST,
                 request.FILES,
                 **teams_formset_kwargs,
             )
         else:
-            teams_formset = PersonalProfileTeamsFormset(
+            teams_formset = TeamsProfileEditFormset(
                 **teams_formset_kwargs,
             )
 
@@ -288,7 +313,7 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
         if self.teams_formset:
             self.teams_formset.save()
 
-        if isinstance(form, PersonalProfileAdminForm):
+        if isinstance(form, AdminProfileEditForm):
             PersonService.update_groups_and_permissions(
                 person=self.object,
                 is_person_admin=form.cleaned_data["is_person_admin"],

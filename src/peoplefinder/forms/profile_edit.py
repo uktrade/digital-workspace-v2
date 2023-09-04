@@ -29,7 +29,7 @@ class PersonalProfileEditForm(forms.ModelForm):
     remove_photo = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
         first_name_label = self.fields["first_name"].label
@@ -122,7 +122,7 @@ class PersonalProfileEditForm(forms.ModelForm):
         return super().save(commit=commit)
 
 
-class PersonalProfileContactForm(forms.ModelForm):
+class ContactProfileEditForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = [
@@ -133,7 +133,7 @@ class PersonalProfileContactForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
         email_label = self.fields["email"].label
@@ -177,7 +177,7 @@ class PersonalProfileContactForm(forms.ModelForm):
         )
 
 
-class PersonalProfileTeamsForm(forms.ModelForm):
+class TeamsProfileEditForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = [
@@ -193,7 +193,7 @@ class PersonalProfileTeamsForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
         person = self.instance
@@ -247,7 +247,7 @@ class PersonalProfileTeamsForm(forms.ModelForm):
         return super().save(commit=commit)
 
 
-PersonalProfileTeamsFormset = forms.modelformset_factory(
+TeamsProfileEditFormset = forms.modelformset_factory(
     TeamMember,
     form=RoleForm,
     extra=0,
@@ -255,7 +255,7 @@ PersonalProfileTeamsFormset = forms.modelformset_factory(
 )
 
 
-class PersonalProfileLocationForm(forms.ModelForm):
+class LocationProfileEditForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = [
@@ -290,7 +290,7 @@ class PersonalProfileLocationForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
         remote_working_choices = self.fields["remote_working"].choices
@@ -346,7 +346,7 @@ class PersonalProfileLocationForm(forms.ModelForm):
         )
 
 
-class PersonalProfileSkillsForm(forms.ModelForm):
+class SkillsProfileEditForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = [
@@ -371,7 +371,7 @@ class PersonalProfileSkillsForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
         key_skills_label = self.fields["key_skills"].label
@@ -493,7 +493,7 @@ class PersonalProfileSkillsForm(forms.ModelForm):
         )
 
 
-class PersonalProfileAdminForm(forms.ModelForm):
+class AdminProfileEditForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = [
@@ -517,7 +517,7 @@ class PersonalProfileAdminForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request", None)
+        self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
         person = self.instance
@@ -530,7 +530,7 @@ class PersonalProfileAdminForm(forms.ModelForm):
         )
 
         # Enable the fields that only a superuser can edit.
-        if self.request and self.request.user.is_superuser:
+        if self.request_user and self.request_user.is_superuser:
             self.fields["is_superuser"].disabled = False
             self.fields["is_team_admin"].disabled = False
             self.fields["is_person_admin"].disabled = False

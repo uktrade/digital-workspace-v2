@@ -1,17 +1,45 @@
 from dataclasses import dataclass
+from typing import Any, Optional
 
 import pytest
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import Group, Permission
 from django.core.management import call_command
+from django.db import models
 from django.db.utils import IntegrityError
 from django.test.client import Client
 from django.urls import reverse
 from pytest_django.asserts import assertContains
 
-from peoplefinder.models import Person, Team
+from networks.models import Network
+from peoplefinder.forms.profile_edit import (
+    AdminProfileEditForm,
+    ContactProfileEditForm,
+    LocationProfileEditForm,
+    PersonalProfileEditForm,
+    SkillsProfileEditForm,
+    TeamsProfileEditForm,
+    TeamsProfileEditFormset,
+)
+from peoplefinder.forms.role import RoleFormsetForm
+from peoplefinder.management.commands.create_people_finder_groups import (
+    PERSON_ADMIN_GROUP_NAME,
+    TEAM_ADMIN_GROUP_NAME,
+)
+from peoplefinder.models import (
+    AdditionalRole,
+    Grade,
+    KeySkill,
+    LearningInterest,
+    Person,
+    Profession,
+    Team,
+    UkStaffLocation,
+    Workday,
+)
 from peoplefinder.services.person import PersonService
 from peoplefinder.test.factories import TeamFactory
+from peoplefinder.types import EditSections
 from user.models import User
 from user.test.factories import UserFactory
 
@@ -68,14 +96,94 @@ def check_permission(state, view_url, codename):
     assert response.status_code == 200
 
 
-@pytest.mark.skip
-def test_edit_profile(state):
+def test_edit_profile_personal(state):
     edit_profile_url = reverse(
-        "profile-edit",
+        "profile-edit-section",
         kwargs={
             "profile_slug": state.person.slug,
+            "edit_section": EditSections.PERSONAL.value,
         },
     )
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 200
+
+
+def test_edit_profile_contact(state):
+    edit_profile_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.CONTACT.value,
+        },
+    )
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 200
+
+
+def test_edit_profile_teams(state):
+    edit_profile_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.TEAMS.value,
+        },
+    )
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 200
+
+
+def test_edit_profile_location(state):
+    edit_profile_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.LOCATION.value,
+        },
+    )
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 200
+
+
+def test_edit_profile_skills(state):
+    edit_profile_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.SKILLS.value,
+        },
+    )
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 200
+
+
+def test_edit_profile_admin_no_superuser(state):
+    edit_profile_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.ADMIN.value,
+        },
+    )
+    response = state.client.get(edit_profile_url)
+    assert response.status_code == 403
+
+
+def test_edit_profile_admin_superuser(state):
+    PersonService.update_groups_and_permissions(
+        person=state.person,
+        is_person_admin=False,
+        is_team_admin=False,
+        is_superuser=True,
+    )
+
+    edit_profile_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.ADMIN.value,
+        },
+    )
+
     response = state.client.get(edit_profile_url)
     assert response.status_code == 200
 
@@ -243,36 +351,371 @@ def test_cannot_be_own_manager(state):
         state.person.save()
 
 
-@pytest.mark.skip
-def test_profile_edit_view(state):
+def get_payload_value(value) -> Any:
+    if obj_id := getattr(value, "id", None):
+        value = obj_id
+    elif isinstance(value, list) or isinstance(value, models.QuerySet):
+        value = [get_payload_value(item) for item in value]
+    return value
+
+
+def payload_from_cleaned_data(form) -> dict:
+    payload = {}
+
+    for key, value in form.cleaned_data.items():
+        if value:
+            if form.prefix:
+                payload[f"{form.prefix}-{key}"] = get_payload_value(value)
+            else:
+                payload[key] = get_payload_value(value)
+    return payload
+
+
+def test_profile_edit_personal_view(state):
     view_url = reverse(
-        "profile-edit",
+        "profile-edit-section",
         kwargs={
             "profile_slug": state.person.slug,
+            "edit_section": EditSections.PERSONAL.value,
         },
     )
 
     response = state.client.get(view_url)
 
     assert response.status_code == 200
-    assert state.person.primary_phone_number is None
+    assert state.person.first_name is "Jane"
+    assert state.person.last_name is "Smith"
+    assert state.person.pronouns is None
+    assert state.person.name_pronunciation is None
 
-    form = ProfileForm({"primary_phone_number": "07000"}, instance=state.person)
-    form.is_valid()
+    form = PersonalProfileEditForm(
+        {
+            "first_name": "Jane",
+            "last_name": "Smith",
+            "pronouns": "she/her",
+            "name_pronunciation": "Jay-n Smi-th",
+        },
+        instance=state.person,
+    )
+    assert form.is_valid()
 
     # Need to remove items with no value with cleaned data in order that "POST" will work
-    payload = {}
-    for key, value in form.cleaned_data.items():
-        if value:
-            payload[key] = value
+    payload = payload_from_cleaned_data(form)
 
     response = state.client.post(view_url, payload)
 
+    assert response.status_code == 302
+    assert response.url == view_url
+    assert state.person.first_name == "Jane"
+    assert state.person.last_name == "Smith"
+    assert state.person.pronouns == "she/her"
+    assert state.person.name_pronunciation == "Jay-n Smi-th"
+
+
+def test_profile_edit_contact_view(state):
+    view_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.CONTACT.value,
+        },
+    )
+
+    response = state.client.get(view_url)
+
     assert response.status_code == 200
-    assert state.person.primary_phone_number == "07000"
+    assert state.person.contact_email is None
+    assert state.person.primary_phone_number is None
+    assert state.person.secondary_phone_number is None
+
+    form = ContactProfileEditForm(
+        {
+            "contact_email": "jane.smith@test.com",
+            "primary_phone_number": "01234567890",
+            "secondary_phone_number": "09876543210",
+        },
+        instance=state.person,
+    )
+    assert form.is_valid()
+
+    # Need to remove items with no value with cleaned data in order that "POST" will work
+    payload = payload_from_cleaned_data(form)
+
+    response = state.client.post(view_url, payload)
+
+    assert response.status_code == 302
+    assert response.url == view_url
+    assert state.person.contact_email == "jane.smith@test.com"
+    assert state.person.primary_phone_number == "01234567890"
+    assert state.person.secondary_phone_number == "09876543210"
 
 
-@pytest.mark.skip
+def test_profile_edit_teams_view(state):
+    view_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.TEAMS.value,
+        },
+    )
+
+    response = state.client.get(view_url)
+
+    assert response.status_code == 200
+    assert state.person.contact_email is None
+    assert state.person.primary_phone_number is None
+    assert state.person.secondary_phone_number is None
+
+    grade = Grade.objects.all().first()
+
+    form = TeamsProfileEditForm(
+        {
+            "grade": grade,
+            "do_not_work_for_dit": True,
+        },
+        instance=state.person,
+    )
+    form.is_valid()
+    assert form.is_valid()
+
+    # Need to remove items with no value with cleaned data in order that "POST" will work
+    payload = {
+        "teams-TOTAL_FORMS": "0",
+        "teams-INITIAL_FORMS": "0",
+    }
+    payload.update(**payload_from_cleaned_data(form))
+
+    response = state.client.post(view_url, payload)
+
+    assert response.status_code == 302
+    assert response.url == view_url
+    assert state.person.grade == grade
+    assert state.person.manager is None
+    assert state.person.do_not_work_for_dit is True
+
+
+def test_profile_edit_teams_formset_view(state):
+    view_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.TEAMS.value,
+        },
+    )
+
+    response = state.client.get(view_url)
+
+    assert response.status_code == 200
+    assert state.person.roles.count() == 0
+
+    form = TeamsProfileEditForm(
+        {},
+        instance=state.person,
+    )
+    assert form.is_valid()
+
+    prefix = "teams-0"
+    teams_formset_form = RoleFormsetForm(
+        {
+            f"{prefix}-person": state.person,
+            f"{prefix}-team": state.team,
+            f"{prefix}-job_title": "Job title",
+            f"{prefix}-head_of_team": False,
+            f"{prefix}-DELETE": False,
+        },
+        prefix="teams-0",
+    )
+    teams_formset_form.is_valid()
+    assert teams_formset_form.is_valid()
+
+    # Need to remove items with no value with cleaned data in order that "POST" will work
+    payload = {
+        "teams-TOTAL_FORMS": "1",
+        "teams-INITIAL_FORMS": "0",
+    }
+    payload.update(**payload_from_cleaned_data(form))
+    payload.update(**payload_from_cleaned_data(teams_formset_form))
+
+    response = state.client.post(view_url, payload)
+
+    assert response.status_code == 302
+    assert response.url == view_url
+    assert state.person.roles.count() == 1
+    role = state.person.roles.first()
+    assert role.person == state.person
+    assert role.team == state.team
+    assert role.job_title == "Job title"
+    assert role.head_of_team is False
+
+
+def test_profile_edit_location_view(state):
+    view_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.LOCATION.value,
+        },
+    )
+
+    response = state.client.get(view_url)
+
+    assert response.status_code == 200
+    assert state.person.uk_office_location is None
+    assert state.person.remote_working is None
+    assert state.person.location_in_building is None
+    assert state.person.international_building is None
+    assert state.person.workdays.count() == 0
+
+    uk_office_location = UkStaffLocation.objects.all().first()
+    workday = Workday.objects.all().first()
+
+    form = LocationProfileEditForm(
+        {
+            "uk_office_location": uk_office_location,
+            "remote_working": Person.RemoteWorking.OFFICE_WORKER.value,
+            "location_in_building": "3rd floor",
+            "international_building": "international",
+            "workdays": [workday],
+        },
+        instance=state.person,
+    )
+    assert form.is_valid()
+
+    # Need to remove items with no value with cleaned data in order that "POST" will work
+    payload = payload_from_cleaned_data(form)
+
+    response = state.client.post(view_url, payload)
+
+    assert response.status_code == 302
+    assert response.url == view_url
+    assert state.person.uk_office_location == uk_office_location
+    assert state.person.remote_working == Person.RemoteWorking.OFFICE_WORKER
+    assert state.person.location_in_building == "3rd floor"
+    assert state.person.international_building == "international"
+    assert state.person.workdays.count() == 1
+    assert state.person.workdays.first() == workday
+
+
+def test_profile_edit_skills_view(state):
+    view_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.SKILLS.value,
+        },
+    )
+
+    response = state.client.get(view_url)
+
+    assert response.status_code == 200
+    assert state.person.key_skills.count() == 0
+    assert state.person.other_key_skills is None
+    assert state.person.fluent_languages is None
+    assert state.person.intermediate_languages is None
+    assert state.person.learning_interests.count() == 0
+    assert state.person.other_learning_interests is None
+    assert state.person.networks.count() == 0
+    assert state.person.professions.count() == 0
+    assert state.person.additional_roles.count() == 0
+    assert state.person.other_additional_roles is None
+    assert state.person.previous_experience is None
+
+    key_skills = [KeySkill.objects.all().first()]
+    learning_interests = [LearningInterest.objects.all().first()]
+    networks = []
+    # networks = [Network.objects.all().first()]
+    professions = [Profession.objects.all().first()]
+    additional_roles = [AdditionalRole.objects.all().first()]
+
+    form = SkillsProfileEditForm(
+        {
+            "key_skills": key_skills,
+            "other_key_skills": "Other key skills",
+            "fluent_languages": "French",
+            "intermediate_languages": "Italian",
+            "learning_interests": learning_interests,
+            "other_learning_interests": "Other learning interests",
+            "networks": networks,
+            "professions": professions,
+            "additional_roles": additional_roles,
+            "other_additional_roles": "Other additional roles",
+            "previous_experience": "Previous experience",
+        },
+        instance=state.person,
+    )
+    assert form.is_valid()
+
+    # Need to remove items with no value with cleaned data in order that "POST" will work
+    payload = payload_from_cleaned_data(form)
+
+    response = state.client.post(view_url, payload)
+
+    assert response.status_code == 302
+    assert response.url == view_url
+    assert state.person.key_skills.count() == 1
+    assert state.person.other_key_skills == "Other key skills"
+    assert state.person.fluent_languages == "French"
+    assert state.person.intermediate_languages == "Italian"
+    assert state.person.learning_interests.count() == 1
+    assert state.person.other_learning_interests == "Other learning interests"
+    assert state.person.networks.count() == 0
+    # assert state.person.networks.count() == 1
+    assert state.person.professions.count() == 1
+    assert state.person.additional_roles.count() == 1
+    assert state.person.other_additional_roles == "Other additional roles"
+    assert state.person.previous_experience == "Previous experience"
+
+
+def test_profile_edit_admin_view(state):
+    PersonService.update_groups_and_permissions(
+        person=state.person,
+        is_person_admin=False,
+        is_team_admin=False,
+        is_superuser=True,
+    )
+
+    view_url = reverse(
+        "profile-edit-section",
+        kwargs={
+            "profile_slug": state.person.slug,
+            "edit_section": EditSections.ADMIN.value,
+        },
+    )
+
+    response = state.client.get(view_url)
+
+    assert response.status_code == 200
+    assert state.person.user.is_superuser == True
+    assert (
+        state.person.user.groups.filter(name=PERSON_ADMIN_GROUP_NAME).exists() == False
+    )
+    assert state.person.user.groups.filter(name=TEAM_ADMIN_GROUP_NAME).exists() == False
+
+    form = AdminProfileEditForm(
+        {
+            "is_person_admin": True,
+            "is_team_admin": True,
+            "is_superuser": False,
+        },
+        instance=state.person,
+        request_user=state.user,
+    )
+    assert form.is_valid()
+
+    # Need to remove items with no value with cleaned data in order that "POST" will work
+    payload = payload_from_cleaned_data(form)
+
+    response = state.client.post(view_url, payload)
+
+    assert response.status_code == 302
+    assert response.url == view_url
+
+    state.person.user.refresh_from_db()
+    assert state.person.user.groups.filter(name=PERSON_ADMIN_GROUP_NAME).exists()
+    assert state.person.user.groups.filter(name=TEAM_ADMIN_GROUP_NAME).exists()
+    assert state.person.user.is_superuser == False
+
+
 def test_user_admin_no_superuser(state):
     PersonService.update_groups_and_permissions(
         person=state.person,
@@ -281,9 +724,10 @@ def test_user_admin_no_superuser(state):
         is_superuser=False,
     )
     view_url = reverse(
-        "profile-edit",
+        "profile-edit-section",
         kwargs={
             "profile_slug": state.person.slug,
+            "edit_section": EditSections.PERSONAL.value,
         },
     )
 
@@ -293,10 +737,11 @@ def test_user_admin_no_superuser(state):
 
     soup = BeautifulSoup(response.content, features="html.parser")
 
-    assert not soup.find(lambda tag: tag.name == "span" and "Permissions" in tag.text)
+    assert not soup.find(
+        lambda tag: tag.name == "a" and "Administer profile" in tag.text
+    )
 
 
-@pytest.mark.skip
 def test_user_admin_with_superuser(state):
     PersonService.update_groups_and_permissions(
         person=state.person,
@@ -305,9 +750,10 @@ def test_user_admin_with_superuser(state):
         is_superuser=True,
     )
     view_url = reverse(
-        "profile-edit",
+        "profile-edit-section",
         kwargs={
             "profile_slug": state.person.slug,
+            "edit_section": EditSections.PERSONAL.value,
         },
     )
 
@@ -317,10 +763,9 @@ def test_user_admin_with_superuser(state):
 
     soup = BeautifulSoup(response.content, features="html.parser")
 
-    assert soup.find(lambda tag: tag.name == "span" and "Permissions" in tag.text)
+    assert soup.find(lambda tag: tag.name == "a" and "Administer profile" in tag.text)
 
 
-@pytest.mark.skip
 def test_user_admin_no_superuser_but_team_person_admin(state):
     PersonService.update_groups_and_permissions(
         person=state.person,
@@ -329,9 +774,10 @@ def test_user_admin_no_superuser_but_team_person_admin(state):
         is_superuser=False,
     )
     view_url = reverse(
-        "profile-edit",
+        "profile-edit-section",
         kwargs={
             "profile_slug": state.person.slug,
+            "edit_section": EditSections.PERSONAL.value,
         },
     )
 
@@ -341,7 +787,9 @@ def test_user_admin_no_superuser_but_team_person_admin(state):
 
     soup = BeautifulSoup(response.content, features="html.parser")
 
-    assert not soup.find(lambda tag: tag.name == "span" and "Permissions" in tag.text)
+    assert not soup.find(
+        lambda tag: tag.name == "a" and "Administer profile" in tag.text
+    )
 
 
 class TestProfileUpdateUserView:
