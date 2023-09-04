@@ -1,10 +1,13 @@
+{% load profile %}
 {% load webpack_static from webpack_loader %}
 <div class="pf-person-search-result">
     <div class="pf-person-search-result__picture {{ person.is_active|yesno:',inactive-profile' }}">
         <a href="{% url 'profile-view' person.slug %}"
            onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }} })">
             {% if person.photo %}
-                <img src="{{ person.photo.url }}">
+                <div {% profile_photo_attrs person %}>
+                    <img src="{{ person.photo.url }}">
+                </div>
             {% else %}
                 <img src="{% webpack_static 'no-photo-large.png' %}">
             {% endif %}

@@ -57,7 +57,6 @@ class ModelIndexManager(QueryBuilder):
     def _get_related_fields(cls, model_field_name, mapping):
         fields = []
         for related_field_mapping in mapping:
-            related_field_mapping["related_field"] = model_field_name
             fields += cls._get_search_fields_from_mapping(related_field_mapping)
         return [
             RelatedFields(model_field_name, fields),
@@ -67,10 +66,6 @@ class ModelIndexManager(QueryBuilder):
     def _get_search_fields_from_mapping(cls, field_mapping):
         fields = []
         model_field_name = field_mapping["model_field_name"]
-        if "related_field" in field_mapping:
-            model_field_name = (
-                f"{field_mapping['related_field']}.{field_mapping['model_field_name']}"
-            )
 
         if "related_fields" in field_mapping:
             fields += cls._get_related_fields(

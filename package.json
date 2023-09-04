@@ -3,6 +3,7 @@
     "author": "Department for Business and Trade",
     "private": true,
     "dependencies": {
+        "@ministryofjustice/frontend": "^1.8.0",
         "cropperjs": "^1.5.13",
         "css-loader": "^5.2.7",
         "govuk-frontend": "^4.5.0",
@@ -17,16 +18,14 @@
     },
     "version": "0.1.0",
     "scripts": {
+        "assets:moj": "mkdir -p ./static/moj-frontend && cp -r ./node_modules/@ministryofjustice/frontend/moj/assets/* ./static/moj-frontend/",
         "dev": "webpack --config webpack.config.js --watch",
-        "build": "webpack --config webpack.config.js",
+        "build": "npm run assets:moj && webpack --config webpack.config.js",
         "heroku-postbuild": "npm run build",
         "clean": "rm -f ./assets/webpack_bundles/*"
     },
     "browserslist": [
-        "last 3 chrome versions",
-        "last 1 firefox version",
-        "last 1 safari version",
-        "IE 11"
+        "last 3 chrome versions", "last 1 firefox version", "last 1 safari version", "IE 11"
     ],
     "engines": {
         "npm": ">8.0.0",

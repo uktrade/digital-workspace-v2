@@ -8,9 +8,10 @@ from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.utils import ProgrammingError
 
-from wagtail.search.index import get_indexed_models
+from wagtail.search.index import get_indexed_models, SearchField
 
 from extended_search import models
+from extended_search.index import RelatedFields
 
 
 env_file_path = os.path.join(
@@ -213,11 +214,20 @@ class SearchSettings(NestedChainMap):
     def _get_all_indexed_fields(self):
         fields = {}
         for model_cls in get_indexed_models():
-            for search_field in model_cls.get_searchable_search_fields():
-                definition_cls = search_field.get_definition_model(model_cls)
-                if definition_cls not in fields:
-                    fields[definition_cls] = set()
-                fields[definition_cls].add(search_field)
+            for search_field in model_cls.search_fields:
+                if isinstance(search_field, SearchField) or isinstance(
+                    search_field, RelatedFields
+                ):
+                    definition_cls = search_field.get_definition_model(model_cls)
+                    if definition_cls not in fields:
+                        fields[definition_cls] = set()
+
+                    if isinstance(search_field, RelatedFields):
+                        for ff in search_field.fields:
+                            ff.parent_model_field = search_field.field_name
+                            fields[definition_cls].add(ff)
+                    else:
+                        fields[definition_cls].add(search_field)
 
         return fields
 
@@ -231,6 +241,10 @@ class SearchSettings(NestedChainMap):
                 field_name_str = getattr(
                     search_field, "model_field_name", search_field.field_name
                 )
+                if parent_model_field := getattr(
+                    search_field, "parent_model_field", None
+                ):
+                    field_name_str = f"{parent_model_field}.{field_name_str}"
                 field_key = f"{model_name_str}.{field_name_str}"
 
                 self.fields["boost_parts"]["fields"][field_key] = getattr(
