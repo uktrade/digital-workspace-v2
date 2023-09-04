@@ -377,41 +377,6 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
         return field_locations
 
 
-class ProfileLeavingDitView(SuccessMessageMixin, ProfileView, FormView):
-    template_name = "peoplefinder/profile-leaving-dit.html"
-    form_class = ProfileLeavingDitForm
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-
-        self.profile = Person.active.get(slug=self.kwargs["profile_slug"])
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context["profile"] = self.profile
-
-        return context
-
-    def form_valid(self, form):
-        person_service = PersonService()
-
-        person_service.left_dit(
-            request=self.request,
-            person=self.profile,
-            reported_by=self.request.user.profile,
-            comment=form.cleaned_data.get("comment"),
-        )
-
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse("profile-view", kwargs={"profile_slug": self.profile.slug})
-
-    def get_success_message(self, cleaned_data):
-        return f"A deletion request for {self.profile} has been sent to support"
-
-
 @method_decorator(transaction.atomic, name="post")
 class ProfileDeleteView(SingleObjectMixin, ProfileView):
     model = Person
