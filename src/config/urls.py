@@ -49,9 +49,7 @@ urlpatterns = [
     path("peoplefinder/api/", include(api_urlpatterns)),
     path("sitemap.xml", sitemap),
     # Feedback
-    path(
-        "feedback/", include(feedback_urls), name="feedback"
-    ),
+    path("feedback/", include(feedback_urls), name="feedback"),
     # Wagtail
     path("", include(wagtail_urls)),
 ]

@@ -5,6 +5,7 @@ from django.conf import settings
 from notifications_python_client.notifications import NotificationsAPIClient
 from django.urls import reverse
 
+
 def feedback_received_within(days=1):
     return BaseFeedback.objects.filter(
         submitted_at__gte=timezone.now() - timedelta(days=days)
@@ -25,7 +26,8 @@ def send_feedback_notification():
             email_address=email_recipient,
             template_id=settings.FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID,
             personalisation={
-                "feedback_url": settings.WAGTAIL_BASE_URL + reverse("submitted-feedback")
+                "feedback_url": settings.WAGTAIL_BASE_URL
+                + reverse("submitted-feedback")
             },
         )
 
