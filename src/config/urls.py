@@ -51,7 +51,7 @@ urlpatterns = [
     # Feedback
     path(
         "feedback/", include(feedback_urls), name="feedback"
-    ),  # @TODO [DWPF-454] remove feedback after beta
+    ),
     # Wagtail
     path("", include(wagtail_urls)),
 ]

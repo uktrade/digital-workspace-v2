@@ -1,6 +1,6 @@
 from config.celery import celery_app
 from peoplefinder.services.uk_staff_locations import UkStaffLocationService
-from src.core import utils
+from feedback import utils
 
 
 @celery_app.task(bind=True)
@@ -26,7 +26,7 @@ def ingest_uk_staff_locations(self):
 
 @celery_app.task(bind=True)
 def schedule_feedback_email_notification():
-    feedback_received = utils.has_received_feedback_within_24hrs()
+    feedback_received = utils.feedback_received_within()
     if not feedback_received:
         return
     message = utils.send_feedback_notification()

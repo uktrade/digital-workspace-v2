@@ -3,11 +3,11 @@ from django_feedback_govuk.models import BaseFeedback
 from datetime import timedelta
 from django.conf import settings
 from notifications_python_client.notifications import NotificationsAPIClient
+from django.urls import reverse
 
-
-def has_received_feedback_within_24hrs():
+def feedback_received_within(days=1):
     return BaseFeedback.objects.filter(
-        submitted_at__gte=timezone.now() - timedelta(days=1)
+        submitted_at__gte=timezone.now() - timedelta(days=days)
     ).exists()
 
 
@@ -25,7 +25,7 @@ def send_feedback_notification():
             email_address=email_recipient,
             template_id=settings.FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID,
             personalisation={
-                # TODO: if email template has dynamic content add key-values pair here
+                "feedback_url": settings.WAGTAIL_BASE_URL + reverse("submitted-feedback")
             },
         )
 
