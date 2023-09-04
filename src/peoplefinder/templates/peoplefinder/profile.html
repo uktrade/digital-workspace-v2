@@ -46,16 +46,6 @@
                 </div>
             {% endif %}
 
-            {% if profile.profile_completion < 100 %}
-                <div class="govuk-warning-text">
-                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">
-                        <span class="govuk-warning-text__assistive">Warning</span>
-                        Your profile is only {{ profile.profile_completion|floatformat:0 }}% complete.
-                    </strong>
-                </div>
-            {% endif %}
-
             {% for role in roles %}
                 {% include "peoplefinder/components/profile-role.html" with role=role %}
             {% endfor %}
