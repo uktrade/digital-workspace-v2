@@ -25,9 +25,10 @@ def test_profile(superuser, user, page: Page):
     # Profile edit page
     profile_edit_page = profile_view_page.goto_profile_edit_page()
     assert profile_edit_page.first_name == "John"
-    assert profile_edit_page.manager == "Super User"
-    profile_edit_page.add_role(job_title="CEO", head_of_team=True)
-    profile_edit_page.save_profile()
+    profile_edit_team_page = profile_edit_page.goto_profile_edit_team_page()
+    assert profile_edit_team_page.manager == "Super User"
+    profile_edit_team_page.add_role(job_title="CEO", head_of_team=True)
+    profile_edit_team_page.save_profile()
 
     # Updated profile page
     profile_view_page = profile_edit_page.goto_profile_view_page()
