@@ -28,7 +28,7 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l mb-0" data-testid="full-name">{{ profile.full_name }}</h1>
             {% if profile.name_pronunciation or profile.pronouns %}
-                <p class="govuk-body-m profile-secondary">
+                <p class="govuk-body-m pf-secondary-colour">
                     {% if profile.name_pronunciation %}{{ profile.name_pronunciation }}{% endif %}
                     {% if profile.pronouns %}
                         {% if profile.name_pronunciation %}<br>{% endif %}
@@ -115,7 +115,7 @@
                     </strong>
                 </div>
             {% else %}
-                <p class="govuk-body-s">Last edited {{ profile.edited_or_confirmed_at|naturalday:"j F Y" }}</p>
+                <p class="govuk-body-s pf-secondary-colour">Last edited {{ profile.edited_or_confirmed_at|naturalday:"j F Y" }}</p>
             {% endif %}
         </div>
     </div>
