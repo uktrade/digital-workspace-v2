@@ -20,10 +20,10 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import UpdateView
 
 from peoplefinder.forms.crispy_helper import RoleFormsetFormHelper
-from peoplefinder.forms.profile import ProfileLeavingDitForm, ProfileUpdateUserForm
+from peoplefinder.forms.profile import ProfileUpdateUserForm
 from peoplefinder.forms.profile_edit import (
     AdminProfileEditForm,
     ContactProfileEditForm,
