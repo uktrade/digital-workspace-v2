@@ -73,10 +73,6 @@ class PersonService:
             "weight": 1,
             "edit_section": EditSections.CONTACT,
         },
-        "contact_email": {
-            "weight": 1,
-            "edit_section": EditSections.CONTACT,
-        },
         "primary_phone_number": {
             "weight": 1,
             "edit_section": EditSections.CONTACT,
@@ -203,6 +199,7 @@ class PersonService:
             user=user,
             legacy_sso_user_id=user.legacy_sso_user_id,
             first_name=user.first_name,
+            preferred_first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
             login_count=1,
@@ -521,7 +518,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 48, (
+    assert len(Person._meta.get_fields()) == 49, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )

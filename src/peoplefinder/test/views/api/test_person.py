@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 
-
 url_name = "person-api-people-list"
 test_url = f"http://testserver{reverse(url_name)}"
 
@@ -100,7 +99,7 @@ class PersonTests(TestCase):
         assert len(response.json()["results"]) == 1
         person_returned = response.json()["results"][0]
 
-        assert person_returned["full_name"] == "John Smith"
+        assert person_returned["full_name"] == "J Smith"
         assert person_returned["formatted_roles"] == ["Software Engineer in Software"]
         roles = person_returned["roles"]
         assert isinstance(roles, list)

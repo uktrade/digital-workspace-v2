@@ -41,6 +41,9 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
         team_software = Team.objects.get(slug="software")
 
+        user_john_smith.profile.preferred_first_name = "J"
+        user_john_smith.profile.save(update_fields=["preferred_first_name"])
+
         user_john_smith.profile.roles.get_or_create(
             team=team_software,
             job_title="Software Engineer",
