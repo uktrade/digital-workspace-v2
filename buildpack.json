@@ -1,5 +1,5 @@
 {
-  "builpacks": [
+  "buildpacks": [
     {
       "paketo-buildpacks": "python"
     },
