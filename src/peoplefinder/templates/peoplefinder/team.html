@@ -53,37 +53,36 @@
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-one-half">
-                    <h2 class="govuk-heading-m">Direct members of {{ team.short_name }}</h2>
+                    <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
                 </div>
-                <div class="govuk-grid-column-one-half text-right separated">
-                    <a class="govuk-link inline-block"
-                       href="{% url 'team-people' team.slug %}">View all sub-team members</a>
-                </div>
-
+                {% if sub_teams %}
+                    <div class="govuk-grid-column-one-half text-right separated">
+                        <a class="govuk-link inline-block"
+                           href="{% url 'team-people' team.slug %}">View everyone in {{ team.short_name }} and sub-teams</a>
+                    </div>
+                {% endif %}
             </div>
-
-            {% include 'peoplefinder/components/pagination.html' with page=team_members page_numbers=page_numbers page_obj_name='people' %}
-
-            <ul class="pf-team-member-cards">
-                {% for member in team_members %}
-                    <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
-                {% endfor %}
-            </ul>
-
-            {% include 'peoplefinder/components/pagination.html' with page=team_members page_numbers=page_numbers page_obj_name='people' %}
+            {% if direct_team_members %}
+                <ul class="pf-team-member-cards">
+                    {% for member in direct_team_members %}
+                        <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="govuk-body-s">This team has no direct members</p>
+            {% endif %}
         </div>
     </div>
 
-    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    {% if sub_teams %}
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            {% if sub_teams %}
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-one-half">
                         <h2 class="govuk-heading-m">Teams within {{ team.short_name }}</h2>
@@ -98,16 +97,9 @@
                         <li>{% include 'peoplefinder/components/team-card.html' with team=team %}</li>
                     {% endfor %}
                 </ul>
-            {% else %}
-                <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
-                <ul class="pf-team-member-cards">
-                    {% for member in members %}
-                        <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% if perms.peoplefinder.change_team and perms.peoplefinder.view_auditlog %}
         <details class="govuk-details" data-module="govuk-details">
