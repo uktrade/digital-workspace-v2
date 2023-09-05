@@ -8,6 +8,7 @@ env:
 
   variables:
     PAKETO_BUILDER_VERSION: 0.2.326-full
+    LIFECYCLE_VERSION: 0.16.0
 
 phases:
 #   install:
