@@ -73,10 +73,6 @@ class PersonService:
             "weight": 1,
             "edit_section": EditSections.CONTACT,
         },
-        "contact_email": {
-            "weight": 1,
-            "edit_section": EditSections.CONTACT,
-        },
         "primary_phone_number": {
             "weight": 1,
             "edit_section": EditSections.CONTACT,

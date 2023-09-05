@@ -140,7 +140,7 @@ class ContactProfileEditForm(forms.ModelForm):
         self.fields["email"].label = ""
         self.fields["email"].disabled = True
 
-        contact_email_label = self.fields["contact_email"].label
+        contact_email_label = self.fields["contact_email"].label + " (optional)"
         self.fields["contact_email"].label = ""
 
         primary_phone_number_label = self.fields["primary_phone_number"].label
