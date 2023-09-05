@@ -312,7 +312,7 @@ class LocationProfileEditForm(forms.ModelForm):
         )
         self.fields["international_building"].label = ""
 
-        workdays_label = self.fields["workdays"].label
+        workdays_label = self.fields["workdays"].label + " (optional)"
         self.fields["workdays"].label = ""
 
         self.helper = FormHelper()
