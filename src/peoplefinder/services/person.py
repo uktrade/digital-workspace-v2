@@ -199,6 +199,7 @@ class PersonService:
             user=user,
             legacy_sso_user_id=user.legacy_sso_user_id,
             first_name=user.first_name,
+            preferred_first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
             login_count=1,
