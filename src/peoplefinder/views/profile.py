@@ -59,6 +59,34 @@ class ProfileView(PeoplefinderView):
 
         return qs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        profile = context["profile"]
+        field_statuses = PersonService().profile_completion_field_statuses(profile)
+
+        context.update(
+            missing_profile_completion_fields=[
+                (
+                    reverse(
+                        "profile-edit-section",
+                        kwargs={
+                            "profile_slug": profile.slug,
+                            "edit_section": PersonService().get_profile_completion_field_edit_section(
+                                field
+                            ),
+                        },
+                    )
+                    + "#"
+                    + PersonService().get_profile_completion_field_form_id(field),
+                    field.replace("_", " ").capitalize(),
+                )
+                for field, field_status in field_statuses.items()
+                if not field_status
+            ],
+        )
+        return context
+
 
 class ProfileLegacyView(ProfileView):
     def get(self, request: HttpRequest, profile_legacy_slug: str) -> HttpResponse:
@@ -217,8 +245,6 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             profile=profile,
         )
 
-        field_statuses = PersonService().profile_completion_field_statuses(profile)
-
         edit_sections = [section for section in EditSections]
         if not self.request.user.is_superuser:
             edit_sections.remove(EditSections.ADMIN)
@@ -230,24 +256,6 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             profile_slug=profile.slug,
             roles=roles,
             update_user_form=update_user_form,
-            missing_profile_completion_fields=[
-                (
-                    reverse(
-                        "profile-edit-section",
-                        kwargs={
-                            "profile_slug": profile.slug,
-                            "edit_section": PersonService().get_profile_completion_field_edit_section(
-                                field
-                            ),
-                        },
-                    )
-                    + "#"
-                    + PersonService().get_profile_completion_field_form_id(field),
-                    field.replace("_", " ").capitalize(),
-                )
-                for field, field_status in field_statuses.items()
-                if not field_status
-            ],
         )
 
         if self.edit_section == EditSections.TEAMS:
