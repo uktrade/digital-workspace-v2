@@ -15,6 +15,7 @@ class PersonalProfileEditForm(forms.ModelForm):
         model = Person
         fields = [
             "first_name",
+            "preferred_first_name",
             "last_name",
             "pronouns",
             "photo",
@@ -34,6 +35,12 @@ class PersonalProfileEditForm(forms.ModelForm):
 
         first_name_label = self.fields["first_name"].label
         self.fields["first_name"].label = ""
+        self.fields["first_name"].disabled = True
+
+        preferred_first_name_label = (
+            self.fields["preferred_first_name"].label + " (optional)"
+        )
+        self.fields["preferred_first_name"].label = ""
 
         last_name_label = self.fields["last_name"].label
         self.fields["last_name"].label = ""
@@ -53,6 +60,11 @@ class PersonalProfileEditForm(forms.ModelForm):
                 "first_name",
                 legend_size=Size.MEDIUM,
                 legend=first_name_label,
+            ),
+            Fieldset(
+                "preferred_first_name",
+                legend_size=Size.MEDIUM,
+                legend=preferred_first_name_label,
             ),
             Fieldset(
                 "last_name",

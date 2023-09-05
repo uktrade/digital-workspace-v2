@@ -30,7 +30,6 @@ from .db_utils import (
     recreate_db,
 )
 
-
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 
@@ -158,7 +157,8 @@ def user(django_db_blocker, django_user_model):
     john_user_profile = Person.objects.get(user=user)
     super_user_profile = Person.objects.get(user__username="testsuperuser")
 
+    john_user_profile.preferred_first_name = "J"
     john_user_profile.manager = super_user_profile
-    john_user_profile.save(update_fields=["manager"])
+    john_user_profile.save(update_fields=["preferred_first_name", "manager"])
 
     return user
