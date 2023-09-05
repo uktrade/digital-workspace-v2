@@ -519,9 +519,9 @@ class Person(Indexed, models.Model):
 
     first_name = models.CharField(
         max_length=200,
-        help_text=(
-            "If you enter a preferred name below, this name will be hidden to others"
-        ),
+        # help_text=(
+        #     "If you enter a preferred name below, this name will be hidden to others"
+        # ),
     )
     last_name = models.CharField(
         max_length=200,
