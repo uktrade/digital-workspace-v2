@@ -1,7 +1,8 @@
 import pytest
+from django.test import override_settings
 from django_feedback_govuk.models import BaseFeedback
-from feedback.utils import feedback_received_within
-from feedback.utils import send_feedback_notification
+
+from feedback.utils import feedback_received_within, send_feedback_notification
 
 
 def test_no_feedback_submitted(db):
@@ -24,29 +25,62 @@ def test_feedback_submitted_over_24hrs_ago(db, freezer):
     assert not feedback_received_within()
 
 
+@override_settings(
+    GOVUK_NOTIFY_API_KEY=None,
+    FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID=None,
+    WAGTAILADMIN_BASE_URL=None
+)
 def test_send_feedback_notification_when_no_settings_are_set():
     # send_feedback_notification() raises an error when called with no settings provided
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError) as raised_execption:
         send_feedback_notification()
+        assert raised_execption.value.args[0] == "Missing required settings for sending feedback notifications"
 
 
+@override_settings(
+    GOVUK_NOTIFY_API_KEY="test-api-key",
+    FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=[],
+    FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID="test-template-id",
+    WAGTAILADMIN_BASE_URL="https://test.example.com/"
+)
 def test_send_feedback_notification_with_no_email_recipients():
     # send_feedback_notification() raises an error when the email_recipients list is empty
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as raised_exception:
         send_feedback_notification()
+        assert raised_exception.value.args[0] == "Missing required settings for sending feedback notifications"
 
 
-# CASE 2: Method doesn't raise an error when it is called with valid settings (Django docs -> override_settings)
-# def test_send_feedback_notification_with_valid_settings():
-#     ...
+@override_settings(
+    GOVUK_NOTIFY_API_KEY="this-is-my-really-long-api-key-because-gov-uk-notify-expects-it-to-be-long-when-you-create-a-service",
+    FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=["test@email.com"],
+    FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID="test-template-id",
+    WAGTAILADMIN_BASE_URL="https://test.example.com/"
+)
+def test_send_feedback_notification_with_valid_settings(mocker):
+    # send_feedback_notification() does not raise an error when all the settings provided are valid
+    mock_send_email_notification = mocker.patch(
+        "feedback.utils.NotificationsAPIClient.send_email_notification"
+    )
+    send_feedback_notification()
+    mock_send_email_notification.assert_called_once_with(
+        email_address="test@email.com",
+        template_id="test-template-id",
+        personalisation={"feedback_url": "https://test.example.com/feedback/submitted/"}
+    )
 
 
-# CASE 4: If the length is 1, then the send_email_notification method is called once (mock + mock.patch() + make sure all parameters included are correct)
-# def test_send_feedback_email_notification_with_one_email_recipient():
-#     ...
-
-
-# CASE 5: If the length is more than 1, the send_email_notification method is called once
-# per email address, test to make sure it is called with the expected data the expected number of times
-# (this is the most complex test in this scenario so don't worry too much,
-# I have to look at an example every time I write these types of tests)
+@override_settings(
+    GOVUK_NOTIFY_API_KEY="this-is-my-really-long-api-key-because-gov-uk-notify-expects-it-to-be-long-when-you-create-a-service",
+    FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=["test1@email.com", "test2@email.com"],
+    FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID="test-template-id",
+    WAGTAILADMIN_BASE_URL="https://test.example.com/"
+)
+def test_send_feedback_notification_with_multiple_emails(mocker):
+    # send_email_notification() gets called once per email address
+    mock_send_email_notification = mocker.patch(
+        "feedback.utils.NotificationsAPIClient.send_email_notification"
+    )
+    send_feedback_notification()
+    assert len(mock_send_email_notification.call_args_list) == 2
+    print(mock_send_email_notification.call_args_list)
+    assert False
