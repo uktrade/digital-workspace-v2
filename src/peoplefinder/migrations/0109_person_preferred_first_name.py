@@ -37,7 +37,10 @@ class Migration(migrations.Migration):
                 max_length=200,
             ),
         ),
+        # Use SQL to update the first_name field on the Person model with the
+        # first_name field on the User model (if they are different)
         migrations.RunSQL(
+            # We use SQL instead of the ORM here for simplicity and performance.
             sql="""
                 UPDATE peoplefinder_person
                 SET first_name = user_user.first_name
