@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import call
 from django.test import override_settings
 from django_feedback_govuk.models import BaseFeedback
 
@@ -28,33 +29,39 @@ def test_feedback_submitted_over_24hrs_ago(db, freezer):
 @override_settings(
     GOVUK_NOTIFY_API_KEY=None,
     FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID=None,
-    WAGTAILADMIN_BASE_URL=None
+    WAGTAILADMIN_BASE_URL=None,
 )
 def test_send_feedback_notification_when_no_settings_are_set():
     # send_feedback_notification() raises an error when called with no settings provided
     with pytest.raises(ValueError) as raised_execption:
         send_feedback_notification()
-        assert raised_execption.value.args[0] == "Missing required settings for sending feedback notifications"
+        assert (
+            raised_execption.value.args[0]
+            == "Missing required settings for sending feedback notifications"
+        )
 
 
 @override_settings(
     GOVUK_NOTIFY_API_KEY="test-api-key",
     FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=[],
     FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID="test-template-id",
-    WAGTAILADMIN_BASE_URL="https://test.example.com/"
+    WAGTAILADMIN_BASE_URL="https://test.example.com/",
 )
 def test_send_feedback_notification_with_no_email_recipients():
     # send_feedback_notification() raises an error when the email_recipients list is empty
     with pytest.raises(ValueError) as raised_exception:
         send_feedback_notification()
-        assert raised_exception.value.args[0] == "Missing required settings for sending feedback notifications"
+        assert (
+            raised_exception.value.args[0]
+            == "Missing required settings for sending feedback notifications"
+        )
 
 
 @override_settings(
     GOVUK_NOTIFY_API_KEY="this-is-my-really-long-api-key-because-gov-uk-notify-expects-it-to-be-long-when-you-create-a-service",
     FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=["test@email.com"],
     FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID="test-template-id",
-    WAGTAILADMIN_BASE_URL="https://test.example.com/"
+    WAGTAILADMIN_BASE_URL="https://test.example.com/",
 )
 def test_send_feedback_notification_with_valid_settings(mocker):
     # send_feedback_notification() does not raise an error when all the settings provided are valid
@@ -65,7 +72,9 @@ def test_send_feedback_notification_with_valid_settings(mocker):
     mock_send_email_notification.assert_called_once_with(
         email_address="test@email.com",
         template_id="test-template-id",
-        personalisation={"feedback_url": "https://test.example.com/feedback/submitted/"}
+        personalisation={
+            "feedback_url": "https://test.example.com/feedback/submitted/"
+        },
     )
 
 
@@ -73,14 +82,29 @@ def test_send_feedback_notification_with_valid_settings(mocker):
     GOVUK_NOTIFY_API_KEY="this-is-my-really-long-api-key-because-gov-uk-notify-expects-it-to-be-long-when-you-create-a-service",
     FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=["test1@email.com", "test2@email.com"],
     FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID="test-template-id",
-    WAGTAILADMIN_BASE_URL="https://test.example.com/"
+    WAGTAILADMIN_BASE_URL="https://test.example.com/",
 )
 def test_send_feedback_notification_with_multiple_emails(mocker):
-    # send_email_notification() gets called once per email address
+    # send_email_notification() is called once per email address
     mock_send_email_notification = mocker.patch(
         "feedback.utils.NotificationsAPIClient.send_email_notification"
     )
+    calls = [
+        call(
+            email_address="test1@email.com",
+            template_id="test-template-id",
+            personalisation={
+                "feedback_url": "https://test.example.com/feedback/submitted/"
+            },
+        ),
+        call(
+            email_address="test2@email.com",
+            template_id="test-template-id",
+            personalisation={
+                "feedback_url": "https://test.example.com/feedback/submitted/"
+            },
+        ),
+    ]
     send_feedback_notification()
-    assert len(mock_send_email_notification.call_args_list) == 2
-    print(mock_send_email_notification.call_args_list)
-    assert False
+    assert mock_send_email_notification.call_count == len(calls)
+    mock_send_email_notification.assert_has_calls(calls)
