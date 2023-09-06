@@ -11,6 +11,33 @@ def populate_preferred_first_name(apps, schema_editor):
     Person.objects.update(preferred_first_name=models.F("first_name"))
 
 
+def reverse_preferred_first_name(apps, schema_editor):
+    """
+    Reverse populate_preferred_first_name
+    """
+    Person = apps.get_model("peoplefinder", "Person")
+    Person.objects.update(first_name=models.F("preferred_first_name"))
+
+
+def populate_first_name(apps, schema_editor):
+    Person = apps.get_model("peoplefinder", "Person")
+    person_iterator = (
+        Person.objects.select_related("user")
+        .exclude(
+            first_name=models.F("user__first_name"),
+        )
+        .only("first_name", "user__first_name")
+        .iterator(chunk_size=500)
+    )
+
+    update_list = []
+    for person in person_iterator:
+        person.first_name = person.user.first_name
+        update_list.append(person)
+
+    Person.objects.bulk_update(update_list, ["first_name"])
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("peoplefinder", "0108_alter_person_contact_email_alter_person_email_and_more"),
@@ -27,7 +54,8 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.RunPython(
-            populate_preferred_first_name, reverse_code=migrations.RunPython.noop
+            populate_preferred_first_name,
+            reverse_code=reverse_preferred_first_name,
         ),
         migrations.AlterField(
             model_name="person",
@@ -37,17 +65,8 @@ class Migration(migrations.Migration):
                 max_length=200,
             ),
         ),
-        # Use SQL to update the first_name field on the Person model with the
-        # first_name field on the User model (if they are different)
-        migrations.RunSQL(
-            # We use SQL instead of the ORM here for simplicity and performance.
-            sql="""
-                UPDATE peoplefinder_person
-                SET first_name = user_user.first_name
-                FROM user_user
-                WHERE peoplefinder_person.user_id = user_user.id
-                AND peoplefinder_person.first_name <> user_user.first_name;
-            """,
-            reverse_sql=migrations.RunSQL.noop,
+        migrations.RunPython(
+            populate_first_name,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
