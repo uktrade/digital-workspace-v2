@@ -7,8 +7,8 @@ env:
     SLACK_TOKEN: "/codebuild/slack_api_token"
 
   variables:
-    PAKETO_BUILDER_VERSION: 0.2.326-full
-    LIFECYCLE_VERSION: 0.16.0
+    PAKETO_BUILDER_VERSION: 0.2.395-full
+    LIFECYCLE_VERSION: 0.16.3
 
 phases:
 #   install:
