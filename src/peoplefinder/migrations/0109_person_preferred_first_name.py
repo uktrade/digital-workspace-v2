@@ -4,8 +4,38 @@ from django.db import migrations, models
 
 
 def populate_preferred_first_name(apps, schema_editor):
+    """
+    Update all Profile models preferred_first_name with the profile.first_name
+    """
     Person = apps.get_model("peoplefinder", "Person")
     Person.objects.update(preferred_first_name=models.F("first_name"))
+
+
+def reverse_preferred_first_name(apps, schema_editor):
+    """
+    Reverse populate_preferred_first_name
+    """
+    Person = apps.get_model("peoplefinder", "Person")
+    Person.objects.update(first_name=models.F("preferred_first_name"))
+
+
+def populate_first_name(apps, schema_editor):
+    Person = apps.get_model("peoplefinder", "Person")
+    person_iterator = (
+        Person.objects.select_related("user")
+        .exclude(
+            first_name=models.F("user__first_name"),
+        )
+        .only("first_name", "user__first_name")
+        .iterator(chunk_size=500)
+    )
+
+    update_list = []
+    for person in person_iterator:
+        person.first_name = person.user.first_name
+        update_list.append(person)
+
+    Person.objects.bulk_update(update_list, ["first_name"])
 
 
 class Migration(migrations.Migration):
@@ -24,7 +54,8 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.RunPython(
-            populate_preferred_first_name, reverse_code=migrations.RunPython.noop
+            populate_preferred_first_name,
+            reverse_code=reverse_preferred_first_name,
         ),
         migrations.AlterField(
             model_name="person",
@@ -33,5 +64,9 @@ class Migration(migrations.Migration):
                 help_text="How you would prefer to be called, for example a shortened version of your name. This will appear on your profile.",
                 max_length=200,
             ),
+        ),
+        migrations.RunPython(
+            populate_first_name,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
