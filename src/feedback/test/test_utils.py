@@ -24,21 +24,21 @@ def test_feedback_submitted_over_24hrs_ago(db, freezer):
     assert not feedback_received_within()
 
 
-# CASE 1: Method raises an error when calling and no settings are set
 def test_send_feedback_notification_when_no_settings_are_set():
+    # send_feedback_notification() raises an error when called with no settings provided
     with pytest.raises(Exception):
+        send_feedback_notification()
+
+
+def test_send_feedback_notification_with_no_email_recipients():
+    # send_feedback_notification() raises an error when the email_recipients list is empty
+    with pytest.raises(ValueError):
         send_feedback_notification()
 
 
 # CASE 2: Method doesn't raise an error when it is called with valid settings (Django docs -> override_settings)
 # def test_send_feedback_notification_with_valid_settings():
 #     ...
-
-
-# CASE 3: If the length of the email recipients is 0, an error is raised
-def test_send_feedback_notification_with_no_email_recipients():
-    with pytest.raises(ValueError):
-        send_feedback_notification()
 
 
 # CASE 4: If the length is 1, then the send_email_notification method is called once (mock + mock.patch() + make sure all parameters included are correct)
