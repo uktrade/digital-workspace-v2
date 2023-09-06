@@ -4,6 +4,9 @@ from django.db import migrations, models
 
 
 def populate_preferred_first_name(apps, schema_editor):
+    """
+    Update all Profile models preferred_first_name with the profile.first_name
+    """
     Person = apps.get_model("peoplefinder", "Person")
     Person.objects.update(preferred_first_name=models.F("first_name"))
 
@@ -33,5 +36,15 @@ class Migration(migrations.Migration):
                 help_text="How you would prefer to be called, for example a shortened version of your name. This will appear on your profile.",
                 max_length=200,
             ),
+        ),
+        migrations.RunSQL(
+            sql="""
+                UPDATE peoplefinder_person
+                SET first_name = user_user.first_name
+                FROM user_user
+                WHERE peoplefinder_person.user_id = user_user.id
+                AND peoplefinder_person.first_name <> user_user.first_name;
+            """,
+            reverse_sql=migrations.RunSQL.noop,
         ),
     ]
