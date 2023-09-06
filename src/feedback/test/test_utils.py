@@ -89,7 +89,7 @@ def test_send_feedback_notification_with_multiple_emails(mocker):
     mock_send_email_notification = mocker.patch(
         "feedback.utils.NotificationsAPIClient.send_email_notification"
     )
-    calls = [
+    expected_calls = [
         call(
             email_address="test1@email.com",
             template_id="test-template-id",
@@ -106,5 +106,5 @@ def test_send_feedback_notification_with_multiple_emails(mocker):
         ),
     ]
     send_feedback_notification()
-    assert mock_send_email_notification.call_count == len(calls)
-    mock_send_email_notification.assert_has_calls(calls)
+    assert mock_send_email_notification.call_count == len(expected_calls)
+    mock_send_email_notification.assert_has_calls(expected_calls)
