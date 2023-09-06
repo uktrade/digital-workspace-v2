@@ -12,7 +12,9 @@
 {% endblock location %}
 
 {% block content %}
-    <div class="govuk-grid-row">
+    {% include "peoplefinder/components/profile/edit/profile-completion.html" with profile=profile missing_profile_completion_fields=missing_profile_completion_fields %}
+
+    <div class="govuk-grid-row govuk-!-margin-bottom-6">
         <div class="govuk-grid-column-one-third">
             {% if profile.photo %}
                 {% if is_ee %}
@@ -28,13 +30,15 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l mb-0" data-testid="full-name">{{ profile.full_name }}</h1>
             {% if profile.name_pronunciation or profile.pronouns %}
-                <p class="govuk-body-s">
+                <p class="govuk-body-m pf-secondary-colour">
                     {% if profile.name_pronunciation %}{{ profile.name_pronunciation }}{% endif %}
                     {% if profile.pronouns %}
                         {% if profile.name_pronunciation %}<br>{% endif %}
                         ({{ profile.pronouns }})
                     {% endif %}
                 </p>
+            {% else %}
+                <div class="govuk-!-padding-bottom-4"></div>
             {% endif %}
             {% if not profile.is_active %}
                 <div class="govuk-warning-text">
@@ -46,21 +50,11 @@
                 </div>
             {% endif %}
 
-            {% if profile.profile_completion < 100 %}
-                <div class="govuk-warning-text">
-                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">
-                        <span class="govuk-warning-text__assistive">Warning</span>
-                        Your profile is only {{ profile.profile_completion|floatformat:0 }}% complete.
-                    </strong>
-                </div>
-            {% endif %}
-
             {% for role in roles %}
                 {% include "peoplefinder/components/profile-role.html" with role=role %}
             {% endfor %}
 
-            <dl class="ws-profile__primary-contact-list govuk-body-l">
+            <dl class="ws-profile__primary-contact-list govuk-body-m">
                 <dt class="govuk-visually-hidden">Preferred email</dt>
                 {% if profile.contact_email %}
                     <dd>
@@ -125,20 +119,7 @@
                     </strong>
                 </div>
             {% else %}
-                <p class="govuk-body-s">Last edited {{ profile.edited_or_confirmed_at|naturalday:"j F Y" }}</p>
-            {% endif %}
-
-
-            {% if profile.is_active %}
-                {% if request.user == profile.user %}
-                    <p class="govuk-body-s">
-                        Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.
-                    </p>
-                {% else %}
-                    <p class="govuk-body-s">
-                        Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.
-                    </p>
-                {% endif %}
+                <p class="govuk-body-s pf-secondary-colour">Last edited {{ profile.edited_or_confirmed_at|naturalday:"j F Y" }}</p>
             {% endif %}
         </div>
     </div>
@@ -147,7 +128,7 @@
         {% if is_users_profile or profile_section.values %}
             <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
-                    <h2 class="govuk-summary-card__title">{{ profile_section.title }}</h2>
+                    <h2 class="govuk-summary-card__title govuk-!-font-size-24">{{ profile_section.title }}</h2>
                     <ul class="govuk-summary-card__actions">
                         <li class="govuk-summary-card__action">
                             <a class="govuk-link" href="{{ profile_section.url }}">

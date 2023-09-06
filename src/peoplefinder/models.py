@@ -267,6 +267,30 @@ class PersonIndexManager(ModelIndexManager):
             boost=7.0,
         ),
         IndexedField(
+            "first_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "preferred_first_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "last_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
             "email",
             keyword=True,
             boost=4.0,
@@ -523,6 +547,13 @@ class Person(Indexed, models.Model):
             "If you enter a preferred name below, this name will be hidden to others"
         ),
     )
+    preferred_first_name = models.CharField(
+        max_length=200,
+        help_text=(
+            "How you would prefer to be called, for example a shortened "
+            "version of your name. This will appear on your profile."
+        ),
+    )
     last_name = models.CharField(
         max_length=200,
     )
@@ -700,7 +731,7 @@ class Person(Indexed, models.Model):
 
     @property
     def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.preferred_first_name} {self.last_name}"
 
     @property
     def preferred_email(self) -> str:

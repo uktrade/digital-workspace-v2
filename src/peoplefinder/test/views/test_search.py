@@ -38,6 +38,7 @@ class TestSearchView:
         assertContains(r, str(another_normal_user.profile.slug))
 
         another_normal_user.profile.first_name = "Tim"
+        another_normal_user.profile.preferred_first_name = "Tim"
         another_normal_user.profile.email = "tim.smith@example.com"
         another_normal_user.profile.save()
 

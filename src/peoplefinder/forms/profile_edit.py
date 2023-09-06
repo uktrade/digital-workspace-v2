@@ -15,6 +15,7 @@ class PersonalProfileEditForm(forms.ModelForm):
         model = Person
         fields = [
             "first_name",
+            "preferred_first_name",
             "last_name",
             "pronouns",
             "photo",
@@ -34,6 +35,12 @@ class PersonalProfileEditForm(forms.ModelForm):
 
         first_name_label = self.fields["first_name"].label
         self.fields["first_name"].label = ""
+        self.fields["first_name"].disabled = True
+
+        preferred_first_name_label = (
+            self.fields["preferred_first_name"].label + " (optional)"
+        )
+        self.fields["preferred_first_name"].label = ""
 
         last_name_label = self.fields["last_name"].label
         self.fields["last_name"].label = ""
@@ -53,6 +60,11 @@ class PersonalProfileEditForm(forms.ModelForm):
                 "first_name",
                 legend_size=Size.MEDIUM,
                 legend=first_name_label,
+            ),
+            Fieldset(
+                "preferred_first_name",
+                legend_size=Size.MEDIUM,
+                legend=preferred_first_name_label,
             ),
             Fieldset(
                 "last_name",
@@ -140,7 +152,7 @@ class ContactProfileEditForm(forms.ModelForm):
         self.fields["email"].label = ""
         self.fields["email"].disabled = True
 
-        contact_email_label = self.fields["contact_email"].label
+        contact_email_label = self.fields["contact_email"].label + " (optional)"
         self.fields["contact_email"].label = ""
 
         primary_phone_number_label = self.fields["primary_phone_number"].label
@@ -312,7 +324,7 @@ class LocationProfileEditForm(forms.ModelForm):
         )
         self.fields["international_building"].label = ""
 
-        workdays_label = self.fields["workdays"].label
+        workdays_label = self.fields["workdays"].label + " (optional)"
         self.fields["workdays"].label = ""
 
         self.helper = FormHelper()

@@ -20,10 +20,10 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
-from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.edit import UpdateView
 
 from peoplefinder.forms.crispy_helper import RoleFormsetFormHelper
-from peoplefinder.forms.profile import ProfileLeavingDitForm, ProfileUpdateUserForm
+from peoplefinder.forms.profile import ProfileUpdateUserForm
 from peoplefinder.forms.profile_edit import (
     AdminProfileEditForm,
     ContactProfileEditForm,
@@ -58,6 +58,34 @@ class ProfileView(PeoplefinderView):
             qs = qs.active()
 
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        profile = context["profile"]
+        field_statuses = PersonService().profile_completion_field_statuses(profile)
+
+        context.update(
+            missing_profile_completion_fields=[
+                (
+                    reverse(
+                        "profile-edit-section",
+                        kwargs={
+                            "profile_slug": profile.slug,
+                            "edit_section": PersonService().get_profile_completion_field_edit_section(
+                                field
+                            ),
+                        },
+                    )
+                    + "#"
+                    + PersonService().get_profile_completion_field_form_id(field),
+                    field.replace("_", " ").capitalize(),
+                )
+                for field, field_status in field_statuses.items()
+                if not field_status
+            ],
+        )
+        return context
 
 
 class ProfileLegacyView(ProfileView):
@@ -217,8 +245,6 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             profile=profile,
         )
 
-        field_statuses = PersonService().profile_completion_field_statuses(profile)
-
         edit_sections = [section for section in EditSections]
         if not self.request.user.is_superuser:
             edit_sections.remove(EditSections.ADMIN)
@@ -230,24 +256,6 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             profile_slug=profile.slug,
             roles=roles,
             update_user_form=update_user_form,
-            missing_profile_completion_fields=[
-                (
-                    reverse(
-                        "profile-edit-section",
-                        kwargs={
-                            "profile_slug": profile.slug,
-                            "edit_section": PersonService().get_profile_completion_field_edit_section(
-                                field
-                            ),
-                        },
-                    )
-                    + "#"
-                    + PersonService().get_profile_completion_field_form_id(field),
-                    field.replace("_", " ").capitalize(),
-                )
-                for field, field_status in field_statuses.items()
-                if not field_status
-            ],
         )
 
         if self.edit_section == EditSections.TEAMS:
@@ -375,41 +383,6 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
                 field_locations[field_name] = edit_section
 
         return field_locations
-
-
-class ProfileLeavingDitView(SuccessMessageMixin, ProfileView, FormView):
-    template_name = "peoplefinder/profile-leaving-dit.html"
-    form_class = ProfileLeavingDitForm
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-
-        self.profile = Person.active.get(slug=self.kwargs["profile_slug"])
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context["profile"] = self.profile
-
-        return context
-
-    def form_valid(self, form):
-        person_service = PersonService()
-
-        person_service.left_dit(
-            request=self.request,
-            person=self.profile,
-            reported_by=self.request.user.profile,
-            comment=form.cleaned_data.get("comment"),
-        )
-
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse("profile-view", kwargs={"profile_slug": self.profile.slug})
-
-    def get_success_message(self, cleaned_data):
-        return f"A deletion request for {self.profile} has been sent to support"
 
 
 @method_decorator(transaction.atomic, name="post")

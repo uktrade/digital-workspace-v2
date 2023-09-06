@@ -390,7 +390,7 @@ def test_profile_edit_personal_view(state):
 
     form = PersonalProfileEditForm(
         {
-            "first_name": "Jane",
+            "preferred_first_name": "Jane",
             "last_name": "Smith",
             "pronouns": "she/her",
             "name_pronunciation": "Jay-n Smi-th",
