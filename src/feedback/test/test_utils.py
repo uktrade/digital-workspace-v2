@@ -18,7 +18,7 @@ def test_feedback_submitted_over_24hrs_ago(db, freezer):
     freezer.move_to("2023-09-01")
     BaseFeedback.objects.create()
     assert feedback_received_within()
-    
+
     freezer.move_to("2023-09-03")
     assert not feedback_received_within()
 
