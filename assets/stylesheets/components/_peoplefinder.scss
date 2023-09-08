@@ -457,3 +457,9 @@
     background-position: 0% 50%;
   }
 }
+
+@media (max-width: 640px) {
+  .moj-side-navigation__list {
+    flex-direction: column;
+  }
+}
