@@ -157,7 +157,7 @@ class HomePage(BasePage):
         if not cache.get("homepage_tweets"):
             cache.set(
                 "homepage_tweets",
-                sorted(get_tweets(), key=lambda x: x.created_at, reverse=True),
+                [], # sorted(get_tweets(), key=lambda x: x.created_at, reverse=True),
                 3000,
             )
 
