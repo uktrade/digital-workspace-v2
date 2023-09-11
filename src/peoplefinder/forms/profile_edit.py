@@ -1,3 +1,5 @@
+from typing import List
+
 from crispy_forms_gds.helper import FormHelper
 from crispy_forms_gds.layout import HTML, Field, Fieldset, Layout, Size
 from django import forms
@@ -144,6 +146,9 @@ class ContactProfileEditForm(forms.ModelForm):
             "primary_phone_number",
             "secondary_phone_number",
         ]
+        widgets = {
+            "email": GovUkRadioSelect,
+        }
 
     def __init__(self, *args, **kwargs):
         self.request_user = kwargs.pop("request_user", None)
@@ -151,7 +156,8 @@ class ContactProfileEditForm(forms.ModelForm):
 
         email_label = self.fields["email"].label
         self.fields["email"].label = ""
-        self.fields["email"].choices = self.get_email_choices()
+        emails: List[str] = self.get_email_choices()
+        self.fields["email"].choices = [(email, email) for email in emails]
 
         contact_email_label = self.fields["contact_email"].label + " (optional)"
         self.fields["contact_email"].label = ""
@@ -189,18 +195,14 @@ class ContactProfileEditForm(forms.ModelForm):
             ),
         )
 
-    def get_email_choices(self):
+    def get_email_choices(self) -> List[str]:
         verified_emails = PersonService.get_verified_emails(self.instance)
         choices = []
         if self.instance.email in verified_emails:
-            choices += [
-                self.instance.email,
-            ]
+            choices += [self.instance.email]
         choices += [email for email in verified_emails if email not in choices]
         if not choices:
-            choices = [
-                self.instance.email,
-            ]
+            return [self.instance.email]
         return choices
 
     def clean_email(self):
