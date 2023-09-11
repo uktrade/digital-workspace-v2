@@ -459,7 +459,14 @@
 }
 
 @media (max-width: 640px) {
+  .moj-side-navigation,
   .moj-side-navigation__list {
+    display: block;
+  }
+  .moj-side-navigation__item {
     flex-direction: column;
+  }
+  .moj-side-navigation__item a {
+    width: max-content;
   }
 }
