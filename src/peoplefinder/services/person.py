@@ -1,5 +1,6 @@
 import logging
-from typing import Dict, List, Optional, Tuple
+from datetime import timedelta
+from typing import Any, Dict, List, Optional, Tuple, TypedDict
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -23,7 +24,7 @@ from peoplefinder.services.audit_log import (
     AuditLogService,
     ObjectRepr,
 )
-from peoplefinder.tasks import person_update_notifier
+from peoplefinder.tasks import notify_user_about_profile_changes, person_update_notifier
 from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
 
@@ -53,9 +54,21 @@ You can update any profile on Digital Workspace. Find out more at: https://works
 """
 
 
+class ProfileCompletionField(TypedDict, total=False):
+    weight: int
+    edit_section: Any  # EditSections
+    form_id: str
+    or_fields: List[str]
+
+
+class ProfileSectionMapping(TypedDict):
+    edit_section: Any  # EditSections
+    fields: List[Tuple[str, str]]
+
+
 class PersonService:
     # List of fields that contribute to profile completion and their weights.
-    PROFILE_COMPLETION_FIELDS: Dict[str, int] = {
+    PROFILE_COMPLETION_FIELDS: Dict[str, ProfileCompletionField] = {
         "first_name": {
             "weight": 0,
             "edit_section": EditSections.PERSONAL,
@@ -107,7 +120,7 @@ class PersonService:
         },
     }
     # Map of profile sections to edit sections and fields.
-    PROFILE_SECTION_MAPPING = {
+    PROFILE_SECTION_MAPPING: Dict[Any, ProfileSectionMapping] = {
         ProfileSections.CONTACT: {
             "edit_section": EditSections.CONTACT,
             "fields": [
@@ -280,7 +293,7 @@ class PersonService:
             person.edited_or_confirmed_at = timezone.now()
             person.save()
 
-            self.notify_about_changes(request, person)
+            self.trigger_profile_change_notification(request, person)
 
         # Notify external services
         person_update_notifier.delay(person.id)
@@ -319,13 +332,15 @@ class PersonService:
         if request:
             self.notify_about_deletion(person, deleted_by)
 
-    def notify_about_changes(self, request: HttpRequest, person: Person) -> None:
+    def trigger_profile_change_notification(
+        self, request: HttpRequest, person: Person
+    ) -> None:
         editor = request.user.profile
 
         if editor == person:
             return None
 
-        context = {
+        personalisation = {
             "profile_name": person.full_name,
             "editor_name": editor.full_name,
             "profile_url": request.build_absolute_uri(
@@ -334,15 +349,42 @@ class PersonService:
         }
 
         if settings.APP_ENV in ("local", "test"):
-            logger.info(NOTIFY_ABOUT_CHANGES_LOG_MESSAGE.format(**context))
+            logger.info(NOTIFY_ABOUT_CHANGES_LOG_MESSAGE.format(**personalisation))
 
             return
 
+        notify_user_about_profile_changes.apply_async(
+            args=(
+                person.pk,
+                personalisation,
+            ),
+            countdown=300,  # 5 minutes.
+        )
+
+    def notify_about_changes_debounce(
+        self, person_pk, personalisation, countdown
+    ) -> None:
+        """
+        Don't call this method directly, use `trigger_profile_change_notification`.
+
+        See `peoplefinder.tasks.notify_user_about_profile_changes` for more
+        details.
+        """
+        person = Person.objects.get(pk=person_pk)
+
+        if countdown:
+            can_run_time = person.edited_or_confirmed_at + timedelta(seconds=countdown)
+            if timezone.now() < can_run_time:
+                # If the person model was edited more recently than the delay,
+                # then don't send a notification as something has happened since
+                # the task was triggered.
+                return None
+
         notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
         notification_client.send_email_notification(
-            person.email,
-            settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
-            personalisation=context,
+            email_address=person.email,
+            template_id=settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
+            personalisation=personalisation,
         )
 
     @staticmethod
@@ -484,9 +526,9 @@ class PersonService:
     def get_profile_section_values(
         self, person: "Person", profile_section: ProfileSections
     ) -> List[Tuple[str, str, str]]:
-        profile_section_fields = self.get_profile_section_mapping(
-            profile_section,
-        ).get("fields", [])
+        profile_section_fields: List[
+            Tuple[str, str]
+        ] = self.get_profile_section_mapping(profile_section,).get("fields", [])
         values = []
         for field_name, field_label in profile_section_fields:
             field_value = getattr(person, field_name)

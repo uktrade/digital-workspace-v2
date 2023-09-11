@@ -79,7 +79,7 @@ services:
 
   celery:
     image: digital_workspace/wagtail:latest
-    command: poetry run celery -A config worker -l info
+    command: poetry run celery -A config.celery worker -l INFO
     volumes:
       - .:/app
     depends_on:
