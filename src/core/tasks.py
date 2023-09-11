@@ -29,5 +29,4 @@ def schedule_feedback_email_notification():
     feedback_received = utils.feedback_received_within()
     if not feedback_received:
         return
-    message = utils.send_feedback_notification()
-    print(f"Message: {message}")
+    utils.send_feedback_notification()
