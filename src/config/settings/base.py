@@ -7,7 +7,6 @@ from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
-
 # Set directories to be used across settings
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
@@ -95,6 +94,7 @@ ALLOWED_HOSTS = ["*"]
 # Set up Django
 LOCAL_APPS = [
     "core",
+    "feedback",
     "home",
     "content",
     "search",
@@ -120,6 +120,7 @@ THIRD_PARTY_APPS = [
     "django_chunk_upload_handlers",
     "django_audit_log_middleware",
     "rest_framework",
+    "django_celery_beat",
     "crispy_forms",
     "crispy_forms_gds",
     "django_feedback_govuk",
@@ -160,7 +161,15 @@ DJANGO_APPS = [
     "django.contrib.sitemaps",
 ]
 
-INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + WAGTAIL_APPS + DJANGO_APPS
+INSTALLED_APPS = (
+    LOCAL_APPS
+    + THIRD_PARTY_APPS
+    + WAGTAIL_APPS
+    + DJANGO_APPS
+    + [
+        "extended_search",  # must be last because it depends on models being loaded into memory
+    ]
+)
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -174,6 +183,7 @@ MIDDLEWARE = [
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "core.middleware.GetPeoplefinderProfileMiddleware",
+    "core.middleware.TimezoneMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "django_audit_log_middleware.AuditLogMiddleware",
 ]
@@ -208,7 +218,13 @@ if "postgres" in VCAP_SERVICES:
 else:
     DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASES = {"default": env.db()}
+DATABASES = {
+    "default": env.db(),
+}
+if "UK_STAFF_LOCATIONS_DATABASE_URL" in env:
+    DATABASES["uk_staff_locations"] = env.db("UK_STAFF_LOCATIONS_DATABASE_URL")
+
+DATABASE_ROUTERS = ["peoplefinder.routers.IngestedModelsRouter"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -221,8 +237,9 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_URL = reverse_lazy("authbroker_client:login")
 LOGIN_REDIRECT_URL = "/"
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-gb"
 TIME_ZONE = "UTC"
+LOCAL_TIME_ZONE = "Europe/London"
 USE_I18N = True
 USE_TZ = True
 
@@ -298,7 +315,7 @@ ELASTICSEARCH_DSL = {
 
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "wagtail.search.backends.elasticsearch7",
+        "BACKEND": "extended_search.backends.backend.CustomSearchBackend",
         "AUTO_UPDATE": True,
         "ATOMIC_REBUILD": True,
         "URLS": [OPENSEARCH_URL],
@@ -312,24 +329,48 @@ WAGTAILSEARCH_BACKENDS = {
                 },
                 "analysis": {
                     "filter": {
-                        "search_stop_words": {"type": "stop", "stopwords": stop_words},
-                        "search_synonyms": {
-                            "type": "synonym",
-                            "lenient": True,
-                            "synonyms": synonyms,
+                        "english_snowball": {
+                            "type": "snowball",
+                            "language": "english",
+                        },
+                        "remove_spaces": {
+                            "type": "pattern_replace",
+                            "pattern": "[ ()+]",
+                            "replacement": "",
                         },
                     },
                     "analyzer": {
-                        "stop_and_synonyms": {
-                            "tokenizer": "lowercase",
+                        "snowball": {
+                            "tokenizer": "standard",
                             "filter": [
-                                "search_stop_words",
-                                "search_synonyms",
+                                "english_snowball",
+                                "stop",
+                                "lowercase",
+                                "asciifolding",
                             ],
+                        },
+                        # Used for keyword fields like acronyms and phone
+                        # numbers - use with caution (it removes whitespace and
+                        # tokenizes everything else into a single token)
+                        "no_spaces": {
+                            "tokenizer": "keyword",
+                            "filter": "remove_spaces",
                         },
                     },
                 },
             }
+        },
+    }
+}
+
+SEARCH_EXTENDED = {
+    "boost_parts": {
+        "extras": {
+            "page_tools_phrase_title_explicit": 2.0,
+            "page_guidance_phrase_title_explicit": 2.0,
+        },
+        "query_types": {
+            "phrase": 20.5,
         },
     }
 }
@@ -381,6 +422,12 @@ if "redis" in VCAP_SERVICES:
     )
 else:
     CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
+
+# Celery
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_RESULT_SERIALIZER = "json"
 
 CACHES = {
     "default": {
@@ -472,7 +519,13 @@ LOGGING = {
             "handlers": [
                 "stdout",
             ],
-            "level": "INFO",
+            "level": os.getenv("OPENSEARCH_LOG_LEVEL", "INFO"),
+        },
+        "environ": {
+            "handlers": [
+                "stdout",
+            ],
+            "level": os.getenv("ENVIRON_LOG_LEVEL", "INFO"),
         },
     },
 }
@@ -546,19 +599,39 @@ HIDE_NEWS = env.bool("HIDE_NEWS", False)
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["gds"]
 CRISPY_TEMPLATE_PACK = "gds"
 
+# Feedback notifications email
+FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID = env("FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID")
+FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS = env.list(
+    "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
+)
+
 # Feedback
 DJANGO_FEEDBACK_GOVUK = {
     "SERVICE_NAME": "the beta experience",
-    "FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID": env(
-        "FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID"
-    ),
-    "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS": env.list(
-        "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
-    ),
     "COPY": {
-        "SUBMIT_TITLE": "Give your feedback on the beta search experience",
-        "FIELD_SATISFACTION_LEGEND": "How do you feel about your search experience today?",
-        "FIELD_COMMENT_LEGEND": "Tell us why you gave that rating",
+        "SUBMIT_TITLE": "Providing feedback on your experience will help us improve the service",
+        "FIELD_SATISFACTION_LEGEND": "How satisfied are you with Digital Workspace?",
+        "FIELD_COMMENT_LEGEND": "How could we improve this service?",
         "FIELD_COMMENT_HINT": "If you do not want to be contacted about more research opportunities, you can let us know here.",
+    },
+    "FEEDBACK_FORMS": {
+        "default": {
+            "model": "django_feedback_govuk.models.Feedback",
+            "form": "django_feedback_govuk.forms.FeedbackForm",
+            "view": "django_feedback_govuk.views.FeedbackView",
+        },
+        "search-v1": {
+            "model": "feedback.models.SearchFeedbackV1",
+            "form": "feedback.forms.SearchFeedbackV1Form",
+            "view": "django_feedback_govuk.views.FeedbackView",
+        },
+        "search-v2": {
+            "model": "feedback.models.SearchFeedbackV2",
+            "form": "feedback.forms.SearchFeedbackV2Form",
+            "view": "feedback.views.SearchFeedbackV2FormView",
+            "copy": {
+                "SUBMIT_TITLE": None,
+            },
+        },
     },
 }

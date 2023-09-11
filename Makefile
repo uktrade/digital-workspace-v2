@@ -14,9 +14,9 @@ help:
 	@echo "$(CLR_Y)build$(CLR__) : Build the app's docker containers"
 	@echo "$(CLR_Y)up$(CLR__) : Start the app's docker containers"
 	@echo "$(CLR_Y)down$(CLR__) : Stop the app's docker containers"
-	@echo "$(CLR_Y)build-all$(CLR__) : Build all docker containers (inc. testrunner)"
-	@echo "$(CLR_Y)up-all$(CLR__) : Start all docker containers in the background (inc. testrunner)"
-	@echo "$(CLR_Y)down-all$(CLR__) : Stop all docker containers (inc. testrunner)"
+	@echo "$(CLR_Y)build-all$(CLR__) : Build all docker containers (inc. testrunner, opensearch dash)"
+	@echo "$(CLR_Y)up-all$(CLR__) : Start all docker containers in the background (inc. testrunner, opensearch dash)"
+	@echo "$(CLR_Y)down-all$(CLR__) : Stop all docker containers (inc. testrunner, opensearch dash)"
 	@echo "\n$(CLR_G)Linting$(CLR__)"
 	@echo "$(CLR_Y)check$(CLR__) : Run black, ruff and djlint in 'check' modes, and scan for 'fixme' comments"
 	@echo "$(CLR_Y)fix$(CLR__) : Run black, ruff and djlint in 'fix' modes"
@@ -90,19 +90,19 @@ build:
 	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose build
 
 build-all:
-	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose --profile playwright build
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose --profile playwright --profile opensearch build
 
 up:
 	docker-compose up
 
 up-all:
-	docker-compose --profile playwright up -d
+	docker-compose --profile playwright --profile opensearch --profile celery-beat up -d
 
 down:
 	docker-compose down
 
 down-all:
-	docker-compose --profile playwright down
+	docker-compose --profile playwright --profile opensearch --profile celery-beat down
 
 #
 # Linting
@@ -130,7 +130,7 @@ bash:
 	$(wagtail) bash
 
 psql:
-	PGPASSWORD='postgres' psql -h localhost -U postgres
+	PGPASSWORD='postgres' psql -h localhost -U postgres digital_workspace
 
 check-requirements:
 	$(wagtail-no-deps) poetry export --without-hashes | cmp -- requirements.txt -
@@ -143,31 +143,33 @@ clean:
 	find . -name '__pycache__' -exec rm -rf {} +
 
 local-setup:
-	poetry install -G dev
+	poetry install --with dev
 	npm install
 
 dump-db:
 	pg_dump digital_workspace -U postgres -h localhost -p 5432 -O -x -c -f dw.dump
 
 reset-db:
-	@docker-compose kill db
-	@rm -rf ./.db/
-	docker-compose start db
+	docker-compose stop db
+	rm -rf ./.db/
+	docker-compose up -d db
 
 first-use:
-	@docker-compose --profile playwright down
+	docker-compose --profile playwright --profile opensearch --profile celery-beat down
 	make build
-	make up
 	make reset-db
+	sleep 3
 	make migrate
 	make data-countries
 	make menus
 	make create_section_homepages
 	make wagtail-groups
 	make pf-groups
+	make ingest-uk-staff-locations
 	make superuser
-	docker-compose up
+	make index
 	make local-setup
+	make up
 
 superuser:
 	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
@@ -207,7 +209,7 @@ test:
 	$(testrunner) pytest -m "not e2e" --reuse-db $(tests)
 
 test-e2e: up-all
-	docker-compose exec playwright poetry run pytest -m "e2e"
+	docker-compose exec playwright poetry run pytest -m "e2e" $(tests)
 	docker-compose stop playwright
 
 test-all:
@@ -263,3 +265,6 @@ create_section_homepages:
 
 data-countries:
 	$(wagtail) python manage.py loaddata countries.json
+
+ingest-uk-staff-locations:
+	$(wagtail) python manage.py ingest_uk_staff_locations

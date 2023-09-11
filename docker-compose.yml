@@ -9,6 +9,7 @@ services:
       - ./setup/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./.db:/var/lib/postgresql/data
     environment:
+      - POSTGRES_DB=digital_workspace
       - POSTGRES_PASSWORD=postgres
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
@@ -16,8 +17,13 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:buster
+    ports:
+      - "6379:6379"
+
   opensearch:
-    image: opensearchproject/opensearch:1.2.3
+    image: opensearchproject/opensearch:1.3.7
     ports:
       - "9200:9200"
     environment:
@@ -35,6 +41,18 @@ services:
           "-f",
           "http://localhost:9200/_cat/health"
         ]
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:1.3.7
+    ports:
+      - 5601:5601
+    profiles:
+      - opensearch
+    environment:
+      - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
+      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
+    depends_on:
+      - opensearch
 
   wagtail:
     build:
@@ -61,7 +79,7 @@ services:
 
   celery:
     image: digital_workspace/wagtail:latest
-    command: poetry run celery -A config worker -l info
+    command: poetry run celery -A config.celery worker -l INFO
     volumes:
       - .:/app
     depends_on:
@@ -69,10 +87,19 @@ services:
       - redis
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.local
-  redis:
-    image: redis:buster
-    ports:
-      - "6379:6379"
+
+  celery-beat:
+    image: digital_workspace/wagtail:latest
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+    volumes:
+      - .:/app
+    profiles:
+      - celery-beat
+    command: poetry run celery -A config.celery beat -l INFO
+    depends_on:
+      - db
+      - redis
 
   playwright:
     build:

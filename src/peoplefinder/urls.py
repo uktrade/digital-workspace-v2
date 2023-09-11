@@ -19,13 +19,14 @@ from peoplefinder.views.profile import (
     ProfileDeleteView,
     ProfileDetailView,
     ProfileEditView,
-    ProfileLeavingDitView,
     ProfileLegacyView,
     ProfileUpdateUserView,
     get_profile_by_staff_sso_id,
     get_profile_card,
+    profile_edit_blank_teams_form,
+    redirect_to_profile_edit,
 )
-from peoplefinder.views.role import RoleFormView, TeamSelectView
+from peoplefinder.views.role import TeamSelectView
 from peoplefinder.views.team import (
     TeamAddNewSubteamView,
     TeamDeleteView,
@@ -35,7 +36,6 @@ from peoplefinder.views.team import (
     TeamPeopleView,
     TeamTreeView,
 )
-
 
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
@@ -50,7 +50,18 @@ people_urlpatterns = [
         ProfileLegacyView.as_view(),
         name="profile-legacy-view",
     ),
-    path("<uuid:profile_slug>/edit/", ProfileEditView.as_view(), name="profile-edit"),
+    # Redirects to profile-edit-section with edit_section=personal
+    path(
+        "<uuid:profile_slug>/blank-teams-form/",
+        profile_edit_blank_teams_form,
+        name="profile-edit-blank-teams-form",
+    ),
+    # Redirects to profile-edit-section with edit_section=personal
+    path(
+        "<uuid:profile_slug>/edit/",
+        redirect_to_profile_edit,
+        name="profile-edit",
+    ),
     # Manager component
     path(
         "<uuid:profile_slug>/edit/manager/",
@@ -84,18 +95,11 @@ people_urlpatterns = [
             ]
         ),
     ),
-    # Roles
-    path("<uuid:profile_slug>/edit/roles/", RoleFormView.as_view(), name="roles"),
+    # Edit sections
     path(
-        "<uuid:profile_slug>/edit/roles/<int:role_pk>/",
-        RoleFormView.as_view(),
-        name="role",
-    ),
-    # Leaving DIT
-    path(
-        "<uuid:profile_slug>/leaving-dbt",
-        ProfileLeavingDitView.as_view(),
-        name="profile-leaving-dit",
+        "<uuid:profile_slug>/edit/<str:edit_section>/",
+        ProfileEditView.as_view(),
+        name="profile-edit-section",
     ),
     path(
         "<uuid:profile_slug>/delete/",

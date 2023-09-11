@@ -1,7 +1,10 @@
 
 {% extends "1_col_content.html" %}
-{% comment %} @TODO [DWPF-454] remove the package and this template {% endcomment %}
+
 {% load feedback_tags %}
 {% block content %}
+    {% if not hide_back_button %}
+        <a href="{% url 'submitted-feedback' %}" class="govuk-back-link">Back</a>
+    {% endif %}
     {% feedback_listing %}
 {% endblock content %}

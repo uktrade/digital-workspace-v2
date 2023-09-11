@@ -1,0 +1,199 @@
+
+{% extends "1_col_content.html" %}
+{% load search_explore %}
+
+{% block title %}
+    Explore search options for '{{ search_query }}'
+{% endblock title %}
+
+{% block location %}
+    Search
+{% endblock location %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'info' %}
+                <div class="govuk-notification-banner"
+                     role="region"
+                     aria-labelledby="govuk-notification-banner-title"
+                     data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title"
+                            id="govuk-notification-banner-title">Success</h2>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+                        <p class="govuk-notification-banner__heading">{{ message }}</p>
+                    </div>
+                </div>
+            {% elif message.tags == 'error' %}
+                <div class="govuk-error-summary" data-module="govuk-error-summary">
+                    <div role="alert">
+                        <h2 class="govuk-error-summary__title">There is a problem</h2>
+                        <div class="govuk-error-summary__body">
+                            <ul class="govuk-list govuk-error-summary__list">
+                                <li>
+                                    <a href="#">{{ message }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% if perms.extended_search.view_explore %}
+        <div class="govuk-grid-column-full">
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    This is a complex area. Read up on <a href="https://www.elastic.co/blog/how-to-improve-elasticsearch-search-relevance-with-boolean-queries">the theory</a> behind, and <a href="https://github.blog/2023-03-09-how-github-docs-new-search-works/">the basis of</a>, <a href="https://github.com/uktrade/digital-workspace-v2/blob/main/docs/search.md">our approach</a>.
+                </strong>
+            </div>
+
+            <h1 class="govuk-heading-m">Configure</h1>
+            <div class="govuk-accordion"
+                 data-module="govuk-accordion"
+                 id="accordion-default">
+                <div class="govuk-accordion__section">
+                    <div class="govuk-accordion__section-header">
+                        <h2 class="govuk-accordion__section-heading">
+                            <span class="govuk-accordion__section-button"
+                                  id="accordion-default-heading-1">
+                                <h3 class="govuk-heading-s">Boost variables</h3>
+                            </span>
+                        </h2>
+                    </div>
+                    <div id="accordion-default-content-1"
+                         class="govuk-accordion__section-content"
+                         aria-labelledby="accordion-default-heading-1">
+                        <div class="govuk-summary-card">
+                            <div class="govuk-summary-card__content">
+                                <dl class="govuk-summary-list" style="font-size: 1rem; line-height: 1">
+                                    {% for boost in boost_variables %}
+                                        <div class="govuk-summary-list__row">
+                                            <dt class="govuk-summary-list__key" style="width:75%; font-weight:400">{{ boost.name }}</dt>
+                                            <dd class="govuk-summary-list__value">
+                                                {% if perms.extended_search.change_setting %}
+                                                    <form method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="key" value="{{ boost.name }}">
+                                                        <input type="text"
+                                                               name="value"
+                                                               value="{{ boost.value }}"
+                                                               class="govuk-input"
+                                                               style="width:4em">
+                                                        <input type="submit" value="Save" class="govuk-button" style="margin:0">
+                                                    </form>
+                                                {% else %}
+                                                    {{ boost.value }}
+                                                {% endif %}
+                                            </dd>
+                                        </div>
+                                    {% endfor %}
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="govuk-accordion__section">
+                    <div class="govuk-accordion__section-header">
+                        <h2 class="govuk-accordion__section-heading">
+                            <span class="govuk-accordion__section-button"
+                                  id="accordion-default-heading-2">
+                                <h3 class="govuk-heading-s">Subqueries</h3>
+                            </span>
+                        </h2>
+                    </div>
+                    <div id="accordion-default-content-1"
+                         class="govuk-accordion__section-content"
+                         aria-labelledby="accordion-default-heading-2">
+                        <h2 class="govuk-heading-s">All pages</h2>
+
+                        <table class="govuk-table" style="font-size:1rem">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Field</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Analyzer</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Query type</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Combined boost</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for query in sub_queries.pages %}
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">{{ query.field }}</th>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">{{ query.analyzer }}</td>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">{{ query.query_type }}</td>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">{{ query.boost|floatformat:1 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <h2 class="govuk-heading-s">People</h2>
+
+                        <table class="govuk-table" style="font-size:1rem">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Field</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Analyzer</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Query type</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Combined boost</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for query in sub_queries.people %}
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">{{ query.field }}</th>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">{{ query.analyzer }}</td>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">{{ query.query_type }}</td>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">{{ query.boost|floatformat:1 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <h2 class="govuk-heading-s">Teams</h2>
+
+                        <table class="govuk-table" style="font-size:1rem">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">Field</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Analyzer</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Query type</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Combined boost</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for query in sub_queries.teams %}
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">{{ query.field }}</th>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">{{ query.analyzer }}</td>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">{{ query.query_type }}</td>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">{{ query.boost|floatformat:1 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="govuk-heading-m">Evaluate</h1>
+            {% include 'search/partials/search_form.html' %}
+
+            <div class="govuk-accordion"
+                 data-module="govuk-accordion"
+                 id="accordion-default">
+                {% search_category category='all_pages' show_heading=True %}
+                {% search_category category='people' show_heading=True %}
+                {% search_category category='teams' show_heading=True %}
+            </div>
+        </div>
+    {% else %}
+        <h2 class="govuk-heading-m">Not allowed</h2>
+        <p class="govuk-body">You do not have permission to view this page</p>
+    {% endif %}
+
+{% endblock content %}

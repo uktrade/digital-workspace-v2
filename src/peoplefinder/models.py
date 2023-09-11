@@ -1,5 +1,5 @@
 import uuid
-from typing import Iterator
+from typing import Iterator, Optional
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -9,11 +9,18 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import Case, F, Func, JSONField, Q, Value, When
 from django.db.models.functions import Concat
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import strip_tags
+from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
-from wagtail.search import index
 from wagtail.search.queryset import SearchableQuerySetMixin
+
+from core.models import IngestedModel
+from extended_search.fields import IndexedField, RelatedIndexedFields
+from extended_search.index import Indexed
+from extended_search.managers.index import ModelIndexManager
 
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
@@ -163,6 +170,23 @@ class Building(models.Model):
         return self.name
 
 
+class UkStaffLocation(IngestedModel):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["code"], name="unique_location_code"),
+            models.UniqueConstraint(fields=["name"], name="unique_location_name"),
+        ]
+        ordering = ["name"]
+
+    code = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    organisation = models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class ActivePeopleManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().exclude(is_active=False)
@@ -232,7 +256,172 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
-class Person(index.Indexed, models.Model):
+class PersonIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "full_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "first_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "preferred_first_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "last_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "email",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "contact_email",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "primary_phone_number",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "secondary_phone_number",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "search_grade",
+            explicit=True,
+        ),
+        IndexedField(
+            "search_buildings",
+            tokenized=True,
+        ),
+        RelatedIndexedFields(
+            "roles",
+            [
+                IndexedField(
+                    "job_title",
+                    tokenized=True,
+                    explicit=True,
+                    boost=3.0,
+                ),
+            ],
+        ),
+        RelatedIndexedFields(
+            "key_skills",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    boost=0.8,
+                ),
+            ],
+        ),
+        RelatedIndexedFields(
+            "learning_interests",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    boost=0.8,
+                ),
+            ],
+        ),
+        RelatedIndexedFields(
+            "additional_roles",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    boost=0.8,
+                ),
+            ],
+        ),
+        RelatedIndexedFields(
+            "networks",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    filter=True,
+                    boost=1.5,
+                ),
+            ],
+        ),
+        IndexedField(
+            "international_building",
+            tokenized=True,
+        ),
+        IndexedField(
+            "search_location",
+            tokenized=True,
+        ),
+        IndexedField(
+            "fluent_languages",
+            tokenized=True,
+        ),
+        IndexedField(
+            "search_teams",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "has_photo",
+            proximity=True,
+            boost=1.5,
+        ),
+        IndexedField(
+            "profile_completion",
+            proximity=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "is_active",
+            filter=True,
+        ),
+        IndexedField(
+            "professions",
+            filter=True,
+        ),
+        IndexedField(
+            "grade",
+            filter=True,
+        ),
+        IndexedField(
+            "networks",
+            filter=True,
+        ),
+        IndexedField("do_not_work_for_dit", filter=True),
+    ]
+
+
+class Person(Indexed, models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -304,6 +493,42 @@ class Person(index.Indexed, models.Model):
         blank=True,
         related_name="+",
     )
+    buildings.system_check_deprecated_details = {
+        "msg": ("Person.buildings been deprecated."),
+        "hint": "Use Person.uk_office_location and Person.remote_working instead.",
+        "id": "peoplefinder.Person.E001",
+    }
+    uk_office_location = models.ForeignKey(
+        "UkStaffLocation",
+        verbose_name="What is your office location?",
+        help_text="Your base location as per your contract",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    class RemoteWorking(models.TextChoices):
+        OFFICE_WORKER = (
+            "office_worker",
+            "I work primarily from the office",
+        )
+        REMOTE_WORKER = (
+            "remote_worker",
+            "I work primarily from home (remote worker)",
+        )
+        SPLIT = (
+            "split",
+            "I split my time between home and the office",
+        )
+
+    remote_working = models.CharField(
+        verbose_name="Where do you usually work?",
+        blank=True,
+        null=True,
+        max_length=80,
+        choices=RemoteWorking.choices,
+    )
 
     slug = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     legacy_slug = models.CharField(
@@ -316,47 +541,65 @@ class Person(index.Indexed, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     edited_or_confirmed_at = models.DateTimeField(default=timezone.now)
 
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=80)
+    first_name = models.CharField(
+        max_length=200,
+        help_text=(
+            "If you enter a preferred name below, this name will be hidden to others"
+        ),
+    )
+    preferred_first_name = models.CharField(
+        max_length=200,
+        help_text=(
+            "How you would prefer to be called, for example a shortened "
+            "version of your name. This will appear on your profile."
+        ),
+    )
+    last_name = models.CharField(
+        max_length=200,
+    )
     email = models.EmailField(
         "Main work email address",
         help_text=(
             "Choose your own official work email address provided by the"
             " organisation you are directly employed by or contracted to."
+            " This is the email you use to log into Digital Workspace."
         ),
     )
     pronouns = models.CharField(max_length=40, null=True, blank=True)
+    name_pronunciation = models.CharField(
+        "How to pronounce your full name",
+        help_text=mark_safe(  # noqa: S308
+            "A phonetic representation of your name.<br><a class='govuk-link' href='/news-and-views/say-my-name/' target='_blank' rel='noreferrer'>"
+            "Tips for writing your name phonetically</a>"
+        ),
+        max_length=200,
+        null=True,
+        blank=True,
+    )
     contact_email = models.EmailField(
-        "Contact email address",
+        "Preferred email address",
         null=True,
         blank=True,
         help_text=(
-            "Enter the email address your colleagues should contact you on, for"
-            " example, a jobshare or Private Office mailbox. This will be shown on your"
-            " profile instead of your main work email address. Do not enter a personal"
-            " email address, or a work email address that is not safe for official"
-            " information."
+            "Complete if you want to show a different email address on your"
+            " profile for example a jobshare or Private Office mailbox. Do not"
+            " enter a personal email address, or work email address that is not"
+            " safe for official information."
         ),
     )
     primary_phone_number = models.CharField(
-        "Preferred contact number",
+        "Contact number",
         max_length=42,
         null=True,
         blank=True,
-        help_text=(
-            "Enter your preferred contact telephone number. Include your country"
-            " dialling code."
-        ),
+        help_text="Include your country dialling code.",
     )
     secondary_phone_number = models.CharField(
         "Alternative contact number",
         max_length=160,
         null=True,
         blank=True,
-        help_text=(
-            "Enter an alternative contact telephone number. Include your country"
-            " dialling code."
-        ),
+        help_text="Include your country dialling code.",
     )
     town_city_or_region = models.CharField(
         "Town, city or region",
@@ -366,19 +609,30 @@ class Person(index.Indexed, models.Model):
         help_text="For example, London",
     )
     regional_building = models.CharField(
-        "UK regional building or location", max_length=130, null=True, blank=True
+        "UK regional building or location",
+        max_length=130,
+        null=True,
+        blank=True,
     )
+    regional_building.system_check_deprecated_details = {
+        "msg": ("Person.regional_building been deprecated."),
+        "hint": "Use Person.uk_office_location and Person.remote_working instead.",
+        "id": "peoplefinder.Person.E001",
+    }
     international_building = models.CharField(
-        "International building or location", max_length=110, null=True, blank=True
+        "International location",
+        max_length=110,
+        null=True,
+        blank=True,
+        help_text="Complete if you work outside the UK.",
     )
     location_in_building = models.CharField(
-        "Where in the building do you work?",
+        "Location in the building",
         max_length=130,
         null=True,
         blank=True,
         help_text=(
-            "Skip this question if you work in a Foreign and Commonwealth Office (FCO)"
-            " building"
+            "If you sit in a particular area, you can let colleagues know here."
         ),
     )
     do_not_work_for_dit = models.BooleanField(
@@ -445,29 +699,7 @@ class Person(index.Indexed, models.Model):
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
-    search_fields = [
-        index.SearchField("first_name", partial_match=True, boost=10),
-        index.SearchField("last_name", partial_match=True, boost=10),
-        index.RelatedFields("roles", [index.SearchField("job_title")]),
-        index.SearchField("email"),
-        index.SearchField("contact_email"),
-        index.SearchField("primary_phone_number"),
-        index.SearchField("secondary_phone_number"),
-        index.SearchField("fluent_languages"),
-        index.SearchField("intermediate_languages"),
-        index.SearchField("town_city_or_region"),
-        index.SearchField("regional_building"),
-        index.SearchField("international_building"),
-        index.SearchField("location_in_building"),
-        index.RelatedFields("key_skills", [index.SearchField("name")]),
-        index.SearchField("other_key_skills"),
-        index.RelatedFields("learning_interests", [index.SearchField("name")]),
-        index.SearchField("other_learning_interests"),
-        index.RelatedFields("additional_roles", [index.SearchField("name")]),
-        index.SearchField("other_additional_roles"),
-        index.RelatedFields("networks", [index.SearchField("name")]),
-        index.FilterField("is_active"),
-    ]
+    search_fields = PersonIndexManager()
 
     def __str__(self) -> str:
         return self.full_name
@@ -499,7 +731,7 @@ class Person(index.Indexed, models.Model):
 
     @property
     def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.preferred_first_name} {self.last_name}"
 
     @property
     def preferred_email(self) -> str:
@@ -510,6 +742,40 @@ class Person(index.Indexed, models.Model):
         return ", ".join(
             filter(None, [self.fluent_languages, self.intermediate_languages])
         )
+
+    @property
+    def has_photo(self) -> bool:
+        return bool(self.photo)
+
+    @property
+    def search_teams(self):
+        """
+        Indexable string of team names and abbreviations
+        """
+        teams = self.roles.all()
+        names = teams.values_list("team__name", flat=True)
+        names_str = " ".join(list([n or "" for n in names]))
+        abbrs = teams.values_list("team__abbreviation", flat=True)
+        abbrs_str = " ".join(list([a or "" for a in abbrs]))
+        return f"{names_str} {abbrs_str}"
+
+    @property
+    def search_buildings(self):
+        return ", ".join(self.buildings.all().values_list("name", flat=True))
+
+    @property
+    def search_location(self):
+        return ", ".join(self.uk_office_location.all().values_list("name", flat=True))
+
+    @property
+    def search_grade(self):
+        return self.get_grade_display()
+
+    def save(self, *args, **kwargs):
+        from peoplefinder.services.person import PersonService
+
+        self.profile_completion = PersonService().get_profile_completion(person=self)
+        return super().save(*args, **kwargs)
 
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()
@@ -524,11 +790,86 @@ class Person(index.Indexed, models.Model):
         # "Monday, Tuesday, Wednesday, ..."
         return ", ".join(map(str, workdays))
 
-    def save(self, *args, **kwargs):
-        from peoplefinder.services.person import PersonService
+    def get_office_location_display(self) -> Optional[str]:
+        if self.uk_office_location:
+            return mark_safe(  # noqa: S308
+                self.uk_office_location.name
+                + "<br>"
+                + strip_tags(self.location_in_building)
+            )
+        if self.international_building:
+            return self.international_building
+        return None
 
-        self.profile_completion = PersonService().get_profile_completion(person=self)
-        return super().save(*args, **kwargs)
+    def get_manager_display(self) -> Optional[str]:
+        if self.manager:
+            return mark_safe(  # noqa: S308
+                render_to_string(
+                    "peoplefinder/components/profile-link.html",
+                    {
+                        "profile": self.manager,
+                        "data_testid": "manager",
+                    },
+                )
+            )
+        return None
+
+    def get_roles_display(self) -> Optional[str]:
+        output = ""
+        for role in self.roles.select_related("team").all():
+            output += render_to_string(
+                "peoplefinder/components/profile-role.html", {"role": role}
+            )
+        return mark_safe(output)  # noqa: S308
+
+    def get_grade_display(self) -> Optional[str]:
+        if self.grade:
+            return self.grade.name
+        return None
+
+    def get_key_skills_display(self) -> Optional[str]:
+        if self.key_skills.exists() or self.other_key_skills:
+            skills_list = []
+            skills_list += self.key_skills.values_list("name", flat=True)
+            if self.other_key_skills:
+                skills_list.append(self.other_key_skills)
+            return ", ".join(skills_list)
+
+        return None
+
+    def get_learning_interests_display(self) -> Optional[str]:
+        if self.learning_interests.exists() or self.other_learning_interests:
+            interests_list = []
+            interests_list += self.learning_interests.values_list("name", flat=True)
+            if self.other_learning_interests:
+                interests_list.append(self.other_learning_interests)
+            return ", ".join(interests_list)
+
+        return None
+
+    def get_networks_display(self) -> Optional[str]:
+        if self.networks.exists():
+            return ", ".join(self.networks.values_list("name", flat=True))
+
+        return None
+
+    def get_professions_display(self) -> Optional[str]:
+        if self.professions.exists():
+            return ", ".join(self.professions.values_list("name", flat=True))
+
+        return None
+
+    def get_additional_roles_display(self) -> Optional[str]:
+        if self.additional_roles.exists() or self.other_additional_roles:
+            additional_roles_list = []
+            additional_roles_list += self.additional_roles.values_list(
+                "name", flat=True
+            )
+            if self.other_additional_roles:
+                additional_roles_list.append(self.other_additional_roles)
+            return ", ".join(additional_roles_list)
+
+        return None
 
 
 class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
@@ -586,6 +927,37 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
         )
 
 
+class TeamIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "abbreviation",
+            tokenized=True,
+            explicit=True,
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "description",
+            tokenized=True,
+            explicit=True,
+        ),
+        IndexedField(
+            "roles_in_team",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+    ]
+
+
 # markdown
 DEFAULT_TEAM_DESCRIPTION = """Find out who is in the team and their contact details.
 
@@ -593,7 +965,7 @@ You can update this description, by [updating your team information](https://wor
 """
 
 
-class Team(index.Indexed, models.Model):
+class Team(Indexed, models.Model):
     class LeadersOrdering(models.TextChoices):
         ALPHABETICAL = "alphabetical", "Alphabetical"
         CUSTOM = "custom", "Custom"
@@ -632,12 +1004,7 @@ class Team(index.Indexed, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = TeamQuerySet.as_manager()
-
-    # TODO: PFM-239 - boost doesn't work https://github.com/wagtail/wagtail/issues/5422
-    search_fields = [
-        index.SearchField("name", partial_match=True, boost=10),
-        index.SearchField("abbreviation", boost=20),
-    ]
+    search_fields = TeamIndexManager()
 
     def __str__(self) -> str:
         return self.short_name
@@ -664,6 +1031,12 @@ class Team(index.Indexed, models.Model):
         order_by += ["person__last_name", "person__first_name"]
 
         yield from self.members.active().filter(head_of_team=True).order_by(*order_by)
+
+    @property
+    def roles_in_team(self) -> list[str]:
+        return list(
+            TeamMember.objects.filter(team=self).values_list("job_title", flat=True)
+        )
 
 
 class ActiveTeamMemberManager(models.Manager):

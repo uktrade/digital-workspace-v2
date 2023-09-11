@@ -15,8 +15,8 @@ def test_team_service(db):
         │   ├── Analysis
         │   └── Change
         └── GTI
-            ├── Investment
             └── DEFEND
+            ├── Investment
     """
     test_case = unittest.TestCase()
 
@@ -122,14 +122,14 @@ def test_team_service(db):
             "parent_name": coo.name,
         },
         {
-            "team_id": gti_investment.id,
-            "team_name": gti_investment.name,
+            "team_id": gti_defence.id,
+            "team_name": gti_defence.name,
             "parent_id": gti.id,
             "parent_name": gti.name,
         },
         {
-            "team_id": gti_defence.id,
-            "team_name": gti_defence.name,
+            "team_id": gti_investment.id,
+            "team_name": gti_investment.name,
             "parent_id": gti.id,
             "parent_name": gti.name,
         },

@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import resolve
+from django.utils import timezone
 
 from peoplefinder.models import Person
 
@@ -39,3 +41,12 @@ class GetPeoplefinderProfileMiddleware:
             response.context_data["peoplefinder_profile"] = profile
 
         return response
+
+
+class TimezoneMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        timezone.activate(settings.LOCAL_TIME_ZONE)
+        return self.get_response(request)

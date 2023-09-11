@@ -2,7 +2,17 @@ from typing import Iterator, Optional, TypedDict
 
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db import connection, transaction
-from django.db.models import CharField, F, Q, QuerySet, Subquery, Value
+from django.db.models import (
+    Case,
+    CharField,
+    F,
+    OuterRef,
+    Q,
+    QuerySet,
+    Subquery,
+    Value,
+    When,
+)
 from django.db.models.functions import Concat
 from django.utils.text import slugify
 
@@ -173,11 +183,27 @@ class TeamService:
             dict of team select data
         """
         root_team = self.get_root_team()
-        full_team_tree = (
-            TeamTree.objects.select_related("child")
-            .filter(depth=1)
-            .order_by("child", "depth")
+
+        team_tree_depth_1 = TeamTree.objects.select_related("child", "parent").filter(
+            depth=1
         )
+
+        children_subquery = Subquery(
+            team_tree_depth_1.filter(depth=1, parent__pk=OuterRef("child__pk")).values(
+                "child"
+            )[:1],
+        )
+
+        full_team_tree = team_tree_depth_1.annotate(
+            children_subquery=children_subquery,
+            has_children=Case(
+                When(
+                    Q(children_subquery__isnull=False),
+                    then=Value(True),
+                ),
+                default=Value(False),
+            ),
+        ).order_by("-has_children", "parent__name", "child__name")
 
         yield {
             "team_id": root_team.id,

@@ -6,6 +6,8 @@ from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel
 
 from content.models import BasePage, ContentPage, Theme
+from extended_search.fields import IndexedField
+from extended_search.managers.index import ModelIndexManager
 
 
 class WorkingAtDITHome(ContentPage):
@@ -103,6 +105,16 @@ class TopicTheme(models.Model):
         ordering = ["topic__title"]
 
 
+class PageTopicIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "topic",
+            tokenized=True,
+            explicit=True,
+        ),
+    ]
+
+
 class PageTopic(models.Model):
     page = ParentalKey(
         "content.ContentPage",
@@ -120,15 +132,30 @@ class PageTopic(models.Model):
         FieldPanel("topic"),
     ]
 
+    search_fields = ContentPage.search_fields + PageTopicIndexManager()
+
     class Meta:
         unique_together = ("page", "topic")
 
 
+class PageWithTopicsIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "search_topics",
+            tokenized=True,
+            explicit=True,
+        ),
+    ]
+
+
 class PageWithTopics(ContentPage):
-    excerpt = models.CharField(max_length=700, blank=True, null=True)
+    @property
+    def search_topics(self):
+        return " ".join(self.topics.all().values_list("topic__title", flat=True))
+
+    search_fields = ContentPage.search_fields + PageWithTopicsIndexManager()
 
     content_panels = ContentPage.content_panels + [
-        FieldPanel("excerpt"),
         InlinePanel("topics", label="Topics"),
     ]
 

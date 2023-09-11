@@ -1,7 +1,8 @@
 import logging
-from typing import Dict, Optional
-import requests
+from datetime import timedelta
+from typing import Any, Dict, List, Optional, Tuple, TypedDict
 
+import requests
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -10,6 +11,8 @@ from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
+from django.utils.html import strip_tags
+from django.utils.safestring import mark_safe
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from peoplefinder.management.commands.create_people_finder_groups import (
@@ -22,7 +25,8 @@ from peoplefinder.services.audit_log import (
     AuditLogService,
     ObjectRepr,
 )
-from peoplefinder.tasks import person_update_notifier
+from peoplefinder.tasks import notify_user_about_profile_changes, person_update_notifier
+from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
 
 logger = logging.getLogger(__name__)
@@ -51,18 +55,115 @@ You can update any profile on Digital Workspace. Find out more at: https://works
 """
 
 
+class ProfileCompletionField(TypedDict, total=False):
+    weight: int
+    edit_section: Any  # EditSections
+    form_id: str
+    or_fields: List[str]
+
+
+class ProfileSectionMapping(TypedDict):
+    edit_section: Any  # EditSections
+    fields: List[Tuple[str, str]]
+
+
 class PersonService:
     # List of fields that contribute to profile completion and their weights.
-    PROFILE_COMPLETION_FIELDS: Dict[str, int] = {
-        "first_name": 0,
-        "last_name": 0,
-        "photo": 1,
-        "email": 0,
-        "primary_phone_number": 1,
-        "country": 1,
-        "town_city_or_region": 1,
-        "manager": 1,
-        "roles": 1,  # Related objects
+    PROFILE_COMPLETION_FIELDS: Dict[str, ProfileCompletionField] = {
+        "first_name": {
+            "weight": 0,
+            "edit_section": EditSections.PERSONAL,
+        },
+        "last_name": {
+            "weight": 0,
+            "edit_section": EditSections.PERSONAL,
+        },
+        "photo": {
+            "weight": 1,
+            "edit_section": EditSections.PERSONAL,
+            "form_id": "photo-form-group",
+        },
+        "email": {
+            "weight": 1,
+            "edit_section": EditSections.CONTACT,
+        },
+        "primary_phone_number": {
+            "weight": 1,
+            "edit_section": EditSections.CONTACT,
+        },
+        "location": {
+            "weight": 1,
+            "or_fields": [
+                "uk_office_location",
+                "international_building",
+            ],
+            "edit_section": EditSections.LOCATION,
+            "form_id": "id_uk_office_location",
+        },
+        "remote_working": {
+            "weight": 1,
+            "edit_section": EditSections.LOCATION,
+            "form_id": "id_remote_working_1",
+        },
+        "manager": {
+            "weight": 1,
+            "or_fields": [
+                "manager",
+                "do_not_work_for_dit",
+            ],
+            "edit_section": EditSections.TEAMS,
+            "form_id": "manager-component",
+        },
+        "roles": {  # Related objects
+            "weight": 1,
+            "edit_section": EditSections.TEAMS,
+            "form_id": "team-and-role-heading",
+        },
+    }
+    # Map of profile sections to edit sections and fields.
+    PROFILE_SECTION_MAPPING: Dict[Any, ProfileSectionMapping] = {
+        ProfileSections.CONTACT: {
+            "edit_section": EditSections.CONTACT,
+            "fields": [
+                ("contact_email", "Preferred email"),
+                ("primary_phone_number", "Contact number"),
+            ],
+        },
+        ProfileSections.ROLE: {
+            "edit_section": EditSections.TEAMS,
+            "fields": [
+                ("get_manager_display", "My manager"),
+                ("get_grade_display", "Grade"),
+                ("get_roles_display", "My role(s)"),
+            ],
+        },
+        ProfileSections.LOCATION: {
+            "edit_section": EditSections.LOCATION,
+            "fields": [
+                ("get_remote_working_display", "Where I work"),
+                ("get_office_location_display", "Office location"),
+                ("get_workdays_display", "Days I work"),
+            ],
+        },
+        ProfileSections.ABOUT: {
+            "edit_section": EditSections.SKILLS,
+            "fields": [
+                ("get_key_skills_display", "My skills"),
+                ("fluent_languages", "Fluent languages"),
+                ("intermediate_languages", "Non-fluent languages"),
+                (
+                    "get_learning_interests_display",
+                    "My learning and development interests",
+                ),
+                ("get_networks_display", "My networks"),
+                ("get_professions_display", "My professions"),
+                (
+                    "get_additional_roles_display",
+                    "My further roles and responsibilities",
+                ),
+                ("previous_experience", "My previous experience"),
+            ],
+        },
     }
 
     def create_user_profile(self, user: User) -> Person:
@@ -112,6 +213,7 @@ class PersonService:
             user=user,
             legacy_sso_user_id=user.legacy_sso_user_id,
             first_name=user.first_name,
+            preferred_first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
             login_count=1,
@@ -192,7 +294,7 @@ class PersonService:
             person.edited_or_confirmed_at = timezone.now()
             person.save()
 
-            self.notify_about_changes(request, person)
+            self.trigger_profile_change_notification(request, person)
 
         # Notify external services
         person_update_notifier.delay(person.id)
@@ -231,13 +333,15 @@ class PersonService:
         if request:
             self.notify_about_deletion(person, deleted_by)
 
-    def notify_about_changes(self, request: HttpRequest, person: Person) -> None:
+    def trigger_profile_change_notification(
+        self, request: HttpRequest, person: Person
+    ) -> None:
         editor = request.user.profile
 
         if editor == person:
             return None
 
-        context = {
+        personalisation = {
             "profile_name": person.full_name,
             "editor_name": editor.full_name,
             "profile_url": request.build_absolute_uri(
@@ -246,15 +350,42 @@ class PersonService:
         }
 
         if settings.APP_ENV in ("local", "test"):
-            logger.info(NOTIFY_ABOUT_CHANGES_LOG_MESSAGE.format(**context))
+            logger.info(NOTIFY_ABOUT_CHANGES_LOG_MESSAGE.format(**personalisation))
 
             return
 
+        notify_user_about_profile_changes.apply_async(
+            args=(
+                person.pk,
+                personalisation,
+            ),
+            countdown=300,  # 5 minutes.
+        )
+
+    def notify_about_changes_debounce(
+        self, person_pk, personalisation, countdown
+    ) -> None:
+        """
+        Don't call this method directly, use `trigger_profile_change_notification`.
+
+        See `peoplefinder.tasks.notify_user_about_profile_changes` for more
+        details.
+        """
+        person = Person.objects.get(pk=person_pk)
+
+        if countdown:
+            can_run_time = person.edited_or_confirmed_at + timedelta(seconds=countdown)
+            if timezone.now() < can_run_time:
+                # If the person model was edited more recently than the delay,
+                # then don't send a notification as something has happened since
+                # the task was triggered.
+                return None
+
         notification_client = NotificationsAPIClient(settings.GOVUK_NOTIFY_API_KEY)
         notification_client.send_email_notification(
-            person.email,
-            settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
-            personalisation=context,
+            email_address=person.email,
+            template_id=settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
+            personalisation=personalisation,
         )
 
     @staticmethod
@@ -336,24 +467,91 @@ class PersonService:
         field_statuses = self.profile_completion_field_statuses(person)
         for field_status in field_statuses:
             if field_statuses[field_status]:
-                complete_fields += self.PROFILE_COMPLETION_FIELDS[field_status]
+                complete_fields += self.PROFILE_COMPLETION_FIELDS[field_status][
+                    "weight"
+                ]
 
-        total_field_weights = sum(self.PROFILE_COMPLETION_FIELDS.values())
+        total_field_weights = sum(
+            [f["weight"] for f in self.PROFILE_COMPLETION_FIELDS.values()]
+        )
         percentage = (complete_fields / total_field_weights) * 100
         return int(percentage)
 
     def profile_completion_field_statuses(self, person: "Person") -> Dict[str, bool]:
         statuses: Dict[str, bool] = {}
-        for profile_completion_field in self.PROFILE_COMPLETION_FIELDS:
-            profile_completion_field_status = False
+        for (
+            profile_completion_field,
+            pcf_dict,
+        ) in self.PROFILE_COMPLETION_FIELDS.items():
             if profile_completion_field == "roles":
                 # If the person doesn't have a PK then there can't be any relationships.
                 if not person._state.adding and person.roles.all().exists():
-                    profile_completion_field_status = True
-            elif getattr(person, profile_completion_field, None) is not None:
-                profile_completion_field_status = True
-            statuses[profile_completion_field] = profile_completion_field_status
+                    statuses[profile_completion_field] = True
+                    continue
+
+            if "or_fields" in pcf_dict:
+                if any(
+                    [getattr(person, or_field) for or_field in pcf_dict["or_fields"]]
+                ):
+                    statuses[profile_completion_field] = True
+                    continue
+
+            field_value = getattr(person, profile_completion_field, None)
+
+            if field_value:
+                statuses[profile_completion_field] = True
+                continue
+
+            statuses[profile_completion_field] = False
         return statuses
+
+    def get_profile_completion_field_edit_section(
+        self, field_name: str
+    ) -> EditSections:
+        return self.PROFILE_COMPLETION_FIELDS.get(field_name, {}).get(
+            "edit_section",
+            EditSections.PERSONAL,
+        )
+
+    def get_profile_completion_field_form_id(self, field_name: str) -> EditSections:
+        return self.PROFILE_COMPLETION_FIELDS.get(field_name, {}).get(
+            "form_id",
+            "id_" + field_name,
+        )
+
+    def get_profile_section_mapping(
+        self, profile_section: ProfileSections
+    ) -> Dict[str, str]:
+        return self.PROFILE_SECTION_MAPPING.get(profile_section, {})
+
+    def get_profile_section_values(
+        self, person: "Person", profile_section: ProfileSections
+    ) -> List[Tuple[str, str, str]]:
+        profile_section_fields: List[
+            Tuple[str, str]
+        ] = self.get_profile_section_mapping(profile_section,).get("fields", [])
+        values = []
+        for field_name, field_label in profile_section_fields:
+            field_value = getattr(person, field_name)
+
+            if isinstance(field_value, str):
+                # Replace newlines with "<br>".
+                field_value = mark_safe(  # noqa: S308
+                    strip_tags(field_value).replace("\n", "<br>")
+                )
+
+            if callable(field_value):
+                field_value = field_value()
+
+            if field_value not in [None, ""]:
+                values.append(
+                    (
+                        field_name,
+                        field_label,
+                        field_value,
+                    )
+                )
+        return values
 
     @staticmethod
     def get_verified_emails(person: Person) -> list[str]:
@@ -381,7 +579,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 45, (
+    assert len(Person._meta.get_fields()) == 49, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
