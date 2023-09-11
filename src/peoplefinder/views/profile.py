@@ -3,10 +3,6 @@ from pathlib import Path
 from typing import Any, Dict
 
 from django.contrib import messages
-from django.template.response import TemplateResponse
-from django.utils.decorators import decorator_from_middleware
-from django_hawk.middleware import HawkResponseMiddleware
-from django_hawk.utils import DjangoHawkAuthenticationFailed, authenticate_request
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -19,19 +15,16 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.decorators import method_decorator
+from django.utils.decorators import decorator_from_middleware, method_decorator
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
-from django.views.generic.edit import FormView, UpdateView
-from webpack_loader.utils import get_static
-
-from peoplefinder.forms.profile import (
-    ProfileForm,
-    ProfileLeavingDitForm,
-    ProfileUpdateUserForm,
 from django.views.generic.edit import UpdateView
+from django_hawk.middleware import HawkResponseMiddleware
+from django_hawk.utils import DjangoHawkAuthenticationFailed, authenticate_request
+from webpack_loader.utils import get_static
 
 from peoplefinder.forms.crispy_helper import RoleFormsetFormHelper
 from peoplefinder.forms.profile import ProfileUpdateUserForm
