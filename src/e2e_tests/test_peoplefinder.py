@@ -18,8 +18,8 @@ def test_profile(superuser, user, page: Page):
 
     # Profile page
     profile_view_page = home_page.goto_profile_view_page()
-    expect(profile_view_page.page).to_have_title(re.compile(r"John Smith.*"))
-    assert profile_view_page.full_name == "John Smith"
+    expect(profile_view_page.page).to_have_title(re.compile(r"J Smith.*"))
+    assert profile_view_page.full_name == "J Smith"
     assert profile_view_page.preferred_email == user.email
 
     # Profile edit page
@@ -32,7 +32,7 @@ def test_profile(superuser, user, page: Page):
 
     # Updated profile page
     profile_view_page = profile_edit_page.goto_profile_view_page()
-    assert profile_view_page.full_name == "John Smith"
+    assert profile_view_page.full_name == "J Smith"
     assert profile_view_page.manager == "Super User"
     assert "CEO in SpaceX" in profile_view_page.roles
 
