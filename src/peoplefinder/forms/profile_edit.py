@@ -1,13 +1,16 @@
+from typing import List
+
 from crispy_forms_gds.helper import FormHelper
 from crispy_forms_gds.layout import HTML, Field, Fieldset, Layout, Size
 from django import forms
-from django.core.validators import ValidationError
+from django.core.validators import ValidationError, validate_email
 from django.template import Context, Template
 
 from peoplefinder.forms.crispy_layout import GovUKDetails
 from peoplefinder.forms.profile import GovUkRadioSelect, GroupedModelChoiceField
 from peoplefinder.forms.role import RoleForm
 from peoplefinder.models import Person, TeamMember, UkStaffLocation
+from peoplefinder.services.person import PersonService
 
 
 class PersonalProfileEditForm(forms.ModelForm):
@@ -502,6 +505,66 @@ class SkillsProfileEditForm(forms.ModelForm):
                 legend="Skills, interests and networks (optional)",
             )
         )
+
+
+class AccountSettingsForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = [
+            "email",
+        ]
+        widgets = {
+            "email": forms.Select,
+        }
+
+    email = forms.ChoiceField(
+        label=Person._meta.get_field("email").verbose_name,
+        help_text=Person._meta.get_field("email").help_text,
+        required=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.request_user = kwargs.pop("request_user", None)
+        super().__init__(*args, **kwargs)
+
+        email_label = self.fields["email"].label
+        self.fields["email"].label = ""
+        self.fields["email"].choices = [(e, e) for e in self.get_email_choices()]
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                Field.select("email"),
+                legend_size=Size.MEDIUM,
+                legend=email_label,
+            ),
+        )
+
+    def get_email_choices(self) -> List[str]:
+        verified_emails = PersonService.get_verified_emails(self.instance)
+        choices = []
+        if self.instance.email in verified_emails:
+            choices += [self.instance.email]
+        choices += [email for email in verified_emails if email not in choices]
+        if not choices:
+            return [self.instance.email]
+        return choices
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+
+        validate_email(email)
+
+        verified_emails = PersonService.get_verified_emails(self.instance)
+        if verified_emails == []:
+            raise Exception("Could not retrieve valid emails for this user")
+        if email not in verified_emails:
+            raise ValidationError(
+                "Email address must be officially assigned and verified by SSO authentication"
+            )
+
+        return email
 
 
 class AdminProfileEditForm(forms.ModelForm):
