@@ -353,12 +353,14 @@ class PersonService:
 
             return
 
+        countdown = 300  # 5 minutes.
         notify_user_about_profile_changes.apply_async(
             args=(
                 person.pk,
                 personalisation,
+                countdown,
             ),
-            countdown=300,  # 5 minutes.
+            countdown=countdown,
         )
 
     def notify_about_changes_debounce(
