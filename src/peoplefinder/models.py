@@ -562,7 +562,7 @@ class Person(Indexed, models.Model):
         help_text=(
             "The work email address provided by the organisation you are"
             " directly employed by or contracted to. This is the email you use"
-            " to log into Digital Workspace.",
+            " to log into Digital Workspace."
         ),
     )
     pronouns = models.CharField(max_length=40, null=True, blank=True)
