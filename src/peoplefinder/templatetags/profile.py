@@ -1,3 +1,5 @@
+import hashlib
+
 from django import template
 from django.utils.safestring import mark_safe
 
@@ -10,7 +12,7 @@ def profile_photo_attrs(profile) -> str:
         return ""
 
     def byte_hash(val: str):
-        return hash(val) % 255
+        return int(hashlib.sha256(val.encode("utf-8")).hexdigest(), 16) % 255
 
     attrs = {
         "class": "profile-photo",
