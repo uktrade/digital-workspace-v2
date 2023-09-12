@@ -16,7 +16,6 @@
 
     {% include "peoplefinder/components/profile/edit/profile-completion.html" with profile=profile missing_profile_completion_fields=missing_profile_completion_fields %}
 
-    <h1 class="govuk-heading-l">{{ page_title }}</h1>
 
     {% error_summary form %}
     {% if teams_formset %}
@@ -43,6 +42,7 @@
 
         </div>
         <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">{{ page_title }}</h1>
             <form id="edit-profile"
                   class="ws-profile-edit-form"
                   action="#"
