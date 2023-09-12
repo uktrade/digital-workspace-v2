@@ -191,31 +191,6 @@ class ContactProfileEditForm(forms.ModelForm):
             ),
         )
 
-    def get_email_choices(self) -> List[str]:
-        verified_emails = PersonService.get_verified_emails(self.instance)
-        choices = []
-        if self.instance.email in verified_emails:
-            choices += [self.instance.email]
-        choices += [email for email in verified_emails if email not in choices]
-        if not choices:
-            return [self.instance.email]
-        return choices
-
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-
-        validate_email(email)
-
-        verified_emails = PersonService.get_verified_emails(self.instance)
-        if verified_emails == []:
-            raise Exception("Could not retrieve valid emails for this user")
-        if email not in verified_emails:
-            raise ValidationError(
-                "Email address must be officially assigned and verified by SSO authentication"
-            )
-
-        return email
-
 
 class TeamsProfileEditForm(forms.ModelForm):
     class Meta:
