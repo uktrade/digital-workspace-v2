@@ -2,6 +2,7 @@ import logging
 from datetime import timedelta
 from typing import Any, Dict, List, Optional, Tuple, TypedDict
 
+import requests
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -553,6 +554,24 @@ class PersonService:
                     )
                 )
         return values
+
+    @staticmethod
+    def get_verified_emails(person: Person) -> list[str]:
+        user_email = person.user.email  # @TODO prefer UUID if we can get it from SSO
+        url = f"{settings.AUTHBROKER_URL}/api/v1/user/emails/"
+        params = {"email": user_email}
+        headers = {"Authorization": f"bearer {settings.AUTHBROKER_INTROSPECTION_TOKEN}"}
+
+        response = requests.get(url, params, headers=headers, timeout=5)
+
+        if response.status_code == 200:
+            resp_json = response.json()
+            return resp_json["emails"]
+        else:
+            logger.error(
+                f"Response code [{response.status_code}] from authbroker emails endpoint for {user_email}"
+            )
+        return []
 
 
 class PersonAuditLogSerializer(AuditLogSerializer):
