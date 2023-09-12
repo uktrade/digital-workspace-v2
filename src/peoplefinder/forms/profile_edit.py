@@ -146,15 +146,6 @@ class ContactProfileEditForm(forms.ModelForm):
             "primary_phone_number",
             "secondary_phone_number",
         ]
-        widgets = {
-            "email": forms.Select,
-        }
-
-    email = forms.ChoiceField(
-        label=Person._meta.get_field("email").verbose_name,
-        help_text=Person._meta.get_field("email").help_text,
-        required=True,
-    )
 
     def __init__(self, *args, **kwargs):
         self.request_user = kwargs.pop("request_user", None)
@@ -162,7 +153,7 @@ class ContactProfileEditForm(forms.ModelForm):
 
         email_label = self.fields["email"].label
         self.fields["email"].label = ""
-        self.fields["email"].choices = [(e, e) for e in self.get_email_choices()]
+        self.fields["email"].disabled = True
 
         contact_email_label = self.fields["contact_email"].label + " (optional)"
         self.fields["contact_email"].label = ""
@@ -179,7 +170,7 @@ class ContactProfileEditForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset(
-                Field.select("email"),
+                "email",
                 legend_size=Size.MEDIUM,
                 legend=email_label,
             ),
