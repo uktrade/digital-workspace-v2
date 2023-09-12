@@ -15,12 +15,16 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.decorators import method_decorator
+from django.utils.decorators import decorator_from_middleware, method_decorator
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import UpdateView
+from django_hawk.middleware import HawkResponseMiddleware
+from django_hawk.utils import DjangoHawkAuthenticationFailed, authenticate_request
+from webpack_loader.utils import get_static
 
 from peoplefinder.forms.crispy_helper import RoleFormsetFormHelper
 from peoplefinder.forms.profile import ProfileUpdateUserForm
@@ -512,3 +516,26 @@ def get_profile_by_staff_sso_id(request, staff_sso_id):
     person = get_object_or_404(Person, user__legacy_sso_user_id=staff_sso_id)
 
     return redirect(person)
+
+
+@decorator_from_middleware(HawkResponseMiddleware)
+def get_profile_card(request, staff_sso_email_user_id):
+    try:
+        authenticate_request(request=request)
+    except DjangoHawkAuthenticationFailed:
+        return HttpResponse(status=401)
+
+    try:
+        person = Person.objects.filter(user__username=staff_sso_email_user_id).get()
+    except (Person.DoesNotExist, Person.MultipleObjectsReturned):
+        person = None
+
+    return TemplateResponse(
+        request,
+        "peoplefinder/components/profile-card.html",
+        {
+            "profile": person,
+            "profile_url": request.build_absolute_uri(person.get_absolute_url()),
+            "no_photo_url": request.build_absolute_uri(get_static("no-photo.png")),
+        },
+    )

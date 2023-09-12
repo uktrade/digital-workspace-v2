@@ -17,7 +17,7 @@ def profile_photo_attrs(profile) -> str:
         "style": (
             f"--color-1: {byte_hash(profile.first_name)};"
             f" --color-2: {byte_hash(profile.last_name)};"
-            f" --color-3: {byte_hash(profile.first_name + profile.last_name)}"
+            f" --color-3: {byte_hash(profile.preferred_first_name)}"
         ),
     }
     return mark_safe(" ".join([f'{k}="{v}"' for k, v in attrs.items()]))  # noqa S308
