@@ -1,16 +1,13 @@
-from typing import List
-
 from crispy_forms_gds.helper import FormHelper
 from crispy_forms_gds.layout import HTML, Field, Fieldset, Layout, Size
 from django import forms
-from django.core.validators import ValidationError, validate_email
+from django.core.validators import ValidationError
 from django.template import Context, Template
 
 from peoplefinder.forms.crispy_layout import GovUKDetails
 from peoplefinder.forms.profile import GovUkRadioSelect, GroupedModelChoiceField
 from peoplefinder.forms.role import RoleForm
 from peoplefinder.models import Person, TeamMember, UkStaffLocation
-from peoplefinder.services.person import PersonService
 
 
 class PersonalProfileEditForm(forms.ModelForm):
