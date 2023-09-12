@@ -560,9 +560,9 @@ class Person(Indexed, models.Model):
     email = models.EmailField(
         "Main work email address",
         help_text=(
-            "Choose your own official work email address provided by the"
-            " organisation you are directly employed by or contracted to."
-            " This is the email you use to log into Digital Workspace."
+            "The work email address provided by the organisation you are"
+            " directly employed by or contracted to. This is the email you use"
+            " to log into Digital Workspace.",
         ),
     )
     pronouns = models.CharField(max_length=40, null=True, blank=True)
