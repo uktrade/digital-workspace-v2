@@ -138,7 +138,6 @@ class ContactProfileEditForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = [
-            "email",
             "contact_email",
             "primary_phone_number",
             "secondary_phone_number",
@@ -148,11 +147,8 @@ class ContactProfileEditForm(forms.ModelForm):
         self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
-        email_label = self.fields["email"].label
-        self.fields["email"].label = ""
-        self.fields["email"].disabled = True
-
-        contact_email_label = self.fields["contact_email"].label + " (optional)"
+        contact_email_label = self.fields["contact_email"].label
+        self.fields["contact_email"].required = True
         self.fields["contact_email"].label = ""
 
         primary_phone_number_label = self.fields["primary_phone_number"].label
@@ -166,11 +162,6 @@ class ContactProfileEditForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Fieldset(
-                "email",
-                legend_size=Size.MEDIUM,
-                legend=email_label,
-            ),
             Fieldset(
                 "contact_email",
                 legend_size=Size.MEDIUM,

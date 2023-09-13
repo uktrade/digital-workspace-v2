@@ -254,7 +254,7 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             edit_sections.remove(EditSections.ADMIN)
 
         context.update(
-            page_title=f"Edit profile: {self.edit_section.label}",
+            page_title=f"Edit profile: {self.edit_section.label.lower()}",
             current_edit_section=self.edit_section,
             edit_sections=edit_sections,
             profile_slug=profile.slug,

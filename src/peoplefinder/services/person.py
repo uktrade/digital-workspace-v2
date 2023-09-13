@@ -125,8 +125,9 @@ class PersonService:
         ProfileSections.CONTACT: {
             "edit_section": EditSections.CONTACT,
             "fields": [
-                ("contact_email", "Preferred email"),
-                ("primary_phone_number", "Contact number"),
+                ("contact_email", "Email"),
+                ("primary_phone_number", "Phone number"),
+                ("secondary_phone_number", "Alternative phone number"),
             ],
         },
         ProfileSections.ROLE: {
@@ -216,6 +217,7 @@ class PersonService:
             preferred_first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
+            contact_email=user.email,
             login_count=1,
         )
 
