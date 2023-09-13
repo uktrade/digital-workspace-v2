@@ -577,29 +577,30 @@ class Person(Indexed, models.Model):
         blank=True,
     )
     contact_email = models.EmailField(
-        "Preferred email address",
+        "Email address",
         null=True,
         blank=True,
-        help_text=(
-            "Complete if you want to show a different email address on your"
-            " profile for example a jobshare or Private Office mailbox. Do not"
-            " enter a personal email address, or work email address that is not"
-            " safe for official information."
-        ),
+        help_text="The work email you want people to contact you on.",
     )
     primary_phone_number = models.CharField(
-        "Contact number",
+        "Phone number",
         max_length=42,
         null=True,
         blank=True,
-        help_text="Include your country dialling code.",
+        help_text=(
+            "Enter the country's dialling code in place of the first 0. The"
+            " UK's dialling code is +44."
+        ),
     )
     secondary_phone_number = models.CharField(
-        "Alternative contact number",
+        "Alternative phone number",
         max_length=160,
         null=True,
         blank=True,
-        help_text="Include your country dialling code.",
+        help_text=(
+            "Enter the country's dialling code in place of the first 0. The"
+            " UK's dialling code is +44."
+        ),
     )
     town_city_or_region = models.CharField(
         "Town, city or region",

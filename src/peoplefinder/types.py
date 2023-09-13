@@ -9,9 +9,9 @@ class ProfileSections(models.TextChoices):
 
 
 class EditSections(models.TextChoices):
-    PERSONAL = "personal", "Personal Details"
-    CONTACT = "contact", "Contact Details"
+    PERSONAL = "personal", "Personal details"
+    CONTACT = "contact", "Contact details"
     TEAMS = "teams", "Team and role"
     LOCATION = "location", "Location and working patterns"
-    SKILLS = "skills", "Skills, Networks and Interests"
+    SKILLS = "skills", "Skills, networks and interests"
     ADMIN = "admin", "Administer profile"
