@@ -6,45 +6,56 @@
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
     <head>
-        <meta charset="utf-8"/>
+        <meta charset="utf-8" />
         <title>
             {% block title %}
-                {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
+                {% if self.seo_title %}
+                    {{ self.seo_title }}
+                {% else %}
+                    {{ self.title }}
+                {% endif %}
             {% endblock %}
-            {% block title_suffix %}
-                - Digital Workspace
-            {% endblock %}
+            {% block title_suffix %}- Digital Workspace{% endblock %}
         </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-        <meta name="theme-color" content="#cd1632"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <meta name="theme-color" content="#cd1632" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager -->
             <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl+ '&gtm_auth={{ settings.GTM_AUTH }}&amp;gtm_preview=env-2&gtm_cookies_win=x';f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','{{ settings.GTM_CODE }}');</script>
+            })(window,document,'script','dataLayer','{{ settings.GTM_CODE }}');
+            </script>
             <!-- End Google Tag Manager -->
         {% endif %}
-        <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'core/favicon.ico' %}" type="image/x-icon"/>
-        <link rel="mask-icon" href="{% webpack_static 'govuk-mask-icon.svg' %}" color="#0b0c0c">
-        <link rel="apple-touch-icon" href="{% static 'core/apple-touch-icon.png' %}">
-
+        <link rel="shortcut icon"
+              sizes="16x16 32x32 48x48"
+              href="{% static 'core/favicon.ico' %}"
+              type="image/x-icon" />
+        <link rel="mask-icon"
+              href="{% webpack_static 'govuk-mask-icon.svg' %}"
+              color="#0b0c0c">
+        <link rel="apple-touch-icon"
+              href="{% static 'core/apple-touch-icon.png' %}">
         <meta name="robots" content="noindex, nofollow">
-        <meta property="og:image" content="{% webpack_static 'govuk-opengraph-image.png' %}">
-
+        <meta property="og:image"
+              content="{% webpack_static 'govuk-opengraph-image.png' %}">
         {% render_bundle 'main' 'css' %}
         {% block stylesheets %}{% endblock %}
         {% block libraries %}{% endblock %}
     </head>
-
     <body class="govuk-template__body ">
+        <h1>Hello DBTPAAS</h1>
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.GTM_CODE }}"
-            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        height="0"
+        width="0"
+        style="display:none;
+               visibility:hidden"></iframe></noscript>
             <!-- End Google Tag Manager (noscript) -->
         {% endif %}
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
@@ -56,11 +67,10 @@
         <div class="govuk-width-container">
             <div class="govuk-phase-banner">
                 <p class="govuk-phase-banner__content">
-                    <strong class="govuk-tag govuk-phase-banner__content__tag">
-                        beta
-                    </strong>
+                    <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
                     <span class="govuk-phase-banner__text">
-                        This is a new service – your <a class="govuk-link" href="mailto:digitalworkspace@digital.trade.gov.uk">feedback</a> will help us to improve it. {# /PS-IGNORE #}
+                        This is a new service – your <a class="govuk-link"
+    href="mailto:digitalworkspace@digital.trade.gov.uk">feedback</a> will help us to improve it. {# /PS-IGNORE #}
                     </span>
                 </p>
             </div>
