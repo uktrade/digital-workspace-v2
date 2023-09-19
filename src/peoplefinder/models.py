@@ -553,6 +553,7 @@ class Person(Indexed, models.Model):
             "How you would prefer to be called, for example a shortened "
             "version of your name. This will appear on your profile."
         ),
+        null=True,
     )
     last_name = models.CharField(
         max_length=200,
