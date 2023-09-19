@@ -554,6 +554,7 @@ class Person(Indexed, models.Model):
             "version of your name. This will appear on your profile."
         ),
         null=True,
+        blank=True,
     )
     last_name = models.CharField(
         max_length=200,
