@@ -1,4 +1,11 @@
-# How search works
+---
+hide:
+  - navigation
+---
+
+# Search
+
+## How search works
 
 Search is handled by [OpenSearch](https://opensearch.org/), an [ElasticSearch](https://www.elastic.co/) clone that runs as a service on AWS. Indexing and querying is managed by an extension to [Wagtail's in-built search](https://docs.wagtail.org/en/stable/topics/search/index.html) functionality.
 

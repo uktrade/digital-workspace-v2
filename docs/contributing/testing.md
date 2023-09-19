@@ -1,5 +1,10 @@
 # Testing
 
+## Test commands
+
+- `make test`
+- `make test-e2e`
+
 ## E2E codegen tests
 
 When writing playwright tests it might be useful to use the `make e2e-codegen` tool to help generate code.

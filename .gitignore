@@ -5,6 +5,7 @@
 *.retry
 .env
 .envrc
+.cache
 *~
 /logs
 /data
