@@ -41,6 +41,7 @@ class PersonalProfileEditForm(forms.ModelForm):
             self.fields["preferred_first_name"].label + " (optional)"
         )
         self.fields["preferred_first_name"].label = ""
+        self.fields["preferred_first_name"].required = False
 
         last_name_label = self.fields["last_name"].label
         self.fields["last_name"].label = ""
