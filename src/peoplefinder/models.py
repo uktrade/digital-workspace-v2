@@ -174,11 +174,10 @@ class UkStaffLocation(IngestedModel):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["code"], name="unique_location_code"),
-            models.UniqueConstraint(fields=["name"], name="unique_location_name"),
         ]
         ordering = ["name"]
 
-    code = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     organisation = models.CharField(max_length=255)
