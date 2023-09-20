@@ -616,6 +616,7 @@ class Person(Indexed, models.Model):
         blank=True,
     )
     usual_office_days = models.CharField(
+        "What days do you usually come into the office?",
         help_text=("e.g. I usually come in on Mondays and Wednesdays"),
         max_length=200,
         null=True,
@@ -796,6 +797,11 @@ class Person(Indexed, models.Model):
 
         # "Monday, Tuesday, Wednesday, ..."
         return ", ".join(map(str, workdays))
+    
+    def get_usual_office_days_display(self) -> str:
+        if self.usual_office_days:
+            return self.usual_office_days
+        return None
 
     def get_office_location_display(self) -> Optional[str]:
         if self.uk_office_location:

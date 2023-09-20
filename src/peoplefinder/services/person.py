@@ -143,6 +143,7 @@ class PersonService:
             "fields": [
                 ("get_remote_working_display", "Where I work"),
                 ("get_office_location_display", "Office location"),
+                ("get_usual_office_days_display", "Days I'm in the office"),
                 ("get_workdays_display", "Days I work"),
             ],
         },
