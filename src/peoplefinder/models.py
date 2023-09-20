@@ -797,7 +797,7 @@ class Person(Indexed, models.Model):
 
         # "Monday, Tuesday, Wednesday, ..."
         return ", ".join(map(str, workdays))
-    
+
     def get_usual_office_days_display(self) -> str:
         if self.usual_office_days:
             return self.usual_office_days
