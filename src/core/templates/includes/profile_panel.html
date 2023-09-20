@@ -4,7 +4,7 @@
         <a class="profile-link"
            href="{% url 'profile-view' peoplefinder_profile.slug %}">
             <div class="profile-details">
-                <span class="salutation">Hi {{ peoplefinder_profile.preferred_first_name|truncatechars:25 }}</span>
+                <span class="salutation">Hi {{ peoplefinder_profile.get_first_name_display|truncatechars:25 }}</span>
                 <span class="profile-prompt"><span>View your profile</span>
                 {% if peoplefinder_profile.profile_completion < 100 %}
                     <span>({{ peoplefinder_profile.profile_completion|floatformat:0 }}% complete)</span>
