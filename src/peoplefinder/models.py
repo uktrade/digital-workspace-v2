@@ -798,11 +798,6 @@ class Person(Indexed, models.Model):
         # "Monday, Tuesday, Wednesday, ..."
         return ", ".join(map(str, workdays))
 
-    def get_usual_office_days_display(self) -> str:
-        if self.usual_office_days:
-            return self.usual_office_days
-        return None
-
     def get_office_location_display(self) -> Optional[str]:
         if self.uk_office_location:
             return mark_safe(  # noqa: S308
