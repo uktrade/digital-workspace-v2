@@ -553,6 +553,8 @@ class Person(Indexed, models.Model):
             "How you would prefer to be called, for example a shortened "
             "version of your name. This will appear on your profile."
         ),
+        null=True,
+        blank=True,
     )
     last_name = models.CharField(
         max_length=200,
@@ -739,7 +741,8 @@ class Person(Indexed, models.Model):
 
     @property
     def full_name(self) -> str:
-        return f"{self.preferred_first_name} {self.last_name}"
+        first_name = self.get_first_name_display()
+        return f"{first_name} {self.last_name}"
 
     @property
     def preferred_email(self) -> str:
@@ -784,6 +787,11 @@ class Person(Indexed, models.Model):
 
         self.profile_completion = PersonService().get_profile_completion(person=self)
         return super().save(*args, **kwargs)
+
+    def get_first_name_display(self) -> str:
+        if self.preferred_first_name:
+            return self.preferred_first_name
+        return self.first_name
 
     def get_workdays_display(self) -> str:
         workdays = self.workdays.all_mon_to_sun()

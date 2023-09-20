@@ -15,7 +15,7 @@ context:
         {% endif %}
         <ul class="profile-details">
             {% if profile %}
-                <li class="profile-name">Hi {{ profile.preferred_first_name }}</li>
+                <li class="profile-name">Hi {{ profile.get_first_name_display }}</li>
                 <li class="profile-completion">
                     View your profile
                     {% if profile.profile_completion < 100 %}
