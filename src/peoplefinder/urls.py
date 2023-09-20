@@ -19,6 +19,7 @@ from peoplefinder.views.profile import (
     ProfileDeleteView,
     ProfileDetailView,
     ProfileEditView,
+    ProfileLeavingDbtView,
     ProfileLegacyView,
     ProfileUpdateUserView,
     get_profile_by_staff_sso_id,
@@ -100,6 +101,12 @@ people_urlpatterns = [
         "<uuid:profile_slug>/edit/<str:edit_section>/",
         ProfileEditView.as_view(),
         name="profile-edit-section",
+    ),
+    # Leaving DBT
+    path(
+        "<uuid:profile_slug>/leaving-dbt",
+        ProfileLeavingDbtView.as_view(),
+        name="profile-leaving-dit",
     ),
     path(
         "<uuid:profile_slug>/delete/",

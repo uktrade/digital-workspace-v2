@@ -121,6 +121,20 @@
             {% else %}
                 <p class="govuk-body-s pf-secondary-colour">Last edited {{ profile.edited_or_confirmed_at|naturalday:"j F Y" }}</p>
             {% endif %}
+
+            {% if profile.is_active %}
+                {% if request.user == profile.user %}
+                    <p class="govuk-body-s">
+                        Let us know if you are <a class="govuk-link"
+    href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.
+                    </p>
+                {% else %}
+                    <p class="govuk-body-s">
+                        Let us know if {{ profile.full_name }} has <a class="govuk-link"
+    href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.
+                    </p>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 
