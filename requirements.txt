@@ -21,6 +21,7 @@ colorama==0.4.6 ; python_version >= "3.11" and python_version < "4.0" and platfo
 crispy-forms-gds==0.2.4 ; python_version >= "3.11" and python_version < "4.0"
 cron-descriptor==1.4.0 ; python_version >= "3.11" and python_version < "4.0"
 cryptography==41.0.3 ; python_version >= "3.11" and python_version < "4.0"
+dbt-copilot-python==0.1.2 ; python_version >= "3.11" and python_version < "4.0"
 defusedxml==0.7.1 ; python_version >= "3.11" and python_version < "4.0"
 django-audit-log-middleware==0.0.4 ; python_version >= "3.11" and python_version < "4.0"
 django-celery-beat==2.5.0 ; python_version >= "3.11" and python_version < "4.0"
