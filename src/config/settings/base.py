@@ -3,6 +3,7 @@ import sys
 
 import environ
 import sentry_sdk
+from dbt_copilot_python.network import setup_allowed_hosts
 from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
@@ -89,7 +90,7 @@ if env.str("SENTRY_DSN", None):
 
 # Allow all hosts
 # (this application will always be run behind a PaaS router or locally)
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = setup_allowed_hosts(["*"])
 
 # Set up Django
 LOCAL_APPS = [
