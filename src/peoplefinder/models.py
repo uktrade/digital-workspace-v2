@@ -617,6 +617,13 @@ class Person(Indexed, models.Model):
         null=True,
         blank=True,
     )
+    usual_office_days = models.CharField(
+        "What days do you usually come in to the office?",
+        help_text=("For example: I usually come in on Mondays and Wednesdays"),
+        max_length=200,
+        null=True,
+        blank=True,
+    )
     regional_building.system_check_deprecated_details = {
         "msg": ("Person.regional_building been deprecated."),
         "hint": "Use Person.uk_office_location and Person.remote_working instead.",

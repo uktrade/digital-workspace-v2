@@ -264,6 +264,7 @@ class LocationProfileEditForm(forms.ModelForm):
         fields = [
             "uk_office_location",
             "remote_working",
+            "usual_office_days",
             "location_in_building",
             "international_building",
             "workdays",
@@ -299,6 +300,9 @@ class LocationProfileEditForm(forms.ModelForm):
         remote_working_choices = self.fields["remote_working"].choices
         self.fields["remote_working"].choices = remote_working_choices[1:]
 
+        usual_office_days_label = self.fields["usual_office_days"].label + " (optional)"
+        self.fields["usual_office_days"].label = ""
+
         uk_office_location_label = self.fields["uk_office_location"].label
         self.fields["uk_office_location"].label = ""
 
@@ -330,6 +334,11 @@ class LocationProfileEditForm(forms.ModelForm):
                 "remote_working",
                 legend_size=Size.MEDIUM,
                 legend=remote_working_label,
+            ),
+            Fieldset(
+                "usual_office_days",
+                legend_size=Size.MEDIUM,
+                legend=usual_office_days_label,
             ),
             Fieldset(
                 "location_in_building",
