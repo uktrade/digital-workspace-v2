@@ -1,0 +1,20 @@
+version: 0.2
+env:
+  parameter-store:
+    SLACK_WORKSPACE_ID: "/codebuild/slack_workspace_id"
+    SLACK_CHANNEL_ID: "/codebuild/slack_channel_id"
+    SLACK_TOKEN: "/codebuild/slack_api_token"
+  variables:
+    PAKETO_BUILDER_VERSION: <version supporting required versions of python etc.>
+    LIFECYCLE_VERSION: <buildpacks.io lifecycle version, e.g. 0.16.0>
+
+phases:
+  # install:
+
+  pre_build:
+    commands:
+      - codebuild-breakpoint
+
+  build:
+    commands:
+      - /work/build.sh

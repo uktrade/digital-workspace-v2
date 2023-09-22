@@ -1,0 +1,6 @@
+application:
+  name: intranet
+  process:
+    - web
+    - celery-beat
+    - celery-worker
