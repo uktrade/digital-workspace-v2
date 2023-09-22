@@ -15,3 +15,5 @@ ELASTICSEARCH_DSL = {
 CLAM_AV_USERNAME = "value-does-not-matter-for-build"
 CLAM_AV_PASSWORD = "value-does-not-matter-for-build"
 CLAM_AV_DOMAIN = "value-does-not-matter-for-build"
+
+APP_ENV = "value-does-not-matter-for-build"
