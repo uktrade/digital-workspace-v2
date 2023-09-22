@@ -6,4 +6,4 @@ npm ci
 
 cd src
 
-python manage.py collectstatic --settings=config.settings.local --noinput
+python manage.py collectstatic --settings=config.settings.build --noinput
