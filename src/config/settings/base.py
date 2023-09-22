@@ -1,9 +1,11 @@
 import os
 import sys
-
+import dj_database_url
 import environ
 import sentry_sdk
+from dbt_copilot_python.database import database_url_from_env
 from dbt_copilot_python.network import setup_allowed_hosts
+from dbt_copilot_python.utility import is_copilot
 from django.urls import reverse_lazy
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
@@ -214,14 +216,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-if "postgres" in VCAP_SERVICES:
-    DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
+if is_copilot():
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=database_url_from_env("DATABASE_CREDENTIALS")
+        )
+    }
 else:
-    DATABASE_URL = os.getenv("DATABASE_URL")
+    if "postgres" in VCAP_SERVICES:
+        DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
+    else:
+        DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASES = {
-    "default": env.db(),
-}
+    DATABASES = {
+        "default": env.db(),
+    }
+
 if "UK_STAFF_LOCATIONS_DATABASE_URL" in env:
     DATABASES["uk_staff_locations"] = env.db("UK_STAFF_LOCATIONS_DATABASE_URL")
 
