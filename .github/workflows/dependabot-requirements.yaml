@@ -21,7 +21,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install poetry
-      - run: git checkout HEAD
+      - run: git fetch && git checkout ${GITHUB_HEAD_REF}
       - name: Generate requirements
         run: |
           poetry export --without-hashes --output requirements.txt
