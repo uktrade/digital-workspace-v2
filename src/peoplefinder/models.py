@@ -800,14 +800,13 @@ class Person(Indexed, models.Model):
         return ", ".join(map(str, workdays))
 
     def get_office_location_display(self) -> Optional[str]:
-        if self.uk_office_location:
-            return mark_safe(  # noqa: S308
-                self.uk_office_location.name
-                + "<br>"
-                + strip_tags(self.location_in_building)
-            )
         if self.international_building:
             return self.international_building
+        if self.uk_office_location:
+            location_display = self.uk_office_location.name
+            if self.location_in_building:
+                location_display += "<br>" + strip_tags(self.location_in_building)
+            return mark_safe(location_display)  # noqa: S308
         return None
 
     def get_manager_display(self) -> Optional[str]:
