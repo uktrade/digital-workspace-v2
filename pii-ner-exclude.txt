@@ -11,6 +11,7 @@
 -O codecov.sh https://codecov.io/bash
 // GOV.UK Design System Overrides
 /home/
+/usr/bin/env bash
 0.0.0.34
 0.9em
 0005_workday_data
@@ -271,6 +272,9 @@ SD
 SE
 SERVICE_NAME
 SG
+SLACK_CHANNEL_ID
+SLACK_TOKEN
+SLACK_WORKSPACE_ID
 SN
 SQL
 ST
@@ -437,6 +441,7 @@ ner_output_file.txt
 no-photo-large.png
 node_modules/
 npm
+npm ci
 npm run
 npm-debug.log
 oEmbed
