@@ -25,7 +25,10 @@
         "clean": "rm -f ./assets/webpack_bundles/*"
     },
     "browserslist": [
-        "last 3 chrome versions", "last 1 firefox version", "last 1 safari version", "IE 11"
+        "last 3 chrome versions",
+        "last 1 firefox version",
+        "last 1 safari version",
+        "IE 11"
     ],
     "engines": {
         "npm": ">8.0.0",

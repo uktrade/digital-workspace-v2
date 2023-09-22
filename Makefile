@@ -59,6 +59,7 @@ help:
 	@echo "$(CLR_Y)create_section_homepages$(CLR__) : Create the section homepages"
 	@echo "$(CLR_Y)setup_v2_user --email=someone@example.com$(CLR__) : Create/enable Django user with v2 search flag"
 	@echo "$(CLR_Y)data-countries$(CLR__) : Import the countries data"
+	@echo -e "$(COLOUR_YELLOW)make serve-docs$(COLOUR_NONE) : Serve mkdocs on port 8002"
 
 #
 # Makefile variables
@@ -268,3 +269,6 @@ data-countries:
 
 ingest-uk-staff-locations:
 	$(wagtail) python manage.py ingest_uk_staff_locations
+
+serve-docs:
+	poetry run mkdocs serve -a localhost:8002
