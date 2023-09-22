@@ -56,7 +56,6 @@ Asian
 Astronauts ├
 AuditLog
 AuthenticationFailed
-AuthenticationFailed
 AuthenticationMiddleware
 AutoField
 B006
@@ -105,7 +104,6 @@ DJANGO_EMAIL_BACKEND
 DJANGO_SECRET_KEY
 DK
 DOM
-DRF
 DRF
 DSN
 DZ
@@ -180,7 +178,6 @@ HTTP
 HU
 Hawk
 HawkAuthentication
-HawkFail
 HawkFail
 Health & wellbeing
 Heard Island
