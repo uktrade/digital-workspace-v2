@@ -17,12 +17,9 @@
     <div class="govuk-grid-row govuk-!-margin-bottom-6">
         <div class="govuk-grid-column-one-third">
             {% if profile.photo %}
-                {% if is_ee %}
-                {% else %}
-                    <div {% profile_photo_attrs profile %}>
-                        <img src="{{ profile.photo.url }}" width="100%">
-                    </div>
-                {% endif %}
+                <div {% profile_photo_attrs profile %}>
+                    <img src="{{ profile.photo.url }}" width="100%">
+                </div>
             {% else %}
                 <img src="{% webpack_static 'no-photo-large.png' %}" width="100%">
             {% endif %}
