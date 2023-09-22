@@ -1,6 +1,7 @@
 from django_log_formatter_ecs import ECSFormatter
 
-from .base import *  # noqa
+from .env_intermediate import *  # noqa
+
 
 
 AWS_S3_URL_PROTOCOL = "https:"
