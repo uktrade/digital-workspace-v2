@@ -619,7 +619,7 @@ class Person(Indexed, models.Model):
     )
     usual_office_days = models.CharField(
         "What days do you usually come in to the office?",
-        help_text=("For example: I usually come in on Mondays and Wednesdays"),
+        help_text=("For example: I usually come in on Mondays and Wednesdays."),
         max_length=200,
         null=True,
         blank=True,
