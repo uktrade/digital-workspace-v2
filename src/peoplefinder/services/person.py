@@ -143,6 +143,7 @@ class PersonService:
             "fields": [
                 ("get_remote_working_display", "Where I work"),
                 ("get_office_location_display", "Office location"),
+                ("usual_office_days", "Days I'm in the office"),
                 ("get_workdays_display", "Days I work"),
             ],
         },
@@ -583,7 +584,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 49, (
+    assert len(Person._meta.get_fields()) == 50, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )
