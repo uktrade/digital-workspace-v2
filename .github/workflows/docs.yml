@@ -8,13 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Check if docs changed
+        id: changes
+        run: |
+          git fetch --all
+          echo "docs=$(git show --name-only --oneline | grep docs/ > /dev/null && echo true || echo false)" >> $GITHUB_OUTPUT
       - uses: actions/setup-python@v2
+        if: steps.changes.outputs.docs == 'true'
         with:
           python-version: 3.x
       - name: Install Poetry
+        if: steps.changes.outputs.docs == 'true'
         run: |
           pip install -U pip
           pip install poetry
           poetry config virtualenvs.create false
           poetry install --with docs
-      - run: poetry run mkdocs gh-deploy --force
+      - name: Deploy to GitHub Pages
+        if: steps.changes.outputs.docs == 'true'
+        run: poetry run mkdocs gh-deploy --force
