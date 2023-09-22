@@ -5,3 +5,9 @@ from .base import *  # noqa
 # AUTHBROKER_URL = "value-does-not-matter-for-build"
 
 SECRET_KEY = "value-does-not-matter-for-build"
+
+ELASTICSEARCH_DSL = {
+    "default": {
+        "hosts": "value-does-not-matter-for-build",
+    },
+}
