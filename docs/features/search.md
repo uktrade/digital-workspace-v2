@@ -47,7 +47,9 @@ As we ask OpenSearch to return results (documents) relating to the user's query,
 
 Rather than send a single query to OpenSearch, we send a set of similar queries which allows us to ask for various types of match, all ranked according to their likelihood to be what the user is looking for.
 
-An example is that we may ask for both and exact match and a fuzzy match for the same term in the same query, with the exact match having a higher score. Each search result will only be included once but this approach maximises the chances of a) returning results that match explicit (possibly advanced, complex) queries, and b) returning relevant results to broader, less explicit queries.
+An example is that we may ask for both and exact match and a fuzzy match for the same term in the same query, with the exact match having a higher score. Each search result will only be included once but this approach maximises the chances of:
+ - returning results that match explicit (possibly advanced, complex) queries
+ - returning relevant results to broader, less explicit queries
 
 In reality each query submitted by the user will result in at least 7 individual search operations, often 19, and perhaps more depending on filtering etc. These will be managed within a single query to OpenSearch, and turnaround times should not suffer as a result.
 
