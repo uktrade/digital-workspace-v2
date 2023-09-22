@@ -804,10 +804,12 @@ class Person(Indexed, models.Model):
             return self.international_building
         if self.uk_office_location and not self.location_in_building:
             return self.uk_office_location.name
-        return mark_safe(
-            self.uk_office_location.name + "<br>" + strip_tags(self.location_in_building)
+        return mark_safe(  # noqa: S308
+            self.uk_office_location.name
+            + "<br>"
+            + strip_tags(self.location_in_building)
         )
-    
+
     def get_manager_display(self) -> Optional[str]:
         if self.manager:
             return mark_safe(  # noqa: S308
