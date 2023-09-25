@@ -1,5 +1,12 @@
 application:
   name: intranet
   process:
+    # The way DBT PaaS works currently we need one entry
+    # here for each of the entries in the Procfile.
+    # The only actual different in the three images created
+    # is the process they start up with.
+    # There is a plan ensure it only needs to build one
+    # image in the near future.
     - web
-    - celery
+    - worker # celery worker
+    - beat # celery beat
