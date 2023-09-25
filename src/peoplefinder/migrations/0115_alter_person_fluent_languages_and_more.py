@@ -31,14 +31,4 @@ class Migration(migrations.Migration):
                 verbose_name="Which other languages do you speak?",
             ),
         ),
-        migrations.AlterField(
-            model_name="person",
-            name="preferred_first_name",
-            field=models.CharField(
-                blank=True,
-                help_text="Your preferred first name is shown on your profile. This does not affect the search results for your name",
-                max_length=200,
-                null=True,
-            ),
-        ),
     ]

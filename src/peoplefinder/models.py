@@ -550,8 +550,8 @@ class Person(Indexed, models.Model):
     preferred_first_name = models.CharField(
         max_length=200,
         help_text=(
-            "Your preferred first name is shown on your profile. This does not"
-            " affect the search results for your name"
+            "This name appears on your profile. Colleagues can search for you"
+            " using either of your first names"
         ),
         null=True,
         blank=True,
