@@ -2,4 +2,4 @@ application:
   name: intranet
   process:
     - web
-    # - celery
+    - celery
