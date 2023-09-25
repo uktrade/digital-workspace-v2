@@ -21,6 +21,6 @@ DATABASES = {
         "dbname": "value-does-not-matter-for-build",
         "engine": "postgres",
         "port": 5432,
-        "host": "localhost"
+        "host": "localhost",
     }
 }
