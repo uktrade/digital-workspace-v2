@@ -641,9 +641,7 @@ class Person(Indexed, models.Model):
         max_length=130,
         null=True,
         blank=True,
-        help_text=(
-            "If you sit in a particular area, you can let colleagues know here"
-        ),
+        help_text=("If you sit in a particular area, you can let colleagues know here"),
     )
     do_not_work_for_dit = models.BooleanField(
         "My manager is not listed because I do not work for DBT", default=False
