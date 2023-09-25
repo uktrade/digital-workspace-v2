@@ -1,5 +1,3 @@
-import os
-
 import dj_database_url
 import environ
 import sentry_sdk
@@ -12,8 +10,8 @@ from .base import *  # noqa
 
 # Read environment variables using `django-environ`, use `.env` if it exists
 env = environ.Env()
-env_file = os.path.join(PROJECT_ROOT_DIR, ".env")
-if os.path.exists(env_file):
+env_file = os.path.join(PROJECT_ROOT_DIR, ".env")  # noqa F405
+if os.path.exists(env_file):  # noqa F405
     env.read_env(env_file)
 env.read_env()
 
@@ -81,7 +79,7 @@ else:
     if "postgres" in VCAP_SERVICES:
         DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
     else:
-        DATABASE_URL = os.getenv("DATABASE_URL")
+        DATABASE_URL = os.getenv("DATABASE_URL")  # noqa F405
 
     DATABASES = {
         "default": env.db(),
@@ -93,7 +91,7 @@ if "UK_STAFF_LOCATIONS_DATABASE_URL" in env:
 WEBPACK_LOADER = {
     "DEFAULT": {
         "CACHE": not DEBUG,
-        "STATS_FILE": os.path.join(PROJECT_ROOT_DIR, "webpack-stats.json"),
+        "STATS_FILE": os.path.join(PROJECT_ROOT_DIR, "webpack-stats.json"),  # noqa F405
         "POLL_INTERVAL": 0.1,
         "IGNORE": [r".+\.hot-update.js", r".+\.map"],
     }
@@ -110,8 +108,7 @@ ELASTICSEARCH_DSL = {
     },
 }
 
-WAGTAILSEARCH_BACKENDS.default.URLS = ([OPENSEARCH_URL],)
-
+WAGTAILSEARCH_BACKENDS.default.URLS = ([OPENSEARCH_URL],)  # noqa F405
 
 # ClamAV
 CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
