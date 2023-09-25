@@ -571,7 +571,7 @@ class Person(Indexed, models.Model):
     name_pronunciation = models.CharField(
         "How to pronounce your full name",
         help_text=mark_safe(  # noqa: S308
-            "A phonetic representation of your name.<br><a class='govuk-link' href='/news-and-views/say-my-name/' target='_blank' rel='noreferrer'>"
+            "A phonetic representation of your name<br><a class='govuk-link' href='/news-and-views/say-my-name/' target='_blank' rel='noreferrer'>"
             "Tips for writing your name phonetically</a>"
         ),
         max_length=200,
@@ -582,7 +582,7 @@ class Person(Indexed, models.Model):
         "Email address",
         null=True,
         blank=True,
-        help_text="The work email you want people to contact you on.",
+        help_text="The work email you want people to contact you on",
     )
     primary_phone_number = models.CharField(
         "Phone number",
@@ -634,7 +634,7 @@ class Person(Indexed, models.Model):
         max_length=110,
         null=True,
         blank=True,
-        help_text="Complete if you work outside the UK.",
+        help_text="Complete if you work outside the UK",
     )
     location_in_building = models.CharField(
         "Location in the building",
@@ -642,7 +642,7 @@ class Person(Indexed, models.Model):
         null=True,
         blank=True,
         help_text=(
-            "If you sit in a particular area, you can let colleagues know here."
+            "If you sit in a particular area, you can let colleagues know here"
         ),
     )
     do_not_work_for_dit = models.BooleanField(
@@ -687,7 +687,7 @@ class Person(Indexed, models.Model):
         "Previous positions I have held",
         null=True,
         blank=True,
-        help_text="List where you have worked before your current role.",
+        help_text="List where you have worked before your current role",
     )
     photo = models.ImageField(
         max_length=255,

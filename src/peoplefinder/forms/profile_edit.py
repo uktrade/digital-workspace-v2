@@ -287,7 +287,7 @@ class LocationProfileEditForm(forms.ModelForm):
             "name",
         ),
         label="What is your office location?",
-        help_text="Your base location as per your contract.",
+        help_text="Your base location as per your contract",
         group_field="city",
         empty_label="Select your office location",
         required=False,
