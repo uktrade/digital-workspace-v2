@@ -1,4 +1,4 @@
-from .base import *  # noqa
+from .base_after_django_environ import *  # noqa
 
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
