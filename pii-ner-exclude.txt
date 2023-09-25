@@ -142,6 +142,7 @@ FIELD_SATISFACTION_LEGEND
 FR
 Falkland Islands
 Fast Track"
+FileHandler
 FileReader
 French
 G6/D7
