@@ -219,57 +219,6 @@ with open(stop_words_file) as stop_words_file:
             continue
         stop_words.append(line.strip())
 
-WAGTAILSEARCH_BACKENDS = {
-    "default": {
-        "BACKEND": "extended_search.backends.backend.CustomSearchBackend",
-        "AUTO_UPDATE": True,
-        "ATOMIC_REBUILD": True,
-        # URLS will be set in after_django_environ.py
-        "URLS": [],
-        "INDEX": "wagtail",
-        "TIMEOUT": 60,
-        "OPTIONS": {},
-        "INDEX_SETTINGS": {
-            "settings": {
-                "index": {
-                    "number_of_shards": 1,
-                },
-                "analysis": {
-                    "filter": {
-                        "english_snowball": {
-                            "type": "snowball",
-                            "language": "english",
-                        },
-                        "remove_spaces": {
-                            "type": "pattern_replace",
-                            "pattern": "[ ()+]",
-                            "replacement": "",
-                        },
-                    },
-                    "analyzer": {
-                        "snowball": {
-                            "tokenizer": "standard",
-                            "filter": [
-                                "english_snowball",
-                                "stop",
-                                "lowercase",
-                                "asciifolding",
-                            ],
-                        },
-                        # Used for keyword fields like acronyms and phone
-                        # numbers - use with caution (it removes whitespace and
-                        # tokenizes everything else into a single token)
-                        "no_spaces": {
-                            "tokenizer": "keyword",
-                            "filter": "remove_spaces",
-                        },
-                    },
-                },
-            }
-        },
-    }
-}
-
 SEARCH_EXTENDED = {
     "boost_parts": {
         "extras": {

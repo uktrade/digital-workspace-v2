@@ -108,7 +108,55 @@ ELASTICSEARCH_DSL = {
     },
 }
 
-WAGTAILSEARCH_BACKENDS["default"]["URLS"] = [OPENSEARCH_URL]  # noqa F405
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "extended_search.backends.backend.CustomSearchBackend",
+        "AUTO_UPDATE": True,
+        "ATOMIC_REBUILD": True,
+        "URLS": [OPENSEARCH_URL],  # noqa F405
+        "INDEX": "wagtail",
+        "TIMEOUT": 60,
+        "OPTIONS": {},
+        "INDEX_SETTINGS": {
+            "settings": {
+                "index": {
+                    "number_of_shards": 1,
+                },
+                "analysis": {
+                    "filter": {
+                        "english_snowball": {
+                            "type": "snowball",
+                            "language": "english",
+                        },
+                        "remove_spaces": {
+                            "type": "pattern_replace",
+                            "pattern": "[ ()+]",
+                            "replacement": "",
+                        },
+                    },
+                    "analyzer": {
+                        "snowball": {
+                            "tokenizer": "standard",
+                            "filter": [
+                                "english_snowball",
+                                "stop",
+                                "lowercase",
+                                "asciifolding",
+                            ],
+                        },
+                        # Used for keyword fields like acronyms and phone
+                        # numbers - use with caution (it removes whitespace and
+                        # tokenizes everything else into a single token)
+                        "no_spaces": {
+                            "tokenizer": "keyword",
+                            "filter": "remove_spaces",
+                        },
+                    },
+                },
+            }
+        },
+    }
+}
 
 # ClamAV
 CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
