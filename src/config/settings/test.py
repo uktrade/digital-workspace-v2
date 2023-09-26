@@ -1,6 +1,7 @@
 import logging
 
-from .base_after_django_environ import *  # noqa
+from .base import *  # noqa
+
 
 APP_ENV = "test"
 DEBUG = True

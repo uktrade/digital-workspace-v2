@@ -1,6 +1,7 @@
 from django_log_formatter_ecs import ECSFormatter
 
-from .base_after_django_environ import *  # noqa
+from .base import *  # noqa
+
 
 AWS_S3_URL_PROTOCOL = "https:"
 AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")  # noqa F405
