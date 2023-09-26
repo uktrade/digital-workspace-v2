@@ -4,4 +4,6 @@ A [Wagtail](https://www.wagtail.io)-based intranet for the Department for Busine
 
 Project documentation is available [here](https://uktrade.github.io/digital-workspace-v2/).
 
-![AWS Codebuild status](https://codebuild.eu-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiSWg0Z3RpTEFhL1NBVDJ5a1RuS0ZGZHMra01sQm9xbkYraFRUeTJacmcvRWFGY0VlUUxJVHJJTlRRVk9nbVlPemw2MUE0L2FnSDZQZEc0ZVM3eTNOZnhFPSIsIml2UGFyYW1ldGVyU3BlYyI6Inc4MnlOdmo1eXd2RGNBWkwiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
+## DBT PaaS
+
+![AWS Codebuild status](https://codebuild.eu-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiTnY3cHFnT0pzRDM3SWpJdW5ZYW1IYmIxK29aMUNUSVVkRzJhYzFLdllQd1ZOeGt3T0d0K0hPZW1YcDRqN243a2tYKzYwckhmNkVNZnQxNXVwKzM2WENnPSIsIml2UGFyYW1ldGVyU3BlYyI6IlJ2RDdEck5kSysxeFMvTUIiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
