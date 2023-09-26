@@ -1,3 +1,7 @@
+# Over in DBT PaaS we compile static assets when the image is built.
+# This file exists with minimal settings so that we can do that
+# without exceptions because setting don't exist etc.
+
 import os
 import sys
 
