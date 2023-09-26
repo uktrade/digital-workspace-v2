@@ -8,5 +8,5 @@ application:
     # There is a plan ensure it only needs to build one
     # image in the near future.
     - web
-    - worker # celery worker
-    - beat # celery beat
+    # - worker # celery worker
+    # - beat # celery beat
