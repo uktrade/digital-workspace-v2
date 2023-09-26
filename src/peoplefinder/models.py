@@ -550,8 +550,8 @@ class Person(Indexed, models.Model):
     preferred_first_name = models.CharField(
         max_length=200,
         help_text=(
-            "How you would prefer to be called, for example a shortened "
-            "version of your name. This will appear on your profile."
+            "This name appears on your profile. Colleagues can search for you"
+            " using either of your first names"
         ),
         null=True,
         blank=True,
@@ -654,18 +654,18 @@ class Person(Indexed, models.Model):
         help_text="Enter your skills. Use a comma to separate them.",
     )
     fluent_languages = models.CharField(
-        "Which languages do you speak fluently?",
+        "Which languages are you fluent in?",
         max_length=200,
         null=True,
         blank=True,
-        help_text="Enter languages that you are fluent in. Use a comma to separate them.",
+        help_text="Use a comma to separate the languages. For example: French, Polish, Ukrainian",
     )
     intermediate_languages = models.CharField(
         "Which other languages do you speak?",
         max_length=200,
         null=True,
         blank=True,
-        help_text="Enter languages that you speak but aren't fluent in. Use a comma to separate them.",
+        help_text="These are languages you speak and write but are not fluent in",
     )
     other_learning_interests = models.CharField(
         "What other learning and development interests do you have?",

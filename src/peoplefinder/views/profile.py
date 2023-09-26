@@ -157,9 +157,14 @@ class ProfileDetailView(ProfileView, DetailView):
                         profile,
                         profile_section,
                     ),
+                    "empty_text": PersonService().get_profile_section_empty_text(
+                        profile_section
+                    ),
                 }
             )
-        context.update(profile_sections=profile_sections)
+        context.update(
+            profile_sections=profile_sections,
+        )
 
         return context
 
