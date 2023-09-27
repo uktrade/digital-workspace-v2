@@ -47,15 +47,13 @@ if "aws-s3-bucket" in VCAP_SERVICES:
     AWS_REGION = app_bucket_creds["aws_region"]
     AWS_S3_REGION_NAME = app_bucket_creds["aws_region"]
     AWS_STORAGE_BUCKET_NAME = app_bucket_creds["bucket_name"]
+    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+    AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
 else:
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
     AWS_REGION = env("AWS_REGION")
     AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
-
-# You don't seem to be able to sign S3 URLs with VCAP S3 creds
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
 
 # Asset path used in parser
 NEW_ASSET_PATH = env("NEW_ASSET_PATH")
