@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 
 # Backport of Django's Postgres specific ArraySubquery expression.
 # Documentation: https://docs.djangoproject.com/en/dev/ref/contrib/postgres/expressions/#arraysubquery-expressions
-# Commit: https://github.com/django/django/commit/a06b977a91f043c509df781670fb4cf35cb437b7
+# Commit: https://github.com/django/django/commit/a06b977a91f043c509df781670fb4cf35cb437b7 /PS-IGNORE
 # TODO: Remove once Django has released this and we upgrade to that version.
 class ArraySubquery(Subquery):
     template = "ARRAY(%(subquery)s)"

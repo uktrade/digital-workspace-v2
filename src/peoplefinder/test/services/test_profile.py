@@ -96,7 +96,7 @@ class TestCreateUserProfile:
             {
                 "user": None,
                 "legacy_sso_user_id": "not-a-match",
-                "email": "not-a-match@example.com",
+                "email": "not-a-match@example.com",  # /PS-IGNORE
             },
         ),
     )
@@ -120,7 +120,7 @@ class TestCreateUserProfile:
 
         profile.user = None
         profile.legacy_sso_user_id = "not-a-match"
-        profile.email = "not-a-match@example.com"
+        profile.email = "not-a-match@example.com"  # /PS-IGNORE
         profile.first_name = "no"
         profile.last_name = "match"
         profile.save()
