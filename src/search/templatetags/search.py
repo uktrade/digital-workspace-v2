@@ -49,7 +49,7 @@ def search_category(context, *, category, limit=None, show_heading=False):
 
     # TODO: Remove debugging
     try:
-        print(f"Search Debug: {json.dumps([search_results, query])}")
+        print(f"Search Debug: {json.dumps(search_results)}")
     except Exception as e:
         print(f"Search Debug Failed: {e}")
 
