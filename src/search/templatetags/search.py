@@ -1,9 +1,11 @@
+import json
 from typing import Literal, Tuple
 
 from django import template
 from django.core.paginator import Paginator
 
 from search import search as search_vectors
+import logging
 
 
 register = template.Library()
@@ -44,6 +46,16 @@ def search_category(context, *, category, limit=None, show_heading=False):
     # pages will have the pinned results removed after pagination and cause
     # the pages to have odd lengths.
     search_results = list(pinned_results) + list(search_vector.search(query))
+
+    # TODO: Remove debugging
+    try:
+        logger = logging.getLogger(__name__)
+        logger.info(json.dumps(search_results))
+        logger.info(json.dumps(query))
+        logger.info(json.dumps(request))
+    except:
+        pass
+
     count = len(search_results)
 
     if limit:
