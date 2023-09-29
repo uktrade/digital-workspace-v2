@@ -48,13 +48,11 @@ def search_category(context, *, category, limit=None, show_heading=False):
     search_results = list(pinned_results) + list(search_vector.search(query))
 
     # TODO: Remove debugging
+    logger = logging.getLogger(__name__)
     try:
-        logger = logging.getLogger(__name__)
-        logger.info(json.dumps(search_results))
-        logger.info(json.dumps(query))
-        logger.info(json.dumps(request))
-    except:
-        pass
+        logger.info("Search Debug: %s", json.dumps([search_results, query, request]))
+    except Exception as e:
+        logger.info("Search Debug Failed: %s", str(e))
 
     count = len(search_results)
 
