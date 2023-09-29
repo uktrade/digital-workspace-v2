@@ -39,6 +39,10 @@ def search_category(context, *, category, limit=None, show_heading=False):
     query = context["search_query"]
     page = context["page"]
 
+    logger = logging.getLogger("ANTS_LOGGER")
+    logger.info(f"Search Debug: In the search_category function (logger)")
+    print(f"Search Debug: In the search_category function (print)")
+
     search_vector = SEARCH_VECTORS[category](request)
     pinned_results = search_vector.pinned(query)
     # `list` needs to be called to force the database query to be evaluated
@@ -49,9 +53,9 @@ def search_category(context, *, category, limit=None, show_heading=False):
 
     # TODO: Remove debugging
     try:
-        print(f"Search Debug: {json.dumps(search_results)}")
+        logger.info(f"Search Debug: {json.dumps(search_results)}")
     except Exception as e:
-        print(f"Search Debug Failed: {e}")
+        logger.error(f"Search Debug Failed: {e}")
 
     count = len(search_results)
 

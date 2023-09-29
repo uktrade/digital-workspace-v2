@@ -27,5 +27,7 @@ def get_search_query(index_manager, query_str, model_class, *args, **kwargs):
                 query_elements,
             )
 
+    logger.info(f"Search Debug L: Query - {query}")
+    print(f"Search Debug P: Query - {query}")
     logger.debug(query)
     return query
