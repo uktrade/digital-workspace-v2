@@ -40,8 +40,8 @@ def search_category(context, *, category, limit=None, show_heading=False):
     page = context["page"]
 
     logger = logging.getLogger("ANTS_LOGGER")
-    logger.info(f"Search Debug: In the search_category function (logger)")
-    print(f"Search Debug: In the search_category function (print)")
+    logger.info("Search Debug: In the search_category function (logger)")
+    print("Search Debug: In the search_category function (print)")
 
     search_vector = SEARCH_VECTORS[category](request)
     pinned_results = search_vector.pinned(query)

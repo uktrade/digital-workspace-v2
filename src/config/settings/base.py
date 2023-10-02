@@ -431,7 +431,9 @@ if "redis" in VCAP_SERVICES:
         credentials["port"],
     )
 else:
-    CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
+    CELERY_BROKER_URL = (
+        env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
+    )
 
 # Celery
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
