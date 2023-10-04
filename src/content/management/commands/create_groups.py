@@ -14,7 +14,6 @@ from working_at_dit.models import (
     WorkingAtDITHome,
 )
 
-
 TOP_LEVEL_PAGE_TYPES = [
     AboutUsHome,
     HowDoIHome,
@@ -26,15 +25,16 @@ TOP_LEVEL_PAGE_TYPES = [
     WorkingAtDITHome,
 ]
 
-EDITOR_PAGE_PERMISSION_TYPES = [
-    "add",
-    "edit",
-    "publish",
+
+EDITOR_PAGE_PERMISSIONS = [
+    "add_page",
+    "change_page",
+    "publish_page",
 ]
 
-MODERATOR_PAGE_PERMISSION_TYPES = EDITOR_PAGE_PERMISSION_TYPES + [
-    "lock",
-    "unlock",
+MODERATOR_PAGE_PERMISSIONS = EDITOR_PAGE_PERMISSIONS + [
+    "lock_page",
+    "unlock_page",
 ]
 
 NEWS_MODERATOR_ROOT_COLLECTION_PERMISSIONS = [
@@ -134,11 +134,14 @@ class Command(BaseCommand):
         # News
         news_home = NewsHome.objects.first()
 
-        for identifier in MODERATOR_PAGE_PERMISSION_TYPES:
+        for moderator_page_permission in MODERATOR_PAGE_PERMISSIONS:
             GroupPagePermission.objects.get_or_create(
                 group=news_moderators,
                 page=news_home,
-                permission_type=identifier,
+                permission=Permission.objects.get(
+                    codename=moderator_page_permission,
+                    content_type__app_label="wagtailcore",
+                ),
             )
 
         GroupPagePermission.objects.filter(
@@ -152,18 +155,24 @@ class Command(BaseCommand):
         for top_level_page_type in TOP_LEVEL_PAGE_TYPES:
             top_level_page = top_level_page_type.objects.first()
 
-            for identifier in EDITOR_PAGE_PERMISSION_TYPES:
+            for editor_page_permission in EDITOR_PAGE_PERMISSIONS:
                 GroupPagePermission.objects.get_or_create(
                     group=editors,
                     page=top_level_page,
-                    permission_type=identifier,
+                    permission=Permission.objects.get(
+                        codename=editor_page_permission,
+                        content_type__app_label="wagtailcore",
+                    ),
                 )
 
-            for identifier in MODERATOR_PAGE_PERMISSION_TYPES:
+            for moderator_page_permission in MODERATOR_PAGE_PERMISSIONS:
                 GroupPagePermission.objects.get_or_create(
                     group=moderators,
                     page=top_level_page,
-                    permission_type=identifier,
+                    permission=Permission.objects.get(
+                        codename=moderator_page_permission,
+                        content_type__app_label="wagtailcore",
+                    ),
                 )
 
         moderator_permissions = Permission.objects.filter(
