@@ -1,15 +1,17 @@
-import pytest
 from unittest.mock import call
 
+import pytest
+from wagtail.search.query import MATCH_NONE, PlainText
+
+from content.models import ContentPage
 from extended_search.backends.backend import (
+    CustomSearchBackend,
+    CustomSearchQueryCompiler,
     ExtendedSearchQueryCompiler,
     OnlyFieldSearchQueryCompiler,
-    CustomSearchBackend,
     SearchBackend,
 )
 from extended_search.backends.query import OnlyFields
-from wagtail.search.query import PlainText, MATCH_NONE
-from content.models import ContentPage
 from peoplefinder.models import Person, Team
 
 
@@ -108,7 +110,7 @@ class TestOnlyFieldSearchQueryCompiler:
 
 class TestCustomSearchBackend:
     def test_correct_mappings_and_backends_configured(self):
-        assert CustomSearchBackend.query_compiler_class == OnlyFieldSearchQueryCompiler
+        assert CustomSearchBackend.query_compiler_class == CustomSearchQueryCompiler
 
     def test_custom_search_backend_used(self):
         assert SearchBackend == CustomSearchBackend
