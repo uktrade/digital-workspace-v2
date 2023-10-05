@@ -278,8 +278,7 @@ class LocationProfileEditForm(forms.ModelForm):
         queryset=UkStaffLocation.objects.all()
         .filter(
             organisation__in=[
-                "Department for International Trade",
-                "Department for Business, Energy and Industrial Strategy",
+                "Department for Business and Trade",
             ]
         )
         .order_by(
