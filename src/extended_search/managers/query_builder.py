@@ -1,13 +1,13 @@
 import logging
+from typing import Optional
+
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
+from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
-from extended_search.managers import get_indexed_field_name
 from extended_search.backends.query import Nested, OnlyFields
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
-
 
 logger = logging.getLogger(__name__)
 
@@ -39,14 +39,7 @@ class QueryBuilder:
         return query
 
     @classmethod
-    def _get_boost_for_field_querytype_analysistype(
-        cls,
-        base_field_name: str,
-        model_class: models.Model,
-        query_type: SearchQueryType,
-        analysis_type: AnalysisType,
-        field_mapping: dict,
-    ):
+    def _get_boost_for_querytype(cls, query_type: SearchQueryType):
         match query_type:
             case SearchQueryType.PHRASE:
                 query_boost_key = "phrase"
@@ -58,10 +51,15 @@ class QueryBuilder:
                 query_boost_key = "fuzzy"
             case _:
                 raise ValueError(f"{query_type} must be a valid SearchQueryType")
-        query_boost = float(
-            search_settings["boost_parts"]["query_types"][query_boost_key]  # type: ignore
-        )
 
+        if setting_boost := search_settings["boost_parts"]["query_types"][
+            query_boost_key
+        ]:
+            return float(setting_boost)
+        return 1.0
+
+    @classmethod
+    def _get_boost_for_analysistype(cls, analysis_type: AnalysisType):
         match analysis_type:
             case AnalysisType.EXPLICIT:
                 analysis_boost_key = "explicit"
@@ -75,20 +73,33 @@ class QueryBuilder:
                 analysis_boost_key = 1.0  # @TODO figure out how to add this
             case _:
                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
-        analyzer_boost = float(
-            search_settings["boost_parts"]["analyzers"][analysis_boost_key]  # type: ignore
-        )
+        if setting_boost := search_settings["boost_parts"]["analyzers"][
+            analysis_boost_key
+        ]:
+            return float(setting_boost)
+        return 1.0
 
+    @classmethod
+    def _get_boost_for_field(cls, model_class, field_name):
         content_type = ContentType.objects.get_for_model(model_class)
-        field_name = base_field_name  # get_indexed_field_name(base_field_name, analysis_type) @TODO investigate
-        if (
-            "parent_model_field" in field_mapping
-            and field_mapping["parent_model_field"]
-        ):
-            field_name = f"{field_mapping['parent_model_field']}.{field_name}"
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
-        field_boost = float(
-            search_settings["boost_parts"]["fields"][field_boost_key]  # type: ignore
+        if setting_boost := search_settings["boost_parts"]["fields"][field_boost_key]:
+            return float(setting_boost)
+        return 1.0
+
+    @classmethod
+    def _get_boost_for_field_querytype_analysistype(
+        cls,
+        field_name: str,
+        model_class: models.Model,
+        query_type: SearchQueryType,
+        analysis_type: AnalysisType,
+    ):
+        query_boost = cls._get_boost_for_querytype(query_type)
+        analyzer_boost = cls._get_boost_for_analysistype(analysis_type)
+        field_boost = cls._get_boost_for_field(
+            model_class,
+            field_name,
         )
 
         return query_boost * analyzer_boost * field_boost
@@ -115,39 +126,19 @@ class QueryBuilder:
             model_class,
             query_type,
             analysis_type,
-            field_mapping,
         )
 
-        field_name = get_indexed_field_name(base_field_name, analysis_type)
-        if (
-            "parent_model_field" in field_mapping
-            and field_mapping["parent_model_field"]
-        ):
-            field_name = f"{field_mapping['parent_model_field']}.{field_name}"
-        return OnlyFields(Boost(query, boost), fields=[field_name])
+        return OnlyFields(Boost(query, boost), fields=[base_field_name])
 
     @classmethod
-    def _add_to_query(cls, query, query_part):
-        if query_part is None:
-            return query  # even if this is _also_ None
-
-        if query is None:
-            return query_part  # the first node becomes the root
-
-        return query | query_part
+    def _combine_queries(cls, q1: Optional[SearchQuery], q2: Optional[SearchQuery]):
+        if q1 and q2:
+            return q1 | q2
+        return q1 or q2
 
     @classmethod
     def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
         subquery = None
-        if "related_fields" in field_mapping:
-            for related_field_mapping in field_mapping["related_fields"]:
-                subquery = cls._add_to_query(
-                    subquery,
-                    cls._get_search_query_from_mapping(
-                        query_str, model_class, related_field_mapping
-                    ),
-                )
-            subquery = Nested(subquery=subquery, path=field_mapping["model_field_name"])
 
         if "search" in field_mapping:
             for analyzer in field_mapping["search"]:
@@ -164,7 +155,7 @@ class QueryBuilder:
                             field_mapping,
                         )
                     )
-                    subquery = cls._add_to_query(
+                    subquery = cls._combine_queries(
                         subquery,
                         query_element,
                     )
@@ -178,9 +169,60 @@ class QueryBuilder:
                 AnalysisType("tokenized"),
                 field_mapping,
             )
-            subquery = cls._add_to_query(
+            subquery = cls._combine_queries(
                 subquery,
                 query_element,
             )
 
         return subquery
+
+
+class NestedQueryBuilder(QueryBuilder):
+    @classmethod
+    def _get_searchquery_for_query_field_querytype_analysistype(
+        cls,
+        query_str: str,
+        model_class: models.Model,
+        base_field_name: str,
+        query_type: SearchQueryType,
+        analysis_type: AnalysisType,
+        field_mapping: dict,
+    ):
+        # @TODO: Come up with a better name for this, and/or move it higher up
+        field_name = base_field_name
+        if pmf := field_mapping.get("parent_model_field"):
+            field_name = f"{pmf}.{field_name}"
+
+        return super()._get_searchquery_for_query_field_querytype_analysistype(
+            query_str,
+            model_class,
+            field_name,
+            query_type,
+            analysis_type,
+            field_mapping,
+        )
+
+    @classmethod
+    def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
+        subquery = super()._get_search_query_from_mapping(
+            query_str, model_class, field_mapping
+        )
+        if "related_fields" not in field_mapping:
+            return subquery
+
+        internal_subquery = None
+        for related_field_mapping in field_mapping["related_fields"]:
+            internal_subquery = cls._combine_queries(
+                internal_subquery,
+                cls._get_search_query_from_mapping(
+                    query_str, model_class, related_field_mapping
+                ),
+            )
+        nested_subquery = Nested(
+            subquery=internal_subquery, path=field_mapping["model_field_name"]
+        )
+
+        return cls._combine_queries(
+            nested_subquery,
+            subquery,
+        )
