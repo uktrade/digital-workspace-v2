@@ -1,3 +1,4 @@
+from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
@@ -24,7 +25,11 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
     #     """
     #     super().__init__(*args, **kwargs)
     #     self.mapping = self.mapping_class(self.queryset.model)
-    #     self.remapped_fields = self._remap_fields(self.fields)
+    #     self.DBT_remapped_fields = self._remap_fields(self.fields)
+
+    def get_boosted_fields(self, fields):
+        boostable_fields = [f for f in fields if isinstance(f, Field)]
+        return super().get_boosted_fields(boostable_fields)
 
     def get_searchable_fields(self):
         return self.queryset.model.get_searchable_search_fields()
@@ -82,10 +87,10 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         upstream. It exists in order to break out the _join_and_compile_queries
         method
         """
-        if self.remapped_fields:
-            fields = self.remapped_fields
-        else:
-            fields = [self.mapping.all_field_name]
+        # if self.DBT_remapped_fields:
+        #     fields = [field.field_name for field in self.DBT_remapped_fields]
+        # else:
+        fields = [self.mapping.all_field_name]
 
         if len(fields) == 0:
             # No fields. Return a query that'll match nothing
