@@ -191,7 +191,8 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
         match_query = super()._compile_fuzzy_query(query, fields)
 
         if boost != 1.0:
-            match_query["match"][fields[0]]["boost"] = boost
+            for field in fields:
+                match_query["match"][field]["boost"] = boost
 
         return match_query
 
@@ -205,10 +206,11 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
             if "multi_match" in match_query:
                 match_query["multi_match"]["boost"] = boost
             else:
-                match_query["match_phrase"][fields[0]] = {
-                    "query": match_query["match_phrase"][fields[0]],
-                    "boost": boost,
-                }
+                for field in fields:
+                    match_query["match_phrase"][field] = {
+                        "query": match_query["match_phrase"][field],
+                        "boost": boost,
+                    }
 
         return match_query
 
