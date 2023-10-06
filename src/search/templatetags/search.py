@@ -44,7 +44,6 @@ def search_category(context, *, category, limit=None, show_heading=False):
     # pages will have the pinned results removed after pagination and cause
     # the pages to have odd lengths.
     search_results = list(pinned_results) + list(search_vector.search(query))
-
     count = len(search_results)
 
     if limit:
