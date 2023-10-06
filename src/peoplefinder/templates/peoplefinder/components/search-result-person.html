@@ -6,7 +6,9 @@
            onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'profile-view' person.slug %}', 'search_result_selected_type': 'person', 'search_result_selected_section': 'people', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }} })">
             {% if person.photo %}
                 <div {% profile_photo_attrs person %}>
-                    <img src="{{ person.photo.url }}">
+                    <div class="aspect-ratio-square">
+                        <img src="{{ person.photo.url }}">
+                    </div>
                 </div>
             {% else %}
                 <img src="{% webpack_static 'no-photo-large.png' %}">
