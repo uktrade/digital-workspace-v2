@@ -65,6 +65,7 @@ class ProfileCompletionField(TypedDict, total=False):
 class ProfileSectionMapping(TypedDict):
     edit_section: Any  # EditSections
     fields: List[Tuple[str, str]]
+    empty_text: str
 
 
 class PersonService:
@@ -129,6 +130,7 @@ class PersonService:
                 ("primary_phone_number", "Phone number"),
                 ("secondary_phone_number", "Alternative phone number"),
             ],
+            "empty_text": "Add your work email address and phone number to your profile.",
         },
         ProfileSections.ROLE: {
             "edit_section": EditSections.TEAMS,
@@ -137,6 +139,7 @@ class PersonService:
                 ("get_grade_display", "Grade"),
                 ("get_roles_display", "My role(s)"),
             ],
+            "empty_text": "Add your grade, team, and role to your profile.",
         },
         ProfileSections.LOCATION: {
             "edit_section": EditSections.LOCATION,
@@ -146,6 +149,7 @@ class PersonService:
                 ("usual_office_days", "Days I'm in the office"),
                 ("get_workdays_display", "Days I work"),
             ],
+            "empty_text": "Add your office location and working pattern to your profile.",
         },
         ProfileSections.ABOUT: {
             "edit_section": EditSections.SKILLS,
@@ -165,6 +169,7 @@ class PersonService:
                 ),
                 ("previous_experience", "My previous experience"),
             ],
+            "empty_text": "Add skills, interests, and networks to your profile.",
         },
     }
 
@@ -510,16 +515,19 @@ class PersonService:
             statuses[profile_completion_field] = False
         return statuses
 
+    def get_profile_completion_field(self, field_name: str) -> ProfileCompletionField:
+        return self.PROFILE_COMPLETION_FIELDS[field_name]
+
     def get_profile_completion_field_edit_section(
         self, field_name: str
     ) -> EditSections:
-        return self.PROFILE_COMPLETION_FIELDS.get(field_name, {}).get(
+        return self.get_profile_completion_field(field_name).get(
             "edit_section",
             EditSections.PERSONAL,
         )
 
-    def get_profile_completion_field_form_id(self, field_name: str) -> EditSections:
-        return self.PROFILE_COMPLETION_FIELDS.get(field_name, {}).get(
+    def get_profile_completion_field_form_id(self, field_name: str) -> str:
+        return self.get_profile_completion_field(field_name).get(
             "form_id",
             "id_" + field_name,
         )
@@ -528,6 +536,12 @@ class PersonService:
         self, profile_section: ProfileSections
     ) -> Dict[str, str]:
         return self.PROFILE_SECTION_MAPPING.get(profile_section, {})
+
+    def get_profile_section_empty_text(
+        self,
+        profile_section: ProfileSections,
+    ) -> str:
+        return self.get_profile_section_mapping(profile_section)["empty_text"]
 
     def get_profile_section_values(
         self, person: "Person", profile_section: ProfileSections
