@@ -26,6 +26,9 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
     #     self.mapping = self.mapping_class(self.queryset.model)
     #     self.remapped_fields = self._remap_fields(self.fields)
 
+    def get_searchable_fields(self):
+        return self.queryset.model.get_searchable_search_fields()
+
     def _remap_fields(self, fields):
         """
         Convert field names into index column names
@@ -34,11 +37,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
             return None
 
         remapped_fields = []
-        searchable_fields = {
-            f.field_name: f
-            for f in self.queryset.model.search_fields
-            if isinstance(f, SearchField) or isinstance(f, RelatedFields)
-        }
+        searchable_fields = {f.field_name: f for f in self.get_searchable_fields()}
         for field_name in fields:
             if field_name in searchable_fields:
                 field_name = self.mapping.get_field_column_name(
@@ -121,27 +120,13 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def _compile_query(self, query, field, boost=1.0):
         """
         Override the parent method to handle specifics of the OnlyFields
-        SearchQuery, and allow boosting of Fuzzy and Phrase queries
+        SearchQuery.
         """
-        if not isinstance(query, (Fuzzy, Phrase, OnlyFields, Nested)):
+        if not isinstance(query, OnlyFields):
             return super()._compile_query(query, field, boost)
 
-        # Overrides the existing functionality only to be able to pass Boost
-        # values to Fuzzy and Phrase types as well as PlainText
-        if isinstance(query, Fuzzy):
-            return self._compile_fuzzy_query(query, [field], boost)
-
-        elif isinstance(query, Phrase):
-            return self._compile_phrase_query(query, [field], boost)
-
-        # Handle Nested fields for RelatedFields on models
-        elif isinstance(query, Nested):
-            return self._compile_nested_query(query, [field], boost)
-
-        # Handle OnlyFields
         remapped_fields = self._remap_fields(query.fields)
 
-        # Handle RelatedFields passing a list at this point
         if isinstance(field, list) and len(field) == 1:
             field = field[0]
 
@@ -164,6 +149,40 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
             # was defined in the search() method but has been excluded from
             # this part of the tree with an OnlyFields filter
             return self._compile_query(MATCH_NONE, field, boost)
+
+
+class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
+    def get_searchable_fields(self):
+        return [
+            f
+            for f in self.queryset.model.search_fields
+            if isinstance(f, SearchField) or isinstance(f, RelatedFields)
+        ]
+
+    def _compile_query(self, query, field, boost=1.0):
+        if isinstance(query, Nested):
+            return self._compile_nested_query(query, [field], boost)
+        return super()._compile_query(query, field, boost)
+
+    def _compile_nested_query(self, query, fields, boost=1.0):
+        """
+        Add OS DSL elements to support Nested fields
+        """
+        return {
+            "nested": {
+                "path": query.path,
+                "query": self._compile_query(query.subquery, fields, boost),
+            }
+        }
+
+
+class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
+    def _compile_query(self, query, field, boost=1.0):
+        if isinstance(query, Fuzzy):
+            return self._compile_fuzzy_query(query, [field], boost)
+        if isinstance(query, Phrase):
+            return self._compile_phrase_query(query, [field], boost)
+        return super()._compile_query(query, field, boost)
 
     def _compile_fuzzy_query(self, query, fields, boost=1.0):
         """
@@ -193,20 +212,17 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
         return match_query
 
-    def _compile_nested_query(self, query, fields, boost=1.0):
-        """
-        Add OS DSL elements to support Nested fields
-        """
-        return {
-            "nested": {
-                "path": query.path,
-                "query": self._compile_query(query.subquery, fields, boost),
-            }
-        }
+
+class CustomSearchQueryCompiler(
+    BoostSearchQueryCompiler,
+    NestedSearchQueryCompiler,
+    OnlyFieldSearchQueryCompiler,
+):
+    ...
 
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):
-    query_compiler_class = OnlyFieldSearchQueryCompiler
+    query_compiler_class = CustomSearchQueryCompiler
 
 
 SearchBackend = CustomSearchBackend

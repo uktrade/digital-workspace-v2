@@ -18,7 +18,9 @@
         <div class="govuk-grid-column-one-third">
             {% if profile.photo %}
                 <div {% profile_photo_attrs profile %}>
-                    <img src="{{ profile.photo.url }}" width="100%">
+                    <div class="aspect-ratio-square">
+                        <img src="{{ profile.photo.url }}" width="100%">
+                    </div>
                 </div>
             {% else %}
                 <img src="{% webpack_static 'no-photo-large.png' %}" width="100%">

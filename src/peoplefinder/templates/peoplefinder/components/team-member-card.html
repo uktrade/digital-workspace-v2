@@ -1,7 +1,8 @@
 {% load webpack_static from webpack_loader %}
 
 <div class="pf-team-member-card">
-    <a class="govuk-link" href="{% url 'profile-view' member.person.slug %}">
+    <a class="aspect-ratio-square govuk-link"
+       href="{% url 'profile-view' member.person.slug %}">
         {% if member.person.photo %}
             <img src="{{ member.person.photo.url }}" width="100%">
         {% else %}
