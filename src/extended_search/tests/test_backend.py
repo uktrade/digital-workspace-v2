@@ -2,6 +2,7 @@ from unittest.mock import call
 
 import pytest
 from wagtail.search.query import MATCH_NONE, PlainText
+from wagtail.search.backends.elasticsearch5 import Elasticsearch5SearchQueryCompiler
 
 from content.models import ContentPage
 from extended_search.backends.backend import (
@@ -20,13 +21,18 @@ class TestExtendedSearchQueryCompiler:
         query = PlainText("quid")
         compiler = ExtendedSearchQueryCompiler(ContentPage.objects.all(), query)
         assert compiler._remap_fields(None) is None
-        assert compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es5_compiler = Elasticsearch5SearchQueryCompiler(
+            ContentPage.objects.all(), query
+        )
+        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
 
         compiler = ExtendedSearchQueryCompiler(Person.objects.all(), query)
-        assert compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es5_compiler = Elasticsearch5SearchQueryCompiler(Person.objects.all(), query)
+        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
 
         compiler = ExtendedSearchQueryCompiler(Team.objects.all(), query)
-        assert compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es5_compiler = Elasticsearch5SearchQueryCompiler(Team.objects.all(), query)
+        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
 
     def test_join_compile_queries_output_format_and_uses_compile_query(self, mocker):
         mock_compile = mocker.patch(
