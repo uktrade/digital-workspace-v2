@@ -13,7 +13,7 @@ def print_attrs(attrs: dict) -> str:
 @register.simple_tag
 def profile_photo_attrs(profile) -> str:
     attrs = {
-        "class": "aspect-ratio-square",
+        "class": "",
     }
     if not profile.roles.filter(team__name="Employee Experience").exists():
         return print_attrs(attrs)
