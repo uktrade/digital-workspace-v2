@@ -8,6 +8,7 @@ from dbt_copilot_python.database import database_url_from_env
 from dbt_copilot_python.network import setup_allowed_hosts
 from dbt_copilot_python.utility import is_copilot
 from django.urls import reverse_lazy
+from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
@@ -25,7 +26,7 @@ env.read_env()
 VCAP_SERVICES = env.json("VCAP_SERVICES", {})
 
 # Set required configuration from environment
-# Should be one of the following: "local", "test", "dev", "staging", "training", "prod"
+# Should be one of the following: "local", "test", "dev", "staging", "training", "prod", "build"
 APP_ENV = env.str("APP_ENV", "local")
 GIT_COMMIT = env.str("GIT_COMMIT", None)
 
@@ -47,15 +48,13 @@ if "aws-s3-bucket" in VCAP_SERVICES:
     AWS_REGION = app_bucket_creds["aws_region"]
     AWS_S3_REGION_NAME = app_bucket_creds["aws_region"]
     AWS_STORAGE_BUCKET_NAME = app_bucket_creds["bucket_name"]
+    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+    AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
 else:
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
     AWS_REGION = env("AWS_REGION")
     AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
-
-# You don't seem to be able to sign S3 URLs with VCAP S3 creds
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
 
 # Asset path used in parser
 NEW_ASSET_PATH = env("NEW_ASSET_PATH")
@@ -432,6 +431,10 @@ if "redis" in VCAP_SERVICES:
         credentials["host"],
         credentials["port"],
     )
+elif is_copilot():
+    CELERY_BROKER_URL = (
+        env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
+    )
 else:
     CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
 
@@ -482,12 +485,23 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
+        "ecs_formatter": {
+            "()": ECSFormatter,
+        },
         "simple": {
             "format": "{asctime} {levelname} {message}",
             "style": "{",
         },
     },
     "handlers": {
+        "ecs": {
+            "class": "logging.StreamHandler",
+            "formatter": "ecs_formatter",
+        },
+        "simple": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
         "stdout": {
             "class": "logging.StreamHandler",
             "stream": sys.stdout,
@@ -501,6 +515,8 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": [
+                "ecs",
+                "simple",
                 "stdout",
             ],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
@@ -515,6 +531,8 @@ LOGGING = {
         },
         "django.server": {
             "handlers": [
+                "ecs",
+                "simple",
                 "stdout",
             ],
             "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "INFO"),
@@ -522,6 +540,8 @@ LOGGING = {
         },
         "django.db.backends": {
             "handlers": [
+                "ecs",
+                "simple",
                 "stdout",
             ],
             "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),

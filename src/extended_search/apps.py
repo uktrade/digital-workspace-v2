@@ -11,5 +11,5 @@ class ExtendedSearchConfig(AppConfig):
 
         search_settings.initialise_field_dict()
         search_settings.initialise_env_dict()
-        if settings.APP_ENV != "test":
+        if settings.APP_ENV not in ["test", "build"]:
             search_settings.initialise_db_dict()
