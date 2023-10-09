@@ -73,7 +73,7 @@ services:
       - opensearch
       - celery
     environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.develeper
+      - DJANGO_SETTINGS_MODULE=config.settings.developer
     stdin_open: true
     tty: true
 
@@ -86,12 +86,12 @@ services:
       - db
       - redis
     environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.develeper
+      - DJANGO_SETTINGS_MODULE=config.settings.developer
 
   celery-beat:
     image: digital_workspace/wagtail:latest
     environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.develeper
+      - DJANGO_SETTINGS_MODULE=config.settings.developer
     volumes:
       - .:/app
     profiles:
