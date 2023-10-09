@@ -8,6 +8,7 @@ from dbt_copilot_python.database import database_url_from_env
 from dbt_copilot_python.network import setup_allowed_hosts
 from dbt_copilot_python.utility import is_copilot
 from django.urls import reverse_lazy
+from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
@@ -25,7 +26,7 @@ env.read_env()
 VCAP_SERVICES = env.json("VCAP_SERVICES", {})
 
 # Set required configuration from environment
-# Should be one of the following: "local", "test", "dev", "staging", "training", "prod"
+# Should be one of the following: "local", "test", "dev", "staging", "training", "prod", "build"
 APP_ENV = env.str("APP_ENV", "local")
 GIT_COMMIT = env.str("GIT_COMMIT", None)
 
@@ -484,12 +485,23 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
+        "ecs_formatter": {
+            "()": ECSFormatter,
+        },
         "simple": {
             "format": "{asctime} {levelname} {message}",
             "style": "{",
         },
     },
     "handlers": {
+        "ecs": {
+            "class": "logging.StreamHandler",
+            "formatter": "ecs_formatter",
+        },
+        "simple": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
         "stdout": {
             "class": "logging.StreamHandler",
             "stream": sys.stdout,
@@ -503,6 +515,8 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": [
+                "ecs",
+                "simple",
                 "stdout",
             ],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
@@ -517,6 +531,8 @@ LOGGING = {
         },
         "django.server": {
             "handlers": [
+                "ecs",
+                "simple",
                 "stdout",
             ],
             "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "INFO"),
@@ -524,6 +540,8 @@ LOGGING = {
         },
         "django.db.backends": {
             "handlers": [
+                "ecs",
+                "simple",
                 "stdout",
             ],
             "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),
