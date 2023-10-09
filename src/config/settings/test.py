@@ -2,7 +2,6 @@ import logging
 
 from .base import *  # noqa
 
-
 APP_ENV = "test"
 DEBUG = True
 TEMPLATE_DEBUG = True
@@ -17,10 +16,6 @@ WAGTAILSEARCH_BACKENDS["default"] |= {  # noqa
     "INDEX": "test_wagtail",
     "AUTO_UPDATE": False,
 }
-
-INSTALLED_APPS += [  # noqa F405
-    "django_extensions",
-]
 
 LOGGING["handlers"] |= {  # noqa F405
     "file": {
