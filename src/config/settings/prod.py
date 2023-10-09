@@ -19,9 +19,9 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-LOGGING["root"]["handlers"] = [
+LOGGING["root"]["handlers"] = [  # noqa F405
     "ecs",
     "simple",
 ]
-LOGGING["loggers"]["django"]["propagate"] = False
-LOGGING["loggers"]["django.db.backends"]["propagate"] = False
+LOGGING["loggers"]["django"]["propagate"] = False  # noqa F405
+LOGGING["loggers"]["django.db.backends"]["propagate"] = False  # noqa F405
