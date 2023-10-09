@@ -14,6 +14,7 @@ common/CACHE
 __pycache__
 !.gitignore
 .venv/
+venv
 .pytest_cache/
 .python-version
 .ruff_cache
