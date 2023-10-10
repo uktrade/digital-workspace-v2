@@ -4,7 +4,7 @@ from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchQueryCompiler,
 )
 from wagtail.search.index import SearchField
-from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
+from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
 from extended_search.backends.query import Nested, OnlyFields
 from extended_search.index import RelatedFields
@@ -18,18 +18,16 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
     PR maybe worth referencing https://github.com/wagtail/wagtail/issues/5422
     """
 
-    # def __init__(self, *args, **kwargs):
-    #     """
-    #     This override doesn't do anything, it's just here as a reminder to
-    #     modify the underlying class in this way when creating the upstream PR
-    #     """
-    #     super().__init__(*args, **kwargs)
-    #     self.mapping = self.mapping_class(self.queryset.model)
-    #     self.DBT_remapped_fields = self._remap_fields(self.fields)
+    def __init__(self, *args, **kwargs):
+        """Remove this when we get wagtail PR 11018 merged & deployed"""
+        super().__init__(*args, **kwargs)
+        self.remapped_fields = self.remapped_fields or [
+            Field(self.mapping.all_field_name)
+        ]
 
-    def get_boosted_fields(self, fields):
-        boostable_fields = [f for f in fields if isinstance(f, Field)]
-        return super().get_boosted_fields(boostable_fields)
+    # def get_boosted_fields(self, fields):
+    #     boostable_fields = [f for f in fields if isinstance(f, Field)]
+    #     return super().get_boosted_fields(boostable_fields)
 
     def get_searchable_fields(self):
         return self.queryset.model.get_searchable_search_fields()
@@ -61,7 +59,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
             remapped_fields.append(field_name)
 
-        return remapped_fields
+        return [Field(field) for field in remapped_fields]
 
     def _join_and_compile_queries(self, query, fields, boost=1.0):
         """
@@ -87,10 +85,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         upstream. It exists in order to break out the _join_and_compile_queries
         method
         """
-        # if self.DBT_remapped_fields:
-        #     fields = [field.field_name for field in self.DBT_remapped_fields]
-        # else:
-        fields = [self.mapping.all_field_name]
+        fields = self.remapped_fields
 
         if len(fields) == 0:
             # No fields. Return a query that'll match nothing
@@ -110,6 +105,16 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         elif isinstance(self.query, Fuzzy):
             return self._compile_fuzzy_query(self.query, fields)
+
+        elif isinstance(self.query, Not):
+            return {
+                "bool": {
+                    "mustNot": [
+                        self._compile_query(self.query.subquery, field)
+                        for field in fields
+                    ]
+                }
+            }
 
         else:
             return self._join_and_compile_queries(self.query, fields)
