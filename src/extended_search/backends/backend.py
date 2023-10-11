@@ -25,10 +25,6 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
             Field(self.mapping.all_field_name)
         ]
 
-    # def get_boosted_fields(self, fields):
-    #     boostable_fields = [f for f in fields if isinstance(f, Field)]
-    #     return super().get_boosted_fields(boostable_fields)
-
     def get_searchable_fields(self):
         return self.queryset.model.get_searchable_search_fields()
 
