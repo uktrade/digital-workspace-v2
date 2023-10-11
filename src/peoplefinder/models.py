@@ -560,13 +560,7 @@ class Person(Indexed, models.Model):
     )
     email = models.EmailField(
         "How we contact you",
-        help_text=(
-            "This is the email you want to receive official communications from"
-            " the department as well as notifications for Digital Workspace,"
-            " Data Workspace. You can still log in to services with any of"
-            " these emails. It does not show on your profile, unless you have"
-            " set it as your contact email"
-        ),
+        help_text="We will send Digital Workspace notifications to this email",
     )
     pronouns = models.CharField(max_length=40, null=True, blank=True)
     name_pronunciation = models.CharField(
