@@ -17,6 +17,14 @@ WAGTAILSEARCH_BACKENDS["default"] |= {  # noqa
     "AUTO_UPDATE": False,
 }
 
+INSTALLED_APPS += [  # noqa F405
+    "django_extensions",
+]
+
+# Remove the uk_staff_locations database
+del DATABASES["uk_staff_locations"]
+INGESTED_MODELS_DATABASES.remove("uk_staff_locations")
+
 LOGGING["handlers"] |= {  # noqa F405
     "file": {
         "level": "DEBUG",
