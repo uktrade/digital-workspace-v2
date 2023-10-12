@@ -191,7 +191,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 query.subquery, remapped_fields, boost
             )
 
-        elif field in remapped_fields:
+        elif field.field_name in remapped_fields:
             # Fields were defined explicitly upstream, and we are dealing with
             # one that's in the OnlyFields filter
             return self._compile_query(query.subquery, field, boost)
