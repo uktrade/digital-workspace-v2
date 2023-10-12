@@ -28,6 +28,9 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         ]
 
     def get_boosted_fields(self, fields):
+        """
+        This is needed because we are backporting to strings WAY TOO EARLY
+        """
         boostable_fields = [self.to_field(f) for f in fields]
 
         return super().get_boosted_fields(boostable_fields)
