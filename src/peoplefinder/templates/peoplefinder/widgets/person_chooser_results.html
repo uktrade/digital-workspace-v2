@@ -1,0 +1,31 @@
+{% load i18n profile %}
+
+<ul class="listing horiz images chooser">
+    {% for row in rows %}
+        <li>
+            {% if is_multiple_choice %}
+                <input type="checkbox"
+                       name="id"
+                       value="{{ row.object_id }}"
+                       title="{% blocktrans trimmed with title=row.title %}Select {{ title }}{% endblocktrans %}">
+            {% endif %}
+            <a class="item-choice image-choice"
+               title="{{ row.title }}"
+               href="{{ row.choose_url }}">
+                <div class="image">
+                    <img alt="{{ row.title }}"
+                         class="show-transparency"
+                         height="164"
+                         src="{% get_person_photo row.object_id %}"
+                         width="165">
+                </div>
+                <h3>{{ row.title }}</h3>
+            </a>
+        </li>
+
+    {% endfor %}
+</ul>
+
+{% if is_paginated %}
+    {% include "generic_chooser/_ajax_pagination_nav.html" with items=page %}
+{% endif %}

@@ -3,6 +3,8 @@ import hashlib
 from django import template
 from django.utils.safestring import mark_safe
 
+from peoplefinder.models import Person
+
 register = template.Library()
 
 
@@ -28,3 +30,9 @@ def profile_photo_attrs(profile) -> str:
         f" --color-3: {byte_hash(profile.get_first_name_display())};"
     )
     return print_attrs(attrs)
+
+
+@register.simple_tag
+def get_person_photo(profile_id) -> str:
+    profile = Person.objects.get(id=profile_id)
+    return profile.photo.url if profile.photo else None

@@ -127,6 +127,7 @@ THIRD_PARTY_APPS = [
     "crispy_forms",
     "crispy_forms_gds",
     "django_feedback_govuk",
+    "generic_chooser",
 ]
 
 WAGTAIL_APPS = [

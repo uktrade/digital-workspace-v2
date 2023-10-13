@@ -17,11 +17,11 @@ from wagtail.snippets.models import register_snippet
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
-from core.models import ContentOwnerMixin
 from core.utils import set_seen_cookie_banner
 from extended_search.fields import IndexedField
 from extended_search.index import Indexed
 from extended_search.managers.index import ModelIndexManager
+from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
 
@@ -165,6 +165,27 @@ class ContentPageIndexManager(ModelIndexManager):
         IndexedField("is_creatable", filter=True),
         IndexedField("published_date", proximity=True),
     ]
+
+
+class ContentOwnerMixin(models.Model):
+    content_owner = models.ForeignKey(
+        "peoplefinder.Person",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    content_contact_email = models.EmailField(
+        null=True,
+        blank=True,
+    )
+
+    content_panels = [
+        FieldPanel("content_owner", widget=PersonChooser),
+        FieldPanel("content_contact_email"),
+    ]
+
+    class Meta:
+        abstract = True
 
 
 class ContentPage(ContentOwnerMixin, BasePage):

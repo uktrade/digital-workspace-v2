@@ -8,6 +8,7 @@ from content.models import ContentPage, PrivacyPolicyHome
 from country_fact_sheet.models import CountryFactSheetHome
 from networks.models import NetworksHome
 from news.models import NewsHome
+from peoplefinder.models import Person
 from tools.models import ToolsHome
 from transition.models import TransitionHome
 from working_at_dit.models import (
