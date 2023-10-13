@@ -17,6 +17,7 @@ from wagtail.snippets.models import register_snippet
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
+from core.models import ContentOwnerMixin
 from core.utils import set_seen_cookie_banner
 from extended_search.fields import IndexedField
 from extended_search.index import Indexed
@@ -166,7 +167,7 @@ class ContentPageIndexManager(ModelIndexManager):
     ]
 
 
-class ContentPage(BasePage):
+class ContentPage(ContentOwnerMixin, BasePage):
     objects = PageManager.from_queryset(ContentPageQuerySet)()
 
     is_creatable = False
@@ -280,10 +281,14 @@ class ContentPage(BasePage):
 
     subpage_types = []
 
-    content_panels = BasePage.content_panels + [
-        FieldPanel("excerpt", widget=widgets.Textarea),
-        FieldPanel("body"),
-    ]
+    content_panels = (
+        ContentOwnerMixin.content_panels
+        + BasePage.content_panels
+        + [
+            FieldPanel("excerpt", widget=widgets.Textarea),
+            FieldPanel("body"),
+        ]
+    )
 
     promote_panels = [
         FieldPanel("slug", widget=SlugInput),

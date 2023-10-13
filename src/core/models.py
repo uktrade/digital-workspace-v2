@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from simple_history import register
 from simple_history.models import HistoricalRecords
+from wagtail.admin.panels import FieldPanel
 from wagtail.documents.models import Document
 from wagtail.snippets.models import register_snippet
 
@@ -35,6 +36,25 @@ class SiteAlertBanner(models.Model):
 
 
 register(Document, app=__package__)
+
+
+class ContentOwnerMixin(models.Model):
+    content_owner = models.ForeignKey(
+        "peoplefinder.Person",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    content_contact_email = models.EmailField(
+        null=True,
+    )
+
+    content_panels = [
+        FieldPanel("content_owner"),
+        FieldPanel("content_contact_email"),
+    ]
+
+    class Meta:
+        abstract = True
 
 
 class IngestedModelManager(models.Manager):
