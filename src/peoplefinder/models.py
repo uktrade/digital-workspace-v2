@@ -783,6 +783,10 @@ class Person(Indexed, models.Model):
         from peoplefinder.services.person import PersonService
 
         self.profile_completion = PersonService().get_profile_completion(person=self)
+
+        if self.user and self.is_active != self.user.is_active:
+            self.user.is_active = self.is_active
+            self.user.save()
         return super().save(*args, **kwargs)
 
     def get_first_name_display(self) -> str:

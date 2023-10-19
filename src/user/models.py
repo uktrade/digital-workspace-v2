@@ -24,5 +24,11 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    def save(self, *args, **kwargs):
+        if self.profile and self.is_active != self.profile.is_active:
+            self.profile.is_active = self.is_active
+            self.profile.save()
+        return super().save(*args, **kwargs)
+
 
 register(User)
