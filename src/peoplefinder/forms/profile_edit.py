@@ -105,6 +105,7 @@ class PersonalProfileEditForm(forms.ModelForm):
                 ),
                 legend_size=Size.MEDIUM,
                 legend="Photo",
+                css_class="govuk-!-margin-bottom-0",
             ),
         )
 
@@ -179,6 +180,7 @@ class ContactProfileEditForm(forms.ModelForm):
                 "secondary_phone_number",
                 legend_size=Size.MEDIUM,
                 legend=secondary_phone_number_label,
+                css_class="govuk-!-margin-bottom-0",
             ),
         )
 
@@ -231,6 +233,7 @@ class TeamsProfileEditForm(forms.ModelForm):
                 Field("do_not_work_for_dit"),
                 legend_size=Size.MEDIUM,
                 legend="Who is your line manager?",
+                css_class="govuk-!-margin-bottom-0",
             ),
         )
 
@@ -356,6 +359,7 @@ class LocationProfileEditForm(forms.ModelForm):
                 "workdays",
                 legend_size=Size.MEDIUM,
                 legend=workdays_label,
+                css_class="govuk-!-margin-bottom-0",
             ),
         )
 
@@ -503,6 +507,7 @@ class SkillsProfileEditForm(forms.ModelForm):
                 ),
                 legend_size=Size.MEDIUM,
                 legend="Skills, interests and networks (optional)",
+                css_class="govuk-!-margin-bottom-0",
             )
         )
 
@@ -538,6 +543,7 @@ class AccountSettingsForm(forms.ModelForm):
                 Field.select("email"),
                 legend_size=Size.MEDIUM,
                 legend=email_label,
+                css_class="govuk-!-margin-bottom-0",
             ),
         )
 
