@@ -29,6 +29,7 @@ from webpack_loader.utils import get_static
 from peoplefinder.forms.crispy_helper import RoleFormsetFormHelper
 from peoplefinder.forms.profile import ProfileLeavingDbtForm, ProfileUpdateUserForm
 from peoplefinder.forms.profile_edit import (
+    AccountSettingsForm,
     AdminProfileEditForm,
     ContactProfileEditForm,
     LocationProfileEditForm,
@@ -206,6 +207,7 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
         EditSections.TEAMS: TeamsProfileEditForm,
         EditSections.LOCATION: LocationProfileEditForm,
         EditSections.SKILLS: SkillsProfileEditForm,
+        EditSections.ACCOUNT_SETTINGS: AccountSettingsForm,
         EditSections.ADMIN: AdminProfileEditForm,
     }
 
@@ -258,8 +260,12 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
         if not self.request.user.is_superuser:
             edit_sections.remove(EditSections.ADMIN)
 
+        page_title = f"Edit profile: {self.edit_section.label.lower()}"
+        if self.edit_section == EditSections.ACCOUNT_SETTINGS:
+            page_title = EditSections.ACCOUNT_SETTINGS.label
+
         context.update(
-            page_title=f"Edit profile: {self.edit_section.label.lower()}",
+            page_title=page_title,
             current_edit_section=self.edit_section,
             edit_sections=edit_sections,
             profile_slug=profile.slug,

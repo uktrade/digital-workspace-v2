@@ -14,4 +14,5 @@ class EditSections(models.TextChoices):
     TEAMS = "teams", "Team and role"
     LOCATION = "location", "Location and working patterns"
     SKILLS = "skills", "Skills, networks and interests"
+    ACCOUNT_SETTINGS = "account_settings", "Account settings"
     ADMIN = "admin", "Administer profile"
