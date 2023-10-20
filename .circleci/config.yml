@@ -22,9 +22,6 @@ jobs:
           name: run containers
           command: docker-compose up -d
       - run:
-          name: run migrations
-          command: make migrate
-      - run:
           name: check for missing migrations
           command: make checkmigrations
       - run:
