@@ -1,6 +1,7 @@
 import logging
 from datetime import timedelta
 from typing import Any, Dict, List, Optional, Tuple, TypedDict
+from urllib.parse import urlparse, urlunparse
 
 import requests
 from django.conf import settings
@@ -575,7 +576,8 @@ class PersonService:
     @staticmethod
     def get_verified_emails(person: Person) -> list[str]:
         user_email = person.user.email  # @TODO prefer UUID if we can get it from SSO
-        url = f"{settings.AUTHBROKER_URL}/api/v1/user/emails/"
+        authbroker_url = urlparse(settings.AUTHBROKER_URL)
+        url = urlunparse(authbroker_url._replace(path="/emails/"))
         params = {"email": user_email}
         headers = {"Authorization": f"bearer {settings.AUTHBROKER_INTROSPECTION_TOKEN}"}
 

@@ -559,12 +559,8 @@ class Person(Indexed, models.Model):
         max_length=200,
     )
     email = models.EmailField(
-        "Main work email address",
-        help_text=(
-            "The work email address provided by the organisation you are"
-            " directly employed by or contracted to. This is the email you use"
-            " to log into Digital Workspace."
-        ),
+        "How we contact you",
+        help_text="We will send Digital Workspace notifications to this email",
     )
     pronouns = models.CharField(max_length=40, null=True, blank=True)
     name_pronunciation = models.CharField(

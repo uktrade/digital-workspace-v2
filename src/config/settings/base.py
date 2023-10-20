@@ -482,6 +482,7 @@ SETTINGS_EXPORT = [
     "GTM_CODE",
     "GTM_AUTH",
     "PERM_SEC_NAME",
+    "LEAVING_SERVICE_URL",
 ]
 
 LOGGING = {
@@ -670,3 +671,6 @@ DJANGO_FEEDBACK_GOVUK = {
         },
     },
 }
+
+# Leaving Service
+LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
