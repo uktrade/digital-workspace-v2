@@ -3,7 +3,7 @@ from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.admin.panels import FieldPanel
 
 import peoplefinder.models as pf_models
-from content.models import ContentPage
+from content.models import ContentOwnerMixin, ContentPage
 from extended_search.fields import IndexedField
 from extended_search.managers.index import ModelIndexManager
 
@@ -100,7 +100,7 @@ class NetworkIndexManager(ModelIndexManager):
     ]
 
 
-class Network(ContentPage):
+class Network(ContentOwnerMixin, ContentPage):
     is_creatable = True
 
     parent_page_types = [

@@ -9,11 +9,17 @@ from django.db.models import Q, Subquery
 from django.forms import widgets
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
-from wagtail.admin.panels import FieldPanel, TitleFieldPanel
+from wagtail.admin.panels import (
+    FieldPanel,
+    ObjectList,
+    TabbedInterface,
+    TitleFieldPanel,
+)
 from wagtail.admin.widgets.slug import SlugInput
 from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.snippets.models import register_snippet
+from wagtail.utils.decorators import cached_classmethod
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
@@ -179,16 +185,26 @@ class ContentOwnerMixin(models.Model):
         blank=True,
     )
 
-    content_panels = [
+    content_owner_panels = [
         FieldPanel("content_owner", widget=PersonChooser),
         FieldPanel("content_contact_email"),
     ]
+
+    @cached_classmethod
+    def get_edit_handler(cls):
+        return TabbedInterface(
+            [
+                ObjectList(cls.content_panels, heading="Content"),
+                ObjectList(cls.promote_panels, heading="Promote"),
+                ObjectList(cls.content_owner_panels, heading="Content owner"),
+            ]
+        ).bind_to_model(cls)
 
     class Meta:
         abstract = True
 
 
-class ContentPage(ContentOwnerMixin, BasePage):
+class ContentPage(BasePage):
     objects = PageManager.from_queryset(ContentPageQuerySet)()
 
     is_creatable = False
@@ -302,14 +318,10 @@ class ContentPage(ContentOwnerMixin, BasePage):
 
     subpage_types = []
 
-    content_panels = (
-        ContentOwnerMixin.content_panels
-        + BasePage.content_panels
-        + [
-            FieldPanel("excerpt", widget=widgets.Textarea),
-            FieldPanel("body"),
-        ]
-    )
+    content_panels = BasePage.content_panels + [
+        FieldPanel("excerpt", widget=widgets.Textarea),
+        FieldPanel("body"),
+    ]
 
     promote_panels = [
         FieldPanel("slug", widget=SlugInput),
