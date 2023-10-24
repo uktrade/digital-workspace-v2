@@ -21,12 +21,13 @@
     <br>
     {% if page.content_owner %}
         <div class="ws-content-page__metadata-item">
-            Content owner: <a href="{% url 'profile-view' page.content_owner.slug %}">{{ page.content_owner }}</a>
+            Content owner: <a class="govuk-link"
+    href="{% url 'profile-view' page.content_owner.slug %}">{{ page.content_owner }}</a>
         </div>
     {% endif %}
     {% if page.content_contact_email %}
         <div class="ws-content-page__metadata-item">
-            Contact email: <a href="mailto:{{ page.content_contact_email }}">{{ page.content_contact_email }}</a>
+            Contact email: <a class="govuk-link" href="mailto:{{ page.content_contact_email }}">{{ page.content_contact_email }}</a>
         </div>
     {% endif %}
 </div>
