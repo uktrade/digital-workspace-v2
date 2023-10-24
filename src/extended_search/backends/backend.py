@@ -1,9 +1,12 @@
+from typing import Any, List, Union
+
+from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
 )
 from wagtail.search.index import SearchField
-from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Phrase, PlainText
+from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
 from extended_search.backends.query import Nested, OnlyFields
 from extended_search.index import RelatedFields
@@ -17,14 +20,20 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
     PR maybe worth referencing https://github.com/wagtail/wagtail/issues/5422
     """
 
-    # def __init__(self, *args, **kwargs):
-    #     """
-    #     This override doesn't do anything, it's just here as a reminder to
-    #     modify the underlying class in this way when creating the upstream PR
-    #     """
-    #     super().__init__(*args, **kwargs)
-    #     self.mapping = self.mapping_class(self.queryset.model)
-    #     self.remapped_fields = self._remap_fields(self.fields)
+    def __init__(self, *args, **kwargs):
+        """Remove this when we get wagtail PR 11018 merged & deployed"""
+        super().__init__(*args, **kwargs)
+        self.remapped_fields = self.remapped_fields or [
+            Field(self.mapping.all_field_name)
+        ]
+
+    def get_boosted_fields(self, fields):
+        """
+        This is needed because we are backporting to strings WAY TOO EARLY
+        """
+        boostable_fields = [self.to_field(f) for f in fields]
+
+        return super().get_boosted_fields(boostable_fields)
 
     def get_searchable_fields(self):
         return self.queryset.model.get_searchable_search_fields()
@@ -56,7 +65,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
             remapped_fields.append(field_name)
 
-        return remapped_fields
+        return [Field(field) for field in remapped_fields]
 
     def _join_and_compile_queries(self, query, fields, boost=1.0):
         """
@@ -75,17 +84,53 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
             return {"dis_max": {"queries": field_queries}}
 
+    def to_string(self, field: Union[str, Field]) -> str:
+        if isinstance(field, Field):
+            return field.field_name
+        return field
+
+    def to_field(self, field: Union[str, Field]) -> Field:
+        if isinstance(field, Field):
+            return field
+        return Field(field)
+
+    def backport_fields(self, fields: List[Any]) -> List[str]:
+        """
+        Convert a list of Field objects to a list of strings to be compatible
+        with older versions of the code.
+        """
+        if not fields:
+            return fields
+
+        if not isinstance(fields[0], list):
+            return [self.to_string(f) for f in fields]
+
+        new_fields = []
+        for field in fields:
+            backported_fields = self.backport_fields(field)
+            for backported_field in backported_fields:
+                new_fields.append(backported_field)
+        return new_fields
+
+    def _compile_plaintext_query(self, query, fields, boost=1.0):
+        return super()._compile_plaintext_query(
+            query, self.backport_fields(fields), boost
+        )
+
+    def _compile_fuzzy_query(self, query, fields):
+        return super()._compile_fuzzy_query(query, self.backport_fields(fields))
+
+    def _compile_phrase_query(self, query, fields):
+        return super()._compile_phrase_query(query, self.backport_fields(fields))
+
     def get_inner_query(self):
         """
         This is a brittle override of the Elasticsearch7SearchQueryCompiler.
-        get_inner_query, acting as a standin for getting these changes merged
+        get_inner_query, acting as a stand in for getting these changes merged
         upstream. It exists in order to break out the _join_and_compile_queries
         method
         """
-        if self.remapped_fields:
-            fields = self.remapped_fields
-        else:
-            fields = [self.mapping.all_field_name]
+        fields = [self.to_field(f) for f in self.remapped_fields]
 
         if len(fields) == 0:
             # No fields. Return a query that'll match nothing
@@ -105,6 +150,16 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         elif isinstance(self.query, Fuzzy):
             return self._compile_fuzzy_query(self.query, fields)
+
+        elif isinstance(self.query, Not):
+            return {
+                "bool": {
+                    "mustNot": [
+                        self._compile_query(self.query.subquery, field)
+                        for field in fields
+                    ]
+                }
+            }
 
         else:
             return self._join_and_compile_queries(self.query, fields)
@@ -130,7 +185,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
         if isinstance(field, list) and len(field) == 1:
             field = field[0]
 
-        if field == self.mapping.all_field_name:
+        if field.field_name == self.mapping.all_field_name:
             # We are using the "_all_text" field proxy (i.e. the search()
             # method was called without the fields kwarg), but now we want to
             # limit the downstream fields compiled to those explicitly defined
@@ -139,7 +194,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 query.subquery, remapped_fields, boost
             )
 
-        elif field in remapped_fields:
+        elif field.field_name in remapped_fields:
             # Fields were defined explicitly upstream, and we are dealing with
             # one that's in the OnlyFields filter
             return self._compile_query(query.subquery, field, boost)
@@ -171,7 +226,7 @@ class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
         return {
             "nested": {
                 "path": query.path,
-                "query": self._compile_query(query.subquery, fields, boost),
+                "query": self._join_and_compile_queries(query.subquery, fields, boost),
             }
         }
 
@@ -191,7 +246,8 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
         match_query = super()._compile_fuzzy_query(query, fields)
 
         if boost != 1.0:
-            match_query["match"][fields[0]]["boost"] = boost
+            for field in fields:
+                match_query["match"][field.field_name]["boost"] = boost
 
         return match_query
 
@@ -205,10 +261,12 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
             if "multi_match" in match_query:
                 match_query["multi_match"]["boost"] = boost
             else:
-                match_query["match_phrase"][fields[0]] = {
-                    "query": match_query["match_phrase"][fields[0]],
-                    "boost": boost,
-                }
+                for field in fields:
+                    query = match_query["match_phrase"][field.field_name]
+                    match_query["match_phrase"][field.field_name] = {
+                        "query": query,
+                        "boost": boost,
+                    }
 
         return match_query
 

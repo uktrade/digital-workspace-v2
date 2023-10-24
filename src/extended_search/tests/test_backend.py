@@ -1,6 +1,8 @@
 from unittest.mock import call
 
 import pytest
+from wagtail.search.backends.elasticsearch5 import Elasticsearch5SearchQueryCompiler
+from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.query import MATCH_NONE, PlainText
 
 from content.models import ContentPage
@@ -20,13 +22,18 @@ class TestExtendedSearchQueryCompiler:
         query = PlainText("quid")
         compiler = ExtendedSearchQueryCompiler(ContentPage.objects.all(), query)
         assert compiler._remap_fields(None) is None
-        assert compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es5_compiler = Elasticsearch5SearchQueryCompiler(
+            ContentPage.objects.all(), query
+        )
+        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
 
         compiler = ExtendedSearchQueryCompiler(Person.objects.all(), query)
-        assert compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es5_compiler = Elasticsearch5SearchQueryCompiler(Person.objects.all(), query)
+        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
 
         compiler = ExtendedSearchQueryCompiler(Team.objects.all(), query)
-        assert compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es5_compiler = Elasticsearch5SearchQueryCompiler(Team.objects.all(), query)
+        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
 
     def test_join_compile_queries_output_format_and_uses_compile_query(self, mocker):
         mock_compile = mocker.patch(
@@ -59,13 +66,14 @@ class TestOnlyFieldSearchQueryCompiler:
         )
         query = PlainText("quid")
         compiler = OnlyFieldSearchQueryCompiler(ContentPage.objects.all(), query)
-        compiler._compile_query(query, "bar", 3.5)
-        mock_parent.assert_called_once_with(query, "bar", 3.5)
+        field = Field("bar")
+        compiler._compile_query(query, field, 3.5)
+        mock_parent.assert_called_once_with(query, field, 3.5)
 
         mock_parent.reset_mock()
         query = OnlyFields(PlainText("quid"), fields=["foo"])
         compiler = OnlyFieldSearchQueryCompiler(ContentPage.objects.all(), query)
-        compiler._compile_query(query, "bar", 3.5)
+        compiler._compile_query(query, Field("bar"), 3.5)
         assert call(query, "bar", 3.5) not in mock_parent.calls()
 
     def test_compile_query_uses_remap_fields(self, mocker):
@@ -74,7 +82,7 @@ class TestOnlyFieldSearchQueryCompiler:
         )
         query = OnlyFields(PlainText("quid"), fields=["foo"])
         compiler = OnlyFieldSearchQueryCompiler(ContentPage.objects.all(), query)
-        compiler._compile_query(query, "bar", 3.5)
+        compiler._compile_query(query, Field("bar"), 3.5)
         mock_remap.assert_called_once_with(["foo"])
 
     def test_compile_query_onlyfields_logic(self, mocker):
@@ -91,21 +99,24 @@ class TestOnlyFieldSearchQueryCompiler:
         subquery = PlainText("quid")
         query = OnlyFields(subquery, fields=["foo"])
         compiler = OnlyFieldSearchQueryCompiler(ContentPage.objects.all(), query)
-        compiler._compile_query(query, compiler.mapping.all_field_name, 8.3)
+        field = Field(compiler.mapping.all_field_name)
+        compiler._compile_query(query, field, 8.3)
         mock_join_and_compile.assert_called_once_with(subquery, ["baz"], 8.3)
         mock_parent.assert_not_called()
 
         mock_parent.reset_mock()
         mock_join_and_compile.reset_mock()
-        compiler._compile_query(query, "baz", 8.3)
+        field = Field("baz")
+        compiler._compile_query(query, field, 8.3)
         mock_join_and_compile.assert_not_called()
-        mock_parent.assert_called_once_with(subquery, "baz", 8.3)
+        mock_parent.assert_called_once_with(subquery, field, 8.3)
 
         mock_parent.reset_mock()
         mock_join_and_compile.reset_mock()
-        compiler._compile_query(query, "foobar", 8.3)
+        field = Field("foobar")
+        compiler._compile_query(query, field, 8.3)
         mock_join_and_compile.assert_not_called()
-        mock_parent.assert_called_once_with(MATCH_NONE, "foobar", 8.3)
+        mock_parent.assert_called_once_with(MATCH_NONE, field, 8.3)
 
 
 class TestCustomSearchBackend:
