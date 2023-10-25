@@ -37,6 +37,7 @@ from peoplefinder.views.team import (
     TeamPeopleView,
     TeamTreeView,
 )
+from peoplefinder.views.organogram import OrganogramView
 
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
@@ -51,6 +52,13 @@ people_urlpatterns = [
         ProfileLegacyView.as_view(),
         name="profile-legacy-view",
     ),
+    # designed to be viewed inside an iframe
+    path(
+        "<uuid:profile_slug>/organogram/",
+        OrganogramView.as_view(),
+        name="organogram-person",
+    ),
+
     # Redirects to profile-edit-section with edit_section=personal
     path(
         "<uuid:profile_slug>/blank-teams-form/",

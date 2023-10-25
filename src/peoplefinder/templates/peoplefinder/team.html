@@ -55,18 +55,41 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            {% if sub_teams %}
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-half">
+                    <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
+                </div>
+                {% if sub_teams %}
+                    <div class="govuk-grid-column-one-half text-right separated">
+                        <a class="govuk-link inline-block"
+                           href="{% url 'team-people' team.slug %}">View everyone in {{ team.short_name }} and sub-teams</a>
+                    </div>
+                {% endif %}
+            </div>
+            {% if direct_team_members %}
+                <ul class="pf-team-member-cards">
+                    {% for member in direct_team_members %}
+                        <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="govuk-body-s">This team has no direct members</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if sub_teams %}
+
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-one-half">
                         <h2 class="govuk-heading-m">Teams within {{ team.short_name }}</h2>
                     </div>
                     <div class="govuk-grid-column-one-half text-right separated">
                         <a class="govuk-link inline-block"
-                           href="{% url 'team-people' team.slug %}">View all people</a>
-                        <a class="govuk-link inline-block"
                            href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
-                        <a class="govuk-link inline-block"
-                           href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
                     </div>
                 </div>
                 <ul class="pf-team-cards">
@@ -74,16 +97,9 @@
                         <li>{% include 'peoplefinder/components/team-card.html' with team=team %}</li>
                     {% endfor %}
                 </ul>
-            {% else %}
-                <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
-                <ul class="pf-team-member-cards">
-                    {% for member in members %}
-                        <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% if perms.peoplefinder.change_team and perms.peoplefinder.view_auditlog %}
         <details class="govuk-details" data-module="govuk-details">

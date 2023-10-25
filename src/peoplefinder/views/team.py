@@ -66,7 +66,17 @@ class TeamDetailView(DetailView, PeoplefinderView):
         ):
             context["team_audit_log"] = AuditLogService.get_audit_log(team)
 
+        direct_members = self.get_direct_team_members(team, context["sub_teams"])
+        context["direct_team_members"] = direct_members
+
         return context
+
+    def get_direct_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
+        return (
+            TeamMember.active.filter(team=team)
+            .order_by("person__first_name", "person__last_name")
+            .distinct("person", "person__first_name", "person__last_name")
+        )
 
 
 @method_decorator(transaction.atomic, name="post")
