@@ -9,11 +9,17 @@ from django.db.models import Q, Subquery
 from django.forms import widgets
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
-from wagtail.admin.panels import FieldPanel, TitleFieldPanel
+from wagtail.admin.panels import (
+    FieldPanel,
+    ObjectList,
+    TabbedInterface,
+    TitleFieldPanel,
+)
 from wagtail.admin.widgets.slug import SlugInput
 from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.snippets.models import register_snippet
+from wagtail.utils.decorators import cached_classmethod
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
@@ -21,6 +27,7 @@ from core.utils import set_seen_cookie_banner
 from extended_search.fields import IndexedField
 from extended_search.index import Indexed
 from extended_search.managers.index import ModelIndexManager
+from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
 
@@ -164,6 +171,38 @@ class ContentPageIndexManager(ModelIndexManager):
         IndexedField("is_creatable", filter=True),
         IndexedField("published_date", proximity=True),
     ]
+
+
+class ContentOwnerMixin(models.Model):
+    content_owner = models.ForeignKey(
+        "peoplefinder.Person",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
+    )
+    content_contact_email = models.EmailField(
+        help_text="Contact email shown on article, this could be the content owner or a team inbox",
+        null=True,
+        blank=False,
+    )
+
+    content_owner_panels = [
+        FieldPanel("content_owner", widget=PersonChooser),
+        FieldPanel("content_contact_email"),
+    ]
+
+    @cached_classmethod
+    def get_edit_handler(cls):
+        return TabbedInterface(
+            [
+                ObjectList(cls.content_panels, heading="Content"),
+                ObjectList(cls.promote_panels, heading="Promote"),
+                ObjectList(cls.content_owner_panels, heading="Content owner"),
+            ]
+        ).bind_to_model(cls)
+
+    class Meta:
+        abstract = True
 
 
 class ContentPage(BasePage):

@@ -58,6 +58,7 @@ django-celery-beat = "^2.5.0"
 dbt-copilot-python = "^0.1.3"
 dj-database-url = "^2.1.0"
 pillow = "10.0.1"
+wagtail-generic-chooser = "^0.6"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.4.2"

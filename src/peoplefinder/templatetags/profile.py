@@ -2,6 +2,9 @@ import hashlib
 
 from django import template
 from django.utils.safestring import mark_safe
+from webpack_loader import utils as webpack_utils
+
+from peoplefinder.models import Person
 
 register = template.Library()
 
@@ -28,3 +31,15 @@ def profile_photo_attrs(profile) -> str:
         f" --color-3: {byte_hash(profile.get_first_name_display())};"
     )
     return print_attrs(attrs)
+
+
+@register.simple_tag
+def get_person_photo(profile_id) -> str:
+    profile = Person.objects.get(id=profile_id)
+    photo_url = profile.photo.url if profile.photo else None
+    if not photo_url:
+        photo_url = webpack_utils.get_static(
+            "no-photo-large.png",
+            config="DEFAULT",
+        )
+    return photo_url
