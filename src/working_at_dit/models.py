@@ -5,7 +5,7 @@ from django.db.models import Q
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel
 
-from content.models import BasePage, ContentPage, Theme
+from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
 from extended_search.fields import IndexedField
 from extended_search.managers.index import ModelIndexManager
 
@@ -29,7 +29,7 @@ class WorkingAtDITHome(ContentPage):
         return context
 
 
-class Topic(ContentPage):
+class Topic(ContentOwnerMixin, ContentPage):
     subpage_types = []  # Should not be able to create children
 
     def get_context(self, request, *args, **kwargs):
@@ -169,7 +169,7 @@ class PageWithTopics(ContentPage):
         return context
 
 
-class HowDoI(PageWithTopics):
+class HowDoI(ContentOwnerMixin, PageWithTopics):
     subpage_types = []  # Should not be able to create children
 
     include_link_on_homepage = models.BooleanField(
@@ -193,14 +193,14 @@ class HowDoIHome(ContentPage):
         return context
 
 
-class Guidance(PageWithTopics):
+class Guidance(ContentOwnerMixin, PageWithTopics):
     template = "working_at_dit/policy_guidance.html"
     is_creatable = True
 
     subpage_types = ["working_at_dit.Guidance"]
 
 
-class Policy(PageWithTopics):
+class Policy(ContentOwnerMixin, PageWithTopics):
     template = "working_at_dit/policy_guidance.html"
     is_creatable = True
 
