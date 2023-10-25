@@ -18,7 +18,7 @@
           datetime="{{ page.last_published_at|date:"c" }}">
         Last updated {{ page.last_published_at|date:"j F Y" }}, {{ page.last_published_at|time:"H:i A"|lower }}
     </time>
-    <br>
+    {% if page.content_owner or page.content_contact_email %}<br>{% endif %}
     {% if page.content_owner %}
         <div class="ws-content-page__metadata-item">
             Content owner: <a class="govuk-link"
