@@ -1,8 +1,8 @@
-from content.models import ContentPage, ContentPageIndexManager
+from content.models import ContentPage
 from extended_search.managers import get_search_query
-from news.models import NewsPage, NewsPageIndexManager
-from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
-from tools.models import Tool, ToolIndexManager
+from news.models import NewsPage
+from peoplefinder.models import Person, Team
+from tools.models import Tool
 from working_at_dit.models import PoliciesAndGuidanceHome
 
 
@@ -58,12 +58,12 @@ class PagesSearchVector(SearchVector):
 
 class AllPagesSearchVector(PagesSearchVector):
     page_model = ContentPage
-    page_index_manager = ContentPageIndexManager
+    page_index_manager = ContentPage.IndexManager
 
 
 class GuidanceSearchVector(PagesSearchVector):
     page_model = ContentPage
-    page_index_manager = ContentPageIndexManager
+    page_index_manager = ContentPage.IndexManager
 
     def get_queryset(self):
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()
@@ -73,12 +73,12 @@ class GuidanceSearchVector(PagesSearchVector):
 
 class NewsSearchVector(PagesSearchVector):
     page_model = NewsPage
-    page_index_manager = NewsPageIndexManager
+    page_index_manager = NewsPage.IndexManager
 
 
 class ToolsSearchVector(PagesSearchVector):
     page_model = Tool
-    page_index_manager = ToolIndexManager
+    page_index_manager = Tool.IndexManager
 
 
 class PeopleSearchVector(SearchVector):
@@ -95,7 +95,7 @@ class PeopleSearchVector(SearchVector):
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
         query = get_search_query(
-            PersonIndexManager,
+            Person.IndexManager,
             query,
             Person,
             *args,
@@ -110,5 +110,5 @@ class TeamsSearchVector(SearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = get_search_query(TeamIndexManager, query, Team, *args, **kwargs)
+        query = get_search_query(Team.IndexManager, query, Team, *args, **kwargs)
         return self._wagtail_search(queryset, query, *args, **kwargs)

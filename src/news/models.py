@@ -121,18 +121,7 @@ class NewsPageNewsCategory(models.Model):
         unique_together = ("news_page", "news_category")
 
 
-class NewsPageIndexManager(ModelIndexManager):
-    fields = [
-        IndexedField(
-            "search_categories",
-            autocomplete=True,
-            tokenized=True,
-        ),
-        IndexedField(
-            "pinned_on_home",
-            filter=True,
-        ),
-    ]
+
 
 
 class NewsPage(PageWithTopics):
@@ -173,8 +162,25 @@ class NewsPage(PageWithTopics):
         return " ".join(
             self.news_categories.all().values_list("news_category__category", flat=True)
         )
-
-    search_fields = ContentPage.search_fields + NewsPageIndexManager()
+    class IndexManager(ModelIndexManager):
+        fields = [
+            # IndexedField(
+            #     "search_headings",
+            #     tokenized=True,
+            #     fuzzy=True,
+            #     boost=1.0,
+            # ),
+            IndexedField(
+                "search_categories",
+                autocomplete=True,
+                tokenized=True,
+            ),
+            IndexedField(
+                "pinned_on_home",
+                filter=True,
+            ),
+        ]
+    search_fields = PageWithTopics.search_fields + IndexManager()
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504
         FieldPanel("preview_image"),

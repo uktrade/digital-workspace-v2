@@ -71,18 +71,6 @@ class IrapToolData(IrapToolDataAbstract):
         return self.product_name
 
 
-class ToolIndexManager(ModelIndexManager):
-    fields = [
-        IndexedField(
-            "search_tool_name",
-            fuzzy=True,
-            tokenized=True,
-            explicit=True,
-            autocomplete=True,
-            keyword=True,
-            boost=10.0,
-        ),
-    ]
 
 
 class Tool(PageWithTopics):
@@ -105,7 +93,19 @@ class Tool(PageWithTopics):
         max_length=2048,
     )
 
-    search_fields = PageWithTopics.search_fields + ToolIndexManager()
+    class IndexManager(ModelIndexManager):
+        fields = [
+            IndexedField(
+                "search_tool_name",
+                fuzzy=True,
+                tokenized=True,
+                explicit=True,
+                autocomplete=True,
+                keyword=True,
+                boost=10.0,
+            ),
+        ]
+    search_fields = PageWithTopics.search_fields + IndexManager()
 
     @property
     def search_tool_name(self):

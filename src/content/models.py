@@ -134,36 +134,7 @@ class ContentPageQuerySet(PageQuerySet):
         return self.filter(self.exclusions_q(query))
 
 
-class ContentPageIndexManager(ModelIndexManager):
-    fields = [
-        IndexedField(
-            "search_title",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=5.0,
-        ),
-        IndexedField(
-            "search_headings",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=3.0,
-        ),
-        IndexedField(
-            "excerpt",
-            tokenized=True,
-            explicit=True,
-            boost=2.0,
-        ),
-        IndexedField(
-            "search_content",
-            tokenized=True,
-            explicit=True,
-        ),
-        IndexedField("is_creatable", filter=True),
-        IndexedField("published_date", proximity=True),
-    ]
+
 
 
 class ContentPage(BasePage):
@@ -256,7 +227,38 @@ class ContentPage(BasePage):
         null=True,
     )
 
-    search_fields = BasePage.search_fields + ContentPageIndexManager()
+    class IndexManager(ModelIndexManager):
+        fields = [
+            IndexedField(
+                "search_title",
+                tokenized=True,
+                explicit=True,
+                fuzzy=True,
+                boost=5.0,
+            ),
+            IndexedField(
+                "search_headings",
+                tokenized=True,
+                explicit=True,
+                fuzzy=True,
+                boost=3.0,
+            ),
+            IndexedField(
+                "excerpt",
+                tokenized=True,
+                explicit=True,
+                boost=2.0,
+            ),
+            IndexedField(
+                "search_content",
+                tokenized=True,
+                explicit=True,
+            ),
+            IndexedField("is_creatable", filter=True),
+            IndexedField("published_date", proximity=True),
+        ]
+
+    search_fields = BasePage.search_fields + IndexManager()
 
     @property
     def published_date(self):
