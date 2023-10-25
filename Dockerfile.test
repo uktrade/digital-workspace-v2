@@ -5,17 +5,6 @@ ENV NODE_MAJOR=18
 
 RUN adduser pwuser
 
-# # Playwright doesn't like Debian
-# RUN export DEP="http://archive.ubuntu.com/ubuntu/pool/main/libj/libjpeg-turbo/libjpeg-turbo8_2.0.3-0ubuntu1_amd64.deb" && \
-#     wget -O /tmp/$(basename $DEP) $DEP && \
-#     apt-get install -fy /tmp/$(basename $DEP)
-# RUN export DEP="http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2_amd64.deb" && \
-#     wget -O /tmp/$(basename $DEP) $DEP && \
-#     apt-get install -fy /tmp/$(basename $DEP)
-# RUN export DEP="http://ftp.de.debian.org/debian/pool/main/e/enchant/libenchant1c2a_1.6.0-11.1+b1_amd64.deb" && \
-#     wget -O /tmp/$(basename $DEP) $DEP && \
-#     apt-get install -fy /tmp/$(basename $DEP)
-
 RUN playwright install
 RUN playwright install-deps
 
