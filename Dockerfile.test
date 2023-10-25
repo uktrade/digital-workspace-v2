@@ -1,16 +1,30 @@
 FROM digital_workspace/wagtail:latest
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+ENV NODE_MAJOR=18
 
 RUN adduser pwuser
 
-RUN poetry run playwright install-deps
-RUN poetry run playwright install
+# # Playwright doesn't like Debian
+# RUN export DEP="http://archive.ubuntu.com/ubuntu/pool/main/libj/libjpeg-turbo/libjpeg-turbo8_2.0.3-0ubuntu1_amd64.deb" && \
+#     wget -O /tmp/$(basename $DEP) $DEP && \
+#     apt-get install -fy /tmp/$(basename $DEP)
+# RUN export DEP="http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2_amd64.deb" && \
+#     wget -O /tmp/$(basename $DEP) $DEP && \
+#     apt-get install -fy /tmp/$(basename $DEP)
+# RUN export DEP="http://ftp.de.debian.org/debian/pool/main/e/enchant/libenchant1c2a_1.6.0-11.1+b1_amd64.deb" && \
+#     wget -O /tmp/$(basename $DEP) $DEP && \
+#     apt-get install -fy /tmp/$(basename $DEP)
 
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y --no-install-recommends \
-    nodejs
+RUN playwright install
+RUN playwright install-deps
 
+# NODE install
+RUN apt-get update && apt-get install -y ca-certificates curl gnupg
+RUN mkdir -p /etc/apt/keyrings
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN apt-get update && apt-get install nodejs -y
 RUN npm install
 RUN npm run build
 

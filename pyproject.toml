@@ -81,6 +81,7 @@ werkzeug = "^2.2.3"
 blessings = "^1.7"
 pytest-mock = "^3.11.1"
 pytest-freezer = "^0.4.8"
+playwright = "^1.36"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-awesome-pages-plugin = "^2.8.0"
