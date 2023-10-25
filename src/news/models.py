@@ -121,9 +121,6 @@ class NewsPageNewsCategory(models.Model):
         unique_together = ("news_page", "news_category")
 
 
-
-
-
 class NewsPage(PageWithTopics):
     is_creatable = True
     parent_page_types = ["news.NewsHome"]
@@ -162,6 +159,7 @@ class NewsPage(PageWithTopics):
         return " ".join(
             self.news_categories.all().values_list("news_category__category", flat=True)
         )
+
     class IndexManager(ModelIndexManager):
         fields = [
             # IndexedField(
@@ -180,6 +178,7 @@ class NewsPage(PageWithTopics):
                 filter=True,
             ),
         ]
+
     search_fields = PageWithTopics.search_fields + IndexManager()
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504

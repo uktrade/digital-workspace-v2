@@ -255,8 +255,6 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
-
-
 class Person(Indexed, models.Model):
     class Meta:
         constraints = [
@@ -702,6 +700,7 @@ class Person(Indexed, models.Model):
             ),
             IndexedField("do_not_work_for_dit", filter=True),
         ]
+
     search_fields = IndexManager()
 
     def __str__(self) -> str:
@@ -935,7 +934,6 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
         )
 
 
-
 # markdown
 DEFAULT_TEAM_DESCRIPTION = """Find out who is in the team and their contact details.
 
@@ -1012,6 +1010,7 @@ class Team(Indexed, models.Model):
                 boost=2.0,
             ),
         ]
+
     search_fields = IndexManager()
 
     def __str__(self) -> str:

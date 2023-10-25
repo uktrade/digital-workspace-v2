@@ -71,8 +71,6 @@ class IrapToolData(IrapToolDataAbstract):
         return self.product_name
 
 
-
-
 class Tool(PageWithTopics):
     is_creatable = True
     irap_tool = models.OneToOneField(
@@ -105,6 +103,7 @@ class Tool(PageWithTopics):
                 boost=10.0,
             ),
         ]
+
     search_fields = PageWithTopics.search_fields + IndexManager()
 
     @property

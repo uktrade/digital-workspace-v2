@@ -134,9 +134,6 @@ class ContentPageQuerySet(PageQuerySet):
         return self.filter(self.exclusions_q(query))
 
 
-
-
-
 class ContentPage(BasePage):
     objects = PageManager.from_queryset(ContentPageQuerySet)()
 
