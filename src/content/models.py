@@ -181,6 +181,7 @@ class ContentOwnerMixin(models.Model):
         blank=True,
     )
     content_contact_email = models.EmailField(
+        help_text="Contact email shown on article, this could be the content owner or a team inbox",
         null=True,
         blank=True,
     )
