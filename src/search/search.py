@@ -42,9 +42,8 @@ class PagesSearchVector(SearchVector):
 
     def get_query(self, query_str):
         return get_search_query(
-            self.page_index_manager,
-            query_str,
             self.page_model,
+            query_str,
         )
 
     def pinned(self, query):
@@ -95,9 +94,8 @@ class PeopleSearchVector(SearchVector):
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
         query = get_search_query(
-            Person.IndexManager,
-            query,
             Person,
+            query,
             *args,
             **kwargs,
         )
@@ -110,5 +108,5 @@ class TeamsSearchVector(SearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = get_search_query(Team.IndexManager, query, Team, *args, **kwargs)
+        query = get_search_query(Team, query, *args, **kwargs)
         return self._wagtail_search(queryset, query, *args, **kwargs)

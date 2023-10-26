@@ -41,12 +41,12 @@ class TestManagerInit:
             "extended_search.managers.query_builder.QueryBuilder._get_search_query_from_mapping",
             return_value=[],
         )
-        assert get_search_query(ModelIndexManager, "query", ContentPage) is None
+        assert get_search_query(ContentPage, "query") is None
         mock_map.assert_called_once_with()
 
         mock_map.return_value = ["--one--"]
         mock_q.return_value = "--query--"
-        assert get_search_query(ModelIndexManager, "query", ContentPage) == "--query--"
+        assert get_search_query(ContentPage, "query") == "--query--"
         mock_q.assert_called_once_with("query", ContentPage, "--one--")
 
 

@@ -8,7 +8,7 @@ from wagtail.search.backends.elasticsearch7 import (
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
-from extended_search.backends.query import Nested, OnlyFields
+from extended_search.backends.query import Nested, OnlyFields, Filtered
 from extended_search.index import RelatedFields
 
 
@@ -231,6 +231,39 @@ class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
         }
 
 
+class FilteredSearchQueryCompiler(ExtendedSearchQueryCompiler):
+    def _compile_query(self, query, field, boost=1.0):
+        if isinstance(query, Filtered):
+            return self._compile_filtered_query(query, [field], boost)
+        return super()._compile_query(query, field, boost)
+
+    def _compile_filtered_query(self, query, fields, boost=1.0):
+        """
+        Add OS DSL elements to support Filtered fields
+        """
+        compiled_filters = [self._process_lookup(*f) for f in query.filters]
+        if len(compiled_filters) == 1:
+            compiled_filters = compiled_filters[0]
+
+        return {
+            "bool": {
+                "must": self._join_and_compile_queries(query.subquery, fields, boost),
+                "filter": compiled_filters,
+            }
+        }
+
+    def _process_lookup(self, field, lookup, value):
+        # @TODO figure out if this ought to be a diff method since we (maybe)
+        # don't want to pre-process the field names into column names
+        if lookup == "contains":
+            return {"match": {field: value}}
+
+        if lookup == "excludes":
+            return {"bool": {"mustNot": {"match": {field: value}}}}
+
+        return super()._process_lookup(field, lookup, value)
+
+
 class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def _compile_query(self, query, field, boost=1.0):
         if isinstance(query, Fuzzy):
@@ -273,6 +306,7 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
 class CustomSearchQueryCompiler(
     BoostSearchQueryCompiler,
+    FilteredSearchQueryCompiler,
     NestedSearchQueryCompiler,
     OnlyFieldSearchQueryCompiler,
 ):

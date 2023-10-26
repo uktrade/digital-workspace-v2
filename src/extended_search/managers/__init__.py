@@ -1,6 +1,11 @@
+import inspect
 import logging
 from typing import Optional
 
+from wagtail.search.index import get_indexed_models
+from wagtail.search.query import SearchQuery
+
+from extended_search.backends.query import Filtered
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType
 
@@ -21,20 +26,153 @@ def get_indexed_field_name(
     return f"{model_field_name}{field_name_suffix}"
 
 
-def get_search_query(index_manager, query_str, model_class, *args, **kwargs):
-    """
-    Uses the field mapping to derive the full nested SearchQuery
-    """
+def get_query_for_model(model_class, query_str) -> SearchQuery:
     query = None
-    for field_mapping in index_manager.get_mapping():
-        query_elements = index_manager._get_search_query_from_mapping(
+    for field_mapping in model_class.IndexManager.get_mapping():
+        query_elements = model_class.IndexManager._get_search_query_from_mapping(
             query_str, model_class, field_mapping
         )
         if query_elements is not None:
-            query = index_manager._combine_queries(
+            query = model_class.IndexManager._combine_queries(
                 query,
                 query_elements,
             )
-
     logger.debug(query)
     return query
+
+
+def get_search_query(model_class, query_str, *args, **kwargs):
+    """
+    Uses the field mapping to derive the full nested SearchQuery
+    """
+
+    # iterate models
+    #   check if indexmanager has been seen before, discard if so
+    #   get fields defined on (novel) indexmanager
+    #   generate query_part just for those fields
+    # merge query_parts
+    # profit
+
+    # - OR -
+
+    # # iterate models
+
+    # extended_model_classes = []
+    # for indexed_model in get_indexed_models():
+    #     if model_class in inspect.getmro(indexed_model):
+    #         extended_model_classes.append(model_class)
+
+    # #   build query for each model
+
+    # queries = []
+    # for model_class in extended_model_classes:
+    #     query = get_query_for_model(model_class, query_str)
+
+    # #   add filter to query so it only applies to "docs with that model first in the contenttypes list"
+
+    #     query.add_contenttype_is_filter(model_class)
+    #     queries.append(query)
+
+    # # merge queries
+
+    # query = queries.pop()
+    # for q in queries:
+    #     query |= q
+    # return query
+
+    # - OR -
+
+    # build query for root model passed in to method
+    root_query = get_query_for_model(model_class, query_str)
+
+    # iterate extended models that have a dedicated IndexManager
+    extended_model_classes = []
+    for indexed_model in get_indexed_models():
+        if hasattr(model_class, "IndexManager") and model_class in inspect.getmro(
+            indexed_model
+        ):
+            extended_model_classes.append(model_class)
+
+    #   build query for each model, the query includes all fields (not only ones defined on the IM)
+
+    queries = []
+    for sub_model_class in extended_model_classes:
+        query = get_query_for_model(sub_model_class, query_str)
+
+        #   add filter to query so it only applies to "docs with that model anywhere in the contenttypes list"
+
+        query = Filtered(
+            query,
+            filters=[
+                (
+                    "content_type",
+                    "contains",
+                    sub_model_class._meta.app_label + "." + sub_model_class.__name__,
+                ),
+            ],
+        )
+        queries.append(query)
+
+    # add filter to root query to exclude docs with contenttypes matching any of the extended-models-with-dedicated-IM
+
+    root_query = Filtered(
+        root_query,
+        filters=[
+            (
+                "content_type",
+                "excludes",
+                model_class._meta.app_label + "." + model_class.__name__,
+            ),
+        ],
+    )
+
+    # merge queries
+
+    query = root_query
+    for q in queries:
+        query |= q
+    return query
+
+
+# Elasticsearch5SearchQueryCompiler reference
+#
+# get_content_type_filter() --> {"match": {"content_type": content_type}}
+#
+# def get_filters(self):
+#     # Filter by content type
+#     filters = [self.get_content_type_filter()]
+
+#     # Apply filters from queryset
+#     queryset_filters = self._get_filters_from_queryset()
+#     if queryset_filters:
+#         filters.append(queryset_filters)
+
+#     return filters
+
+# def get_query(self):
+#     inner_query = self.get_inner_query()
+#     filters = self.get_filters()
+
+#     if len(filters) == 1:
+#         return {
+#             "bool": {
+#                 "must": inner_query,
+#                 "filter": filters[0],
+#             }
+#         }
+#     elif len(filters) > 1:
+#         return {
+#             "bool": {
+#                 "must": inner_query,
+#                 "filter": filters,
+#             }
+#         }
+#     else:
+#         return inner_query
+#
+#
+# Elasticsearch5Mapping reeference
+#
+# get_content_type() --> "wagtailcore.Page"
+#
+# get_all_content_types() --> ["myapp.MyPageModel", "wagtailcore.Page"]
