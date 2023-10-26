@@ -1293,14 +1293,21 @@ django = "*"
 
 [[package]]
 name = "django-simple-history"
-version = "3.4.0"
+version = "3.4.0.post28+g29108a5"
 description = "Store model history and view/revert changes from admin site."
 optional = false
 python-versions = ">=3.8"
-files = [
-    {file = "django-simple-history-3.4.0.tar.gz", hash = "sha256:19bd1a87e1e2eba34dfd43eab1fcf2da5752221f343232f2372b2121c7e3b97d"},
-    {file = "django_simple_history-3.4.0-py3-none-any.whl", hash = "sha256:992dcca3cddc0b67b470fc91f77292e2d2a6010d37c9eac3536e9d80e8754032"},
-]
+files = []
+develop = false
+
+[package.dependencies]
+asgiref = ">=3.6"
+
+[package.source]
+type = "git"
+url = "https://github.com/jazzband/django-simple-history.git"
+reference = "29108a5"
+resolved_reference = "29108a5b94397ba6107e6899db957289c75468c1"
 
 [[package]]
 name = "django-staff-sso-client"
@@ -4376,4 +4383,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c1c0650622b9db0ad2a1455780d13d47c8a2f10de3eec791700ae61de6440cd0"
+content-hash = "9f7f1eedf0fd2c30b37c4908159b44ce2ca6c805af1b863bb0e207faedd5c0f0"
