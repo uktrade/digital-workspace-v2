@@ -84,6 +84,7 @@ class QueryBuilder:
         content_type = ContentType.objects.get_for_model(model_class)
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
         if setting_boost := search_settings["boost_parts"]["fields"][field_boost_key]:
+            print(f"  FOUND {field_boost_key} -> {setting_boost}")
             return float(setting_boost)
         return 1.0
 

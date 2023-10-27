@@ -110,7 +110,6 @@ class ModelIndexManager(NestedQueryBuilder):
         if not cls.generated_fields or len(cls.generated_fields) == 0:
             cls.get_search_fields()
 
-        # print(f"       @@ {cls} -> {cls.fields}")
         direct_fields = []
         index_field_names = [f.model_field_name for f in cls.fields]
         for generated_field in cls.generated_fields:
