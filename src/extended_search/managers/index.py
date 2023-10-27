@@ -110,15 +110,15 @@ class ModelIndexManager(NestedQueryBuilder):
         if not cls.generated_fields or len(cls.generated_fields) == 0:
             cls.get_search_fields()
 
-        direct_fields = []
         index_field_names = [f.model_field_name for f in cls.fields]
-        for generated_field in cls.generated_fields:
+        return [
+            field
+            for field in cls.generated_fields
             if (
-                hasattr(generated_field, "model_field_name")
-                and generated_field.model_field_name in index_field_names
-            ):
-                direct_fields.append(generated_field)
-        return direct_fields
+                hasattr(field, "model_field_name")
+                and field.model_field_name in index_field_names
+            )
+        ]
 
     @classmethod
     def is_directly_defined(cls, field):

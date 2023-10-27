@@ -3,6 +3,7 @@ from typing import Any, List, Union
 from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
+    Elasticsearch7Mapping,
     Elasticsearch7SearchQueryCompiler,
 )
 from wagtail.search.index import SearchField
@@ -10,6 +11,13 @@ from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, Plain
 
 from extended_search.backends.query import Nested, OnlyFields, Filtered
 from extended_search.index import RelatedFields
+
+
+class FilteredSearchMapping(Elasticsearch7Mapping):
+    def get_field_column_name(self, field):
+        if type(field) == str and field == "content_type":
+            return "content_type"
+        return super().get_field_column_name(field)
 
 
 class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
@@ -253,8 +261,6 @@ class FilteredSearchQueryCompiler(ExtendedSearchQueryCompiler):
         }
 
     def _process_lookup(self, field, lookup, value):
-        # @TODO figure out if this ought to be a diff method since we (maybe)
-        # don't want to pre-process the field names into column names
         if lookup == "contains":
             return {"match": {field: value}}
 
@@ -315,6 +321,7 @@ class CustomSearchQueryCompiler(
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = CustomSearchQueryCompiler
+    mapping_class = FilteredSearchMapping
 
 
 SearchBackend = CustomSearchBackend

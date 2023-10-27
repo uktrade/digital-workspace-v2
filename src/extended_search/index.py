@@ -11,6 +11,17 @@ logger = logging.getLogger(__name__)
 
 class Indexed(index.Indexed):
     @classmethod
+    def has_indexmanager_direct_inner_class(cls):
+        for attr in cls.__dict__.values():
+            if (
+                inspect.isclass(attr)
+                # and issubclass(attr, ModelIndexManager) #  Can't run this check due to circular imports
+                and attr.__name__ == "IndexManager"
+            ):
+                return True
+        return False
+
+    @classmethod
     def _check_search_fields(cls, **kwargs):
         errors = []
         for field in cls.get_search_fields():
@@ -95,20 +106,10 @@ class RenamedFieldMixin:
         """
         Returns the correct base class if it wasn't found because of a field naming discrepancy
         """
-
-        def has_indexmanager_direct_inner_class(model_class):
-            for attr in model_class.__dict__.values():
-                if (
-                    inspect.isclass(attr)
-                    # and issubclass(attr, ModelIndexManager)
-                    and attr.__name__ == "IndexManager"
-                ):
-                    return True
-            return False
-
-        if has_indexmanager_direct_inner_class(
-            cls
-        ) and cls.IndexManager.is_directly_defined(self):
+        if (
+            cls.has_indexmanager_direct_inner_class()
+            and cls.IndexManager.is_directly_defined(self)
+        ):
             return cls
 
         if base_cls := super().get_definition_model(cls):
