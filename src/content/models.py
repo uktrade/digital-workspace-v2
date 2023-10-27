@@ -141,7 +141,6 @@ class ContentPageQuerySet(PageQuerySet):
         return self.filter(self.exclusions_q(query))
 
 
-
 class ContentOwnerMixin(models.Model):
     content_owner = models.ForeignKey(
         "peoplefinder.Person",

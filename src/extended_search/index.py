@@ -107,7 +107,8 @@ class RenamedFieldMixin:
         Returns the correct base class if it wasn't found because of a field naming discrepancy
         """
         if (
-            cls.has_indexmanager_direct_inner_class()
+            hasattr(cls, "has_indexmanager_direct_inner_class")
+            and cls.has_indexmanager_direct_inner_class()
             and cls.IndexManager.is_directly_defined(self)
         ):
             return cls

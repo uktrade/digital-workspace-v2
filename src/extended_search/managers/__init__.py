@@ -45,6 +45,7 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     """
     Uses the field mapping to derive the full nested SearchQuery
     """
+
     def model_contenttype(model_class):
         return f"{model_class._meta.app_label}.{model_class.__name__}"
 
@@ -95,7 +96,6 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     for q in queries:
         query |= q
     return query
-
 
     # CAMS IDEA:
 

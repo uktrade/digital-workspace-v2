@@ -6,7 +6,6 @@ from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
 from content.models import ContentPage
 from extended_search.backends.query import OnlyFields
 from extended_search.managers import get_indexed_field_name, get_search_query
-from extended_search.managers.index import ModelIndexManager
 from extended_search.managers.query_builder import NestedQueryBuilder, QueryBuilder
 from extended_search.models import Setting
 from extended_search.settings import extended_search_settings
