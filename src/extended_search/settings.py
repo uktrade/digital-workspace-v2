@@ -222,6 +222,9 @@ class SearchSettings(NestedChainMap):
                     if definition_cls not in fields:
                         fields[definition_cls] = set()
 
+                    print(
+                        f"-----> indexing {model_cls}.{search_field} --> {definition_cls}"
+                    )
                     if isinstance(search_field, RelatedFields):
                         for ff in search_field.fields:
                             ff.parent_model_field = search_field.field_name

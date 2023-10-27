@@ -162,12 +162,12 @@ class NewsPage(PageWithTopics):
 
     class IndexManager(ModelIndexManager):
         fields = [
-            # IndexedField(
-            #     "search_headings",
-            #     tokenized=True,
-            #     fuzzy=True,
-            #     boost=1.0,
-            # ),
+            IndexedField(
+                "search_headings",
+                tokenized=True,
+                fuzzy=True,
+                boost=1.0,
+            ),
             IndexedField(
                 "search_categories",
                 autocomplete=True,
