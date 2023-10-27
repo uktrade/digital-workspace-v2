@@ -27,6 +27,7 @@ def get_indexed_field_name(
 
 
 def get_query_for_model(model_class, query_str) -> SearchQuery:
+    # print(f">>>>>> GET SUB QUERY FOR {model_class} <<<<<<")
     query = None
     for field_mapping in model_class.IndexManager.get_mapping():
         query_elements = model_class.IndexManager._get_search_query_from_mapping(
@@ -45,6 +46,7 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     """
     Uses the field mapping to derive the full nested SearchQuery
     """
+    # print(f"------ GET QUERY FOR {model_class} -------")
 
     # iterate models
     #   check if indexmanager has been seen before, discard if so
@@ -82,52 +84,66 @@ def get_search_query(model_class, query_str, *args, **kwargs):
 
     # - OR -
 
-    # build query for root model passed in to method
-    root_query = get_query_for_model(model_class, query_str)
+    def has_indexmanager_direct_inner_class(model_class):
+        for attr in model_class.__dict__.values():
+            if (
+                inspect.isclass(attr)
+                # and issubclass(attr, ModelIndexManager)
+                and attr.__name__ == "IndexManager"
+            ):
+                return True
+        return False
 
-    # iterate extended models that have a dedicated IndexManager
+    def model_contenttype(model_class):
+        return f"{model_class._meta.app_label}.{model_class.__name__}"
+
+    # iterate indexed models extending the root model that have a dedicated IndexManager
     extended_model_classes = []
     for indexed_model in get_indexed_models():
-        if hasattr(model_class, "IndexManager") and model_class in inspect.getmro(
-            indexed_model
+        if (
+            indexed_model != model_class
+            and model_class in inspect.getmro(indexed_model)
+            and has_indexmanager_direct_inner_class(indexed_model)
         ):
-            extended_model_classes.append(model_class)
+            extended_model_classes.append(indexed_model)
+            # print(f"     @ ADDING {indexed_model}")
+    extended_model_names = [model_contenttype(m) for m in extended_model_classes]
 
-    #   build query for each model, the query includes all fields (not only ones defined on the IM)
-
-    queries = []
-    for sub_model_class in extended_model_classes:
-        query = get_query_for_model(sub_model_class, query_str)
-
-        #   add filter to query so it only applies to "docs with that model anywhere in the contenttypes list"
-
-        query = Filtered(
-            query,
-            filters=[
-                (
-                    "content_type",
-                    "contains",
-                    sub_model_class._meta.app_label + "." + sub_model_class.__name__,
-                ),
-            ],
-        )
-        queries.append(query)
-
+    # build query for root model passed in to method
     # add filter to root query to exclude docs with contenttypes matching any of the extended-models-with-dedicated-IM
-
+    root_query = get_query_for_model(model_class, query_str)
     root_query = Filtered(
         root_query,
         filters=[
             (
                 "content_type",
                 "excludes",
-                model_class._meta.app_label + "." + model_class.__name__,
+                extended_model_names,
             ),
         ],
     )
+    # print(f"     | ROOT QUERY FOR {model_class} |")
 
-    # merge queries
+    # build full query for each extended model
+    queries = []
+    for sub_model_class in extended_model_classes:
+        query = get_query_for_model(sub_model_class, query_str)
+        # print(f"     ^ INNER QUERY FOR {sub_model_class} |")
 
+        #   add filter to query so it only applies to "docs with that model anywhere in the contenttypes list"
+        query = Filtered(
+            query,
+            filters=[
+                (
+                    "content_type",
+                    "contains",
+                    model_contenttype(sub_model_class),
+                ),
+            ],
+        )
+        queries.append(query)
+
+    # merge all queries
     query = root_query
     for q in queries:
         query |= q

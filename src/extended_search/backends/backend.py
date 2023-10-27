@@ -259,7 +259,7 @@ class FilteredSearchQueryCompiler(ExtendedSearchQueryCompiler):
             return {"match": {field: value}}
 
         if lookup == "excludes":
-            return {"bool": {"mustNot": {"match": {field: value}}}}
+            return {"bool": {"mustNot": {"terms": {field: value}}}}
 
         return super()._process_lookup(field, lookup, value)
 
