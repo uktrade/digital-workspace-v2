@@ -1,5 +1,6 @@
 from unittest.mock import call
 
+import inspect
 import pytest
 from wagtail.search.backends.elasticsearch5 import Elasticsearch5SearchQueryCompiler
 from wagtail.search.backends.elasticsearch6 import Field
@@ -7,9 +8,13 @@ from wagtail.search.query import MATCH_NONE, PlainText
 
 from content.models import ContentPage
 from extended_search.backends.backend import (
+    BoostSearchQueryCompiler,
     CustomSearchBackend,
     CustomSearchQueryCompiler,
     ExtendedSearchQueryCompiler,
+    FilteredSearchMapping,
+    FilteredSearchQueryCompiler,
+    NestedSearchQueryCompiler,
     OnlyFieldSearchQueryCompiler,
     SearchBackend,
 )
@@ -119,9 +124,54 @@ class TestOnlyFieldSearchQueryCompiler:
         mock_parent.assert_called_once_with(MATCH_NONE, field, 8.3)
 
 
+class TestBoostSearchQueryCompiler:
+    def test_compile_query_catches_all(self, mocker):
+        assert False
+
+    def test_compile_fuzzy_query(self):
+        assert False
+
+    def test_compile_phrase_query(self):
+        assert False
+
+
+class TestNestedSearchQueryCompiler:
+    def test_get_searchable_fields(self):
+        assert False
+
+    def test_compile_query_catches_nested(self, mocker):
+        assert False
+
+    def test_compile_nested_query(self):
+        assert False
+
+
+
+class TestFilteredSearchQueryCompiler:
+    def test_compile_query_catches_filtered(self, mocker):
+        assert False
+
+    def test_compile_filtered_query(self):
+        assert False
+
+    def test_process_lookup(self):
+        assert False
+
+
+class TestFilteredSearchMapping:
+    def test_get_field_column_name(self, mocker):
+        assert False
+
+
 class TestCustomSearchBackend:
     def test_correct_mappings_and_backends_configured(self):
         assert CustomSearchBackend.query_compiler_class == CustomSearchQueryCompiler
+        assert CustomSearchBackend.mapping_class == FilteredSearchMapping
+        assert ExtendedSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
+        assert BoostSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
+        assert FilteredSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
+        assert NestedSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
+        assert OnlyFieldSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
 
     def test_custom_search_backend_used(self):
         assert SearchBackend == CustomSearchBackend

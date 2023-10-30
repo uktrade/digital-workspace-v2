@@ -53,3 +53,17 @@ class TestOnlyFields:
             )
             == f"<OnlyFields {repr(PlainText('foo'))} fields=['bar', 'baz']>"
         )
+
+class TestNested:
+    def test_init_sets_attributes(self):
+        assert False
+
+    def test_repr(self):
+        assert False
+
+class TestFiltered:
+    def test_init_sets_attributes(self):
+        assert False
+
+    def test_repr(self):
+        assert False
