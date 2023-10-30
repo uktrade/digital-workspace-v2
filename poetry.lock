@@ -1293,7 +1293,7 @@ django = "*"
 
 [[package]]
 name = "django-simple-history"
-version = "3.4.0.post28+g29108a5"
+version = "0.0.post1304+g29108a5"
 description = "Store model history and view/revert changes from admin site."
 optional = false
 python-versions = ">=3.8"
@@ -1305,7 +1305,7 @@ asgiref = ">=3.6"
 
 [package.source]
 type = "git"
-url = "https://github.com/jazzband/django-simple-history.git"
+url = "https://github.com/uktrade/django-simple-history.git"
 reference = "29108a5"
 resolved_reference = "29108a5b94397ba6107e6899db957289c75468c1"
 
@@ -4383,4 +4383,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9f7f1eedf0fd2c30b37c4908159b44ce2ca6c805af1b863bb0e207faedd5c0f0"
+content-hash = "d131c2eee71bd55f9c5773b9e4b6a0b28cea9a9f4ac70ae7c3e9653a367aeb31"
