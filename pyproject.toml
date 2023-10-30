@@ -14,7 +14,8 @@ django-crispy-forms = "^1.14.0"
 django-environ = "^0.10.0"
 # django_redis = "^5.2.0"
 django-settings-export = "^1.2.1"
-django-simple-history = "^3.3.0"
+# TODO: Set django-simple-history to the next release after 3.4.0 (when released)
+django-simple-history = { git = "https://github.com/uktrade/django-simple-history.git", rev = "29108a5" }
 django-storages = "^1.13.2"
 django-webpack-loader = "^1.8.1"
 djangorestframework = "^3.14.0"
