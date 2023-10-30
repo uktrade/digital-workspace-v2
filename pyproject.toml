@@ -78,7 +78,7 @@ wagtail-factories = "^4.0.0"
 # Util
 bpython = "^0.24"
 django-extensions = "^3.2.1"
-werkzeug = "^2.2.3"
+werkzeug = "^3.0.1"
 blessings = "^1.7"
 pytest-mock = "^3.11.1"
 pytest-freezer = "^0.4.8"
