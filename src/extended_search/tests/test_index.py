@@ -1,9 +1,7 @@
 import inspect
-import pytest
 
 from wagtail.search import index
 from extended_search.index import (
-    Indexed,
     RenamedFieldMixin,
     SearchField,
     AutocompleteField,
@@ -13,27 +11,27 @@ from extended_search.index import (
 
 class TestIndexedModel:
     def test_has_indexmanager_direct_inner_class(self):
-        assert False
+        raise AssertionError()
 
     def test_check_search_fields(self):
-        assert False
+        raise AssertionError()
 
 
 class TestRenamedFieldMixin:
     def test_model_field_name(self):
-        assert False
+        raise AssertionError()
 
     def test_get_field(self):
-        assert False
+        raise AssertionError()
 
     def test_get_attname(self):
-        assert False
+        raise AssertionError()
 
     def test_get_deinition_model(self):
-        assert False
+        raise AssertionError()
 
     def test_get_value(self):
-        assert False
+        raise AssertionError()
 
     def test_mixin_used(self):
         assert index.SearchField in inspect.getmro(SearchField)

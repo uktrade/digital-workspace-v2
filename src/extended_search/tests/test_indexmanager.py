@@ -235,7 +235,7 @@ class TestModelIndexManager:
         assert ModelIndexManager._get_analyzer_name(AnalysisType.EXPLICIT) == "bar"
 
     def test_get_directly_defined_fields(self):
-        assert False
+        raise AssertionError()
 
     def test_is_directly_defined(self):
-        assert False
+        raise AssertionError()

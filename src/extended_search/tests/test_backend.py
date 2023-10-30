@@ -126,41 +126,40 @@ class TestOnlyFieldSearchQueryCompiler:
 
 class TestBoostSearchQueryCompiler:
     def test_compile_query_catches_all(self, mocker):
-        assert False
+        raise AssertionError()
 
     def test_compile_fuzzy_query(self):
-        assert False
+        raise AssertionError()
 
     def test_compile_phrase_query(self):
-        assert False
+        raise AssertionError()
 
 
 class TestNestedSearchQueryCompiler:
     def test_get_searchable_fields(self):
-        assert False
+        raise AssertionError()
 
     def test_compile_query_catches_nested(self, mocker):
-        assert False
+        raise AssertionError()
 
     def test_compile_nested_query(self):
-        assert False
-
+        raise AssertionError()
 
 
 class TestFilteredSearchQueryCompiler:
     def test_compile_query_catches_filtered(self, mocker):
-        assert False
+        raise AssertionError()
 
     def test_compile_filtered_query(self):
-        assert False
+        raise AssertionError()
 
     def test_process_lookup(self):
-        assert False
+        raise AssertionError()
 
 
 class TestFilteredSearchMapping:
     def test_get_field_column_name(self, mocker):
-        assert False
+        raise AssertionError()
 
 
 class TestCustomSearchBackend:
