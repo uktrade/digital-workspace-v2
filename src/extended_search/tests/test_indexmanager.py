@@ -158,12 +158,6 @@ class TestModelIndexManager:
             return_value="baz",
         )
         result = ModelIndexManager._get_searchable_search_fields("foo", [], 3.2)
-        assert len(result) == 1
-        assert type(result[0]) == SearchField
-        assert result[0].field_name == "bar"
-        assert result[0].boost == 3.2
-        assert result[0].kwargs["model_field_name"] == "foo"
-        assert result[0].kwargs["es_extra"] == {"analyzer": "baz"}
         # uses help methods
         mock_fieldname.assert_called_once_with(
             "foo",
@@ -171,6 +165,12 @@ class TestModelIndexManager:
         )
         # analyzer defaults to tokenized
         mock_analyzer.assert_called_once_with(AnalysisType.TOKENIZED)
+        assert len(result) == 1
+        assert type(result[0]) == SearchField
+        assert result[0].field_name == "bar"
+        assert result[0].boost == 3.2
+        assert result[0].kwargs["model_field_name"] == "foo"
+        assert result[0].kwargs["es_extra"] == {"analyzer": "baz"}
 
     def test_get_searchable_search_fields_returns_field_per_analyzer(self, mocker):
         mocker.patch(
@@ -234,8 +234,59 @@ class TestModelIndexManager:
         assert AnalysisType.EXPLICIT.value == "explicit"
         assert ModelIndexManager._get_analyzer_name(AnalysisType.EXPLICIT) == "bar"
 
-    def test_get_directly_defined_fields(self):
-        raise AssertionError()
+    def test_get_directly_defined_fields(self, mocker):
+        class Field:
+            field_name = None
+            model_field_name = None
 
-    def test_is_directly_defined(self):
-        raise AssertionError()
+        def side_effect():
+            ModelIndexManager.generated_fields = ["bar"]
+
+        mock_get_search_fields = mocker.patch(
+            "extended_search.managers.index.ModelIndexManager.get_search_fields",
+            side_effect=side_effect,
+        )
+
+        ModelIndexManager.fields = []
+        ModelIndexManager.generated_fields = None
+        ModelIndexManager.get_directly_defined_fields()
+        mock_get_search_fields.assert_called_once()
+
+        mock_get_search_fields.reset_mock()
+        ModelIndexManager.generated_fields = []
+        ModelIndexManager.get_directly_defined_fields()
+        mock_get_search_fields.assert_called_once()
+
+        mock_get_search_fields.reset_mock()
+        ModelIndexManager.generated_fields = ["bar"]
+        ModelIndexManager.get_directly_defined_fields()
+        mock_get_search_fields.assert_not_called()
+
+        mock_get_search_fields.reset_mock()
+        fie = Field()
+        fie.model_field_name = "foo"
+        gen = Field()
+        gen.field_name = "bar"
+        ModelIndexManager.fields = [fie]
+        ModelIndexManager.generated_fields = [gen]
+        assert ModelIndexManager.get_directly_defined_fields() == []
+
+        gen.field_name = "foo"
+        assert ModelIndexManager.get_directly_defined_fields() == []
+
+        gen.model_field_name = "foo"
+        assert ModelIndexManager.get_directly_defined_fields() == [gen]
+
+        gen2 = Field()
+        gen2.model_field_name = "foo"
+        ModelIndexManager.generated_fields = [gen, gen2]
+        assert ModelIndexManager.get_directly_defined_fields() == [gen, gen2]
+
+    def test_is_directly_defined(self, mocker):
+        mock_get_directly_defined_fields = mocker.patch(
+            "extended_search.managers.index.ModelIndexManager.get_directly_defined_fields",
+            return_value=["foo", "bar", "baz"],
+        )
+        assert ModelIndexManager.is_directly_defined("hello") is False
+        mock_get_directly_defined_fields.assert_called_once()
+        assert ModelIndexManager.is_directly_defined("baz") is True
