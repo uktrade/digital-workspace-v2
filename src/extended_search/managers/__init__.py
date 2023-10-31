@@ -75,7 +75,7 @@ def get_search_query(model_class, query_str, *args, **kwargs):
             (
                 "content_type",
                 "excludes",
-                extended_models.keys(),
+                list(extended_models.keys()),
             ),
         ],
     )
