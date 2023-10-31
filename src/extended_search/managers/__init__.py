@@ -52,11 +52,9 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     # build full query for each extended model
     queries = []
     for sub_model_class in extended_models.values():
-        query = get_query_for_model(sub_model_class, query_str)
-
         # filter so it only applies to "docs with that model anywhere in the contenttypes list"
         query = Filtered(
-            query,
+            get_query_for_model(sub_model_class, query_str),
             filters=[
                 (
                     "content_type",
