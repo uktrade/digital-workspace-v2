@@ -4,6 +4,8 @@ from content.models import ContentPage
 from extended_search.managers import (
     get_indexed_field_name,
     get_query_for_model,
+    get_extended_models_with_indexmanager,
+    model_contenttype,
 )
 from extended_search.models import Setting
 from extended_search.settings import extended_search_settings
@@ -48,6 +50,33 @@ class TestManagersInit:
         assert get_query_for_model(ContentPage, "query") == "--query--"
         mock_q.assert_called_once_with("query", ContentPage, "--one--")
 
+    def test_get_extended_models_with_indexmanager(self, mocker):
+        class Base(mocker.Mock):
+            ...
+        class Extended(Base):
+            ...
+
+        mocker.patch(
+            "wagtail.search.index.get_indexed_models",
+            return_value=[Base],
+        )
+        mock_mro = mocker.patch(
+            "inspect.getmro",
+            return_value=[],
+        )
+        Base.has_indexmanager_direct_inner_class.return_value = False
+        assert get_extended_models_with_indexmanager(Base) == {}
+
+        Base.has_indexmanager_direct_inner_class.return_value = True
+        mock_mro.return_value = [Extended, Base]
+        assert get_extended_models_with_indexmanager(Base) == {'mock.extended': Extended}
+
+    def test_model_contenttype(self, mocker):
+        mock_class = mocker.Mock()
+        mock_class._meta.app_label = "foo"
+        mock_class.__name__ = "bar"
+        assert model_contenttype(mock_class) == "foo.bar"
+
     def test_get_search_query(self, mocker):
         mocker.patch(
             "wagtail.search.index.get_indexed_models",
@@ -55,6 +84,14 @@ class TestManagersInit:
         )
         mocker.patch(
             "extended_search.managers.get_query_for_model",
+            return_value=[],
+        )
+        mocker.patch(
+            "extended_search.managers.model_contenttype",
+            return_value=[],
+        )
+        mocker.patch(
+            "extended_search.managers.get_extended_models_with_indexmanager",
             return_value=[],
         )
         raise AssertionError()

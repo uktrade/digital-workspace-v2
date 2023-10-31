@@ -48,38 +48,7 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     parent; each has it's own subquery using its own settings filtered by
     type, and all are joined together at the end.
     """
-
-    def model_contenttype(model_class):
-        return f"{model_class._meta.app_label}.{model_class.__name__}"
-
-    def get_extended_models_with_indexmanager():
-        # iterate indexed models extending the root model that have a dedicated IndexManager
-        extended_model_classes = {}
-        for indexed_model in get_indexed_models():
-            if (
-                indexed_model != model_class
-                and model_class in inspect.getmro(indexed_model)
-                and indexed_model.has_indexmanager_direct_inner_class()
-            ):
-                extended_model_classes[model_contenttype(indexed_model)] = indexed_model
-        return extended_model_classes
-
-    extended_models = get_extended_models_with_indexmanager()
-
-    # build query for root model passed in to method, filter to exclude docs with contenttypes
-    # matching any of the extended-models-with-dedicated-IM
-    root_query = get_query_for_model(model_class, query_str)
-    root_query = Filtered(
-        root_query,
-        filters=[
-            (
-                "content_type",
-                "excludes",
-                list(extended_models.keys()),
-            ),
-        ],
-    )
-
+    extended_models = get_extended_models_with_indexmanager(model_class)
     # build full query for each extended model
     queries = []
     for sub_model_class in extended_models.values():
@@ -98,6 +67,35 @@ def get_search_query(model_class, query_str, *args, **kwargs):
         )
         queries.append(query)
 
+    # build query for root model passed in to method, filter to exclude docs with contenttypes
+    # matching any of the extended-models-with-dedicated-IM
+    root_query = get_query_for_model(model_class, query_str)
+    root_query = Filtered(
+        root_query,
+        filters=[
+            (
+                "content_type",
+                "excludes",
+                list(extended_models.keys()),
+            ),
+        ],
+    )
+
     for q in queries:
         root_query |= q
     return root_query
+
+def get_extended_models_with_indexmanager(model_class):
+    # iterate indexed models extending the root model that have a dedicated IndexManager
+    extended_model_classes = {}
+    for indexed_model in get_indexed_models():
+        if (
+            indexed_model != model_class
+            and model_class in inspect.getmro(indexed_model)
+            and indexed_model.has_indexmanager_direct_inner_class()
+        ):
+            extended_model_classes[model_contenttype(indexed_model)] = indexed_model
+    return extended_model_classes
+
+def model_contenttype(model_class):
+    return f"{model_class._meta.app_label}.{model_class.__name__}"

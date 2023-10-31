@@ -261,11 +261,16 @@ class FilteredSearchQueryCompiler(ExtendedSearchQueryCompiler):
         }
 
     def _process_lookup(self, field, lookup, value):
+        if type(field) == str:
+            column_name = field
+        else:
+            column_name = self.mapping.get_field_column_name(field)
+
         if lookup == "contains":
-            return {"match": {field: value}}
+            return {"match": {column_name: value}}
 
         if lookup == "excludes":
-            return {"bool": {"mustNot": {"terms": {field: value}}}}
+            return {"bool": {"mustNot": {"terms": {column_name: value}}}}
 
         return super()._process_lookup(field, lookup, value)
 
@@ -285,8 +290,11 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
         match_query = super()._compile_fuzzy_query(query, fields)
 
         if boost != 1.0:
-            for field in fields:
-                match_query["match"][field.field_name]["boost"] = boost
+            if "multi_match" in match_query:
+                match_query["multi_match"]["boost"] = boost
+            else:
+                for field in fields:
+                    match_query["match"][field.field_name]["boost"] = boost
 
         return match_query
 
