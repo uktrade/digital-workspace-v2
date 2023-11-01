@@ -163,12 +163,6 @@ class NewsPage(PageWithTopics):
     class IndexManager(ModelIndexManager):
         fields = [
             IndexedField(
-                "search_title",
-                tokenized=True,
-                fuzzy=True,
-                boost=0.5,
-            ),
-            IndexedField(
                 "search_categories",
                 autocomplete=True,
                 tokenized=True,
