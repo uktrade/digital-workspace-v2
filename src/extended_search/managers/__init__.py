@@ -51,15 +51,15 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     extended_models = get_extended_models_with_indexmanager(model_class)
     # build full query for each extended model
     queries = []
-    for sub_model_class in extended_models.values():
+    for sub_model_contenttype, sub_model_class in extended_models.items():
         # filter so it only applies to "docs with that model anywhere in the contenttypes list"
         query = Filtered(
-            get_query_for_model(sub_model_class, query_str),
+            subquery=get_query_for_model(sub_model_class, query_str),
             filters=[
                 (
                     "content_type",
                     "contains",
-                    model_contenttype(sub_model_class),
+                    sub_model_contenttype,
                 ),
             ],
         )
@@ -67,9 +67,8 @@ def get_search_query(model_class, query_str, *args, **kwargs):
 
     # build query for root model passed in to method, filter to exclude docs with contenttypes
     # matching any of the extended-models-with-dedicated-IM
-    root_query = get_query_for_model(model_class, query_str)
     root_query = Filtered(
-        root_query,
+        subquery=get_query_for_model(model_class, query_str),
         filters=[
             (
                 "content_type",
@@ -83,6 +82,7 @@ def get_search_query(model_class, query_str, *args, **kwargs):
         root_query |= q
     return root_query
 
+
 def get_extended_models_with_indexmanager(model_class):
     # iterate indexed models extending the root model that have a dedicated IndexManager
     extended_model_classes = {}
@@ -92,8 +92,7 @@ def get_extended_models_with_indexmanager(model_class):
             and model_class in inspect.getmro(indexed_model)
             and indexed_model.has_indexmanager_direct_inner_class()
         ):
-            extended_model_classes[model_contenttype(indexed_model)] = indexed_model
+            extended_model_classes[
+                f"{indexed_model._meta.app_label}.{indexed_model.__name__}"
+            ] = indexed_model
     return extended_model_classes
-
-def model_contenttype(model_class):
-    return f"{model_class._meta.app_label}.{model_class.__name__}"

@@ -274,7 +274,7 @@ class TestFilteredSearchQueryCompiler:
         mock_parent = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._process_lookup"
         )
-        mock_column_name = mocker.patch(
+        mocker.patch(
             "extended_search.backends.backend.Elasticsearch7Mapping.get_field_column_name",
             return_value="foobar",
         )

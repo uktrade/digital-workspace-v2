@@ -1,11 +1,16 @@
 import pytest
 
+from unittest.mock import call
+
+from wagtail.search.query import PlainText, Or
+
 from content.models import ContentPage
+from extended_search.backends.query import Filtered
 from extended_search.managers import (
     get_indexed_field_name,
     get_query_for_model,
     get_extended_models_with_indexmanager,
-    model_contenttype,
+    get_search_query,
 )
 from extended_search.models import Setting
 from extended_search.settings import extended_search_settings
@@ -51,47 +56,70 @@ class TestManagersInit:
         mock_q.assert_called_once_with("query", ContentPage, "--one--")
 
     def test_get_extended_models_with_indexmanager(self, mocker):
-        class Base(mocker.Mock):
-            ...
-        class Extended(Base):
-            ...
-
-        mocker.patch(
-            "wagtail.search.index.get_indexed_models",
-            return_value=[Base],
+        base_model_class = mocker.Mock()
+        extended_model_class = mocker.Mock()
+        extended_model_class.__name__ = "extendedModel"
+        extended_model_class._meta.app_label = "mock.extended"
+        extended_model_class.has_indexmanager_direct_inner_class.return_value = False
+        mock_get_models = mocker.patch(
+            "extended_search.managers.get_indexed_models",
+            return_value=[base_model_class],
         )
         mock_mro = mocker.patch(
-            "inspect.getmro",
-            return_value=[],
+            "extended_search.managers.inspect.getmro",
+            return_value=[extended_model_class],
         )
-        Base.has_indexmanager_direct_inner_class.return_value = False
-        assert get_extended_models_with_indexmanager(Base) == {}
+        assert get_extended_models_with_indexmanager(base_model_class) == {}
 
-        Base.has_indexmanager_direct_inner_class.return_value = True
-        mock_mro.return_value = [Extended, Base]
-        assert get_extended_models_with_indexmanager(Base) == {'mock.extended': Extended}
+        mock_get_models.return_value = [
+            base_model_class,
+            extended_model_class,
+        ]
+        assert get_extended_models_with_indexmanager(base_model_class) == {}
 
-    def test_model_contenttype(self, mocker):
-        mock_class = mocker.Mock()
-        mock_class._meta.app_label = "foo"
-        mock_class.__name__ = "bar"
-        assert model_contenttype(mock_class) == "foo.bar"
+        extended_model_class.has_indexmanager_direct_inner_class.return_value = True
+        assert get_extended_models_with_indexmanager(base_model_class) == {}
+
+        mock_mro.return_value = [extended_model_class, base_model_class]
+        assert get_extended_models_with_indexmanager(base_model_class) == {
+            "mock.extended.extendedModel": extended_model_class
+        }
 
     def test_get_search_query(self, mocker):
-        mocker.patch(
-            "wagtail.search.index.get_indexed_models",
-            return_value=[],
-        )
-        mocker.patch(
-            "extended_search.managers.get_query_for_model",
-            return_value=[],
-        )
-        mocker.patch(
-            "extended_search.managers.model_contenttype",
-            return_value=[],
-        )
-        mocker.patch(
+        model_class = mocker.Mock()
+        extended_model_class = mocker.Mock()
+        query = "foo"  # PlainText("foo")
+        mock_get_extended_models = mocker.patch(
             "extended_search.managers.get_extended_models_with_indexmanager",
-            return_value=[],
+            return_value={"mock.extended_model": extended_model_class},
         )
-        raise AssertionError()
+        mock_get_query = mocker.patch(
+            "extended_search.managers.get_query_for_model",
+            return_value=PlainText("foo"),
+        )
+        result = get_search_query(model_class, query)
+        mock_get_extended_models.assert_called_once_with(model_class)
+        mock_get_query.assert_has_calls(
+            [
+                call(extended_model_class, query),
+                call(model_class, query),
+            ]
+        )
+        assert repr(result) == repr(
+            Or(
+                [
+                    Filtered(
+                        subquery=PlainText("foo"),
+                        filters=[
+                            ("content_type", "excludes", ["mock.extended_model"]),
+                        ],
+                    ),
+                    Filtered(
+                        subquery=PlainText("foo"),
+                        filters=[
+                            ("content_type", "contains", "mock.extended_model"),
+                        ],
+                    ),
+                ]
+            )
+        )
