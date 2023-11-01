@@ -523,10 +523,13 @@ class ProfileActivateAction(
         self.person.save()
 
 
-class ProfileUpdateUserView(SuccessMessageMixin, HtmxFormView):
+class ProfileUpdateUserView(UserPassesTestMixin, SuccessMessageMixin, HtmxFormView):
     template_name = "peoplefinder/components/update-user-form.html"
     form_class = ProfileUpdateUserForm
     success_message = "User has been updated"
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)

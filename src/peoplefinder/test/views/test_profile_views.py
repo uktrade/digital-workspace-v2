@@ -800,6 +800,13 @@ class TestProfileUpdateUserView:
         )
 
     def test_swap_user(self, normal_user, state):
+        PersonService.update_groups_and_permissions(
+            person=state.person,
+            is_person_admin=False,
+            is_team_admin=False,
+            is_superuser=True,
+        )
+
         john = normal_user
         john_profile = john.profile
         jane = state.user
