@@ -40,7 +40,7 @@ django-log-formatter-ecs==0.0.5 ; python_version >= "3.11" and python_version < 
 django-modelcluster==6.1 ; python_version >= "3.11" and python_version < "4.0"
 django-permissionedforms==0.1 ; python_version >= "3.11" and python_version < "4.0"
 django-settings-export==1.2.1 ; python_version >= "3.11" and python_version < "4.0"
-django-simple-history==3.4.0 ; python_version >= "3.11" and python_version < "4.0"
+django-simple-history @ git+https://github.com/uktrade/django-simple-history.git@29108a5 ; python_version >= "3.11" and python_version < "4.0"
 django-staff-sso-client==4.2.1 ; python_version >= "3.11" and python_version < "4.0"
 django-storages==1.14.2 ; python_version >= "3.11" and python_version < "4.0"
 django-taggit==3.1.0 ; python_version >= "3.11" and python_version < "4.0"

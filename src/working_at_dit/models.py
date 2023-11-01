@@ -36,14 +36,14 @@ class Topic(ContentOwnerMixin, ContentPage):
         context = super().get_context(request, *args, **kwargs)
 
         context["related_news"] = PageTopic.objects.filter(
-            topic=self.contentpage, page__content_type__app_label="news"
+            topic=self, page__content_type__app_label="news"
         ).order_by("-page__last_published_at")[:5]
 
         context["policies_and_guidance"] = (
             ContentPage.objects.public()
             .live()
             .filter(
-                topics__topic=self.contentpage,
+                topics__topic=self,
                 content_type__app_label="working_at_dit",
             )
             .filter(Q(content_type__model="policy") | Q(content_type__model="guidance"))
@@ -51,13 +51,13 @@ class Topic(ContentOwnerMixin, ContentPage):
         )
 
         tools = PageTopic.objects.filter(
-            topic=self.contentpage, page__content_type__app_label="tools"
+            topic=self, page__content_type__app_label="tools"
         ).order_by("page__last_published_at")
 
         context["tools"] = tools
 
         how_do_is = PageTopic.objects.filter(
-            topic=self.contentpage,
+            topic=self,
             page__content_type__app_label="working_at_dit",
             page__content_type__model="howdoi",
             page__live=True,
