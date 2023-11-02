@@ -56,6 +56,17 @@ class TeamForm(forms.ModelForm):
 
         return list(map(int, leaders_positions.split(",")))
 
+    def clean_description(self):
+        # Some really dumb validation to prevent XSS with 'javascript:' urls
+        description = self.cleaned_data["description"]
+        if "javascript:" in description:
+            raise forms.ValidationError(
+                "You cannot use 'javascript:' in the description"
+            )
+        if "data:" in description:
+            raise forms.ValidationError("You cannot use 'data:' in the description")
+        return description
+
     def clean(self):
         cleaned_data = super().clean()
 

@@ -38,7 +38,7 @@ elasticsearch = "<7.14.0"         # highest version for OpenSearch support
 elasticsearch-dsl = "^7.4.0"
 django-elasticsearch-dsl = "^7.3"
 # Peoplefinder
-markdown = "^3.4.3"
+markdown = "^3.5.1"
 requests-hawk = "^1.1.1"
 # Operational
 waitress = "^2.1.2"
