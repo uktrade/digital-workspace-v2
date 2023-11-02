@@ -4,7 +4,6 @@ from django.conf import settings
 
 from wagtail.search.backends import get_search_backend
 from wagtail.search.index import AutocompleteField, SearchField
-from wagtail.search.query import Or
 
 from content.models import ContentPage
 from extended_search.backends.query import Filtered
@@ -170,7 +169,7 @@ class TestPerModelFieldOverrides:
     @pytest.mark.django_db
     @pytest.mark.xfail
     def test_subclass_settings_overrides_work_only_on_subclass(self):
-        content_mapping = self.update_and_get_mapping_from_model_fields(
+        self.update_and_get_mapping_from_model_fields(
             ContentPage,
             [
                 IndexedField(
@@ -180,7 +179,7 @@ class TestPerModelFieldOverrides:
                 ),
             ],
         )
-        news_mapping = self.update_and_get_mapping_from_model_fields(
+        self.update_and_get_mapping_from_model_fields(
             NewsPage,
             [
                 IndexedField(
