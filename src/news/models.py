@@ -1,21 +1,20 @@
 from datetime import datetime
 
+from content.models import BasePage, ContentPage
+from core.utils import set_seen_cookie_banner
 from django.contrib.auth import get_user_model
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
 from django.template.response import TemplateResponse
 from django.utils.text import slugify
+from extended_search.fields import IndexedField
+from extended_search.managers.index import ModelIndexManager
 from modelcluster.fields import ParentalKey
+from news.forms import CommentForm
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.snippets.models import register_snippet
-
-from content.models import BasePage, ContentPage
-from core.utils import set_seen_cookie_banner
-from extended_search.fields import IndexedField
-from extended_search.managers.index import ModelIndexManager
-from news.forms import CommentForm
 from working_at_dit.models import PageWithTopics
 
 
@@ -52,16 +51,6 @@ class Comment(models.Model):
     ]
 
 
-class NewsCategoryIndexManager(ModelIndexManager):
-    fields = [
-        IndexedField(
-            "category",
-            tokenized=True,
-            explicit=True,
-        ),
-    ]
-
-
 @register_snippet
 class NewsCategory(models.Model):
     class Meta:
@@ -85,7 +74,16 @@ class NewsCategory(models.Model):
     )
     history = history = HistoricalRecords()
 
-    search_fields = ContentPage.search_fields + NewsCategoryIndexManager()
+    class IndexManager(ModelIndexManager):
+        fields = [
+            IndexedField(
+                "category",
+                tokenized=True,
+                explicit=True,
+            ),
+        ]
+
+    search_fields = ContentPage.search_fields + IndexManager()
 
     def __str__(self):
         return self.category

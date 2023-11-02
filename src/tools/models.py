@@ -5,8 +5,8 @@ from django.shortcuts import redirect
 from wagtail.admin.panels import FieldPanel
 
 from content.models import ContentPage
-from extended_search.managers.index import ModelIndexManager
 from extended_search.fields import IndexedField
+from extended_search.managers.index import ModelIndexManager
 from working_at_dit.models import PageWithTopics
 
 
