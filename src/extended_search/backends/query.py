@@ -37,3 +37,43 @@ class OnlyFields(SearchQuery):
             repr(self.subquery),
             ", ".join([f"'{f}'" for f in self.fields]),
         )
+
+
+class FunctionScore(SearchQuery):
+    remapped_fields = None
+
+    def __init__(
+        self,
+        subquery: SearchQuery,
+        field: str,
+        function_name: str,
+        function_params: list[tuple],
+    ):
+        if not isinstance(subquery, SearchQuery):
+            raise TypeError("The `subquery` parameter must be of type SearchQuery")
+
+        if not isinstance(field, str):
+            raise TypeError("The `field` parameter must be a string")
+
+        if not isinstance(function_name, str):
+            raise TypeError("The `function_name` parameter must be a string")
+
+        if (
+            not isinstance(function_params, list)
+            or not isinstance(function_params[0], tuple)
+            or not len(function_params[0]) == 2
+        ):
+            raise TypeError("The `function` parameter must be a list of 2-tuples")
+
+        self.subquery = subquery
+        self.field = field
+        self.function_name = function_name
+        self.function_params = function_params
+
+    def __repr__(self):
+        return "<FunctionScore {} field='{}' function_name='{}' function_params='{}'>".format(
+            repr(self.subquery),
+            self.field,
+            self.function_name,
+            self.function_params,
+        )

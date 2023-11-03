@@ -8,7 +8,7 @@ from wagtail.search.backends.elasticsearch7 import (
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
-from extended_search.backends.query import Nested, OnlyFields
+from extended_search.backends.query import Nested, OnlyFields, FunctionScore
 from extended_search.index import RelatedFields
 
 
@@ -231,6 +231,24 @@ class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
         }
 
 
+class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
+    def _compile_query(self, query, field, boost=1.0):
+        if isinstance(query, FunctionScore):
+            return self._compile_function_score_query(query, [field], boost)
+        return super()._compile_query(query, field, boost)
+
+    def _compile_function_score_query(self, query, fields, boost=1.0):
+        params = {param[0]: param[1] for param in query.function_params}
+        return {
+            "function_score": {
+                "query": self._join_and_compile_queries(query.subquery, fields, boost),
+                query.function_name: {
+                    query.field: params
+                }
+            }
+        }
+
+
 class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def _compile_query(self, query, field, boost=1.0):
         if isinstance(query, Fuzzy):
@@ -275,6 +293,7 @@ class CustomSearchQueryCompiler(
     BoostSearchQueryCompiler,
     NestedSearchQueryCompiler,
     OnlyFieldSearchQueryCompiler,
+    FunctionScoreSearchQueryCompiler,
 ):
     ...
 
