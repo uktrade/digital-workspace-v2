@@ -261,6 +261,7 @@ class FilteredSearchQueryCompiler(ExtendedSearchQueryCompiler):
         }
 
     def _process_lookup(self, field, lookup, value):
+        # @TODO not pretty given get_field_column_name is already overridden
         if type(field) == str:
             column_name = field
         else:

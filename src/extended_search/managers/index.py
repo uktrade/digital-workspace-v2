@@ -98,11 +98,10 @@ class ModelIndexManager(NestedQueryBuilder):
 
     @classmethod
     def get_search_fields(cls):
-        cls.generated_fields = []
-
-        for field_mapping in cls.get_mapping():
-            cls.generated_fields += cls._get_search_fields_from_mapping(field_mapping)
-
+        cls.generated_fields = [
+            cls._get_search_fields_from_mapping(field_mapping)
+            for field_mapping in cls.get_mapping()
+        ]
         return cls.generated_fields
 
     @classmethod
