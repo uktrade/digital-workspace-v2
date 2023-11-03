@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
-from extended_search.backends.query import Nested, OnlyFields
+from extended_search.backends.query import Nested, OnlyFields, FunctionScore
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
 
@@ -138,6 +138,7 @@ class QueryBuilder:
 
     @classmethod
     def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
+        print(">>", field_mapping)
         subquery = None
 
         if "search" in field_mapping:
@@ -155,6 +156,21 @@ class QueryBuilder:
                             field_mapping,
                         )
                     )
+                    if query_element is not None and "function_score" in field_mapping:
+                        params = [
+                            (k, v)
+                            for k, v in field_mapping["function_score"][
+                                "function_params"
+                            ].items()
+                        ]
+                        query_element = FunctionScore(
+                            query_element,
+                            field=f"{query_element.fields[0]}_keyword",
+                            function_name=field_mapping["function_score"][
+                                "function_name"
+                            ],
+                            function_params=params,
+                        )
                     subquery = cls._combine_queries(
                         subquery,
                         query_element,

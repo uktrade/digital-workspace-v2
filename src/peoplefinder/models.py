@@ -674,12 +674,19 @@ class Person(Indexed, models.Model):
             ),
             IndexedField(
                 "has_photo",
-                proximity=True,
+                # proximity=True,  @TODO can't work with booleans, need another approach
                 boost=1.5,
             ),
             IndexedField(
                 "profile_completion",
-                proximity=True,
+                function_score={
+                    "function_name": "gauss",
+                    "function_params": {
+                        "scale": 0,
+                        "origin": 100,
+                        "decay": 0.5,
+                    }
+                },
                 boost=2.0,
             ),
             IndexedField(

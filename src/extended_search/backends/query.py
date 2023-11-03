@@ -84,7 +84,7 @@ class FunctionScore(SearchQuery):
             or not isinstance(function_params[0], tuple)
             or not len(function_params[0]) == 2
         ):
-            raise TypeError("The `function` parameter must be a list of 2-tuples")
+            raise TypeError("The `function_params` parameter must be a list of 2-tuples")
 
         self.subquery = subquery
         self.field = field
