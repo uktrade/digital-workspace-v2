@@ -3,13 +3,21 @@ from typing import Any, List, Union
 from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
+    Elasticsearch7Mapping,
     Elasticsearch7SearchQueryCompiler,
 )
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
-from extended_search.backends.query import Nested, OnlyFields, FunctionScore
+from extended_search.backends.query import Nested, OnlyFields, Filtered, FunctionScore
 from extended_search.index import RelatedFields
+
+
+class FilteredSearchMapping(Elasticsearch7Mapping):
+    def get_field_column_name(self, field):
+        if type(field) == str and field == "content_type":
+            return "content_type"
+        return super().get_field_column_name(field)
 
 
 class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
@@ -231,6 +239,43 @@ class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
         }
 
 
+class FilteredSearchQueryCompiler(ExtendedSearchQueryCompiler):
+    def _compile_query(self, query, field, boost=1.0):
+        if isinstance(query, Filtered):
+            return self._compile_filtered_query(query, [field], boost)
+        return super()._compile_query(query, field, boost)
+
+    def _compile_filtered_query(self, query, fields, boost=1.0):
+        """
+        Add OS DSL elements to support Filtered fields
+        """
+        compiled_filters = [self._process_lookup(*f) for f in query.filters]
+        if len(compiled_filters) == 1:
+            compiled_filters = compiled_filters[0]
+
+        return {
+            "bool": {
+                "must": self._join_and_compile_queries(query.subquery, fields, boost),
+                "filter": compiled_filters,
+            }
+        }
+
+    def _process_lookup(self, field, lookup, value):
+        # @TODO not pretty given get_field_column_name is already overridden
+        if type(field) == str:
+            column_name = field
+        else:
+            column_name = self.mapping.get_field_column_name(field)
+
+        if lookup == "contains":
+            return {"match": {column_name: value}}
+
+        if lookup == "excludes":
+            return {"bool": {"mustNot": {"terms": {column_name: value}}}}
+
+        return super()._process_lookup(field, lookup, value)
+
+
 class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def _compile_query(self, query, field, boost=1.0):
         if isinstance(query, FunctionScore):
@@ -264,8 +309,11 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
         match_query = super()._compile_fuzzy_query(query, fields)
 
         if boost != 1.0:
-            for field in fields:
-                match_query["match"][field.field_name]["boost"] = boost
+            if "multi_match" in match_query:
+                match_query["multi_match"]["boost"] = boost
+            else:
+                for field in fields:
+                    match_query["match"][field.field_name]["boost"] = boost
 
         return match_query
 
@@ -291,6 +339,7 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
 class CustomSearchQueryCompiler(
     BoostSearchQueryCompiler,
+    FilteredSearchQueryCompiler,
     NestedSearchQueryCompiler,
     OnlyFieldSearchQueryCompiler,
     FunctionScoreSearchQueryCompiler,
@@ -300,6 +349,7 @@ class CustomSearchQueryCompiler(
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = CustomSearchQueryCompiler
+    mapping_class = FilteredSearchMapping
 
 
 SearchBackend = CustomSearchBackend
