@@ -672,11 +672,17 @@ class Person(Indexed, models.Model):
                 explicit=True,
                 boost=2.0,
             ),
-            IndexedField(
-                "has_photo",
-                # proximity=True,  @TODO can't work with booleans, need another approach
-                boost=1.5,
-            ),
+            # IndexedField(
+            #     "has_photo",
+            #     function_score={
+            #         "function_name": "gauss",
+            #         "function_params": {
+            #             "scale": 0.1,
+            #             "origin": 1,
+            #             "decay": 0.3,
+            #         },
+            #     },
+            # ),
             IndexedField(
                 "profile_completion",
                 function_score={
@@ -684,8 +690,8 @@ class Person(Indexed, models.Model):
                     "function_params": {
                         "scale": 50,
                         "origin": 100,
-                        "decay": 0.5,
-                    }
+                        "decay": 0.3,
+                    },
                 },
             ),
             IndexedField(
@@ -752,9 +758,11 @@ class Person(Indexed, models.Model):
             filter(None, [self.fluent_languages, self.intermediate_languages])
         )
 
-    @property
-    def has_photo(self) -> bool:
-        return bool(self.photo)
+    # @property
+    # def has_photo(self) -> int:
+    #     if bool(self.photo):
+    #         return 1
+    #     return 0
 
     @property
     def search_teams(self):

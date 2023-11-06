@@ -45,6 +45,17 @@ class FunctionScoreSearchMapping(Elasticsearch7Mapping):
 
         return super().get_field_column_name(field)
 
+    # def get_field_mapping(self, field):
+    #     column_name, mapping = super().get_field_mapping(field)
+
+    #     if (
+    #         isinstance(field, FunctionBasisField)
+    #         and self.type_map.get(field.get_type(self.model), None) is None
+    #     ):
+    #         mapping["type"] = "integer"
+
+    #     return column_name, mapping
+
 
 class CustomSearchMapping(
     FunctionScoreSearchMapping,
