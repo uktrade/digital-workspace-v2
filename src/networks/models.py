@@ -109,16 +109,18 @@ class Network(ContentOwnerMixin, ContentPage):
     def search_topics(self):
         return " ".join(self.topics.all().values_list("topic__title", flat=True))
 
-    class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "search_topics",
-                tokenized=True,
-                explicit=True,
-            ),
-        ]
-
-    search_fields = ContentPage.search_fields + IndexManager()
+    class IndexManager(ContentPage.IndexManager):
+        @classmethod
+        def get_index_fields(cls):
+            index_fields = super().get_index_fields()
+            index_fields.update(
+                search_topics=IndexedField(
+                    "search_topics",
+                    tokenized=True,
+                    explicit=True,
+                ),
+            )
+            return index_fields
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

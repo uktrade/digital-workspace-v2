@@ -5,11 +5,12 @@ import logging
 from django.core import checks
 from wagtail.search import index
 
-
 logger = logging.getLogger(__name__)
 
 
 class Indexed(index.Indexed):
+    search_fields = []
+
     @classmethod
     def has_indexmanager_direct_inner_class(cls):
         for attr in cls.__dict__.values():
@@ -38,7 +39,9 @@ class Indexed(index.Indexed):
                 )
         return errors
 
-    search_fields = []
+    @classmethod
+    def get_search_fields(cls):
+        return cls.search_fields
 
 
 class RenamedFieldMixin:

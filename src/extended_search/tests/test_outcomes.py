@@ -1,21 +1,19 @@
 # Integration / functional output tests
 import pytest
 from django.conf import settings
-
 from wagtail.search.backends import get_search_backend
 from wagtail.search.index import AutocompleteField, SearchField
 
 from content.models import ContentPage
 from extended_search.backends.query import Filtered
 from extended_search.fields import IndexedField
-from extended_search.models import Setting
 from extended_search.managers import (
-    get_search_query,
     get_extended_models_with_indexmanager,
+    get_search_query,
 )
+from extended_search.models import Setting
 from extended_search.settings import SearchSettings, extended_search_settings
 from news.models import NewsPage
-
 
 existing_cp_fields = ContentPage.IndexManager.fields
 existing_cp_search_fields = ContentPage.search_fields
@@ -23,18 +21,35 @@ existing_np_fields = NewsPage.IndexManager.fields
 existing_np_search_fields = NewsPage.search_fields
 
 
+class TestNewsIndexManager(NewsPage.IndexManager):
+    @classmethod
+    def get_index_fields(cls):
+        index_fields = super().get_index_fields()
+        index_fields.update(
+            search_title=IndexedField(
+                "search_title",
+                search=True,
+                boost=10.0,
+            ),
+        )
+        return index_fields
+
+
 class TestPerModelFieldOverrides:
     def update_and_get_mapping_from_model_fields(
-        self, model_class, fields, base_fields=None
+        self, model_class, fields, base_fields=None, test_manager=None
     ):
         if base_fields is None:
             base_fields = []
+        if test_manager is None:
+            test_manager = model_class.IndexManager
 
         backend_name = settings.WAGTAILSEARCH_BACKENDS["default"]["BACKEND"]
         backend = get_search_backend(backend_name)
 
-        model_class.IndexManager.fields = fields
-        model_class.search_fields = base_fields + model_class.IndexManager()
+        test_manager.fields = fields
+        model_class.IndexManager = test_manager
+        model_class.search_fields = base_fields
         index = backend.get_index_for_model(model_class)
         mapping_cls = index.mapping_class(model_class)
         return mapping_cls.get_mapping()
@@ -150,14 +165,20 @@ class TestPerModelFieldOverrides:
         )
         news_mapping = self.update_and_get_mapping_from_model_fields(
             NewsPage,
-            [
-                IndexedField(
-                    "search_title",
-                    search=True,
-                    boost=10.0,
-                ),
-            ],
+            [],
             ContentPage.search_fields,
+            TestNewsIndexManager,
+        )
+
+        print(
+            list(
+                b
+                for b in content_mapping["properties"].keys()
+                if "_all_text_boost" in b
+            )
+        )
+        print(
+            list(b for b in news_mapping["properties"].keys() if "_all_text_boost" in b)
         )
 
         # @TODO hopefully we can get a better boost indicator
@@ -220,9 +241,9 @@ class TestPerModelFieldOverrides:
     @pytest.mark.django_db
     def test_generated_search_applies_baseclass_and_subclass_filters(self):
         ContentPage.IndexManager.fields = existing_cp_fields
-        ContentPage.search_fields = existing_cp_search_fields
+        ContentPage.search_fields = ContentPage.IndexManager(existing_cp_search_fields)
         NewsPage.IndexManager.fields = existing_np_fields
-        NewsPage.search_fields = existing_np_search_fields
+        NewsPage.search_fields = NewsPage.IndexManager(existing_np_search_fields)
 
         query = get_search_query(ContentPage, "foo")
         extended_models = get_extended_models_with_indexmanager(ContentPage)

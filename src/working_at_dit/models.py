@@ -1,12 +1,13 @@
 from itertools import groupby
 
-from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
 from django.db import models
 from django.db.models import Q
-from extended_search.fields import IndexedField
-from extended_search.managers.index import ModelIndexManager
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel
+
+from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
+from extended_search.fields import IndexedField
+from extended_search.managers.index import ModelIndexManager
 
 
 class WorkingAtDITHome(ContentPage):
@@ -122,13 +123,17 @@ class PageTopic(models.Model):
     ]
 
     class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "topic",
-                tokenized=True,
-                explicit=True,
-            ),
-        ]
+        @classmethod
+        def get_index_fields(cls):
+            index_fields = super().get_index_fields()
+            index_fields.update(
+                topic=IndexedField(
+                    "topic",
+                    tokenized=True,
+                    explicit=True,
+                ),
+            )
+            return index_fields
 
     search_fields = IndexManager()
 
@@ -141,16 +146,18 @@ class PageWithTopics(ContentPage):
     def search_topics(self):
         return " ".join(self.topics.all().values_list("topic__title", flat=True))
 
-    class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "search_topics",
-                tokenized=True,
-                explicit=True,
-            ),
-        ]
-
-    search_fields = ContentPage.search_fields + IndexManager()
+    class IndexManager(ContentPage.IndexManager):
+        @classmethod
+        def get_index_fields(cls):
+            index_fields = super().get_index_fields()
+            index_fields.update(
+                search_topics=IndexedField(
+                    "search_topics",
+                    tokenized=True,
+                    explicit=True,
+                ),
+            )
+            return index_fields
 
     content_panels = ContentPage.content_panels + [
         InlinePanel("topics", label="Topics"),

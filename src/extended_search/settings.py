@@ -1,18 +1,16 @@
+import os
 from collections import ChainMap
 from collections.abc import Mapping
-import environ
-from psycopg2.errors import UndefinedTable
-import os
 
+import environ
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.utils import ProgrammingError
-
-from wagtail.search.index import get_indexed_models, SearchField
+from psycopg2.errors import UndefinedTable
+from wagtail.search.index import SearchField, get_indexed_models
 
 from extended_search import models
 from extended_search.index import RelatedFields
-
 
 env_file_path = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
@@ -214,7 +212,7 @@ class SearchSettings(NestedChainMap):
     def _get_all_indexed_fields(self):
         fields = {}
         for model_cls in get_indexed_models():
-            for search_field in model_cls.search_fields:
+            for search_field in model_cls.get_search_fields():
                 if isinstance(search_field, SearchField) or isinstance(
                     search_field, RelatedFields
                 ):

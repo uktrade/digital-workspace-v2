@@ -91,20 +91,22 @@ class Tool(PageWithTopics):
         max_length=2048,
     )
 
-    class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "search_tool_name",
-                fuzzy=True,
-                tokenized=True,
-                explicit=True,
-                autocomplete=True,
-                keyword=True,
-                boost=10.0,
-            ),
-        ]
-
-    search_fields = PageWithTopics.search_fields + IndexManager()
+    class IndexManager(PageWithTopics.IndexManager):
+        @classmethod
+        def get_index_fields(cls):
+            index_fields = super().get_index_fields()
+            index_fields.update(
+                search_tool_name=IndexedField(
+                    "search_tool_name",
+                    fuzzy=True,
+                    tokenized=True,
+                    explicit=True,
+                    autocomplete=True,
+                    keyword=True,
+                    boost=10.0,
+                ),
+            )
+            return index_fields
 
     @property
     def search_tool_name(self):

@@ -1,7 +1,9 @@
 import logging
+from typing import Dict, List, Optional
 
-from wagtail.search.index import FilterField
+from wagtail.search.index import BaseField, FilterField
 
+from extended_search.fields import IndexedField
 from extended_search.index import AutocompleteField, RelatedFields, SearchField
 from extended_search.managers import get_indexed_field_name
 from extended_search.managers.query_builder import NestedQueryBuilder
@@ -12,10 +14,18 @@ logger = logging.getLogger(__name__)
 
 
 class ModelIndexManager(NestedQueryBuilder):
-    fields = []
+    fields: List[IndexedField] = []
+    search_fields: List[BaseField] = []
 
-    def __new__(cls):
+    def __new__(cls, search_fields: Optional[list] = None):
+        if search_fields:
+            cls.search_fields = search_fields
         return cls.get_search_fields()
+
+    @classmethod
+    def get_index_fields(cls) -> Dict[str, IndexedField]:
+        index_fields = {field.name: field for field in cls.fields}
+        return index_fields
 
     @classmethod
     def _get_analyzer_name(cls, analyzer_type):
@@ -89,7 +99,7 @@ class ModelIndexManager(NestedQueryBuilder):
     @classmethod
     def get_mapping(cls):
         mapping = []
-        for field in cls.fields:
+        for _, field in cls.get_index_fields().items():
             mapping += [
                 field.mapping,
             ]
@@ -99,8 +109,13 @@ class ModelIndexManager(NestedQueryBuilder):
     @classmethod
     def get_search_fields(cls):
         cls.generated_fields = []
+        generated_field_names = set()
         for field_mapping in cls.get_mapping():
             cls.generated_fields += cls._get_search_fields_from_mapping(field_mapping)
+            generated_field_names.add(field_mapping["name"])
+        for search_field in cls.search_fields:
+            if search_field.field_name not in generated_field_names:
+                cls.generated_fields += [search_field]
         return cls.generated_fields
 
     @classmethod
@@ -108,7 +123,9 @@ class ModelIndexManager(NestedQueryBuilder):
         if not cls.generated_fields or len(cls.generated_fields) == 0:
             cls.get_search_fields()
 
-        index_field_names = [f.model_field_name for f in cls.fields]
+        index_field_names = [
+            f.model_field_name for _, f in cls.get_index_fields().items()
+        ]
         return [
             field
             for field in cls.generated_fields
