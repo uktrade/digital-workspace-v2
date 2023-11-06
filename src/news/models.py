@@ -169,6 +169,16 @@ class NewsPage(PageWithTopics):
                 "pinned_on_home",
                 filter=True,
             ),
+            IndexedField(
+                "last_published_at",
+                function_score={
+                    "function_name": "gauss",
+                    "function_params": {
+                        "scale": "365d",
+                        "decay": 0.3,
+                    },
+                },
+            ),
         ]
 
     search_fields = PageWithTopics.search_fields + IndexManager()

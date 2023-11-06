@@ -687,7 +687,6 @@ class Person(Indexed, models.Model):
                         "decay": 0.5,
                     }
                 },
-                boost=2.0,
             ),
             IndexedField(
                 "is_active",
