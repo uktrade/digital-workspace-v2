@@ -682,7 +682,7 @@ class Person(Indexed, models.Model):
                 function_score={
                     "function_name": "gauss",
                     "function_params": {
-                        "scale": 0,
+                        "scale": 50,
                         "origin": 100,
                         "decay": 0.5,
                     }

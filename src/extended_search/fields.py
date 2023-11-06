@@ -50,9 +50,6 @@ class BaseIndexedField(AbstractBaseField):
         if fuzzy:
             self.search = True
 
-        if function_score:
-            self.search = True  # @TODO let's verify if we need this
-
     def _get_search_mapping_object(self):
         if not self.search:
             return {}
@@ -64,11 +61,6 @@ class BaseIndexedField(AbstractBaseField):
                 AnalysisType.TOKENIZED,
             ]
             mapping["fuzzy"] = []
-
-        if self.function_score:
-            mapping["search"] = [
-                AnalysisType.KEYWORD,
-            ]
 
         return mapping
 
@@ -84,6 +76,12 @@ class BaseIndexedField(AbstractBaseField):
 
         return {"filter": []}
 
+    def _get_function_score_mapping_object(self):
+        if not self.function_score:
+            return {}
+
+        return {"function_score": self.function_score}
+
     def get_mapping(self):
         mapping = super().get_mapping()
         if self.search:
@@ -93,7 +91,7 @@ class BaseIndexedField(AbstractBaseField):
         if self.filter:
             mapping = mapping | self._get_filter_mapping_object()
         if self.function_score:
-            mapping["function_score"] = self.function_score
+            mapping = mapping | self._get_function_score_mapping_object()
         return mapping
 
 

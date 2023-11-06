@@ -5,7 +5,6 @@ import logging
 from django.core import checks
 from wagtail.search import index
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -39,6 +38,12 @@ class Indexed(index.Indexed):
         return errors
 
     search_fields = []
+
+    @classmethod
+    def get_functionbasis_search_fields(cls):
+        return [
+            field for field in cls.get_search_fields() if isinstance(field, FunctionBasisField)
+        ]
 
 
 class RenamedFieldMixin:
@@ -124,3 +129,16 @@ class AutocompleteField(RenamedFieldMixin, index.AutocompleteField):
 
 class RelatedFields(RenamedFieldMixin, index.RelatedFields):
     ...
+
+
+class FunctionBasisField(index.BaseField):
+    SUPPORTED_FUNCTION_NAMES = ["gauss", "exp", "linear"]
+
+    def __init__(self, field_name, function_name, function_params, **kwargs):
+        super().__init__(field_name, **kwargs)
+
+        if function_name not in self.SUPPORTED_FUNCTION_NAMES:
+            raise AttributeError(f"Function {function_name} is not supported, expecting one of {', '.join(self.SUPPORTED_FUNCTION_NAMES)}")
+
+        self.function_name = function_name
+        self.function_params = function_params

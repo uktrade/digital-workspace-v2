@@ -2,7 +2,12 @@ import logging
 
 from wagtail.search.index import FilterField
 
-from extended_search.index import AutocompleteField, RelatedFields, SearchField
+from extended_search.index import (
+    AutocompleteField,
+    RelatedFields,
+    SearchField,
+    FunctionBasisField,
+)
 from extended_search.managers import get_indexed_field_name
 from extended_search.managers.query_builder import NestedQueryBuilder
 from extended_search.settings import extended_search_settings as search_settings
@@ -53,6 +58,16 @@ class ModelIndexManager(NestedQueryBuilder):
         ]
 
     @classmethod
+    def _get_function_basis_fields(cls, model_field_name, mapping):
+        return [
+            FunctionBasisField(
+                model_field_name,
+                function_name=mapping["function_name"],
+                function_params=[(param, value) for param, value in mapping["function_params"].items()],
+            ),
+        ]
+
+    @classmethod
     def _get_related_fields(cls, model_field_name, mapping):
         fields = []
         for related_field_mapping in mapping:
@@ -84,15 +99,26 @@ class ModelIndexManager(NestedQueryBuilder):
         if "filter" in field_mapping:
             fields += cls._get_filterable_search_fields(model_field_name)
 
+        if "function_score" in field_mapping:
+            fields += cls._get_function_basis_fields(
+                model_field_name, field_mapping["function_score"]
+            )
+
         return fields
 
     @classmethod
     def get_mapping(cls):
         mapping = []
+        function_fields = []
         for field in cls.fields:
-            mapping += [
-                field.mapping,
-            ]
+            if "function_score" in field.mapping:
+                function_fields += [field.mapping]
+            else:
+                mapping += [
+                    field.mapping,
+                ]
+        # function score fields always at the start of the list
+        mapping = function_fields + mapping
         logger.debug(mapping)
         return mapping
 

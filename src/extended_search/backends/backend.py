@@ -1,5 +1,6 @@
 from typing import Any, List, Union
 
+from wagtail.search.backends.elasticsearch5 import get_model_root
 from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7SearchBackend,
@@ -10,7 +11,7 @@ from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
 from extended_search.backends.query import Nested, OnlyFields, Filtered, FunctionScore
-from extended_search.index import RelatedFields
+from extended_search.index import RelatedFields, FunctionBasisField
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
@@ -20,6 +21,38 @@ class FilteredSearchMapping(Elasticsearch7Mapping):
         return super().get_field_column_name(field)
 
 
+class FunctionScoreSearchMapping(Elasticsearch7Mapping):
+    def get_field_column_name(self, field):
+        # Fields in derived models get prefixed with their model name, fields
+        # in the root model don't get prefixed at all
+        # This is to prevent mapping clashes in cases where two page types have
+        # a field with the same name but a different type.
+        root_model = get_model_root(self.model)
+        definition_model = field.get_definition_model(self.model)
+
+        if definition_model != root_model:
+            prefix = (
+                definition_model._meta.app_label.lower()
+                + "_"
+                + definition_model.__name__.lower()
+                + "__"
+            )
+        else:
+            prefix = ""
+
+        if isinstance(field, FunctionBasisField):
+            return prefix + field.get_attname(self.model) + "_functionscore"
+
+        return super().get_field_column_name(field)
+
+
+class CustomSearchMapping(
+    FunctionScoreSearchMapping,
+    FilteredSearchMapping,
+):
+    ...
+
+
 class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
     """
     Acting as a placeholder for upstream merges to Wagtail in a PR; this class
@@ -27,6 +60,8 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
     particular aspects to smaller methods to make it easier to override. In the
     PR maybe worth referencing https://github.com/wagtail/wagtail/issues/5422
     """
+
+    mapping_class = CustomSearchMapping
 
     def __init__(self, *args, **kwargs):
         """Remove this when we get wagtail PR 11018 merged & deployed"""
@@ -283,13 +318,17 @@ class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
         return super()._compile_query(query, field, boost)
 
     def _compile_function_score_query(self, query, fields, boost=1.0):
-        params = {param[0]: param[1] for param in query.function_params}
+        functionbasis_fields = {
+            f.field_name: f
+            for f in self.queryset.model.get_functionbasis_search_fields()
+        }
+        remapped_field_name = self.mapping.get_field_column_name(
+            functionbasis_fields[query.field]
+        )
         return {
             "function_score": {
                 "query": self._join_and_compile_queries(query.subquery, fields, boost),
-                query.function_name: {
-                    query.field: params
-                }
+                query.function_name: {remapped_field_name: query.function_params},
             }
         }
 
@@ -338,18 +377,18 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
 
 class CustomSearchQueryCompiler(
+    FunctionScoreSearchQueryCompiler,
     BoostSearchQueryCompiler,
     FilteredSearchQueryCompiler,
     NestedSearchQueryCompiler,
     OnlyFieldSearchQueryCompiler,
-    FunctionScoreSearchQueryCompiler,
 ):
     ...
 
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = CustomSearchQueryCompiler
-    mapping_class = FilteredSearchMapping
+    mapping_class = CustomSearchMapping
 
 
 SearchBackend = CustomSearchBackend

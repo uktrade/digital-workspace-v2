@@ -26,21 +26,6 @@ def get_indexed_field_name(
     return f"{model_field_name}{field_name_suffix}"
 
 
-def get_query_for_model(model_class, query_str) -> SearchQuery:
-    query = None
-    for field_mapping in model_class.IndexManager.get_mapping():
-        query_elements = model_class.IndexManager._get_search_query_from_mapping(
-            query_str, model_class, field_mapping
-        )
-        if query_elements is not None:
-            query = model_class.IndexManager._combine_queries(
-                query,
-                query_elements,
-            )
-    logger.debug(query)
-    return query
-
-
 def get_search_query(model_class, query_str, *args, **kwargs):
     """
     Generates a full query for a model class, by running query builder
@@ -54,7 +39,9 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     for sub_model_contenttype, sub_model_class in extended_models.items():
         # filter so it only applies to "docs with that model anywhere in the contenttypes list"
         query = Filtered(
-            subquery=get_query_for_model(sub_model_class, query_str),
+            subquery=sub_model_class.IndexManager.get_query_for_model(
+                sub_model_class, query_str
+            ),
             filters=[
                 (
                     "content_type",
@@ -68,7 +55,7 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     # build query for root model passed in to method, filter to exclude docs with contenttypes
     # matching any of the extended-models-with-dedicated-IM
     root_query = Filtered(
-        subquery=get_query_for_model(model_class, query_str),
+        subquery=model_class.IndexManager.get_query_for_model(model_class, query_str),
         filters=[
             (
                 "content_type",

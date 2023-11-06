@@ -68,7 +68,7 @@ class FunctionScore(SearchQuery):
         subquery: SearchQuery,
         field: str,
         function_name: str,
-        function_params: list[tuple],
+        function_params: dict,
     ):
         if not isinstance(subquery, SearchQuery):
             raise TypeError("The `subquery` parameter must be of type SearchQuery")
@@ -79,12 +79,8 @@ class FunctionScore(SearchQuery):
         if not isinstance(function_name, str):
             raise TypeError("The `function_name` parameter must be a string")
 
-        if (
-            not isinstance(function_params, list)
-            or not isinstance(function_params[0], tuple)
-            or not len(function_params[0]) == 2
-        ):
-            raise TypeError("The `function_params` parameter must be a list of 2-tuples")
+        if not isinstance(function_params, dict):
+            raise TypeError("The `function_params` parameter must be a dict")
 
         self.subquery = subquery
         self.field = field

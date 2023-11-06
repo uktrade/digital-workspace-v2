@@ -137,8 +137,16 @@ class QueryBuilder:
         return q1 or q2
 
     @classmethod
+    def _get_function_score_field_from_mapping(cls, query, field_mapping):
+        return FunctionScore(
+            subquery=query,
+            field=field_mapping["model_field_name"],
+            function_name=field_mapping["function_score"]["function_name"],
+            function_params=field_mapping["function_score"]["function_params"],
+        )
+
+    @classmethod
     def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
-        print(">>", field_mapping)
         subquery = None
 
         if "search" in field_mapping:
@@ -156,21 +164,6 @@ class QueryBuilder:
                             field_mapping,
                         )
                     )
-                    if query_element is not None and "function_score" in field_mapping:
-                        params = [
-                            (k, v)
-                            for k, v in field_mapping["function_score"][
-                                "function_params"
-                            ].items()
-                        ]
-                        query_element = FunctionScore(
-                            query_element,
-                            field=f"{query_element.fields[0]}_keyword",
-                            function_name=field_mapping["function_score"][
-                                "function_name"
-                            ],
-                            function_params=params,
-                        )
                     subquery = cls._combine_queries(
                         subquery,
                         query_element,
@@ -191,6 +184,31 @@ class QueryBuilder:
             )
 
         return subquery
+
+    @classmethod
+    def get_query_for_model(cls, model_class, query_str) -> SearchQuery:
+        query = None
+        function_fields = []
+        for field_mapping in model_class.IndexManager.get_mapping():
+            if "function_score" in field_mapping:
+                function_fields.append(field_mapping)
+            else:
+                query_elements = cls._get_search_query_from_mapping(
+                    query_str, model_class, field_mapping
+                )
+                if query_elements is not None:
+                    query = cls._combine_queries(
+                        query,
+                        query_elements,
+                    )
+        # wrap the whole model's query in the score function
+        for field_mapping in function_fields:
+            query = cls._get_function_score_field_from_mapping(
+                query,
+                field_mapping,
+            )
+        logger.debug(query)
+        return query
 
 
 class NestedQueryBuilder(QueryBuilder):
