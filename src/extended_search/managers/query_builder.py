@@ -6,6 +6,7 @@ from django.db import models
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
 from extended_search.backends.query import Nested, OnlyFields, FunctionScore
+from extended_search.managers import get_indexed_field_name
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
 
@@ -128,7 +129,8 @@ class QueryBuilder:
             analysis_type,
         )
 
-        return OnlyFields(Boost(query, boost), fields=[base_field_name])
+        field_name = get_indexed_field_name(base_field_name, analysis_type)
+        return OnlyFields(Boost(query, boost), fields=[field_name])
 
     @classmethod
     def _combine_queries(cls, q1: Optional[SearchQuery], q2: Optional[SearchQuery]):
