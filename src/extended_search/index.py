@@ -40,9 +40,15 @@ class Indexed(index.Indexed):
     search_fields = []
 
     @classmethod
-    def get_functionbasis_search_fields(cls):
+    def get_score_functions(cls):
+        if cls.has_indexmanager_direct_inner_class():
+            cls.IndexManager.get_search_fields()
+            return cls.IndexManager.score_functions
+
         return [
-            field for field in cls.get_search_fields() if isinstance(field, FunctionBasisField)
+            field
+            for field in cls.get_search_fields()
+            if isinstance(field, ScoreFunction)
         ]
 
 
@@ -131,14 +137,59 @@ class RelatedFields(RenamedFieldMixin, index.RelatedFields):
     ...
 
 
-class FunctionBasisField(index.BaseField):
-    SUPPORTED_FUNCTION_NAMES = ["gauss", "exp", "linear"]
+class ScoreFunction(index.BaseField):
+    SUPPORTED_FUNCTIONS = ["script_score", "gauss", "exp", "linear"]
 
-    def __init__(self, field_name, function_name, function_params, **kwargs):
-        super().__init__(field_name, **kwargs)
+    def __init__(self, function_name, **kwargs) -> None:
+        if function_name not in self.SUPPORTED_FUNCTIONS:
+            raise AttributeError(
+                f"Function {function_name} is not supported, expecting one of {', '.join(self.SUPPORTED_FUNCTIONS)}"
+            )
+        self.function_name = kwargs["function_name"] = function_name
 
-        if function_name not in self.SUPPORTED_FUNCTION_NAMES:
-            raise AttributeError(f"Function {function_name} is not supported, expecting one of {', '.join(self.SUPPORTED_FUNCTION_NAMES)}")
+        if function_name == "script_score":
+            if "script" not in kwargs and "source" not in kwargs:
+                raise AttributeError(
+                    "The 'script_score' function type requires passing either a 'script' or a 'source' parameter"
+                )
 
-        self.function_name = function_name
-        self.function_params = function_params
+            if "script" in kwargs:
+                if type(kwargs["script"]) != dict or "source" not in kwargs["script"]:
+                    raise AttributeError(
+                        "The 'script' parameter must be a dict containing a 'source' key"
+                    )
+                self.script = kwargs["script"]
+            elif "source" in kwargs:
+                self.script = {"source": kwargs["source"]}
+
+            self.params = {"script": self.script}
+
+        else:  # it's a decay function
+            if "field_name" not in kwargs:
+                raise AttributeError(
+                    f"The '{function_name}' function requires a 'field_name' parameter"
+                )
+            if "scale" not in kwargs:
+                raise AttributeError(
+                    f"The '{function_name}' function requires a 'scale' parameter"
+                )
+            if "decay" not in kwargs:
+                # optional for ES, but we want explicit values in the config
+                raise AttributeError(
+                    f"The '{function_name}' function requires a 'decay' parameter"
+                )
+            self.field_name = kwargs["field_name"]
+            self.scale = kwargs["scale"]
+            self.decay = kwargs["decay"]
+            self.params = {
+                "_field_name_": {  # NB important this is the model field name
+                    "scale": self.scale,
+                    "decay": self.decay,
+                }
+            }
+            if "offset" in kwargs:
+                self.offset = kwargs["offset"]
+                self.params["_field_name_"]["offset"] = self.offset
+            if "origin" in kwargs:
+                self.origin = kwargs["origin"]
+                self.params["_field_name_"]["origin"] = self.origin

@@ -1,3 +1,4 @@
+from typing import Optional
 from wagtail.search.query import SearchQuery
 
 
@@ -66,15 +67,12 @@ class FunctionScore(SearchQuery):
     def __init__(
         self,
         subquery: SearchQuery,
-        field: str,
         function_name: str,
         function_params: dict,
+        field: Optional[str] = None,
     ):
         if not isinstance(subquery, SearchQuery):
             raise TypeError("The `subquery` parameter must be of type SearchQuery")
-
-        if not isinstance(field, str):
-            raise TypeError("The `field` parameter must be a string")
 
         if not isinstance(function_name, str):
             raise TypeError("The `function_name` parameter must be a string")
@@ -82,15 +80,18 @@ class FunctionScore(SearchQuery):
         if not isinstance(function_params, dict):
             raise TypeError("The `function_params` parameter must be a dict")
 
+        if field is not None and not isinstance(field, str):
+            raise TypeError("The `field` parameter must be a string")
+
         self.subquery = subquery
-        self.field = field
         self.function_name = function_name
         self.function_params = function_params
+        self.field = field
 
     def __repr__(self):
-        return "<FunctionScore {} field='{}' function_name='{}' function_params='{}'>".format(
+        return "<FunctionScore {} function_name='{}' function_params='{}' field='{}' >".format(
             repr(self.subquery),
-            self.field,
             self.function_name,
             self.function_params,
+            self.field,
         )

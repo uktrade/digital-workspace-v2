@@ -12,7 +12,7 @@ from django.db.models import Q, Subquery
 from django.forms import widgets
 from django.utils.html import strip_tags
 from extended_search.fields import IndexedField
-from extended_search.index import Indexed
+from extended_search.index import Indexed, ScoreFunction
 from extended_search.managers.index import ModelIndexManager
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
@@ -291,15 +291,11 @@ class ContentPage(BasePage):
                 explicit=True,
             ),
             IndexedField("is_creatable", filter=True),
-            IndexedField(
-                "last_published_at",
-                function_score={
-                    "function_name": "gauss",
-                    "function_params": {
-                        "scale": "365d",
-                        "decay": 0.8,
-                    },
-                },
+            ScoreFunction(
+                "gauss",
+                field_name="last_published_at",
+                scale="365d",
+                decay=0.8,
             ),
         ]
 

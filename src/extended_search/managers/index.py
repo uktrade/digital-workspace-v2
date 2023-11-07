@@ -6,7 +6,7 @@ from extended_search.index import (
     AutocompleteField,
     RelatedFields,
     SearchField,
-    FunctionBasisField,
+    ScoreFunction,
 )
 from extended_search.managers import get_indexed_field_name
 from extended_search.managers.query_builder import NestedQueryBuilder
@@ -58,16 +58,6 @@ class ModelIndexManager(NestedQueryBuilder):
         ]
 
     @classmethod
-    def _get_function_basis_fields(cls, model_field_name, mapping):
-        return [
-            FunctionBasisField(
-                model_field_name,
-                function_name=mapping["function_name"],
-                function_params=[(param, value) for param, value in mapping["function_params"].items()],
-            ),
-        ]
-
-    @classmethod
     def _get_related_fields(cls, model_field_name, mapping):
         fields = []
         for related_field_mapping in mapping:
@@ -99,11 +89,6 @@ class ModelIndexManager(NestedQueryBuilder):
         if "filter" in field_mapping:
             fields += cls._get_filterable_search_fields(model_field_name)
 
-        if "function_score" in field_mapping:
-            fields += cls._get_function_basis_fields(
-                model_field_name, field_mapping["function_score"]
-            )
-
         return fields
 
     @classmethod
@@ -111,21 +96,22 @@ class ModelIndexManager(NestedQueryBuilder):
         mapping = []
         function_fields = []
         for field in cls.fields:
-            if "function_score" in field.mapping:
-                function_fields += [field.mapping]
+            if isinstance(field, ScoreFunction):
+                function_fields.append(field)
             else:
                 mapping += [
                     field.mapping,
                 ]
-        # function score fields always at the start of the list
-        mapping = function_fields + mapping
-        logger.debug(mapping)
+        mapping = {"score_functions": function_fields, "fields": mapping}
+        logger.debug(f"Index mapping for {cls}: {mapping}")
         return mapping
 
     @classmethod
     def get_search_fields(cls):
         cls.generated_fields = []
-        for field_mapping in cls.get_mapping():
+        mapping = cls.get_mapping()
+        cls.score_functions = mapping["score_functions"]
+        for field_mapping in mapping["fields"]:
             cls.generated_fields += cls._get_search_fields_from_mapping(field_mapping)
         return cls.generated_fields
 
@@ -134,7 +120,9 @@ class ModelIndexManager(NestedQueryBuilder):
         if not cls.generated_fields or len(cls.generated_fields) == 0:
             cls.get_search_fields()
 
-        index_field_names = [f.model_field_name for f in cls.fields]
+        index_field_names = [
+            f.model_field_name for f in cls.fields if hasattr(f, "model_field_name")
+        ]
         return [
             field
             for field in cls.generated_fields

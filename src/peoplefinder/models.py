@@ -19,7 +19,7 @@ from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
 from extended_search.fields import IndexedField, RelatedIndexedFields
-from extended_search.index import Indexed
+from extended_search.index import Indexed, ScoreFunction
 from extended_search.managers.index import ModelIndexManager
 
 # United Kingdom
@@ -683,16 +683,12 @@ class Person(Indexed, models.Model):
             #         },
             #     },
             # ),
-            IndexedField(
-                "profile_completion",
-                function_score={
-                    "function_name": "gauss",
-                    "function_params": {
-                        "scale": 50,
-                        "origin": 100,
-                        "decay": 0.3,
-                    },
-                },
+            ScoreFunction(
+                "gauss",
+                field_name="profile_completion",
+                scale=50,
+                origin=100,
+                decay=0.3,
             ),
             IndexedField(
                 "is_active",

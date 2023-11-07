@@ -137,13 +137,15 @@ class QueryBuilder:
         return q1 or q2
 
     @classmethod
-    def _get_function_score_field_from_mapping(cls, query, field_mapping):
-        return FunctionScore(
-            subquery=query,
-            field=field_mapping["model_field_name"],
-            function_name=field_mapping["function_score"]["function_name"],
-            function_params=field_mapping["function_score"]["function_params"],
-        )
+    def _integrate_function_score(cls, query, function_definition):
+        kwargs = {
+            "function_name": function_definition.function_name,
+            "function_params": function_definition.params,
+        }
+        if hasattr(function_definition, "field_name"):
+            kwargs["field"] = function_definition.field_name
+
+        return FunctionScore(subquery=query, **kwargs)
 
     @classmethod
     def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
@@ -188,26 +190,24 @@ class QueryBuilder:
     @classmethod
     def get_query_for_model(cls, model_class, query_str) -> SearchQuery:
         query = None
-        function_fields = []
-        for field_mapping in model_class.IndexManager.get_mapping():
-            if "function_score" in field_mapping:
-                function_fields.append(field_mapping)
-            else:
-                query_elements = cls._get_search_query_from_mapping(
-                    query_str, model_class, field_mapping
-                )
-                if query_elements is not None:
-                    query = cls._combine_queries(
-                        query,
-                        query_elements,
-                    )
-        # wrap the whole model's query in the score function
-        for field_mapping in function_fields:
-            query = cls._get_function_score_field_from_mapping(
-                query,
-                field_mapping,
+        model_mapping = model_class.IndexManager.get_mapping()
+        for field_mapping in model_mapping["fields"]:
+            query_elements = cls._get_search_query_from_mapping(
+                query_str, model_class, field_mapping
             )
-        logger.debug(query)
+            if query_elements is not None:
+                query = cls._combine_queries(
+                    query,
+                    query_elements,
+                )
+        # wrap the whole model's query in the score function
+        print(">>>>", model_mapping)
+        for function_definition in model_mapping["score_functions"]:
+            query = cls._integrate_function_score(
+                query,
+                function_definition,
+            )
+        logger.debug(f"generated query for {model_class.__name__}: {query}")
         return query
 
 
