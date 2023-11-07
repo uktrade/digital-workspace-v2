@@ -166,7 +166,7 @@ class TestQueryBuilder:
             {},
         )
         assert isinstance(result, OnlyFields)
-        assert result.fields == ["title"]
+        assert result.fields == ["title_explicit"]
         subquery = result.subquery
         assert isinstance(subquery, Boost)
         assert subquery.boost == 333.33
@@ -376,7 +376,7 @@ class TestNestedQueryBuilder(TestQueryBuilder):
             {"parent_model_field": "foo"},
         )
         assert isinstance(result, OnlyFields)
-        assert result.fields == ["foo.title"]
+        assert result.fields == ["foo.title_explicit"]
         subquery = result.subquery
         assert isinstance(subquery, Boost)
         assert subquery.boost == 333.33
