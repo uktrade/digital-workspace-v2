@@ -201,7 +201,6 @@ class QueryBuilder:
                     query_elements,
                 )
         # wrap the whole model's query in the score function
-        print(">>>>", model_mapping)
         for function_definition in model_mapping["score_functions"]:
             query = cls._integrate_function_score(
                 query,

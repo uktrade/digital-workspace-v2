@@ -3,7 +3,6 @@ import logging
 from typing import Optional
 
 from wagtail.search.index import get_indexed_models
-from wagtail.search.query import SearchQuery
 
 from extended_search.backends.query import Filtered
 from extended_search.settings import extended_search_settings as search_settings
