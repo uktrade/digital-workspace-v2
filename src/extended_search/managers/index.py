@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 class ModelIndexManager(NestedQueryBuilder):
     fields = []
 
-    def __new__(cls):
-        return cls.get_search_fields()
+    def __init__(self, model_class):
+        self.model_class = model_class
 
     @classmethod
     def _get_analyzer_name(cls, analyzer_type):
@@ -52,56 +52,54 @@ class ModelIndexManager(NestedQueryBuilder):
             FilterField(model_field_name),
         ]
 
+    # @classmethod
+    # def _get_related_fields(cls, model_field_name, mapping):
+    #     fields = []
+    #     for related_field_mapping in mapping:
+    #         fields += cls._get_search_fields_from_mapping(related_field_mapping)
+    #     return [
+    #         RelatedFields(model_field_name, fields),
+    #     ]
+
+    # @classmethod
+    # def _get_search_fields_from_mapping(cls, field_mapping):
+    #     fields = []
+    #     model_field_name = field_mapping["model_field_name"]
+
+    #     if "related_fields" in field_mapping:
+    #         fields += cls._get_related_fields(
+    #             model_field_name, field_mapping["related_fields"]
+    #         )
+
+    #     if "search" in field_mapping:
+    #         fields += cls._get_searchable_search_fields(
+    #             model_field_name,
+    #             field_mapping["search"],
+    #             field_mapping["boost"],
+    #         )
+
+    #     if "autocomplete" in field_mapping:
+    #         fields += cls._get_autocomplete_search_fields(model_field_name)
+
+    #     if "filter" in field_mapping:
+    #         fields += cls._get_filterable_search_fields(model_field_name)
+
+    #     return fields
+
     @classmethod
-    def _get_related_fields(cls, model_field_name, mapping):
-        fields = []
-        for related_field_mapping in mapping:
-            fields += cls._get_search_fields_from_mapping(related_field_mapping)
+    def get_mapping(cls, model_class):
         return [
-            RelatedFields(model_field_name, fields),
+            field.mapping
+            for field in model_class.get_search_fields()
+            if hasattr(field, "mapping")
         ]
 
-    @classmethod
-    def _get_search_fields_from_mapping(cls, field_mapping):
-        fields = []
-        model_field_name = field_mapping["model_field_name"]
-
-        if "related_fields" in field_mapping:
-            fields += cls._get_related_fields(
-                model_field_name, field_mapping["related_fields"]
-            )
-
-        if "search" in field_mapping:
-            fields += cls._get_searchable_search_fields(
-                model_field_name,
-                field_mapping["search"],
-                field_mapping["boost"],
-            )
-
-        if "autocomplete" in field_mapping:
-            fields += cls._get_autocomplete_search_fields(model_field_name)
-
-        if "filter" in field_mapping:
-            fields += cls._get_filterable_search_fields(model_field_name)
-
-        return fields
-
-    @classmethod
-    def get_mapping(cls):
-        mapping = []
-        for field in cls.fields:
-            mapping += [
-                field.mapping,
-            ]
-        logger.debug(mapping)
-        return mapping
-
-    @classmethod
-    def get_search_fields(cls):
-        cls.generated_fields = []
-        for field_mapping in cls.get_mapping():
-            cls.generated_fields += cls._get_search_fields_from_mapping(field_mapping)
-        return cls.generated_fields
+    # @classmethod
+    # def get_search_fields(cls):
+    #     cls.generated_fields = []
+    #     for field_mapping in cls.get_mapping():
+    #         cls.generated_fields += cls._get_search_fields_from_mapping(field_mapping)
+    #     return cls.generated_fields
 
     @classmethod
     def get_directly_defined_fields(cls):
@@ -117,7 +115,3 @@ class ModelIndexManager(NestedQueryBuilder):
                 and field.model_field_name in index_field_names
             )
         ]
-
-    @classmethod
-    def is_directly_defined(cls, field):
-        return field in cls.get_directly_defined_fields()

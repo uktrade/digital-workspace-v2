@@ -2,7 +2,8 @@ import inspect
 import logging
 from typing import Optional
 
-from wagtail.search.index import get_indexed_models
+from django.apps import apps
+from wagtail.search.index import Indexed
 from wagtail.search.query import SearchQuery
 
 from extended_search.backends.query import Filtered
@@ -27,13 +28,16 @@ def get_indexed_field_name(
 
 
 def get_query_for_model(model_class, query_str) -> SearchQuery:
+    from extended_search.managers.index import ModelIndexManager
+
     query = None
-    for field_mapping in model_class.IndexManager.get_mapping():
-        query_elements = model_class.IndexManager._get_search_query_from_mapping(
+    model_index_manager = ModelIndexManager(model_class)
+    for field_mapping in model_index_manager.get_mapping(model_class):
+        query_elements = model_index_manager._get_search_query_from_mapping(
             query_str, model_class, field_mapping
         )
         if query_elements is not None:
-            query = model_class.IndexManager._combine_queries(
+            query = model_index_manager._combine_queries(
                 query,
                 query_elements,
             )
@@ -48,7 +52,7 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     parent; each has it's own subquery using its own settings filtered by
     type, and all are joined together at the end.
     """
-    extended_models = get_extended_models_with_indexmanager(model_class)
+    extended_models = get_extended_models_with_index_fields(model_class)
     # build full query for each extended model
     queries = []
     for sub_model_contenttype, sub_model_class in extended_models.items():
@@ -83,14 +87,24 @@ def get_search_query(model_class, query_str, *args, **kwargs):
     return root_query
 
 
-def get_extended_models_with_indexmanager(model_class):
-    # iterate indexed models extending the root model that have a dedicated IndexManager
+def get_indexed_models():
+    # Custom override for `wagtail.search.index.get_indexed_models`
+    return [
+        model
+        for model in apps.get_models()
+        if issubclass(model, Indexed) and not model._meta.abstract
+        # and (model.search_fields or getattr(model, "indexed_fields"))
+    ]
+
+
+def get_extended_models_with_index_fields(model_class):
+    # Iterate indexed models extending the root model that have a indexed_fields attribute defined
     extended_model_classes = {}
     for indexed_model in get_indexed_models():
         if (
             indexed_model != model_class
             and model_class in inspect.getmro(indexed_model)
-            and indexed_model.has_indexmanager_direct_inner_class()
+            and indexed_model.has_direct_indexed_fields()
         ):
             extended_model_classes[
                 f"{indexed_model._meta.app_label}.{indexed_model.__name__}"

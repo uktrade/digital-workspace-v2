@@ -1,25 +1,20 @@
-# type: ignore  (type checking is unhappy about the mixin referencing fields it doesnt define)
+# type: ignore  (type checking is unhappy about the mixin referencing fields it
+# doesn't define)
 import inspect
 import logging
+from typing import Dict, List
 
 from django.core import checks
 from wagtail.search import index
 
+from extended_search.fields import IndexedField
 
 logger = logging.getLogger(__name__)
 
 
 class Indexed(index.Indexed):
-    @classmethod
-    def has_indexmanager_direct_inner_class(cls):
-        for attr in cls.__dict__.values():
-            if (
-                inspect.isclass(attr)
-                # and issubclass(attr, ModelIndexManager) #  Can't run this check due to circular imports
-                and attr.__name__ == "IndexManager"
-            ):
-                return True
-        return False
+    search_fields: List[IndexedField | index.BaseField | index.RelatedFields] = []
+    indexed_fields: Dict[str, IndexedField | index.BaseField | index.RelatedFields] = {}
 
     @classmethod
     def _check_search_fields(cls, **kwargs):
@@ -38,7 +33,53 @@ class Indexed(index.Indexed):
                 )
         return errors
 
-    search_fields = []
+    @classmethod
+    def _get_search_field(cls, field_dict, field, parent_field):
+        if isinstance(field, IndexedField):
+            generated_fields = field.generate_fields(parent_field)
+            for generated_field in generated_fields:
+                field_dict[
+                    (type(generated_field), generated_field.field_name)
+                ] = generated_field
+        elif isinstance(field, RelatedFields):
+            related_fields = {}
+            for related_field in field.fields:
+                related_fields |= cls._get_search_field(related_field, field)
+            field_dict[(RelatedFields, field.field_name)] = RelatedFields(
+                field.model_field_name, list(related_fields.values())
+            )
+        else:
+            field_dict[(type(field), field.field_name, field.model_field_name)] = field
+        return field_dict
+
+    @classmethod
+    def get_search_fields(cls, parent_field=None):
+        search_fields = {}
+
+        for field in cls.search_fields:
+            search_fields |= cls._get_search_field(search_fields, field, parent_field)
+
+        for _, field in cls.get_indexed_fields().items():
+            search_fields |= cls._get_search_field(search_fields, field, parent_field)
+
+        return list(search_fields.values())
+
+    @classmethod
+    def get_parent_model_indexed_fields(cls):
+        for base_cls in inspect.getmro(cls)[1:]:
+            if hasattr(base_cls, "get_indexed_fields"):
+                return base_cls.get_indexed_fields()
+        return {}
+
+    @classmethod
+    def get_indexed_fields(cls):
+        indexed_fields = cls.get_parent_model_indexed_fields()
+        return indexed_fields | cls.indexed_fields
+
+    @classmethod
+    def has_direct_indexed_fields(cls) -> bool:
+        parent_indexed_fields = cls.get_parent_model_indexed_fields()
+        return parent_indexed_fields != cls.indexed_fields
 
 
 class RenamedFieldMixin:
@@ -82,9 +123,10 @@ class RenamedFieldMixin:
         Returns the correct base class if it wasn't found because of a field naming discrepancy
         """
         if (
-            hasattr(cls, "has_indexmanager_direct_inner_class")
-            and cls.has_indexmanager_direct_inner_class()
-            and cls.IndexManager.is_directly_defined(self)
+            hasattr(cls, "has_direct_indexed_fields")
+            and cls.has_direct_indexed_fields()
+            # TODO: Update this check
+            # and cls.IndexManager.is_directly_defined(self)
         ):
             return cls
 
@@ -112,6 +154,10 @@ class RenamedFieldMixin:
 
         if self.model_field_name:
             return getattr(obj, self.model_field_name, None)
+
+
+class FilterField(RenamedFieldMixin, index.FilterField):
+    ...
 
 
 class SearchField(RenamedFieldMixin, index.SearchField):
