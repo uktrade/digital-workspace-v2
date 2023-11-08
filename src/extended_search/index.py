@@ -76,11 +76,25 @@ class Indexed(index.Indexed):
         parent_indexed_fields = cls.get_parent_model_indexed_fields()
         return parent_indexed_fields | cls.indexed_fields
 
+    # @classmethod
+    # def get_direct_indexed_fields(
+    #     cls,
+    # ) -> Dict[str, IndexedField | index.BaseField | index.RelatedFields]:
+    #     parent_indexed_fields = cls.get_parent_model_indexed_fields()
+    #     current_indexed_fields = cls.get_indexed_fields()
+    #     # Build a dict of fields that are defined directly on this model
+    #     return {
+    #         field_name: field
+    #         for field_name, field in current_indexed_fields.items()
+    #         if field_name not in parent_indexed_fields
+    #     }
+
     @classmethod
     def has_direct_indexed_fields(cls) -> bool:
-        parent_indexed_fields = cls.get_parent_model_indexed_fields()
-        current_indexed_fields = cls.get_indexed_fields()
-        return parent_indexed_fields != current_indexed_fields
+        parent_model = inspect.getmro(cls)[1]
+        if not hasattr(parent_model, "indexed_fields"):
+            return bool(cls.indexed_fields)
+        return parent_model.indexed_fields != cls.indexed_fields
 
 
 class RenamedFieldMixin:

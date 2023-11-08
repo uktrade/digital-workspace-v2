@@ -81,21 +81,21 @@ def explore(request: HttpRequest) -> HttpResponse:
     ]
 
     content_page_query_builder = ExtendedSearchQueryBuilder(ContentPage)
-    for mapping in content_page_query_builder.get_mapping(ContentPage):
+    for mapping in content_page_query_builder.get_mapping():
         field = content_page_query_builder._get_search_query_from_mapping(
             query, ContentPage, mapping
         )
         get_query_info(subqueries["pages"], field, mapping, analyzer_field_suffices)
 
     person_query_builder = ExtendedSearchQueryBuilder(Person)
-    for mapping in person_query_builder.get_mapping(Person):
+    for mapping in person_query_builder.get_mapping():
         field = person_query_builder._get_search_query_from_mapping(
             query, Person, mapping
         )
         get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
 
     team_query_builder = ExtendedSearchQueryBuilder(Team)
-    for mapping in team_query_builder.get_mapping(Team):
+    for mapping in team_query_builder.get_mapping():
         field = team_query_builder._get_search_query_from_mapping(query, Team, mapping)
         get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
 

@@ -175,7 +175,26 @@ class WagtailRelatedFields(RelatedFields):
 ####################
 
 
-class RelatedIndexedFields(WagtailRelatedFields):
+class AbstractBaseField:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.boost = 1.0
+        if "boost" in kwargs:
+            self.boost = kwargs["boost"]
+
+    def _get_base_mapping_object(self):
+        return {
+            "name": self.field_name,
+            "model_field_name": self.model_field_name,
+            "boost": self.boost,
+            "parent_model_field": None,  # when is not None, field is Related
+        }
+
+    def get_mapping(self):
+        return self._get_base_mapping_object()
+
+
+class RelatedIndexedFields(AbstractBaseField, WagtailRelatedFields):
     def _get_related_mapping_object(self):
         fields = []
         for field in self.fields:
@@ -191,30 +210,7 @@ class RelatedIndexedFields(WagtailRelatedFields):
         return mapping | self._get_related_mapping_object()
 
 
-# class AbstractBaseField:
-#     def __init__(self, name, model_field_name=None, boost=1.0, **kwargs):
-#         self.name = kwargs["name"] = name
-#         self.model_field_name = kwargs["model_field_name"] = model_field_name or name
-#         self.boost = kwargs["boost"] = boost
-#         self.kwargs = kwargs
-
-#     def _get_base_mapping_object(self):
-#         return {
-#             "name": self.name,
-#             "model_field_name": self.model_field_name,
-#             "boost": self.boost,
-#             "parent_model_field": None,  # when is not None, field is Related
-#         }
-
-#     def get_mapping(self):
-#         return self._get_base_mapping_object()
-
-#     @property
-#     def mapping(self):
-#         return self.get_mapping()
-
-
-class BaseIndexedField(WagtailIndexedField):
+class BaseIndexedField(AbstractBaseField, WagtailIndexedField):
     def __init__(
         self,
         *args,
@@ -225,7 +221,7 @@ class BaseIndexedField(WagtailIndexedField):
             *args,
             **kwargs,
         )
-        self.fuzzy = self.kwargs["fuzzy"] = fuzzy
+        self.fuzzy = kwargs["fuzzy"] = fuzzy
         if self.fuzzy:
             self.search = True
 
@@ -277,10 +273,10 @@ class IndexedField(BaseIndexedField):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
-        self.tokenized = self.kwargs["tokenized"] = tokenized
-        self.explicit = self.kwargs["explicit"] = explicit
-        self.keyword = self.kwargs["keyword"] = keyword
-        self.proximity = self.kwargs["proximity"] = proximity
+        self.tokenized = kwargs["tokenized"] = tokenized
+        self.explicit = kwargs["explicit"] = explicit
+        self.keyword = kwargs["keyword"] = keyword
+        self.proximity = kwargs["proximity"] = proximity
 
         if tokenized or explicit or keyword:
             self.search = True

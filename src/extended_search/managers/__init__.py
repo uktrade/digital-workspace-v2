@@ -1,6 +1,6 @@
 import inspect
 import logging
-from typing import Optional
+from typing import Dict, Optional
 
 from django.apps import apps
 from wagtail.search.index import Indexed
@@ -32,9 +32,7 @@ def get_query_for_model(model_class, query_str) -> SearchQuery:
 
     query = None
     model_query_builder = ExtendedSearchQueryBuilder(model_class)
-    for field_mapping in model_index_manager.get_mapping(model_class):
-        query_elements = model_index_manager._get_search_query_from_mapping(
-    for field_mapping in model_query_builder.get_mapping(model_class):
+    for field_mapping in model_query_builder.get_mapping():
         query_elements = model_query_builder._get_search_query_from_mapping(
             query_str, model_class, field_mapping
         )
@@ -43,7 +41,6 @@ def get_query_for_model(model_class, query_str) -> SearchQuery:
                 query,
                 query_elements,
             )
-    logger.debug(query)
     return query
 
 
@@ -73,19 +70,23 @@ def get_search_query(model_class, query_str, *args, **kwargs):
 
     # build query for root model passed in to method, filter to exclude docs with contenttypes
     # matching any of the extended-models-with-dedicated-IM
-    root_query = Filtered(
-        subquery=get_query_for_model(model_class, query_str),
-        filters=[
-            (
-                "content_type",
-                "excludes",
-                list(extended_models.keys()),
-            ),
-        ],
-    )
+    root_query = get_query_for_model(model_class, query_str)
+    if extended_models:
+        root_query = Filtered(
+            subquery=root_query,
+            filters=[
+                (
+                    "content_type",
+                    "excludes",
+                    list(extended_models.keys()),
+                ),
+            ],
+        )
 
     for q in queries:
         root_query |= q
+
+    logger.debug(root_query)
     return root_query
 
 
