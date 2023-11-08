@@ -84,8 +84,14 @@ class QueryBuilder:
     def _get_boost_for_field(cls, model_class, field_name):
         content_type = ContentType.objects.get_for_model(model_class)
         field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
-        if setting_boost := search_settings["boost_parts"]["fields"][field_boost_key]:
-            return float(setting_boost)
+        # TODO: Remove this try/except:
+        try:
+            if setting_boost := search_settings["boost_parts"]["fields"][
+                field_boost_key
+            ]:
+                return float(setting_boost)
+        except KeyError:
+            return 1.0
         return 1.0
 
     @classmethod
