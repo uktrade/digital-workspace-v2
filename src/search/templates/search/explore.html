@@ -114,6 +114,30 @@
                         <table class="govuk-table" style="font-size:1rem">
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">
+                                        Function type <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-decay">info</a>
+                                    </th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Parameters</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for query in sub_queries.pages__score_functions %}
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">{{ query.function_name }}</th>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">
+                                            {% for param in query.params %}
+                                                {{ param.0 }}: {{ param.1 }}
+                                                <br>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <table class="govuk-table" style="font-size:1rem">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
                                     <th scope="col" class="govuk-table__header">Field</th>
                                     <th scope="col" class="govuk-table__header govuk-table__header--numeric">Analyzer</th>
                                     <th scope="col" class="govuk-table__header govuk-table__header--numeric">Query type</th>
@@ -137,6 +161,30 @@
                         <table class="govuk-table" style="font-size:1rem">
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">
+                                        Function type <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-decay">info</a>
+                                    </th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Parameters</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for query in sub_queries.people__score_functions %}
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">{{ query.function_name }}</th>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">
+                                            {% for param in query.params %}
+                                                {{ param.0 }}: {{ param.1 }}
+                                                <br>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <table class="govuk-table" style="font-size:1rem">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
                                     <th scope="col" class="govuk-table__header">Field</th>
                                     <th scope="col" class="govuk-table__header govuk-table__header--numeric">Analyzer</th>
                                     <th scope="col" class="govuk-table__header govuk-table__header--numeric">Query type</th>
@@ -155,6 +203,30 @@
                             </tbody>
                         </table>
                         <h2 class="govuk-heading-s">Teams</h2>
+
+                        <table class="govuk-table" style="font-size:1rem">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">
+                                        Function type <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-decay">info</a>
+                                    </th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Parameters</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                {% for query in sub_queries.teams__score_functions %}
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">{{ query.function_name }}</th>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric">
+                                            {% for param in query.params %}
+                                                {{ param.0 }}: {{ param.1 }}
+                                                <br>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
 
                         <table class="govuk-table" style="font-size:1rem">
                             <thead class="govuk-table__head">

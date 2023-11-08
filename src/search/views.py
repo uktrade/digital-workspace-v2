@@ -77,17 +77,35 @@ def explore(request: HttpRequest) -> HttpResponse:
         (k, v["index_fieldname_suffix"])
         for k, v in extended_search_settings["analyzers"].items()
     ]
-    for mapping in ContentPage.IndexManager.get_mapping():
+
+    content_mapping = ContentPage.IndexManager.get_mapping()
+    subqueries["pages__score_functions"] = []
+    get_function_info(
+        subqueries["pages__score_functions"], content_mapping["score_functions"]
+    )
+    for mapping in content_mapping["fields"]:
         field = ContentPage.IndexManager._get_search_query_from_mapping(
             query, ContentPage, mapping
         )
         get_query_info(subqueries["pages"], field, mapping, analyzer_field_suffices)
-    for mapping in Person.IndexManager.get_mapping():
+
+    person_mapping = Person.IndexManager.get_mapping()
+    subqueries["people__score_functions"] = []
+    get_function_info(
+        subqueries["people__score_functions"], person_mapping["score_functions"]
+    )
+    for mapping in person_mapping["fields"]:
         field = Person.IndexManager._get_search_query_from_mapping(
             query, Person, mapping
         )
         get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
-    for mapping in Team.IndexManager.get_mapping():
+
+    team_mapping = Team.IndexManager.get_mapping()
+    subqueries["teams__score_functions"] = []
+    get_function_info(
+        subqueries["teams__score_functions"], team_mapping["score_functions"]
+    )
+    for mapping in team_mapping["fields"]:
         field = Team.IndexManager._get_search_query_from_mapping(query, Team, mapping)
         get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
 
@@ -101,6 +119,16 @@ def explore(request: HttpRequest) -> HttpResponse:
     }
 
     return TemplateResponse(request, "search/explore.html", context=context)
+
+
+def get_function_info(funcslist, fields):
+    for field in fields:
+        atts = [
+            (a, getattr(field, a))
+            for a in field.__dict__
+            if a not in ["params", "function_name"]
+        ]
+        funcslist.append({"function_name": field.function_name, "params": atts})
 
 
 def get_query_info(fields, field, mapping, suffix_map):
