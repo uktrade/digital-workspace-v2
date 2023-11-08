@@ -73,13 +73,14 @@ class Indexed(index.Indexed):
 
     @classmethod
     def get_indexed_fields(cls):
-        indexed_fields = cls.get_parent_model_indexed_fields()
-        return indexed_fields | cls.indexed_fields
+        parent_indexed_fields = cls.get_parent_model_indexed_fields()
+        return parent_indexed_fields | cls.indexed_fields
 
     @classmethod
     def has_direct_indexed_fields(cls) -> bool:
         parent_indexed_fields = cls.get_parent_model_indexed_fields()
-        return parent_indexed_fields != cls.indexed_fields
+        current_indexed_fields = cls.get_indexed_fields()
+        return parent_indexed_fields != current_indexed_fields
 
 
 class RenamedFieldMixin:

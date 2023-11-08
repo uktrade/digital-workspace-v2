@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
@@ -11,7 +12,7 @@ from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
 from content.models import ContentPage
 from extended_search.backends.query import OnlyFields
-from extended_search.managers.index import ModelIndexManager
+from extended_search.managers.index import ExtendedSearchQueryBuilder
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import extended_search_settings
 from peoplefinder.models import Person, Team
@@ -25,12 +26,12 @@ def can_view_explore():
 
 
 @require_http_methods(["GET"])
-def search(request: HttpRequest, category: str = None) -> HttpResponse:
+def search(request: HttpRequest, category: Optional[str] = None) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
 
     # If the category is invalid, redirect to search all.
-    if category not in SEARCH_CATEGORIES:
+    if not category or category not in SEARCH_CATEGORIES:
         return redirect(
             reverse("search:category", kwargs={"category": "all"}) + f"?query={query}"
         )
@@ -79,23 +80,23 @@ def explore(request: HttpRequest) -> HttpResponse:
         for k, v in extended_search_settings["analyzers"].items()
     ]
 
-    content_page_index_manager = ModelIndexManager(ContentPage)
-    for mapping in content_page_index_manager.get_mapping(ContentPage):
-        field = content_page_index_manager._get_search_query_from_mapping(
+    content_page_query_builder = ExtendedSearchQueryBuilder(ContentPage)
+    for mapping in content_page_query_builder.get_mapping(ContentPage):
+        field = content_page_query_builder._get_search_query_from_mapping(
             query, ContentPage, mapping
         )
         get_query_info(subqueries["pages"], field, mapping, analyzer_field_suffices)
 
-    person_index_manager = ModelIndexManager(Person)
-    for mapping in person_index_manager.get_mapping(Person):
-        field = person_index_manager._get_search_query_from_mapping(
+    person_query_builder = ExtendedSearchQueryBuilder(Person)
+    for mapping in person_query_builder.get_mapping(Person):
+        field = person_query_builder._get_search_query_from_mapping(
             query, Person, mapping
         )
         get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
 
-    team_index_manager = ModelIndexManager(Team)
-    for mapping in team_index_manager.get_mapping(Team):
-        field = team_index_manager._get_search_query_from_mapping(query, Team, mapping)
+    team_query_builder = ExtendedSearchQueryBuilder(Team)
+    for mapping in team_query_builder.get_mapping(Team):
+        field = team_query_builder._get_search_query_from_mapping(query, Team, mapping)
         get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
 
     context = {

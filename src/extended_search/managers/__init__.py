@@ -28,16 +28,18 @@ def get_indexed_field_name(
 
 
 def get_query_for_model(model_class, query_str) -> SearchQuery:
-    from extended_search.managers.index import ModelIndexManager
+    from extended_search.managers.index import ExtendedSearchQueryBuilder
 
     query = None
-    model_index_manager = ModelIndexManager(model_class)
+    model_query_builder = ExtendedSearchQueryBuilder(model_class)
     for field_mapping in model_index_manager.get_mapping(model_class):
         query_elements = model_index_manager._get_search_query_from_mapping(
+    for field_mapping in model_query_builder.get_mapping(model_class):
+        query_elements = model_query_builder._get_search_query_from_mapping(
             query_str, model_class, field_mapping
         )
         if query_elements is not None:
-            query = model_index_manager._combine_queries(
+            query = model_query_builder._combine_queries(
                 query,
                 query_elements,
             )
