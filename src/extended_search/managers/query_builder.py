@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
-from extended_search.backends.query import Nested, OnlyFields
+from extended_search.backends.query import Nested, OnlyFields, FunctionScore
 from extended_search.managers import get_indexed_field_name
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
@@ -139,6 +139,17 @@ class QueryBuilder:
         return q1 or q2
 
     @classmethod
+    def _integrate_function_score(cls, query, function_definition):
+        kwargs = {
+            "function_name": function_definition.function_name,
+            "function_params": function_definition.params,
+        }
+        if hasattr(function_definition, "field_name"):
+            kwargs["field"] = function_definition.field_name
+
+        return FunctionScore(subquery=query, **kwargs)
+
+    @classmethod
     def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
         subquery = None
 
@@ -177,6 +188,28 @@ class QueryBuilder:
             )
 
         return subquery
+
+    @classmethod
+    def get_query_for_model(cls, model_class, query_str) -> SearchQuery:
+        query = None
+        model_mapping = model_class.IndexManager.get_mapping()
+        for field_mapping in model_mapping["fields"]:
+            query_elements = cls._get_search_query_from_mapping(
+                query_str, model_class, field_mapping
+            )
+            if query_elements is not None:
+                query = cls._combine_queries(
+                    query,
+                    query_elements,
+                )
+        # wrap the whole model's query in the score function
+        for function_definition in model_mapping["score_functions"]:
+            query = cls._integrate_function_score(
+                query,
+                function_definition,
+            )
+        logger.debug(f"generated query for {model_class.__name__}: {query}")
+        return query
 
 
 class NestedQueryBuilder(QueryBuilder):

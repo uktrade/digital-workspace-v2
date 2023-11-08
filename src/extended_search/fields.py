@@ -37,6 +37,7 @@ class BaseIndexedField(AbstractBaseField):
         autocomplete=False,
         filter=False,
         fuzzy=False,
+        function_score=False,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -44,6 +45,7 @@ class BaseIndexedField(AbstractBaseField):
         self.autocomplete = self.kwargs["autocomplete"] = autocomplete
         self.filter = self.kwargs["filter"] = filter
         self.fuzzy = self.kwargs["fuzzy"] = fuzzy
+        self.function_score = self.kwargs["function_score"] = function_score
 
         if fuzzy:
             self.search = True
@@ -74,6 +76,12 @@ class BaseIndexedField(AbstractBaseField):
 
         return {"filter": []}
 
+    def _get_function_score_mapping_object(self):
+        if not self.function_score:
+            return {}
+
+        return {"function_score": self.function_score}
+
     def get_mapping(self):
         mapping = super().get_mapping()
         if self.search:
@@ -82,6 +90,8 @@ class BaseIndexedField(AbstractBaseField):
             mapping = mapping | self._get_autocomplete_mapping_object()
         if self.filter:
             mapping = mapping | self._get_filter_mapping_object()
+        if self.function_score:
+            mapping = mapping | self._get_function_score_mapping_object()
         return mapping
 
 
@@ -92,20 +102,15 @@ class IndexedField(BaseIndexedField):
         tokenized=False,
         explicit=False,
         keyword=False,
-        proximity=False,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.tokenized = self.kwargs["tokenized"] = tokenized
         self.explicit = self.kwargs["explicit"] = explicit
         self.keyword = self.kwargs["keyword"] = keyword
-        self.proximity = self.kwargs["proximity"] = proximity
 
         if tokenized or explicit or keyword:
             self.search = True
-
-        if proximity:
-            self.filter = True
 
     def _get_search_mapping_object(self):
         mapping = super()._get_search_mapping_object()
@@ -115,14 +120,6 @@ class IndexedField(BaseIndexedField):
             mapping["search"] += [AnalysisType.EXPLICIT]
         if self.keyword:
             mapping["search"] += [AnalysisType.KEYWORD]
-        return mapping
-
-    def _get_filter_mapping_object(self):
-        mapping = super()._get_filter_mapping_object()
-        if self.proximity and AnalysisType.PROXIMITY not in mapping["filter"]:
-            mapping["filter"] += [
-                AnalysisType.PROXIMITY
-            ]  # @TODO is this the right way to index proximity
         return mapping
 
 

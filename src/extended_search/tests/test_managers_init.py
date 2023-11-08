@@ -8,7 +8,6 @@ from content.models import ContentPage
 from extended_search.backends.query import Filtered
 from extended_search.managers import (
     get_indexed_field_name,
-    get_query_for_model,
     get_extended_models_with_indexmanager,
     get_search_query,
 )
@@ -47,12 +46,12 @@ class TestManagersInit:
             "extended_search.managers.query_builder.QueryBuilder._get_search_query_from_mapping",
             return_value=[],
         )
-        assert get_query_for_model(ContentPage, "query") is None
+        assert ContentPage.IndexManager.get_query_for_model(ContentPage, "query") is None
         mock_map.assert_called_once_with()
 
         mock_map.return_value = ["--one--"]
         mock_q.return_value = "--query--"
-        assert get_query_for_model(ContentPage, "query") == "--query--"
+        assert ContentPage.IndexManager.get_query_for_model(ContentPage, "query") == "--query--"
         mock_q.assert_called_once_with("query", ContentPage, "--one--")
 
     def test_get_extended_models_with_indexmanager(self, mocker):

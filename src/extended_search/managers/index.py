@@ -2,7 +2,12 @@ import logging
 
 from wagtail.search.index import FilterField
 
-from extended_search.index import AutocompleteField, RelatedFields, SearchField
+from extended_search.index import (
+    AutocompleteField,
+    RelatedFields,
+    SearchField,
+    ScoreFunction,
+)
 from extended_search.managers import get_indexed_field_name
 from extended_search.managers.query_builder import NestedQueryBuilder
 from extended_search.settings import extended_search_settings as search_settings
@@ -89,17 +94,24 @@ class ModelIndexManager(NestedQueryBuilder):
     @classmethod
     def get_mapping(cls):
         mapping = []
+        function_fields = []
         for field in cls.fields:
-            mapping += [
-                field.mapping,
-            ]
-        logger.debug(mapping)
+            if isinstance(field, ScoreFunction):
+                function_fields.append(field)
+            else:
+                mapping += [
+                    field.mapping,
+                ]
+        mapping = {"score_functions": function_fields, "fields": mapping}
+        logger.debug(f"Index mapping for {cls}: {mapping}")
         return mapping
 
     @classmethod
     def get_search_fields(cls):
         cls.generated_fields = []
-        for field_mapping in cls.get_mapping():
+        mapping = cls.get_mapping()
+        cls.score_functions = mapping["score_functions"]
+        for field_mapping in mapping["fields"]:
             cls.generated_fields += cls._get_search_fields_from_mapping(field_mapping)
         return cls.generated_fields
 
@@ -108,7 +120,9 @@ class ModelIndexManager(NestedQueryBuilder):
         if not cls.generated_fields or len(cls.generated_fields) == 0:
             cls.get_search_fields()
 
-        index_field_names = [f.model_field_name for f in cls.fields]
+        index_field_names = [
+            f.model_field_name for f in cls.fields if hasattr(f, "model_field_name")
+        ]
         return [
             field
             for field in cls.generated_fields

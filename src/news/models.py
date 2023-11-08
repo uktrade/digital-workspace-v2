@@ -8,6 +8,7 @@ from django.db import models
 from django.template.response import TemplateResponse
 from django.utils.text import slugify
 from extended_search.fields import IndexedField
+from extended_search.index import ScoreFunction
 from extended_search.managers.index import ModelIndexManager
 from modelcluster.fields import ParentalKey
 from news.forms import CommentForm
@@ -168,6 +169,12 @@ class NewsPage(PageWithTopics):
             IndexedField(
                 "pinned_on_home",
                 filter=True,
+            ),
+            ScoreFunction(
+                "gauss",
+                field_name="last_published_at",
+                scale="365d",
+                decay=0.3,
             ),
         ]
 

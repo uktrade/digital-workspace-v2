@@ -19,7 +19,7 @@ from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
 from extended_search.fields import IndexedField, RelatedIndexedFields
-from extended_search.index import Indexed
+from extended_search.index import Indexed, ScoreFunction
 from extended_search.managers.index import ModelIndexManager
 
 # United Kingdom
@@ -672,15 +672,23 @@ class Person(Indexed, models.Model):
                 explicit=True,
                 boost=2.0,
             ),
-            IndexedField(
-                "has_photo",
-                proximity=True,
-                boost=1.5,
-            ),
-            IndexedField(
-                "profile_completion",
-                proximity=True,
-                boost=2.0,
+            # IndexedField(
+            #     "has_photo",
+            #     function_score={
+            #         "function_name": "gauss",
+            #         "function_params": {
+            #             "scale": 0.1,
+            #             "origin": 1,
+            #             "decay": 0.3,
+            #         },
+            #     },
+            # ),
+            ScoreFunction(
+                "gauss",
+                field_name="profile_completion",
+                scale=50,
+                origin=100,
+                decay=0.3,
             ),
             IndexedField(
                 "is_active",
@@ -746,9 +754,11 @@ class Person(Indexed, models.Model):
             filter(None, [self.fluent_languages, self.intermediate_languages])
         )
 
-    @property
-    def has_photo(self) -> bool:
-        return bool(self.photo)
+    # @property
+    # def has_photo(self) -> int:
+    #     if bool(self.photo):
+    #         return 1
+    #     return 0
 
     @property
     def search_teams(self):
