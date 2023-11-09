@@ -25,7 +25,7 @@ from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
 from extended_search.fields import IndexedField
-from extended_search.index import Indexed
+from extended_search.index import Indexed, convert_search_fields
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
@@ -78,69 +78,25 @@ class BasePage(Page, Indexed):
     ]
 
     # Search field override
-    search_fields = []
-    indexed_fields = {
-        "title": IndexedField(
-            "title",
-            tokenized=True,
-            explicit=True,
-            filter=True,
-            autocomplete=True,
-            boost=2,
-        ),
-        "id": IndexedField(
-            "id",
-            filter=True,
-        ),
-        "live": IndexedField(
-            "live",
-            filter=True,
-        ),
-        "owner": IndexedField(
-            "owner",
-            filter=True,
-        ),
-        "content_type": IndexedField(
-            "content_type",
-            filter=True,
-        ),
-        "path": IndexedField(
-            "path",
-            filter=True,
-        ),
-        "depth": IndexedField(
-            "depth",
-            filter=True,
-        ),
-        "locked": IndexedField(
-            "locked",
-            filter=True,
-        ),
-        "show_in_menus": IndexedField(
-            "show_in_menus",
-            filter=True,
-        ),
-        "first_published_at": IndexedField(
-            "first_published_at",
-            filter=True,
-        ),
-        "last_published_at": IndexedField(
-            "last_published_at",
-            filter=True,
-        ),
-        "latest_revision_created_at": IndexedField(
-            "latest_revision_created_at",
-            filter=True,
-        ),
-        "locale": IndexedField(
-            "locale",
-            filter=True,
-        ),
-        "translation_key": IndexedField(
-            "translation_key",
-            filter=True,
-        ),
-    }
+    search_fields = convert_search_fields(Page.search_fields)
+    # [
+    #     SearchField("title", boost=2),
+    #     AutocompleteField("title"),
+    #     FilterField("title"),
+    #     FilterField("id"),
+    #     FilterField("live"),
+    #     FilterField("owner"),
+    #     FilterField("content_type"),
+    #     FilterField("path"),
+    #     FilterField("depth"),
+    #     FilterField("locked"),
+    #     FilterField("show_in_menus"),
+    #     FilterField("first_published_at"),
+    #     FilterField("last_published_at"),
+    #     FilterField("latest_revision_created_at"),
+    #     FilterField("locale"),
+    #     FilterField("translation_key"),
+    # ]
 
     def serve(self, request):
         response = super().serve(request)

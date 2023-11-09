@@ -73,14 +73,6 @@ class NewsCategory(models.Model):
     )
     history = history = HistoricalRecords()
 
-    indexed_fields = {
-        "category": IndexedField(
-            "category",
-            tokenized=True,
-            explicit=True,
-        ),
-    }
-
     def __str__(self):
         return self.category
 

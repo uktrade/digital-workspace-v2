@@ -1,12 +1,11 @@
 import inspect
 import logging
-from typing import Dict, Optional
+from typing import Optional
 
-from django.apps import apps
-from wagtail.search.index import Indexed
 from wagtail.search.query import SearchQuery
 
 from extended_search.backends.query import Filtered
+from extended_search.index import get_indexed_models
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType
 
@@ -88,16 +87,6 @@ def get_search_query(model_class, query_str, *args, **kwargs):
 
     logger.debug(root_query)
     return root_query
-
-
-def get_indexed_models():
-    # Custom override for `wagtail.search.index.get_indexed_models`
-    return [
-        model
-        for model in apps.get_models()
-        if issubclass(model, Indexed) and not model._meta.abstract
-        # and (model.search_fields or getattr(model, "indexed_fields"))
-    ]
 
 
 def get_extended_models_with_index_fields(model_class):

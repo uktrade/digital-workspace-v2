@@ -121,14 +121,6 @@ class PageTopic(models.Model):
         FieldPanel("topic"),
     ]
 
-    indexed_fields = {
-        "topic": IndexedField(
-            "topic",
-            tokenized=True,
-            explicit=True,
-        ),
-    }
-
     class Meta:
         unique_together = ("page", "topic")
 

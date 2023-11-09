@@ -1,16 +1,18 @@
 from typing import Any, List, Union
 
+from django.db.models.query import QuerySet
+from wagtail.search.backends.base import EmptySearchResults
 from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
-    Elasticsearch7SearchBackend,
     Elasticsearch7Mapping,
+    Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
 )
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
-from extended_search.backends.query import Nested, OnlyFields, Filtered
-from extended_search.index import RelatedFields
+from extended_search.backends.query import Filtered, Nested, OnlyFields
+from extended_search.index import RelatedFields, class_is_indexed
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
@@ -331,6 +333,31 @@ class CustomSearchQueryCompiler(
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = CustomSearchQueryCompiler
     mapping_class = FilteredSearchMapping
+
+    def _search(self, query_compiler_class, query, model_or_queryset, **kwargs):
+        # Find model/queryset
+        if isinstance(model_or_queryset, QuerySet):
+            model = model_or_queryset.model
+            queryset = model_or_queryset
+        else:
+            model = model_or_queryset
+            queryset = model_or_queryset.objects.all()
+
+        # Model must be a class that is in the index
+        if not class_is_indexed(model):
+            return EmptySearchResults()
+
+        # Check that there's still a query string after the clean up
+        if query == "":
+            return EmptySearchResults()
+
+        # Search
+        search_query_compiler = query_compiler_class(queryset, query, **kwargs)
+
+        # Check the query
+        search_query_compiler.check()
+
+        return self.results_class(self, search_query_compiler)
 
 
 SearchBackend = CustomSearchBackend

@@ -4,7 +4,9 @@ import inspect
 import logging
 from typing import Dict, List
 
+from django.apps import apps
 from django.core import checks
+from django.db import models
 from wagtail.search import index
 
 from extended_search.fields import IndexedField
@@ -49,7 +51,12 @@ class Indexed(index.Indexed):
                 field.model_field_name, list(related_fields.values())
             )
         else:
-            field_dict[(type(field), field.field_name, field.model_field_name)] = field
+            if hasattr(field, "model_field_name"):
+                field_dict[
+                    (type(field), field.field_name, field.model_field_name)
+                ] = field
+            else:
+                field_dict[(type(field), field.field_name)] = field
         return field_dict
 
     @classmethod
@@ -185,3 +192,58 @@ class AutocompleteField(RenamedFieldMixin, index.AutocompleteField):
 
 class RelatedFields(RenamedFieldMixin, index.RelatedFields):
     ...
+
+
+def class_is_indexed(cls):
+    return (
+        issubclass(cls, Indexed)
+        and issubclass(cls, models.Model)
+        and not cls._meta.abstract
+        and (cls.search_fields or cls.indexed_fields)
+    )
+
+
+def get_indexed_models():
+    # Custom override for `wagtail.search.index.get_indexed_models`
+    return [
+        model
+        for model in apps.get_models()
+        if issubclass(model, Indexed) and not model._meta.abstract
+        # and (model.search_fields or getattr(model, "indexed_fields"))
+    ]
+
+
+def convert_search_fields(search_fields: List) -> List:
+    new_search_fields = []
+
+    for f in search_fields:
+        if isinstance(f, index.RelatedFields):
+            new_search_fields.append(
+                RelatedFields(
+                    f.field_name,
+                    convert_search_fields(f.fields),
+                )
+            )
+        if isinstance(f, index.AutocompleteField):
+            new_search_fields.append(
+                AutocompleteField(
+                    f.field_name,
+                    **f.kwargs,
+                )
+            )
+        if isinstance(f, index.SearchField):
+            new_search_fields.append(
+                SearchField(
+                    f.field_name,
+                    **f.kwargs,
+                )
+            )
+        if isinstance(f, index.FilterField):
+            new_search_fields.append(
+                FilterField(
+                    f.field_name,
+                    **f.kwargs,
+                )
+            )
+
+    return new_search_fields
