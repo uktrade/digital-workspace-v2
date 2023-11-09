@@ -5,10 +5,49 @@ from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
 
 from content.models import ContentPage
 from extended_search.backends.query import OnlyFields
+from extended_search.managers import get_indexed_field_name, get_search_query
+from extended_search.managers.index import ModelIndexManager
 from extended_search.managers.query_builder import NestedQueryBuilder, QueryBuilder
 from extended_search.models import Setting
 from extended_search.settings import extended_search_settings
 from extended_search.types import AnalysisType, SearchQueryType
+
+
+class TestManagerInit:
+    @pytest.mark.django_db
+    def test_get_indexed_field_name_uses_settings_correctly(self):
+        with pytest.raises(AttributeError):
+            get_indexed_field_name("foo", "bar")
+        analyzer = AnalysisType.TOKENIZED
+        assert get_indexed_field_name("foo", analyzer) == "foo"
+
+        Setting.objects.create(
+            key=f"analyzers__{analyzer.value}__index_fieldname_suffix", value="bar"
+        )
+        assert (
+            extended_search_settings[
+                f"analyzers__{analyzer.value}__index_fieldname_suffix"
+            ]
+            == "bar"
+        )
+        assert get_indexed_field_name("foo", analyzer) == "foobar"
+
+    def test_get_search_query_uses_mapping(self, mocker):
+        mock_map = mocker.patch(
+            "extended_search.managers.index.ModelIndexManager.get_mapping",
+            return_value=[],
+        )
+        mock_q = mocker.patch(
+            "extended_search.managers.query_builder.QueryBuilder._get_search_query_from_mapping",
+            return_value=[],
+        )
+        assert get_search_query(ModelIndexManager, "query", ContentPage) is None
+        mock_map.assert_called_once_with()
+
+        mock_map.return_value = ["--one--"]
+        mock_q.return_value = "--query--"
+        assert get_search_query(ModelIndexManager, "query", ContentPage) == "--query--"
+        mock_q.assert_called_once_with("query", ContentPage, "--one--")
 
 
 class TestQueryBuilder:

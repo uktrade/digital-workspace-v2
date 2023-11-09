@@ -1,9 +1,6 @@
 import html
 from typing import Optional
 
-from content import blocks
-from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
-from core.utils import set_seen_cookie_banner
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -11,13 +8,7 @@ from django.db import models
 from django.db.models import Q, Subquery
 from django.forms import widgets
 from django.utils.html import strip_tags
-from extended_search.fields import IndexedField
-from extended_search.index import Indexed
-from extended_search.managers.index import ModelIndexManager
-from peoplefinder.widgets import PersonChooser
-from search.utils import split_query
 from simple_history.models import HistoricalRecords
-from user.models import User as UserModel
 from wagtail.admin.panels import (
     FieldPanel,
     ObjectList,
@@ -30,6 +21,15 @@ from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
+from content import blocks
+from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
+from core.utils import set_seen_cookie_banner
+from extended_search.fields import IndexedField
+from extended_search.index import Indexed
+from extended_search.managers.index import ModelIndexManager
+from peoplefinder.widgets import PersonChooser
+from search.utils import split_query
+from user.models import User as UserModel
 
 User = get_user_model()
 
@@ -139,6 +139,38 @@ class ContentPageQuerySet(PageQuerySet):
 
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
+
+
+class ContentPageIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "search_title",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=5.0,
+        ),
+        IndexedField(
+            "search_headings",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=3.0,
+        ),
+        IndexedField(
+            "excerpt",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "search_content",
+            tokenized=True,
+            explicit=True,
+        ),
+        IndexedField("is_creatable", filter=True),
+        IndexedField("published_date", proximity=True),
+    ]
 
 
 class ContentOwnerMixin(models.Model):
@@ -263,38 +295,7 @@ class ContentPage(BasePage):
         null=True,
     )
 
-    class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "search_title",
-                tokenized=True,
-                explicit=True,
-                fuzzy=True,
-                boost=5.0,
-            ),
-            IndexedField(
-                "search_headings",
-                tokenized=True,
-                explicit=True,
-                fuzzy=True,
-                boost=3.0,
-            ),
-            IndexedField(
-                "excerpt",
-                tokenized=True,
-                explicit=True,
-                boost=2.0,
-            ),
-            IndexedField(
-                "search_content",
-                tokenized=True,
-                explicit=True,
-            ),
-            IndexedField("is_creatable", filter=True),
-            IndexedField("published_date", proximity=True),
-        ]
-
-    search_fields = BasePage.search_fields + IndexManager()
+    search_fields = BasePage.search_fields + ContentPageIndexManager()
 
     @property
     def published_date(self):
