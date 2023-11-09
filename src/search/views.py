@@ -9,11 +9,11 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
-from content.models import ContentPage
+from content.models import ContentPage, ContentPageIndexManager
 from extended_search.backends.query import OnlyFields
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import extended_search_settings
-from peoplefinder.models import Person, Team
+from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
 from search.templatetags.search import SEARCH_CATEGORIES
 
 logger = logging.getLogger(__name__)
@@ -77,18 +77,18 @@ def explore(request: HttpRequest) -> HttpResponse:
         (k, v["index_fieldname_suffix"])
         for k, v in extended_search_settings["analyzers"].items()
     ]
-    for mapping in ContentPage.IndexManager.get_mapping():
-        field = ContentPage.IndexManager._get_search_query_from_mapping(
+    for mapping in ContentPageIndexManager.get_mapping():
+        field = ContentPageIndexManager._get_search_query_from_mapping(
             query, ContentPage, mapping
         )
         get_query_info(subqueries["pages"], field, mapping, analyzer_field_suffices)
-    for mapping in Person.IndexManager.get_mapping():
-        field = Person.IndexManager._get_search_query_from_mapping(
+    for mapping in PersonIndexManager.get_mapping():
+        field = PersonIndexManager._get_search_query_from_mapping(
             query, Person, mapping
         )
         get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
-    for mapping in Team.IndexManager.get_mapping():
-        field = Team.IndexManager._get_search_query_from_mapping(query, Team, mapping)
+    for mapping in TeamIndexManager.get_mapping():
+        field = TeamIndexManager._get_search_query_from_mapping(query, Team, mapping)
         get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
 
     context = {

@@ -98,26 +98,9 @@ class ModelIndexManager(NestedQueryBuilder):
 
     @classmethod
     def get_search_fields(cls):
-        cls.generated_fields = []
+        index_fields = []
+
         for field_mapping in cls.get_mapping():
-            cls.generated_fields += cls._get_search_fields_from_mapping(field_mapping)
-        return cls.generated_fields
+            index_fields += cls._get_search_fields_from_mapping(field_mapping)
 
-    @classmethod
-    def get_directly_defined_fields(cls):
-        if not cls.generated_fields or len(cls.generated_fields) == 0:
-            cls.get_search_fields()
-
-        index_field_names = [f.model_field_name for f in cls.fields]
-        return [
-            field
-            for field in cls.generated_fields
-            if (
-                hasattr(field, "model_field_name")
-                and field.model_field_name in index_field_names
-            )
-        ]
-
-    @classmethod
-    def is_directly_defined(cls, field):
-        return field in cls.get_directly_defined_fields()
+        return index_fields
