@@ -62,7 +62,7 @@ class BaseField(index.BaseField):
             return value
 
         value = getattr(obj, self.model_field_name, None)
-        if hasattr(value, "__call__"):
+        if hasattr(value, "__call__"):  # noqa: B004
             value = value()
         return value
 

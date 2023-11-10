@@ -43,7 +43,7 @@ class TestBaseField:
         field = BaseField("foo")
         returned_field = field.get_field(mock_model)
         parent_method.assert_not_called()
-        assert returned_field is "foobar"
+        assert returned_field == "foobar"
 
     def test_get_attname_uses_field_name_not_model_field_name(self, mocker):
         mock_field = mocker.Mock()
@@ -103,7 +103,7 @@ class TestBaseField:
         assert field.model_field_name == "foo"
         result = field.get_value(CustomObject())
         parent_method.assert_called_once()
-        assert result is "foobar"
+        assert result == "foobar"
 
         parent_method.return_value = None
         field = BaseField("foo", model_field_name="bar")
