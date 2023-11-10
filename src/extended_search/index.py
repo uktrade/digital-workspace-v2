@@ -170,6 +170,48 @@ class RelatedIndexedFields(BaseField):
 
 
 #############################
+# Multi-query search code
+#############################
+
+
+class MultiQueryIndexedField(IndexedField):
+    def __init__(
+        self,
+        *args,
+        tokenized: bool = False,
+        explicit: bool = False,
+        fuzzy: bool = False,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.tokenized = tokenized
+        self.explicit = explicit
+        self.fuzzy = fuzzy
+
+        if tokenized or explicit or fuzzy:
+            self.search = True
+
+
+#############################
+# Digital Workspace code
+#############################
+
+
+class DWIndexedField(MultiQueryIndexedField):
+    def __init__(
+        self,
+        *args,
+        keyword: bool = False,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.keyword = keyword
+
+        if keyword:
+            self.search = True
+
+
+#############################
 # UNPROCESSED STUFF BELOW @TODO
 #############################
 
