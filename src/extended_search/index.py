@@ -1,6 +1,7 @@
 # type: ignore  (type checking is unhappy about the mixin referencing fields it doesnt define)
 import inspect
 import logging
+from typing import Optional
 
 from django.core import checks
 from wagtail.search import index
@@ -8,9 +9,30 @@ from wagtail.search import index
 logger = logging.getLogger(__name__)
 
 
+class Indexed(index.Indexed):
+    search_fields = []
+
+    @classmethod
+    def _check_search_fields(cls, **kwargs):
+        errors = []
+        for field in cls.get_search_fields():
+            message = "{model}.search_fields contains non-existent field '{name}'"
+            if not cls._has_field(field.field_name) and not cls._has_field(
+                field.model_field_name
+            ):
+                errors.append(
+                    checks.Warning(
+                        message.format(model=cls.__name__, name=field.field_name),
+                        obj=cls,
+                        id="wagtailsearch.W004",
+                    )
+                )
+        return errors
+
+
 class BaseField(index.BaseField):
-    def __init__(self, field_name, model_field_name=None, **kwargs):
-        super().__init__(field_name, **kwargs)
+    def __init__(self, field_name, *args, model_field_name=None, **kwargs):
+        super().__init__(field_name, *args, **kwargs)
         self.model_field_name = model_field_name or field_name
 
     def get_field(self, cls):
@@ -68,29 +90,88 @@ class RelatedFields(index.RelatedFields, BaseField, index.BaseField):
 
 
 #############################
-# UNPROCESSED STUFF BELOW @TODO
+# One-to-many supporting code
 #############################
 
 
-class Indexed(index.Indexed):
-    search_fields = []
+class IndexedField(BaseField):
+    def __init__(
+        self,
+        *args,
+        boost: float = 1.0,
+        search: bool = False,
+        search_kwargs: Optional[dict] = None,
+        autocomplete: bool = False,
+        autocomplete_kwargs: Optional[dict] = None,
+        filter: bool = False,
+        filter_kwargs: Optional[dict] = None,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
 
-    @classmethod
-    def _check_search_fields(cls, **kwargs):
-        errors = []
-        for field in cls.get_search_fields():
-            message = "{model}.search_fields contains non-existent field '{name}'"
-            if not cls._has_field(field.field_name) and not cls._has_field(
-                field.model_field_name
-            ):
-                errors.append(
-                    checks.Warning(
-                        message.format(model=cls.__name__, name=field.field_name),
-                        obj=cls,
-                        id="wagtailsearch.W004",
-                    )
-                )
-        return errors
+        self.boost = boost
+        self.search = search
+        self.search_kwargs = search_kwargs or {}
+        self.autocomplete = autocomplete
+        self.autocomplete_kwargs = autocomplete_kwargs or {}
+        self.filter = filter
+        self.filter_kwargs = filter_kwargs or {}
+
+    def generate_fields(
+        self,
+        # parent_field: Optional[BaseField] = None,
+    ) -> list[BaseField]:
+        generated_fields = []
+        field_name = self.model_field_name
+        # if parent_field:
+        #     field_name = f"{parent_field.model_field_name}.{field_name}"
+
+        if self.search:
+            generated_fields.append(self.generate_search_field(field_name))
+        if self.autocomplete:
+            generated_fields.append(self.generate_autocomplete_field(field_name))
+        if self.filter:
+            generated_fields.append(self.generate_filter_field(field_name))
+
+        return generated_fields
+
+    def generate_search_field(self, field_name: str) -> SearchField:
+        return SearchField(
+            field_name,
+            model_field_name=self.model_field_name,
+            **self.search_kwargs,
+        )
+
+    def generate_autocomplete_field(self, field_name: str) -> AutocompleteField:
+        return AutocompleteField(
+            field_name,
+            model_field_name=self.model_field_name,
+            **self.autocomplete_kwargs,
+        )
+
+    def generate_filter_field(self, field_name: str) -> FilterField:
+        return FilterField(
+            field_name,
+            model_field_name=self.model_field_name,
+            **self.filter_kwargs,
+        )
+
+
+class RelatedIndexedFields(BaseField):
+    def __init__(
+        self,
+        field_name: str,
+        related_fields: list[BaseField],
+        *args,
+        **kwargs,
+    ):
+        super().__init__(field_name, *args, **kwargs)
+        self.related_fields = related_fields
+
+
+#############################
+# UNPROCESSED STUFF BELOW @TODO
+#############################
 
 
 class CustomIndexed(Indexed):
@@ -104,22 +185,5 @@ class CustomIndexed(Indexed):
             ):
                 return True
         return False
-
-    @classmethod
-    def _check_search_fields(cls, **kwargs):
-        errors = []
-        for field in cls.get_search_fields():
-            message = "{model}.search_fields contains non-existent field '{name}'"
-            if not cls._has_field(field.field_name) and not cls._has_field(
-                field.model_field_name
-            ):
-                errors.append(
-                    checks.Warning(
-                        message.format(model=cls.__name__, name=field.field_name),
-                        obj=cls,
-                        id="wagtailsearch.W004",
-                    )
-                )
-        return errors
 
     search_fields = []

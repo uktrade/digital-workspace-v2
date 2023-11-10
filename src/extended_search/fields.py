@@ -1,52 +1,35 @@
 import logging
 
+from extended_search import index
 from extended_search.types import AnalysisType
-
 
 logger = logging.getLogger(__name__)
 
 
-class AbstractBaseField:
-    def __init__(self, name, model_field_name=None, boost=1.0, **kwargs):
-        self.name = kwargs["name"] = name
-        self.model_field_name = kwargs["model_field_name"] = model_field_name or name
-        self.boost = kwargs["boost"] = boost
-        self.kwargs = kwargs
+class BaseIndexedField(index.IndexedField):
+    def __init__(
+        self,
+        *args,
+        fuzzy=False,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.fuzzy = self.kwargs["fuzzy"] = fuzzy
+
+        if fuzzy:
+            self.search = True
 
     def _get_base_mapping_object(self):
         return {
-            "name": self.name,
+            "name": self.field_name,
             "model_field_name": self.model_field_name,
             "boost": self.boost,
             "parent_model_field": None,  # when is not None, field is Related
         }
 
-    def get_mapping(self):
-        return self._get_base_mapping_object()
-
     @property
     def mapping(self):
         return self.get_mapping()
-
-
-class BaseIndexedField(AbstractBaseField):
-    def __init__(
-        self,
-        *args,
-        search=False,
-        autocomplete=False,
-        filter=False,
-        fuzzy=False,
-        **kwargs,
-    ):
-        super().__init__(*args, **kwargs)
-        self.search = self.kwargs["search"] = search
-        self.autocomplete = self.kwargs["autocomplete"] = autocomplete
-        self.filter = self.kwargs["filter"] = filter
-        self.fuzzy = self.kwargs["fuzzy"] = fuzzy
-
-        if fuzzy:
-            self.search = True
 
     def _get_search_mapping_object(self):
         if not self.search:
@@ -75,7 +58,7 @@ class BaseIndexedField(AbstractBaseField):
         return {"filter": []}
 
     def get_mapping(self):
-        mapping = super().get_mapping()
+        mapping = self._get_base_mapping_object()
         if self.search:
             mapping = mapping | self._get_search_mapping_object()
         if self.autocomplete:
@@ -126,11 +109,7 @@ class IndexedField(BaseIndexedField):
         return mapping
 
 
-class RelatedIndexedFields(AbstractBaseField):
-    def __init__(self, name, related_fields, *args, **kwargs):
-        super().__init__(name, *args, **kwargs)
-        self.related_fields = self.kwargs["related_fields"] = related_fields
-
+class RelatedIndexedFields(index.RelatedIndexedFields):
     def _get_related_mapping_object(self):
         fields = []
         for field in self.related_fields:
@@ -141,6 +120,17 @@ class RelatedIndexedFields(AbstractBaseField):
             "related_fields": fields,
         }
 
+    def _get_base_mapping_object(self):
+        return {
+            "name": self.field_name,
+            "model_field_name": self.model_field_name,
+            "parent_model_field": None,  # when is not None, field is Related
+        }
+
     def get_mapping(self):
-        mapping = super().get_mapping()
+        mapping = self._get_base_mapping_object()
         return mapping | self._get_related_mapping_object()
+
+    @property
+    def mapping(self):
+        return self.get_mapping()

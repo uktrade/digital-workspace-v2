@@ -1,16 +1,17 @@
+import inspect
 from unittest.mock import call
 
-import inspect
 import pytest
 from wagtail.search.backends.elasticsearch5 import Elasticsearch5SearchQueryCompiler
 from wagtail.search.backends.elasticsearch6 import Field
-from wagtail.search.index import SearchField, RelatedFields
-from wagtail.search.query import MATCH_NONE, PlainText, Fuzzy, Phrase
+from wagtail.search.index import RelatedFields, SearchField
+from wagtail.search.query import MATCH_NONE, Fuzzy, Phrase, PlainText
 
 from content.models import ContentPage
 from extended_search.backends.backend import (
     BoostSearchQueryCompiler,
     CustomSearchBackend,
+    CustomSearchMapping,
     CustomSearchQueryCompiler,
     ExtendedSearchQueryCompiler,
     FilteredSearchMapping,
@@ -19,7 +20,7 @@ from extended_search.backends.backend import (
     OnlyFieldSearchQueryCompiler,
     SearchBackend,
 )
-from extended_search.backends.query import OnlyFields, Nested, Filtered
+from extended_search.backends.query import Filtered, Nested, OnlyFields
 from peoplefinder.models import Person, Team
 
 
@@ -316,12 +317,13 @@ class TestFilteredSearchMapping:
 class TestCustomSearchBackend:
     def test_correct_mappings_and_backends_configured(self):
         assert CustomSearchBackend.query_compiler_class == CustomSearchQueryCompiler
-        assert CustomSearchBackend.mapping_class == FilteredSearchMapping
+        assert CustomSearchBackend.mapping_class == CustomSearchMapping
         assert ExtendedSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
         assert BoostSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
         assert FilteredSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
         assert NestedSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
         assert OnlyFieldSearchQueryCompiler in inspect.getmro(CustomSearchQueryCompiler)
+        assert FilteredSearchMapping in inspect.getmro(CustomSearchMapping)
 
     def test_custom_search_backend_used(self):
         assert SearchBackend == CustomSearchBackend

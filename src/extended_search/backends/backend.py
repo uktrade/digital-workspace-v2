@@ -2,15 +2,25 @@ from typing import Any, List, Union
 
 from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
-    Elasticsearch7SearchBackend,
     Elasticsearch7Mapping,
+    Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
 )
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
-from extended_search.backends.query import Nested, OnlyFields, Filtered
+from extended_search.backends.query import Filtered, Nested, OnlyFields
 from extended_search.index import RelatedFields
+
+#############################
+# Wagtail overrides above
+# Our custom code below
+#############################
+
+
+#############################
+# UNPROCESSED STUFF BELOW @TODO
+#############################
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
@@ -319,6 +329,12 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
         return match_query
 
 
+class CustomSearchMapping(
+    FilteredSearchMapping,
+):
+    ...
+
+
 class CustomSearchQueryCompiler(
     BoostSearchQueryCompiler,
     FilteredSearchQueryCompiler,
@@ -330,7 +346,7 @@ class CustomSearchQueryCompiler(
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = CustomSearchQueryCompiler
-    mapping_class = FilteredSearchMapping
+    mapping_class = CustomSearchMapping
 
 
 SearchBackend = CustomSearchBackend

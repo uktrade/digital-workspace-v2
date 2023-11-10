@@ -113,7 +113,7 @@ class ModelIndexManager(NestedQueryBuilder):
             field
             for field in cls.generated_fields
             if (
-                hasattr(field, "model_field_name")
+                hasattr(field, "model_field_name")  # @TODO do we still need this line?
                 and field.model_field_name in index_field_names
             )
         ]
