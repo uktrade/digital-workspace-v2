@@ -160,7 +160,6 @@ class TestIndexedField:
         assert not field.tokenized
         assert not field.explicit
         assert not field.keyword
-        assert not field.proximity
 
         field = IndexedField(
             "foo",
@@ -168,12 +167,10 @@ class TestIndexedField:
             tokenized=True,
             explicit=True,
             keyword=True,
-            proximity=True,
         )
         assert field.tokenized
         assert field.explicit
         assert field.keyword
-        assert field.proximity
 
     def test_init_params_set_search_param_when_needed(self):
         field = IndexedField("foo", tokenized=True)
@@ -181,28 +178,18 @@ class TestIndexedField:
         assert field.tokenized
         assert not field.explicit
         assert not field.keyword
-        assert not field.proximity
 
         field = IndexedField("foo", explicit=True)
         assert field.search
         assert field.explicit
         assert not field.tokenized
         assert not field.keyword
-        assert not field.proximity
 
         field = IndexedField("foo", keyword=True)
         assert field.search
         assert field.keyword
         assert not field.tokenized
         assert not field.explicit
-        assert not field.proximity
-
-        field = IndexedField("foo", proximity=True)
-        assert not field.search
-        assert field.proximity
-        assert not field.tokenized
-        assert not field.explicit
-        assert not field.keyword
 
     def test_get_search_mapping_object_format(self):
         field = IndexedField("foo", tokenized=True)

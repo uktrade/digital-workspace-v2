@@ -6,19 +6,7 @@ from extended_search.types import AnalysisType
 logger = logging.getLogger(__name__)
 
 
-class BaseIndexedField(index.IndexedField):
-    def __init__(
-        self,
-        *args,
-        fuzzy=False,
-        **kwargs,
-    ):
-        super().__init__(*args, **kwargs)
-        self.fuzzy = self.kwargs["fuzzy"] = fuzzy
-
-        if fuzzy:
-            self.search = True
-
+class BaseIndexedField(index.DWIndexedField):
     def _get_base_mapping_object(self):
         return {
             "name": self.field_name,
@@ -69,26 +57,6 @@ class BaseIndexedField(index.IndexedField):
 
 
 class IndexedField(BaseIndexedField):
-    def __init__(
-        self,
-        *args,
-        tokenized=False,
-        explicit=False,
-        keyword=False,
-        proximity=False,
-        **kwargs,
-    ):
-        super().__init__(*args, **kwargs)
-        self.tokenized = self.kwargs["tokenized"] = tokenized
-        self.explicit = self.kwargs["explicit"] = explicit
-        self.keyword = self.kwargs["keyword"] = keyword
-        self.proximity = self.kwargs["proximity"] = proximity
-
-        if tokenized or explicit or keyword:
-            self.search = True
-
-        if proximity:
-            self.filter = True
 
     def _get_search_mapping_object(self):
         mapping = super()._get_search_mapping_object()
@@ -98,14 +66,6 @@ class IndexedField(BaseIndexedField):
             mapping["search"] += [AnalysisType.EXPLICIT]
         if self.keyword:
             mapping["search"] += [AnalysisType.KEYWORD]
-        return mapping
-
-    def _get_filter_mapping_object(self):
-        mapping = super()._get_filter_mapping_object()
-        if self.proximity and AnalysisType.PROXIMITY not in mapping["filter"]:
-            mapping["filter"] += [
-                AnalysisType.PROXIMITY
-            ]  # @TODO is this the right way to index proximity
         return mapping
 
 
