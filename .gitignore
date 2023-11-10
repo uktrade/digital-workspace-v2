@@ -68,3 +68,5 @@ ner_output_file.txt
 # Playwright
 /playwright-report
 /playwright/.auth
+
+dw.dump

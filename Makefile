@@ -175,6 +175,9 @@ first-use:
 superuser:
 	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
 
+su-all:
+	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.all().update(is_superuser=True, is_staff=True)"
+
 #
 # Django
 #
