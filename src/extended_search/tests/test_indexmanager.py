@@ -1,7 +1,7 @@
 import pytest
-
 from wagtail.search.index import FilterField
-from extended_search.index import AutocompleteField, SearchField, RelatedFields
+
+from extended_search.index import AutocompleteField, RelatedFields, SearchField
 from extended_search.managers.index import ModelIndexManager
 from extended_search.managers.query_builder import QueryBuilder
 from extended_search.models import Setting
@@ -169,7 +169,7 @@ class TestModelIndexManager:
         assert type(result[0]) == SearchField
         assert result[0].field_name == "bar"
         assert result[0].boost == 3.2
-        assert result[0].kwargs["model_field_name"] == "foo"
+        assert result[0].model_field_name == "foo"
         assert result[0].kwargs["es_extra"] == {"analyzer": "baz"}
 
     def test_get_searchable_search_fields_returns_field_per_analyzer(self, mocker):
