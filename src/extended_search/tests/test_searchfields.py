@@ -70,11 +70,18 @@ class TestRenamedFieldMixin:
         parent_method = mocker.patch(
             "wagtail.search.index.SearchField.get_definition_model", return_value=None
         )
+        mock_model.IndexManager.is_directly_defined.return_value = False
         field = SearchField("foo")
         result = field.get_definition_model(mock_model)
         parent_method.assert_called_once()
         assert result is None
 
+        parent_method.reset_mock()
+        mock_model.IndexManager.is_directly_defined.return_value = True
+        assert field.get_definition_model(mock_model) == mock_model
+        parent_method.assert_not_called()
+
+        mock_model.IndexManager.is_directly_defined.return_value = False
         mock_base = mocker.Mock()
         mock_base.bar = True
         mocker.patch("inspect.getmro", return_value=[mock_base])
