@@ -57,7 +57,6 @@ class BaseIndexedField(index.DWIndexedField):
 
 
 class IndexedField(BaseIndexedField):
-
     def _get_search_mapping_object(self):
         mapping = super()._get_search_mapping_object()
         if self.tokenized and AnalysisType.TOKENIZED not in mapping["search"]:
