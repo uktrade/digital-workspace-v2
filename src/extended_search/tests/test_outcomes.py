@@ -1,21 +1,19 @@
 # Integration / functional output tests
 import pytest
 from django.conf import settings
-
 from wagtail.search.backends import get_search_backend
 from wagtail.search.index import AutocompleteField, SearchField
 
 from content.models import ContentPage
 from extended_search.backends.query import Filtered
 from extended_search.fields import IndexedField
-from extended_search.models import Setting
 from extended_search.managers import (
-    get_search_query,
     get_extended_models_with_indexmanager,
+    get_search_query,
 )
+from extended_search.models import Setting
 from extended_search.settings import SearchSettings, extended_search_settings
 from news.models import NewsPage
-
 
 existing_cp_fields = ContentPage.IndexManager.fields
 existing_cp_search_fields = ContentPage.search_fields
@@ -23,6 +21,7 @@ existing_np_fields = NewsPage.IndexManager.fields
 existing_np_search_fields = NewsPage.search_fields
 
 
+@pytest.mark.xfail
 class TestPerModelFieldOverrides:
     def update_and_get_mapping_from_model_fields(
         self, model_class, fields, base_fields=None

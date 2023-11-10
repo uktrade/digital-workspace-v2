@@ -19,7 +19,7 @@ from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
 from extended_search.fields import IndexedField, RelatedIndexedFields
-from extended_search.index import Indexed
+from extended_search.index import CustomIndexed
 from extended_search.managers.index import ModelIndexManager
 
 # United Kingdom
@@ -255,7 +255,7 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
-class Person(Indexed, models.Model):
+class Person(CustomIndexed, models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -941,7 +941,7 @@ You can update this description, by [updating your team information](https://wor
 """
 
 
-class Team(Indexed, models.Model):
+class Team(CustomIndexed, models.Model):
     class LeadersOrdering(models.TextChoices):
         ALPHABETICAL = "alphabetical", "Alphabetical"
         CUSTOM = "custom", "Custom"
