@@ -6,7 +6,6 @@ from django.db import models
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
 from extended_search.backends.query import Nested, OnlyFields
-from extended_search.managers import get_indexed_field_name
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
 
@@ -115,6 +114,8 @@ class QueryBuilder:
         analysis_type: AnalysisType,
         field_mapping: dict,
     ):
+        from extended_search.managers import get_indexed_field_name
+
         query = cls._get_inner_searchquery_for_querytype(
             query_str,
             query_type,

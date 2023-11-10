@@ -26,7 +26,6 @@ from content.utils import manage_excluded, manage_pinned, truncate_words_and_cha
 from core.utils import set_seen_cookie_banner
 from extended_search.fields import IndexedField
 from extended_search.index import CustomIndexed
-from extended_search.managers.index import ModelIndexManager
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
@@ -263,38 +262,35 @@ class ContentPage(BasePage):
         null=True,
     )
 
-    class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "search_title",
-                tokenized=True,
-                explicit=True,
-                fuzzy=True,
-                boost=5.0,
-            ),
-            IndexedField(
-                "search_headings",
-                tokenized=True,
-                explicit=True,
-                fuzzy=True,
-                boost=3.0,
-            ),
-            IndexedField(
-                "excerpt",
-                tokenized=True,
-                explicit=True,
-                boost=2.0,
-            ),
-            IndexedField(
-                "search_content",
-                tokenized=True,
-                explicit=True,
-            ),
-            IndexedField("is_creatable", filter=True),
-            IndexedField("published_date", proximity=True),
-        ]
-
-    search_fields = BasePage.search_fields + IndexManager()
+    search_fields = BasePage.search_fields + [
+        IndexedField(
+            "search_title",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=5.0,
+        ),
+        IndexedField(
+            "search_headings",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=3.0,
+        ),
+        IndexedField(
+            "excerpt",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "search_content",
+            tokenized=True,
+            explicit=True,
+        ),
+        IndexedField("is_creatable", filter=True),
+        IndexedField("published_date", proximity=True),
+    ]
 
     @property
     def published_date(self):

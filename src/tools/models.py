@@ -6,7 +6,6 @@ from wagtail.admin.panels import FieldPanel
 
 from content.models import ContentPage
 from extended_search.fields import IndexedField
-from extended_search.managers.index import ModelIndexManager
 from working_at_dit.models import PageWithTopics
 
 
@@ -91,20 +90,17 @@ class Tool(PageWithTopics):
         max_length=2048,
     )
 
-    class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "search_tool_name",
-                fuzzy=True,
-                tokenized=True,
-                explicit=True,
-                autocomplete=True,
-                keyword=True,
-                boost=10.0,
-            ),
-        ]
-
-    search_fields = PageWithTopics.search_fields + IndexManager()
+    search_fields = PageWithTopics.search_fields + [
+        IndexedField(
+            "search_tool_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            keyword=True,
+            boost=10.0,
+        ),
+    ]
 
     @property
     def search_tool_name(self):

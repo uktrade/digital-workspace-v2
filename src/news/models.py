@@ -8,7 +8,6 @@ from django.db import models
 from django.template.response import TemplateResponse
 from django.utils.text import slugify
 from extended_search.fields import IndexedField
-from extended_search.managers.index import ModelIndexManager
 from modelcluster.fields import ParentalKey
 from news.forms import CommentForm
 from simple_history.models import HistoricalRecords
@@ -74,16 +73,13 @@ class NewsCategory(models.Model):
     )
     history = history = HistoricalRecords()
 
-    class IndexManager(ModelIndexManager):
-        fields = [
+    search_fields = ContentPage.search_fields + [
             IndexedField(
                 "category",
                 tokenized=True,
                 explicit=True,
             ),
         ]
-
-    search_fields = ContentPage.search_fields + IndexManager()
 
     def __str__(self):
         return self.category
@@ -158,8 +154,7 @@ class NewsPage(PageWithTopics):
             self.news_categories.all().values_list("news_category__category", flat=True)
         )
 
-    class IndexManager(ModelIndexManager):
-        fields = [
+    search_fields = PageWithTopics.search_fields + [
             IndexedField(
                 "search_categories",
                 autocomplete=True,
@@ -170,8 +165,6 @@ class NewsPage(PageWithTopics):
                 filter=True,
             ),
         ]
-
-    search_fields = PageWithTopics.search_fields + IndexManager()
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504
         FieldPanel("preview_image"),

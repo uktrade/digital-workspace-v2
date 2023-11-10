@@ -6,6 +6,7 @@ from wagtail.search.index import get_indexed_models
 from wagtail.search.query import SearchQuery
 
 from extended_search.backends.query import Filtered
+from extended_search.managers.query_builder import NestedQueryBuilder
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType
 
@@ -28,12 +29,12 @@ def get_indexed_field_name(
 
 def get_query_for_model(model_class, query_str) -> SearchQuery:
     query = None
-    for field_mapping in model_class.IndexManager.get_mapping():
-        query_elements = model_class.IndexManager._get_search_query_from_mapping(
+    for field_mapping in model_class.get_mapping():
+        query_elements = NestedQueryBuilder._get_search_query_from_mapping(
             query_str, model_class, field_mapping
         )
         if query_elements is not None:
-            query = model_class.IndexManager._combine_queries(
+            query = NestedQueryBuilder._combine_queries(
                 query,
                 query_elements,
             )
