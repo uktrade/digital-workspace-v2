@@ -1,5 +1,5 @@
 from content.models import ContentPage
-from extended_search.managers import get_search_query
+from extended_search.managers.query_builder import CustomQueryBuilder
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from tools.models import Tool
@@ -40,7 +40,7 @@ class PagesSearchVector(SearchVector):
         return self.page_model.objects.public_or_login().live()
 
     def get_query(self, query_str):
-        return get_search_query(
+        return CustomQueryBuilder.get_search_query(
             self.page_model,
             query_str,
         )
@@ -88,7 +88,7 @@ class PeopleSearchVector(SearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = get_search_query(
+        query = CustomQueryBuilder.get_search_query(
             Person,
             query,
             *args,
@@ -103,5 +103,5 @@ class TeamsSearchVector(SearchVector):
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset()
-        query = get_search_query(Team, query, *args, **kwargs)
+        query = CustomQueryBuilder.get_search_query(Team, query, *args, **kwargs)
         return self._wagtail_search(queryset, query, *args, **kwargs)

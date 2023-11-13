@@ -1,12 +1,14 @@
+import inspect
 import logging
 from typing import Optional
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from wagtail.search.index import BaseField, get_indexed_models
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
-from extended_search.backends.query import Nested, OnlyFields
-from extended_search.managers import get_indexed_field_name
+from extended_search.backends.query import Filtered, Nested, OnlyFields
+from extended_search.index import RelatedIndexedFields, IndexedField
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
 
@@ -113,8 +115,15 @@ class QueryBuilder:
         base_field_name: str,
         query_type: SearchQueryType,
         analysis_type: AnalysisType,
-        field_mapping: dict,
+        field: BaseField,
     ):
+        from extended_search.managers import get_indexed_field_name
+
+        field_name = base_field_name
+        # if pmf := field_mapping.get("parent_model_field"):
+        #     field_name = f"{pmf}.{field_name}"
+        # @TODO parent!
+
         query = cls._get_inner_searchquery_for_querytype(
             query_str,
             query_type,
@@ -139,37 +148,42 @@ class QueryBuilder:
         return q1 or q2
 
     @classmethod
-    def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
-        subquery = None
+    def _get_search_query_for_searchfield(cls, field, query_str, model_class, subquery):
+        analyzers = set()
+        if field.explicit:
+            analyzers.add(AnalysisType.EXPLICIT)
+        if field.keyword:
+            analyzers.add(AnalysisType.KEYWORD)
+        if not analyzers:
+            analyzers.add(AnalysisType.TOKENIZED)
 
-        if "search" in field_mapping:
-            for analyzer in field_mapping["search"]:
-                for query_type in search_settings[
-                    f"analyzers__{analyzer.value}__query_types"
-                ]:
-                    query_element = (
-                        cls._get_searchquery_for_query_field_querytype_analysistype(
-                            query_str,
-                            model_class,
-                            field_mapping["model_field_name"],
-                            SearchQueryType(query_type),
-                            analyzer,
-                            field_mapping,
-                        )
+        for analyzer in analyzers:
+            for query_type in search_settings[
+                f"analyzers__{analyzer.value}__query_types"
+            ]:
+                query_element = (
+                    cls._get_searchquery_for_query_field_querytype_analysistype(
+                        query_str,
+                        model_class,
+                        field.model_field_name,
+                        SearchQueryType(query_type),
+                        analyzer,
+                        field,
                     )
-                    subquery = cls._combine_queries(
-                        subquery,
-                        query_element,
-                    )
+                )
+                subquery = cls._combine_queries(
+                    subquery,
+                    query_element,
+                )
 
-        if "fuzzy" in field_mapping:
+        if field.fuzzy:
             query_element = cls._get_searchquery_for_query_field_querytype_analysistype(
                 query_str,
                 model_class,
-                field_mapping["model_field_name"],
+                field.model_field_name,
                 SearchQueryType("fuzzy"),
-                AnalysisType("tokenized"),
-                field_mapping,
+                AnalysisType.TOKENIZED,
+                field,
             )
             subquery = cls._combine_queries(
                 subquery,
@@ -178,53 +192,104 @@ class QueryBuilder:
 
         return subquery
 
-
-class NestedQueryBuilder(QueryBuilder):
     @classmethod
-    def _get_searchquery_for_query_field_querytype_analysistype(
+    def _get_search_query(
         cls,
         query_str: str,
         model_class: models.Model,
-        base_field_name: str,
-        query_type: SearchQueryType,
-        analysis_type: AnalysisType,
-        field_mapping: dict,
+        field: BaseField,
     ):
-        # @TODO: Come up with a better name for this, and/or move it higher up
-        field_name = base_field_name
-        if pmf := field_mapping.get("parent_model_field"):
-            field_name = f"{pmf}.{field_name}"
+        # @TODO verify this works if not everything is an IndexedField
+        subquery = None
 
-        return super()._get_searchquery_for_query_field_querytype_analysistype(
-            query_str,
-            model_class,
-            field_name,
-            query_type,
-            analysis_type,
-            field_mapping,
-        )
+        if isinstance(field, IndexedField):
+            if field.search:
+                subquery = cls._get_search_query_for_searchfield(
+                    field, query_str, model_class, subquery
+                )
+
+        if isinstance(field, RelatedIndexedFields):
+            internal_subquery = None
+            for related_field in field.related_fields:
+                internal_subquery = cls._combine_queries(
+                    internal_subquery,
+                    cls._get_search_query(query_str, model_class, related_field),
+                )
+            subquery = cls._combine_queries(
+                Nested(subquery=internal_subquery, path=field.model_field_name),
+                subquery,
+            )
+
+        return subquery
+
+
+class CustomQueryBuilder(QueryBuilder):
+    @classmethod
+    def get_query_for_model(cls, model_class, query_str) -> SearchQuery:
+        query = None
+        for field in model_class.IndexManager.fields:
+            query_elements = cls._get_search_query(query_str, model_class, field)
+            if query_elements is not None:
+                query = cls._combine_queries(
+                    query,
+                    query_elements,
+                )
+        logger.debug(query)
+        return query
 
     @classmethod
-    def _get_search_query_from_mapping(cls, query_str, model_class, field_mapping):
-        subquery = super()._get_search_query_from_mapping(
-            query_str, model_class, field_mapping
-        )
-        if "related_fields" not in field_mapping:
-            return subquery
-
-        internal_subquery = None
-        for related_field_mapping in field_mapping["related_fields"]:
-            internal_subquery = cls._combine_queries(
-                internal_subquery,
-                cls._get_search_query_from_mapping(
-                    query_str, model_class, related_field_mapping
-                ),
+    def get_search_query(cls, model_class, query_str, *args, **kwargs):
+        """
+        Generates a full query for a model class, by running query builder
+        against the given model as well as all models with the given as a
+        parent; each has it's own subquery using its own settings filtered by
+        type, and all are joined together at the end.
+        """
+        extended_models = cls.get_extended_models_with_indexmanager(model_class)
+        # build full query for each extended model
+        queries = []
+        for sub_model_contenttype, sub_model_class in extended_models.items():
+            # filter so it only applies to "docs with that model anywhere in the contenttypes list"
+            query = Filtered(
+                subquery=cls.get_query_for_model(sub_model_class, query_str),
+                filters=[
+                    (
+                        "content_type",
+                        "contains",
+                        sub_model_contenttype,
+                    ),
+                ],
             )
-        nested_subquery = Nested(
-            subquery=internal_subquery, path=field_mapping["model_field_name"]
+            queries.append(query)
+
+        # build query for root model passed in to method, filter to exclude docs with contenttypes
+        # matching any of the extended-models-with-dedicated-IM
+        root_query = Filtered(
+            subquery=cls.get_query_for_model(model_class, query_str),
+            filters=[
+                (
+                    "content_type",
+                    "excludes",
+                    list(extended_models.keys()),
+                ),
+            ],
         )
 
-        return cls._combine_queries(
-            nested_subquery,
-            subquery,
-        )
+        for q in queries:
+            root_query |= q
+        return root_query
+
+    @classmethod
+    def get_extended_models_with_indexmanager(cls, model_class):
+        # iterate indexed models extending the root model that have a dedicated IndexManager
+        extended_model_classes = {}
+        for indexed_model in get_indexed_models():
+            if (
+                indexed_model != model_class
+                and model_class in inspect.getmro(indexed_model)
+                and indexed_model.has_indexmanager_direct_inner_class()
+            ):
+                extended_model_classes[
+                    f"{indexed_model._meta.app_label}.{indexed_model.__name__}"
+                ] = indexed_model
+        return extended_model_classes
