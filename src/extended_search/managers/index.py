@@ -3,15 +3,14 @@ import logging
 from wagtail.search.index import FilterField
 
 from extended_search.index import AutocompleteField, RelatedFields, SearchField
-from extended_search.managers import get_indexed_field_name
-from extended_search.managers.query_builder import NestedQueryBuilder
+from extended_search.managers.query_builder import CustomQueryBuilder
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType
 
 logger = logging.getLogger(__name__)
 
 
-class ModelIndexManager(NestedQueryBuilder):
+class ModelIndexManager(CustomQueryBuilder):
     fields = []
 
     def __new__(cls):
@@ -24,6 +23,8 @@ class ModelIndexManager(NestedQueryBuilder):
 
     @classmethod
     def _get_searchable_search_fields(cls, model_field_name, analyzers, boost=1.0):
+        from extended_search.managers import get_indexed_field_name
+
         fields = []
         if len(analyzers) == 0:
             analyzers = [AnalysisType.TOKENIZED]

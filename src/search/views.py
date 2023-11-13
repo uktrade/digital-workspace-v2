@@ -11,6 +11,7 @@ from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
 from content.models import ContentPage
 from extended_search.backends.query import OnlyFields
+from extended_search.managers.query_builder import CustomQueryBuilder
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import extended_search_settings
 from peoplefinder.models import Person, Team
@@ -78,17 +79,17 @@ def explore(request: HttpRequest) -> HttpResponse:
         for k, v in extended_search_settings["analyzers"].items()
     ]
     for mapping in ContentPage.IndexManager.get_mapping():
-        field = ContentPage.IndexManager._get_search_query_from_mapping(
+        field = CustomQueryBuilder._get_search_query(
             query, ContentPage, mapping
         )
         get_query_info(subqueries["pages"], field, mapping, analyzer_field_suffices)
     for mapping in Person.IndexManager.get_mapping():
-        field = Person.IndexManager._get_search_query_from_mapping(
+        field = CustomQueryBuilder._get_search_query(
             query, Person, mapping
         )
         get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
     for mapping in Team.IndexManager.get_mapping():
-        field = Team.IndexManager._get_search_query_from_mapping(query, Team, mapping)
+        field = CustomQueryBuilder._get_search_query(query, Team, mapping)
         get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
 
     context = {
