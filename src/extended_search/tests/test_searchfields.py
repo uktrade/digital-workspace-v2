@@ -3,6 +3,9 @@ from wagtail.search import index
 from extended_search.index import (
     AutocompleteField,
     BaseField,
+    FilterField,
+    IndexedField,
+    ModelFieldNameMixin,
     RelatedFields,
     SearchField,
 )
@@ -118,20 +121,39 @@ class TestBaseField:
         result = field.get_value(CustomObject())
         assert result is None
 
+    def test_extends_renamedfieldmixin(self):
+        assert issubclass(BaseField, ModelFieldNameMixin)
+        assert issubclass(BaseField, index.BaseField)
+
 
 class TestAutocompleteField:
     def test_extends_renamedfieldmixin(self):
+        assert issubclass(AutocompleteField, ModelFieldNameMixin)
         assert issubclass(AutocompleteField, BaseField)
         assert issubclass(AutocompleteField, index.AutocompleteField)
 
 
 class TestSearchField:
     def test_extends_renamedfieldmixin(self):
-        assert issubclass(SearchField, BaseField)
+        assert issubclass(SearchField, ModelFieldNameMixin)
+        assert issubclass(AutocompleteField, BaseField)
         assert issubclass(SearchField, index.SearchField)
+
+
+class TestFilterField:
+    def test_extends_renamedfieldmixin(self):
+        assert issubclass(FilterField, ModelFieldNameMixin)
+        assert issubclass(AutocompleteField, BaseField)
+        assert issubclass(FilterField, index.FilterField)
 
 
 class TestRelatedFields:
     def test_extends_renamedfieldmixin(self):
-        assert issubclass(RelatedFields, BaseField)
+        assert issubclass(RelatedFields, ModelFieldNameMixin)
         assert issubclass(RelatedFields, index.RelatedFields)
+
+
+class TestIndexedField:
+    def test_extends_renamedfieldmixin(self):
+        assert issubclass(IndexedField, ModelFieldNameMixin)
+        assert issubclass(IndexedField, BaseField)

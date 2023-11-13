@@ -1,6 +1,13 @@
 import pytest
 
-from extended_search.index import BaseField, IndexedField, RelatedFields  # AbstractBaseField,
+from extended_search.index import BaseField  # AbstractBaseField,
+from extended_search.index import (
+    DWIndexedField,
+    IndexedField,
+    MultiQueryIndexedField,
+    RelatedFields,
+)
+
 # from extended_search.types import AnalysisType
 
 # @pytest.mark.xfail
@@ -49,100 +56,26 @@ class TestBaseField:
         field = BaseField("foo")
         assert field.field_name == "foo"
         assert field.model_field_name == field.field_name
-        assert field.boost == 1.0
-        assert not field.search
-        assert not field.autocomplete
-        assert not field.filter
-        assert not field.fuzzy
 
-        field = BaseField(
-            "foo", search=True, autocomplete=True, filter=True, fuzzy=True
-        )
-        assert field.search
-        assert field.autocomplete
-        assert field.filter
-        assert field.fuzzy
+        field = BaseField("foo", model_field_name="bar")
+        assert field.field_name == "foo"
+        assert field.model_field_name == "bar"
 
-        field = BaseField("foo", fuzzy=True)
-        assert field.search
-        assert not field.autocomplete
-        assert not field.filter
-        assert field.fuzzy
+    @pytest.mark.xfail
+    def test_get_field(self):
+        raise AssertionError()
 
-    # def test_get_search_mapping_object_format(self):
-    #     field = BaseField("foo")
-    #     assert field._get_search_mapping_object() == {}
+    @pytest.mark.xfail
+    def test_get_definition_model(self):
+        raise AssertionError()
 
-    #     field = BaseField("foo", search=True)
-    #     assert field._get_search_mapping_object() == {"search": []}
+    @pytest.mark.xfail
+    def test_get_value(self):
+        raise AssertionError()
 
-    #     field = BaseField("foo", fuzzy=True)
-    #     assert field._get_search_mapping_object() == {
-    #         "search": [
-    #             AnalysisType.TOKENIZED,
-    #         ],
-    #         "fuzzy": [],
-    #     }
-
-    # def test_get_autocomplete_mapping_object_format(self):
-    #     field = BaseField("foo")
-    #     assert field._get_autocomplete_mapping_object() == {}
-
-    #     field = BaseField("foo", autocomplete=True)
-    #     assert field._get_autocomplete_mapping_object() == {"autocomplete": []}
-
-    # def test_get_filter_mapping_object_format(self):
-    #     field = BaseField("foo")
-    #     assert field._get_filter_mapping_object() == {}
-
-    #     field = BaseField("foo", filter=True)
-    #     assert field._get_filter_mapping_object() == {"filter": []}
-
-    # def test_get_mapping_uses_sub_methods(self, mocker):
-    #     mock_func = mocker.patch(
-    #         "extended_search.index.BaseField._get_base_mapping_object",
-    #         return_value={"name": "bar"},
-    #     )
-    #     mock_search = mocker.patch(
-    #         "extended_search.index.BaseField._get_search_mapping_object",
-    #         return_value={"search": "baz"},
-    #     )
-    #     mock_autocomplete = mocker.patch(
-    #         "extended_search.index.BaseField._get_autocomplete_mapping_object",
-    #         return_value={"autocomplete": "bam"},
-    #     )
-    #     mock_filter = mocker.patch(
-    #         "extended_search.index.BaseField._get_filter_mapping_object",
-    #         return_value={"filter": "foobar"},
-    #     )
-    #     field = BaseField("foo")
-    #     assert field.get_mapping() == {"name": "bar"}
-    #     mock_func.assert_called_once()
-    #     mock_search.assert_not_called()
-    #     mock_autocomplete.assert_not_called()
-    #     mock_filter.assert_not_called()
-
-    #     field = BaseField("foo", search=True)
-    #     assert field.get_mapping() == {"name": "bar", "search": "baz"}
-    #     mock_search.assert_called_once()
-
-    #     field = BaseField("foo", autocomplete=True)
-    #     assert field.get_mapping() == {"name": "bar", "autocomplete": "bam"}
-    #     mock_autocomplete.assert_called_once()
-
-    #     field = BaseField("foo", filter=True)
-    #     assert field.get_mapping() == {"name": "bar", "filter": "foobar"}
-    #     mock_filter.assert_called_once()
-
-    #     field = BaseField("foo", search=True, autocomplete=True, filter=True)
-    #     assert field.get_mapping() == {
-    #         "name": "bar",
-    #         "search": "baz",
-    #         "autocomplete": "bam",
-    #         "filter": "foobar",
-    #     }
-
-        # @TODO NB we are now not testing each method
+    @pytest.mark.xfail
+    def test_get_attname(self):
+        raise AssertionError()
 
 
 class TestIndexedField:
@@ -152,6 +85,98 @@ class TestIndexedField:
         assert field.model_field_name == field.field_name
         assert field.boost == 1.0
         assert not field.search
+        assert field.search_kwargs == {}
+        assert not field.autocomplete
+        assert field.autocomplete_kwargs == {}
+        assert not field.filter
+        assert field.filter_kwargs == {}
+
+        field = IndexedField(
+            "foo",
+            boost=44.9,
+            search=True,
+            filter=True,
+            autocomplete=True,
+            search_kwargs={"foo": 99},
+            filter_kwargs={"bar": True},
+            autocomplete_kwargs={"baz": "foobar"},
+        )
+        assert field.boost == 44.9
+        assert field.search
+        assert field.search_kwargs == {"foo": 99}
+        assert field.filter
+        assert field.filter_kwargs == {"bar": True}
+        assert field.autocomplete
+        assert field.autocomplete_kwargs == {"baz": "foobar"}
+
+    @pytest.mark.xfail
+    def test_get_analyzers(self):
+        raise AssertionError()
+
+
+class TestMultiQueryIndexedField:
+    def test_init_params_accepted_defaults_and_all_saved(self):
+        field = MultiQueryIndexedField("foo")
+        assert field.field_name == "foo"
+        assert field.model_field_name == field.field_name
+        assert field.boost == 1.0
+        assert not field.search
+        assert not field.autocomplete
+        assert not field.filter
+        assert not field.fuzzy
+        assert not field.tokenized
+        assert not field.explicit
+
+        field = MultiQueryIndexedField(
+            "foo",
+            explicit=True,
+            tokenized=True,
+            fuzzy=True,
+        )
+        assert field.search
+        assert not field.autocomplete
+        assert not field.filter
+        assert field.explicit
+        assert field.tokenized
+        assert field.fuzzy
+
+    def test_init_params_set_search_param_when_needed(self):
+        field = MultiQueryIndexedField("foo", tokenized=True)
+        assert field.search
+        assert not field.autocomplete
+        assert not field.filter
+        assert not field.explicit
+        assert field.tokenized
+        assert not field.fuzzy
+
+        field = MultiQueryIndexedField("foo", explicit=True)
+        assert field.search
+        assert not field.autocomplete
+        assert not field.filter
+        assert field.explicit
+        assert not field.tokenized
+        assert not field.fuzzy
+
+        field = MultiQueryIndexedField("foo", fuzzy=True)
+        assert field.search
+        assert not field.autocomplete
+        assert not field.filter
+        assert not field.explicit
+        assert not field.tokenized
+        assert field.fuzzy
+
+    @pytest.mark.xfail
+    def test_get_analyzers(self):
+        raise AssertionError()
+
+
+class TestDWIndexedField:
+    def test_init_params_accepted_defaults_and_all_saved(self):
+        field = DWIndexedField("foo")
+        assert field.field_name == "foo"
+        assert field.model_field_name == field.field_name
+        assert field.boost == 1.0
+        assert not field.search
         assert not field.autocomplete
         assert not field.filter
         assert not field.fuzzy
@@ -159,74 +184,19 @@ class TestIndexedField:
         assert not field.explicit
         assert not field.keyword
 
-        field = IndexedField(
-            "foo",
-            search=True,
-            tokenized=True,
-            explicit=True,
-            keyword=True,
-        )
-        assert field.tokenized
-        assert field.explicit
-        assert field.keyword
-
     def test_init_params_set_search_param_when_needed(self):
-        field = IndexedField("foo", tokenized=True)
+        field = DWIndexedField("foo", keyword=True)
         assert field.search
-        assert field.tokenized
+        assert not field.autocomplete
+        assert not field.filter
         assert not field.explicit
-        assert not field.keyword
-
-        field = IndexedField("foo", explicit=True)
-        assert field.search
-        assert field.explicit
         assert not field.tokenized
-        assert not field.keyword
-
-        field = IndexedField("foo", keyword=True)
-        assert field.search
         assert field.keyword
-        assert not field.tokenized
-        assert not field.explicit
+        assert not field.fuzzy
 
-    # def test_get_search_mapping_object_format(self):
-    #     field = IndexedField("foo", tokenized=True)
-    #     mapping = field._get_search_mapping_object()
-    #     assert mapping == {"search": [AnalysisType.TOKENIZED]}
-
-    #     field = IndexedField("foo", explicit=True)
-    #     mapping = field._get_search_mapping_object()
-    #     assert mapping == {"search": [AnalysisType.EXPLICIT]}
-
-    #     field = IndexedField("foo", keyword=True)
-    #     mapping = field._get_search_mapping_object()
-    #     assert mapping == {"search": [AnalysisType.KEYWORD]}
-
-    #     field = IndexedField("foo", proximity=True)
-    #     mapping = field._get_search_mapping_object()
-    #     assert mapping == {}
-
-    #     field = IndexedField(
-    #         "foo", tokenized=True, explicit=True, keyword=True, proximity=True
-    #     )
-    #     mapping = field._get_search_mapping_object()
-    #     assert mapping == {
-    #         "search": [
-    #             AnalysisType.TOKENIZED,
-    #             AnalysisType.EXPLICIT,
-    #             AnalysisType.KEYWORD,
-    #             # AnalysisType.PROXIMITY,
-    #         ]
-    #     }
-
-    # def test_get_search_mapping_object_uses_parent_method(self, mocker):
-    #     mock_search = mocker.patch(
-    #         "extended_search.index.BaseIndexedField._get_search_mapping_object",
-    #         return_value={"search": []},
-    #     )
-    #     field = IndexedField("foo")
-    #     field._get_search_mapping_object()
-    #     mock_search.assert_called_once()
+    @pytest.mark.xfail
+    def test_get_analyzers(self):
+        raise AssertionError()
 
 
 class TestRelatedFields:
@@ -236,36 +206,18 @@ class TestRelatedFields:
         assert field.model_field_name == field.field_name
         assert field.fields == ["bar", "baz"]
 
-    # def test_get_related_mapping_object_format(self, mocker):
-    #     mock_field = mocker.Mock()
-    #     mock_second_field = mocker.Mock()
-    #     mock_field.get_mapping.return_value = {"field_name": "--FOO--"}
-    #     mock_second_field.get_mapping.return_value = {"field_name": "--BAR--"}
-    #     field = RelatedFields("foo", [mock_field, mock_second_field])
-    #     mapping = field._get_related_mapping_object()
-    #     assert {
-    #         "fields": [
-    #             {
-    #                 "field_name": "--FOO--",
-    #                 "parent_model_field": "foo",
-    #             },
-    #             {
-    #                 "field_name": "--BAR--",
-    #                 "parent_model_field": "foo",
-    #             },
-    #         ]
-    #     } == mapping
+    @pytest.mark.xfail
+    def test_get_field(self):
+        raise AssertionError()
 
     @pytest.mark.xfail
-    def test_get_mapping_uses_sub_methods(self, mocker):
-        mock_func = mocker.patch(
-            "extended_search.index.AbstractBaseField.get_mapping", return_value={}
-        )
-        mock_related = mocker.patch(
-            "extended_search.index.RelatedFields._get_related_mapping_object",
-            return_value={},
-        )
-        field = RelatedFields("foo", ["bar", "baz"])
-        field.get_mapping()
-        mock_func.assert_called_once()
-        mock_related.assert_called_once()
+    def test_get_definition_model(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_value(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_select_on_queryset(self):
+        raise AssertionError()
