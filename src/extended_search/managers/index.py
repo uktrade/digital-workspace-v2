@@ -10,7 +10,6 @@ from extended_search.index import (
 )
 from extended_search.managers.query_builder import CustomQueryBuilder
 from extended_search.settings import extended_search_settings as search_settings
-from extended_search.types import AnalysisType
 
 logger = logging.getLogger(__name__)
 

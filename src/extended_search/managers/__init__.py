@@ -1,12 +1,7 @@
-import inspect
 import logging
 from typing import Optional
 
-from wagtail.search.index import get_indexed_models
-from wagtail.search.query import SearchQuery
 
-from extended_search.backends.query import Filtered
-from extended_search.managers.query_builder import CustomQueryBuilder
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType
 
@@ -25,4 +20,3 @@ def get_indexed_field_name(
         search_settings[f"analyzers__{analyzer.value}__index_fieldname_suffix"] or ""
     )
     return f"{model_field_name}{field_name_suffix}"
-
