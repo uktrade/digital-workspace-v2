@@ -78,19 +78,17 @@ def explore(request: HttpRequest) -> HttpResponse:
         (k, v["index_fieldname_suffix"])
         for k, v in extended_search_settings["analyzers"].items()
     ]
-    for mapping in ContentPage.IndexManager.get_mapping():
-        field = CustomQueryBuilder._get_search_query(
-            query, ContentPage, mapping
+    for index_field in ContentPage.IndexManager.fields:
+        field = CustomQueryBuilder._get_search_query(query, ContentPage, index_field)
+        get_query_info(subqueries["pages"], field, index_field, analyzer_field_suffices)
+    for index_field in Person.IndexManager.fields:
+        field = CustomQueryBuilder._get_search_query(query, Person, index_field)
+        get_query_info(
+            subqueries["people"], field, index_field, analyzer_field_suffices
         )
-        get_query_info(subqueries["pages"], field, mapping, analyzer_field_suffices)
-    for mapping in Person.IndexManager.get_mapping():
-        field = CustomQueryBuilder._get_search_query(
-            query, Person, mapping
-        )
-        get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
-    for mapping in Team.IndexManager.get_mapping():
-        field = CustomQueryBuilder._get_search_query(query, Team, mapping)
-        get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
+    for index_field in Team.IndexManager.fields:
+        field = CustomQueryBuilder._get_search_query(query, Team, index_field)
+        get_query_info(subqueries["teams"], field, index_field, analyzer_field_suffices)
 
     context = {
         "search_url": reverse("search:explore"),
@@ -104,13 +102,13 @@ def explore(request: HttpRequest) -> HttpResponse:
     return TemplateResponse(request, "search/explore.html", context=context)
 
 
-def get_query_info(fields, field, mapping, suffix_map):
+def get_query_info(fields, field, index_field, suffix_map):
     if field is None:
         return fields
 
     if isinstance(field, Or):
         for f in field.subqueries:
-            fields = get_query_info(fields, f, mapping, suffix_map)
+            fields = get_query_info(fields, f, index_field, suffix_map)
 
     elif isinstance(field, OnlyFields):
         core_field = field.subquery.subquery
@@ -132,7 +130,7 @@ def get_query_info(fields, field, mapping, suffix_map):
         fields.append(
             {
                 "query_type": query_type,
-                "field": mapping["model_field_name"],
+                "field": index_field.model_field_name,
                 "analyzer": analyzer_name,
                 "boost": field.subquery.boost,
             }

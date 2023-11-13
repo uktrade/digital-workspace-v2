@@ -3,7 +3,7 @@ from itertools import groupby
 from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
 from django.db import models
 from django.db.models import Q
-from extended_search.fields import IndexedField
+from extended_search.index import DWIndexedField as IndexedField
 from extended_search.managers.index import ModelIndexManager
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel

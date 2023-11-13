@@ -7,7 +7,7 @@ from django.core.paginator import EmptyPage, Paginator
 from django.db import models
 from django.template.response import TemplateResponse
 from django.utils.text import slugify
-from extended_search.fields import IndexedField
+from extended_search.index import DWIndexedField as IndexedField
 from extended_search.managers.index import ModelIndexManager
 from modelcluster.fields import ParentalKey
 from news.forms import CommentForm
