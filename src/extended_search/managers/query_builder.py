@@ -8,7 +8,7 @@ from wagtail.search.index import BaseField, get_indexed_models
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
 from extended_search.backends.query import Filtered, Nested, OnlyFields
-from extended_search.index import RelatedIndexedFields, IndexedField
+from extended_search.index import IndexedField, RelatedFields
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
 
@@ -200,9 +200,9 @@ class QueryBuilder:
                     field, query_str, model_class, subquery
                 )
 
-        if isinstance(field, RelatedIndexedFields):
+        if isinstance(field, RelatedFields):
             internal_subquery = None
-            for related_field in field.related_fields:
+            for related_field in field.fields:
                 internal_subquery = cls._combine_queries(
                     internal_subquery,
                     cls._get_search_query(query_str, model_class, related_field),
