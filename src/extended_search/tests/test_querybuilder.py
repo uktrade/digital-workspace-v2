@@ -10,7 +10,6 @@ from wagtail.search.query import Or, PlainText
 # from extended_search.models import Setting
 # from extended_search.settings import extended_search_settings
 # from extended_search.types import AnalysisType, SearchQueryType
-from content.models import ContentPage
 from extended_search.backends.query import Filtered
 from extended_search.managers.query_builder import CustomQueryBuilder
 
