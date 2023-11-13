@@ -4,6 +4,7 @@ from simple_history import register
 from simple_history.models import HistoricalRecords
 from wagtail.documents.models import Document
 from wagtail.snippets.models import register_snippet
+from waffle.models import AbstractUserFlag
 
 
 @register_snippet
@@ -51,3 +52,7 @@ class IngestedModel(models.Model):
     is_active = models.BooleanField(default=True)
 
     objects = IngestedModelManager()
+
+
+class FeatureFlag(AbstractUserFlag):
+    pass

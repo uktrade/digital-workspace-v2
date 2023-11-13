@@ -1,6 +1,9 @@
 from django.contrib.admin import AdminSite
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from waffle.admin import FlagAdmin as WaffleFlagAdmin
+
+from core.models import FeatureFlag
 
 
 class DigitalWorkspaceAdminSite(AdminSite):
@@ -19,3 +22,4 @@ class DigitalWorkspaceAdminSite(AdminSite):
 
 
 admin_site = DigitalWorkspaceAdminSite(name="dw_admin")
+admin_site.register(FeatureFlag, WaffleFlagAdmin)

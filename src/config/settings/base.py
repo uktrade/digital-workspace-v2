@@ -128,6 +128,7 @@ THIRD_PARTY_APPS = [
     "crispy_forms_gds",
     "django_feedback_govuk",
     "generic_chooser",
+    "waffle",
 ]
 
 WAGTAIL_APPS = [
@@ -190,6 +191,7 @@ MIDDLEWARE = [
     "core.middleware.TimezoneMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "django_audit_log_middleware.AuditLogMiddleware",
+    "waffle.middleware.WaffleMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -675,3 +677,8 @@ DJANGO_FEEDBACK_GOVUK = {
 
 # Leaving Service
 LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
+
+
+# django-waffle
+# https://waffle.readthedocs.io/en/stable/starting/configuring.html
+WAFFLE_FLAG_MODEL = "core.FeatureFlag"
