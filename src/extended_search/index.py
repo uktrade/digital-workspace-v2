@@ -4,6 +4,9 @@ import logging
 from typing import Optional
 
 from django.core import checks
+from django.core.exceptions import FieldDoesNotExist
+from django.db.models.fields.related import ForeignObjectRel, OneToOneRel, RelatedField
+from modelcluster.fields import ParentalManyToManyField
 from wagtail.search import index
 
 from extended_search.types import AnalysisType
@@ -32,18 +35,13 @@ class Indexed(index.Indexed):
         return errors
 
 
-class BaseField(index.BaseField):
+class ModelFieldNameMixin:
     def __init__(self, field_name, *args, model_field_name=None, **kwargs):
         super().__init__(field_name, *args, **kwargs)
         self.model_field_name = model_field_name or field_name
 
     def get_field(self, cls):
         return cls._meta.get_field(self.model_field_name)
-
-    def get_attname(self, cls):
-        if self.model_field_name != self.field_name:
-            return self.field_name
-        return super().get_attname(cls)
 
     def get_definition_model(self, cls):
         if base_cls := super().get_definition_model(cls):
@@ -69,6 +67,13 @@ class BaseField(index.BaseField):
         return value
 
 
+class BaseField(ModelFieldNameMixin, index.BaseField):
+    def get_attname(self, cls):
+        if self.model_field_name != self.field_name:
+            return self.field_name
+        return super().get_attname(cls)
+
+
 class SearchField(index.SearchField, BaseField, index.BaseField):
     ...
 
@@ -81,8 +86,39 @@ class FilterField(index.FilterField, BaseField, index.BaseField):
     ...
 
 
-class RelatedFields(index.RelatedFields, BaseField, index.BaseField):
-    ...
+class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
+    def select_on_queryset(self, queryset):
+        """
+        This method runs either prefetch_related or select_related on the queryset
+        to improve indexing speed of the relation.
+
+        It decides which method to call based on the number of related objects:
+         - single (eg ForeignKey, OneToOne), it runs select_related
+         - multiple (eg ManyToMany, reverse ForeignKey) it runs prefetch_related
+        """
+        try:
+            field = self.get_field(queryset.model)
+        except FieldDoesNotExist:
+            return queryset
+
+        if isinstance(field, RelatedField) and not isinstance(
+            field, ParentalManyToManyField
+        ):
+            if field.many_to_one or field.one_to_one:
+                queryset = queryset.select_related(self.model_field_name)
+            elif field.one_to_many or field.many_to_many:
+                queryset = queryset.prefetch_related(self.model_field_name)
+
+        elif isinstance(field, ForeignObjectRel):
+            # Reverse relation
+            if isinstance(field, OneToOneRel):
+                # select_related for reverse OneToOneField
+                queryset = queryset.select_related(self.model_field_name)
+            else:
+                # prefetch_related for anything else (reverse ForeignKey/ManyToManyField)
+                queryset = queryset.prefetch_related(self.model_field_name)
+
+        return queryset
 
 
 #############################
@@ -164,18 +200,6 @@ class IndexedField(BaseField):
             analyzers.add(AnalysisType.TOKENIZED)
         # @TODO add analyzers for filter, autocomplete
         return analyzers
-
-
-class RelatedIndexedFields(BaseField):
-    def __init__(
-        self,
-        field_name: str,
-        related_fields: list[BaseField],
-        *args,
-        **kwargs,
-    ):
-        super().__init__(field_name, *args, **kwargs)
-        self.related_fields = related_fields
 
 
 #############################

@@ -6,11 +6,8 @@ from wagtail.search.index import AutocompleteField, SearchField
 
 from content.models import ContentPage
 from extended_search.backends.query import Filtered
-from extended_search.fields import IndexedField
-from extended_search.managers import (
-    get_extended_models_with_indexmanager,
-    get_search_query,
-)
+from extended_search.index import IndexedField
+from extended_search.managers.query_builder import CustomQueryBuilder
 from extended_search.models import Setting
 from extended_search.settings import SearchSettings, extended_search_settings
 from news.models import NewsPage
@@ -223,8 +220,11 @@ class TestPerModelFieldOverrides:
         NewsPage.IndexManager.fields = existing_np_fields
         NewsPage.search_fields = existing_np_search_fields
 
-        query = get_search_query(ContentPage, "foo")
-        extended_models = get_extended_models_with_indexmanager(ContentPage)
+        query = CustomQueryBuilder.get_search_query(ContentPage, "foo")
+
+        extended_models = CustomQueryBuilder.get_extended_models_with_indexmanager(
+            ContentPage
+        )
 
         self.filter_parts = []
         self.find_filter(query)

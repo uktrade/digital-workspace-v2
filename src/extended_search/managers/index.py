@@ -6,7 +6,6 @@ from extended_search.index import (
     AutocompleteField,
     IndexedField,
     RelatedFields,
-    RelatedIndexedFields,
     SearchField,
 )
 from extended_search.managers.query_builder import CustomQueryBuilder
@@ -63,9 +62,9 @@ class ModelIndexManager(CustomQueryBuilder):
         ]
 
     @classmethod
-    def _get_related_fields(cls, field: RelatedIndexedFields):
+    def _get_related_fields(cls, field: RelatedFields):
         fields = []
-        for related_field in field.related_fields:
+        for related_field in field.fields:
             fields += cls._get_search_fields(related_field)
         return [
             RelatedFields(field.model_field_name, fields),
@@ -75,7 +74,7 @@ class ModelIndexManager(CustomQueryBuilder):
     def _get_search_fields(cls, field):
         fields = []
 
-        if isinstance(field, RelatedIndexedFields):
+        if isinstance(field, RelatedFields):
             fields += cls._get_related_fields(field)
 
         if isinstance(field, IndexedField):

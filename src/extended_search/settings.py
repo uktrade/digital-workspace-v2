@@ -213,7 +213,6 @@ class SearchSettings(NestedChainMap):
         fields = {}
         for model_cls in get_indexed_models():
             for search_field in model_cls.search_fields:
-                print(">>>", search_field)
                 if isinstance(search_field, SearchField) or isinstance(
                     search_field, RelatedFields
                 ):

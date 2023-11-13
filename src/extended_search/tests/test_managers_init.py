@@ -1,17 +1,12 @@
-import pytest
-
 from unittest.mock import call
 
-from wagtail.search.query import PlainText, Or
+import pytest
+from wagtail.search.query import Or, PlainText
 
 from content.models import ContentPage
 from extended_search.backends.query import Filtered
-from extended_search.managers import (
-    get_indexed_field_name,
-    get_query_for_model,
-    get_extended_models_with_indexmanager,
-    get_search_query,
-)
+from extended_search.managers import get_indexed_field_name
+from extended_search.managers.query_builder import CustomQueryBuilder
 from extended_search.models import Setting
 from extended_search.settings import extended_search_settings
 from extended_search.types import AnalysisType
@@ -47,12 +42,14 @@ class TestManagersInit:
             "extended_search.managers.query_builder.QueryBuilder._get_search_query_from_mapping",
             return_value=[],
         )
-        assert get_query_for_model(ContentPage, "query") is None
+        assert CustomQueryBuilder.get_query_for_model(ContentPage, "query") is None
         mock_map.assert_called_once_with()
 
         mock_map.return_value = ["--one--"]
         mock_q.return_value = "--query--"
-        assert get_query_for_model(ContentPage, "query") == "--query--"
+        assert (
+            CustomQueryBuilder.get_query_for_model(ContentPage, "query") == "--query--"
+        )
         mock_q.assert_called_once_with("query", ContentPage, "--one--")
 
     def test_get_extended_models_with_indexmanager(self, mocker):
@@ -69,21 +66,30 @@ class TestManagersInit:
             "extended_search.managers.inspect.getmro",
             return_value=[extended_model_class],
         )
-        assert get_extended_models_with_indexmanager(base_model_class) == {}
+        assert (
+            CustomQueryBuilder.get_extended_models_with_indexmanager(base_model_class)
+            == {}
+        )
 
         mock_get_models.return_value = [
             base_model_class,
             extended_model_class,
         ]
-        assert get_extended_models_with_indexmanager(base_model_class) == {}
+        assert (
+            CustomQueryBuilder.get_extended_models_with_indexmanager(base_model_class)
+            == {}
+        )
 
         extended_model_class.has_indexmanager_direct_inner_class.return_value = True
-        assert get_extended_models_with_indexmanager(base_model_class) == {}
+        assert (
+            CustomQueryBuilder.get_extended_models_with_indexmanager(base_model_class)
+            == {}
+        )
 
         mock_mro.return_value = [extended_model_class, base_model_class]
-        assert get_extended_models_with_indexmanager(base_model_class) == {
-            "mock.extended.extendedModel": extended_model_class
-        }
+        assert CustomQueryBuilder.get_extended_models_with_indexmanager(
+            base_model_class
+        ) == {"mock.extended.extendedModel": extended_model_class}
 
     def test_get_search_query(self, mocker):
         model_class = mocker.Mock()
@@ -97,7 +103,7 @@ class TestManagersInit:
             "extended_search.managers.get_query_for_model",
             return_value=PlainText("foo"),
         )
-        result = get_search_query(model_class, query)
+        result = CustomQueryBuilder.get_search_query(model_class, query)
         mock_get_extended_models.assert_called_once_with(model_class)
         mock_get_query.assert_has_calls(
             [

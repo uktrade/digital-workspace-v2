@@ -599,7 +599,7 @@ class Person(CustomIndexed, models.Model):
                 "search_buildings",
                 tokenized=True,
             ),
-            # RelatedIndexedFields(
+            # RelatedFields(
             #     "roles",
             #     [
             #         IndexedField(
@@ -610,7 +610,7 @@ class Person(CustomIndexed, models.Model):
             #         ),
             #     ],
             # ),
-            # RelatedIndexedFields(
+            # RelatedFields(
             #     "key_skills",
             #     [
             #         IndexedField(
@@ -621,7 +621,7 @@ class Person(CustomIndexed, models.Model):
             #         ),
             #     ],
             # ),
-            # RelatedIndexedFields(
+            # RelatedFields(
             #     "learning_interests",
             #     [
             #         IndexedField(
@@ -631,7 +631,7 @@ class Person(CustomIndexed, models.Model):
             #         ),
             #     ],
             # ),
-            # RelatedIndexedFields(
+            # RelatedFields(
             #     "additional_roles",
             #     [
             #         IndexedField(
@@ -642,7 +642,7 @@ class Person(CustomIndexed, models.Model):
             #         ),
             #     ],
             # ),
-            # RelatedIndexedFields(
+            # RelatedFields(
             #     "networks",
             #     [
             #         IndexedField(

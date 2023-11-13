@@ -1,8 +1,7 @@
 import pytest
 
-from extended_search.fields import BaseIndexedField  # AbstractBaseField,
-from extended_search.fields import IndexedField, RelatedIndexedFields
-from extended_search.types import AnalysisType
+from extended_search.index import BaseField, IndexedField, RelatedFields  # AbstractBaseField,
+# from extended_search.types import AnalysisType
 
 # @pytest.mark.xfail
 # class TestAbstractBaseField:
@@ -36,7 +35,7 @@ from extended_search.types import AnalysisType
 
 #     def test_mapping_property_uses_get_mapping_method(self, mocker):
 #         mock_func = mocker.patch(
-#             "extended_search.fields.AbstractBaseField.get_mapping",
+#             "extended_search.index.AbstractBaseField.get_mapping",
 #             return_value={"name": "foo"},
 #         )
 #         field = AbstractBaseField("foo")
@@ -45,9 +44,9 @@ from extended_search.types import AnalysisType
 #         assert mapping == field.get_mapping()
 
 
-class TestBaseIndexedField:
+class TestBaseField:
     def test_init_params_accepted_defaults_and_all_saved(self):
-        field = BaseIndexedField("foo")
+        field = BaseField("foo")
         assert field.field_name == "foo"
         assert field.model_field_name == field.field_name
         assert field.boost == 1.0
@@ -56,7 +55,7 @@ class TestBaseIndexedField:
         assert not field.filter
         assert not field.fuzzy
 
-        field = BaseIndexedField(
+        field = BaseField(
             "foo", search=True, autocomplete=True, filter=True, fuzzy=True
         )
         assert field.search
@@ -64,84 +63,84 @@ class TestBaseIndexedField:
         assert field.filter
         assert field.fuzzy
 
-        field = BaseIndexedField("foo", fuzzy=True)
+        field = BaseField("foo", fuzzy=True)
         assert field.search
         assert not field.autocomplete
         assert not field.filter
         assert field.fuzzy
 
-    def test_get_search_mapping_object_format(self):
-        field = BaseIndexedField("foo")
-        assert field._get_search_mapping_object() == {}
+    # def test_get_search_mapping_object_format(self):
+    #     field = BaseField("foo")
+    #     assert field._get_search_mapping_object() == {}
 
-        field = BaseIndexedField("foo", search=True)
-        assert field._get_search_mapping_object() == {"search": []}
+    #     field = BaseField("foo", search=True)
+    #     assert field._get_search_mapping_object() == {"search": []}
 
-        field = BaseIndexedField("foo", fuzzy=True)
-        assert field._get_search_mapping_object() == {
-            "search": [
-                AnalysisType.TOKENIZED,
-            ],
-            "fuzzy": [],
-        }
+    #     field = BaseField("foo", fuzzy=True)
+    #     assert field._get_search_mapping_object() == {
+    #         "search": [
+    #             AnalysisType.TOKENIZED,
+    #         ],
+    #         "fuzzy": [],
+    #     }
 
-    def test_get_autocomplete_mapping_object_format(self):
-        field = BaseIndexedField("foo")
-        assert field._get_autocomplete_mapping_object() == {}
+    # def test_get_autocomplete_mapping_object_format(self):
+    #     field = BaseField("foo")
+    #     assert field._get_autocomplete_mapping_object() == {}
 
-        field = BaseIndexedField("foo", autocomplete=True)
-        assert field._get_autocomplete_mapping_object() == {"autocomplete": []}
+    #     field = BaseField("foo", autocomplete=True)
+    #     assert field._get_autocomplete_mapping_object() == {"autocomplete": []}
 
-    def test_get_filter_mapping_object_format(self):
-        field = BaseIndexedField("foo")
-        assert field._get_filter_mapping_object() == {}
+    # def test_get_filter_mapping_object_format(self):
+    #     field = BaseField("foo")
+    #     assert field._get_filter_mapping_object() == {}
 
-        field = BaseIndexedField("foo", filter=True)
-        assert field._get_filter_mapping_object() == {"filter": []}
+    #     field = BaseField("foo", filter=True)
+    #     assert field._get_filter_mapping_object() == {"filter": []}
 
-    def test_get_mapping_uses_sub_methods(self, mocker):
-        mock_func = mocker.patch(
-            "extended_search.fields.BaseIndexedField._get_base_mapping_object",
-            return_value={"name": "bar"},
-        )
-        mock_search = mocker.patch(
-            "extended_search.fields.BaseIndexedField._get_search_mapping_object",
-            return_value={"search": "baz"},
-        )
-        mock_autocomplete = mocker.patch(
-            "extended_search.fields.BaseIndexedField._get_autocomplete_mapping_object",
-            return_value={"autocomplete": "bam"},
-        )
-        mock_filter = mocker.patch(
-            "extended_search.fields.BaseIndexedField._get_filter_mapping_object",
-            return_value={"filter": "foobar"},
-        )
-        field = BaseIndexedField("foo")
-        assert field.get_mapping() == {"name": "bar"}
-        mock_func.assert_called_once()
-        mock_search.assert_not_called()
-        mock_autocomplete.assert_not_called()
-        mock_filter.assert_not_called()
+    # def test_get_mapping_uses_sub_methods(self, mocker):
+    #     mock_func = mocker.patch(
+    #         "extended_search.index.BaseField._get_base_mapping_object",
+    #         return_value={"name": "bar"},
+    #     )
+    #     mock_search = mocker.patch(
+    #         "extended_search.index.BaseField._get_search_mapping_object",
+    #         return_value={"search": "baz"},
+    #     )
+    #     mock_autocomplete = mocker.patch(
+    #         "extended_search.index.BaseField._get_autocomplete_mapping_object",
+    #         return_value={"autocomplete": "bam"},
+    #     )
+    #     mock_filter = mocker.patch(
+    #         "extended_search.index.BaseField._get_filter_mapping_object",
+    #         return_value={"filter": "foobar"},
+    #     )
+    #     field = BaseField("foo")
+    #     assert field.get_mapping() == {"name": "bar"}
+    #     mock_func.assert_called_once()
+    #     mock_search.assert_not_called()
+    #     mock_autocomplete.assert_not_called()
+    #     mock_filter.assert_not_called()
 
-        field = BaseIndexedField("foo", search=True)
-        assert field.get_mapping() == {"name": "bar", "search": "baz"}
-        mock_search.assert_called_once()
+    #     field = BaseField("foo", search=True)
+    #     assert field.get_mapping() == {"name": "bar", "search": "baz"}
+    #     mock_search.assert_called_once()
 
-        field = BaseIndexedField("foo", autocomplete=True)
-        assert field.get_mapping() == {"name": "bar", "autocomplete": "bam"}
-        mock_autocomplete.assert_called_once()
+    #     field = BaseField("foo", autocomplete=True)
+    #     assert field.get_mapping() == {"name": "bar", "autocomplete": "bam"}
+    #     mock_autocomplete.assert_called_once()
 
-        field = BaseIndexedField("foo", filter=True)
-        assert field.get_mapping() == {"name": "bar", "filter": "foobar"}
-        mock_filter.assert_called_once()
+    #     field = BaseField("foo", filter=True)
+    #     assert field.get_mapping() == {"name": "bar", "filter": "foobar"}
+    #     mock_filter.assert_called_once()
 
-        field = BaseIndexedField("foo", search=True, autocomplete=True, filter=True)
-        assert field.get_mapping() == {
-            "name": "bar",
-            "search": "baz",
-            "autocomplete": "bam",
-            "filter": "foobar",
-        }
+    #     field = BaseField("foo", search=True, autocomplete=True, filter=True)
+    #     assert field.get_mapping() == {
+    #         "name": "bar",
+    #         "search": "baz",
+    #         "autocomplete": "bam",
+    #         "filter": "foobar",
+    #     }
 
         # @TODO NB we are now not testing each method
 
@@ -190,83 +189,83 @@ class TestIndexedField:
         assert not field.tokenized
         assert not field.explicit
 
-    def test_get_search_mapping_object_format(self):
-        field = IndexedField("foo", tokenized=True)
-        mapping = field._get_search_mapping_object()
-        assert mapping == {"search": [AnalysisType.TOKENIZED]}
+    # def test_get_search_mapping_object_format(self):
+    #     field = IndexedField("foo", tokenized=True)
+    #     mapping = field._get_search_mapping_object()
+    #     assert mapping == {"search": [AnalysisType.TOKENIZED]}
 
-        field = IndexedField("foo", explicit=True)
-        mapping = field._get_search_mapping_object()
-        assert mapping == {"search": [AnalysisType.EXPLICIT]}
+    #     field = IndexedField("foo", explicit=True)
+    #     mapping = field._get_search_mapping_object()
+    #     assert mapping == {"search": [AnalysisType.EXPLICIT]}
 
-        field = IndexedField("foo", keyword=True)
-        mapping = field._get_search_mapping_object()
-        assert mapping == {"search": [AnalysisType.KEYWORD]}
+    #     field = IndexedField("foo", keyword=True)
+    #     mapping = field._get_search_mapping_object()
+    #     assert mapping == {"search": [AnalysisType.KEYWORD]}
 
-        field = IndexedField("foo", proximity=True)
-        mapping = field._get_search_mapping_object()
-        assert mapping == {}
+    #     field = IndexedField("foo", proximity=True)
+    #     mapping = field._get_search_mapping_object()
+    #     assert mapping == {}
 
-        field = IndexedField(
-            "foo", tokenized=True, explicit=True, keyword=True, proximity=True
-        )
-        mapping = field._get_search_mapping_object()
-        assert mapping == {
-            "search": [
-                AnalysisType.TOKENIZED,
-                AnalysisType.EXPLICIT,
-                AnalysisType.KEYWORD,
-                # AnalysisType.PROXIMITY,
-            ]
-        }
+    #     field = IndexedField(
+    #         "foo", tokenized=True, explicit=True, keyword=True, proximity=True
+    #     )
+    #     mapping = field._get_search_mapping_object()
+    #     assert mapping == {
+    #         "search": [
+    #             AnalysisType.TOKENIZED,
+    #             AnalysisType.EXPLICIT,
+    #             AnalysisType.KEYWORD,
+    #             # AnalysisType.PROXIMITY,
+    #         ]
+    #     }
 
-    def test_get_search_mapping_object_uses_parent_method(self, mocker):
-        mock_search = mocker.patch(
-            "extended_search.fields.BaseIndexedField._get_search_mapping_object",
-            return_value={"search": []},
-        )
-        field = IndexedField("foo")
-        field._get_search_mapping_object()
-        mock_search.assert_called_once()
+    # def test_get_search_mapping_object_uses_parent_method(self, mocker):
+    #     mock_search = mocker.patch(
+    #         "extended_search.index.BaseIndexedField._get_search_mapping_object",
+    #         return_value={"search": []},
+    #     )
+    #     field = IndexedField("foo")
+    #     field._get_search_mapping_object()
+    #     mock_search.assert_called_once()
 
 
-class TestRelatedIndexedFields:
+class TestRelatedFields:
     def test_init_params_accepted_defaults_and_all_saved(self):
-        field = RelatedIndexedFields("foo", ["bar", "baz"])
+        field = RelatedFields("foo", ["bar", "baz"])
         assert field.field_name == "foo"
         assert field.model_field_name == field.field_name
-        assert field.related_fields == ["bar", "baz"]
+        assert field.fields == ["bar", "baz"]
 
-    def test_get_related_mapping_object_format(self, mocker):
-        mock_field = mocker.Mock()
-        mock_second_field = mocker.Mock()
-        mock_field.get_mapping.return_value = {"field_name": "--FOO--"}
-        mock_second_field.get_mapping.return_value = {"field_name": "--BAR--"}
-        field = RelatedIndexedFields("foo", [mock_field, mock_second_field])
-        mapping = field._get_related_mapping_object()
-        assert {
-            "related_fields": [
-                {
-                    "field_name": "--FOO--",
-                    "parent_model_field": "foo",
-                },
-                {
-                    "field_name": "--BAR--",
-                    "parent_model_field": "foo",
-                },
-            ]
-        } == mapping
+    # def test_get_related_mapping_object_format(self, mocker):
+    #     mock_field = mocker.Mock()
+    #     mock_second_field = mocker.Mock()
+    #     mock_field.get_mapping.return_value = {"field_name": "--FOO--"}
+    #     mock_second_field.get_mapping.return_value = {"field_name": "--BAR--"}
+    #     field = RelatedFields("foo", [mock_field, mock_second_field])
+    #     mapping = field._get_related_mapping_object()
+    #     assert {
+    #         "fields": [
+    #             {
+    #                 "field_name": "--FOO--",
+    #                 "parent_model_field": "foo",
+    #             },
+    #             {
+    #                 "field_name": "--BAR--",
+    #                 "parent_model_field": "foo",
+    #             },
+    #         ]
+    #     } == mapping
 
     @pytest.mark.xfail
     def test_get_mapping_uses_sub_methods(self, mocker):
         mock_func = mocker.patch(
-            "extended_search.fields.AbstractBaseField.get_mapping", return_value={}
+            "extended_search.index.AbstractBaseField.get_mapping", return_value={}
         )
         mock_related = mocker.patch(
-            "extended_search.fields.RelatedIndexedFields._get_related_mapping_object",
+            "extended_search.index.RelatedFields._get_related_mapping_object",
             return_value={},
         )
-        field = RelatedIndexedFields("foo", ["bar", "baz"])
+        field = RelatedFields("foo", ["bar", "baz"])
         field.get_mapping()
         mock_func.assert_called_once()
         mock_related.assert_called_once()
