@@ -6,6 +6,8 @@ from typing import Optional
 from django.core import checks
 from wagtail.search import index
 
+from extended_search.types import AnalysisType
+
 logger = logging.getLogger(__name__)
 
 
@@ -156,6 +158,13 @@ class IndexedField(BaseField):
             **self.filter_kwargs,
         )
 
+    def get_analyzers(self):
+        analyzers = set()
+        if self.search:
+            analyzers.add(AnalysisType.TOKENIZED)
+        # @TODO add analyzers for filter, autocomplete
+        return analyzers
+
 
 class RelatedIndexedFields(BaseField):
     def __init__(
@@ -191,6 +200,14 @@ class MultiQueryIndexedField(IndexedField):
         if tokenized or explicit or fuzzy:
             self.search = True
 
+    def get_analyzers(self):
+        analyzers = super().get_analyzers()
+        if self.explicit:
+            analyzers.add(AnalysisType.EXPLICIT)
+        if self.tokenized:
+            analyzers.add(AnalysisType.TOKENIZED)
+        return analyzers
+
 
 #############################
 # Digital Workspace code
@@ -209,6 +226,12 @@ class DWIndexedField(MultiQueryIndexedField):
 
         if keyword:
             self.search = True
+
+    def get_analyzers(self):
+        analyzers = super().get_analyzers()
+        if self.keyword:
+            analyzers.add(AnalysisType.KEYWORD)
+        return analyzers
 
 
 #############################

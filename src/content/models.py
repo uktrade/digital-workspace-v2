@@ -24,8 +24,7 @@ from wagtail.utils.decorators import cached_classmethod
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
-from extended_search.fields import IndexedField
-from extended_search.index import CustomIndexed
+from extended_search.index import CustomIndexed, DWIndexedField as IndexedField
 from extended_search.managers.index import ModelIndexManager
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query

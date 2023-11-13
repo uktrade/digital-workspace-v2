@@ -18,8 +18,8 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
-from extended_search.fields import IndexedField, RelatedIndexedFields
 from extended_search.index import CustomIndexed
+from extended_search.index import DWIndexedField as IndexedField
 from extended_search.managers.index import ModelIndexManager
 
 # United Kingdom

@@ -2,7 +2,13 @@ import logging
 
 from wagtail.search.index import FilterField
 
-from extended_search.index import AutocompleteField, RelatedFields, SearchField
+from extended_search.index import (
+    AutocompleteField,
+    IndexedField,
+    RelatedFields,
+    RelatedIndexedFields,
+    SearchField,
+)
 from extended_search.managers.query_builder import CustomQueryBuilder
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType
@@ -22,86 +28,75 @@ class ModelIndexManager(CustomQueryBuilder):
         return analyzer_settings["es_analyzer"]
 
     @classmethod
-    def _get_searchable_search_fields(cls, model_field_name, analyzers, boost=1.0):
+    def _get_searchable_search_fields(cls, field: IndexedField):
         from extended_search.managers import get_indexed_field_name
 
         fields = []
-        if len(analyzers) == 0:
-            analyzers = [AnalysisType.TOKENIZED]
+        # if len(analyzers) == 0:
+        #     analyzers = [AnalysisType.TOKENIZED]
 
-        for analyzer in analyzers:
-            index_field_name = get_indexed_field_name(model_field_name, analyzer)
+        for analyzer in field.get_analyzers():
+            index_field_name = get_indexed_field_name(
+                field.model_field_name,
+                analyzer,
+            )
             fields += [
                 SearchField(
                     index_field_name,
-                    model_field_name=model_field_name,
+                    model_field_name=field.model_field_name,
                     es_extra={
                         "analyzer": cls._get_analyzer_name(analyzer),
                     },
-                    boost=boost,
+                    boost=field.boost,
                 ),
             ]
         return fields
 
     @classmethod
-    def _get_autocomplete_search_fields(cls, model_field_name):
-        return [AutocompleteField(model_field_name)]
+    def _get_autocomplete_search_fields(cls, field: IndexedField):
+        return [AutocompleteField(field.model_field_name)]
 
     @classmethod
-    def _get_filterable_search_fields(cls, model_field_name):
+    def _get_filterable_search_fields(cls, field: IndexedField):
         return [
-            FilterField(model_field_name),
+            FilterField(field.model_field_name),
         ]
 
     @classmethod
-    def _get_related_fields(cls, model_field_name, mapping):
+    def _get_related_fields(cls, field: RelatedIndexedFields):
         fields = []
-        for related_field_mapping in mapping:
-            fields += cls._get_search_fields_from_mapping(related_field_mapping)
+        for related_field in field.related_fields:
+            fields += cls._get_search_fields(related_field)
         return [
-            RelatedFields(model_field_name, fields),
+            RelatedFields(field.model_field_name, fields),
         ]
 
     @classmethod
-    def _get_search_fields_from_mapping(cls, field_mapping):
+    def _get_search_fields(cls, field):
         fields = []
-        model_field_name = field_mapping["model_field_name"]
 
-        if "related_fields" in field_mapping:
-            fields += cls._get_related_fields(
-                model_field_name, field_mapping["related_fields"]
-            )
+        if isinstance(field, RelatedIndexedFields):
+            fields += cls._get_related_fields(field)
 
-        if "search" in field_mapping:
-            fields += cls._get_searchable_search_fields(
-                model_field_name,
-                field_mapping["search"],
-                field_mapping["boost"],
-            )
+        if isinstance(field, IndexedField):
+            if field.search:
+                fields += cls._get_searchable_search_fields(field)
 
-        if "autocomplete" in field_mapping:
-            fields += cls._get_autocomplete_search_fields(model_field_name)
+            if field.autocomplete:
+                fields += cls._get_autocomplete_search_fields(field)
 
-        if "filter" in field_mapping:
-            fields += cls._get_filterable_search_fields(model_field_name)
+            if field.filter:
+                fields += cls._get_filterable_search_fields(field)
+        else:
+            fields.append(field)
 
         return fields
 
     @classmethod
-    def get_mapping(cls):
-        mapping = []
-        for field in cls.fields:
-            mapping += [
-                field.mapping,
-            ]
-        logger.debug(mapping)
-        return mapping
-
-    @classmethod
     def get_search_fields(cls):
         cls.generated_fields = []
-        for field_mapping in cls.get_mapping():
-            cls.generated_fields += cls._get_search_fields_from_mapping(field_mapping)
+        for field in cls.fields:
+            cls.generated_fields += cls._get_search_fields(field)
         return cls.generated_fields
 
     @classmethod
