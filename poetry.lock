@@ -1393,6 +1393,20 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-waffle"
+version = "4.0.0"
+description = "A feature flipper for Django."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django-waffle-4.0.0.tar.gz", hash = "sha256:125e0c5a95a9b54739c77693f7454d717c1ec82b43eb5eb3e6e1ad69c0f75fe6"},
+    {file = "django_waffle-4.0.0-py3-none-any.whl", hash = "sha256:6426baad1573ca1908bd615650048f7948690f336058d37d3e3bb550ddf75cda"},
+]
+
+[package.dependencies]
+django = ">=3.2"
+
+[[package]]
 name = "django-webpack-loader"
 version = "1.8.1"
 description = "Transparently use webpack with django"
@@ -4383,4 +4397,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3af202c73f2f53ef675d4057773874cc54c9266bac732035e7d3a78c6dc2f0ff"
+content-hash = "5cfcd7d75f970e7b658564bfec0a8390c14b4cbdeca0cde92515b65ebeedc3b1"
