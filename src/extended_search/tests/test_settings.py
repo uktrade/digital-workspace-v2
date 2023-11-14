@@ -1,18 +1,16 @@
-import pytest
-
 from types import NoneType
 
-from wagtail.search.index import SearchField
-
+import pytest
 from extended_search.models import Setting
 from extended_search.settings import (
-    extended_search_settings,
     DEFAULT_SETTINGS,
     NESTING_SEPARATOR,
     SETTINGS_KEY,
     NestedChainMap,
     SearchSettings,
+    extended_search_settings,
 )
+from wagtail.search.index import SearchField
 
 
 class TestDefaults:
@@ -260,12 +258,12 @@ class TestSearchSettings:
         mock_searchfield_2.get_definition_model.return_value = "--model--"
         mock_searchfield_3 = mocker.MagicMock(spec=SearchField)
         mock_searchfield_3.get_definition_model.return_value = "--second-model--"
-        mock_model_1.search_fields = [
+        mock_model_1.get_search_fields.return_value = [
             mock_searchfield_1,
             mock_searchfield_2,
             mock_searchfield_2,
         ]
-        mock_model_2.search_fields = [
+        mock_model_2.get_search_fields.return_value = [
             mock_searchfield_3,
         ]
         mock_get_models.return_value = [

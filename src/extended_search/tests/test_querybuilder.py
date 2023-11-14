@@ -17,8 +17,11 @@ from extended_search.managers.query_builder import CustomQueryBuilder
 
 
 class MockModelClass:
-    class IndexManager:
-        fields = []
+    indexed_fields = []
+
+    @classmethod
+    def get_all_indexed_fields_including_from_parents_and_refactor_this(cls):
+        return cls.indexed_fields
 
 
 class TestQueryBuilder:
@@ -37,7 +40,7 @@ class TestQueryBuilder:
         mock_get_search_query.reset_mock()
         mock_combine.reset_mock()
 
-        MockModelClass.IndexManager.fields = ["--field--"]
+        MockModelClass.indexed_fields = ["--field--"]
         assert CustomQueryBuilder.get_query_for_model(MockModelClass, "query") is None
         mock_get_search_query.assert_called_once_with(
             "query", MockModelClass, "--field--"
@@ -51,7 +54,7 @@ class TestQueryBuilder:
         mock_combine.assert_called_once_with(None, "--query--")
 
     @pytest.mark.xfail
-    def test_get_extended_models_with_indexmanager(self, mocker):
+    def test_get_extended_models_with_unique_indexed_fields(self, mocker):
         base_model_class = mocker.Mock()
         extended_model_class = mocker.Mock()
         extended_model_class.__name__ = "extendedModel"
@@ -66,7 +69,9 @@ class TestQueryBuilder:
             return_value=[extended_model_class],
         )
         assert (
-            CustomQueryBuilder.get_extended_models_with_indexmanager(base_model_class)
+            CustomQueryBuilder.get_extended_models_with_unique_indexed_fields(
+                base_model_class
+            )
             == {}
         )
 
@@ -75,18 +80,22 @@ class TestQueryBuilder:
             extended_model_class,
         ]
         assert (
-            CustomQueryBuilder.get_extended_models_with_indexmanager(base_model_class)
+            CustomQueryBuilder.get_extended_models_with_unique_indexed_fields(
+                base_model_class
+            )
             == {}
         )
 
         extended_model_class.has_indexmanager_direct_inner_class.return_value = True
         assert (
-            CustomQueryBuilder.get_extended_models_with_indexmanager(base_model_class)
+            CustomQueryBuilder.get_extended_models_with_unique_indexed_fields(
+                base_model_class
+            )
             == {}
         )
 
         mock_mro.return_value = [extended_model_class, base_model_class]
-        assert CustomQueryBuilder.get_extended_models_with_indexmanager(
+        assert CustomQueryBuilder.get_extended_models_with_unique_indexed_fields(
             base_model_class
         ) == {"mock.extended.extendedModel": extended_model_class}
 
@@ -96,7 +105,7 @@ class TestQueryBuilder:
         extended_model_class = mocker.Mock()
         query = "foo"  # PlainText("foo")
         mock_get_extended_models = mocker.patch(
-            "extended_search.managers.get_extended_models_with_indexmanager",
+            "extended_search.managers.get_extended_models_with_unique_indexed_fields",
             return_value={"mock.extended_model": extended_model_class},
         )
         mock_get_query = mocker.patch(
