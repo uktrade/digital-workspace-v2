@@ -182,6 +182,7 @@ def get_query_info(fields, field, mapping, suffix_map):
 
 def get_all_subqueries(query):
     from content.models import ContentPage
+
     subqueries = {"pages": [], "people": [], "teams": []}
     analyzer_field_suffices = [
         (k, v["index_fieldname_suffix"])
@@ -207,7 +208,7 @@ def get_bad_score_threshold(query, category):
     bad_score_threshold_multiplier = 1
     boost_values = set()
     subqueries = get_all_subqueries(query)
-    
+
     for subquery in subqueries[category]:
         boost_values.add(round(subquery["boost"], 2))
 
