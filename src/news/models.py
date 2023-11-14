@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from content.models import BasePage, ContentPage
+from content.models import BasePage
 from core.utils import set_seen_cookie_banner
 from django.contrib.auth import get_user_model
 from django.core.paginator import EmptyPage, Paginator
