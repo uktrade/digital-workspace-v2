@@ -161,6 +161,14 @@ class Indexed(index.Indexed):
         # print("---", processed_index_fields)
         return search_fields + processed_index_fields
 
+    @classmethod
+    def get_all_indexed_fields_including_from_parents_and_refactor_this(cls):
+        fields = set()
+        for model_class in inspect.getmro(cls):
+            if class_is_indexed(model_class):
+                fields.update(model_class.indexed_fields)
+        return list(fields)
+
 
 def get_indexed_models():
     """
