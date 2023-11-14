@@ -90,6 +90,16 @@ class NetworkForm(WagtailAdminPageForm):
         return page
 
 
+class NetworkIndexManager(ModelIndexManager):
+    fields = [
+        IndexedField(
+            "search_topics",
+            tokenized=True,
+            explicit=True,
+        ),
+    ]
+
+
 class Network(ContentOwnerMixin, ContentPage):
     is_creatable = True
 
@@ -109,16 +119,7 @@ class Network(ContentOwnerMixin, ContentPage):
     def search_topics(self):
         return " ".join(self.topics.all().values_list("topic__title", flat=True))
 
-    class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "search_topics",
-                tokenized=True,
-                explicit=True,
-            ),
-        ]
-
-    search_fields = ContentPage.search_fields + IndexManager()
+    search_fields = ContentPage.search_fields + NetworkIndexManager()
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
