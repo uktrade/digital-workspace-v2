@@ -216,6 +216,17 @@ class SearchSettings(NestedChainMap):
                 if isinstance(search_field, SearchField) or isinstance(
                     search_field, RelatedFields
                 ):
+                    print(
+                        "🤬",
+                        model_cls,
+                        search_field,
+                        search_field.field_name,
+                        getattr(
+                            search_field,
+                            "model_field_name",
+                            "-",
+                        ),
+                    )
                     definition_cls = search_field.get_definition_model(model_cls)
                     if definition_cls not in fields:
                         fields[definition_cls] = set()
@@ -226,6 +237,7 @@ class SearchSettings(NestedChainMap):
                             fields[definition_cls].add(ff)
                     else:
                         fields[definition_cls].add(search_field)
+                    print("--> ", definition_cls)
 
         return fields
 

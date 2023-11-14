@@ -5,7 +5,12 @@ from typing import Optional
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from extended_search.backends.query import Filtered, Nested, OnlyFields
-from extended_search.index import IndexedField, RelatedFields, get_indexed_models
+from extended_search.index import (
+    IndexedField,
+    RelatedFields,
+    get_indexed_models,
+    SearchField,
+)
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
 from wagtail.search.index import BaseField
@@ -83,9 +88,24 @@ class QueryBuilder:
         return 1.0
 
     @classmethod
-    def _get_boost_for_field(cls, model_class, field_name):
-        content_type = ContentType.objects.get_for_model(model_class)
-        field_boost_key = f"{content_type.app_label}.{content_type.model}.{field_name}"
+    def _get_boost_for_field(cls, model_class, field):
+        # definition_cls = search_field.get_definition_model(model_cls)
+        # if definition_cls not in fields:
+        #     fields[definition_cls] = set()
+
+        # if isinstance(search_field, RelatedFields):
+        #     for ff in search_field.fields:
+        #         ff.parent_model_field = search_field.field_name
+        #         fields[definition_cls].add(ff)
+        # else:
+        #     fields[definition_cls].add(search_field)
+        # print("--> ", definition_cls)
+        definition_cls = field.get_definition_model(model_class)
+        content_type = ContentType.objects.get_for_model(definition_cls)
+
+        field_boost_key = (
+            f"{content_type.app_label}.{content_type.model}.{field.field_name}"
+        )
         if setting_boost := search_settings["boost_parts"]["fields"][field_boost_key]:
             return float(setting_boost)
         return 1.0
@@ -97,12 +117,13 @@ class QueryBuilder:
         model_class: models.Model,
         query_type: SearchQueryType,
         analysis_type: AnalysisType,
+        field: BaseField,
     ):
         query_boost = cls._get_boost_for_querytype(query_type)
         analyzer_boost = cls._get_boost_for_analysistype(analysis_type)
         field_boost = cls._get_boost_for_field(
             model_class,
-            field_name,
+            field,
         )
 
         return query_boost * analyzer_boost * field_boost
@@ -136,6 +157,7 @@ class QueryBuilder:
             model_class,
             query_type,
             analysis_type,
+            field,
         )
 
         field_name = get_indexed_field_name(base_field_name, analysis_type)
@@ -212,14 +234,23 @@ class QueryBuilder:
                 subquery,
             )
 
+        # if isinstance(field, SearchField):
+        #     subquery = cls._get_search_query_for_searchfield(
+        #         field, query_str, model_class, subquery
+        #     )
+
         return subquery
 
 
 class CustomQueryBuilder(QueryBuilder):
     @classmethod
-    def get_query_for_model(cls, model_class, query_str) -> SearchQuery:
+    def get_query_for_model(cls, model_class, query_str) -> Optional[SearchQuery]:
         query = None
-        for field in model_class.indexed_fields:
+        for (
+            field
+        ) in (
+            model_class.get_all_indexed_fields_including_from_parents_and_refactor_this()
+        ):
             query_elements = cls._get_search_query(query_str, model_class, field)
             if query_elements is not None:
                 query = cls._combine_queries(
@@ -227,6 +258,9 @@ class CustomQueryBuilder(QueryBuilder):
                     query_elements,
                 )
         logger.debug(query)
+        if query is None:
+            print("👀  ", model_class.get_search_fields())
+            # print("    ", model_class.get_search_fields())
         return query
 
     @classmethod
@@ -242,8 +276,9 @@ class CustomQueryBuilder(QueryBuilder):
         queries = []
         for sub_model_contenttype, sub_model_class in extended_models.items():
             # filter so it only applies to "docs with that model anywhere in the contenttypes list"
+            subquery = cls.get_query_for_model(sub_model_class, query_str)
             query = Filtered(
-                subquery=cls.get_query_for_model(sub_model_class, query_str),
+                subquery=subquery,
                 filters=[
                     (
                         "content_type",
@@ -256,16 +291,21 @@ class CustomQueryBuilder(QueryBuilder):
 
         # build query for root model passed in to method, filter to exclude docs with contenttypes
         # matching any of the extended-models-with-dedicated-IM
-        root_query = Filtered(
-            subquery=cls.get_query_for_model(model_class, query_str),
-            filters=[
-                (
-                    "content_type",
-                    "excludes",
-                    list(extended_models.keys()),
-                ),
-            ],
-        )
+        subquery = cls.get_query_for_model(model_class, query_str)
+        if subquery:
+            root_query = Filtered(
+                subquery=subquery,
+                filters=[
+                    (
+                        "content_type",
+                        "excludes",
+                        list(extended_models.keys()),
+                    ),
+                ],
+            )
+        else:
+            print(">> NONE", model_class)
+            root_query = subquery
 
         for q in queries:
             root_query |= q
