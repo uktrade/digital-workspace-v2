@@ -9,7 +9,6 @@ from extended_search.index import (
     IndexedField,
     RelatedFields,
     get_indexed_models,
-    SearchField,
 )
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
@@ -89,17 +88,6 @@ class QueryBuilder:
 
     @classmethod
     def _get_boost_for_field(cls, model_class, field):
-        # definition_cls = search_field.get_definition_model(model_cls)
-        # if definition_cls not in fields:
-        #     fields[definition_cls] = set()
-
-        # if isinstance(search_field, RelatedFields):
-        #     for ff in search_field.fields:
-        #         ff.parent_model_field = search_field.field_name
-        #         fields[definition_cls].add(ff)
-        # else:
-        #     fields[definition_cls].add(search_field)
-        # print("--> ", definition_cls)
         definition_cls = field.get_definition_model(model_class)
         content_type = ContentType.objects.get_for_model(definition_cls)
 
@@ -234,11 +222,6 @@ class QueryBuilder:
                 subquery,
             )
 
-        # if isinstance(field, SearchField):
-        #     subquery = cls._get_search_query_for_searchfield(
-        #         field, query_str, model_class, subquery
-        #     )
-
         return subquery
 
 
@@ -257,10 +240,6 @@ class CustomQueryBuilder(QueryBuilder):
                     query,
                     query_elements,
                 )
-        logger.debug(query)
-        if query is None:
-            print("👀  ", model_class.get_search_fields())
-            # print("    ", model_class.get_search_fields())
         return query
 
     @classmethod
@@ -271,11 +250,19 @@ class CustomQueryBuilder(QueryBuilder):
         parent; each has it's own subquery using its own settings filtered by
         type, and all are joined together at the end.
         """
-        extended_models = cls.get_extended_models_with_indexmanager(model_class)
+        extended_models = cls.get_extended_models_with_unique_indexed_fields(
+            model_class
+        )
         # build full query for each extended model
         queries = []
-        for sub_model_contenttype, sub_model_class in extended_models.items():
+        queried_content_types = []
+        for sub_model_class in extended_models:
             # filter so it only applies to "docs with that model anywhere in the contenttypes list"
+
+            sub_model_contenttype = (
+                f"{sub_model_class._meta.app_label}.{sub_model_class.__name__}"
+            )
+
             subquery = cls.get_query_for_model(sub_model_class, query_str)
             query = Filtered(
                 subquery=subquery,
@@ -288,40 +275,37 @@ class CustomQueryBuilder(QueryBuilder):
                 ],
             )
             queries.append(query)
+            queried_content_types.append(sub_model_contenttype)
 
         # build query for root model passed in to method, filter to exclude docs with contenttypes
         # matching any of the extended-models-with-dedicated-IM
         subquery = cls.get_query_for_model(model_class, query_str)
-        if subquery:
-            root_query = Filtered(
-                subquery=subquery,
-                filters=[
-                    (
-                        "content_type",
-                        "excludes",
-                        list(extended_models.keys()),
-                    ),
-                ],
-            )
-        else:
-            print(">> NONE", model_class)
-            root_query = subquery
+        root_query = Filtered(
+            subquery=subquery,
+            filters=[
+                (
+                    "content_type",
+                    "excludes",
+                    queried_content_types,
+                ),
+            ],
+        )
 
         for q in queries:
             root_query |= q
+
+        logger.debug(root_query)
         return root_query
 
     @classmethod
-    def get_extended_models_with_indexmanager(cls, model_class):
+    def get_extended_models_with_unique_indexed_fields(cls, model_class):
         # iterate indexed models extending the root model that have a dedicated IndexManager
-        extended_model_classes = {}
+        extended_model_classes = []
         for indexed_model in get_indexed_models():
             if (
                 indexed_model != model_class
                 and model_class in inspect.getmro(indexed_model)
-                and indexed_model.has_indexmanager_direct_inner_class()
+                # and indexed_model.has_indexmanager_direct_inner_class()
             ):
-                extended_model_classes[
-                    f"{indexed_model._meta.app_label}.{indexed_model.__name__}"
-                ] = indexed_model
+                extended_model_classes.append(indexed_model)
         return extended_model_classes

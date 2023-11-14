@@ -228,7 +228,7 @@ class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def get_searchable_fields(self):
         return [
             f
-            for f in self.queryset.model.search_fields
+            for f in self.queryset.model.get_search_fields()
             if isinstance(f, SearchField) or isinstance(f, RelatedFields)
         ]
 
