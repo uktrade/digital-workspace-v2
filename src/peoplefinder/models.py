@@ -20,7 +20,6 @@ from wagtail.search.queryset import SearchableQuerySetMixin
 from core.models import IngestedModel
 from extended_search.index import CustomIndexed
 from extended_search.index import DWIndexedField as IndexedField
-from extended_search.managers.index import ModelIndexManager
 
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
@@ -537,171 +536,170 @@ class Person(CustomIndexed, models.Model):
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
 
-    class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "full_name",
-                fuzzy=True,
-                tokenized=True,
-                explicit=True,
-                autocomplete=True,
-                boost=7.0,
-            ),
-            IndexedField(
-                "first_name",
-                fuzzy=True,
-                tokenized=True,
-                explicit=True,
-                autocomplete=True,
-                boost=7.0,
-            ),
-            IndexedField(
-                "preferred_first_name",
-                fuzzy=True,
-                tokenized=True,
-                explicit=True,
-                autocomplete=True,
-                boost=7.0,
-            ),
-            IndexedField(
-                "last_name",
-                fuzzy=True,
-                tokenized=True,
-                explicit=True,
-                autocomplete=True,
-                boost=7.0,
-            ),
-            IndexedField(
-                "email",
-                keyword=True,
-                boost=4.0,
-            ),
-            IndexedField(
-                "contact_email",
-                keyword=True,
-                boost=4.0,
-            ),
-            IndexedField(
-                "primary_phone_number",
-                keyword=True,
-                boost=4.0,
-            ),
-            IndexedField(
-                "secondary_phone_number",
-                keyword=True,
-                boost=4.0,
-            ),
-            IndexedField(
-                "search_grade",
-                explicit=True,
-            ),
-            IndexedField(
-                "search_buildings",
-                tokenized=True,
-            ),
-            # RelatedFields(
-            #     "roles",
-            #     [
-            #         IndexedField(
-            #             "job_title",
-            #             tokenized=True,
-            #             explicit=True,
-            #             boost=3.0,
-            #         ),
-            #     ],
-            # ),
-            # RelatedFields(
-            #     "key_skills",
-            #     [
-            #         IndexedField(
-            #             "name",
-            #             tokenized=True,
-            #             explicit=True,
-            #             boost=0.8,
-            #         ),
-            #     ],
-            # ),
-            # RelatedFields(
-            #     "learning_interests",
-            #     [
-            #         IndexedField(
-            #             "name",
-            #             tokenized=True,
-            #             boost=0.8,
-            #         ),
-            #     ],
-            # ),
-            # RelatedFields(
-            #     "additional_roles",
-            #     [
-            #         IndexedField(
-            #             "name",
-            #             tokenized=True,
-            #             explicit=True,
-            #             boost=0.8,
-            #         ),
-            #     ],
-            # ),
-            # RelatedFields(
-            #     "networks",
-            #     [
-            #         IndexedField(
-            #             "name",
-            #             tokenized=True,
-            #             explicit=True,
-            #             filter=True,
-            #             boost=1.5,
-            #         ),
-            #     ],
-            # ),
-            IndexedField(
-                "international_building",
-                tokenized=True,
-            ),
-            IndexedField(
-                "search_location",
-                tokenized=True,
-            ),
-            IndexedField(
-                "fluent_languages",
-                tokenized=True,
-            ),
-            IndexedField(
-                "search_teams",
-                tokenized=True,
-                explicit=True,
-                boost=2.0,
-            ),
-            IndexedField(
-                "has_photo",
-                proximity=True,
-                boost=1.5,
-            ),
-            IndexedField(
-                "profile_completion",
-                proximity=True,
-                boost=2.0,
-            ),
-            IndexedField(
-                "is_active",
-                filter=True,
-            ),
-            IndexedField(
-                "professions",
-                filter=True,
-            ),
-            IndexedField(
-                "grade",
-                filter=True,
-            ),
-            IndexedField(
-                "networks",
-                filter=True,
-            ),
-            IndexedField("do_not_work_for_dit", filter=True),
-        ]
+    indexed_fields = [
+        IndexedField(
+            "full_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "first_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "preferred_first_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "last_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=7.0,
+        ),
+        IndexedField(
+            "email",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "contact_email",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "primary_phone_number",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "secondary_phone_number",
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "search_grade",
+            explicit=True,
+        ),
+        IndexedField(
+            "search_buildings",
+            tokenized=True,
+        ),
+        # RelatedFields(
+        #     "roles",
+        #     [
+        #         IndexedField(
+        #             "job_title",
+        #             tokenized=True,
+        #             explicit=True,
+        #             boost=3.0,
+        #         ),
+        #     ],
+        # ),
+        # RelatedFields(
+        #     "key_skills",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             explicit=True,
+        #             boost=0.8,
+        #         ),
+        #     ],
+        # ),
+        # RelatedFields(
+        #     "learning_interests",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             boost=0.8,
+        #         ),
+        #     ],
+        # ),
+        # RelatedFields(
+        #     "additional_roles",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             explicit=True,
+        #             boost=0.8,
+        #         ),
+        #     ],
+        # ),
+        # RelatedFields(
+        #     "networks",
+        #     [
+        #         IndexedField(
+        #             "name",
+        #             tokenized=True,
+        #             explicit=True,
+        #             filter=True,
+        #             boost=1.5,
+        #         ),
+        #     ],
+        # ),
+        IndexedField(
+            "international_building",
+            tokenized=True,
+        ),
+        IndexedField(
+            "search_location",
+            tokenized=True,
+        ),
+        IndexedField(
+            "fluent_languages",
+            tokenized=True,
+        ),
+        IndexedField(
+            "search_teams",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "has_photo",
+            proximity=True,
+            boost=1.5,
+        ),
+        IndexedField(
+            "profile_completion",
+            proximity=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "is_active",
+            filter=True,
+        ),
+        IndexedField(
+            "professions",
+            filter=True,
+        ),
+        IndexedField(
+            "grade",
+            filter=True,
+        ),
+        IndexedField(
+            "networks",
+            filter=True,
+        ),
+        IndexedField("do_not_work_for_dit", filter=True),
+    ]
 
-    search_fields = IndexManager()
+    search_fields = []
 
     def __str__(self) -> str:
         return self.full_name
@@ -981,37 +979,36 @@ class Team(CustomIndexed, models.Model):
 
     objects = TeamQuerySet.as_manager()
 
-    class IndexManager(ModelIndexManager):
-        fields = [
-            IndexedField(
-                "name",
-                fuzzy=True,
-                tokenized=True,
-                explicit=True,
-                autocomplete=True,
-                boost=4.0,
-            ),
-            IndexedField(
-                "abbreviation",
-                tokenized=True,
-                explicit=True,
-                keyword=True,
-                boost=4.0,
-            ),
-            IndexedField(
-                "description",
-                tokenized=True,
-                explicit=True,
-            ),
-            IndexedField(
-                "roles_in_team",
-                tokenized=True,
-                explicit=True,
-                boost=2.0,
-            ),
-        ]
+    indexed_fields = [
+        IndexedField(
+            "name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "abbreviation",
+            tokenized=True,
+            explicit=True,
+            keyword=True,
+            boost=4.0,
+        ),
+        IndexedField(
+            "description",
+            tokenized=True,
+            explicit=True,
+        ),
+        IndexedField(
+            "roles_in_team",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+    ]
 
-    search_fields = IndexManager()
+    search_fields = []
 
     def __str__(self) -> str:
         return self.short_name
