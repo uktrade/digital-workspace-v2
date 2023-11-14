@@ -149,23 +149,19 @@ class Indexed(index.Indexed):
 
     @classmethod
     def get_search_fields(cls):
-        # return cls.get_indexed_fields()
         search_fields = super().get_search_fields()
         processed_index_fields = []
         for model_class in inspect.getmro(cls):
-            if class_is_indexed(model_class):
+            if class_is_indexed(model_class) and issubclass(model_class, Indexed):
                 processed_index_fields += model_class.get_indexed_fields()
-        # processed_index_fields = cls.get_indexed_fields()
 
-        # print("ooo", search_fields)
-        # print("---", processed_index_fields)
         return search_fields + processed_index_fields
 
     @classmethod
     def get_all_indexed_fields_including_from_parents_and_refactor_this(cls):
         fields = set()
         for model_class in inspect.getmro(cls):
-            if class_is_indexed(model_class):
+            if class_is_indexed(model_class) and issubclass(model_class, Indexed):
                 fields.update(model_class.indexed_fields)
         return list(fields)
 
@@ -177,7 +173,7 @@ def get_indexed_models():
     return [
         model
         for model in apps.get_models()
-        if issubclass(model, Indexed) and not model._meta.abstract
+        if issubclass(model, index.Indexed) and not model._meta.abstract
         # and model.search_fields
     ]
 
@@ -187,7 +183,7 @@ def class_is_indexed(cls):
     Overrides wagtail.search.index.class_is_indexed
     """
     return (
-        issubclass(cls, Indexed)
+        issubclass(cls, index.Indexed)
         and issubclass(cls, models.Model)
         and not cls._meta.abstract
         # and cls.search_fields
@@ -224,8 +220,8 @@ class ModelFieldNameMixin:
             return value
 
         value = getattr(obj, self.model_field_name, None)
-        if hasattr(value, "__call__"):  # noqa: B004
-            value = value()
+        # if hasattr(value, "__call__"):  # noqa: B004
+        #     value = value()
         return value
 
 
