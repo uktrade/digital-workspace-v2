@@ -6,11 +6,11 @@ import environ
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.utils import ProgrammingError
+from extended_search import models
+from extended_search.index import RelatedFields, get_indexed_models
 from psycopg2.errors import UndefinedTable
 from wagtail.search.index import SearchField
 
-from extended_search import models
-from extended_search.index import RelatedFields, get_indexed_models
 
 env_file_path = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),

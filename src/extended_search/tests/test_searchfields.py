@@ -113,10 +113,6 @@ class TestBaseField:
         result = field.get_value(CustomObject())
         assert result == "baz"
 
-        field = BaseField("foo", model_field_name="call_baz")
-        result = field.get_value(CustomObject())
-        assert result == "called_baz"
-
         field = BaseField("foo", model_field_name="other")
         result = field.get_value(CustomObject())
         assert result is None
@@ -124,6 +120,16 @@ class TestBaseField:
     def test_extends_renamedfieldmixin(self):
         assert issubclass(BaseField, ModelFieldNameMixin)
         assert issubclass(BaseField, index.BaseField)
+
+    def test_get_value_doesnt_call_callable(self, mocker):
+        mocker.patch(
+            "wagtail.search.index.BaseField.get_value",
+            return_value=None,
+        )
+        obj = CustomObject()
+        field = BaseField("foo", model_field_name="call_baz")
+        result = field.get_value(obj)
+        assert result == obj.call_baz
 
 
 class TestAutocompleteField:

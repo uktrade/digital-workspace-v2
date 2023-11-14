@@ -12,9 +12,9 @@ from extended_search.models import Setting
 from extended_search.settings import SearchSettings, extended_search_settings
 from news.models import NewsPage
 
-existing_cp_fields = ContentPage.IndexManager.fields
+existing_cp_fields = ContentPage.indexed_fields
 existing_cp_search_fields = ContentPage.search_fields
-existing_np_fields = NewsPage.IndexManager.fields
+existing_np_fields = NewsPage.indexed_fields
 existing_np_search_fields = NewsPage.search_fields
 
 
@@ -29,7 +29,7 @@ class TestPerModelFieldOverrides:
         backend_name = settings.WAGTAILSEARCH_BACKENDS["default"]["BACKEND"]
         backend = get_search_backend(backend_name)
 
-        model_class.IndexManager.fields = fields
+        model_class.indexed_fields = fields
         model_class.search_fields = base_fields + model_class.IndexManager()
         index = backend.get_index_for_model(model_class)
         mapping_cls = index.mapping_class(model_class)
@@ -215,9 +215,9 @@ class TestPerModelFieldOverrides:
 
     @pytest.mark.django_db
     def test_generated_search_applies_baseclass_and_subclass_filters(self):
-        ContentPage.IndexManager.fields = existing_cp_fields
+        ContentPage.indexed_fields = existing_cp_fields
         ContentPage.search_fields = existing_cp_search_fields
-        NewsPage.IndexManager.fields = existing_np_fields
+        NewsPage.indexed_fields = existing_np_fields
         NewsPage.search_fields = existing_np_search_fields
 
         query = CustomQueryBuilder.get_search_query(ContentPage, "foo")
