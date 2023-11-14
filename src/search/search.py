@@ -7,20 +7,16 @@ from working_at_dit.models import PoliciesAndGuidanceHome
 
 
 class SearchVector:
-    def __init__(self, request, annotate_score=False):
+    def __init__(self, request):
         self.request = request
-        self.annotate_score = annotate_score
+        self.annotate_score = True
 
     def _wagtail_search(self, queryset, query, *args, **kwargs):
         """
         Allows e.g. score annotation without polluting overridden search method
         """
-        return_method = queryset.search(query, *args, **kwargs)
 
-        if self.annotate_score:
-            return_method = return_method.annotate_score("_score")
-
-        return return_method
+        return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
     def get_queryset(self):
         raise NotImplementedError
