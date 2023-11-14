@@ -9,8 +9,12 @@ from django.db.models import Q, Subquery
 from django.forms import widgets
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
-from wagtail.admin.panels import (FieldPanel, ObjectList, TabbedInterface,
-                                  TitleFieldPanel)
+from wagtail.admin.panels import (
+    FieldPanel,
+    ObjectList,
+    TabbedInterface,
+    TitleFieldPanel,
+)
 from wagtail.admin.widgets.slug import SlugInput
 from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, PageQuerySet
@@ -18,8 +22,7 @@ from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
 from content import blocks
-from content.utils import (manage_excluded, manage_pinned,
-                           truncate_words_and_chars)
+from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
 from extended_search.index import CustomIndexed
 from extended_search.index import DWIndexedField as IndexedField
