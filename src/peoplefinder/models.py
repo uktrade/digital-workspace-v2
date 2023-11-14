@@ -769,7 +769,11 @@ class Person(Indexed, models.Model):
 
     @property
     def search_location(self):
-        return ", ".join(self.uk_office_location.all().values_list("name", flat=True))
+        if not self.uk_office_location:
+            return None
+
+        # The `name` usually includes the city.
+        return self.uk_office_location.name
 
     @property
     def search_grade(self):
