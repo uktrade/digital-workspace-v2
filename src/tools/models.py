@@ -1,11 +1,10 @@
+from content.models import ContentPage
 from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.shortcuts import redirect
-from wagtail.admin.panels import FieldPanel
-
-from content.models import ContentPage
 from extended_search.index import DWIndexedField as IndexedField
+from wagtail.admin.panels import FieldPanel
 from working_at_dit.models import PageWithTopics
 
 
@@ -101,8 +100,6 @@ class Tool(PageWithTopics):
             boost=10.0,
         ),
     ]
-
-    search_fields = PageWithTopics.search_fields
 
     @property
     def search_tool_name(self):

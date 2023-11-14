@@ -1,21 +1,21 @@
 from datetime import datetime
 
+from content.models import BasePage, ContentPage
+from core.utils import set_seen_cookie_banner
 from django.contrib.auth import get_user_model
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
 from django.template.response import TemplateResponse
 from django.utils.text import slugify
+from extended_search.index import DWIndexedField as IndexedField
 from modelcluster.fields import ParentalKey
+from news.forms import CommentForm
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.snippets.models import register_snippet
-
-from content.models import BasePage, ContentPage
-from core.utils import set_seen_cookie_banner
-from extended_search.index import DWIndexedField as IndexedField
-from news.forms import CommentForm
 from working_at_dit.models import PageWithTopics
+
 
 UserModel = get_user_model()
 
@@ -72,16 +72,6 @@ class NewsCategory(models.Model):
         blank=True,
     )
     history = history = HistoricalRecords()
-
-    indexed_fields = [
-        IndexedField(
-            "category",
-            tokenized=True,
-            explicit=True,
-        ),
-    ]
-
-    search_fields = ContentPage.search_fields
 
     def __str__(self):
         return self.category
@@ -167,8 +157,6 @@ class NewsPage(PageWithTopics):
             filter=True,
         ),
     ]
-
-    # search_fields = PageWithTopics.search_fields
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504
         FieldPanel("preview_image"),
