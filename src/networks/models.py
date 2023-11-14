@@ -1,10 +1,9 @@
-from django import forms
-from wagtail.admin.forms import WagtailAdminPageForm
-from wagtail.admin.panels import FieldPanel
-
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
+from django import forms
 from extended_search.index import DWIndexedField as IndexedField
+from wagtail.admin.forms import WagtailAdminPageForm
+from wagtail.admin.panels import FieldPanel
 
 
 class NetworksHome(ContentPage):
@@ -115,8 +114,6 @@ class Network(ContentOwnerMixin, ContentPage):
             explicit=True,
         ),
     ]
-
-    search_fields = ContentPage.search_fields
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
