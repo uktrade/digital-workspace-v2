@@ -4,13 +4,13 @@ from typing import Optional
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from wagtail.search.index import BaseField, get_indexed_models
-from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
-
 from extended_search.backends.query import Filtered, Nested, OnlyFields
-from extended_search.index import IndexedField, RelatedFields
+from extended_search.index import IndexedField, RelatedFields, get_indexed_models
 from extended_search.settings import extended_search_settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
+from wagtail.search.index import BaseField
+from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
+
 
 logger = logging.getLogger(__name__)
 
@@ -219,7 +219,7 @@ class CustomQueryBuilder(QueryBuilder):
     @classmethod
     def get_query_for_model(cls, model_class, query_str) -> SearchQuery:
         query = None
-        for field in model_class.IndexManager.fields:
+        for field in model_class.indexed_fields:
             query_elements = cls._get_search_query(query_str, model_class, field)
             if query_elements is not None:
                 query = cls._combine_queries(

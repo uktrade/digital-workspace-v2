@@ -1,15 +1,17 @@
 # type: ignore  (type checking is unhappy about the mixin referencing fields it doesnt define)
 import inspect
 import logging
-from typing import Optional
+from typing import Optional, Union
 
+from django.apps import apps
 from django.core import checks
 from django.core.exceptions import FieldDoesNotExist
+from django.db import models
 from django.db.models.fields.related import ForeignObjectRel, OneToOneRel, RelatedField
+from extended_search.types import AnalysisType
 from modelcluster.fields import ParentalManyToManyField
 from wagtail.search import index
 
-from extended_search.types import AnalysisType
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +35,158 @@ class Indexed(index.Indexed):
                     )
                 )
         return errors
+
+    ##################################
+    # COPIED FROM INDEXMANAGER
+    ##################################
+    indexed_fields = []
+
+    @classmethod
+    def _get_analyzer_name(cls, analyzer_type):
+        from extended_search.settings import extended_search_settings as search_settings
+
+        analyzer_settings = search_settings["analyzers"][analyzer_type.value]
+        return analyzer_settings["es_analyzer"]
+
+    @classmethod
+    def _get_searchable_search_fields(cls, field: "IndexedField"):
+        from extended_search.managers import get_indexed_field_name
+
+        fields = []
+        # if len(analyzers) == 0:
+        #     analyzers = [AnalysisType.TOKENIZED]
+
+        for analyzer in field.get_analyzers():
+            index_field_name = get_indexed_field_name(
+                field.model_field_name,
+                analyzer,
+            )
+            fields += [
+                SearchField(
+                    index_field_name,
+                    model_field_name=field.model_field_name,
+                    es_extra={
+                        "analyzer": cls._get_analyzer_name(analyzer),
+                    },
+                    boost=field.boost,
+                ),
+            ]
+        return fields
+
+    @classmethod
+    def _get_autocomplete_search_fields(cls, field: "IndexedField"):
+        return [AutocompleteField(field.model_field_name)]
+
+    @classmethod
+    def _get_filterable_search_fields(cls, field):
+        return [
+            FilterField(field.model_field_name),
+        ]
+
+    @classmethod
+    def _get_related_fields(cls, field: "IndexedField"):
+        fields = []
+        for related_field in field.fields:
+            fields += cls._get_indexed_fields(related_field)
+        return [
+            RelatedFields(field.model_field_name, fields),
+        ]
+
+    @classmethod
+    def _get_indexed_fields(cls, field: Union["RelatedFields", "IndexedField"]):
+        fields = []
+
+        if isinstance(field, RelatedFields):
+            fields += cls._get_related_fields(field)
+
+        if isinstance(field, IndexedField):
+            if field.search:
+                fields += cls._get_searchable_search_fields(field)
+
+            if field.autocomplete:
+                fields += cls._get_autocomplete_search_fields(field)
+
+            if field.filter:
+                fields += cls._get_filterable_search_fields(field)
+        else:
+            fields.append(field)
+
+        return fields
+
+    @classmethod
+    def get_indexed_fields(cls):
+        cls.generated_fields = []
+        if not hasattr(cls, "indexed_fields"):
+            return []
+
+        for field in cls.indexed_fields:
+            cls.generated_fields += cls._get_indexed_fields(field)
+        return cls.generated_fields
+
+    @classmethod
+    def get_directly_defined_fields(cls):
+        if not cls.generated_fields or len(cls.generated_fields) == 0:
+            cls.get_indexed_fields()
+
+        index_field_names = [f.model_field_name for f in cls.indexed_fields]
+        return [
+            field
+            for field in cls.generated_fields
+            if (
+                hasattr(field, "model_field_name")  # @TODO do we still need this line?
+                and field.model_field_name in index_field_names
+            )
+        ]
+
+    @classmethod
+    def is_directly_defined(cls, field):
+        return field in cls.get_directly_defined_fields()
+
+    ##################################
+    # END OF COPYPASTA
+    # EXTRAS TO MAKE IT WORK BELOW
+    ##################################
+
+    @classmethod
+    def get_search_fields(cls):
+        # return cls.get_indexed_fields()
+        search_fields = super().get_search_fields()
+        processed_index_fields = []
+        for model_class in inspect.getmro(cls):
+            if class_is_indexed(model_class):
+                processed_index_fields += model_class.get_indexed_fields()
+        # processed_index_fields = cls.get_indexed_fields()
+
+        # print("ooo", search_fields)
+        # print("---", processed_index_fields)
+        return search_fields + processed_index_fields
+
+
+def get_indexed_models():
+    """
+    Overrides wagtail.search.index.get_indexed_models
+    """
+    return [
+        model
+        for model in apps.get_models()
+        if issubclass(model, Indexed) and not model._meta.abstract
+        # and model.search_fields
+    ]
+
+
+def class_is_indexed(cls):
+    """
+    Overrides wagtail.search.index.class_is_indexed
+    """
+    return (
+        issubclass(cls, Indexed)
+        and issubclass(cls, models.Model)
+        and not cls._meta.abstract
+        # and cls.search_fields
+    )
+    ##################################
+    # END OF EXTRAS
+    ##################################
 
 
 class ModelFieldNameMixin:
@@ -270,7 +424,9 @@ class CustomIndexed(Indexed):
             if (
                 inspect.isclass(attr)
                 # and issubclass(attr, ModelIndexManager) #  Can't run this check due to circular imports
-                and attr.__name__ == "IndexManager"
+                and (
+                    attr.__name__ == "IndexManager" or attr.__name__ == "indexed_fields"
+                )
             ):
                 return True
         return False
