@@ -225,7 +225,25 @@ class ModelFieldNameMixin:
         return value
 
 
-class BaseField(ModelFieldNameMixin, index.BaseField):
+class IsRelatedFieldMixin:
+    def __init__(self, field_name, *args, parent_field=None, **kwargs):
+        super().__init__(field_name, *args, **kwargs)
+        self.parent_field = parent_field
+
+    def is_relation_of(self, field):
+        self.parent_field = field
+
+    def get_indexed_model_field_name(self):
+        if self.parent_field:
+            return self.parent_field.get_indexed_model_field_name()
+        return self.model_field_name
+
+    def get_full_field_name(self):
+        if self.parent_field:
+            return f"{self.parent_field.get_full_field_name()}.{self.model_field_name}"
+
+
+class BaseField(IsRelatedFieldMixin, ModelFieldNameMixin, index.BaseField):
     def get_attname(self, cls):
         if self.model_field_name != self.field_name:
             return self.field_name
@@ -244,7 +262,7 @@ class FilterField(index.FilterField, BaseField, index.BaseField):
     ...
 
 
-class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
+class RelatedFields(IsRelatedFieldMixin, ModelFieldNameMixin, index.RelatedFields):
     def select_on_queryset(self, queryset):
         """
         This method runs either prefetch_related or select_related on the queryset
