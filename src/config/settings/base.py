@@ -678,7 +678,6 @@ DJANGO_FEEDBACK_GOVUK = {
 # Leaving Service
 LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
 
-
 # django-waffle
 # https://waffle.readthedocs.io/en/stable/starting/configuring.html
 WAFFLE_FLAG_MODEL = "core.FeatureFlag"
