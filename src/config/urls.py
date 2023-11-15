@@ -11,12 +11,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from core.admin import admin_site
 from core.urls import urlpatterns as core_urlpatterns
-from peoplefinder.urls import (
-    api_urlpatterns,
-    people_urlpatterns,
-    teams_urlpatterns,
-)
-
+from peoplefinder.urls import api_urlpatterns, people_urlpatterns, teams_urlpatterns
 
 urlpatterns = [
     # URLs for Staff SSO Auth broker
@@ -50,9 +45,11 @@ urlpatterns = [
     path("sitemap.xml", sitemap),
     # Feedback
     path("feedback/", include(feedback_urls), name="feedback"),
-    # Wagtail
-    path("", include(wagtail_urls)),
 ]
+
+# If django-silk is installed, add its URLs
+if "silk" in settings.INSTALLED_APPS:
+    urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
 
 if settings.DEBUG:
     from django.conf.urls.static import static
@@ -61,6 +58,11 @@ if settings.DEBUG:
     # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += [
+    # Wagtail
+    path("", include(wagtail_urls)),
+]
 
 # Removed until we find a fix for Wagtail's redirect behaviour
 handler404 = "core.views.view_404"
