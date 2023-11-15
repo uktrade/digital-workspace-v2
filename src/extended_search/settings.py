@@ -8,10 +8,15 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.utils import ProgrammingError
 from django.utils.functional import cached_property
 from psycopg2.errors import UndefinedTable
-from wagtail.search.index import SearchField
+from wagtail.search import index
 
 from extended_search import models
-from extended_search.index import RelatedFields, get_indexed_models
+from extended_search.index import (
+    RelatedFields,
+    get_indexed_models,
+    SearchField,
+    BaseField,
+)
 
 env_file_path = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
@@ -238,13 +243,10 @@ class SearchSettings(NestedChainMap):
         for model, fields in field_dict.items():
             model_name_str = f"{model._meta.app_label}.{model._meta.model_name}"
             for search_field in fields:
-                field_name_str = getattr(
-                    search_field, "model_field_name", search_field.field_name
-                )
-                if parent_model_field := getattr(
-                    search_field, "parent_model_field", None
-                ):
-                    field_name_str = f"{parent_model_field}.{field_name_str}"
+                if isinstance(search_field, BaseField):
+                    field_name_str = search_field.get_full_model_field_name()
+                else:
+                    field_name_str = search_field.field_name
                 field_key = f"{model_name_str}.{field_name_str}"
 
                 self.fields["boost_parts"]["fields"][field_key] = getattr(
