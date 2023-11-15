@@ -229,7 +229,7 @@ class SearchSettings(NestedChainMap):
 
                     if isinstance(search_field, RelatedFields):
                         for ff in search_field.fields:
-                            ff.parent_model_field = search_field.field_name
+                            # ff.is_relation_of(search_field) @TODO check this
                             fields[definition_cls].add(ff)
                     else:
                         fields[definition_cls].add(search_field)

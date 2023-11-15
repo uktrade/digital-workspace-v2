@@ -131,10 +131,6 @@ class QueryBuilder:
     ):
         from extended_search.managers import get_indexed_field_name
 
-        # if pmf := field_mapping.get("parent_model_field"):
-        #     field_name = f"{pmf}.{field_name}"
-        # @TODO parent!
-
         if isinstance(field, BaseField):
             base_field_name = field.get_full_model_field_name()
 
