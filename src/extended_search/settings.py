@@ -6,11 +6,12 @@ import environ
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.utils import ProgrammingError
-from extended_search import models
-from extended_search.index import RelatedFields, get_indexed_models
+from django.utils.functional import cached_property
 from psycopg2.errors import UndefinedTable
 from wagtail.search.index import SearchField
 
+from extended_search import models
+from extended_search.index import RelatedFields, get_indexed_models
 
 env_file_path = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
@@ -145,7 +146,8 @@ class NestedChainMap(ChainMap):
                 ]
         return keys
 
-    @property
+    # @TODO: just added the cached_property without too much testing
+    @cached_property
     def all_keys(self):
         """
         Returns a list of the *flattened* keys for all nested maps in this instance
