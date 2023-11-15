@@ -1,6 +1,8 @@
 from types import NoneType
 
 import pytest
+from wagtail.search.index import SearchField
+
 from extended_search.models import Setting
 from extended_search.settings import (
     DEFAULT_SETTINGS,
@@ -10,7 +12,6 @@ from extended_search.settings import (
     SearchSettings,
     extended_search_settings,
 )
-from wagtail.search.index import SearchField
 
 
 class TestDefaults:
@@ -356,6 +357,7 @@ class TestSearchSettings:
             "extended_search.settings.NestedChainMap._get_all_prefixed_keys_from_nested_maps",
             return_value=["top__middle__key", "top__second"],
         )  # for all_keys
+        instance = SearchSettings()
         instance.initialise_env_dict()
         assert mock_env.call_count == 2
         assert instance.env_vars == {

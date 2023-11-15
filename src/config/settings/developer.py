@@ -11,4 +11,18 @@ if SKIP_CLAM_AV_FILE_UPLOAD:
 
 INSTALLED_APPS += [  # noqa F405
     "django_extensions",
+    "silk",
 ]
+
+# Add django-silk for profiling
+MIDDLEWARE += [  # noqa F405
+    "silk.middleware.SilkyMiddleware",
+]
+
+SILKY_PYTHON_PROFILER = True
+SILKY_PYTHON_PROFILER_BINARY = True
+SILKY_PYTHON_PROFILER_RESULT_PATH = os.path.join(  # noqa F405
+    PROJECT_ROOT_DIR,  # noqa F405
+    "profiler_results",
+)
+SILKY_META = True
