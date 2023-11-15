@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 
 from extended_search.settings import extended_search_settings as search_settings

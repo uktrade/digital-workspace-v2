@@ -1,7 +1,7 @@
 # type: ignore  (type checking is unhappy about the mixin referencing fields it doesnt define)
 import inspect
 import logging
-from typing import Any, Optional, Union
+from typing import Optional
 
 from django.apps import apps
 from django.core import checks
