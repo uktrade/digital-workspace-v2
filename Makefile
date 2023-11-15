@@ -150,6 +150,9 @@ local-setup:
 dump-db:
 	pg_dump digital_workspace -U postgres -h localhost -p 5432 -O -x -c -f dw.dump
 
+db-from-dump:
+	PGPASSWORD='postgres' psql -h localhost -U postgres digital_workspace -f dw.dump
+
 reset-db:
 	docker-compose stop db
 	rm -rf ./.db/

@@ -9,6 +9,7 @@
 *~
 /logs
 /data
+/profiler_results
 .~*
 common/CACHE
 __pycache__
