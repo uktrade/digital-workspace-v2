@@ -17,6 +17,8 @@ from extended_search.settings import extended_search_settings
 from peoplefinder.models import Person, Team
 from search.templatetags.search import SEARCH_CATEGORIES
 
+from silk.profiling.profiler import silk_profile
+
 logger = logging.getLogger(__name__)
 
 
@@ -25,6 +27,7 @@ def can_view_explore():
 
 
 @require_http_methods(["GET"])
+@silk_profile(name="Search.View")
 def search(request: HttpRequest, category: str = None) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")

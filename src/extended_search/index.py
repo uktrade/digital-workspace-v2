@@ -1,7 +1,7 @@
 # type: ignore  (type checking is unhappy about the mixin referencing fields it doesnt define)
 import inspect
 import logging
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from django.apps import apps
 from django.core import checks
@@ -142,7 +142,7 @@ class ModelFieldNameMixin:
 
         # Find where it was defined by walking the inheritance tree
         for base_cls in inspect.getmro(cls):
-            if self.model_field_name in base_cls.__dict__:
+            if self.get_base_model_field_name() in base_cls.__dict__:
                 return base_cls
 
     def get_value(self, obj):
@@ -193,15 +193,6 @@ class ModelFieldNameMixin:
         if self.parent_field:
             return f"{self.parent_field.get_full_model_field_name()}.{self.model_field_name}"
         return self.model_field_name
-
-    def get_definition_model(self, cls):
-        if base_cls := super().get_definition_model(cls):
-            return base_cls
-
-        # Find where it was defined by walking the inheritance tree
-        for base_cls in inspect.getmro(cls):
-            if self.get_base_model_field_name() in base_cls.__dict__:
-                return base_cls
 
 
 class BaseField(ModelFieldNameMixin, index.BaseField):
@@ -260,14 +251,19 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
     def generate_fields(
         self, parent_field: Optional[BaseField] = None
     ) -> list[BaseField]:
+        if parent_field:
+            self.is_relation_of(parent_field)
+
         generated_fields = []
         for field in self.fields:  # @TODO verify properly
             if isinstance(field, IndexedField) or isinstance(field, RelatedFields):
                 generated_fields += field.generate_fields(parent_field=self)
             else:
-                field.is_related_to(self)  # <- won't work on wagtail native fields
+                field.is_relation_of(self)  # <- won't work on wagtail native fields
                 generated_fields.append(field)
-        return generated_fields
+
+        self.fields = generated_fields
+        return [self]
 
 
 #############################
@@ -309,29 +305,29 @@ class IndexedField(BaseField):
         parent_field: Optional[BaseField] = None,
     ) -> list[BaseField]:
         generated_fields = []
-        field_name = self.model_field_name
+
+        if parent_field:
+            self.is_relation_of(parent_field)
 
         if self.search:
-            generated_fields += self.generate_search_fields(field_name, parent_field)
+            generated_fields += self.generate_search_fields(parent_field)
         if self.autocomplete:
-            generated_fields += self.generate_autocomplete_fields(
-                field_name, parent_field
-            )
+            generated_fields += self.generate_autocomplete_fields(parent_field)
         if self.filter:
-            generated_fields += self.generate_filter_fields(field_name, parent_field)
+            generated_fields += self.generate_filter_fields(parent_field)
 
         return generated_fields
 
     def generate_search_fields(
-        self, field_name: str, parent_field: Optional[BaseField] = None
+        self, parent_field: Optional[BaseField] = None
     ) -> list[SearchField]:
         generated_fields = []
-        for variant_kwargs in self.get_search_field_variants():
+        for variant_args, variant_kwargs in self.get_search_field_variants():
             kwargs = self.search_kwargs.copy()
             kwargs.update(variant_kwargs)
             generated_fields.append(
                 SearchField(
-                    field_name,
+                    *variant_args,
                     model_field_name=self.model_field_name,
                     boost=self.boost,
                     parent_field=parent_field,
@@ -341,15 +337,15 @@ class IndexedField(BaseField):
         return generated_fields
 
     def generate_autocomplete_fields(
-        self, field_name: str, parent_field: Optional[BaseField] = None
+        self, parent_field: Optional[BaseField] = None
     ) -> list[AutocompleteField]:
         generated_fields = []
-        for variant_kwargs in self.get_autocomplete_field_variants():
+        for variant_args, variant_kwargs in self.get_autocomplete_field_variants():
             kwargs = self.autocomplete_kwargs.copy()
             kwargs.update(variant_kwargs)
             generated_fields.append(
                 AutocompleteField(
-                    field_name,
+                    *variant_args,
                     model_field_name=self.model_field_name,
                     parent_field=parent_field,
                     **kwargs,
@@ -358,15 +354,15 @@ class IndexedField(BaseField):
         return generated_fields
 
     def generate_filter_fields(
-        self, field_name: str, parent_field: Optional[BaseField] = None
+        self, parent_field: Optional[BaseField] = None
     ) -> list[FilterField]:
         generated_fields = []
-        for variant_kwargs in self.get_filter_field_variants():
+        for variant_args, variant_kwargs in self.get_filter_field_variants():
             kwargs = self.filter_kwargs.copy()
             kwargs.update(variant_kwargs)
             generated_fields.append(
                 FilterField(
-                    field_name,
+                    *variant_args,
                     model_field_name=self.model_field_name,
                     parent_field=parent_field,
                     **kwargs,
@@ -374,28 +370,34 @@ class IndexedField(BaseField):
             )
         return generated_fields
 
-    def get_search_field_variants(self):
+    def get_search_field_variants(self) -> list[tuple[tuple, dict]]:
         """
-        Override this in order to customise the kwargs passed to SearchField on creation or to create more than one, each with different kwargs
+        Override this in order to customise the args and kwargs passed to SearchField on creation or to create more than one, each with different kwargs
         """
         if self.search:
-            return [{}]
+            return [
+                ((self.model_field_name,), {}),
+            ]
         return []
 
-    def get_autocomplete_field_variants(self):
+    def get_autocomplete_field_variants(self) -> list[tuple[tuple, dict]]:
         """
-        Override this in order to customise the kwargs passed to AutocompleteField on creation or to create more than one, each with different kwargs
+        Override this in order to customise the args and kwargs passed to AutocompleteField on creation or to create more than one, each with different kwargs
         """
         if self.autocomplete:
-            return [{}]
+            return [
+                ((self.model_field_name,), {}),
+            ]
         return []
 
-    def get_filter_field_variants(self):
+    def get_filter_field_variants(self) -> list[tuple[tuple, dict]]:
         """
-        Override this in order to customise the kwargs passed to FilterField on creation or to create more than one, each with different kwargs
+        Override this in order to customise the args and kwargs passed to FilterField on creation or to create more than one, each with different kwargs
         """
         if self.filter:
-            return [{}]
+            return [
+                ((self.model_field_name,), {}),
+            ]
         return []
 
 
@@ -445,15 +447,19 @@ class MultiQueryIndexedField(IndexedField):
 
     def get_search_field_variants(self):
         from extended_search.settings import extended_search_settings as search_settings
+        from extended_search.managers import get_indexed_field_name
 
         return [
-            {
-                "es_extra": {
-                    "analyzer": search_settings["analyzers"][analyzer.value][
-                        "es_analyzer"
-                    ]
-                }
-            }
+            (
+                (get_indexed_field_name(self.model_field_name, analyzer),),
+                {
+                    "es_extra": {
+                        "analyzer": search_settings["analyzers"][analyzer.value][
+                            "es_analyzer"
+                        ]
+                    }
+                },
+            )
             for analyzer in self.get_search_analyzers()
         ]
 
@@ -462,6 +468,16 @@ class MultiQueryIndexedField(IndexedField):
 
     # def get_autocomplete_field_variants(self):
     #     return super().get_autocomplete_field_variants()
+
+
+# class MultiQueryRelatedField(RelatedField):
+#     def __init__(self, *args: Any, **kwargs: Any) -> None:
+#         super().__init__(*args, **kwargs)
+#         self.indexed_fields = [
+#             f
+#             for f in self.fields
+#             if isinstance(f, IndexedField) or isinstance(f, RelatedFields)
+#         ]
 
 
 #############################

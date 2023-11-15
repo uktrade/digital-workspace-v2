@@ -18,8 +18,11 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
-from extended_search.index import CustomIndexed
-from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import (
+    CustomIndexed,
+    DWIndexedField as IndexedField,
+    RelatedFields,
+)
 
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
@@ -597,61 +600,61 @@ class Person(CustomIndexed, models.Model):
             "search_buildings",
             tokenized=True,
         ),
-        # RelatedFields(
-        #     "roles",
-        #     [
-        #         IndexedField(
-        #             "job_title",
-        #             tokenized=True,
-        #             explicit=True,
-        #             boost=3.0,
-        #         ),
-        #     ],
-        # ),
-        # RelatedFields(
-        #     "key_skills",
-        #     [
-        #         IndexedField(
-        #             "name",
-        #             tokenized=True,
-        #             explicit=True,
-        #             boost=0.8,
-        #         ),
-        #     ],
-        # ),
-        # RelatedFields(
-        #     "learning_interests",
-        #     [
-        #         IndexedField(
-        #             "name",
-        #             tokenized=True,
-        #             boost=0.8,
-        #         ),
-        #     ],
-        # ),
-        # RelatedFields(
-        #     "additional_roles",
-        #     [
-        #         IndexedField(
-        #             "name",
-        #             tokenized=True,
-        #             explicit=True,
-        #             boost=0.8,
-        #         ),
-        #     ],
-        # ),
-        # RelatedFields(
-        #     "networks",
-        #     [
-        #         IndexedField(
-        #             "name",
-        #             tokenized=True,
-        #             explicit=True,
-        #             filter=True,
-        #             boost=1.5,
-        #         ),
-        #     ],
-        # ),
+        RelatedFields(
+            "roles",
+            [
+                IndexedField(
+                    "job_title",
+                    tokenized=True,
+                    explicit=True,
+                    boost=3.0,
+                ),
+            ],
+        ),
+        RelatedFields(
+            "key_skills",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    boost=0.8,
+                ),
+            ],
+        ),
+        RelatedFields(
+            "learning_interests",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    boost=0.8,
+                ),
+            ],
+        ),
+        RelatedFields(
+            "additional_roles",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    boost=0.8,
+                ),
+            ],
+        ),
+        RelatedFields(
+            "networks",
+            [
+                IndexedField(
+                    "name",
+                    tokenized=True,
+                    explicit=True,
+                    filter=True,
+                    boost=1.5,
+                ),
+            ],
+        ),
         IndexedField(
             "international_building",
             tokenized=True,
