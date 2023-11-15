@@ -159,7 +159,7 @@ class QueryBuilder:
 
     @classmethod
     def _get_search_query_for_searchfield(cls, field, query_str, model_class, subquery):
-        for analyzer in field.get_analyzers():
+        for analyzer in field.get_search_analyzers():
             for query_type in search_settings[
                 f"analyzers__{analyzer.value}__query_types"
             ]:

@@ -42,85 +42,17 @@ class Indexed(index.Indexed):
     indexed_fields = []
 
     @classmethod
-    def _get_analyzer_name(cls, analyzer_type):
-        from extended_search.settings import extended_search_settings as search_settings
-
-        analyzer_settings = search_settings["analyzers"][analyzer_type.value]
-        return analyzer_settings["es_analyzer"]
-
-    @classmethod
-    def _get_searchable_search_fields(cls, field: "IndexedField"):
-        from extended_search.managers import get_indexed_field_name
-
-        fields = []
-        # if len(analyzers) == 0:
-        #     analyzers = [AnalysisType.TOKENIZED]
-
-        for analyzer in field.get_analyzers():
-            index_field_name = get_indexed_field_name(
-                field.model_field_name,
-                analyzer,
-            )
-            fields += [
-                SearchField(
-                    index_field_name,
-                    model_field_name=field.model_field_name,
-                    es_extra={
-                        "analyzer": cls._get_analyzer_name(analyzer),
-                    },
-                    boost=field.boost,
-                ),
-            ]
-        return fields
-
-    @classmethod
-    def _get_autocomplete_search_fields(cls, field: "IndexedField"):
-        return [AutocompleteField(field.model_field_name)]
-
-    @classmethod
-    def _get_filterable_search_fields(cls, field):
-        return [
-            FilterField(field.model_field_name),
-        ]
-
-    @classmethod
-    def _get_related_fields(cls, field: "IndexedField"):
-        fields = []
-        for related_field in field.fields:
-            fields += cls._get_indexed_fields(related_field)
-        return [
-            RelatedFields(field.model_field_name, fields),
-        ]
-
-    @classmethod
-    def _get_indexed_fields(cls, field: Union["RelatedFields", "IndexedField"]):
-        fields = []
-
-        if isinstance(field, RelatedFields):
-            fields += cls._get_related_fields(field)
-
-        if isinstance(field, IndexedField):
-            if field.search:
-                fields += cls._get_searchable_search_fields(field)
-
-            if field.autocomplete:
-                fields += cls._get_autocomplete_search_fields(field)
-
-            if field.filter:
-                fields += cls._get_filterable_search_fields(field)
-        else:
-            fields.append(field)
-
-        return fields
-
-    @classmethod
     def get_indexed_fields(cls):
         cls.generated_fields = []
         if not hasattr(cls, "indexed_fields"):
             return []
 
-        for field in cls.indexed_fields:
-            cls.generated_fields += cls._get_indexed_fields(field)
+        for (
+            field
+        ) in (
+            cls.indexed_fields
+        ):  # @TODO doesnt support SearchFields in indexed_fiedls (for now ?)
+            cls.generated_fields += field.generate_fields()
         return cls.generated_fields
 
     @classmethod
@@ -194,9 +126,12 @@ def class_is_indexed(cls):
 
 
 class ModelFieldNameMixin:
-    def __init__(self, field_name, *args, model_field_name=None, **kwargs):
+    def __init__(
+        self, field_name, *args, model_field_name=None, parent_field=None, **kwargs
+    ):
         super().__init__(field_name, *args, **kwargs)
         self.model_field_name = model_field_name or field_name
+        self.parent_field = parent_field
 
     def get_field(self, cls):
         return cls._meta.get_field(self.model_field_name)
@@ -204,11 +139,6 @@ class ModelFieldNameMixin:
     def get_definition_model(self, cls):
         if base_cls := super().get_definition_model(cls):
             return base_cls
-
-        # # TODO: review this later (RelatedFields)
-        # name_parts = model_field_name.split(".")
-        # if len(name_parts) > 1:
-        #     model_field_name = name_parts[0]
 
         # Find where it was defined by walking the inheritance tree
         for base_cls in inspect.getmro(cls):
@@ -224,26 +154,57 @@ class ModelFieldNameMixin:
         #     value = value()
         return value
 
-
-class IsRelatedFieldMixin:
-    def __init__(self, field_name, *args, parent_field=None, **kwargs):
-        super().__init__(field_name, *args, **kwargs)
-        self.parent_field = parent_field
+    #################################
+    # RelatedField support in queries
+    #################################
 
     def is_relation_of(self, field):
+        """
+        Allows post-init definiton of a field Relation (used for field name generation)
+        """
         self.parent_field = field
 
-    def get_indexed_model_field_name(self):
+    def get_base_field(self):
+        """
+        Returns the field on the indexed model that owns the relationship, or the field if no relation exists
+        """
         if self.parent_field:
-            return self.parent_field.get_indexed_model_field_name()
+            return self.parent_field.get_base_field()
+        return self
+
+    def get_base_model_field_name(self):
+        """
+        Returns the model field name of the field on the model that owns the relationship, if any, or the field name if not.
+
+        Examples (Book is the indexed model)
+        Book -> Author -> First Name: this would return author
+        Book -> Author -> Publisher -> Name: this would return author
+        """
+        return self.get_base_field().model_field_name
+
+    def get_full_model_field_name(self):
+        """
+        Returns the full name of the field based on the relations in place, starting at the base indexed model.
+
+        Examples (Book is the indexed model)
+        Book -> Author -> First Name: this would return author.first_name
+        Book -> Author -> Publisher -> Name: this would return author.publisher.name
+        """
+        if self.parent_field:
+            return f"{self.parent_field.get_full_model_field_name()}.{self.model_field_name}"
         return self.model_field_name
 
-    def get_full_field_name(self):
-        if self.parent_field:
-            return f"{self.parent_field.get_full_field_name()}.{self.model_field_name}"
+    def get_definition_model(self, cls):
+        if base_cls := super().get_definition_model(cls):
+            return base_cls
+
+        # Find where it was defined by walking the inheritance tree
+        for base_cls in inspect.getmro(cls):
+            if self.get_base_model_field_name() in base_cls.__dict__:
+                return base_cls
 
 
-class BaseField(IsRelatedFieldMixin, ModelFieldNameMixin, index.BaseField):
+class BaseField(ModelFieldNameMixin, index.BaseField):
     def get_attname(self, cls):
         if self.model_field_name != self.field_name:
             return self.field_name
@@ -262,7 +223,7 @@ class FilterField(index.FilterField, BaseField, index.BaseField):
     ...
 
 
-class RelatedFields(IsRelatedFieldMixin, ModelFieldNameMixin, index.RelatedFields):
+class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
     def select_on_queryset(self, queryset):
         """
         This method runs either prefetch_related or select_related on the queryset
@@ -295,6 +256,18 @@ class RelatedFields(IsRelatedFieldMixin, ModelFieldNameMixin, index.RelatedField
                 queryset = queryset.prefetch_related(self.model_field_name)
 
         return queryset
+
+    def generate_fields(
+        self, parent_field: Optional[BaseField] = None
+    ) -> list[BaseField]:
+        generated_fields = []
+        for field in self.fields:  # @TODO verify properly
+            if isinstance(field, IndexedField) or isinstance(field, RelatedFields):
+                generated_fields += field.generate_fields(parent_field=self)
+            else:
+                field.is_related_to(self)  # <- won't work on wagtail native fields
+                generated_fields.append(field)
+        return generated_fields
 
 
 #############################
@@ -333,49 +306,97 @@ class IndexedField(BaseField):
 
     def generate_fields(
         self,
-        # parent_field: Optional[BaseField] = None,
+        parent_field: Optional[BaseField] = None,
     ) -> list[BaseField]:
         generated_fields = []
         field_name = self.model_field_name
-        # if parent_field:
-        #     field_name = f"{parent_field.model_field_name}.{field_name}"
 
         if self.search:
-            generated_fields.append(self.generate_search_field(field_name))
+            generated_fields += self.generate_search_fields(field_name, parent_field)
         if self.autocomplete:
-            generated_fields.append(self.generate_autocomplete_field(field_name))
+            generated_fields += self.generate_autocomplete_fields(
+                field_name, parent_field
+            )
         if self.filter:
-            generated_fields.append(self.generate_filter_field(field_name))
+            generated_fields += self.generate_filter_fields(field_name, parent_field)
 
         return generated_fields
 
-    def generate_search_field(self, field_name: str) -> SearchField:
-        return SearchField(
-            field_name,
-            model_field_name=self.model_field_name,
-            **self.search_kwargs,
-        )
+    def generate_search_fields(
+        self, field_name: str, parent_field: Optional[BaseField] = None
+    ) -> list[SearchField]:
+        generated_fields = []
+        for variant_kwargs in self.get_search_field_variants():
+            kwargs = self.search_kwargs.copy()
+            kwargs.update(variant_kwargs)
+            generated_fields.append(
+                SearchField(
+                    field_name,
+                    model_field_name=self.model_field_name,
+                    boost=self.boost,
+                    parent_field=parent_field,
+                    **kwargs,
+                )
+            )
+        return generated_fields
 
-    def generate_autocomplete_field(self, field_name: str) -> AutocompleteField:
-        return AutocompleteField(
-            field_name,
-            model_field_name=self.model_field_name,
-            **self.autocomplete_kwargs,
-        )
+    def generate_autocomplete_fields(
+        self, field_name: str, parent_field: Optional[BaseField] = None
+    ) -> list[AutocompleteField]:
+        generated_fields = []
+        for variant_kwargs in self.get_autocomplete_field_variants():
+            kwargs = self.autocomplete_kwargs.copy()
+            kwargs.update(variant_kwargs)
+            generated_fields.append(
+                AutocompleteField(
+                    field_name,
+                    model_field_name=self.model_field_name,
+                    parent_field=parent_field,
+                    **kwargs,
+                )
+            )
+        return generated_fields
 
-    def generate_filter_field(self, field_name: str) -> FilterField:
-        return FilterField(
-            field_name,
-            model_field_name=self.model_field_name,
-            **self.filter_kwargs,
-        )
+    def generate_filter_fields(
+        self, field_name: str, parent_field: Optional[BaseField] = None
+    ) -> list[FilterField]:
+        generated_fields = []
+        for variant_kwargs in self.get_filter_field_variants():
+            kwargs = self.filter_kwargs.copy()
+            kwargs.update(variant_kwargs)
+            generated_fields.append(
+                FilterField(
+                    field_name,
+                    model_field_name=self.model_field_name,
+                    parent_field=parent_field,
+                    **kwargs,
+                )
+            )
+        return generated_fields
 
-    def get_analyzers(self):
-        analyzers = set()
+    def get_search_field_variants(self):
+        """
+        Override this in order to customise the kwargs passed to SearchField on creation or to create more than one, each with different kwargs
+        """
         if self.search:
-            analyzers.add(AnalysisType.TOKENIZED)
-        # @TODO add analyzers for filter, autocomplete
-        return analyzers
+            return [{}]
+        return []
+
+    def get_autocomplete_field_variants(self):
+        """
+        Override this in order to customise the kwargs passed to AutocompleteField on creation or to create more than one, each with different kwargs
+        """
+        if self.autocomplete:
+            return [{}]
+        return []
+
+    def get_filter_field_variants(self):
+        """
+        Override this in order to customise the kwargs passed to FilterField on creation or to create more than one, each with different kwargs
+        """
+        if self.filter:
+            return [{}]
+        return []
 
 
 #############################
@@ -400,13 +421,47 @@ class MultiQueryIndexedField(IndexedField):
         if tokenized or explicit or fuzzy:
             self.search = True
 
-    def get_analyzers(self):
-        analyzers = super().get_analyzers()
-        if self.explicit:
-            analyzers.add(AnalysisType.EXPLICIT)
+    def get_search_analyzers(self):
+        analyzers = set()
         if self.tokenized:
             analyzers.add(AnalysisType.TOKENIZED)
+        if self.explicit:
+            analyzers.add(AnalysisType.EXPLICIT)
+        if not analyzers and self.search:
+            analyzers.add(AnalysisType.TOKENIZED)
         return analyzers
+
+    def get_autocomplete_analyzers(self):
+        analyzers = set()
+        if self.autocomplete:  # @TODO
+            analyzers.add(AnalysisType.NGRAM)
+        return analyzers
+
+    def get_filter_analyzers(self):
+        analyzers = set()
+        if self.filter:  # @TODO
+            analyzers.add(AnalysisType.FILTER)
+        return analyzers
+
+    def get_search_field_variants(self):
+        from extended_search.settings import extended_search_settings as search_settings
+
+        return [
+            {
+                "es_extra": {
+                    "analyzer": search_settings["analyzers"][analyzer.value][
+                        "es_analyzer"
+                    ]
+                }
+            }
+            for analyzer in self.get_search_analyzers()
+        ]
+
+    # def get_filter_field_variants(self):
+    #     return super().get_filter_field_variants()
+
+    # def get_autocomplete_field_variants(self):
+    #     return super().get_autocomplete_field_variants()
 
 
 #############################
@@ -427,8 +482,8 @@ class DWIndexedField(MultiQueryIndexedField):
         if keyword:
             self.search = True
 
-    def get_analyzers(self):
-        analyzers = super().get_analyzers()
+    def get_search_analyzers(self):
+        analyzers = super().get_search_analyzers()
         if self.keyword:
             analyzers.add(AnalysisType.KEYWORD)
         return analyzers

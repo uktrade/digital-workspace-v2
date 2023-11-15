@@ -13,4 +13,4 @@ class AnalysisType(Enum):
     FILTER = "filter"
     EXPLICIT = "explicit"
     KEYWORD = "keyword"
-    PROXIMITY = "proximity"
+    NGRAM = "ngram"
