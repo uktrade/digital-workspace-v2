@@ -9,7 +9,6 @@ from working_at_dit.models import PoliciesAndGuidanceHome
 class SearchVector:
     def __init__(self, request):
         self.request = request
-        self.annotate_score = True
 
     def _wagtail_search(self, queryset, query, *args, **kwargs):
         """

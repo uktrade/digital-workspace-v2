@@ -682,3 +682,6 @@ LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
 # django-waffle
 # https://waffle.readthedocs.io/en/stable/starting/configuring.html
 WAFFLE_FLAG_MODEL = "core.FeatureFlag"
+
+# Bad search score multiplier
+BAD_SEARCH_SCORE_MULTIPLIER = env.int("BAD_SEARCH_SCORE_MULTIPLIER", 1)

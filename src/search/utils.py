@@ -2,6 +2,7 @@ import re
 import unicodedata
 import statistics
 
+from django.conf import settings
 from typing import Optional
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 from extended_search.backends.query import OnlyFields
@@ -204,18 +205,19 @@ def get_all_subqueries(query):
     return subqueries
 
 
+# Gets the median of all the boosts related to the query so that a threshold is identified
 def get_bad_score_threshold(query, category):
-    bad_score_threshold_multiplier = 1
     boost_values = set()
     subqueries = get_all_subqueries(query)
 
     for subquery in subqueries[category]:
         boost_values.add(round(subquery["boost"], 2))
 
-    return statistics.median(boost_values) * bad_score_threshold_multiplier
+    return statistics.median(boost_values) * settings.BAD_SEARCH_SCORE_MULTIPLIER
 
 
-def query_has_bad_results(query, category, pinned_results, search_results):
+# Triggers the conditional rendering on the FE message if the search yields low score results
+def has_only_bad_results(query, category, pinned_results, search_results):
     if pinned_results:
         return False
     if not search_results:
