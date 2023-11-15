@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 
 from search import search as search_vectors
 
-from silk.profiling.profiler import silk_profile
+# from silk.profiling.profiler import silk_profile
 
 
 register = template.Library()
@@ -34,7 +34,7 @@ PAGE_SIZE = 20
 @register.inclusion_tag(
     "search/partials/search_results_category.html", takes_context=True
 )
-@silk_profile(name="Search.TemplateTag.category")
+# @silk_profile(name="Search.TemplateTag.category")
 def search_category(context, *, category, limit=None, show_heading=False):
     request = context["request"]
     query = context["search_query"]
@@ -81,7 +81,7 @@ def search_category(context, *, category, limit=None, show_heading=False):
 
 
 @register.simple_tag(takes_context=True)
-@silk_profile(name="Search.TemplateTag.count")
+# @silk_profile(name="Search.TemplateTag.count")
 def search_count(context, *, category):
     request = context["request"]
     query = context["search_query"]

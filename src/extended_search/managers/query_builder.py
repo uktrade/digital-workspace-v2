@@ -76,8 +76,6 @@ class QueryBuilder:
                 analysis_boost_key = "tokenized"
             case AnalysisType.KEYWORD:
                 analysis_boost_key = "explicit"
-            case AnalysisType.PROXIMITY:
-                analysis_boost_key = 1.0  # @TODO figure out how to add this
             case AnalysisType.FILTER:
                 analysis_boost_key = 1.0  # @TODO figure out how to add this
             case _:

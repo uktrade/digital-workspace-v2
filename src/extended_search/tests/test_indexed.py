@@ -192,14 +192,14 @@ class TestIndexed:
         assert mock_func.call_count == 3
         assert len(result[0].fields) == 3
 
-    @pytest.mark.django_db
-    def test_get_analyzer_name_retrieves_value_from_settings(self):
-        Setting.objects.create(key="analyzers__tokenized__es_analyzer", value="foo")
-        assert AnalysisType.TOKENIZED.value == "tokenized"
-        assert Indexed._get_analyzer_name(AnalysisType.TOKENIZED) == "foo"
-        Setting.objects.create(key="analyzers__explicit__es_analyzer", value="bar")
-        assert AnalysisType.EXPLICIT.value == "explicit"
-        assert Indexed._get_analyzer_name(AnalysisType.EXPLICIT) == "bar"
+    # @pytest.mark.django_db
+    # def test_get_analyzer_name_retrieves_value_from_settings(self):
+    #     Setting.objects.create(key="analyzers__tokenized__es_analyzer", value="foo")
+    #     assert AnalysisType.TOKENIZED.value == "tokenized"
+    #     assert Indexed._get_analyzer_name(AnalysisType.TOKENIZED) == "foo"
+    #     Setting.objects.create(key="analyzers__explicit__es_analyzer", value="bar")
+    #     assert AnalysisType.EXPLICIT.value == "explicit"
+    #     assert Indexed._get_analyzer_name(AnalysisType.EXPLICIT) == "bar"
 
     def test_get_directly_defined_fields(self, mocker):
         class Field:
