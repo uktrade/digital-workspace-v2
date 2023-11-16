@@ -36,9 +36,6 @@ class Indexed(index.Indexed):
                 )
         return errors
 
-    ##################################
-    # COPIED FROM INDEXMANAGER
-    ##################################
     indexed_fields = []
 
     @classmethod
@@ -54,11 +51,6 @@ class Indexed(index.Indexed):
         ):  # @TODO doesnt support SearchFields in indexed_fiedls (for now ?)
             cls.generated_fields += field.generate_fields()
         return cls.generated_fields
-
-    ##################################
-    # END OF COPYPASTA
-    # EXTRAS TO MAKE IT WORK BELOW
-    ##################################
 
     @classmethod
     def get_search_fields(cls):
@@ -85,7 +77,9 @@ class Indexed(index.Indexed):
         return [f for v in processed_fields.values() for f in v]
 
     @classmethod
-    def get_all_indexed_fields_including_from_parents_and_refactor_this(cls):
+    def get_all_indexed_fields_including_from_parents_and_refactor_this(
+        cls,
+    ):  # @TODO delete or rename + test
         fields = set()
         for model_class in inspect.getmro(cls):
             if class_is_indexed(model_class) and issubclass(model_class, Indexed):
@@ -465,16 +459,6 @@ class MultiQueryIndexedField(IndexedField):
     #     return super().get_autocomplete_field_variants()
 
 
-# class MultiQueryRelatedField(RelatedField):
-#     def __init__(self, *args: Any, **kwargs: Any) -> None:
-#         super().__init__(*args, **kwargs)
-#         self.indexed_fields = [
-#             f
-#             for f in self.fields
-#             if isinstance(f, IndexedField) or isinstance(f, RelatedFields)
-#         ]
-
-
 #############################
 # Digital Workspace code
 #############################
@@ -498,25 +482,3 @@ class DWIndexedField(MultiQueryIndexedField):
         if self.keyword:
             analyzers.add(AnalysisType.KEYWORD)
         return analyzers
-
-
-#############################
-# UNPROCESSED STUFF BELOW @TODO
-#############################
-
-
-class CustomIndexed(Indexed):
-    @classmethod
-    def has_indexmanager_direct_inner_class(cls):
-        for attr in cls.__dict__.values():
-            if (
-                inspect.isclass(attr)
-                # and issubclass(attr, ModelIndexManager) #  Can't run this check due to circular imports
-                and (
-                    attr.__name__ == "IndexManager" or attr.__name__ == "indexed_fields"
-                )
-            ):
-                return True
-        return False
-
-    search_fields = []

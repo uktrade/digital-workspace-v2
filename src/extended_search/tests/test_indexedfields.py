@@ -1,65 +1,29 @@
 import pytest
 
-from extended_search.index import BaseField  # AbstractBaseField,
 from extended_search.index import (
+    BaseField,
+    # AbstractBaseField,
+    ModelFieldNameMixin,
     DWIndexedField,
     IndexedField,
     MultiQueryIndexedField,
     RelatedFields,
 )
 
-# from extended_search.types import AnalysisType
 
-# @pytest.mark.xfail
-# class TestAbstractBaseField:
-#     def test_init_params_accepted_defaults_and_all_saved(self):
-#         field = AbstractBaseField("foo")
-#         assert field.field_name == "foo"
-#         assert field.model_field_name == field.field_name
-#         assert field.boost == 1.0
-
-#         field = AbstractBaseField("foo", model_field_name="bar", boost=33.7)
-#         assert field.field_name == "foo"
-#         assert field.model_field_name == "bar"
-#         assert field.boost == 33.7
-
-#         field = AbstractBaseField("foo", test="baz")
-#         with pytest.raises(AttributeError):
-#             assert field.test == "baz"
-
-#     def test_get_base_mapping_object_format(self):
-#         field = AbstractBaseField("foo")
-#         assert {
-#             "name": field.field_name,
-#             "model_field_name": field.model_field_name,
-#             "boost": field.boost,
-#             "parent_model_field": None,
-#         } == field._get_base_mapping_object()
-
-#     def test_get_mapping_uses_get_base_mapping_object(self):
-#         field = AbstractBaseField("foo")
-#         assert field.get_mapping() == field._get_base_mapping_object()
-
-#     def test_mapping_property_uses_get_mapping_method(self, mocker):
-#         mock_func = mocker.patch(
-#             "extended_search.index.AbstractBaseField.get_mapping",
-#             return_value={"name": "foo"},
-#         )
-#         field = AbstractBaseField("foo")
-#         mapping = field.mapping
-#         mock_func.assert_called_once()
-#         assert mapping == field.get_mapping()
-
-
-class TestBaseField:
+class TestModelFieldNameMixin:
     def test_init_params_accepted_defaults_and_all_saved(self):
-        field = BaseField("foo")
-        assert field.field_name == "foo"
-        assert field.model_field_name == field.field_name
+        field = ModelFieldNameMixin("foo")
+        assert field.model_field_name == "foo"
+        assert field.parent_field == None
 
-        field = BaseField("foo", model_field_name="bar")
-        assert field.field_name == "foo"
+        field = ModelFieldNameMixin("foo", model_field_name="bar")
         assert field.model_field_name == "bar"
+        assert field.parent_field == None
+
+        field = ModelFieldNameMixin("foo", model_field_name="bar", parent_field="baz")
+        assert field.model_field_name == "bar"
+        assert field.parent_field == "baz"
 
     @pytest.mark.xfail
     def test_get_field(self):
@@ -74,8 +38,92 @@ class TestBaseField:
         raise AssertionError()
 
     @pytest.mark.xfail
-    def test_get_attname(self):
+    def test_is_relation_of(self):
         raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_base_field(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_base_model_field_name(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_full_model_field_name(self):
+        raise AssertionError()
+
+
+class TestBaseField:
+    def test_init_params_accepted_defaults_and_all_saved(self):
+        field = BaseField("foo")
+        assert field.field_name == "foo"
+        assert field.model_field_name == field.field_name
+        assert field.parent_field == None
+
+        field = BaseField("foo", model_field_name="bar")
+        assert field.field_name == "foo"
+        assert field.model_field_name == "bar"
+        assert field.parent_field == None
+
+        field = BaseField("foo", model_field_name="bar", parent_field="baz")
+        assert field.field_name == "foo"
+        assert field.model_field_name == "bar"
+        assert field.parent_field == "baz"
+
+    @pytest.mark.xfail
+    def test_basefield_inherits_from_modelfieldnamemixin(self):
+        raise AssertionError()
+
+
+class TestSearchField:
+    @pytest.mark.xfail
+    def test_searchfield_inherits_from_basefield(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_searchfield_inherits_from_wagtail_searchfield(self):
+        raise AssertionError()
+
+
+class TestAutocompleteField:
+    @pytest.mark.xfail
+    def test_autocompletefield_inherits_from_basefield(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_autocompletefield_inherits_from_wagtail_autocompletefield(self):
+        raise AssertionError()
+
+
+class TestFilterField:
+    @pytest.mark.xfail
+    def test_filterfield_inherits_from_basefield(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_filterfield_inherits_from_wagtail_filterfield(self):
+        raise AssertionError()
+
+
+class TestRelatedFields:
+    def test_init_params_accepted_defaults_and_all_saved(self):
+        field = RelatedFields("foo", ["bar", "baz"])
+        assert field.field_name == "foo"
+        assert field.model_field_name == field.field_name
+        assert field.fields == ["bar", "baz"]
+
+    @pytest.mark.xfail
+    def test_generate_fields(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_select_on_queryset(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_relatedfieldS_inherits_from_modelfieldnamemixin(self):
+        ...
 
 
 class TestIndexedField:
@@ -110,7 +158,115 @@ class TestIndexedField:
         assert field.autocomplete_kwargs == {"baz": "foobar"}
 
     @pytest.mark.xfail
-    def test_get_search_analyzers(self):
+    def test_get_autocomplete_search_fields_returns_extended_autocompletefield(self):
+        result = Indexed._get_autocomplete_search_fields("foo")
+        assert type(result) == list
+        assert type(result[0]) == AutocompleteField
+        assert result[0].field_name == "foo"
+
+    @pytest.mark.xfail
+    def test_get_filterable_search_fields_returns_wagtail_filterfield(self):
+        result = Indexed._get_filterable_search_fields("foo")
+        assert type(result) == list
+        assert type(result[0]) == FilterField
+        assert result[0].field_name == "foo"
+
+    @pytest.mark.xfail
+    def test_get_searchable_search_fields_returns_extended_searchfields(self, mocker):
+        mock_fieldname = mocker.patch(
+            "extended_search.managers.index.get_indexed_field_name",
+            return_value="bar",
+        )
+        mock_analyzer = mocker.patch(
+            "extended_search.index.Indexed._get_analyzer_name",
+            return_value="baz",
+        )
+        result = Indexed._get_searchable_search_fields("foo", [], 3.2)
+        # uses help methods
+        mock_fieldname.assert_called_once_with(
+            "foo",
+            AnalysisType.TOKENIZED,
+        )
+        # analyzer defaults to tokenized
+        mock_analyzer.assert_called_once_with(AnalysisType.TOKENIZED)
+        assert len(result) == 1
+        assert type(result[0]) == SearchField
+        assert result[0].field_name == "bar"
+        assert result[0].boost == 3.2
+        assert result[0].model_field_name == "foo"
+        assert result[0].kwargs["es_extra"] == {"analyzer": "baz"}
+
+    @pytest.mark.xfail
+    def test_get_searchable_search_fields_returns_field_per_analyzer(self, mocker):
+        mocker.patch(
+            "extended_search.managers.index.get_indexed_field_name",
+            return_value="bar",
+        )
+        mocker.patch(
+            "extended_search.index.Indexed._get_analyzer_name",
+            return_value="baz",
+        )
+        assert len(Indexed._get_searchable_search_fields("foo", [], boost=22.5)) == 1
+        assert len(Indexed._get_searchable_search_fields("foo", ["first"])) == 1
+        assert (
+            len(Indexed._get_searchable_search_fields("foo", ["first", "second"])) == 2
+        )
+        assert (
+            len(
+                Indexed._get_searchable_search_fields(
+                    "foo", ["first", "second", "three"]
+                )
+            )
+            == 3
+        )
+
+    @pytest.mark.xfail
+    def test_get_related_fields_returns_extended_relatedfields(self, mocker):
+        mock_func = mocker.patch(
+            "extended_search.index.Indexed._get_indexed_fields_from_mapping",
+            return_value=["SearchFieldObject <bar>"],
+        )
+        result = Indexed._get_related_fields("foo", [{"field_name": "baz"}])
+        mock_func.assert_called_once_with({"field_name": "baz"})
+        assert type(result) == list
+        assert type(result[0]) == RelatedFields
+        assert result[0].field_name == "foo"
+        assert result[0].fields == ["SearchFieldObject <bar>"]
+
+        mock_func.reset_mock()
+        result = Indexed._get_related_fields(
+            "foo",
+            [{"field_name": "baz"}, {"field_name": "bam"}, {"field_name": "foobar"}],
+        )
+        assert mock_func.call_count == 3
+        assert len(result[0].fields) == 3
+
+    @pytest.mark.xfail
+    def test_generate_fields(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_generate_search_fields(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_generate_autocomplete_fields(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_generate_filter_fields(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_search_field_variants(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_autocomplete_field_variants(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_filter_field_variants(self):
         raise AssertionError()
 
 
@@ -169,6 +325,26 @@ class TestMultiQueryIndexedField:
     def test_get_search_analyzers(self):
         raise AssertionError()
 
+    @pytest.mark.xfail
+    def test_get_autocomplete_analyzers(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_filter_analyzers(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_search_field_variants(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_autocomplete_field_variants(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_filter_field_variants(self):
+        raise AssertionError()
+
 
 class TestDWIndexedField:
     def test_init_params_accepted_defaults_and_all_saved(self):
@@ -196,28 +372,4 @@ class TestDWIndexedField:
 
     @pytest.mark.xfail
     def test_get_search_analyzers(self):
-        raise AssertionError()
-
-
-class TestRelatedFields:
-    def test_init_params_accepted_defaults_and_all_saved(self):
-        field = RelatedFields("foo", ["bar", "baz"])
-        assert field.field_name == "foo"
-        assert field.model_field_name == field.field_name
-        assert field.fields == ["bar", "baz"]
-
-    @pytest.mark.xfail
-    def test_get_field(self):
-        raise AssertionError()
-
-    @pytest.mark.xfail
-    def test_get_definition_model(self):
-        raise AssertionError()
-
-    @pytest.mark.xfail
-    def test_get_value(self):
-        raise AssertionError()
-
-    @pytest.mark.xfail
-    def test_get_select_on_queryset(self):
         raise AssertionError()

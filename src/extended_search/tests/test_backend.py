@@ -62,8 +62,12 @@ class TestExtendedSearchQueryCompiler:
         assert mock_compile.call_count == 3
 
     @pytest.mark.xfail
+    def test_remap_fields_handles_parent_relations(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
     def test_get_inner_query_works_the_same_as_parent(self):
-        assert True is False
+        raise AssertionError()
 
 
 class TestOnlyFieldSearchQueryCompiler:

@@ -139,6 +139,54 @@ class TestQueryBuilder:
             )
         )
 
+    @pytest.mark.xfail
+    def test__get_search_query(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_infer_analyzer_from_field(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_search_query_for_indexfield(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_search_query_for_searchfield(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_combine_queries(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_searchquery_for_query_field_querytype_analysistype(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_boost_for_field_querytype_analysistype(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_boost_for_field(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_filter_field_variants(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_boost_for_analysistype(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_boost_for_querytype(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test_get_inner_searchquery_for_querytype(self):
+        raise AssertionError()
+
 
 #     query_builder_class = QueryBuilder
 

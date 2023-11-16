@@ -12,16 +12,6 @@ from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, Plain
 from extended_search.backends.query import Filtered, Nested, OnlyFields
 from extended_search.index import RelatedFields
 
-#############################
-# Wagtail overrides above
-# Our custom code below
-#############################
-
-
-#############################
-# UNPROCESSED STUFF BELOW @TODO
-#############################
-
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
     def get_field_column_name(self, field):

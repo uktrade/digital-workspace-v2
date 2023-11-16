@@ -24,7 +24,7 @@ from wagtail.utils.decorators import cached_classmethod
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
-from extended_search.index import CustomIndexed
+from extended_search.index import Indexed
 from extended_search.index import DWIndexedField as IndexedField
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
@@ -65,7 +65,7 @@ class Theme(models.Model):
         ordering = ["-title"]
 
 
-class BasePage(Page, CustomIndexed):
+class BasePage(Page, Indexed):
     legacy_path = models.CharField(
         max_length=500,
         blank=True,
