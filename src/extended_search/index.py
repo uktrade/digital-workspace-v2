@@ -8,10 +8,10 @@ from django.core import checks
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 from django.db.models.fields.related import ForeignObjectRel, OneToOneRel, RelatedField
-from extended_search.types import AnalysisType
 from modelcluster.fields import ParentalManyToManyField
 from wagtail.search import index
 
+from extended_search.types import AnalysisType
 
 logger = logging.getLogger(__name__)
 
@@ -55,25 +55,6 @@ class Indexed(index.Indexed):
             cls.generated_fields += field.generate_fields()
         return cls.generated_fields
 
-    @classmethod
-    def get_directly_defined_fields(cls):
-        if not cls.generated_fields or len(cls.generated_fields) == 0:
-            cls.get_indexed_fields()
-
-        index_field_names = [f.model_field_name for f in cls.indexed_fields]
-        return [
-            field
-            for field in cls.generated_fields
-            if (
-                hasattr(field, "model_field_name")  # @TODO do we still need this line?
-                and field.model_field_name in index_field_names
-            )
-        ]
-
-    @classmethod
-    def is_directly_defined(cls, field):
-        return field in cls.get_directly_defined_fields()
-
     ##################################
     # END OF COPYPASTA
     # EXTRAS TO MAKE IT WORK BELOW
@@ -82,12 +63,26 @@ class Indexed(index.Indexed):
     @classmethod
     def get_search_fields(cls):
         search_fields = super().get_search_fields()
-        processed_index_fields = []
-        for model_class in inspect.getmro(cls):
-            if class_is_indexed(model_class) and issubclass(model_class, Indexed):
-                processed_index_fields += model_class.get_indexed_fields()
+        processed_fields = {}
 
-        return search_fields + processed_index_fields
+        for f in search_fields:
+            pfn_key = getattr(f, "model_field_name", f.field_name)
+            if pfn_key not in processed_fields:
+                processed_fields[pfn_key] = []
+            processed_fields[pfn_key].append(f)
+
+        class_mro = list(inspect.getmro(cls))
+        class_mro.reverse()
+        for model_class in class_mro:
+            model_field_names = []
+            if class_is_indexed(model_class) and issubclass(model_class, Indexed):
+                for f in model_class.get_indexed_fields():
+                    if f.model_field_name not in model_field_names:
+                        processed_fields[f.model_field_name] = []
+                        model_field_names.append(f.model_field_name)
+                    processed_fields[f.model_field_name].append(f)
+
+        return [f for v in processed_fields.values() for f in v]
 
     @classmethod
     def get_all_indexed_fields_including_from_parents_and_refactor_this(cls):
@@ -446,8 +441,8 @@ class MultiQueryIndexedField(IndexedField):
         return analyzers
 
     def get_search_field_variants(self):
-        from extended_search.settings import extended_search_settings as search_settings
         from extended_search.managers import get_indexed_field_name
+        from extended_search.settings import extended_search_settings as search_settings
 
         return [
             (
