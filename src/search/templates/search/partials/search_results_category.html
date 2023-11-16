@@ -24,12 +24,12 @@
             {% endfor %}
 
         {% else %}
-            {% if tab_name != 'all'%}
+            {% if tab_name != 'all' %}
                 <script lang="javascript">
                         url = '{% url 'search:category' 'all' %}?query={{search_query}}'
                         document.onload = window.location = url;
                 </script>
-            {% endif%}
+            {% endif %}
             <p class="govuk-body">There are no matching {{ result_type_display }}.</p>
 
             {% if search_category == 'all_pages' %}

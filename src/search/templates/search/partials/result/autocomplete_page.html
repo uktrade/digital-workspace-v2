@@ -1,48 +1,42 @@
 {% load webpack_static from webpack_loader %}
 {% load wagtailcore_tags %}
 
-{% if people %}
-    <li class="govuk-heading-s autocomplete-title">People results:</li>
-{% endif %}
+{% if people %}<li class="govuk-heading-s autocomplete-title">People results:</li>{% endif %}
 {% for person in people %}
     <li class= "autocomplete-choice">
         <a class="govuk-link" href="{% url 'profile-view' person.slug %}">
             <div class="people">
                 {% if person.photo %}
-                <img src="{{ person.photo_small.url }}"
-                    alt="Profile image of {{ person.get_full_name }}"
-                    class="profile-image">
+                    <img src="{{ person.photo_small.url }}"
+                         alt="Profile image of {{ person.get_full_name }}"
+                         class="profile-image">
                 {% else %}
-                <img src="{% webpack_static 'no-photo.png' %}"
-                    alt="No photo"
-                    class="profile-image">
+                    <img src="{% webpack_static 'no-photo.png' %}"
+                         alt="No photo"
+                         class="profile-image">
                 {% endif %}
-                <p class="govuk-body autocomplete-text">{{person.first_name}} {{person.last_name}}</p>
+                <p class="govuk-body autocomplete-text">{{ person.first_name }} {{ person.last_name }}</p>
             </div>
         </a>
     </li>
 {% endfor %}
-{% if pages %}
-    <li class="govuk-heading-s autocomplete-title">Content results:</li>
-{% endif %}
+{% if pages %}<li class="govuk-heading-s autocomplete-title">Content results:</li>{% endif %}
 {% for page in pages %}
-<li class="autocomplete-choice">
-    <a class="govuk-link" href="{% pageurl page %}">
-        <div>
-            <p class="govuk-body autocomplete-text">{{page.title}}</p>
-        </div>
-    </a>
-</li>
+    <li class="autocomplete-choice">
+        <a class="govuk-link" href="{% pageurl page %}">
+            <div>
+                <p class="govuk-body autocomplete-text">{{ page.title }}</p>
+            </div>
+        </a>
+    </li>
 {% endfor %}
-{% if teams %}
-<li class="govuk-heading-s autocomplete-title">Teams results:</li>
-{% endif %}
+{% if teams %}<li class="govuk-heading-s autocomplete-title">Teams results:</li>{% endif %}
 {% for team in teams %}
-<li class="autocomplete-choice">
-    <a class="govuk-link" href="{% url 'team-view' team.slug %}">
-        <div>
-        <p class="govuk-body autocomplete-text">{{team.name}}</p>
-        </div>
-    </a>
-</li>
-{%endfor%}
+    <li class="autocomplete-choice">
+        <a class="govuk-link" href="{% url 'team-view' team.slug %}">
+            <div>
+                <p class="govuk-body autocomplete-text">{{ team.name }}</p>
+            </div>
+        </a>
+    </li>
+{% endfor %}

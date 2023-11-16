@@ -27,19 +27,21 @@ def can_view_explore():
 @require_http_methods(["GET"])
 def autocomplete(request: HttpRequest) -> HttpResponse:
     _category = "autocomplete"
-    query = request.GET.get("query","")
-    page  = "1"
+    query = request.GET.get("query", "")
+    page = "1"
 
     search_results = search_template_tag.autocomplete(request, query)
-    
+
     context = {
         "search_url": reverse("search:autocomplete"),
         "search_query": query,
         "search_category": _category,
-        "search_results":list(search_results['pages'] + search_results['people'] + search_results['teams']),
-        "pages":search_results['pages'],
-        "people":search_results['people'],
-        "teams":search_results['teams'],
+        "search_results": list(
+            search_results["pages"] + search_results["people"] + search_results["teams"]
+        ),
+        "pages": search_results["pages"],
+        "people": search_results["people"],
+        "teams": search_results["teams"],
         "page": page,
         "search_feedback_initial": {
             "search_query": query,
@@ -47,8 +49,11 @@ def autocomplete(request: HttpRequest) -> HttpResponse:
         },
     }
 
-    return TemplateResponse(request, "search/partials/result/autocomplete_page.html", context=context)
-    
+    return TemplateResponse(
+        request, "search/partials/result/autocomplete_page.html", context=context
+    )
+
+
 @require_http_methods(["GET"])
 def search(request: HttpRequest, category: str = None) -> HttpResponse:
     query = request.GET.get("query", "")

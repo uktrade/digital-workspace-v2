@@ -8,11 +8,10 @@
            name="query"
            placeholder="{{ placeholder|default:'Search site' }}"
            type="search"
-           value="{{ search_query|default:'' }}" 
+           value="{{ search_query|default:'' }}"
            hx-trigger="keyup changed delay:500ms"
            hx-get="{% url 'search:autocomplete' %}"
            hx-target="#autocomplete-results">
     <button type="submit">Search</button>
-    <div id="autocomplete-results" class="autocomplete-overlay">
-    </div>
+    <div id="autocomplete-results" class="autocomplete-overlay"></div>
 </form>

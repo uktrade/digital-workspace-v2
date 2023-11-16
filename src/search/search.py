@@ -23,10 +23,10 @@ class SearchVector:
             return_method = return_method.annotate_score("_score")
 
         return return_method
-    
-    def _wagtail_autocomplete(self,queryset,query,*args, **kwargs):
-        return_method = queryset.autocomplete(query,*args,**kwargs)
-        
+
+    def _wagtail_autocomplete(self, queryset, query, *args, **kwargs):
+        return_method = queryset.autocomplete(query, *args, **kwargs)
+
         return return_method
 
     def get_queryset(self):
@@ -56,10 +56,10 @@ class PagesSearchVector(SearchVector):
 
     def pinned(self, query):
         return self.get_queryset().pinned(query)
-    
+
     def autocomplete(self, query, *args, **kwargs):
         queryset = self.get_queryset().not_pinned(query)
-        return self._wagtail_autocomplete(queryset,query,*args, **kwargs)
+        return self._wagtail_autocomplete(queryset, query, *args, **kwargs)
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset().not_pinned(query)
@@ -117,7 +117,7 @@ class PeopleSearchVector(SearchVector):
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
     def autocomplete(self, query, *args, **kwargs):
-        return self._wagtail_autocomplete(self.get_queryset(),query,*args, **kwargs)
+        return self._wagtail_autocomplete(self.get_queryset(), query, *args, **kwargs)
 
 
 class TeamsSearchVector(SearchVector):
@@ -130,4 +130,4 @@ class TeamsSearchVector(SearchVector):
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
     def autocomplete(self, query, *args, **kwargs):
-        return self._wagtail_autocomplete(self.get_queryset(),query,*args, **kwargs)
+        return self._wagtail_autocomplete(self.get_queryset(), query, *args, **kwargs)
