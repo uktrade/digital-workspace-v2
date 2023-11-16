@@ -32,16 +32,22 @@ def autocomplete(request: HttpRequest) -> HttpResponse:
 
     search_results = search_template_tag.autocomplete(request, query)
 
+    print(search_results["tools"])
+
     context = {
         "search_url": reverse("search:autocomplete"),
         "search_query": query,
         "search_category": _category,
         "search_results": list(
-            search_results["pages"] + search_results["people"] + search_results["teams"]
+            search_results["pages"]
+            + search_results["people"]
+            + search_results["teams"]
+            + search_results["tools"]
         ),
         "pages": search_results["pages"],
         "people": search_results["people"],
         "teams": search_results["teams"],
+        "tools": search_results["tools"],
         "page": page,
         "search_feedback_initial": {
             "search_query": query,

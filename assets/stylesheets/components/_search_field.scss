@@ -134,7 +134,8 @@ $input-size: 40px;
     width: 100%;
     display: block;
     position: relative;
-    padding: 0px;
+    padding-bottom: 5px;
+    padding-top: 5px;
     border-bottom: solid #b1b4b6;
     border-width: 1px 0;
     list-style-type: none;
@@ -152,6 +153,7 @@ $input-size: 40px;
   }
 
   .people .autocomplete-text {
+    @include govuk-font($size: 16, $line-height: (28 / 16));
     margin-left: 5px;
     padding-left: 5px;
     margin: 0;
@@ -159,12 +161,13 @@ $input-size: 40px;
   }
 
   .autocomplete-title {
-    border-bottom: 5px solid #cf102d;
+    @include govuk-font($size: 16, $line-height: (28 / 16));
+    border-top: 2px solid #1d70b8;
     width: 100%;
     padding-left: 5px;
     margin: 0;
   }
 
   .autocomplete-choice:hover {
-    background-color: #b1b4b6;
+    background-color: govuk-colour("light-grey");
   }

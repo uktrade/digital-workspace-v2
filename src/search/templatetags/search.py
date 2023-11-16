@@ -89,7 +89,14 @@ def autocomplete(request, query, all_results=False):
 
     if all_results:
         search_results.update(
-            {"pages": list(SEARCH_VECTORS["all_pages"](request).autocomplete(query))}
+            {
+                "pages": list(
+                    filter(
+                        lambda page: hasattr(page, "redirect_url"),
+                        list(SEARCH_VECTORS["all_pages"](request).autocomplete(query)),
+                    )
+                )
+            }
         )
         search_results.update(
             {"people": list(SEARCH_VECTORS["people"](request).autocomplete(query))}
@@ -97,12 +104,19 @@ def autocomplete(request, query, all_results=False):
         search_results.update(
             {"teams": list(SEARCH_VECTORS["teams"](request).autocomplete(query))}
         )
+
+        search_results.update(
+            {"tools": list(SEARCH_VECTORS["tools"](request).autocomplete(query))}
+        )
     else:
         search_results.update(
             {
                 "pages": list(
-                    SEARCH_VECTORS["all_pages"](request).autocomplete(query)[:limit]
-                )
+                    filter(
+                        lambda page: hasattr(page, "redirect_url"),
+                        list(SEARCH_VECTORS["all_pages"](request).autocomplete(query)),
+                    )
+                )[:limit]
             }
         )
         search_results.update(
@@ -119,8 +133,20 @@ def autocomplete(request, query, all_results=False):
                 )
             }
         )
+        search_results.update(
+            {
+                "tools": list(
+                    SEARCH_VECTORS["tools"](request).autocomplete(query)[:limit]
+                )
+            }
+        )
 
     return search_results
+
+
+def autocomplete_tools_filter(pages):
+    tools = []
+    return tools
 
 
 @register.simple_tag(takes_context=True)

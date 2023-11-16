@@ -9,7 +9,7 @@
            placeholder="{{ placeholder|default:'Search site' }}"
            type="search"
            value="{{ search_query|default:'' }}"
-           hx-trigger="keyup changed delay:500ms"
+           hx-trigger="keyup changed delay:250ms"
            hx-get="{% url 'search:autocomplete' %}"
            hx-target="#autocomplete-results">
     <button type="submit">Search</button>
