@@ -8,7 +8,7 @@
                 <h3 class="govuk-heading-s">Featured {{ result_type_display }}</h3>
 
                 {% for result in pinned_results %}
-                    {% include search_results_item_template with object=result type=search_category section="pinned" number_overall=forloop.counter number_section=forloop.counter only %}
+                    {% include search_results_item_template with object=result type=search_category section="pinned" number_overall=forloop.counter number_section=forloop.counter perms=perms only %}
                 {% endfor %}
             </div>
         {% endif %}
@@ -19,7 +19,7 @@
                 skip any pinned results that are already rendered above
                 {% endcomment %}
                 {% if search_results.has_previous or forloop.counter > num_pinned_results|add:"0" %}
-                    {% include search_results_item_template with object=result type=search_category section=search_category number_overall=forloop.counter|add:num_pinned_results number_section=forloop.counter only %}
+                    {% include search_results_item_template with object=result type=search_category section=search_category number_overall=forloop.counter|add:num_pinned_results number_section=forloop.counter perms=perms only %}
                 {% endif %}
             {% endfor %}
 
