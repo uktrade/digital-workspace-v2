@@ -1,7 +1,12 @@
 {% load webpack_static from webpack_loader %}
 {% load wagtailcore_tags %}
 
-{% if people %}<li class="govuk-heading-s autocomplete-title">People results:</li>{% endif %}
+{% if people %}
+    <li class="govuk-heading-s autocomplete-title">
+        <a class="govuk-link"
+           href="{% url 'search:category' 'people' %}?query={{ search_query }}">People results:</a>
+    </li>
+{% endif %}
 {% for person in people %}
     <li class= "autocomplete-choice">
         <a class="govuk-link" href="{% url 'profile-view' person.slug %}">
