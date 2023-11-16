@@ -1,13 +1,12 @@
 import re
 import unicodedata
-import statistics
 
 from django.conf import settings
 from typing import Optional
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 from extended_search.backends.query import OnlyFields
 from extended_search.settings import extended_search_settings
-from peoplefinder.models import Person, Team
+from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
 
 
 def sanitize_search_query(query: Optional[str] = None) -> str:
@@ -182,38 +181,39 @@ def get_query_info(fields, field, mapping, suffix_map):
 
 
 def get_all_subqueries(query):
-    from content.models import ContentPage
+    from content.models import ContentPage, ContentPageIndexManager
 
-    subqueries = {"pages": [], "people": [], "teams": []}
+    subqueries = {"all_pages": [], "people": [], "teams": []}
     analyzer_field_suffices = [
         (k, v["index_fieldname_suffix"])
         for k, v in extended_search_settings["analyzers"].items()
     ]
-    for mapping in ContentPage.IndexManager.get_mapping():
-        field = ContentPage.IndexManager._get_search_query_from_mapping(
+    for mapping in ContentPageIndexManager.get_mapping():
+        field = ContentPageIndexManager._get_search_query_from_mapping(
             query, ContentPage, mapping
         )
-        get_query_info(subqueries["pages"], field, mapping, analyzer_field_suffices)
-    for mapping in Person.IndexManager.get_mapping():
-        field = Person.IndexManager._get_search_query_from_mapping(
+        get_query_info(subqueries["all_pages"], field, mapping, analyzer_field_suffices)
+    for mapping in PersonIndexManager.get_mapping():
+        field = PersonIndexManager._get_search_query_from_mapping(
             query, Person, mapping
         )
         get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
-    for mapping in Team.IndexManager.get_mapping():
-        field = Team.IndexManager._get_search_query_from_mapping(query, Team, mapping)
+    for mapping in TeamIndexManager.get_mapping():
+        field = TeamIndexManager._get_search_query_from_mapping(query, Team, mapping)
         get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
     return subqueries
 
 
-# Gets the median of all the boosts related to the query so that a threshold is identified
+# Gets the average of all the boosts related to the query so that a threshold is identified
 def get_bad_score_threshold(query, category):
     boost_values = set()
     subqueries = get_all_subqueries(query)
-
     for subquery in subqueries[category]:
         boost_values.add(round(subquery["boost"], 2))
 
-    return statistics.median(boost_values) * settings.BAD_SEARCH_SCORE_MULTIPLIER
+    avg_boost_value = sum(boost_values) / len(boost_values)
+
+    return avg_boost_value * settings.PAGES_BAD_SEARCH_SCORE_MULTIPLIER
 
 
 # Triggers the conditional rendering on the FE message if the search yields low score results

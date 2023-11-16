@@ -682,5 +682,7 @@ LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
 # https://waffle.readthedocs.io/en/stable/starting/configuring.html
 WAFFLE_FLAG_MODEL = "core.FeatureFlag"
 
-# Bad search score multiplier
-BAD_SEARCH_SCORE_MULTIPLIER = env.int("BAD_SEARCH_SCORE_MULTIPLIER", 1)
+# Bad search score multipliers
+PAGES_BAD_SEARCH_SCORE_MULTIPLIER = env.int("PAGES_BAD_SEARCH_SCORE_MULTIPLIER", 1)
+PEOPLE_BAD_SEARCH_SCORE_MULTIPLIER = env.int("PEOPLE_BAD_SEARCH_SCORE_MULTIPLIER", 1)
+TEAMS_BAD_SEARCH_SCORE_MULTIPLIER = env.int("TEAMS_BAD_SEARCH_SCORE_MULTIPLIER", 1)
