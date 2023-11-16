@@ -1,7 +1,6 @@
 from types import NoneType
 
 import pytest
-from wagtail.search.index import SearchField
 
 from extended_search.models import Setting
 from extended_search.settings import (
@@ -12,6 +11,8 @@ from extended_search.settings import (
     SearchSettings,
     extended_search_settings,
 )
+from extended_search.index import BaseField, SearchField
+from wagtail.search import index
 
 
 class TestDefaults:
@@ -295,24 +296,25 @@ class TestSearchSettings:
         mock_model_2 = mocker.MagicMock()
         mock_model_2._meta.app_label = "--second-app--"
         mock_model_2._meta.model_name = "--second-model--"
-        mock_searchfield_1 = mocker.MagicMock()
-        mock_searchfield_1.model_field_name = "--model-field-name--"
+        mock_searchfield_1 = mocker.MagicMock(spec=BaseField)
+        mock_searchfield_1.get_full_model_field_name.return_value = (
+            "--parent-model-field--.--model-field-name--"
+        )
         mock_searchfield_1.field_name = "--field-name--"
         mock_searchfield_1.boost = 22
-        mock_searchfield_1.parent_model_field = "--parent-model-field--"
-        mock_searchfield_2 = mocker.MagicMock()
-        del mock_searchfield_2.model_field_name  # to fail hasattr
+        mock_searchfield_2 = mocker.MagicMock(spec=index.BaseField)
         mock_searchfield_2.field_name = "--second-field-name--"
         mock_searchfield_2.boost = 33
-        mock_searchfield_2.parent_model_field = None
-        mock_searchfield_3 = mocker.MagicMock()
-        mock_searchfield_3.model_field_name = "--third-model-field-name--"
+        mock_searchfield_3 = mocker.MagicMock(spec=BaseField)
+        mock_searchfield_3.get_full_model_field_name.return_value = (
+            "--third-model-field-name--"
+        )
         mock_searchfield_3.boost = 44
-        mock_searchfield_3.parent_model_field = None
-        mock_searchfield_4 = mocker.MagicMock()
-        mock_searchfield_4.model_field_name = "--4th-model-field-name--"
+        mock_searchfield_4 = mocker.MagicMock(spec=BaseField)
+        mock_searchfield_4.get_full_model_field_name.return_value = (
+            "--4th-model-field-name--"
+        )
         mock_searchfield_4.field_name = "--4th-field-name--"
-        mock_searchfield_4.parent_model_field = None
         del mock_searchfield_4.boost  # to fail hasattr
         mock_get_fields.return_value = {
             mock_model_1: set(
