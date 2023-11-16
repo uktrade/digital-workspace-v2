@@ -3,6 +3,8 @@ from django.core.management import call_command
 from django.urls import reverse
 from pytest_django.asserts import assertContains, assertNotContains
 
+from peoplefinder.models import UkStaffLocation
+
 
 class TestSearchView:
     @pytest.fixture(autouse=True)
@@ -90,3 +92,22 @@ class TestSearchView:
         assertContains(r, "/teams/spacex/")
 
         assertContains(r, "(2)")
+
+    @pytest.mark.opensearch
+    def test_search_on_office_location(self, another_normal_user):
+        # Given there is a uk office in Ilfracombe
+        office = UkStaffLocation.objects.create(
+            code="6ab9caa6",
+            name="Ilfracombe",
+            city="North Devon",
+            organisation="Department for Business and Trade",
+        )
+        # And there is a user at that office
+        another_normal_user.profile.uk_office_location = office
+        another_normal_user.profile.save()
+        # And the search index has been updated
+        call_command("update_index")
+        # When I perform a search for people at that office
+        resp = self._search("ilfracombe", teams=False)
+        # Then the user is returned in the search results
+        assert another_normal_user.profile in resp.context["search_results"].object_list

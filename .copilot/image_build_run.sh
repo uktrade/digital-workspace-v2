@@ -5,12 +5,6 @@ set -e
 
 echo "Running post build script"
 
-echo "Running pip install"
-pip install -r requirements.txt
-
-echo "Running npm ci"
-npm ci
-
 echo "Renaming .env.ci to .env"
 mv ".env.ci" ".env"
 
