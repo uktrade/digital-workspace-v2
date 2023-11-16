@@ -682,3 +682,12 @@ LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
 # django-waffle
 # https://waffle.readthedocs.io/en/stable/starting/configuring.html
 WAFFLE_FLAG_MODEL = "core.FeatureFlag"
+
+
+# Search
+
+# Profiles made inactive within this number of days will be shown in search results to
+# all users.
+SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
+    "SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS", 90
+)
