@@ -2,7 +2,6 @@ import inspect
 import logging
 from typing import Optional
 
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from wagtail.search import index
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
