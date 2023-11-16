@@ -120,7 +120,9 @@ def autocomplete(request, query, all_results=False):
             {
                 "pages": list(
                     filter(
-                        lambda page: autocomplete_tools_filter(page,search_results["tools"]),
+                        lambda page: autocomplete_tools_filter(
+                            page, search_results["tools"]
+                        ),
                         list(SEARCH_VECTORS["all_pages"](request).autocomplete(query)),
                     )
                 )[:limit]
@@ -147,7 +149,7 @@ def autocomplete(request, query, all_results=False):
 # Maybe use SLUG/UUID/ID instead?
 def autocomplete_tools_filter(page, tools):
     tmp_urls = [tool.get_url() for tool in tools]
-    if(page.get_url() in tmp_urls):
+    if page.get_url() in tmp_urls:
         return False
     else:
         return True
