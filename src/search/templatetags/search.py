@@ -111,9 +111,16 @@ def autocomplete(request, query, all_results=False):
     else:
         search_results.update(
             {
+                "tools": list(
+                    SEARCH_VECTORS["tools"](request).autocomplete(query)[:limit]
+                )
+            }
+        )
+        search_results.update(
+            {
                 "pages": list(
                     filter(
-                        lambda page: hasattr(page, "redirect_url"),
+                        lambda page: autocomplete_tools_filter(page,search_results["tools"]),
                         list(SEARCH_VECTORS["all_pages"](request).autocomplete(query)),
                     )
                 )[:limit]
@@ -133,20 +140,17 @@ def autocomplete(request, query, all_results=False):
                 )
             }
         )
-        search_results.update(
-            {
-                "tools": list(
-                    SEARCH_VECTORS["tools"](request).autocomplete(query)[:limit]
-                )
-            }
-        )
 
     return search_results
 
 
-def autocomplete_tools_filter(pages):
-    tools = []
-    return tools
+# Maybe use SLUG/UUID/ID instead?
+def autocomplete_tools_filter(page, tools):
+    tmp_urls = [tool.get_url() for tool in tools]
+    if(page.get_url() in tmp_urls):
+        return False
+    else:
+        return True
 
 
 @register.simple_tag(takes_context=True)
