@@ -18,8 +18,8 @@ class TestManagersInit:
             key=f"analyzers__{analyzer.value}__index_fieldname_suffix", value="bar"
         )
         assert (
-            extended_search_settings[
-                f"analyzers__{analyzer.value}__index_fieldname_suffix"
+            extended_search_settings["analyzers"][analyzer.value][
+                "index_fieldname_suffix"
             ]
             == "bar"
         )

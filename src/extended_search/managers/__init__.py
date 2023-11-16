@@ -12,6 +12,6 @@ def get_indexed_field_name(
     analyzer: AnalysisType,
 ):
     field_name_suffix = (
-        search_settings[f"analyzers__{analyzer.value}__index_fieldname_suffix"] or ""
+        search_settings["analyzers"][analyzer.value]["index_fieldname_suffix"] or ""
     )
     return f"{model_field_name}{field_name_suffix}"
