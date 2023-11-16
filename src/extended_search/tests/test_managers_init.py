@@ -13,16 +13,14 @@ class TestManagersInit:
             get_indexed_field_name("foo", "bar")
         analyzer = AnalysisType.TOKENIZED
         assert get_indexed_field_name("foo", analyzer) == "foo"
-        assert get_indexed_field_name("foo", analyzer, "baz") == "baz.foo"
 
         Setting.objects.create(
             key=f"analyzers__{analyzer.value}__index_fieldname_suffix", value="bar"
         )
         assert (
-            extended_search_settings[
-                f"analyzers__{analyzer.value}__index_fieldname_suffix"
+            extended_search_settings["analyzers"][analyzer.value][
+                "index_fieldname_suffix"
             ]
             == "bar"
         )
         assert get_indexed_field_name("foo", analyzer) == "foobar"
-        assert get_indexed_field_name("foo", analyzer, "baz") == "baz.foobar"

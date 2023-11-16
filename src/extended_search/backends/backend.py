@@ -71,15 +71,14 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
                     searchable_fields[field_name]
                 )
             else:
+                # @TODO this works but ideally we'd move get_field_column_name to handle this directly
                 field_name_parts = field_name.split(".")
-                if (
-                    len(field_name_parts) == 2
-                    and field_name_parts[0] in searchable_fields
-                ):
+                if field_name_parts[0] in searchable_fields:
                     field_name = self.mapping.get_field_column_name(
                         searchable_fields[field_name_parts[0]]
                     )
-                    field_name = f"{field_name}.{field_name_parts[1]}"
+                    field_name_remainder = ".".join(field_name_parts[1:])
+                    field_name = f"{field_name}.{field_name_remainder}"
 
             remapped_fields.append(field_name)
 

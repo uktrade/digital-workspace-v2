@@ -110,7 +110,7 @@ class TestIndexedField:
         assert field.autocomplete_kwargs == {"baz": "foobar"}
 
     @pytest.mark.xfail
-    def test_get_analyzers(self):
+    def test_get_search_analyzers(self):
         raise AssertionError()
 
 
@@ -166,7 +166,7 @@ class TestMultiQueryIndexedField:
         assert field.fuzzy
 
     @pytest.mark.xfail
-    def test_get_analyzers(self):
+    def test_get_search_analyzers(self):
         raise AssertionError()
 
 
@@ -195,7 +195,7 @@ class TestDWIndexedField:
         assert not field.fuzzy
 
     @pytest.mark.xfail
-    def test_get_analyzers(self):
+    def test_get_search_analyzers(self):
         raise AssertionError()
 
 
