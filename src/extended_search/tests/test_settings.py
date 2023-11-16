@@ -1,7 +1,9 @@
 from types import NoneType
 
 import pytest
+from wagtail.search import index
 
+from extended_search.index import BaseField, SearchField
 from extended_search.models import Setting
 from extended_search.settings import (
     DEFAULT_SETTINGS,
@@ -10,9 +12,8 @@ from extended_search.settings import (
     NestedChainMap,
     SearchSettings,
     extended_search_settings,
+    get_settings_field_key,
 )
-from extended_search.index import BaseField, SearchField
-from wagtail.search import index
 
 
 class TestDefaults:
@@ -287,46 +288,20 @@ class TestSearchSettings:
         } == instance._get_all_indexed_fields()
 
     def test_initialise_field_dict(self, mocker):
+        mocker.patch(
+            "extended_search.settings.get_settings_field_key",
+            return_value="--settings-field-key--",
+        )
         mock_get_fields = mocker.patch(
             "extended_search.settings.SearchSettings._get_all_indexed_fields"
         )
-        mock_model_1 = mocker.MagicMock()
-        mock_model_1._meta.app_label = "--app--"
-        mock_model_1._meta.model_name = "--model--"
-        mock_model_2 = mocker.MagicMock()
-        mock_model_2._meta.app_label = "--second-app--"
-        mock_model_2._meta.model_name = "--second-model--"
-        mock_searchfield_1 = mocker.MagicMock(spec=BaseField)
-        mock_searchfield_1.get_full_model_field_name.return_value = (
-            "--parent-model-field--.--model-field-name--"
-        )
-        mock_searchfield_1.field_name = "--field-name--"
-        mock_searchfield_1.boost = 22
-        mock_searchfield_2 = mocker.MagicMock(spec=index.BaseField)
-        mock_searchfield_2.field_name = "--second-field-name--"
-        mock_searchfield_2.boost = 33
-        mock_searchfield_3 = mocker.MagicMock(spec=BaseField)
-        mock_searchfield_3.get_full_model_field_name.return_value = (
-            "--third-model-field-name--"
-        )
-        mock_searchfield_3.boost = 44
-        mock_searchfield_4 = mocker.MagicMock(spec=BaseField)
-        mock_searchfield_4.get_full_model_field_name.return_value = (
-            "--4th-model-field-name--"
-        )
-        mock_searchfield_4.field_name = "--4th-field-name--"
-        del mock_searchfield_4.boost  # to fail hasattr
+        mock_model = mocker.MagicMock()
+        mock_searchfield = mocker.MagicMock(spec=BaseField)
+        mock_searchfield.boost = 22
         mock_get_fields.return_value = {
-            mock_model_1: set(
+            mock_model: set(
                 [
-                    mock_searchfield_1,
-                    mock_searchfield_2,
-                ]
-            ),
-            mock_model_2: set(
-                [
-                    mock_searchfield_3,
-                    mock_searchfield_4,
+                    mock_searchfield,
                 ]
             ),
         }
@@ -335,10 +310,18 @@ class TestSearchSettings:
         assert {
             "boost_parts": {
                 "fields": {
-                    "--app--.--model--.--parent-model-field--.--model-field-name--": 22,
-                    "--app--.--model--.--second-field-name--": 33,
-                    "--second-app--.--second-model--.--third-model-field-name--": 44,
-                    "--second-app--.--second-model--.--4th-model-field-name--": 1.0,
+                    "--settings-field-key--": 22,
+                }
+            }
+        } == instance.fields
+
+        del mock_searchfield.boost
+        instance = SearchSettings()
+        instance.initialise_field_dict()
+        assert {
+            "boost_parts": {
+                "fields": {
+                    "--settings-field-key--": 1.0,
                 }
             }
         } == instance.fields
@@ -401,3 +384,32 @@ class TestSearchSettings:
         assert isinstance(instance, SearchSettings)
         assert isinstance(extended_search_settings, SearchSettings)
         assert instance.defaults == extended_search_settings.defaults
+
+
+class TestGetSettingsFieldKey:
+    @pytest.mark.xfail(reason="Not implemented")
+    def test_get_settings_field_key(self, mocker):
+        mock_model = mocker.MagicMock()
+        mock_model._meta.app_label = "--app-label-1--"
+        mock_model._meta.model_name = "--model-name-1--"
+        mock_searchfield_1 = mocker.MagicMock(spec=BaseField)
+        mock_searchfield_1.field_name = "--field-name-1--"
+        mock_searchfield_1.get_full_model_field_name = mocker.MagicMock(
+            return_value="--full-model-field-name-1--"
+        )
+        mock_searchfield_2 = mocker.MagicMock(spec=index.BaseField)
+        mock_searchfield_2.field_name = "--field-name-2--"
+        mock_searchfield_2.get_full_model_field_name = mocker.MagicMock(
+            return_value="--full-model-field-name-2--"
+        )
+
+        field_key_1 = get_settings_field_key(mock_model, mock_searchfield_1)
+        mock_searchfield_1.get_full_model_field_name.assert_not_called()
+        assert field_key_1 == "--app-label-1--.--model-name-1--.--field-name-1--"
+
+        field_key_2 = get_settings_field_key(mock_model, mock_searchfield_2)
+        mock_searchfield_2.get_full_model_field_name.assert_called_once_with()
+        assert (
+            field_key_2
+            == "--app-label-1--.--model-name-1--.--full-model-field-name-2--"
+        )

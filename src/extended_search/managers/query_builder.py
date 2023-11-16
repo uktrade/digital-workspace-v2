@@ -4,19 +4,20 @@ from typing import Optional
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from extended_search.backends.query import Filtered, Nested, OnlyFields
-from extended_search.index import (
-    IndexedField,
-    RelatedFields,
-    get_indexed_models,
-    BaseField,
-    SearchField,
-)
-from extended_search.settings import extended_search_settings as search_settings
-from extended_search.types import AnalysisType, SearchQueryType
 from wagtail.search import index
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
+from extended_search.backends.query import Filtered, Nested, OnlyFields
+from extended_search.index import (
+    BaseField,
+    IndexedField,
+    RelatedFields,
+    SearchField,
+    get_indexed_models,
+)
+from extended_search.settings import extended_search_settings as search_settings
+from extended_search.settings import get_settings_field_key
+from extended_search.types import AnalysisType, SearchQueryType
 
 logger = logging.getLogger(__name__)
 
@@ -88,17 +89,9 @@ class QueryBuilder:
 
     @classmethod
     def _get_boost_for_field(cls, model_class, field):
-        definition_cls = field.get_definition_model(model_class)
-        content_type = ContentType.objects.get_for_model(definition_cls)
-
-        full_field_name = field.field_name
-        if isinstance(field, BaseField):
-            full_field_name = field.get_full_model_field_name()
-
-        field_boost_key = (
-            f"{content_type.app_label}.{content_type.model}.{full_field_name}"
-        )
-        if setting_boost := search_settings["boost_parts"]["fields"][field_boost_key]:
+        definition_class = field.get_definition_model(model_class)
+        field_key = get_settings_field_key(definition_class, field)
+        if setting_boost := search_settings["boost_parts"]["fields"][field_key]:
             return float(setting_boost)
         return 1.0
 

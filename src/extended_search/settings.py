@@ -11,10 +11,10 @@ from psycopg2.errors import UndefinedTable
 
 from extended_search import models
 from extended_search.index import (
-    RelatedFields,
-    get_indexed_models,
-    SearchField,
     BaseField,
+    RelatedFields,
+    SearchField,
+    get_indexed_models,
 )
 
 env_file_path = os.path.join(
@@ -239,15 +239,9 @@ class SearchSettings(NestedChainMap):
         # preserve same linked obj while re-initialising it
         self.fields["boost_parts"]["fields"].clear()
         field_dict = self._get_all_indexed_fields()
-        for model, fields in field_dict.items():
-            model_name_str = f"{model._meta.app_label}.{model._meta.model_name}"
+        for model_class, fields in field_dict.items():
             for search_field in fields:
-                if isinstance(search_field, BaseField):
-                    field_name_str = search_field.get_full_model_field_name()
-                else:
-                    field_name_str = search_field.field_name
-                field_key = f"{model_name_str}.{field_name_str}"
-
+                field_key = get_settings_field_key(model_class, search_field)
                 self.fields["boost_parts"]["fields"][field_key] = getattr(
                     search_field, "boost", 1.0
                 )
@@ -293,3 +287,10 @@ class SearchSettings(NestedChainMap):
 
 
 extended_search_settings = SearchSettings()
+
+
+def get_settings_field_key(model_class, field) -> str:
+    full_field_name = field.field_name
+    if isinstance(field, BaseField):
+        full_field_name = field.get_full_model_field_name()
+    return f"{model_class._meta.app_label}.{model_class._meta.model_name}.{full_field_name}"
