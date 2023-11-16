@@ -1,6 +1,5 @@
 import pytest
 from extended_search.index import AutocompleteField, Indexed, RelatedFields, SearchField
-from extended_search.models import Setting
 from extended_search.types import AnalysisType
 from wagtail.search.index import FilterField
 

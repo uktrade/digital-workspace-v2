@@ -8,7 +8,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.utils import ProgrammingError
 from django.utils.functional import cached_property
 from psycopg2.errors import UndefinedTable
-from wagtail.search import index
 
 from extended_search import models
 from extended_search.index import (
