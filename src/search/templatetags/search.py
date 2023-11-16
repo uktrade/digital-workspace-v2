@@ -4,7 +4,7 @@ from django import template
 from django.core.paginator import Paginator
 
 from search import search as search_vectors
-from search.utils import query_has_bad_results
+from search.utils import has_only_bad_results
 
 
 register = template.Library()
@@ -73,7 +73,7 @@ def search_category(context, *, category, limit=None, show_heading=False):
         "search_results": search_results,
         "search_query": query,
         "count": count,
-        "show_bad_results_message": query_has_bad_results(
+        "show_bad_results_message": has_only_bad_results(
             query, category, pinned_results, search_vector_results
         ),
         "show_heading": show_heading,
