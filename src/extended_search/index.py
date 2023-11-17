@@ -52,8 +52,19 @@ class Indexed(index.Indexed):
             cls.generated_fields += field.generate_fields()
         return cls.generated_fields
 
+    ##################################
+    # END OF COPYPASTA
+    # EXTRAS TO MAKE IT WORK BELOW
+    ##################################
+    processed_search_fields = {}
+
     @classmethod
     def get_search_fields(cls):
+        if cls not in cls.processed_search_fields:
+            cls.processed_search_fields[cls] = []
+        if cls.processed_search_fields[cls]:
+            return cls.processed_search_fields[cls]
+
         search_fields = super().get_search_fields()
         processed_fields = {}
 
@@ -73,8 +84,10 @@ class Indexed(index.Indexed):
                         processed_fields[f.model_field_name] = []
                         model_field_names.append(f.model_field_name)
                     processed_fields[f.model_field_name].append(f)
-
-        return [f for v in processed_fields.values() for f in v]
+        cls.processed_search_fields[cls] = [
+            f for v in processed_fields.values() for f in v
+        ]
+        return cls.processed_search_fields[cls]
 
     @classmethod
     def get_all_indexed_fields_including_from_parents_and_refactor_this(
