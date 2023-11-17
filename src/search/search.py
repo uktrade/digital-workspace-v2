@@ -1,5 +1,8 @@
+from django.core.cache import cache
+
 from content.models import ContentPage
 from extended_search.managers.query_builder import CustomQueryBuilder
+from extended_search.query import swap_variables
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from tools.models import Tool
@@ -11,11 +14,11 @@ class SearchVector:
         self.request = request
         self.annotate_score = annotate_score
 
-    def _wagtail_search(self, queryset, query, *args, **kwargs):
+    def _wagtail_search(self, queryset, query_str, *args, **kwargs):
         """
         Allows e.g. score annotation without polluting overridden search method
         """
-        return_method = queryset.search(query, *args, **kwargs)
+        return_method = queryset.search(query_str, *args, **kwargs)
 
         if self.annotate_score:
             return_method = return_method.annotate_score("_score")
@@ -25,41 +28,62 @@ class SearchVector:
     def get_queryset(self):
         raise NotImplementedError
 
-    def search(self, query, *args, **kwargs):
+    def search(self, query_str, *args, **kwargs):
         queryset = self.get_queryset()
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        return self._wagtail_search(queryset, query_str, *args, **kwargs)
 
     def pinned(self, query):
         return []
 
 
-class PagesSearchVector(SearchVector):
-    page_model = None
+PRE_BUILT_QUERIES = {
+    ContentPage: CustomQueryBuilder.build_search_query(ContentPage),
+    NewsPage: CustomQueryBuilder.build_search_query(NewsPage),
+    Tool: CustomQueryBuilder.build_search_query(Tool),
+    Person: CustomQueryBuilder.build_search_query(Person),
+    Team: CustomQueryBuilder.build_search_query(Team),
+}
+
+
+class ModelSearchVector(SearchVector):
+    model = None
 
     def get_queryset(self):
-        return self.page_model.objects.public_or_login().live()
+        return self.model.objects.all()
 
-    def get_query(self, query_str):
-        return CustomQueryBuilder.get_search_query(
-            self.page_model,
-            query_str,
-        )
+    def build_query(self, query_str, *args, **kwargs):
+        return swap_variables(PRE_BUILT_QUERIES[self.model], query_str)
 
-    def pinned(self, query):
-        return self.get_queryset().pinned(query)
+    def get_cache_key(self, query_str):
+        return type(self).__name__ + query_str
 
-    def search(self, query, *args, **kwargs):
-        queryset = self.get_queryset().not_pinned(query)
-        query = self.get_query(query)
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+    def search(self, query_str, *args, **kwargs):
+        queryset = self.get_queryset()
+        built_query = self.build_query(query_str, *args, **kwargs)
+        search_results = self._wagtail_search(queryset, built_query, *args, **kwargs)
+
+        return search_results
+
+
+class PagesSearchVector(ModelSearchVector):
+    def get_queryset(self):
+        return super().get_queryset().public_or_login().live()
+
+    def pinned(self, query_str):
+        return self.get_queryset().pinned(query_str)
+
+    def search(self, query_str, *args, **kwargs):
+        queryset = self.get_queryset().not_pinned(query_str)
+        built_query = self.build_query(query_str, *args, **kwargs)
+        return self._wagtail_search(queryset, built_query, *args, **kwargs)
 
 
 class AllPagesSearchVector(PagesSearchVector):
-    page_model = ContentPage
+    model = ContentPage
 
 
 class GuidanceSearchVector(PagesSearchVector):
-    page_model = ContentPage
+    model = ContentPage
 
     def get_queryset(self):
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()
@@ -68,16 +92,18 @@ class GuidanceSearchVector(PagesSearchVector):
 
 
 class NewsSearchVector(PagesSearchVector):
-    page_model = NewsPage
+    model = NewsPage
 
 
 class ToolsSearchVector(PagesSearchVector):
-    page_model = Tool
+    model = Tool
 
 
-class PeopleSearchVector(SearchVector):
+class PeopleSearchVector(ModelSearchVector):
+    model = Person
+
     def get_queryset(self):
-        people = Person.objects.all()
+        people = super().get_queryset()
 
         if not self.request.user.has_perm("peoplefinder.delete_person"):
             people = people.active()
@@ -86,22 +112,9 @@ class PeopleSearchVector(SearchVector):
 
         return people
 
-    def search(self, query, *args, **kwargs):
-        queryset = self.get_queryset()
-        query = CustomQueryBuilder.get_search_query(
-            Person,
-            query,
-            *args,
-            **kwargs,
-        )
-        return self._wagtail_search(queryset, query, *args, **kwargs)
 
+class TeamsSearchVector(ModelSearchVector):
+    model = Team
 
-class TeamsSearchVector(SearchVector):
     def get_queryset(self):
-        return Team.objects.all().with_all_parents()
-
-    def search(self, query, *args, **kwargs):
-        queryset = self.get_queryset()
-        query = CustomQueryBuilder.get_search_query(Team, query, *args, **kwargs)
-        return self._wagtail_search(queryset, query, *args, **kwargs)
+        return super().get_queryset().with_all_parents()
