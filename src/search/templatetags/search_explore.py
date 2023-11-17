@@ -6,7 +6,6 @@ from django.core.paginator import Paginator
 from search import search as search_vectors
 from search.templatetags import search as main_search
 
-
 register = template.Library()
 
 
@@ -29,7 +28,7 @@ def search_category(context, *, category, limit=None, show_heading=False):
     page = context["page"]
 
     search_vector = SEARCH_VECTORS[category](request, annotate_score=True)
-    search_results = list(search_vector.search(query))
+    search_results = search_vector.search_results(query)
     count = len(search_results)
 
     search_results_paginator = Paginator(search_results, main_search.PAGE_SIZE)

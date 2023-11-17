@@ -46,7 +46,7 @@ def search_category(context, *, category, limit=None, show_heading=False):
     # before passing the value to the paginator. If this isn't done, the
     # pages will have the pinned results removed after pagination and cause
     # the pages to have odd lengths.
-    search_results = list(pinned_results) + list(search_vector.search(query))
+    search_results = list(pinned_results) + search_vector.search_results(query)
     count = len(search_results)
 
     if limit:
@@ -87,14 +87,14 @@ def search_count(context, *, category):
     query = context["search_query"]
 
     search_vector = SEARCH_VECTORS[category](request)
-    hits = search_vector.search(query).count()
+    hits = search_vector.count(query)
 
     # combined total for not just pages but people and teams
     if category == "all_pages":
         search_vector = SEARCH_VECTORS["people"](request)
-        hits += search_vector.search(query).count()
+        hits += search_vector.count(query)
         search_vector = SEARCH_VECTORS["teams"](request)
-        hits += search_vector.search(query).count()
+        hits += search_vector.count(query)
 
     return hits
 

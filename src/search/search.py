@@ -32,6 +32,12 @@ class SearchVector:
         queryset = self.get_queryset()
         return self._wagtail_search(queryset, query_str, *args, **kwargs)
 
+    def search_results(self, query_str, *args, **kwargs):
+        return list(self.search(query_str))
+
+    def count(self, query_str, *args, **kwargs):
+        return len(self.search_results(query_str))
+
     def pinned(self, query):
         return []
 
@@ -57,12 +63,22 @@ class ModelSearchVector(SearchVector):
     def get_cache_key(self, query_str):
         return type(self).__name__ + query_str
 
+    def search_results(self, query_str, *args, **kwargs):
+        # Try and get the cached results
+        search_results = cache.get(self.get_cache_key(query_str), None)
+        if search_results:
+            return search_results
+
+        search_results = super().search_results(query_str, *args, **kwargs)
+
+        # Cache for 1 hour
+        cache.set(self.get_cache_key(query_str), search_results, 60 * 60)
+        return search_results
+
     def search(self, query_str, *args, **kwargs):
         queryset = self.get_queryset()
         built_query = self.build_query(query_str, *args, **kwargs)
-        search_results = self._wagtail_search(queryset, built_query, *args, **kwargs)
-
-        return search_results
+        return self._wagtail_search(queryset, built_query, *args, **kwargs)
 
 
 class PagesSearchVector(ModelSearchVector):
