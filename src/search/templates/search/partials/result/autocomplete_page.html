@@ -25,21 +25,6 @@
         </a>
     </li>
 {% endfor %}
-{% if tools %}
-    <li class="govuk-heading-s autocomplete-title">
-        <a class="govuk-link"
-           href="{% url 'search:category' 'tools' %}?query={{ search_query }}">Tools results:</a>
-    </li>
-{% endif %}
-{% for tool in tools %}
-    <li class="autocomplete-choice">
-        <a class="govuk-link" href="{% pageurl tool %}">
-            <div>
-                <p class="govuk-body autocomplete-text">{{ tool.title }}</p>
-            </div>
-        </a>
-    </li>
-{% endfor %}
 {% if pages %}
     <li class="govuk-heading-s autocomplete-title">
         <a class="govuk-link"
