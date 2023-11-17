@@ -42,37 +42,35 @@ class SearchVector:
         return []
 
 
-PRE_BUILT_QUERIES = {
-    ContentPage: CustomQueryBuilder.build_search_query(ContentPage),
-    NewsPage: CustomQueryBuilder.build_search_query(NewsPage),
-    Tool: CustomQueryBuilder.build_search_query(Tool),
-    Person: CustomQueryBuilder.build_search_query(Person),
-    Team: CustomQueryBuilder.build_search_query(Team),
-}
-
-
 class ModelSearchVector(SearchVector):
     model = None
 
     def get_queryset(self):
         return self.model.objects.all()
 
-    def build_query(self, query_str, *args, **kwargs):
-        return swap_variables(PRE_BUILT_QUERIES[self.model], query_str)
+    def get_build_query_cache_key(self):
+        return self.model.__name__
 
-    def get_cache_key(self, query_str):
+    def get_search_results_cache_key(self, query_str):
         return type(self).__name__ + query_str
+
+    def build_query(self, query_str, *args, **kwargs):
+        built_query = cache.get(self.get_build_query_cache_key(), None)
+        if not built_query:
+            built_query = CustomQueryBuilder.build_search_query(self.model)
+            cache.set(self.get_build_query_cache_key(), built_query, 60 * 60)
+        return swap_variables(built_query, query_str)
 
     def search_results(self, query_str, *args, **kwargs):
         # Try and get the cached results
-        search_results = cache.get(self.get_cache_key(query_str), None)
+        search_results = cache.get(self.get_search_results_cache_key(query_str), None)
         if search_results:
             return search_results
 
         search_results = super().search_results(query_str, *args, **kwargs)
 
         # Cache for 1 hour
-        cache.set(self.get_cache_key(query_str), search_results, 60 * 60)
+        cache.set(self.get_search_results_cache_key(query_str), search_results, 60 * 60)
         return search_results
 
     def search(self, query_str, *args, **kwargs):
