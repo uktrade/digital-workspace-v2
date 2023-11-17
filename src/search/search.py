@@ -51,15 +51,20 @@ class ModelSearchVector(SearchVector):
     def get_build_query_cache_key(self):
         return self.model.__name__
 
-    def get_search_results_cache_key(self, query_str):
-        return type(self).__name__ + query_str
-
     def build_query(self, query_str, *args, **kwargs):
         built_query = cache.get(self.get_build_query_cache_key(), None)
         if not built_query:
             built_query = CustomQueryBuilder.build_search_query(self.model)
             cache.set(self.get_build_query_cache_key(), built_query, 60 * 60)
         return swap_variables(built_query, query_str)
+
+    def search(self, query_str, *args, **kwargs):
+        queryset = self.get_queryset()
+        built_query = self.build_query(query_str, *args, **kwargs)
+        return self._wagtail_search(queryset, built_query, *args, **kwargs)
+
+    def get_search_results_cache_key(self, query_str):
+        return type(self).__name__ + query_str.lower()
 
     def search_results(self, query_str, *args, **kwargs):
         # Try and get the cached results
@@ -72,11 +77,6 @@ class ModelSearchVector(SearchVector):
         # Cache for 1 hour
         cache.set(self.get_search_results_cache_key(query_str), search_results, 60 * 60)
         return search_results
-
-    def search(self, query_str, *args, **kwargs):
-        queryset = self.get_queryset()
-        built_query = self.build_query(query_str, *args, **kwargs)
-        return self._wagtail_search(queryset, built_query, *args, **kwargs)
 
 
 class PagesSearchVector(ModelSearchVector):
