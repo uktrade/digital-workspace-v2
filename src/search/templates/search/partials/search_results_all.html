@@ -5,7 +5,11 @@
         <div class="pages">{% search_category category='all_pages' show_heading=True %}</div>
     </div>
     <div class="right-col">
-        <div class="people">{% search_category category='people' limit=3 show_heading=True %}</div>
-        <div class="teams">{% search_category category='teams' limit=3 show_heading=True %}</div>
+        <div class="people">
+            {% search_category category='people' limit=3 show_heading=True show_bad_threshold_message=False %}
+        </div>
+        <div class="teams">
+            {% search_category category='teams' limit=3 show_heading=True show_bad_threshold_message=False %}
+        </div>
     </div>
 </div>

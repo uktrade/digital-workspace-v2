@@ -6,7 +6,6 @@ from django.core.paginator import Paginator
 from search import search as search_vectors
 from search.utils import has_only_bad_results
 
-
 register = template.Library()
 
 SearchCategory = Literal["all", "people", "teams", "guidance", "tools", "news"]
@@ -33,7 +32,14 @@ PAGE_SIZE = 20
 @register.inclusion_tag(
     "search/partials/search_results_category.html", takes_context=True
 )
-def search_category(context, *, category, limit=None, show_heading=False):
+def search_category(
+    context,
+    *,
+    category,
+    limit=None,
+    show_heading=False,
+    show_bad_threshold_message=True,
+):
     request = context["request"]
     query = context["search_query"]
     page = context["page"]
@@ -73,8 +79,11 @@ def search_category(context, *, category, limit=None, show_heading=False):
         "search_results": search_results,
         "search_query": query,
         "count": count,
-        "show_bad_results_message": has_only_bad_results(
-            query, category, pinned_results, search_vector_results
+        "show_bad_results_message": (
+            show_bad_threshold_message
+            and has_only_bad_results(
+                query, category, pinned_results, search_vector_results
+            )
         ),
         "show_heading": show_heading,
         "result_type_display": result_type_display,

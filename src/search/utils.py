@@ -1,9 +1,10 @@
 import re
 import unicodedata
+from typing import Optional
 
 from django.conf import settings
-from typing import Optional
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
+
 from extended_search.backends.query import OnlyFields
 from extended_search.settings import extended_search_settings
 from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
@@ -213,7 +214,7 @@ def get_bad_score_threshold(query, category):
 
     avg_boost_value = sum(boost_values) / len(boost_values)
 
-    return avg_boost_value * settings.PAGES_BAD_SEARCH_SCORE_MULTIPLIER
+    return avg_boost_value * settings.BAD_SEARCH_SCORE_MULTIPLIERS.get(category, 1)
 
 
 # Triggers the conditional rendering on the FE message if the search yields low score results
