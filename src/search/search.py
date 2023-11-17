@@ -64,12 +64,15 @@ class ModelSearchVector(SearchVector):
         return self._wagtail_search(queryset, built_query, *args, **kwargs)
 
     def get_search_results_cache_key(self, query_str):
-        return type(self).__name__ + query_str.lower()
+        # Lower case and strip the spaces from the start and end of the query_str
+        clean_query_str = query_str.lower().strip()
+        return type(self).__name__ + "_" + clean_query_str
 
     def search_results(self, query_str, *args, **kwargs):
         # Try and get the cached results
         search_results = cache.get(self.get_search_results_cache_key(query_str), None)
-        if search_results:
+        if search_results is not None:
+            # @TODO: Note, I think this might cause issues with pagination...
             return search_results
 
         search_results = super().search_results(query_str, *args, **kwargs)
