@@ -297,11 +297,7 @@ class CustomQueryBuilder(QueryBuilder):
 
     @classmethod
     def get_search_query(cls, model_class, query_str: str):
-        cache_key = model_class.__name__
-        built_query = cache.get(cache_key, None)
-        if not built_query:
-            built_query = cls.build_search_query(model_class)
-            cache.set(cache_key, built_query, 60 * 60)
+        built_query = cls.build_search_query(model_class)
         return cls.swap_variables(built_query, query_str)
 
     @classmethod
@@ -312,6 +308,11 @@ class CustomQueryBuilder(QueryBuilder):
         parent; each has it's own subquery using its own settings filtered by
         type, and all are joined together at the end.
         """
+        cache_key = model_class.__name__
+        built_query = cache.get(cache_key, None)
+        if built_query:
+            return built_query
+
         extended_models = cls.get_extended_models_with_unique_indexed_fields(
             model_class
         )
@@ -356,6 +357,8 @@ class CustomQueryBuilder(QueryBuilder):
 
         for q in queries:
             root_query |= q
+
+        cache.set(cache_key, root_query, 60 * 60)
 
         logger.debug(root_query)
         return root_query
