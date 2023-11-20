@@ -1,31 +1,39 @@
 import pytest
 
+from extended_search.index import AutocompleteField  # AbstractBaseField,
 from extended_search.index import (
     BaseField,
-    # AbstractBaseField,
-    ModelFieldNameMixin,
     DWIndexedField,
+    FilterField,
     IndexedField,
+    ModelFieldNameMixin,
     MultiQueryIndexedField,
     RelatedFields,
-    AutocompleteField,
-    FilterField,
     SearchField,
 )
 from extended_search.types import AnalysisType
 
 
+class Base:
+    def __init__(self, *args, **kwargs) -> None:
+        ...
+
+
+class MixedIn(ModelFieldNameMixin, Base):
+    ...
+
+
 class TestModelFieldNameMixin:
     def test_init_params_accepted_defaults_and_all_saved(self):
-        field = ModelFieldNameMixin("foo")
+        field = MixedIn("foo")
         assert field.model_field_name == "foo"
         assert field.parent_field is None
 
-        field = ModelFieldNameMixin("foo", model_field_name="bar")
+        field = MixedIn("foo", model_field_name="bar")
         assert field.model_field_name == "bar"
         assert field.parent_field is None
 
-        field = ModelFieldNameMixin("foo", model_field_name="bar", parent_field="baz")
+        field = MixedIn("foo", model_field_name="bar", parent_field="baz")
         assert field.model_field_name == "bar"
         assert field.parent_field == "baz"
 
