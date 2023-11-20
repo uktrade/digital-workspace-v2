@@ -73,7 +73,7 @@ def explore(request: HttpRequest) -> HttpResponse:
 
     boost_vars = [
         {"name": k, "value": extended_search_settings[k]}
-        for k in extended_search_settings.all_keys
+        for k in extended_search_settings.keys()
         if "boost_parts" in k
     ]
 

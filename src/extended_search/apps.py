@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from django.conf import settings
+from django.conf import settings as django_settings
 
 
 class ExtendedSearchConfig(AppConfig):
@@ -7,9 +7,10 @@ class ExtendedSearchConfig(AppConfig):
 
     def ready(self):
         import extended_search.signals  # noqa
-        from extended_search.settings import settings_singleton as search_settings_obj
+        from extended_search import settings
 
-        search_settings_obj.initialise_field_dict()
-        search_settings_obj.initialise_env_dict()
-        if settings.APP_ENV not in ["test", "build"]:
-            search_settings_obj.initialise_db_dict()
+        settings.settings_singleton.initialise_field_dict()
+        settings.settings_singleton.initialise_env_dict()
+        if django_settings.APP_ENV not in ["test", "build"]:
+            settings.settings_singleton.initialise_db_dict()
+        settings.extended_search_settings = settings.settings_singleton.to_dict()
