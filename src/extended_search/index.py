@@ -68,8 +68,15 @@ class Indexed(index.Indexed):
                 processed_index_fields[k] += f.generate_fields()
         return processed_index_fields
 
+    processed_search_fields = {}
+
     @classmethod
     def get_search_fields(cls):
+        if cls not in cls.processed_search_fields:
+            cls.processed_search_fields[cls] = []
+        if cls.processed_search_fields[cls]:
+            return cls.processed_search_fields[cls]
+
         search_fields = super().get_search_fields()
         processed_fields = {}
 

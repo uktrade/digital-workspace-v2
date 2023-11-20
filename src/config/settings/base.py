@@ -101,7 +101,6 @@ LOCAL_APPS = [
     "feedback",
     "home",
     "content",
-    "search",
     "news",
     "working_at_dit",
     "tools",
@@ -173,7 +172,9 @@ INSTALLED_APPS = (
     + WAGTAIL_APPS
     + DJANGO_APPS
     + [
-        "extended_search",  # must be last because it depends on models being loaded into memory
+        # Search apps must be last because it depends on models being loaded into memory
+        "search",
+        "extended_search",
     ]
 )
 

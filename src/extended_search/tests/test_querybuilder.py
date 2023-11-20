@@ -3,15 +3,16 @@
 from unittest.mock import call
 
 import pytest
-from wagtail.search.query import Or, PlainText
+from wagtail.search.query import And, Fuzzy, Not, Or, Phrase, PlainText
+
+from extended_search.backends.query import Filtered
+from extended_search.managers.query_builder import CustomQueryBuilder, Variable
 
 # from extended_search.backends.query import OnlyFields
 # from extended_search.managers.query_builder import NestedQueryBuilder, QueryBuilder, CustomQueryBuilder
 # from extended_search.models import Setting
 # from extended_search.settings import extended_search_settings
-# from extended_search.types import AnalysisType, SearchQueryType
-from extended_search.backends.query import Filtered
-from extended_search.managers.query_builder import CustomQueryBuilder
+from extended_search.types import SearchQueryType
 
 # from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText
 
@@ -25,32 +26,30 @@ class MockModelClass:
 
 
 class TestQueryBuilder:
-    def test_get_query_for_model(self, mocker):
+    def test_build_query_for_model(self, mocker):
         mock_combine = mocker.patch(
             "extended_search.managers.query_builder.CustomQueryBuilder._combine_queries",
             return_value="foo",
         )
-        mock_get_search_query = mocker.patch(
-            "extended_search.managers.query_builder.CustomQueryBuilder._get_search_query",
+        mock_build_search_query = mocker.patch(
+            "extended_search.managers.query_builder.CustomQueryBuilder._build_search_query",
             return_value=None,
         )
-        assert CustomQueryBuilder.get_query_for_model(MockModelClass, "query") is None
-        mock_get_search_query.assert_not_called()
+        assert CustomQueryBuilder.build_query_for_model(MockModelClass) is None
+        mock_build_search_query.assert_not_called()
         mock_combine.assert_not_called()
-        mock_get_search_query.reset_mock()
+        mock_build_search_query.reset_mock()
         mock_combine.reset_mock()
 
         MockModelClass.indexed_fields = ["--field--"]
-        assert CustomQueryBuilder.get_query_for_model(MockModelClass, "query") is None
-        mock_get_search_query.assert_called_once_with(
-            "query", MockModelClass, "--field--"
-        )
+        assert CustomQueryBuilder.build_query_for_model(MockModelClass) is None
+        mock_build_search_query.assert_called_once_with(MockModelClass, "--field--")
         mock_combine.assert_not_called()
-        mock_get_search_query.reset_mock()
+        mock_build_search_query.reset_mock()
         mock_combine.reset_mock()
 
-        mock_get_search_query.return_value = "--query--"
-        assert CustomQueryBuilder.get_query_for_model(MockModelClass, "query") == "foo"
+        mock_build_search_query.return_value = "--query--"
+        assert CustomQueryBuilder.build_query_for_model(MockModelClass) == "foo"
         mock_combine.assert_called_once_with(None, "--query--")
 
     @pytest.mark.xfail
@@ -99,8 +98,68 @@ class TestQueryBuilder:
             base_model_class
         ) == {"mock.extended.extendedModel": extended_model_class}
 
-    @pytest.mark.xfail
     def test_get_search_query(self, mocker):
+        model_class = mocker.Mock()
+        query = "foo"  # PlainText("foo")
+        built_query = PlainText("foo")
+        mock_build_search_query = mocker.patch(
+            "extended_search.managers.query_builder.CustomQueryBuilder.build_search_query",
+            return_value=built_query,
+        )
+        output_query = PlainText("bar")
+        mock_swap_variables = mocker.patch(
+            "extended_search.managers.query_builder.CustomQueryBuilder.swap_variables",
+            return_value=output_query,
+        )
+        result = CustomQueryBuilder.get_search_query(model_class, query)
+        mock_build_search_query.assert_called_once_with(model_class)
+        mock_swap_variables.assert_called_once_with(built_query, query)
+        assert result == output_query
+
+    def test_swap_variables(self, mocker):
+        query_str = "foo"
+        query = Variable("search_query", SearchQueryType.PHRASE)
+        result = CustomQueryBuilder.swap_variables(query, query_str)
+        assert repr(result) == repr(Phrase("foo"))
+
+        query = Or(
+            [
+                Variable("search_query", SearchQueryType.PHRASE),
+                Variable("search_query", SearchQueryType.FUZZY),
+            ]
+        )
+        result = CustomQueryBuilder.swap_variables(query, query_str)
+        assert repr(result) == repr(
+            Or(
+                [
+                    Phrase("foo"),
+                    Fuzzy("foo"),
+                ]
+            )
+        )
+
+        query = And(
+            [
+                Variable("search_query", SearchQueryType.PHRASE),
+                Variable("search_query", SearchQueryType.FUZZY),
+            ]
+        )
+        result = CustomQueryBuilder.swap_variables(query, query_str)
+        assert repr(result) == repr(
+            And(
+                [
+                    Phrase("foo"),
+                    Fuzzy("foo"),
+                ]
+            )
+        )
+
+        query = Not(Variable("search_query", SearchQueryType.PHRASE))
+        result = CustomQueryBuilder.swap_variables(query, query_str)
+        assert repr(result) == repr(Not(Phrase("foo")))
+
+    @pytest.mark.xfail
+    def test_build_search_query(self, mocker):
         model_class = mocker.Mock()
         extended_model_class = mocker.Mock()
         query = "foo"  # PlainText("foo")
@@ -109,10 +168,10 @@ class TestQueryBuilder:
             return_value={"mock.extended_model": extended_model_class},
         )
         mock_get_query = mocker.patch(
-            "extended_search.managers.get_query_for_model",
+            "extended_search.managers.build_query_for_model",
             return_value=PlainText("foo"),
         )
-        result = CustomQueryBuilder.get_search_query(model_class, query)
+        result = CustomQueryBuilder.build_search_query(model_class)
         mock_get_extended_models.assert_called_once_with(model_class)
         mock_get_query.assert_has_calls(
             [
@@ -140,7 +199,11 @@ class TestQueryBuilder:
         )
 
     @pytest.mark.xfail
-    def test__get_search_query(self):
+    def test__build_search_query(self):
+        raise AssertionError()
+
+    @pytest.mark.xfail
+    def test__build_search_query__uses_cache(self):
         raise AssertionError()
 
     @pytest.mark.xfail
@@ -148,11 +211,11 @@ class TestQueryBuilder:
         raise AssertionError()
 
     @pytest.mark.xfail
-    def test_get_search_query_for_indexfield(self):
+    def test_build_search_query_for_indexfield(self):
         raise AssertionError()
 
     @pytest.mark.xfail
-    def test_get_search_query_for_searchfield(self):
+    def test_build_search_query_for_searchfield(self):
         raise AssertionError()
 
     @pytest.mark.xfail
@@ -369,7 +432,7 @@ class TestQueryBuilder:
 #         ) == set(["a", "b", "c", "d"])
 
 #     @pytest.mark.django_db
-#     def test_get_search_query_from_mapping_uses_settings_and_submethods(self, mocker):
+#     def test_build_search_query_from_mapping_uses_settings_and_submethods(self, mocker):
 #         query_outputs = [
 #             set(["--query--"]),
 #             set(["--query-2--"]),
@@ -387,7 +450,7 @@ class TestQueryBuilder:
 #         )
 #         mapping = {}
 #         assert (
-#             self.query_builder_class._get_search_query_from_mapping(
+#             self.query_builder_class._build_search_query_from_mapping(
 #                 "query", ContentPage, mapping
 #             )
 #             is None
@@ -401,7 +464,7 @@ class TestQueryBuilder:
 #             "fuzzy": [],
 #             "model_field_name": "--name--",
 #         }
-#         result = self.query_builder_class._get_search_query_from_mapping(
+#         result = self.query_builder_class._build_search_query_from_mapping(
 #             "query", ContentPage, mapping
 #         )
 #         assert result == set(["--query--"])
@@ -435,7 +498,7 @@ class TestQueryBuilder:
 #             "search": [AnalysisType.EXPLICIT],
 #             "model_field_name": "--name--",
 #         }
-#         result = self.query_builder_class._get_search_query_from_mapping(
+#         result = self.query_builder_class._build_search_query_from_mapping(
 #             "query", ContentPage, mapping
 #         )
 #         assert mock_query.call_count == 3
@@ -474,7 +537,7 @@ class TestQueryBuilder:
 #             "search": [AnalysisType.TOKENIZED],
 #             "model_field_name": "--name--",
 #         }
-#         result = self.query_builder_class._get_search_query_from_mapping(
+#         result = self.query_builder_class._build_search_query_from_mapping(
 #             "query", ContentPage, mapping
 #         )
 #         assert mock_query.call_count == 3
@@ -513,7 +576,7 @@ class TestQueryBuilder:
 #             "search": [AnalysisType.TOKENIZED, AnalysisType.EXPLICIT],
 #             "model_field_name": "--name--",
 #         }
-#         result = self.query_builder_class._get_search_query_from_mapping(
+#         result = self.query_builder_class._build_search_query_from_mapping(
 #             "query", ContentPage, mapping
 #         )
 #         assert mock_query.call_count == 6
@@ -564,7 +627,7 @@ class TestQueryBuilder:
 #         )
 
 #     @pytest.mark.django_db
-#     def test_get_search_query_from_mapping_uses_settings_and_submethods_for_related_fields(
+#     def test_build_search_query_from_mapping_uses_settings_and_submethods_for_related_fields(
 #         self, mocker
 #     ):
 #         query_outputs = [
@@ -602,7 +665,7 @@ class TestQueryBuilder:
 #             "model_field_name": "--model-field-name--",
 #             "name": "--name--",
 #         }
-#         self.query_builder_class._get_search_query_from_mapping(
+#         self.query_builder_class._build_search_query_from_mapping(
 #             "query", ContentPage, mapping
 #         )
 #         assert mock_query.call_count == 6  # tokenized => 3, x2 fields

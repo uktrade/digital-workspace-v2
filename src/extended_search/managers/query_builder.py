@@ -2,6 +2,7 @@ import inspect
 import logging
 from typing import Optional, Type
 
+from django.core.cache import cache
 from django.db import models
 from wagtail.search import index
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
@@ -22,16 +23,15 @@ from extended_search.types import AnalysisType, SearchQueryType
 logger = logging.getLogger(__name__)
 
 
-class QueryBuilder:
-    @classmethod
-    def _get_inner_searchquery_for_querytype(
-        cls,
-        query_str: str,
-        query_type: SearchQueryType,
-    ):
+class Variable:
+    def __init__(self, name: str, query_type: SearchQueryType) -> None:
+        self.name = name
+        self.query_type = query_type
+
+    def output(self, query_str: str):
         # split can be super basic since we don't support advanced search
         query_parts = query_str.split()
-        match query_type:
+        match self.query_type:
             case SearchQueryType.PHRASE:
                 query = Phrase(query_str)
             case SearchQueryType.QUERY_AND:
@@ -45,9 +45,11 @@ class QueryBuilder:
             case SearchQueryType.FUZZY:
                 query = Fuzzy(query_str)
             case _:
-                raise ValueError(f"{query_type} must be a valid SearchQueryType")
+                raise ValueError(f"{self.query_type} must be a valid SearchQueryType")
         return query
 
+
+class QueryBuilder:
     @classmethod
     def _get_boost_for_querytype(cls, query_type: SearchQueryType):
         match query_type:
@@ -115,9 +117,8 @@ class QueryBuilder:
         return query_boost * analyzer_boost * field_boost
 
     @classmethod
-    def _get_searchquery_for_query_field_querytype_analysistype(
+    def _build_searchquery_for_query_field_querytype_analysistype(
         cls,
-        query_str: str,
         model_class: models.Model,
         base_field_name: str,
         query_type: SearchQueryType,
@@ -129,13 +130,6 @@ class QueryBuilder:
         if isinstance(field, BaseField):
             base_field_name = field.get_full_model_field_name()
 
-        query = cls._get_inner_searchquery_for_querytype(
-            query_str,
-            query_type,
-        )
-        if query is None:
-            return None
-
         boost = cls._get_boost_for_field_querytype_analysistype(
             model_class,
             query_type,
@@ -144,7 +138,9 @@ class QueryBuilder:
         )
 
         field_name = get_indexed_field_name(base_field_name, analysis_type)
-        return OnlyFields(Boost(query, boost), fields=[field_name])
+        return OnlyFields(
+            Boost(Variable("search_query", query_type), boost), fields=[field_name]
+        )
 
     @classmethod
     def _combine_queries(cls, q1: Optional[SearchQuery], q2: Optional[SearchQuery]):
@@ -153,19 +149,18 @@ class QueryBuilder:
         return q1 or q2
 
     @classmethod
-    def _get_search_query_for_searchfield(
-        cls, field, query_str, model_class, subquery, analyzer
+    def _build_search_query_for_searchfield(
+        cls, field, model_class, subquery, analyzer
     ):
-        for query_type in extended_search_settings["analyzers"][analyzer.value][
-            "query_types"
-        ]:
-            query_element = cls._get_searchquery_for_query_field_querytype_analysistype(
-                query_str,
-                model_class,
-                field.model_field_name,
-                SearchQueryType(query_type),
-                analyzer,
-                field,
+        for query_type in extended_search_settings["analyzers"][analyzer.value]["query_types"]:
+            query_element = (
+                cls._build_searchquery_for_query_field_querytype_analysistype(
+                    model_class,
+                    field.model_field_name,
+                    SearchQueryType(query_type),
+                    analyzer,
+                    field,
+                )
             )
             subquery = cls._combine_queries(
                 subquery,
@@ -174,23 +169,24 @@ class QueryBuilder:
         return subquery
 
     @classmethod
-    def _get_search_query_for_indexfield(cls, field, query_str, model_class, subquery):
+    def _build_search_query_for_indexfield(cls, field, model_class, subquery):
         if not field.search:
             return subquery
 
         for analyzer in field.get_search_analyzers():
-            subquery = cls._get_search_query_for_searchfield(
-                field, query_str, model_class, subquery, analyzer
+            subquery = cls._build_search_query_for_searchfield(
+                field, model_class, subquery, analyzer
             )
 
         if field.fuzzy:
-            query_element = cls._get_searchquery_for_query_field_querytype_analysistype(
-                query_str,
-                model_class,
-                field.model_field_name,
-                SearchQueryType("fuzzy"),
-                AnalysisType.TOKENIZED,
-                field,
+            query_element = (
+                cls._build_searchquery_for_query_field_querytype_analysistype(
+                    model_class,
+                    field.model_field_name,
+                    SearchQueryType("fuzzy"),
+                    AnalysisType.TOKENIZED,
+                    field,
+                )
             )
             subquery = cls._combine_queries(
                 subquery,
@@ -200,9 +196,8 @@ class QueryBuilder:
         return subquery
 
     @classmethod
-    def _get_search_query(
+    def _build_search_query(
         cls,
-        query_str: str,
         model_class: models.Model,
         field: index.BaseField,
     ):
@@ -210,8 +205,8 @@ class QueryBuilder:
         subquery = None
 
         if isinstance(field, IndexedField):
-            subquery = cls._get_search_query_for_indexfield(
-                field, query_str, model_class, subquery
+            subquery = cls._build_search_query_for_indexfield(
+                field, model_class, subquery
             )
 
         elif isinstance(field, RelatedFields):
@@ -219,7 +214,7 @@ class QueryBuilder:
             for related_field in field.fields:
                 internal_subquery = cls._combine_queries(
                     internal_subquery,
-                    cls._get_search_query(query_str, model_class, related_field),
+                    cls._build_search_query(model_class, related_field),
                 )
             subquery = cls._combine_queries(
                 Nested(subquery=internal_subquery, path=field.model_field_name),
@@ -227,9 +222,8 @@ class QueryBuilder:
             )
 
         elif isinstance(field, SearchField):
-            subquery = cls._get_search_query_for_searchfield(
+            subquery = cls._build_search_query_for_searchfield(
                 field,
-                query_str,
                 model_class,
                 subquery,
                 cls.infer_analyzer_from_field(field),
@@ -263,10 +257,10 @@ class CustomQueryBuilder(QueryBuilder):
     """
 
     @classmethod
-    def get_query_for_model(cls, model_class, query_str) -> Optional[SearchQuery]:
+    def build_query_for_model(cls, model_class) -> Optional[SearchQuery]:
         query = None
         for field in model_class.get_indexed_fields():
-            query_elements = cls._get_search_query(query_str, model_class, field)
+            query_elements = cls._build_search_query(model_class, field)
             if query_elements is not None:
                 query = cls._combine_queries(
                     query,
@@ -275,13 +269,52 @@ class CustomQueryBuilder(QueryBuilder):
         return query
 
     @classmethod
-    def get_search_query(cls, model_class, query_str, *args, **kwargs):
+    def swap_variables(
+        cls, query: SearchQuery, search_query: str
+    ) -> Optional[SearchQuery]:
+        """
+        Iterate through the query and swap out variables for the search_query.
+        """
+
+        if isinstance(query, Variable):
+            return query.output(search_query)
+
+        if hasattr(query, "subqueries"):
+            query.subqueries = [
+                cls.swap_variables(sq, search_query) for sq in query.subqueries
+            ]
+            query.subqueries = [sq for sq in query.subqueries if sq]
+
+            if not query.subqueries:
+                return None
+            elif len(query.subqueries) == 1:
+                return query.subqueries[0]
+
+        if hasattr(query, "subquery"):
+            query.subquery = cls.swap_variables(query.subquery, search_query)
+            if not query.subquery:
+                return None
+
+        return query
+
+    @classmethod
+    def get_search_query(cls, model_class, query_str: str):
+        built_query = cls.build_search_query(model_class)
+        return cls.swap_variables(built_query, query_str)
+
+    @classmethod
+    def build_search_query(cls, model_class):
         """
         Generates a full query for a model class, by running query builder
         against the given model as well as all models with the given as a
         parent; each has it's own subquery using its own settings filtered by
         type, and all are joined together at the end.
         """
+        cache_key = model_class.__name__
+        built_query = cache.get(cache_key, None)
+        if built_query:
+            return built_query
+
         extended_models = cls.get_extended_models_with_unique_indexed_fields(
             model_class
         )
@@ -296,7 +329,7 @@ class CustomQueryBuilder(QueryBuilder):
                 f"{sub_model_class._meta.app_label}.{sub_model_class.__name__}"
             )
 
-            subquery = cls.get_query_for_model(sub_model_class, query_str)
+            subquery = cls.build_query_for_model(sub_model_class)
             query = Filtered(
                 subquery=subquery,
                 filters=[
@@ -310,9 +343,9 @@ class CustomQueryBuilder(QueryBuilder):
             queries.append(query)
             queried_content_types.append(sub_model_contenttype)
 
-        # build query for root model passed in to method, filter to exclude docs
+        # Build query for root model passed in to method, filter to exclude docs
         # with contenttypes matching any of the already queried models.
-        subquery = cls.get_query_for_model(model_class, query_str)
+        subquery = cls.build_query_for_model(model_class)
         root_query = Filtered(
             subquery=subquery,
             filters=[
@@ -326,6 +359,8 @@ class CustomQueryBuilder(QueryBuilder):
 
         for q in queries:
             root_query |= q
+
+        cache.set(cache_key, root_query, 60 * 60)
 
         logger.debug(root_query)
         return root_query
