@@ -88,7 +88,9 @@ class Indexed(index.Indexed):
 
         processed_fields |= cls.generate_from_indexed_fields()
 
-        return [f for v in processed_fields.values() for f in v]
+        processed_search_fields = [f for v in processed_fields.values() for f in v]
+        cls.processed_search_fields[cls] = processed_search_fields
+        return processed_search_fields
 
     @classmethod
     def has_unique_index_fields(cls):
