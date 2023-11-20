@@ -30,10 +30,7 @@ class SearchVector:
         return self._wagtail_search(queryset, query_str, *args, **kwargs)
 
     def search_results(self, query_str, *args, **kwargs):
-        return list(self.search(query_str))
-
-    def count(self, query_str, *args, **kwargs):
-        return len(self.search_results(query_str))
+        return self.search(query_str)
 
     def pinned(self, query):
         return []
