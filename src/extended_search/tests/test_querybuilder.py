@@ -20,7 +20,7 @@ class MockModelClass:
     indexed_fields = []
 
     @classmethod
-    def get_all_indexed_fields_including_from_parents_and_refactor_this(cls):
+    def get_indexed_fields(cls):
         return cls.indexed_fields
 
 

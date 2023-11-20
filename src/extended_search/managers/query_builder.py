@@ -1,6 +1,6 @@
 import inspect
 import logging
-from typing import Optional
+from typing import Optional, Type
 
 from django.core.cache import cache
 from django.db import models
@@ -10,6 +10,7 @@ from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 from extended_search.backends.query import Filtered, Nested, OnlyFields
 from extended_search.index import (
     BaseField,
+    Indexed,
     IndexedField,
     RelatedFields,
     SearchField,
@@ -247,14 +248,16 @@ class QueryBuilder:
 
 
 class CustomQueryBuilder(QueryBuilder):
+    """
+    Builds a custom search query based on the model's indexed fields.
+
+    Note: the generated query does NOT include the model's `search_fields`
+    """
+
     @classmethod
     def build_query_for_model(cls, model_class) -> Optional[SearchQuery]:
         query = None
-        for (
-            field
-        ) in (
-            model_class.get_all_indexed_fields_including_from_parents_and_refactor_this()
-        ):
+        for field in model_class.get_indexed_fields():
             query_elements = cls._build_search_query(model_class, field)
             if query_elements is not None:
                 query = cls._combine_queries(
@@ -316,7 +319,8 @@ class CustomQueryBuilder(QueryBuilder):
         queries = []
         queried_content_types = []
         for sub_model_class in extended_models:
-            # filter so it only applies to "docs with that model anywhere in the contenttypes list"
+            # Filter so it only applies to "docs with that model anywhere in the
+            # contenttypes list".
 
             sub_model_contenttype = (
                 f"{sub_model_class._meta.app_label}.{sub_model_class.__name__}"
@@ -336,8 +340,8 @@ class CustomQueryBuilder(QueryBuilder):
             queries.append(query)
             queried_content_types.append(sub_model_contenttype)
 
-        # build query for root model passed in to method, filter to exclude docs with contenttypes
-        # matching any of the extended-models-with-dedicated-IM
+        # Build query for root model passed in to method, filter to exclude docs
+        # with contenttypes matching any of the already queried models.
         subquery = cls.build_query_for_model(model_class)
         root_query = Filtered(
             subquery=subquery,
@@ -357,14 +361,19 @@ class CustomQueryBuilder(QueryBuilder):
         return root_query
 
     @classmethod
-    def get_extended_models_with_unique_indexed_fields(cls, model_class):
-        # iterate indexed models extending the root model that have a dedicated IndexManager
+    def get_extended_models_with_unique_indexed_fields(
+        cls, model_class: Type[Indexed]
+    ) -> list[Type[Indexed]]:
+        """
+        Iterate indexed models extending the root model that have unique
+        index fields.
+        """
         extended_model_classes = []
         for indexed_model in get_indexed_models():
             if (
                 indexed_model != model_class
                 and model_class in inspect.getmro(indexed_model)
-                # and indexed_model.has_indexmanager_direct_inner_class()
+                and indexed_model.has_unique_index_fields()
             ):
                 extended_model_classes.append(indexed_model)
         return extended_model_classes

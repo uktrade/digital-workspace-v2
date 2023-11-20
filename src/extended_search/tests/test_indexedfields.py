@@ -1,27 +1,39 @@
 import pytest
 
+from extended_search.index import AutocompleteField  # AbstractBaseField,
 from extended_search.index import (
     BaseField,
-    # AbstractBaseField,
-    ModelFieldNameMixin,
     DWIndexedField,
+    FilterField,
     IndexedField,
+    ModelFieldNameMixin,
     MultiQueryIndexedField,
     RelatedFields,
+    SearchField,
 )
+from extended_search.types import AnalysisType
+
+
+class Base:
+    def __init__(self, *args, **kwargs) -> None:
+        ...
+
+
+class MixedIn(ModelFieldNameMixin, Base):
+    ...
 
 
 class TestModelFieldNameMixin:
     def test_init_params_accepted_defaults_and_all_saved(self):
-        field = ModelFieldNameMixin("foo")
+        field = MixedIn("foo")
         assert field.model_field_name == "foo"
-        assert field.parent_field == None
+        assert field.parent_field is None
 
-        field = ModelFieldNameMixin("foo", model_field_name="bar")
+        field = MixedIn("foo", model_field_name="bar")
         assert field.model_field_name == "bar"
-        assert field.parent_field == None
+        assert field.parent_field is None
 
-        field = ModelFieldNameMixin("foo", model_field_name="bar", parent_field="baz")
+        field = MixedIn("foo", model_field_name="bar", parent_field="baz")
         assert field.model_field_name == "bar"
         assert field.parent_field == "baz"
 
@@ -59,12 +71,12 @@ class TestBaseField:
         field = BaseField("foo")
         assert field.field_name == "foo"
         assert field.model_field_name == field.field_name
-        assert field.parent_field == None
+        assert field.parent_field is None
 
         field = BaseField("foo", model_field_name="bar")
         assert field.field_name == "foo"
         assert field.model_field_name == "bar"
-        assert field.parent_field == None
+        assert field.parent_field is None
 
         field = BaseField("foo", model_field_name="bar", parent_field="baz")
         assert field.field_name == "foo"
@@ -122,8 +134,29 @@ class TestRelatedFields:
         raise AssertionError()
 
     @pytest.mark.xfail
-    def test_relatedfieldS_inherits_from_modelfieldnamemixin(self):
+    def test_relatedfields_inherits_from_modelfieldnamemixin(self):
         ...
+
+    @pytest.mark.xfail
+    def test_get_related_fields_returns_extended_relatedfields(self, mocker):
+        mock_func = mocker.patch(
+            "extended_search.index.Indexed._get_indexed_fields_from_mapping",
+            return_value=["SearchFieldObject <bar>"],
+        )
+        result = RelatedFields.generate_fields("foo", [{"field_name": "baz"}])
+        mock_func.assert_called_once_with({"field_name": "baz"})
+        assert type(result) == list
+        assert type(result[0]) == RelatedFields
+        assert result[0].field_name == "foo"
+        assert result[0].fields == ["SearchFieldObject <bar>"]
+
+        mock_func.reset_mock()
+        result = RelatedFields.generate_fields(
+            "foo",
+            [{"field_name": "baz"}, {"field_name": "bam"}, {"field_name": "foobar"}],
+        )
+        assert mock_func.call_count == 3
+        assert len(result[0].fields) == 3
 
 
 class TestIndexedField:
@@ -159,14 +192,14 @@ class TestIndexedField:
 
     @pytest.mark.xfail
     def test_get_autocomplete_search_fields_returns_extended_autocompletefield(self):
-        result = Indexed._get_autocomplete_search_fields("foo")
+        result = IndexedField.generate_autocomplete_fields("foo")
         assert type(result) == list
         assert type(result[0]) == AutocompleteField
         assert result[0].field_name == "foo"
 
     @pytest.mark.xfail
     def test_get_filterable_search_fields_returns_wagtail_filterfield(self):
-        result = Indexed._get_filterable_search_fields("foo")
+        result = IndexedField.generate_filter_fields("foo")
         assert type(result) == list
         assert type(result[0]) == FilterField
         assert result[0].field_name == "foo"
@@ -181,7 +214,7 @@ class TestIndexedField:
             "extended_search.index.Indexed._get_analyzer_name",
             return_value="baz",
         )
-        result = Indexed._get_searchable_search_fields("foo", [], 3.2)
+        result = IndexedField.generate_search_fields("foo", [], 3.2)
         # uses help methods
         mock_fieldname.assert_called_once_with(
             "foo",
@@ -206,40 +239,15 @@ class TestIndexedField:
             "extended_search.index.Indexed._get_analyzer_name",
             return_value="baz",
         )
-        assert len(Indexed._get_searchable_search_fields("foo", [], boost=22.5)) == 1
-        assert len(Indexed._get_searchable_search_fields("foo", ["first"])) == 1
-        assert (
-            len(Indexed._get_searchable_search_fields("foo", ["first", "second"])) == 2
-        )
+        assert len(IndexedField.generate_search_fields("foo", [], boost=22.5)) == 1
+        assert len(IndexedField.generate_search_fields("foo", ["first"])) == 1
+        assert len(IndexedField.generate_search_fields("foo", ["first", "second"])) == 2
         assert (
             len(
-                Indexed._get_searchable_search_fields(
-                    "foo", ["first", "second", "three"]
-                )
+                IndexedField.generate_search_fields("foo", ["first", "second", "three"])
             )
             == 3
         )
-
-    @pytest.mark.xfail
-    def test_get_related_fields_returns_extended_relatedfields(self, mocker):
-        mock_func = mocker.patch(
-            "extended_search.index.Indexed._get_indexed_fields_from_mapping",
-            return_value=["SearchFieldObject <bar>"],
-        )
-        result = Indexed._get_related_fields("foo", [{"field_name": "baz"}])
-        mock_func.assert_called_once_with({"field_name": "baz"})
-        assert type(result) == list
-        assert type(result[0]) == RelatedFields
-        assert result[0].field_name == "foo"
-        assert result[0].fields == ["SearchFieldObject <bar>"]
-
-        mock_func.reset_mock()
-        result = Indexed._get_related_fields(
-            "foo",
-            [{"field_name": "baz"}, {"field_name": "bam"}, {"field_name": "foobar"}],
-        )
-        assert mock_func.call_count == 3
-        assert len(result[0].fields) == 3
 
     @pytest.mark.xfail
     def test_generate_fields(self):
