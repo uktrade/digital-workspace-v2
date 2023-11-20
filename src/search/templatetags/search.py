@@ -73,6 +73,7 @@ def search_category(
         "num_pinned_results": f"{len(pinned_results)}",
         "search_results": search_results,
         "tab_name": tab_name,
+        "tab_override": context["tab_override"],
         "search_query": query,
         "count": count,
         "show_heading": show_heading,

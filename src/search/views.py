@@ -58,6 +58,7 @@ def autocomplete(request: HttpRequest) -> HttpResponse:
 def search(request: HttpRequest, category: str = None) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
+    tab_override = request.GET.get("tab_override", False)
 
     # If the category is invalid, redirect to search all.
     if category not in search_template_tag.SEARCH_CATEGORIES:
@@ -68,6 +69,7 @@ def search(request: HttpRequest, category: str = None) -> HttpResponse:
     context = {
         "search_url": reverse("search:category", args=[category]),
         "search_query": query,
+        "tab_override": tab_override,
         "search_category": category,
         "page": page,
         "search_feedback_initial": {
