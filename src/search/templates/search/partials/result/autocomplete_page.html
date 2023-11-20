@@ -4,7 +4,7 @@
 {% if people %}
     <li class="govuk-heading-s autocomplete-title">
         <a class="govuk-link"
-           href="{% url 'search:category' 'people' %}?query={{ search_query }}">People results:</a>
+           href="{% url 'search:category' 'people' %}?query={{ search_query }}">People results</a>
     </li>
 {% endif %}
 {% for person in people %}
@@ -28,7 +28,7 @@
 {% if pages %}
     <li class="govuk-heading-s autocomplete-title">
         <a class="govuk-link"
-           href="{% url 'search:category' 'all' %}?query={{ search_query }}">Content results:</a>
+           href="{% url 'search:category' 'all' %}?query={{ search_query }}">Content results</a>
     </li>
 {% endif %}
 {% for page in pages %}
@@ -43,7 +43,7 @@
 {% if teams %}
     <li class="govuk-heading-s autocomplete-title">
         <a class="govuk-link"
-           href="{% url 'search:category' 'teams' %}?query={{ search_query }}">Teams results:</a>
+           href="{% url 'search:category' 'teams' %}?query={{ search_query }}">Teams results</a>
     </li>
 {% endif %}
 {% for team in teams %}
