@@ -2,6 +2,7 @@ import inspect
 import logging
 from typing import Optional
 
+from django.core.cache import cache
 from django.db import models
 from wagtail.search import index
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
@@ -236,6 +237,44 @@ class CustomQueryBuilder(QueryBuilder):
                     query_elements,
                 )
         return query
+
+    @classmethod
+    def swap_variables(
+        cls, query: SearchQuery, search_query: str
+    ) -> Optional[SearchQuery]:
+        """
+        Iterate through the query and swap out variables for the search_query.
+        """
+
+        if isinstance(query, Variable):
+            return query.output(search_query)
+
+        if hasattr(query, "subqueries"):
+            query.subqueries = [
+                cls.swap_variables(sq, search_query) for sq in query.subqueries
+            ]
+            query.subqueries = [sq for sq in query.subqueries if sq]
+
+            if not query.subqueries:
+                return None
+            elif len(query.subqueries) == 1:
+                return query.subqueries[0]
+
+        if hasattr(query, "subquery"):
+            query.subquery = cls.swap_variables(query.subquery, search_query)
+            if not query.subquery:
+                return None
+
+        return query
+
+    @classmethod
+    def get_search_query(cls, model_class, query_str: str):
+        cache_key = model_class.__name__
+        built_query = cache.get(cache_key, None)
+        if not built_query:
+            built_query = cls.build_search_query(model_class)
+            cache.set(cache_key, built_query, 60 * 60)
+        return cls.swap_variables(built_query, query_str)
 
     @classmethod
     def build_search_query(cls, model_class):

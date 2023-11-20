@@ -1,8 +1,5 @@
-from django.core.cache import cache
-
 from content.models import ContentPage
 from extended_search.managers.query_builder import CustomQueryBuilder
-from extended_search.query import swap_variables
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from tools.models import Tool
@@ -48,15 +45,8 @@ class ModelSearchVector(SearchVector):
     def get_queryset(self):
         return self.model.objects.all()
 
-    def get_build_query_cache_key(self):
-        return self.model.__name__
-
     def build_query(self, query_str, *args, **kwargs):
-        built_query = cache.get(self.get_build_query_cache_key(), None)
-        if not built_query:
-            built_query = CustomQueryBuilder.build_search_query(self.model)
-            cache.set(self.get_build_query_cache_key(), built_query, 60 * 60)
-        return swap_variables(built_query, query_str)
+        return CustomQueryBuilder.get_search_query(self.model, query_str)
 
     def search(self, query_str, *args, **kwargs):
         queryset = self.get_queryset()

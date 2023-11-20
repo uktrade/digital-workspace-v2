@@ -30,27 +30,3 @@ class Variable:
                 raise ValueError(f"{self.query_type} must be a valid SearchQueryType")
         return query
 
-
-def swap_variables(query: SearchQuery, search_query: str) -> Optional[SearchQuery]:
-    """
-    Iterate through the query and swap out variables for the search_query.
-    """
-
-    if isinstance(query, Variable):
-        return query.output(search_query)
-
-    if hasattr(query, "subqueries"):
-        query.subqueries = [swap_variables(sq, search_query) for sq in query.subqueries]
-        query.subqueries = [sq for sq in query.subqueries if sq]
-
-        if not query.subqueries:
-            return None
-        elif len(query.subqueries) == 1:
-            return query.subqueries[0]
-
-    if hasattr(query, "subquery"):
-        query.subquery = swap_variables(query.subquery, search_query)
-        if not query.subquery:
-            return None
-
-    return query
