@@ -1,7 +1,7 @@
 # type: ignore  (type checking is unhappy about the mixin referencing fields it doesnt define)
 import inspect
 import logging
-from typing import Optional
+from typing import Optional, Type
 
 from django.apps import apps
 from django.core import checks
@@ -39,18 +39,34 @@ class Indexed(index.Indexed):
     indexed_fields = []
 
     @classmethod
-    def get_indexed_fields(cls):
-        cls.generated_fields = []
-        if not hasattr(cls, "indexed_fields"):
-            return []
+    def get_indexed_fields(cls, as_dict: bool = False):
+        # @TODO test
+        processed_index_fields = {}
+        class_mro = list(inspect.getmro(cls))
+        class_mro.reverse()
+        for model_class in class_mro:
+            model_field_names = []
+            if class_is_indexed(model_class) and issubclass(model_class, Indexed):
+                for f in model_class.indexed_fields:
+                    if f.model_field_name not in model_field_names:
+                        processed_index_fields[f.model_field_name] = []
+                        model_field_names.append(f.model_field_name)
+                    processed_index_fields[f.model_field_name].append(f)
 
-        for (
-            field
-        ) in (
-            cls.indexed_fields
-        ):  # @TODO doesnt support SearchFields in indexed_fiedls (for now ?)
-            cls.generated_fields += field.generate_fields()
-        return cls.generated_fields
+        if as_dict:
+            return processed_index_fields
+        return [f for v in processed_index_fields.values() for f in v]
+
+    @classmethod
+    def generate_from_indexed_fields(cls):
+        processed_index_fields = cls.get_indexed_fields(as_dict=True)
+
+        # @TODO doesn't support SearchFields in indexed_fields (for now ?)
+        for k, v in processed_index_fields.items():
+            processed_index_fields[k] = []
+            for f in v:
+                processed_index_fields[k] += f.generate_fields()
+        return processed_index_fields
 
     @classmethod
     def get_search_fields(cls):
@@ -63,31 +79,19 @@ class Indexed(index.Indexed):
                 processed_fields[pfn_key] = []
             processed_fields[pfn_key].append(f)
 
-        class_mro = list(inspect.getmro(cls))
-        class_mro.reverse()
-        for model_class in class_mro:
-            model_field_names = []
-            if class_is_indexed(model_class) and issubclass(model_class, Indexed):
-                for f in model_class.get_indexed_fields():
-                    if f.model_field_name not in model_field_names:
-                        processed_fields[f.model_field_name] = []
-                        model_field_names.append(f.model_field_name)
-                    processed_fields[f.model_field_name].append(f)
+        processed_fields |= cls.generate_from_indexed_fields()
 
         return [f for v in processed_fields.values() for f in v]
 
     @classmethod
-    def get_all_indexed_fields_including_from_parents_and_refactor_this(
-        cls,
-    ):  # @TODO delete or rename + test
-        fields = set()
-        for model_class in inspect.getmro(cls):
-            if class_is_indexed(model_class) and issubclass(model_class, Indexed):
-                fields.update(model_class.indexed_fields)
-        return list(fields)
+    def has_unique_index_fields(cls):
+        # @TODO: this doesn't account for a diverging MRO
+        parent_model = inspect.getmro(cls)[1]
+        parent_indexed_fields = getattr(parent_model, "indexed_fields", [])
+        return cls.indexed_fields != parent_indexed_fields
 
 
-def get_indexed_models():
+def get_indexed_models() -> list[Type[Indexed]]:
     """
     Overrides wagtail.search.index.get_indexed_models
     """
