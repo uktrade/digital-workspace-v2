@@ -13,7 +13,7 @@ from content.models import ContentPage
 from extended_search.backends.query import OnlyFields
 from extended_search.managers.query_builder import CustomQueryBuilder
 from extended_search.models import Setting as SearchSetting
-from extended_search.settings import extended_search_settings
+from extended_search.settings import settings_singleton
 from peoplefinder.models import Person, Team
 from search.templatetags.search import SEARCH_CATEGORIES
 
@@ -68,15 +68,15 @@ def explore(request: HttpRequest) -> HttpResponse:
     page = request.GET.get("page", "1")
 
     boost_vars = [
-        {"name": k, "value": extended_search_settings[k]}
-        for k in extended_search_settings.all_keys
+        {"name": k, "value": settings_singleton[k]}
+        for k in settings_singleton.all_keys
         if "boost_parts" in k
     ]
 
     subqueries = {"pages": [], "people": [], "teams": []}
     analyzer_field_suffices = [
         (k, v["index_fieldname_suffix"])
-        for k, v in extended_search_settings["analyzers"].items()
+        for k, v in settings_singleton["analyzers"].items()
     ]
     for index_field in ContentPage.indexed_fields:
         field = CustomQueryBuilder._build_search_query(query, ContentPage, index_field)

@@ -12,8 +12,10 @@ from extended_search.settings import (
     NestedChainMap,
     SearchSettings,
     extended_search_settings,
+    settings_singleton,
     get_settings_field_key,
 )
+from collections import ChainMap
 
 
 class TestDefaults:
@@ -382,8 +384,41 @@ class TestSearchSettings:
     def test_singleton(self):
         instance = SearchSettings()
         assert isinstance(instance, SearchSettings)
-        assert isinstance(extended_search_settings, SearchSettings)
-        assert instance.defaults == extended_search_settings.defaults
+        assert isinstance(settings_singleton, SearchSettings)
+        assert instance.defaults == settings_singleton.defaults
+        instance["test"] = "foo"
+        assert "test" in instance
+        assert instance["test"] == "foo"
+        assert "test" not in settings_singleton
+        settings_singleton["test"] = "bar"
+        assert "test" in settings_singleton
+        assert settings_singleton["test"] == "bar"
+        from extended_search.settings import settings_singleton as second_import
+
+        assert "test" in second_import
+        assert second_import["test"] == settings_singleton["test"]
+
+    def test_to_dict(self):
+        instance = SearchSettings()
+        assert not isinstance(instance, dict)
+        assert isinstance(instance.to_dict(), dict)
+        assert isinstance(extended_search_settings, dict)
+
+        def test_values(input):
+            output = []
+            if isinstance(input, ChainMap):
+                raise AssertionError(f"{input} is a ChainMap")
+            elif isinstance(input, dict):
+                for v in input.values():
+                    output += test_values(v)
+            elif not isinstance(input, (str, bool, list, int, float)):
+                raise AssertionError(f"{input} is not a base type: {type(input)}")
+            else:
+                raise AssertionError(f"{input} is not recognised")
+
+    @pytest.mark.xfail()
+    def test_updated_settings_affect_exported_dict(self):
+        raise AssertionError()
 
 
 class TestGetSettingsFieldKey:

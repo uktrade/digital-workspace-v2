@@ -16,7 +16,7 @@ from extended_search.index import (
     SearchField,
     get_indexed_models,
 )
-from extended_search.settings import extended_search_settings as search_settings
+from extended_search.settings import extended_search_settings
 from extended_search.settings import get_settings_field_key
 from extended_search.types import AnalysisType, SearchQueryType
 
@@ -64,7 +64,7 @@ class QueryBuilder:
             case _:
                 raise ValueError(f"{query_type} must be a valid SearchQueryType")
 
-        if setting_boost := search_settings["boost_parts"]["query_types"][
+        if setting_boost := extended_search_settings["boost_parts"]["query_types"][
             query_boost_key
         ]:
             return float(setting_boost)
@@ -83,7 +83,7 @@ class QueryBuilder:
                 analysis_boost_key = 1.0  # @TODO figure out how to add this
             case _:
                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
-        if setting_boost := search_settings["boost_parts"]["analyzers"][
+        if setting_boost := extended_search_settings["boost_parts"]["analyzers"][
             analysis_boost_key
         ]:
             return float(setting_boost)
@@ -93,7 +93,9 @@ class QueryBuilder:
     def _get_boost_for_field(cls, model_class, field):
         definition_class = field.get_definition_model(model_class)
         field_key = get_settings_field_key(definition_class, field)
-        if setting_boost := search_settings["boost_parts"]["fields"][field_key]:
+        if setting_boost := extended_search_settings["boost_parts"]["fields"][
+            field_key
+        ]:
             return float(setting_boost)
         return 1.0
 
@@ -150,7 +152,9 @@ class QueryBuilder:
     def _build_search_query_for_searchfield(
         cls, field, model_class, subquery, analyzer
     ):
-        for query_type in search_settings["analyzers"][analyzer.value]["query_types"]:
+        for query_type in extended_search_settings["analyzers"][analyzer.value][
+            "query_types"
+        ]:
             query_element = (
                 cls._build_searchquery_for_query_field_querytype_analysistype(
                     model_class,
@@ -239,7 +243,7 @@ class QueryBuilder:
         if not es_analyzer:
             return AnalysisType.TOKENIZED
 
-        analyzer_settings = search_settings["analyzers"]
+        analyzer_settings = extended_search_settings["analyzers"]
         for analyzer_name, analyzer_setting in analyzer_settings.items():
             if analyzer_setting["es_analyzer"] == es_analyzer:
                 return AnalysisType(analyzer_name)
