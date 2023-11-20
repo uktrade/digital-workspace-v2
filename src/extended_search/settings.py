@@ -1,6 +1,7 @@
 import os
 from collections import ChainMap
 from collections.abc import Mapping
+from typing import Any, Optional
 
 import environ
 from django.conf import settings as django_settings
@@ -90,12 +91,18 @@ class NestedChainMap(ChainMap):
 
     ...
 
-    def __init__(self, *args, prefix=None, nesting_separator=None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        prefix: Optional[str] = None,
+        nesting_separator: Optional[str] = None,
+        **kwargs,
+    ):
         self.prefix = prefix
         self.nesting_separator = nesting_separator or NESTING_SEPARATOR
         return super().__init__(*args, **kwargs)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> Any:
         """
         Handles nested Chainmap functionality
         """
@@ -114,13 +121,13 @@ class NestedChainMap(ChainMap):
 
         return super().__getitem__(key)
 
-    def __missing__(self, key):
+    def __missing__(self, key: str) -> Any:
         # Check if we're using a flat key that wasn't overridden from the dicts
         if key in self.all_keys:
             return self._getitem_from_nested_maps_for_prefixed_key(key, self)
         return super().__missing__(key)
 
-    def _get_prefixed_key_name(self, key, prefix):
+    def _get_prefixed_key_name(self, key: str, prefix: Optional[str]) -> str:
         """
         Consistent method for naming leaf-node keys using `__` to separate dict
         levels from the main settings, useful for ENV settings e.g.
@@ -134,7 +141,9 @@ class NestedChainMap(ChainMap):
         """
         return f"{prefix}{self.nesting_separator}{key}" if prefix else key
 
-    def _get_all_prefixed_keys_from_nested_maps(self, dict, prefix):
+    def _get_all_prefixed_keys_from_nested_maps(
+        self, dict: dict | ChainMap, prefix: Optional[str]
+    ):
         """
         Returns a list of flattened keys for each key in the nested dict-like
         objects it's passed
@@ -158,7 +167,9 @@ class NestedChainMap(ChainMap):
         """
         return self._get_all_prefixed_keys_from_nested_maps(self, "")
 
-    def _getitem_from_nested_maps_for_prefixed_key(self, key, dict):
+    def _getitem_from_nested_maps_for_prefixed_key(
+        self, key: str, dict: dict | ChainMap
+    ):
         """
         Splits a flattened / prefixed key into parts, and uses those to traverse
         the dict-like ChainMap of settings. Functions as a flattened __getitem__
@@ -285,8 +296,21 @@ class SearchSettings(NestedChainMap):
         except (UndefinedTable, ProgrammingError):
             ...
 
+    def to_dict(self, part: Optional[ChainMap] = None):
+        if part is None:
+            part = self
 
-extended_search_settings = SearchSettings()
+        output = {}
+        for k, v in dict(part).items():
+            if isinstance(v, ChainMap):
+                output[k] = self.to_dict(v)
+            else:
+                output[k] = v
+        return output
+
+
+settings_singleton = SearchSettings()
+extended_search_settings = settings_singleton.to_dict()
 
 
 def get_settings_field_key(model_class, field) -> str:
