@@ -88,6 +88,8 @@ if env.str("SENTRY_DSN", None):
         release=GIT_COMMIT,
         integrations=[DjangoIntegration(), RedisIntegration()],
         send_default_pii=True,  # Enable associating exceptions to users
+        enable_tracing=env.bool("SENTRY_ENABLE_TRACING", False),
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
     )
 
 # Allow all hosts
