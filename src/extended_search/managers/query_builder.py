@@ -152,7 +152,9 @@ class QueryBuilder:
     def _build_search_query_for_searchfield(
         cls, field, model_class, subquery, analyzer
     ):
-        for query_type in extended_search_settings["analyzers"][analyzer.value]["query_types"]:
+        for query_type in extended_search_settings["analyzers"][analyzer.value][
+            "query_types"
+        ]:
             query_element = (
                 cls._build_searchquery_for_query_field_querytype_analysistype(
                     model_class,

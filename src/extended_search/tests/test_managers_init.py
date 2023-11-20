@@ -4,7 +4,6 @@ from extended_search import managers
 from extended_search.models import Setting
 from extended_search import settings
 from extended_search.types import AnalysisType
-from extended_search import signals
 
 
 class TestManagersInit:

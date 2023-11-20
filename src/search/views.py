@@ -13,7 +13,7 @@ from content.models import ContentPage
 from extended_search.backends.query import OnlyFields
 from extended_search.managers.query_builder import CustomQueryBuilder
 from extended_search.models import Setting as SearchSetting
-from extended_search.settings import extended_search_settings, settings_singleton
+from extended_search.settings import settings_singleton
 from peoplefinder.models import Person, Team
 from search.templatetags.search import SEARCH_CATEGORIES
 
