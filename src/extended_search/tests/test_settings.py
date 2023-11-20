@@ -416,6 +416,10 @@ class TestSearchSettings:
             else:
                 raise AssertionError(f"{input} is not recognised")
 
+    @pytest.mark.xfail()
+    def test_updated_settings_affect_exported_dict(self):
+        raise AssertionError()
+
 
 class TestGetSettingsFieldKey:
     @pytest.mark.xfail(reason="Not implemented")

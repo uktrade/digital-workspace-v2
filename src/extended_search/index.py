@@ -440,16 +440,16 @@ class MultiQueryIndexedField(IndexedField):
 
     def get_search_field_variants(self):
         from extended_search.managers import get_indexed_field_name
-        from extended_search.settings import extended_search_settings as search_settings
+        from extended_search.settings import extended_search_settings
 
         return [
             (
                 (get_indexed_field_name(self.model_field_name, analyzer),),
                 {
                     "es_extra": {
-                        "analyzer": search_settings["analyzers"][analyzer.value][
-                            "es_analyzer"
-                        ]
+                        "analyzer": extended_search_settings["analyzers"][
+                            analyzer.value
+                        ]["es_analyzer"]
                     }
                 },
             )
