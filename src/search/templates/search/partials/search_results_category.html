@@ -1,12 +1,14 @@
 <div class="search-results__category">
     {% if show_bad_results_message %}
-        <h2>
+        <div class="low-score-message-container">
             {% if search_category == "people" %}
-                Is this who you are looking for? If not, try again
+                <h2 class="govuk-heading-s">We couldn't find an exact match for '{{ search_query }}'</h2>
+                <p class="govuk-body-s">They may no longer work at DBT. Showing below are similar profiles.</p>
             {% else %}
-                Is this what you are looking for? If not, try again
+                <h2 class="govuk-heading-s">We couldn't find a strong match for '{{ search_query }}'</h2>
+                <p class="govuk-body-s">Try using fewer keyword or...</p>
             {% endif %}
-        </h2>
+        </div>
     {% endif %}
     {% if show_heading %}<h3 class="govuk-heading-s">{{ count }} {{ result_type_display }}</h3>{% endif %}
     {{ page }}
