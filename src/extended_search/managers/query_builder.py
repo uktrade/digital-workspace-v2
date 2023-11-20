@@ -305,17 +305,18 @@ class CustomQueryBuilder(QueryBuilder):
         return cls.swap_variables(built_query, query_str)
 
     @classmethod
-    def build_search_query(cls, model_class):
+    def build_search_query(cls, model_class, ignore_cache=False):
         """
         Generates a full query for a model class, by running query builder
         against the given model as well as all models with the given as a
-        parent; each has it's own subquery using its own settings filtered by
+        parent; each has its own subquery using its own settings filtered by
         type, and all are joined together at the end.
         """
         cache_key = model_class.__name__
-        built_query = cache.get(cache_key, None)
-        if built_query:
-            return built_query
+        if not ignore_cache:
+            built_query = cache.get(cache_key, None)
+            if built_query:
+                return built_query
 
         extended_models = cls.get_extended_models_with_unique_indexed_fields(
             model_class
@@ -362,7 +363,7 @@ class CustomQueryBuilder(QueryBuilder):
         for q in queries:
             root_query |= q
 
-        cache.set(cache_key, root_query, 60 * 60)
+        cache.set(cache_key, root_query)
 
         logger.debug(root_query)
         return root_query
