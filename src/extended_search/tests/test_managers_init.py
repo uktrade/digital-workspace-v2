@@ -10,7 +10,7 @@ class TestManagersInit:
     @pytest.mark.xfail
     def test_get_indexed_field_name(self):
         with pytest.raises(AttributeError):
-            managers.get_indexed_field_name("foo", "bar")
+            query_builder.get_indexed_field_name("foo", "bar")
         analyzer = AnalysisType.TOKENIZED
         assert query_builder.get_indexed_field_name("foo", analyzer) == "foo"
         assert (
