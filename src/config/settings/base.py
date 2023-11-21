@@ -461,8 +461,11 @@ CACHES = {
     }
 }
 
+ENABLE_SEARCH_QUERY_CACHE = env.bool("ENABLE_SEARCH_QUERY_CACHE", True)
+
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
+
 
 # Twitter
 TWITTER_ACCESS_TOKEN = env("TWITTER_ACCESS_TOKEN")

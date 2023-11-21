@@ -2,6 +2,7 @@ import inspect
 import logging
 from typing import Optional, Type
 
+from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from wagtail.search import index
@@ -16,8 +17,7 @@ from extended_search.index import (
     SearchField,
     get_indexed_models,
 )
-from extended_search.settings import extended_search_settings
-from extended_search.settings import get_settings_field_key
+from extended_search.settings import extended_search_settings, get_settings_field_key
 from extended_search.types import AnalysisType, SearchQueryType
 
 logger = logging.getLogger(__name__)
@@ -313,7 +313,7 @@ class CustomQueryBuilder(QueryBuilder):
         type, and all are joined together at the end.
         """
         cache_key = model_class.__name__
-        if not ignore_cache:
+        if not ignore_cache and settings.ENABLE_SEARCH_QUERY_CACHE:
             built_query = cache.get(cache_key, None)
             if built_query:
                 return built_query
