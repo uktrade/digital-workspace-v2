@@ -68,8 +68,15 @@ class Indexed(index.Indexed):
                 processed_index_fields[k] += f.generate_fields()
         return processed_index_fields
 
+    processed_search_fields = {}
+
     @classmethod
     def get_search_fields(cls):
+        if cls not in cls.processed_search_fields:
+            cls.processed_search_fields[cls] = []
+        if cls.processed_search_fields[cls]:
+            return cls.processed_search_fields[cls]
+
         search_fields = super().get_search_fields()
         processed_fields = {}
 
@@ -81,7 +88,9 @@ class Indexed(index.Indexed):
 
         processed_fields |= cls.generate_from_indexed_fields()
 
-        return [f for v in processed_fields.values() for f in v]
+        processed_search_fields = [f for v in processed_fields.values() for f in v]
+        cls.processed_search_fields[cls] = processed_search_fields
+        return processed_search_fields
 
     @classmethod
     def has_unique_index_fields(cls):
@@ -440,16 +449,16 @@ class MultiQueryIndexedField(IndexedField):
 
     def get_search_field_variants(self):
         from extended_search.query_builder import get_indexed_field_name
-        from extended_search.settings import extended_search_settings as search_settings
+        from extended_search.settings import extended_search_settings
 
         return [
             (
                 (get_indexed_field_name(self.model_field_name, analyzer),),
                 {
                     "es_extra": {
-                        "analyzer": search_settings["analyzers"][analyzer.value][
-                            "es_analyzer"
-                        ]
+                        "analyzer": extended_search_settings["analyzers"][
+                            analyzer.value
+                        ]["es_analyzer"]
                     }
                 },
             )

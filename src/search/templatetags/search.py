@@ -38,16 +38,16 @@ PAGE_SIZE = 20
 def search_category(context, *, category, limit=None, show_heading=False):
     request = context["request"]
     query = context["search_query"]
-    page = context["page"]
+    page = int(context["page"])
 
     search_vector = SEARCH_VECTORS[category](request)
-    pinned_results = search_vector.pinned(query)
+
     # `list` needs to be called to force the database query to be evaluated
     # before passing the value to the paginator. If this isn't done, the
     # pages will have the pinned results removed after pagination and cause
     # the pages to have odd lengths.
-    search_results = list(pinned_results) + list(search_vector.search(query))
-    count = len(search_results)
+    search_results = search_vector.search_results(query)
+    search_results_count = search_results.count()
 
     if limit:
         search_results = search_results[: int(limit)]
@@ -62,9 +62,15 @@ def search_category(context, *, category, limit=None, show_heading=False):
     result_type_display, result_type_display_plural = _get_result_type_displays(
         category
     )
-    if count != 1:
-        result_type_display = result_type_display_plural
 
+    pinned_results = []
+    if page == 1:
+        pinned_results = search_vector.pinned(query)
+
+    total_count = search_results_count + len(pinned_results)
+
+    if total_count != 1:
+        result_type_display = result_type_display_plural
     return {
         "request": request,
         "perms": context["perms"],
@@ -74,10 +80,10 @@ def search_category(context, *, category, limit=None, show_heading=False):
         "num_pinned_results": f"{len(pinned_results)}",
         "search_results": search_results,
         "search_query": query,
-        "count": count,
+        "count": total_count,
         "show_heading": show_heading,
         "result_type_display": result_type_display,
-        "is_limited": limit is not None and count > limit,
+        "is_limited": limit is not None and total_count > limit,
     }
 
 
