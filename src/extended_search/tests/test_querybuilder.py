@@ -1,15 +1,23 @@
 from unittest.mock import call
 
 import pytest
+from wagtail.search.query import (
+    And,
+    Boost,
+    Fuzzy,
+    Not,
+    Or,
+    Phrase,
+    PlainText,
+    SearchQuery,
+)
 
 from content.models import ContentPage
-
+from extended_search.index import IndexedField, RelatedFields, SearchField
+from extended_search.query import Filtered, Nested, OnlyFields
+from extended_search.query_builder import CustomQueryBuilder, QueryBuilder, Variable
 from extended_search.settings import extended_search_settings
 from extended_search.types import AnalysisType, SearchQueryType
-from extended_search.query import Filtered, OnlyFields, Nested
-from extended_search.query_builder import QueryBuilder, CustomQueryBuilder
-from extended_search.index import SearchField, IndexedField, RelatedFields
-from wagtail.search.query import Boost, Fuzzy, Or, Phrase, PlainText, SearchQuery
 
 
 class MockModelClass:
@@ -154,6 +162,37 @@ class TestCustomQueryBuilder:
         result = CustomQueryBuilder.swap_variables(query, query_str)
         assert repr(result) == repr(Not(Phrase("foo")))
 
+    def test_variable_output_use_and_if_single_word(self):
+        variable = Variable("search_query", SearchQueryType.QUERY_AND)
+        assert variable.output("searchquery") is None
+        assert variable.output("search query") is not None
+
+    def test_get_inner_searchquery_for_querytype_handles_searchquerytypes(self):
+        result = Variable("search_query", SearchQueryType.PHRASE).output("search query")
+        assert isinstance(result, Phrase)
+        assert result.query_string == "search query"
+
+        result = Variable("search_query", SearchQueryType.QUERY_AND).output(
+            "search query"
+        )
+        assert isinstance(result, PlainText)
+        assert result.operator == "and"
+        assert result.query_string == "search query"
+
+        result = Variable("search_query", SearchQueryType.QUERY_OR).output(
+            "search query"
+        )
+        assert isinstance(result, PlainText)
+        assert result.operator == "or"
+        assert result.query_string == "search query"
+
+        result = Variable("search_query", SearchQueryType.FUZZY).output("search query")
+        assert isinstance(result, Fuzzy)
+        assert result.query_string == "search query"
+
+        with pytest.raises(ValueError):
+            Variable("search_query", "anything").output("search query")
+
     @pytest.mark.xfail
     def test_build_search_query(self, mocker):
         model_class = mocker.Mock()
@@ -292,50 +331,6 @@ class TestQueryBuilder:
             == 1.0
         )
 
-    def test_get_inner_searchquery_for_querytype_doesnt_use_and_if_single_word(self):
-        assert (
-            self.query_builder_class._get_inner_searchquery_for_querytype(
-                "searchquery", SearchQueryType.QUERY_AND
-            )
-            is None
-        )
-        result = self.query_builder_class._get_inner_searchquery_for_querytype(
-            "search query", SearchQueryType.QUERY_AND
-        )
-        assert result is not None
-
-    def test_get_inner_searchquery_for_querytype_handles_searchquerytypes(self):
-        result = self.query_builder_class._get_inner_searchquery_for_querytype(
-            "search query", SearchQueryType.PHRASE
-        )
-        assert isinstance(result, Phrase)
-        assert result.query_string == "search query"
-
-        result = self.query_builder_class._get_inner_searchquery_for_querytype(
-            "search query", SearchQueryType.QUERY_AND
-        )
-        assert isinstance(result, PlainText)
-        assert result.operator == "and"
-        assert result.query_string == "search query"
-
-        result = self.query_builder_class._get_inner_searchquery_for_querytype(
-            "search query", SearchQueryType.QUERY_OR
-        )
-        assert isinstance(result, PlainText)
-        assert result.operator == "or"
-        assert result.query_string == "search query"
-
-        result = self.query_builder_class._get_inner_searchquery_for_querytype(
-            "search query", SearchQueryType.FUZZY
-        )
-        assert isinstance(result, Fuzzy)
-        assert result.query_string == "search query"
-
-        with pytest.raises(ValueError):
-            self.query_builder_class._get_inner_searchquery_for_querytype(
-                "search query", "anything"  # type: ignore
-            )
-
     def test__get_search_query(self, mocker):
         model = mocker.Mock()
         indexed_field = mocker.Mock(spec=IndexedField)
@@ -345,12 +340,12 @@ class TestQueryBuilder:
         search_field = mocker.Mock(spec=SearchField)
         search_field.model_field_name = "search"
         query = PlainText("bar")
-        mock_get_query_indexfield = mocker.patch(
+        mock_build_query_indexfield = mocker.patch(
             "extended_search.query_builder.QueryBuilder._build_search_query_for_indexfield",
             return_value="index-query",
         )
-        mock_get_query_searchfield = mocker.patch(
-            "extended_search.query_builder.QueryBuilder._get_search_query_for_searchfield",
+        mock_build_query_searchfield = mocker.patch(
+            "extended_search.query_builder.QueryBuilder._build_search_query_for_searchfield",
             return_value="search-query",
         )
         mock_combine_queries = mocker.patch(
@@ -362,37 +357,34 @@ class TestQueryBuilder:
         )
 
         assert (
-            self.query_builder_class._get_search_query("foo", model, indexed_field)
+            self.query_builder_class._build_search_query(model, indexed_field)
             == "index-query"
         )
-        mock_get_query_indexfield.assert_called_once_with(
-            indexed_field, "foo", model, None
-        )
-        mock_get_query_searchfield.assert_not_called()
+        mock_build_query_indexfield.assert_called_once_with(indexed_field, model, None)
+        mock_build_query_searchfield.assert_not_called()
         mock_combine_queries.assert_not_called()
         mock_infer_analyzer.assert_not_called()
 
-        mock_get_query_indexfield.reset_mock()
+        mock_build_query_indexfield.reset_mock()
         assert (
-            self.query_builder_class._get_search_query("foo", model, search_field)
+            self.query_builder_class._build_search_query(model, search_field)
             == "search-query"
         )
-        mock_get_query_indexfield.assert_not_called()
-        mock_get_query_searchfield.assert_called_once_with(
-            search_field, "foo", model, None, mock_infer_analyzer.return_value
+        mock_build_query_indexfield.assert_not_called()
+        mock_build_query_searchfield.assert_called_once_with(
+            search_field, model, None, mock_infer_analyzer.return_value
         )
         mock_combine_queries.assert_not_called()
         mock_infer_analyzer.assert_called_once_with(search_field)
 
-        mock_get_query_searchfield.reset_mock()
+        mock_build_query_searchfield.reset_mock()
         mock_infer_analyzer.reset_mock()
         related_fields.fields = [indexed_field, search_field]
         assert (
-            self.query_builder_class._get_search_query("foo", model, related_fields)
-            == query
+            self.query_builder_class._build_search_query(model, related_fields) == query
         )
-        mock_get_query_indexfield.assert_called_once()
-        mock_get_query_searchfield.assert_called_once()
+        mock_build_query_indexfield.assert_called_once()
+        mock_build_query_searchfield.assert_called_once()
         count = 0
         for called, _ in mock_combine_queries.call_args_list:
             if len(called) > 0:
