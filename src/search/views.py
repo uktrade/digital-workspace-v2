@@ -10,8 +10,8 @@ from django.views.decorators.http import require_http_methods
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
 from content.models import ContentPage
-from extended_search.backends.query import OnlyFields
-from extended_search.managers.query_builder import CustomQueryBuilder
+from extended_search.query import OnlyFields
+from extended_search.query_builder import CustomQueryBuilder
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import extended_search_settings
 from peoplefinder.models import Person, Team

@@ -5,9 +5,9 @@ from wagtail.search.backends import get_search_backend
 from wagtail.search.index import AutocompleteField, SearchField
 
 from content.models import ContentPage
-from extended_search.backends.query import Filtered
+from extended_search.query import Filtered
 from extended_search.index import IndexedField
-from extended_search.managers.query_builder import CustomQueryBuilder
+from extended_search.query_builder import CustomQueryBuilder
 from extended_search.models import Setting
 from extended_search.settings import SearchSettings, extended_search_settings
 from news.models import NewsPage

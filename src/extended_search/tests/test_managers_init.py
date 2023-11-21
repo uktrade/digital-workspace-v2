@@ -1,6 +1,6 @@
 import pytest
 
-from extended_search.managers import get_indexed_field_name
+from extended_search.query_builder import get_indexed_field_name
 from extended_search.models import Setting
 from extended_search.settings import extended_search_settings
 from extended_search.types import AnalysisType

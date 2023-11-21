@@ -1,6 +1,6 @@
 import pytest
 
-from extended_search.backends.query import Filtered, Nested, OnlyFields
+from extended_search.query import Filtered, Nested, OnlyFields
 from wagtail.search.query import PlainText
 
 
