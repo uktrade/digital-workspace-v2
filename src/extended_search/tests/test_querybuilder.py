@@ -9,7 +9,6 @@ from wagtail.search.query import (
     Or,
     Phrase,
     PlainText,
-    SearchQuery,
 )
 
 from content.models import ContentPage
