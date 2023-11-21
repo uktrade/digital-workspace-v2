@@ -11,6 +11,7 @@
            value="{{ search_query|default:'' }}"
            hx-trigger="keyup changed delay:250ms"
            hx-get="{% url 'search:autocomplete' %}"
+           hx-on:click="dataLayer.push({ 'event': 'autocomplete-search', 'autocomplete-search_selected_url': '{% url 'search:category' 'all' %}?query={{ search_query }}', 'autocomplete_search_selected_type': 'all'});"
            hx-target="#autocomplete-results">
     <button type="submit">Search</button>
     <div id="autocomplete-results" class="autocomplete-overlay"></div>

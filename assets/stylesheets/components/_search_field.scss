@@ -165,6 +165,7 @@ $input-size: 40px;
     @include govuk-font($size: 16, $weight: bold);
     border-top: 2px solid #1d70b8;
     width: 100%;
+    padding-top: 5px;
     padding-left: 5px;
     margin: 0;
   }

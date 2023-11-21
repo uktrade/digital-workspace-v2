@@ -4,12 +4,16 @@
 {% if people %}
     <li class="govuk-heading-s autocomplete-title">
         <a class="govuk-link"
-           href="{% url 'search:category' 'people' %}?query={{ search_query }}">People results</a>
+           href="{% url 'search:category' 'people' %}?query={{ search_query }}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result', 'autocomplete-result_selected_url': '{% url 'search:category' 'people' %}?query={{ search_query }}', 'autocomplete_result_selected_type': 'person', 'search_result_selected_section': 'people'})">
+        People results</a>
     </li>
 {% endif %}
 {% for person in people %}
     <li class= "autocomplete-choice">
-        <a class="govuk-link" href="{% url 'profile-view' person.slug %}">
+        <a class="govuk-link"
+           href="{% url 'profile-view' person.slug %}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result', 'autocomplete-result_selected_url': '{% url 'profile-view' person.slug %}', 'autocomplete_result_selected_type': 'person', 'search_result_selected_section': 'people'})">
             <div class="people">
                 {% if person.photo %}
                     <img src="{{ person.photo_small.url }}"
@@ -28,12 +32,15 @@
 {% if pages %}
     <li class="govuk-heading-s autocomplete-title">
         <a class="govuk-link"
-           href="{% url 'search:category' 'all' %}?query={{ search_query }}">Content results</a>
+           href="{% url 'search:category' 'all' %}?query={{ search_query }}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result', 'autocomplete-result_selected_url': '{% url 'search:category' 'all' %}?query={{ search_query }}', 'autocomplete_result_selected_type': 'page', 'search_result_selected_section': 'page'})">Content results</a>
     </li>
 {% endif %}
 {% for page in pages %}
     <li class="autocomplete-choice">
-        <a class="govuk-link" href="{% pageurl page %}">
+        <a class="govuk-link"
+           href="{% pageurl page %}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result', 'autocomplete-result_selected_url': '{% pageurl page %}', 'autocomplete_result_selected_type': 'all', 'search_result_selected_section': 'all'})">
             <div>
                 <p class="govuk-body autocomplete-text">{{ page.title }}</p>
             </div>
@@ -43,12 +50,15 @@
 {% if teams %}
     <li class="govuk-heading-s autocomplete-title">
         <a class="govuk-link"
-           href="{% url 'search:category' 'teams' %}?query={{ search_query }}">Teams results</a>
+           href="{% url 'search:category' 'teams' %}?query={{ search_query }}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result', 'autocomplete-result_selected_url': '{% url 'search:category' 'teams' %}?query={{ search_query }}', 'autocomplete_result_selected_type': 'teams', 'search_result_selected_section': 'teams'})">Teams results</a>
     </li>
 {% endif %}
 {% for team in teams %}
     <li class="autocomplete-choice">
-        <a class="govuk-link" href="{% url 'team-view' team.slug %}">
+        <a class="govuk-link"
+           href="{% url 'team-view' team.slug %}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result', 'autocomplete-result_selected_url': '{% url 'team-view' team.slug %}', 'autocomplete_result_selected_type': 'teams', 'search_result_selected_section': 'teams'})">
             <div>
                 <p class="govuk-body autocomplete-text">{{ team.name }}</p>
             </div>
