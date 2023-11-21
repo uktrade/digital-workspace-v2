@@ -19,11 +19,8 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
-from extended_search.index import (
-    Indexed,
-    DWIndexedField as IndexedField,
-    RelatedFields,
-)
+from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import Indexed, RelatedFields
 
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
@@ -608,7 +605,7 @@ class Person(Indexed, models.Model):
             "search_buildings",
             tokenized=True,
         ),
-        RelatedIndexedFields(
+        RelatedFields(
             "roles",
             [
                 IndexedField(
@@ -619,7 +616,7 @@ class Person(Indexed, models.Model):
                 ),
             ],
         ),
-        RelatedIndexedFields(
+        RelatedFields(
             "key_skills",
             [
                 IndexedField(
@@ -630,7 +627,7 @@ class Person(Indexed, models.Model):
                 ),
             ],
         ),
-        RelatedIndexedFields(
+        RelatedFields(
             "learning_interests",
             [
                 IndexedField(
@@ -640,7 +637,7 @@ class Person(Indexed, models.Model):
                 ),
             ],
         ),
-        RelatedIndexedFields(
+        RelatedFields(
             "additional_roles",
             [
                 IndexedField(
@@ -651,7 +648,7 @@ class Person(Indexed, models.Model):
                 ),
             ],
         ),
-        RelatedIndexedFields(
+        RelatedFields(
             "networks",
             [
                 IndexedField(

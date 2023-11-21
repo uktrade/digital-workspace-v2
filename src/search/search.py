@@ -1,10 +1,10 @@
-from extended_search.query_builder import CustomQueryBuilder
+from django.conf import settings
 
 from content.models import ContentPage
+from extended_search.query_builder import CustomQueryBuilder
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from tools.models import Tool
-
 from working_at_dit.models import PoliciesAndGuidanceHome
 
 
