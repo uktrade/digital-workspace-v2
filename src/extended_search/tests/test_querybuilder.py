@@ -427,12 +427,13 @@ class TestQueryBuilder:
         mock_combine_queries = mocker.patch(
             "extended_search.query_builder.QueryBuilder._combine_queries",
         )
-        mock_get_for_searchfield = mocker.patch(
+        mock_build_for_searchfield = mocker.patch(
             "extended_search.query_builder.QueryBuilder._build_search_query_for_searchfield",
             return_value="search-query",
         )
-        mock_get_searchquery = mocker.patch(
-            "extended_search.query_builder.QueryBuilder._build_searchquery_for_query_field_querytype_analysistype"
+        mock_build_searchquery = mocker.patch(
+            "extended_search.query_builder.QueryBuilder._build_searchquery_for_query_field_querytype_analysistype",
+            return_value="search-query-for-query-field-qt-at",
         )
         model = mocker.Mock()
         field = mocker.Mock()
@@ -443,7 +444,7 @@ class TestQueryBuilder:
 
         assert (
             self.query_builder_class._build_search_query_for_indexfield(
-                field, "foo", model, "bar"
+                field, model, "bar"
             )
             == "bar"
         )
@@ -451,58 +452,52 @@ class TestQueryBuilder:
         field.search = True
         assert (
             self.query_builder_class._build_search_query_for_indexfield(
-                field, "foo", model, "bar"
+                field, model, "bar"
             )
-            == mock_combine_queries.return_value
+            == mock_build_for_searchfield.return_value
         )
-        mock_get_for_searchfield.assert_called_once_with(
-            field, "foo", model, "bar", "--analyzer-1--"
+        mock_build_for_searchfield.assert_called_once_with(
+            field, model, "bar", "--analyzer-1--"
         )
-        mock_combine_queries.assert_called_once_with(
-            mock_get_for_searchfield.return_value, "bar"
-        )
+        mock_combine_queries.assert_not_called()
 
-        mock_get_for_searchfield.reset_mock()
+        mock_build_for_searchfield.reset_mock()
         mock_combine_queries.reset_mock()
         field.get_search_analyzers.return_value = ["--analyzer-1--", "--analyzer-2--"]
         assert (
             self.query_builder_class._build_search_query_for_indexfield(
-                field, "foo", model, "bar"
+                field, model, "bar"
             )
-            == mock_combine_queries.return_value
+            == mock_build_for_searchfield.return_value
         )
-        assert len(mock_get_for_searchfield.call_args_list) == 2
-        mock_get_for_searchfield.assert_any_call(
-            field, "foo", model, "bar", "--analyzer-1--"
+        assert len(mock_build_for_searchfield.call_args_list) == 2
+        mock_build_for_searchfield.assert_any_call(
+            field, model, "bar", "--analyzer-1--"
         )
-        mock_get_for_searchfield.assert_any_call(
-            field, "foo", model, "bar", "--analyzer-2--"
+        mock_build_for_searchfield.assert_any_call(
+            field, model, mock_build_for_searchfield.return_value, "--analyzer-2--"
         )
-        assert len(mock_combine_queries.call_args_list) == 2
+        assert len(mock_combine_queries.call_args_list) == 0
 
-        mock_get_for_searchfield.reset_mock()
+        mock_build_for_searchfield.reset_mock()
         mock_combine_queries.reset_mock()
         field.get_search_analyzers.return_value = ["--analyzer-1--"]
         field.fuzzy = True
         assert (
             self.query_builder_class._build_search_query_for_indexfield(
-                field, "foo", model, "bar"
+                field, model, "bar"
             )
             == mock_combine_queries.return_value
         )
-        assert len(mock_get_for_searchfield.call_args_list) == 1
-        mock_get_for_searchfield.assert_any_call(
-            field, "foo", model, "bar", "--analyzer-1--"
+        assert len(mock_build_for_searchfield.call_args_list) == 1
+        mock_build_for_searchfield.assert_any_call(
+            field, model, "bar", "--analyzer-1--"
         )
-        assert len(mock_combine_queries.call_args_list) == 2
+        assert len(mock_combine_queries.call_args_list) == 1
         mock_combine_queries.assert_any_call(
-            mock_get_for_searchfield.return_value, "bar"
+            mock_build_searchquery.return_value, mock_build_for_searchfield.return_value
         )
-        mock_combine_queries.assert_any_call(
-            mock_get_searchquery.return_value, mock_combine_queries.return_value
-        )
-        mock_get_searchquery.assert_called_once_with(
-            "foo",
+        mock_build_searchquery.assert_called_once_with(
             model,
             "model-field-name",
             SearchQueryType("fuzzy"),
