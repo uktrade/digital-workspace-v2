@@ -1,6 +1,6 @@
 import pytest
 
-from extended_search import managers, settings
+from extended_search import query_builder, settings
 from extended_search.models import Setting
 from extended_search.types import AnalysisType
 
@@ -12,8 +12,10 @@ class TestManagersInit:
         with pytest.raises(AttributeError):
             managers.get_indexed_field_name("foo", "bar")
         analyzer = AnalysisType.TOKENIZED
-        assert managers.get_indexed_field_name("foo", analyzer) == "foo"
-        assert settings.extended_search_settings == managers.extended_search_settings
+        assert query_builder.get_indexed_field_name("foo", analyzer) == "foo"
+        assert (
+            settings.extended_search_settings == query_builder.extended_search_settings
+        )
 
         Setting.objects.create(
             key=f"analyzers__{analyzer.value}__index_fieldname_suffix", value="bar"
@@ -35,9 +37,9 @@ class TestManagersInit:
         )
 
         assert (
-            managers.extended_search_settings["analyzers"][analyzer.value][
+            query_builder.extended_search_settings["analyzers"][analyzer.value][
                 "index_fieldname_suffix"
             ]
             == "bar"
         )
-        assert managers.get_indexed_field_name("foo", analyzer) == "foobar"
+        assert query_builder.get_indexed_field_name("foo", analyzer) == "foobar"

@@ -104,12 +104,12 @@ class TestQueryBuilder:
         query = "foo"  # PlainText("foo")
         built_query = PlainText("foo")
         mock_build_search_query = mocker.patch(
-            "extended_search.managers.query_builder.CustomQueryBuilder.build_search_query",
+            "extended_search.query_builder.CustomQueryBuilder.build_search_query",
             return_value=built_query,
         )
         output_query = PlainText("bar")
         mock_swap_variables = mocker.patch(
-            "extended_search.managers.query_builder.CustomQueryBuilder.swap_variables",
+            "extended_search.query_builder.CustomQueryBuilder.swap_variables",
             return_value=output_query,
         )
         result = CustomQueryBuilder.get_search_query(model_class, query)
