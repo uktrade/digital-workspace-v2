@@ -40,8 +40,11 @@ def autocomplete(request: HttpRequest) -> HttpResponse:
             search_results["pages"] + search_results["people"] + search_results["teams"]
         ),
         "pages": search_results["pages"],
+        "pages_count": len(search_results["pages"]),
         "people": search_results["people"],
+        "people_count": len(search_results["people"]),
         "teams": search_results["teams"],
+        "teams_count": len(search_results["teams"]),
         "page": page,
         "search_feedback_initial": {
             "search_query": query,
