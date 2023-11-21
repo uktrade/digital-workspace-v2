@@ -9,8 +9,15 @@
                 <p class="govuk-body-s">Try using fewer keyword or...</p>
             {% endif %}
         </div>
+        <script lang="javascript">
+            document.onload = dataLayer.push({
+                'search_category': '{{ search_category }}'
+            });
+        </script>
     {% endif %}
-    {% if show_heading %}<h3 class="govuk-heading-s">{{ count }} {{ result_type_display }}</h3>{% endif %}
+    {% if show_heading %}
+        <h3 class="govuk-heading-s">{{ count }} {{ result_type_display }}</h3>
+    {% endif %}
     {{ page }}
     <div class="search-results__list"
          data-search-category="{{ search_category }}">
