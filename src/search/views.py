@@ -1,5 +1,6 @@
 import logging
 
+import sentry_sdk
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpRequest, HttpResponse
@@ -44,6 +45,14 @@ def search(request: HttpRequest, category: str = None) -> HttpResponse:
             "search_data": {"category": category},
         },
     }
+
+    # https://docs.sentry.io/platforms/python/performance/instrumentation/custom-instrumentation/#accessing-the-current-transaction
+    transaction = sentry_sdk.Hub.current.scope.transaction
+
+    if transaction is not None:
+        transaction.set_tag("search.category", category)
+        transaction.set_tag("search.query", query)
+        transaction.set_tag("search.page", page)
 
     return TemplateResponse(request, "search/search.html", context=context)
 
