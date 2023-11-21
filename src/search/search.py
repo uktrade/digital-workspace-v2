@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from content.models import ContentPage
 from extended_search.query_builder import CustomQueryBuilder
 from news.models import NewsPage
@@ -91,8 +93,10 @@ class PeopleSearchVector(ModelSearchVector):
     def get_queryset(self):
         people = super().get_queryset()
 
-        if not self.request.user.has_perm("peoplefinder.delete_person"):
-            people = people.active()
+        # Additional filters for normal users (none people admin/superusers).
+        if not self.request.user.has_perm("peoplefinder.can_view_inactive_profiles"):
+            days = settings.SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS
+            people = people.active_or_inactive_within(days=days)
 
         people = people.prefetch_related("key_skills", "additional_roles", "teams")
 

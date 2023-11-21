@@ -59,7 +59,7 @@ class ProfileView(PeoplefinderView):
     def get_queryset(self):
         qs = super().get_queryset()
 
-        if not self.request.user.has_perm("peoplefinder.delete_person"):
+        if not self.request.user.has_perm("peoplefinder.can_view_inactive_profiles"):
             qs = qs.active()
 
         return qs

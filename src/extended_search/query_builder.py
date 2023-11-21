@@ -311,7 +311,7 @@ class CustomQueryBuilder(QueryBuilder):
         type, and all are joined together at the end.
         """
         cache_key = model_class.__name__
-        if not ignore_cache and settings.ENABLE_SEARCH_QUERY_CACHE:
+        if not ignore_cache and settings.SEARCH_ENABLE_QUERY_CACHE:
             built_query = cache.get(cache_key, None)
             if built_query:
                 return built_query

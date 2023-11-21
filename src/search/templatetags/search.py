@@ -73,6 +73,7 @@ def search_category(context, *, category, limit=None, show_heading=False):
         result_type_display = result_type_display_plural
     return {
         "request": request,
+        "perms": context["perms"],
         "search_category": category,
         "search_results_item_template": _get_result_template(category),
         "pinned_results": pinned_results,

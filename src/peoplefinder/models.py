@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from typing import Iterator, Optional
 
@@ -197,6 +198,10 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
     def active(self):
         return self.exclude(is_active=False)
 
+    def active_or_inactive_within(self, *, days: int):
+        cutoff = datetime.datetime.now() - datetime.timedelta(days=days)
+        return self.exclude(became_inactive__lt=cutoff)
+
     def get_annotated(self):
         return self.annotate(
             formatted_roles=ArrayAgg(
@@ -263,6 +268,9 @@ class Person(Indexed, models.Model):
             models.CheckConstraint(
                 check=~Q(id=F("manager")), name="manager_cannot_be_self"
             ),
+        ]
+        permissions = [
+            ("can_view_inactive_profiles", "Can view inactive profiles"),
         ]
 
     is_active = models.BooleanField(default=True)
@@ -685,6 +693,10 @@ class Person(Indexed, models.Model):
         ),
         IndexedField(
             "is_active",
+            filter=True,
+        ),
+        IndexedField(
+            "became_inactive",
             filter=True,
         ),
         IndexedField(

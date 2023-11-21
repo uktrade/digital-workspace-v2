@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from django.core.management import call_command
 from django.urls import reverse
@@ -111,3 +113,36 @@ class TestSearchView:
         resp = self._search("ilfracombe", teams=False)
         # Then the user is returned in the search results
         assert another_normal_user.profile in resp.context["search_results"].object_list
+
+    @pytest.mark.opensearch
+    def test_search_for_recently_inactive_person(self, another_normal_user):
+        profile = another_normal_user.profile
+        ten_days_ago = datetime.datetime.now() - datetime.timedelta(days=10)
+        # Given a user that has recently become inactive
+        profile.is_active = False
+        profile.became_inactive = ten_days_ago
+        profile.save()
+        # And the search index has been updated
+        call_command("update_index")
+        # When I perform a search for that user
+        resp = self._search("jane", teams=False)
+        # Then the user is returned
+        assert another_normal_user.profile in resp.context["search_results"].object_list
+
+    @pytest.mark.opensearch
+    def test_search_for_old_inactive_person(self, another_normal_user):
+        profile = another_normal_user.profile
+        long_time_ago = datetime.datetime.now() - datetime.timedelta(days=120)
+        # Given a user that has been inactive for a long time
+        profile.is_active = False
+        profile.became_inactive = long_time_ago
+        profile.save()
+        # And the search index has been updated
+        call_command("update_index")
+        # When I perform a search for that user
+        resp = self._search("jane", teams=False)
+        # Then the user is not returned
+        assert (
+            another_normal_user.profile
+            not in resp.context["search_results"].object_list
+        )
