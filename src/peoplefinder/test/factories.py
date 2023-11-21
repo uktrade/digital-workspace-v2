@@ -1,6 +1,11 @@
 import factory
 
-from peoplefinder.models import Team
+from peoplefinder.models import Person, Team
+
+
+class PersonFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Person
 
 
 class TeamFactory(factory.django.DjangoModelFactory):
