@@ -505,14 +505,49 @@ class TestQueryBuilder:
             field,
         )
 
-    def test_get_search_query_for_searchfield(self):
-        raise AssertionError()
-
-    def test_get_searchquery_for_query_field_querytype_analysistype(self):
-        raise AssertionError()
-
-    def test_get_filter_field_variants(self):
-        raise AssertionError()
+    def test_build_search_query_for_searchfield(self, mocker):
+        mock_build_specific = mocker.patch(
+            "extended_search.query_builder.QueryBuilder._build_searchquery_for_query_field_querytype_analysistype",
+            return_value="foobar",
+        )
+        mock_combine_queries = mocker.patch(
+            "extended_search.query_builder.QueryBuilder._combine_queries",
+        )
+        model = mocker.Mock()
+        field = mocker.Mock()
+        assert (
+            len(
+                extended_search_settings["analyzers"][AnalysisType.TOKENIZED.value][
+                    "query_types"
+                ]
+            )
+            > 0
+        )
+        assert (
+            self.query_builder_class._build_search_query_for_searchfield(
+                field, model, "sub-query", AnalysisType.TOKENIZED
+            )
+            == mock_combine_queries.return_value
+        )
+        expected = []
+        for q in extended_search_settings["analyzers"][AnalysisType.TOKENIZED.value][
+            "query_types"
+        ]:
+            expected.append(
+                call(
+                    model,
+                    field.model_field_name,
+                    SearchQueryType(q),
+                    AnalysisType.TOKENIZED,
+                    field,
+                )
+            )
+        mock_build_specific.assert_has_calls(expected)
+        assert len(mock_build_specific.call_args_list) == len(
+            extended_search_settings["analyzers"][AnalysisType.TOKENIZED.value][
+                "query_types"
+            ]
+        )
 
     def test_combine_queries(self):
         # using sets because the | operator is used to join querysets, and it's also vaslid to use on sets
@@ -529,7 +564,7 @@ class TestQueryBuilder:
             set(["c", "d"]),
         ) == set(["a", "b", "c", "d"])
 
-    def test_build_searchquery_for_etc_uses_submethods(self, mocker):
+    def test_build_searchquery_for_query_field_querytype_analysistype(self, mocker):
         mock_boost = mocker.patch(
             "extended_search.query_builder.QueryBuilder._get_boost_for_field_querytype_analysistype"
         )
