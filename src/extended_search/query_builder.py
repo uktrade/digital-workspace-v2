@@ -93,11 +93,10 @@ class QueryBuilder:
     def _get_boost_for_field(cls, model_class, field):
         definition_class = field.get_definition_model(model_class)
         field_key = get_settings_field_key(definition_class, field)
-        if setting_boost := extended_search_settings["boost_parts"]["fields"][
-            field_key
-        ]:
-            return float(setting_boost)
-        return 1.0
+        try:
+            return float(extended_search_settings["boost_parts"]["fields"][field_key])
+        except KeyError:
+            return 1.0
 
     @classmethod
     def _get_boost_for_field_querytype_analysistype(
@@ -189,8 +188,8 @@ class QueryBuilder:
                 )
             )
             subquery = cls._combine_queries(
-                subquery,
                 query_element,
+                subquery,
             )
 
         return subquery
@@ -201,35 +200,30 @@ class QueryBuilder:
         model_class: models.Model,
         field: index.BaseField,
     ):
-        # @TODO verify this works if not everything is an IndexedField
-        subquery = None
-
         if isinstance(field, IndexedField):
-            subquery = cls._build_search_query_for_indexfield(
-                field, model_class, subquery
-            )
+            return cls._build_search_query_for_indexfield(field, model_class, None)
 
-        elif isinstance(field, RelatedFields):
+        if isinstance(field, RelatedFields):
             internal_subquery = None
             for related_field in field.fields:
                 internal_subquery = cls._combine_queries(
                     internal_subquery,
                     cls._build_search_query(model_class, related_field),
                 )
-            subquery = cls._combine_queries(
+            return cls._combine_queries(
                 Nested(subquery=internal_subquery, path=field.model_field_name),
-                subquery,
+                None,
             )
 
-        elif isinstance(field, SearchField):
-            subquery = cls._build_search_query_for_searchfield(
+        if isinstance(field, SearchField):
+            return cls._build_search_query_for_searchfield(
                 field,
                 model_class,
-                subquery,
+                None,
                 cls.infer_analyzer_from_field(field),
             )
 
-        return subquery
+        return None
 
     @classmethod
     def infer_analyzer_from_field(cls, field: index.BaseField):

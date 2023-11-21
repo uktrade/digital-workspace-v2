@@ -330,7 +330,7 @@ class CustomSearchQueryCompiler(
     NestedSearchQueryCompiler,
     OnlyFieldSearchQueryCompiler,
 ):
-    ...
+    mapping_class = CustomSearchMapping
 
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):

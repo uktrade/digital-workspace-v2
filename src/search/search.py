@@ -1,5 +1,6 @@
 from django.conf import settings
 
+from extended_search.query_builder import CustomQueryBuilder
 from content.models import ContentPage
 from extended_search.query_builder import CustomQueryBuilder
 from news.models import NewsPage

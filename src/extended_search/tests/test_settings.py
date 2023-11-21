@@ -422,17 +422,16 @@ class TestSearchSettings:
 
 
 class TestGetSettingsFieldKey:
-    @pytest.mark.xfail(reason="Not implemented")
     def test_get_settings_field_key(self, mocker):
         mock_model = mocker.MagicMock()
         mock_model._meta.app_label = "--app-label-1--"
         mock_model._meta.model_name = "--model-name-1--"
-        mock_searchfield_1 = mocker.MagicMock(spec=BaseField)
+        mock_searchfield_1 = mocker.MagicMock(spec=index.BaseField)
         mock_searchfield_1.field_name = "--field-name-1--"
         mock_searchfield_1.get_full_model_field_name = mocker.MagicMock(
             return_value="--full-model-field-name-1--"
         )
-        mock_searchfield_2 = mocker.MagicMock(spec=index.BaseField)
+        mock_searchfield_2 = mocker.MagicMock(spec=BaseField)
         mock_searchfield_2.field_name = "--field-name-2--"
         mock_searchfield_2.get_full_model_field_name = mocker.MagicMock(
             return_value="--full-model-field-name-2--"
