@@ -79,15 +79,24 @@ def explore(request: HttpRequest) -> HttpResponse:
         for k, v in settings_singleton["analyzers"].items()
     ]
     for index_field in ContentPage.indexed_fields:
-        field = CustomQueryBuilder._build_search_query(query, ContentPage, index_field)
+        field = CustomQueryBuilder.swap_variables(
+            CustomQueryBuilder._build_search_query(ContentPage, index_field),
+            query,
+        )
         get_query_info(subqueries["pages"], field, index_field, analyzer_field_suffices)
     for index_field in Person.indexed_fields:
-        field = CustomQueryBuilder._build_search_query(query, Person, index_field)
+        field = CustomQueryBuilder.swap_variables(
+            CustomQueryBuilder._build_search_query(Person, index_field),
+            query,
+        )
         get_query_info(
             subqueries["people"], field, index_field, analyzer_field_suffices
         )
     for index_field in Team.indexed_fields:
-        field = CustomQueryBuilder._build_search_query(query, Team, index_field)
+        field = CustomQueryBuilder.swap_variables(
+            CustomQueryBuilder._build_search_query(Team, index_field),
+            query,
+        )
         get_query_info(subqueries["teams"], field, index_field, analyzer_field_suffices)
 
     context = {
