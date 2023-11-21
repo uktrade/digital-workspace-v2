@@ -16,7 +16,7 @@ class ExtendedSearchConfig(AppConfig):
         settings.extended_search_settings = settings.settings_singleton.to_dict()
 
         from extended_search.index import get_indexed_models
-        from extended_search.managers.query_builder import CustomQueryBuilder
+        from extended_search.query_builder import CustomQueryBuilder
 
         for model_class in get_indexed_models():
             if hasattr(model_class, "indexed_fields") and model_class.indexed_fields:

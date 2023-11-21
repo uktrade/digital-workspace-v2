@@ -8,7 +8,6 @@ from django.db import models
 from wagtail.search import index
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
-from extended_search.backends.query import Filtered, Nested, OnlyFields
 from extended_search.index import (
     BaseField,
     Indexed,
@@ -17,6 +16,7 @@ from extended_search.index import (
     SearchField,
     get_indexed_models,
 )
+from extended_search.query import Filtered, Nested, OnlyFields
 from extended_search.settings import extended_search_settings, get_settings_field_key
 from extended_search.types import AnalysisType, SearchQueryType
 
@@ -125,8 +125,6 @@ class QueryBuilder:
         analysis_type: AnalysisType,
         field: index.BaseField,
     ):
-        from extended_search.managers import get_indexed_field_name
-
         if isinstance(field, BaseField):
             base_field_name = field.get_full_model_field_name()
 
@@ -385,3 +383,14 @@ class CustomQueryBuilder(QueryBuilder):
             ):
                 extended_model_classes.append(indexed_model)
         return extended_model_classes
+
+
+def get_indexed_field_name(
+    model_field_name: str,
+    analyzer: AnalysisType,
+):
+    field_name_suffix = (
+        extended_search_settings["analyzers"][analyzer.value]["index_fieldname_suffix"]
+        or ""
+    )
+    return f"{model_field_name}{field_name_suffix}"

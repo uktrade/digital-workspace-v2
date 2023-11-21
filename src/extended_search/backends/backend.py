@@ -9,7 +9,7 @@ from wagtail.search.backends.elasticsearch7 import (
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
-from extended_search.backends.query import Filtered, Nested, OnlyFields
+from extended_search.query import Filtered, Nested, OnlyFields
 from extended_search.index import RelatedFields
 
 

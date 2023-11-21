@@ -207,7 +207,7 @@ class TestIndexedField:
     @pytest.mark.xfail
     def test_get_searchable_search_fields_returns_extended_searchfields(self, mocker):
         mock_fieldname = mocker.patch(
-            "extended_search.managers.index.get_indexed_field_name",
+            "extended_search.query_builder.get_indexed_field_name",
             return_value="bar",
         )
         mock_analyzer = mocker.patch(
@@ -232,7 +232,7 @@ class TestIndexedField:
     @pytest.mark.xfail
     def test_get_searchable_search_fields_returns_field_per_analyzer(self, mocker):
         mocker.patch(
-            "extended_search.managers.index.get_indexed_field_name",
+            "extended_search.query_builder.get_indexed_field_name",
             return_value="bar",
         )
         mocker.patch(

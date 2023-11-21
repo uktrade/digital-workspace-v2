@@ -20,7 +20,7 @@ from extended_search.backends.backend import (
     OnlyFieldSearchQueryCompiler,
     SearchBackend,
 )
-from extended_search.backends.query import Filtered, Nested, OnlyFields
+from extended_search.query import Filtered, Nested, OnlyFields
 from peoplefinder.models import Person, Team
 
 

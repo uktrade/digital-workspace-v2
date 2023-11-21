@@ -1,5 +1,5 @@
 from content.models import ContentPage
-from extended_search.managers.query_builder import CustomQueryBuilder
+from extended_search.query_builder import CustomQueryBuilder
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from tools.models import Tool

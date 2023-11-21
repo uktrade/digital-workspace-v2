@@ -448,7 +448,7 @@ class MultiQueryIndexedField(IndexedField):
         return analyzers
 
     def get_search_field_variants(self):
-        from extended_search.managers import get_indexed_field_name
+        from extended_search.query_builder import get_indexed_field_name
         from extended_search.settings import extended_search_settings
 
         return [

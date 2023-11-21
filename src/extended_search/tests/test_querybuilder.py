@@ -5,11 +5,12 @@ from unittest.mock import call
 import pytest
 from wagtail.search.query import And, Fuzzy, Not, Or, Phrase, PlainText
 
-from extended_search.backends.query import Filtered
-from extended_search.managers.query_builder import CustomQueryBuilder, Variable
+# from extended_search.types import AnalysisType, SearchQueryType
+from extended_search.query import Filtered
+from extended_search.query_builder import CustomQueryBuilder, Variable
 
-# from extended_search.backends.query import OnlyFields
-# from extended_search.managers.query_builder import NestedQueryBuilder, QueryBuilder, CustomQueryBuilder
+# from extended_search.query import OnlyFields
+# from extended_search.query_builder import NestedQueryBuilder, QueryBuilder, CustomQueryBuilder
 # from extended_search.models import Setting
 # from extended_search.settings import extended_search_settings
 from extended_search.types import SearchQueryType
@@ -28,11 +29,11 @@ class MockModelClass:
 class TestQueryBuilder:
     def test_build_query_for_model(self, mocker):
         mock_combine = mocker.patch(
-            "extended_search.managers.query_builder.CustomQueryBuilder._combine_queries",
+            "extended_search.query_builder.CustomQueryBuilder._combine_queries",
             return_value="foo",
         )
         mock_build_search_query = mocker.patch(
-            "extended_search.managers.query_builder.CustomQueryBuilder._build_search_query",
+            "extended_search.query_builder.CustomQueryBuilder._build_search_query",
             return_value=None,
         )
         assert CustomQueryBuilder.build_query_for_model(MockModelClass) is None
@@ -60,11 +61,11 @@ class TestQueryBuilder:
         extended_model_class._meta.app_label = "mock.extended"
         extended_model_class.has_indexmanager_direct_inner_class.return_value = False
         mock_get_models = mocker.patch(
-            "extended_search.managers.get_indexed_models",
+            "extended_search.query_builder.get_indexed_models",
             return_value=[base_model_class],
         )
         mock_mro = mocker.patch(
-            "extended_search.managers.inspect.getmro",
+            "extended_search.query_builder.inspect.getmro",
             return_value=[extended_model_class],
         )
         assert (
@@ -164,11 +165,11 @@ class TestQueryBuilder:
         extended_model_class = mocker.Mock()
         query = "foo"  # PlainText("foo")
         mock_get_extended_models = mocker.patch(
-            "extended_search.managers.get_extended_models_with_unique_indexed_fields",
+            "extended_search.query_builder.get_extended_models_with_unique_indexed_fields",
             return_value={"mock.extended_model": extended_model_class},
         )
         mock_get_query = mocker.patch(
-            "extended_search.managers.build_query_for_model",
+            "extended_search.query_builder.build_query_for_model",
             return_value=PlainText("foo"),
         )
         result = CustomQueryBuilder.build_search_query(model_class)
@@ -377,10 +378,10 @@ class TestQueryBuilder:
 
 #     def test_get_searchquery_for_etc_uses_submethods(self, mocker):
 #         mock_query = mocker.patch(
-#             "extended_search.managers.query_builder.QueryBuilder._get_inner_searchquery_for_querytype"
+#             "extended_search.query_builder.QueryBuilder._get_inner_searchquery_for_querytype"
 #         )
 #         mock_boost = mocker.patch(
-#             "extended_search.managers.query_builder.QueryBuilder._get_boost_for_field_querytype_analysistype"
+#             "extended_search.query_builder.QueryBuilder._get_boost_for_field_querytype_analysistype"
 #         )
 #         mock_query.return_value = None
 #         result = self.query_builder_class._get_searchquery_for_query_field_querytype_analysistype(
@@ -442,11 +443,11 @@ class TestQueryBuilder:
 #             set(["--query-6--"]),
 #         ]
 #         mock_query = mocker.patch(
-#             "extended_search.managers.query_builder.QueryBuilder._get_searchquery_for_query_field_querytype_analysistype",
+#             "extended_search.query_builder.QueryBuilder._get_searchquery_for_query_field_querytype_analysistype",
 #             side_effect=query_outputs,
 #         )
 #         mocker.patch(
-#             "extended_search.managers.query_builder.Nested",
+#             "extended_search.query_builder.Nested",
 #         )
 #         mapping = {}
 #         assert (
@@ -587,10 +588,10 @@ class TestQueryBuilder:
 
 #     def test_get_searchquery_for_etc_uses_submethods(self, mocker):
 #         mock_query = mocker.patch(
-#             "extended_search.managers.query_builder.NestedQueryBuilder._get_inner_searchquery_for_querytype"
+#             "extended_search.query_builder.NestedQueryBuilder._get_inner_searchquery_for_querytype"
 #         )
 #         mock_boost = mocker.patch(
-#             "extended_search.managers.query_builder.NestedQueryBuilder._get_boost_for_field_querytype_analysistype"
+#             "extended_search.query_builder.NestedQueryBuilder._get_boost_for_field_querytype_analysistype"
 #         )
 #         mock_query.return_value = None
 #         result = self.query_builder_class._get_searchquery_for_query_field_querytype_analysistype(
@@ -639,11 +640,11 @@ class TestQueryBuilder:
 #             set(["--query-6--"]),
 #         ]
 #         mock_query = mocker.patch(
-#             "extended_search.managers.query_builder.NestedQueryBuilder._get_searchquery_for_query_field_querytype_analysistype",
+#             "extended_search.query_builder.NestedQueryBuilder._get_searchquery_for_query_field_querytype_analysistype",
 #             side_effect=query_outputs,
 #         )
 #         mocker.patch(
-#             "extended_search.managers.query_builder.Nested",
+#             "extended_search.query_builder.Nested",
 #         )
 
 #         # RELATED

@@ -1,8 +1,7 @@
 import pytest
 
-from extended_search import managers
+from extended_search import managers, settings
 from extended_search.models import Setting
-from extended_search import settings
 from extended_search.types import AnalysisType
 
 
