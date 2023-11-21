@@ -34,7 +34,6 @@ class TestDefaults:
         assert "tokenized" in DEFAULT_SETTINGS["analyzers"]
         assert "explicit" in DEFAULT_SETTINGS["analyzers"]
         assert "keyword" in DEFAULT_SETTINGS["analyzers"]
-        assert "proximity" in DEFAULT_SETTINGS["analyzers"]
         assert "es_analyzer" in DEFAULT_SETTINGS["analyzers"]["tokenized"]
         assert "index_fieldname_suffix" in DEFAULT_SETTINGS["analyzers"]["tokenized"]
         assert "query_types" in DEFAULT_SETTINGS["analyzers"]["tokenized"]
@@ -44,8 +43,6 @@ class TestDefaults:
         assert "es_analyzer" in DEFAULT_SETTINGS["analyzers"]["keyword"]
         assert "index_fieldname_suffix" in DEFAULT_SETTINGS["analyzers"]["keyword"]
         assert "query_types" in DEFAULT_SETTINGS["analyzers"]["keyword"]
-        assert "es_analyzer" in DEFAULT_SETTINGS["analyzers"]["proximity"]
-        assert "index_fieldname_suffix" in DEFAULT_SETTINGS["analyzers"]["proximity"]
         assert "phrase" in DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]
         assert "query_and" in DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]
         assert "query_or" in DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]
@@ -75,10 +72,6 @@ class TestDefaults:
             DEFAULT_SETTINGS["analyzers"]["keyword"]["index_fieldname_suffix"]
         ) in (str, NoneType)
         assert type(DEFAULT_SETTINGS["analyzers"]["keyword"]["query_types"]) == list
-        assert type(DEFAULT_SETTINGS["analyzers"]["proximity"]["es_analyzer"]) == str
-        assert type(
-            DEFAULT_SETTINGS["analyzers"]["proximity"]["index_fieldname_suffix"]
-        ) in (str, NoneType)
         for v in DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]:
             assert type(v) == str
             assert v in ["phrase", "query_and", "query_or"]
