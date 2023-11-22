@@ -1,5 +1,3 @@
-import pytest
-
 from extended_search.index import DWIndexedField, class_is_indexed, get_indexed_models
 from testapp.models import (
     AbstractIndexedModel,
@@ -18,39 +16,39 @@ class TestIndexed:
         assert type(indexed_fields) == list
         assert len(indexed_fields) == 1
         assert type(indexed_fields[0]) == DWIndexedField
-        assert indexed_fields[0].autocomplete == False
+        assert indexed_fields[0].autocomplete is False
         assert indexed_fields[0].autocomplete_kwargs == {}
         assert indexed_fields[0].boost == 5.0
-        assert indexed_fields[0].explicit == True
+        assert indexed_fields[0].explicit
         assert indexed_fields[0].field_name == "title"
-        assert indexed_fields[0].filter == False
+        assert indexed_fields[0].filter is False
         assert indexed_fields[0].filter_kwargs == {}
-        assert indexed_fields[0].fuzzy == True
-        assert indexed_fields[0].keyword == False
+        assert indexed_fields[0].fuzzy
+        assert indexed_fields[0].keyword is False
         assert indexed_fields[0].model_field_name == "title"
-        assert indexed_fields[0].parent_field == None
-        assert indexed_fields[0].search == True
+        assert indexed_fields[0].parent_field is None
+        assert indexed_fields[0].search
         assert indexed_fields[0].search_kwargs == {}
-        assert indexed_fields[0].tokenized == True
+        assert indexed_fields[0].tokenized
 
         indexed_fields = InheritedStandardIndexedModelWithChanges.get_indexed_fields()
         assert type(indexed_fields) == list
         assert len(indexed_fields) == 1
         assert type(indexed_fields[0]) == DWIndexedField
-        assert indexed_fields[0].autocomplete == False
+        assert indexed_fields[0].autocomplete is False
         assert indexed_fields[0].autocomplete_kwargs == {}
         assert indexed_fields[0].boost == 50.0
-        assert indexed_fields[0].explicit == False
+        assert indexed_fields[0].explicit is False
         assert indexed_fields[0].field_name == "title"
-        assert indexed_fields[0].filter == False
+        assert indexed_fields[0].filter is False
         assert indexed_fields[0].filter_kwargs == {}
-        assert indexed_fields[0].fuzzy == False
-        assert indexed_fields[0].keyword == False
+        assert indexed_fields[0].fuzzy is False
+        assert indexed_fields[0].keyword is False
         assert indexed_fields[0].model_field_name == "title"
-        assert indexed_fields[0].parent_field == None
-        assert indexed_fields[0].search == True
+        assert indexed_fields[0].parent_field is None
+        assert indexed_fields[0].search
         assert indexed_fields[0].search_kwargs == {}
-        assert indexed_fields[0].tokenized == True
+        assert indexed_fields[0].tokenized
 
     def test_get_indexed_fields_as_dict(self):
         indexed_fields = StandardIndexedModel.get_indexed_fields(as_dict=True)
@@ -58,20 +56,20 @@ class TestIndexed:
         assert "title" in indexed_fields
         assert len(indexed_fields["title"]) == 1
         assert type(indexed_fields["title"][0]) == DWIndexedField
-        assert indexed_fields["title"][0].autocomplete == False
+        assert indexed_fields["title"][0].autocomplete is False
         assert indexed_fields["title"][0].autocomplete_kwargs == {}
         assert indexed_fields["title"][0].boost == 5.0
-        assert indexed_fields["title"][0].explicit == True
+        assert indexed_fields["title"][0].explicit
         assert indexed_fields["title"][0].field_name == "title"
-        assert indexed_fields["title"][0].filter == False
+        assert indexed_fields["title"][0].filter is False
         assert indexed_fields["title"][0].filter_kwargs == {}
-        assert indexed_fields["title"][0].fuzzy == True
-        assert indexed_fields["title"][0].keyword == False
+        assert indexed_fields["title"][0].fuzzy
+        assert indexed_fields["title"][0].keyword is False
         assert indexed_fields["title"][0].model_field_name == "title"
-        assert indexed_fields["title"][0].parent_field == None
-        assert indexed_fields["title"][0].search == True
+        assert indexed_fields["title"][0].parent_field is None
+        assert indexed_fields["title"][0].search
         assert indexed_fields["title"][0].search_kwargs == {}
-        assert indexed_fields["title"][0].tokenized == True
+        assert indexed_fields["title"][0].tokenized
 
         indexed_fields = InheritedStandardIndexedModelWithChanges.get_indexed_fields(
             as_dict=True
@@ -80,20 +78,20 @@ class TestIndexed:
         assert "title" in indexed_fields
         assert len(indexed_fields["title"]) == 1
         assert type(indexed_fields["title"][0]) == DWIndexedField
-        assert indexed_fields["title"][0].autocomplete == False
+        assert indexed_fields["title"][0].autocomplete is False
         assert indexed_fields["title"][0].autocomplete_kwargs == {}
         assert indexed_fields["title"][0].boost == 50.0
-        assert indexed_fields["title"][0].explicit == False
+        assert indexed_fields["title"][0].explicit is False
         assert indexed_fields["title"][0].field_name == "title"
-        assert indexed_fields["title"][0].filter == False
+        assert indexed_fields["title"][0].filter is False
         assert indexed_fields["title"][0].filter_kwargs == {}
-        assert indexed_fields["title"][0].fuzzy == False
-        assert indexed_fields["title"][0].keyword == False
+        assert indexed_fields["title"][0].fuzzy is False
+        assert indexed_fields["title"][0].keyword is False
         assert indexed_fields["title"][0].model_field_name == "title"
-        assert indexed_fields["title"][0].parent_field == None
-        assert indexed_fields["title"][0].search == True
+        assert indexed_fields["title"][0].parent_field is None
+        assert indexed_fields["title"][0].search
         assert indexed_fields["title"][0].search_kwargs == {}
-        assert indexed_fields["title"][0].tokenized == True
+        assert indexed_fields["title"][0].tokenized
 
     def test_generate_from_indexed_fields(self):
         processed_index_fields = StandardIndexedModel.generate_from_indexed_fields()
