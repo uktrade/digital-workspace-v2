@@ -82,10 +82,10 @@ class TestExpectedSearchResults(TestCase):
         - 1 team with "fruit" in the name
         - 1 of each of the above without any "fruit" content
         """
-        call_command("create_test_users")
+        call_command("create_test_users")  # TODO: This is breaking on CI
 
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()
-        self.content_owner = User.objects.get(username="johnsmith")
+        self.content_owner = User.objects.get(email="john.smith@example.com")
         self.content_owner_pages = [
             GuidanceFactory.create(
                 parent=policies_and_guidance_home,
