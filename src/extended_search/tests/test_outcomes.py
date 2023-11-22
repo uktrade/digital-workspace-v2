@@ -12,7 +12,7 @@ from extended_search.query import Filtered
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.query_builder import CustomQueryBuilder
 from extended_search.models import Setting
-from extended_search.settings import SearchSettings, extended_search_settings
+from extended_search.settings import SearchSettings, settings_singleton
 from news.factories import NewsPageFactory
 from peoplefinder.services.person import PersonService
 from peoplefinder.test.factories import PersonFactory, TeamFactory
@@ -21,6 +21,7 @@ from user.models import User
 from user.test.factories import UserFactory
 from working_at_dit.models import PoliciesAndGuidanceHome
 from working_at_dit.tests.factories import GuidanceFactory, HowDoIFactory, PolicyFactory
+from testapp.models import IndexedModel, ChildModel
 
 
 class TestGeneratedQuery:
@@ -338,19 +339,6 @@ class TestExpectedSearchResults(TestCase):
 
 
 # Tests to check the sub-class overriding works as expected - in their own file because they mess wih models
-
-import pytest
-from django.conf import settings
-from django.db import models
-
-from wagtail.search.backends import get_search_backend
-from wagtail.search.index import AutocompleteField, SearchField
-
-from extended_search.settings import settings_singleton
-from extended_search.index import DWIndexedField as IndexedField
-from extended_search.models import Setting
-
-from testapp.models import IndexedModel, ChildModel
 
 
 class TestPerModelFieldOverrides:
