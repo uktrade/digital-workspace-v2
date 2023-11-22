@@ -20,6 +20,9 @@ class TestFruits(TestCase):
         - 1 howdoi page with "fruit" in the title
         - 1 tool page with "fruit" in the title
         - 1 news page with "fruit" in the title
+        - 1 person with "fruit" in their name
+        - 1 team with "fruit" in the name
+        - 1 of each of the above without any "fruit" content
         """
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()
         self.content_owner = User.objects.get(username="johnsmith")

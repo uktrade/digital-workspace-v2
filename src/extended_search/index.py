@@ -71,10 +71,11 @@ class Indexed(index.Indexed):
     processed_search_fields = {}
 
     @classmethod
-    def get_search_fields(cls):
+    def get_search_fields(cls, ignore_cache=False):
+        # @TODO test for "cache"
         if cls not in cls.processed_search_fields:
             cls.processed_search_fields[cls] = []
-        if cls.processed_search_fields[cls]:
+        if cls.processed_search_fields[cls] and not ignore_cache:
             return cls.processed_search_fields[cls]
 
         search_fields = super().get_search_fields()

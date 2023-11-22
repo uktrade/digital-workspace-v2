@@ -6,7 +6,7 @@ from wagtail.search.index import AutocompleteField, SearchField
 
 from content.models import ContentPage
 from extended_search.query import Filtered
-from extended_search.index import IndexedField
+from extended_search.index import DWIndexedField as IndexedField
 from extended_search.query_builder import CustomQueryBuilder
 from extended_search.models import Setting
 from extended_search.settings import SearchSettings, extended_search_settings
@@ -18,10 +18,9 @@ existing_np_fields = NewsPage.indexed_fields
 existing_np_search_fields = NewsPage.search_fields
 
 
-@pytest.mark.xfail
 class TestPerModelFieldOverrides:
-    def update_and_get_mapping_from_model_fields(
-        self, model_class, fields, base_fields=None
+    def get_search_mapping_for_updated_indexed_fields(
+        self, model_class, indexed_fields, base_fields=None
     ):
         if base_fields is None:
             base_fields = []
@@ -29,29 +28,25 @@ class TestPerModelFieldOverrides:
         backend_name = settings.WAGTAILSEARCH_BACKENDS["default"]["BACKEND"]
         backend = get_search_backend(backend_name)
 
-        model_class.indexed_fields = fields
-        model_class.search_fields = base_fields + model_class.IndexManager()
+        model_class.processed_search_fields = {}
+        model_class.indexed_fields = indexed_fields
+        model_class.search_fields = base_fields
         index = backend.get_index_for_model(model_class)
         mapping_cls = index.mapping_class(model_class)
+
         return mapping_cls.get_mapping()
 
     def count_matching_search_autocomplete_fields(self, model_class, name):
         count = 0
-        for field in model_class.search_fields:
-            if field.field_name == name and (
+        for field in model_class.get_search_fields(ignore_cache=True):
+            if name in field.field_name and (  # catch variants like "_explicit"
                 isinstance(field, SearchField) or isinstance(field, AutocompleteField)
             ):
                 count += 1
         return count
 
-    @pytest.mark.xfail
-    def test_updated_outcomes(self):
-        # All these tests are a bit funky because our overrides aren't working
-        # too nicely. Update them all once we've fixed this
-        ...
-
     def test_minimal_subclass_overrides_maximal_baseclass(self):
-        content_mapping = self.update_and_get_mapping_from_model_fields(
+        content_mapping = self.get_search_mapping_for_updated_indexed_fields(
             ContentPage,
             [
                 IndexedField(
@@ -61,7 +56,7 @@ class TestPerModelFieldOverrides:
                 ),
             ],
         )
-        news_mapping = self.update_and_get_mapping_from_model_fields(
+        news_mapping = self.get_search_mapping_for_updated_indexed_fields(
             NewsPage,
             [
                 IndexedField(
@@ -78,22 +73,25 @@ class TestPerModelFieldOverrides:
         )
         assert (
             self.count_matching_search_autocomplete_fields(NewsPage, "search_title")
-            == 3  #  @TODO this ought to be 1 when we run the overrides properly
+            == 1
         )
 
         assert "content_contentpage__search_title" in content_mapping["properties"]
-        assert "news_newspage__search_title" in news_mapping["properties"]  #  @TODO
+        assert "news_newspage__search_title" in news_mapping["properties"]
         assert (
             "content_contentpage__search_title_edgengrams"
             in content_mapping["properties"]
         )
-        # assert (
-        #     "content_contentpage__search_title_edgengrams"
-        #     not in news_mapping["properties"]
-        # ) @TODO
+        assert (
+            "content_contentpage__search_title_edgengrams"
+            not in news_mapping["properties"]
+        )
+        assert (
+            "news_newspage__search_title_edgengrams" not in news_mapping["properties"]
+        )
 
     def test_maximal_subclass_overrides_minimal_baseclass(self):
-        content_mapping = self.update_and_get_mapping_from_model_fields(
+        content_mapping = self.get_search_mapping_for_updated_indexed_fields(
             ContentPage,
             [
                 IndexedField(
@@ -102,7 +100,7 @@ class TestPerModelFieldOverrides:
                 ),
             ],
         )
-        news_mapping = self.update_and_get_mapping_from_model_fields(
+        news_mapping = self.get_search_mapping_for_updated_indexed_fields(
             NewsPage,
             [
                 IndexedField(
@@ -120,7 +118,7 @@ class TestPerModelFieldOverrides:
         )
         assert (
             self.count_matching_search_autocomplete_fields(NewsPage, "search_title")
-            == 3  # @TODO this ought to be 2 when we run the overrides properly
+            == 2
         )
 
         assert "content_contentpage__search_title" in content_mapping["properties"]
@@ -134,7 +132,7 @@ class TestPerModelFieldOverrides:
         )
 
     def test_subclass_overrides_boost(self):
-        content_mapping = self.update_and_get_mapping_from_model_fields(
+        content_mapping = self.get_search_mapping_for_updated_indexed_fields(
             ContentPage,
             [
                 IndexedField(
@@ -144,7 +142,7 @@ class TestPerModelFieldOverrides:
                 ),
             ],
         )
-        news_mapping = self.update_and_get_mapping_from_model_fields(
+        news_mapping = self.get_search_mapping_for_updated_indexed_fields(
             NewsPage,
             [
                 IndexedField(
@@ -157,15 +155,19 @@ class TestPerModelFieldOverrides:
         )
 
         # @TODO hopefully we can get a better boost indicator
-        assert "_all_text_boost_5_0" in content_mapping["properties"]
-        assert "_all_text_boost_10_0" not in content_mapping["properties"]
-        assert "_all_text_boost_5_0" not in news_mapping["properties"]
-        assert "_all_text_boost_10_0" in news_mapping["properties"]
+        for field_name, field_details in content_mapping["properties"].items():
+            if "search_title" in field_name:
+                assert "_all_text_boost_10_0" not in field_details["copy_to"]
+                assert "_all_text_boost_5_0" in field_details["copy_to"]
+
+        for field_name, field_details in news_mapping["properties"].items():
+            if "search_title" in field_name:
+                assert "_all_text_boost_10_0" in field_details["copy_to"]
+                assert "_all_text_boost_5_0" not in field_details["copy_to"]
 
     @pytest.mark.django_db
-    @pytest.mark.xfail
     def test_subclass_settings_overrides_work_only_on_subclass(self):
-        self.update_and_get_mapping_from_model_fields(
+        self.get_search_mapping_for_updated_indexed_fields(
             ContentPage,
             [
                 IndexedField(
@@ -175,7 +177,7 @@ class TestPerModelFieldOverrides:
                 ),
             ],
         )
-        self.update_and_get_mapping_from_model_fields(
+        self.get_search_mapping_for_updated_indexed_fields(
             NewsPage,
             [
                 IndexedField(
@@ -189,12 +191,16 @@ class TestPerModelFieldOverrides:
 
         # @TODO this whole thing seems to not be working - is it the way I'm running the test?
         print(extended_search_settings)
+        print(NewsPage.indexed_fields)
+        print(NewsPage.get_search_fields())
 
-        content_field_key = "boost_parts__fields__content.contentpage.search_title"
-        news_field_key = "boost_parts__fields__news.newspage.search_title"
+        content_field_key = "content.contentpage.search_title"
+        news_field_key = "news.newspage.search_title"
 
-        assert extended_search_settings[content_field_key] == 5.0
-        assert extended_search_settings[news_field_key] == 10.0
+        assert (
+            extended_search_settings["boost_parts"]["fields"][content_field_key] == 5.0
+        )
+        assert extended_search_settings["boost_parts"]["fields"][news_field_key] == 10.0
         instance = SearchSettings()
         instance.initialise_db_dict()
         Setting.objects.create(key=news_field_key, value=100.5)
@@ -222,8 +228,10 @@ class TestPerModelFieldOverrides:
 
         query = CustomQueryBuilder.get_search_query(ContentPage, "foo")
 
-        extended_models = CustomQueryBuilder.get_extended_models_with_indexmanager(
-            ContentPage
+        extended_models = (
+            CustomQueryBuilder.get_extended_models_with_unique_indexed_fields(
+                ContentPage
+            )
         )
 
         self.filter_parts = []
@@ -240,8 +248,11 @@ class TestPerModelFieldOverrides:
                 assert (
                     f"{ContentPage._meta.app_label}.{ContentPage.__name__}" not in value
                 )
-                for name in extended_models.keys():
-                    assert name in value
+                for model in extended_models:
+                    assert f"{model._meta.app_label}.{model.__name__}" in value
             else:
-                assert value in extended_models.keys()
+                assert value in [
+                    f"{model._meta.app_label}.{model.__name__}"
+                    for model in extended_models
+                ]
         assert num_excludes == 1
