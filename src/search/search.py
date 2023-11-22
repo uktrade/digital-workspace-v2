@@ -9,25 +9,19 @@ from working_at_dit.models import PoliciesAndGuidanceHome
 
 
 class SearchVector:
-    def __init__(self, request, annotate_score=True):
+    def __init__(self, request):
         self.request = request
-        self.annotate_score = annotate_score
 
     def _wagtail_search(self, queryset, query, *args, **kwargs):
         """
         Allows e.g. score annotation without polluting overridden search method
         """
-        return_method = queryset.search(query, *args, **kwargs)
-
-        if self.annotate_score:
-            return_method = return_method.annotate_score("_score")
+        return_method = queryset.search(query, *args, **kwargs).annotate_score("_score")
 
         return return_method
 
     def _wagtail_autocomplete(self, queryset, query, *args, **kwargs):
-        return_method = queryset.autocomplete(query, *args, **kwargs)
-
-        return return_method
+        return queryset.autocomplete(query, *args, **kwargs)
 
     def get_queryset(self):
         raise NotImplementedError

@@ -28,7 +28,7 @@ def search_category(context, *, category, limit=None, show_heading=False):
     query = context["search_query"]
     page = context["page"]
 
-    search_vector = SEARCH_VECTORS[category](request, annotate_score=True)
+    search_vector = SEARCH_VECTORS[category](request)
     search_results = list(search_vector.search(query))
     count = len(search_results)
 
