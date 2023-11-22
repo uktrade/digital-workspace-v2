@@ -3,25 +3,24 @@ import pytest
 from django.conf import settings
 from django.core.management import call_command
 from django.test import TestCase
-
 from wagtail.search.backends import get_search_backend
 from wagtail.search.index import AutocompleteField, SearchField
 
 from content.models import ContentPage
-from extended_search.query import Filtered
 from extended_search.index import DWIndexedField as IndexedField
-from extended_search.query_builder import CustomQueryBuilder
 from extended_search.models import Setting
+from extended_search.query import Filtered
+from extended_search.query_builder import CustomQueryBuilder
 from extended_search.settings import SearchSettings, settings_singleton
 from news.factories import NewsPageFactory
 from peoplefinder.services.person import PersonService
 from peoplefinder.test.factories import PersonFactory, TeamFactory
+from testapp.models import ChildModel, IndexedModel
 from tools.tests.factories import ToolFactory
 from user.models import User
 from user.test.factories import UserFactory
 from working_at_dit.models import PoliciesAndGuidanceHome
 from working_at_dit.tests.factories import GuidanceFactory, HowDoIFactory, PolicyFactory
-from testapp.models import IndexedModel, ChildModel
 
 
 class TestGeneratedQuery:
@@ -83,6 +82,7 @@ class TestExpectedSearchResults(TestCase):
         - 1 team with "fruit" in the name
         - 1 of each of the above without any "fruit" content
         """
+        call_command("create_test_users")
 
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()
         self.content_owner = User.objects.get(username="johnsmith")
