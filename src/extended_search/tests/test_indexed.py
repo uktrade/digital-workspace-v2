@@ -161,7 +161,7 @@ class TestModuleFunctions:
         assert mock_model_3 in indexed_models
         assert mock_model_4 not in indexed_models
 
-    def test_class_is_indexed(self, db):
+    def test_class_is_indexed(self):
         assert not class_is_indexed(Model)
         assert not class_is_indexed(AbstractModel)
         assert class_is_indexed(IndexedModel)
