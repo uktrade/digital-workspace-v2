@@ -688,3 +688,6 @@ BAD_SEARCH_SCORE_MULTIPLIERS = {
     "people": env.int("PEOPLE_BAD_SEARCH_SCORE_MULTIPLIER", 1),
     "teams": env.int("TEAMS_BAD_SEARCH_SCORE_MULTIPLIER", 1),
 }
+
+# Cut-off value for lots/few search results
+CUTOFF_SEARCH_RESULTS_VALUE = env.int("CUTOFF_SEARCH_RESULTS_VALUE", 20)
