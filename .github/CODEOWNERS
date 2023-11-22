@@ -1,0 +1,9 @@
+# Uses CodeOwners to ensure the relevant Tech Lead sees any relevant PRs
+#
+
+# Search: Marcel
+/src/extended_search/ @marcelkornblum
+/src/search/ @marcelkornblum
+
+# PeopleFinder: Cam
+/src/peoplefinder @CamLamb
