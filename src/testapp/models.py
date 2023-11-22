@@ -3,21 +3,19 @@ from django.db import models
 from extended_search.index import Indexed
 
 
-class MockModel(models.Model):
-    class Meta:
-        abstract = False
+class Model(models.Model):
+    ...
 
 
-class MockAbstractModel(models.Model):
+class AbstractModel(models.Model):
     class Meta:
         abstract = True
 
 
-class MockIndexedModel(Indexed, models.Model):
-    class Meta:
-        abstract = False
+class IndexedModel(Indexed, models.Model):
+    ...
 
 
-class MockAbstractIndexedModel(Indexed, models.Model):
+class AbstractIndexedModel(Indexed, models.Model):
     class Meta:
         abstract = True
