@@ -1,61 +1,170 @@
 import pytest
-from extended_search.index import Indexed
+
+from extended_search.index import DWIndexedField, class_is_indexed, get_indexed_models
+from testapp.models import (
+    AbstractIndexedModel,
+    AbstractModel,
+    IndexedModel,
+    InheritedStandardIndexedModel,
+    InheritedStandardIndexedModelWithChanges,
+    Model,
+    StandardIndexedModel,
+)
 
 
 class TestIndexed:
-    @pytest.mark.xfail
-    def test_get_indexed_fields_uses_submethod(self, mocker):
-        mock_submethod = mocker.patch(
-            "extended_search.index.Indexed._get_indexed_fields_from_mapping"
+    def test_get_indexed_fields(self):
+        indexed_fields = StandardIndexedModel.get_indexed_fields()
+        assert type(indexed_fields) == list
+        assert len(indexed_fields) == 1
+        assert type(indexed_fields[0]) == DWIndexedField
+        assert indexed_fields[0].autocomplete == False
+        assert indexed_fields[0].autocomplete_kwargs == {}
+        assert indexed_fields[0].boost == 5.0
+        assert indexed_fields[0].explicit == True
+        assert indexed_fields[0].field_name == "title"
+        assert indexed_fields[0].filter == False
+        assert indexed_fields[0].filter_kwargs == {}
+        assert indexed_fields[0].fuzzy == True
+        assert indexed_fields[0].keyword == False
+        assert indexed_fields[0].model_field_name == "title"
+        assert indexed_fields[0].parent_field == None
+        assert indexed_fields[0].search == True
+        assert indexed_fields[0].search_kwargs == {}
+        assert indexed_fields[0].tokenized == True
+
+        indexed_fields = InheritedStandardIndexedModelWithChanges.get_indexed_fields()
+        assert type(indexed_fields) == list
+        assert len(indexed_fields) == 1
+        assert type(indexed_fields[0]) == DWIndexedField
+        assert indexed_fields[0].autocomplete == False
+        assert indexed_fields[0].autocomplete_kwargs == {}
+        assert indexed_fields[0].boost == 50.0
+        assert indexed_fields[0].explicit == False
+        assert indexed_fields[0].field_name == "title"
+        assert indexed_fields[0].filter == False
+        assert indexed_fields[0].filter_kwargs == {}
+        assert indexed_fields[0].fuzzy == False
+        assert indexed_fields[0].keyword == False
+        assert indexed_fields[0].model_field_name == "title"
+        assert indexed_fields[0].parent_field == None
+        assert indexed_fields[0].search == True
+        assert indexed_fields[0].search_kwargs == {}
+        assert indexed_fields[0].tokenized == True
+
+    def test_get_indexed_fields_as_dict(self):
+        indexed_fields = StandardIndexedModel.get_indexed_fields(as_dict=True)
+        assert type(indexed_fields) == dict
+        assert "title" in indexed_fields
+        assert len(indexed_fields["title"]) == 1
+        assert type(indexed_fields["title"][0]) == DWIndexedField
+        assert indexed_fields["title"][0].autocomplete == False
+        assert indexed_fields["title"][0].autocomplete_kwargs == {}
+        assert indexed_fields["title"][0].boost == 5.0
+        assert indexed_fields["title"][0].explicit == True
+        assert indexed_fields["title"][0].field_name == "title"
+        assert indexed_fields["title"][0].filter == False
+        assert indexed_fields["title"][0].filter_kwargs == {}
+        assert indexed_fields["title"][0].fuzzy == True
+        assert indexed_fields["title"][0].keyword == False
+        assert indexed_fields["title"][0].model_field_name == "title"
+        assert indexed_fields["title"][0].parent_field == None
+        assert indexed_fields["title"][0].search == True
+        assert indexed_fields["title"][0].search_kwargs == {}
+        assert indexed_fields["title"][0].tokenized == True
+
+        indexed_fields = InheritedStandardIndexedModelWithChanges.get_indexed_fields(
+            as_dict=True
         )
-        Indexed.get_indexed_fields()
-        mock_submethod.assert_called_once_with("foo")
+        assert type(indexed_fields) == dict
+        assert "title" in indexed_fields
+        assert len(indexed_fields["title"]) == 1
+        assert type(indexed_fields["title"][0]) == DWIndexedField
+        assert indexed_fields["title"][0].autocomplete == False
+        assert indexed_fields["title"][0].autocomplete_kwargs == {}
+        assert indexed_fields["title"][0].boost == 50.0
+        assert indexed_fields["title"][0].explicit == False
+        assert indexed_fields["title"][0].field_name == "title"
+        assert indexed_fields["title"][0].filter == False
+        assert indexed_fields["title"][0].filter_kwargs == {}
+        assert indexed_fields["title"][0].fuzzy == False
+        assert indexed_fields["title"][0].keyword == False
+        assert indexed_fields["title"][0].model_field_name == "title"
+        assert indexed_fields["title"][0].parent_field == None
+        assert indexed_fields["title"][0].search == True
+        assert indexed_fields["title"][0].search_kwargs == {}
+        assert indexed_fields["title"][0].tokenized == True
 
-    @pytest.mark.xfail
-    def test_get_indexed_fields_returns_all_indexed_and_related_fields_and_no_others(
-        self, mocker
-    ):
-        mock_mapping = mocker.patch(
-            "extended_search.index.Indexed.get_mapping",
-            return_value=["foo"],
+    def test_generate_from_indexed_fields(self):
+        processed_index_fields = StandardIndexedModel.generate_from_indexed_fields()
+        assert type(processed_index_fields) == dict
+        assert "title" in processed_index_fields
+        assert len(processed_index_fields["title"]) == 2
+        processed_index_field_names = [
+            f.field_name for f in processed_index_fields["title"]
+        ]
+        assert "title" in processed_index_field_names
+        assert "title_explicit" in processed_index_field_names
+
+        processed_index_fields = (
+            InheritedStandardIndexedModelWithChanges.generate_from_indexed_fields()
         )
-        mocker.patch(
-            "extended_search.index.Indexed._get_indexed_fields_from_mapping",
-            return_value=[
-                "bam",
-            ],
-        )
-        assert len(Indexed.get_indexed_fields()) == 1
+        assert type(processed_index_fields) == dict
+        assert "title" in processed_index_fields
+        assert len(processed_index_fields["title"]) == 1
+        processed_index_field_names = [
+            f.field_name for f in processed_index_fields["title"]
+        ]
+        assert "title" in processed_index_field_names
+        assert "title_explicit" not in processed_index_field_names
 
-        mock_mapping.return_value = ["foo", "bar", "baz"]
-        assert len(Indexed.get_indexed_fields()) == 3
+    def test_get_search_fields(self):
+        search_fields = StandardIndexedModel.get_search_fields()
+        assert type(search_fields) == list
+        assert len(search_fields) == 2
+        search_fields_field_names = [f.field_name for f in search_fields]
+        assert "title" in search_fields_field_names
+        assert "title_explicit" in search_fields_field_names
 
-    @pytest.mark.xfail
-    def test_get_indexed_fields_uses_generate_fields(self, mocker):
-        raise AssertionError()
+        search_fields = InheritedStandardIndexedModelWithChanges.get_search_fields()
+        assert type(search_fields) == list
+        assert len(search_fields) == 1
+        search_fields_field_names = [f.field_name for f in search_fields]
+        assert "title" in search_fields_field_names
+        assert "title_explicit" not in search_fields_field_names
 
-    @pytest.mark.xfail
-    def test_get_search_fields_uses_indexed_fields_and_search_fields_attrs(
-        self, mocker
-    ):
-        raise AssertionError()
-
-    @pytest.mark.xfail
-    def test_get_search_fields_allows_indexed_fields_to_override_parent_fields(
-        self, mocker
-    ):
-        raise AssertionError()
-
-    @pytest.mark.xfail
-    def test_get_search_fields_uses_all_parent_indexed_model_fields(self, mocker):
-        raise AssertionError()
+    def test_has_unique_index_fields(self, mocker):
+        assert StandardIndexedModel.has_unique_index_fields()
+        assert not InheritedStandardIndexedModel.has_unique_index_fields()
+        assert InheritedStandardIndexedModelWithChanges.has_unique_index_fields()
 
 
 class TestModuleFunctions:
-    @pytest.mark.xfail
     def test_get_indexed_models(self, mocker):
-        raise AssertionError()
+        mock_model_1 = Model
+        mock_model_2 = AbstractModel
+        mock_model_3 = IndexedModel
+        mock_model_4 = AbstractIndexedModel
+        mock_get_models = mocker.patch(
+            "extended_search.index.apps.get_models",
+            return_value=[
+                mock_model_1,
+                mock_model_2,
+                mock_model_3,
+                mock_model_4,
+            ],
+        )
 
-    @pytest.mark.xfail
-    def test_class_is_indexed(self, mocker):
-        raise AssertionError()
+        indexed_models = get_indexed_models()
+
+        mock_get_models.assert_called_once()
+        assert mock_model_1 not in indexed_models
+        assert mock_model_2 not in indexed_models
+        assert mock_model_3 in indexed_models
+        assert mock_model_4 not in indexed_models
+
+    def test_class_is_indexed(self, db):
+        assert not class_is_indexed(Model)
+        assert not class_is_indexed(AbstractModel)
+        assert class_is_indexed(IndexedModel)
+        assert not class_is_indexed(AbstractIndexedModel)
