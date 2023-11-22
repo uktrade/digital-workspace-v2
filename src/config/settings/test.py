@@ -17,9 +17,10 @@ WAGTAILSEARCH_BACKENDS["default"] |= {  # noqa
     "AUTO_UPDATE": False,
 }
 
-INSTALLED_APPS += [  # noqa F405
+INSTALLED_APPS = [  # noqa F405
+    "testapp",
     "django_extensions",
-]
+] + INSTALLED_APPS
 
 # Remove the uk_staff_locations database
 del DATABASES["uk_staff_locations"]  # noqa F405
