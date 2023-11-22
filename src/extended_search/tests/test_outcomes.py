@@ -69,6 +69,20 @@ class TestGeneratedQuery:
         assert num_excludes == 1
 
 
+def create_test_user():
+    # Jane Smith - another normal user
+    user, _ = User.objects.get_or_create(
+        username="johnsmith",
+        first_name="John",
+        last_name="Smith",
+        email="john.smith@example.com",
+        legacy_sso_user_id="john-smith-sso-user-id",
+        is_staff=False,
+        is_superuser=False,
+    )
+    PersonService().create_user_profile(user)
+
+
 class TestExpectedSearchResults(TestCase):
     def setUp(self):
         """
@@ -82,12 +96,11 @@ class TestExpectedSearchResults(TestCase):
         - 1 team with "fruit" in the name
         - 1 of each of the above without any "fruit" content
         """
-        call_command("create_test_users")  # TODO: This is breaking on CI
+
+        create_test_user()
 
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()
-        self.content_owner = User.objects.filter(profile__isnull=False).get(
-            email="john.smith@example.com"
-        )
+        self.content_owner = User.objects.get(username="johnsmith")
         self.content_owner_pages = [
             GuidanceFactory.create(
                 parent=policies_and_guidance_home,
