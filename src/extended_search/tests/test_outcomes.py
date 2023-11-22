@@ -85,7 +85,9 @@ class TestExpectedSearchResults(TestCase):
         call_command("create_test_users")  # TODO: This is breaking on CI
 
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()
-        self.content_owner = User.objects.get(email="john.smith@example.com")
+        self.content_owner = User.objects.filter(profile__isnull=False).get(
+            email="john.smith@example.com"
+        )
         self.content_owner_pages = [
             GuidanceFactory.create(
                 parent=policies_and_guidance_home,
