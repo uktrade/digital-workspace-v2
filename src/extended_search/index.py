@@ -48,6 +48,7 @@ class Indexed(index.Indexed):
             model_field_names = []
             if class_is_indexed(model_class) and issubclass(model_class, Indexed):
                 for f in model_class.indexed_fields:
+                    f.configuration_model = model_class
                     if f.model_field_name not in model_field_names:
                         processed_index_fields[f.model_field_name] = []
                         model_field_names.append(f.model_field_name)
@@ -71,10 +72,11 @@ class Indexed(index.Indexed):
     processed_search_fields = {}
 
     @classmethod
-    def get_search_fields(cls):
+    def get_search_fields(cls, ignore_cache=False):
+        # @TODO test for "cache"
         if cls not in cls.processed_search_fields:
             cls.processed_search_fields[cls] = []
-        if cls.processed_search_fields[cls]:
+        if cls.processed_search_fields[cls] and not ignore_cache:
             return cls.processed_search_fields[cls]
 
         search_fields = super().get_search_fields()
@@ -129,20 +131,31 @@ def class_is_indexed(cls):
 
 class ModelFieldNameMixin:
     def __init__(
-        self, field_name, *args, model_field_name=None, parent_field=None, **kwargs
+        self,
+        field_name,
+        *args,
+        model_field_name=None,
+        parent_field=None,
+        configuration_model=None,
+        **kwargs,
     ):
         super().__init__(field_name, *args, **kwargs)
         self.model_field_name = model_field_name or field_name
         self.parent_field = parent_field
+        self.configuration_model = configuration_model
 
     def get_field(self, cls):
         return cls._meta.get_field(self.model_field_name)
 
     def get_definition_model(self, cls):
+        if self.configuration_model:
+            return self.configuration_model
+
         if base_cls := super().get_definition_model(cls):
             return base_cls
 
         # Find where it was defined by walking the inheritance tree
+
         for base_cls in inspect.getmro(cls):
             if self.get_base_model_field_name() in base_cls.__dict__:
                 return base_cls
@@ -333,6 +346,7 @@ class IndexedField(BaseField):
                     model_field_name=self.model_field_name,
                     boost=self.boost,
                     parent_field=parent_field,
+                    configuration_model=self.configuration_model,
                     **kwargs,
                 )
             )
@@ -350,6 +364,7 @@ class IndexedField(BaseField):
                     *variant_args,
                     model_field_name=self.model_field_name,
                     parent_field=parent_field,
+                    configuration_model=self.configuration_model,
                     **kwargs,
                 )
             )
@@ -367,6 +382,7 @@ class IndexedField(BaseField):
                     *variant_args,
                     model_field_name=self.model_field_name,
                     parent_field=parent_field,
+                    configuration_model=self.configuration_model,
                     **kwargs,
                 )
             )

@@ -5,26 +5,28 @@ from extended_search.index import Indexed
 
 
 class Model(models.Model):
-    ...
+    title = models.CharField(max_length=225)
 
 
-class AbstractModel(models.Model):
+class AbstractModel(Model):
     class Meta:
         abstract = True
 
 
-class IndexedModel(Indexed, models.Model):
+class IndexedModel(Indexed, Model):
     ...
 
 
-class AbstractIndexedModel(Indexed, models.Model):
+class AbstractIndexedModel(IndexedModel):
     class Meta:
         abstract = True
+
+
+class ChildModel(IndexedModel):
+    ...
 
 
 class StandardIndexedModel(IndexedModel):
-    title = models.CharField(max_length=255)
-
     indexed_fields = [
         IndexedField(
             "title",
