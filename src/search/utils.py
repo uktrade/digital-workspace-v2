@@ -5,6 +5,7 @@ from typing import Optional
 from django.conf import settings
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
+from extended_search.index import Indexed
 from extended_search.query import OnlyFields
 from extended_search.query_builder import CustomQueryBuilder
 from extended_search.settings import extended_search_settings
@@ -182,45 +183,37 @@ def get_query_info(fields, field, index_field, suffix_map):
     return fields
 
 
-def get_all_subqueries(query):
-    from content.models import ContentPage
-
-    subqueries = {"all_pages": [], "people": [], "teams": []}
+def get_query_info_for_model(model_class: Indexed, query: str) -> list:
+    query_info: list = []
     analyzer_field_suffices = [
         (k, v["index_fieldname_suffix"])
         for k, v in extended_search_settings["analyzers"].items()
     ]
-    for index_field in ContentPage.indexed_fields:
+    for index_field in model_class.indexed_fields:
         field = CustomQueryBuilder.swap_variables(
-            CustomQueryBuilder._build_search_query(ContentPage, index_field),
+            CustomQueryBuilder._build_search_query(model_class, index_field),
             query,
         )
-        get_query_info(
-            subqueries["all_pages"], field, index_field, analyzer_field_suffices
-        )
-    for index_field in Person.indexed_fields:
-        field = CustomQueryBuilder.swap_variables(
-            CustomQueryBuilder._build_search_query(Person, index_field),
-            query,
-        )
-        get_query_info(
-            subqueries["people"], field, index_field, analyzer_field_suffices
-        )
-    for index_field in Team.indexed_fields:
-        field = CustomQueryBuilder.swap_variables(
-            CustomQueryBuilder._build_search_query(Team, index_field),
-            query,
-        )
-        get_query_info(subqueries["teams"], field, index_field, analyzer_field_suffices)
-    return subqueries
+        get_query_info(query_info, field, index_field, analyzer_field_suffices)
+    return query_info
 
 
-# Gets the average of all the boosts related to the query so that a threshold is identified
 def get_bad_score_threshold(query, category):
+    """
+    Gets the average of all the boosts related to the query so that a threshold
+    is identified.
+    """
+    from search.templatetags.search import SEARCH_VECTORS
+
+    model_class = SEARCH_VECTORS[category].model
+    if not model_class:
+        return 0
+
+    model_query_info = get_query_info_for_model(model_class, query)
+
     boost_values = set()
-    subqueries = get_all_subqueries(query)
-    for subquery in subqueries[category]:
-        boost_values.add(round(subquery["boost"], 2))
+    for field_query_info in model_query_info:
+        boost_values.add(round(field_query_info["boost"], 2))
 
     avg_boost_value = sum(boost_values) / len(boost_values)
 

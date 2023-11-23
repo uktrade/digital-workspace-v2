@@ -13,55 +13,63 @@ def test_doctests():
 
 class TestBadScoreThreshold:
     def test_default(self, mocker):
+        from search.templatetags.search import SEARCH_VECTORS
+
         category = "test_category"
-        mock_get_all_subqueries = mocker.patch(
-            "search.utils.get_all_subqueries",
-            return_value={
-                category: [
-                    {
-                        "boost": 610,
-                    },
-                    {
-                        "boost": 52,
-                    },
-                    {
-                        "boost": 4,
-                    },
-                ],
-            },
-        )
         query = "test query"
+
+        search_vector = mocker.Mock()
+        search_vector.model = "test_model"
+        mock_get_query_info_for_model = mocker.patch(
+            "search.utils.get_query_info_for_model",
+            return_value=[
+                {"boost": 610},
+                {"boost": 52},
+                {"boost": 4},
+            ],
+        )
+        mocker.patch.dict(
+            SEARCH_VECTORS,
+            {category: search_vector},
+            clear=True,
+        )
 
         output = get_bad_score_threshold(query, category)
 
         assert output == 222
-        mock_get_all_subqueries.assert_called_once_with(query)
+        mock_get_query_info_for_model.assert_called_once_with(
+            search_vector.model, query
+        )
 
     @override_settings(BAD_SEARCH_SCORE_MULTIPLIERS={"test_category": 2})
     def test_with_settings(self, mocker):
+        from search.templatetags.search import SEARCH_VECTORS
+
         category = "test_category"
-        mock_get_all_subqueries = mocker.patch(
-            "search.utils.get_all_subqueries",
-            return_value={
-                category: [
-                    {
-                        "boost": 610,
-                    },
-                    {
-                        "boost": 52,
-                    },
-                    {
-                        "boost": 4,
-                    },
-                ],
-            },
-        )
         query = "test query"
 
+        search_vector = mocker.Mock()
+        search_vector.model = "test_model"
+        mock_get_query_info_for_model = mocker.patch(
+            "search.utils.get_query_info_for_model",
+            return_value=[
+                {"boost": 610},
+                {"boost": 52},
+                {"boost": 4},
+            ],
+        )
+
+        mocker.patch.dict(
+            SEARCH_VECTORS,
+            {category: search_vector},
+            clear=True,
+        )
         output = get_bad_score_threshold(query, category)
 
         assert output == 444
-        mock_get_all_subqueries.assert_called_once_with(query)
+        mock_get_query_info_for_model.assert_called_once_with(
+            search_vector.model, query
+        )
 
 
 class TestHasOnlyBadResults:

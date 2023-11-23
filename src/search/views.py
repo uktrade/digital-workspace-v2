@@ -11,12 +11,10 @@ from django.views.decorators.http import require_http_methods
 
 from content.models import ContentPage
 from extended_search.models import Setting as SearchSetting
-from extended_search.query import OnlyFields
-from extended_search.query_builder import CustomQueryBuilder
 from extended_search.settings import settings_singleton
 from peoplefinder.models import Person, Team
 from search.templatetags import search as search_template_tag
-from search.utils import get_all_subqueries
+from search.utils import get_query_info_for_model
 
 logger = logging.getLogger(__name__)
 
@@ -117,7 +115,11 @@ def explore(request: HttpRequest) -> HttpResponse:
         if "boost_parts" in k
     ]
 
-    subqueries = get_all_subqueries(query)
+    subqueries = {
+        "pages": get_query_info_for_model(ContentPage, query),
+        "people": get_query_info_for_model(Person, query),
+        "teams": get_query_info_for_model(Team, query),
+    }
 
     context = {
         "search_url": reverse("search:explore"),

@@ -22,7 +22,7 @@ SEARCH_CATEGORIES: set[SearchCategory] = {
     "tools",
     "news",
 }
-SEARCH_VECTORS: dict[str, search_vectors.SearchVector] = {
+SEARCH_VECTORS: dict[str, search_vectors.ModelSearchVector] = {
     "all_pages": search_vectors.AllPagesSearchVector,
     "people": search_vectors.PeopleSearchVector,
     "teams": search_vectors.TeamsSearchVector,
