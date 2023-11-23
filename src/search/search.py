@@ -9,20 +9,19 @@ from working_at_dit.models import PoliciesAndGuidanceHome
 
 
 class SearchVector:
-    def __init__(self, request, annotate_score=False):
+    def __init__(self, request):
         self.request = request
-        self.annotate_score = annotate_score
 
     def _wagtail_search(self, queryset, query, *args, **kwargs):
         """
         Allows e.g. score annotation without polluting overridden search method
         """
-        return_method = queryset.search(query, *args, **kwargs)
-
-        if self.annotate_score:
-            return_method = return_method.annotate_score("_score")
+        return_method = queryset.search(query, *args, **kwargs).annotate_score("_score")
 
         return return_method
+
+    def _wagtail_autocomplete(self, queryset, query, *args, **kwargs):
+        return queryset.autocomplete(query, *args, **kwargs)
 
     def get_queryset(self):
         raise NotImplementedError
@@ -51,6 +50,10 @@ class PagesSearchVector(SearchVector):
 
     def pinned(self, query):
         return self.get_queryset().pinned(query)
+
+    def autocomplete(self, query, *args, **kwargs):
+        queryset = self.get_queryset().not_pinned(query)
+        return self._wagtail_autocomplete(queryset, query, *args, **kwargs)
 
     def search(self, query, *args, **kwargs):
         queryset = self.get_queryset().not_pinned(query)
@@ -107,6 +110,9 @@ class PeopleSearchVector(SearchVector):
         )
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
+    def autocomplete(self, query, *args, **kwargs):
+        return self._wagtail_autocomplete(self.get_queryset(), query, *args, **kwargs)
+
 
 class TeamsSearchVector(SearchVector):
     def get_queryset(self):
@@ -116,3 +122,6 @@ class TeamsSearchVector(SearchVector):
         queryset = self.get_queryset()
         query = get_search_query(TeamIndexManager, query, Team, *args, **kwargs)
         return self._wagtail_search(queryset, query, *args, **kwargs)
+
+    def autocomplete(self, query, *args, **kwargs):
+        return self._wagtail_autocomplete(self.get_queryset(), query, *args, **kwargs)

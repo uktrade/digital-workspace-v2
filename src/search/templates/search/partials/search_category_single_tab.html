@@ -1,6 +1,6 @@
 {% load search %}
 {% search_count category=search_count_category as hits %}
-<a href="{% url 'search:category' name %}?query={{ search_query }}"
+<a href="{% url 'search:category' name %}?query={{ search_query }}&tab_override=True"
    class="govuk-!-font-size-19 govuk-link govuk-link--no-underline govuk-link--no-visited-state"
    {% if search_category == name %}data-selected{% endif %}
    data-search-category-name="{{ name }}"
