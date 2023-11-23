@@ -71,7 +71,7 @@ class TestGeneratedQuery:
 
 def create_test_user():
     # Jane Smith - another normal user
-    user, _ = User.objects.get_or_create(
+    user, created = User.objects.get_or_create(
         username="johnsmith",
         first_name="John",
         last_name="Smith",
@@ -80,7 +80,8 @@ def create_test_user():
         is_staff=False,
         is_superuser=False,
     )
-    PersonService().create_user_profile(user)
+    if created:
+        PersonService().create_user_profile(user)
 
 
 class TestExpectedSearchResults(TestCase):
