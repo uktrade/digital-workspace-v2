@@ -215,6 +215,9 @@ fixtree:
 test:
 	$(testrunner) pytest -m "not e2e" --reuse-db $(tests)
 
+test-fresh:
+	$(testrunner) pytest -m "not e2e" $(tests)
+
 test-e2e: up-all
 	docker-compose exec playwright poetry run pytest -m "e2e" $(tests)
 	docker-compose stop playwright
