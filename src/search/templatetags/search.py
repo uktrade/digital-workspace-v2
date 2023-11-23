@@ -40,7 +40,7 @@ def search_category(
     tab_name=None,
     limit=None,
     show_heading=False,
-    show_bad_threshold_message=True,
+    show_bad_results_message=True,
 ):
     request = context["request"]
     query = context["search_query"]
@@ -86,7 +86,7 @@ def search_category(
         "count": count,
         "is_results_count_low": count < settings.CUTOFF_SEARCH_RESULTS_VALUE,
         "show_bad_results_message": (
-            show_bad_threshold_message
+            show_bad_results_message
             and has_only_bad_results(
                 query, category, pinned_results, search_vector_results
             )
