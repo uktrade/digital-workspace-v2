@@ -231,26 +231,82 @@ class TestIndexedField:
             == 3
         )
 
-    def test_generate_fields(self):
+    def test_generate_fields(self, mocker):
         raise AssertionError()
 
-    def test_generate_search_fields(self):
+    def test_generate_search_fields(self, mocker):
         raise AssertionError()
 
-    def test_generate_autocomplete_fields(self):
+    def test_generate_autocomplete_fields(self, mocker):
         raise AssertionError()
 
-    def test_generate_filter_fields(self):
-        raise AssertionError()
+    def test_generate_filter_fields(self, mocker):
+        mock_get_variants = mocker.patch(
+            "extended_search.index.IndexedField.get_filter_field_variants",
+            return_value=[],
+        )
+        mock_field = mocker.patch("extended_search.index.FilterField")
+        field = IndexedField("foo", model_field_name="bar")
+        assert field.generate_filter_fields() == []
+        mock_get_variants.return_value = [
+            (("arg", "arg2"), {"kwarg": "value"}),
+        ]
+        result = field.generate_filter_fields()
+        assert len(result) == 1
+        assert isinstance(result[0], mocker.MagicMock)
+        mock_field.assert_called_once_with(
+            "arg",
+            "arg2",
+            model_field_name="bar",
+            parent_field=None,
+            configuration_model=None,
+            kwarg="value",
+        )
+
+        mock_field.reset_mock()
+        field.parent_field = "baz"
+        field.configuration_model = "foobarbaz"
+        result = field.generate_filter_fields()
+        mock_field.assert_called_once_with(
+            "arg",
+            "arg2",
+            model_field_name="bar",
+            parent_field="baz",
+            configuration_model="foobarbaz",
+            kwarg="value",
+        )
+
+        mock_field.reset_mock()
+        field.filter_kwargs = {"another": 33, "yet_another": True}
+        result = field.generate_filter_fields()
+        mock_field.assert_called_once_with(
+            "arg",
+            "arg2",
+            model_field_name="bar",
+            parent_field="baz",
+            configuration_model="foobarbaz",
+            kwarg="value",
+            another=33,
+            yet_another=True,
+        )
 
     def test_get_search_field_variants(self):
-        raise AssertionError()
+        field = IndexedField("foo", model_field_name="bar", search=False)
+        assert field.get_search_field_variants() == []
+        field.search = True
+        assert field.get_search_field_variants() == [(("bar",), {})]
 
     def test_get_autocomplete_field_variants(self):
-        raise AssertionError()
+        field = IndexedField("foo", model_field_name="bar", autocomplete=False)
+        assert field.get_autocomplete_field_variants() == []
+        field.autocomplete = True
+        assert field.get_autocomplete_field_variants() == [(("bar",), {})]
 
     def test_get_filter_field_variants(self):
-        raise AssertionError()
+        field = IndexedField("foo", model_field_name="bar", filter=False)
+        assert field.get_filter_field_variants() == []
+        field.filter = True
+        assert field.get_filter_field_variants() == [(("bar",), {})]
 
 
 class TestMultiQueryIndexedField:
@@ -305,13 +361,35 @@ class TestMultiQueryIndexedField:
         assert field.fuzzy
 
     def test_get_search_analyzers(self):
-        raise AssertionError()
+        field = MultiQueryIndexedField("foo")
+        assert field.get_search_analyzers() == set()
+        field = MultiQueryIndexedField("foo", tokenized=True)
+        assert field.get_search_analyzers() == {AnalysisType.TOKENIZED}
+        field = MultiQueryIndexedField("foo", explicit=True)
+        assert field.get_search_analyzers() == {AnalysisType.EXPLICIT}
+        field = MultiQueryIndexedField("foo", search=True)
+        assert field.get_search_analyzers() == {AnalysisType.TOKENIZED}
+        field = MultiQueryIndexedField("foo", search=True, explicit=True)
+        assert field.get_search_analyzers() == {AnalysisType.EXPLICIT}
+        field = MultiQueryIndexedField("foo", search=True, tokenized=True)
+        assert field.get_search_analyzers() == {AnalysisType.TOKENIZED}
+        field = MultiQueryIndexedField("foo", explicit=True, tokenized=True)
+        assert field.get_search_analyzers() == {
+            AnalysisType.EXPLICIT,
+            AnalysisType.TOKENIZED,
+        }
 
     def test_get_autocomplete_analyzers(self):
-        raise AssertionError()
+        field = MultiQueryIndexedField("foo", autocomplete=False)
+        assert field.get_autocomplete_analyzers() == set()
+        field.autocomplete = True
+        assert field.get_autocomplete_analyzers() == {AnalysisType.NGRAM}
 
     def test_get_filter_analyzers(self):
-        raise AssertionError()
+        field = MultiQueryIndexedField("foo", filter=False)
+        assert field.get_filter_analyzers() == set()
+        field.filter = True
+        assert field.get_filter_analyzers() == {AnalysisType.FILTER}
 
     def test_get_search_field_variants(self, mocker):
         mock_get_name = mocker.patch(
@@ -332,7 +410,7 @@ class TestMultiQueryIndexedField:
         mock_analyzers.return_value = [AnalysisType.TOKENIZED]
         assert field.get_search_field_variants() == [
             (
-                "--field-name--",
+                ("--field-name--",),
                 {
                     "es_extra": {
                         "analyzer": settings.extended_search_settings["analyzers"][
@@ -344,6 +422,32 @@ class TestMultiQueryIndexedField:
         ]
         mock_analyzers.assert_called_once_with()
         mock_get_name.assert_called_once_with("foo", AnalysisType.TOKENIZED)
+
+        mock_analyzers.reset_mock()
+        mock_get_name.reset_mock()
+        mock_analyzers.return_value = [AnalysisType.EXPLICIT, AnalysisType.TOKENIZED]
+        assert field.get_search_field_variants() == [
+            (
+                ("--field-name--",),
+                {
+                    "es_extra": {
+                        "analyzer": settings.extended_search_settings["analyzers"][
+                            AnalysisType.EXPLICIT.value
+                        ]["es_analyzer"]
+                    }
+                },
+            ),
+            (
+                ("--field-name--",),
+                {
+                    "es_extra": {
+                        "analyzer": settings.extended_search_settings["analyzers"][
+                            AnalysisType.TOKENIZED.value
+                        ]["es_analyzer"]
+                    }
+                },
+            ),
+        ]
 
 
 class TestDWIndexedField:
@@ -377,7 +481,7 @@ class TestDWIndexedField:
         )
         field = DWIndexedField("foo", keyword=False)
         assert field.get_search_analyzers() == set()
-        field = DWIndexedField("foo", keyword=True)
+        field.keyword = True
         assert field.get_search_analyzers() == {AnalysisType.KEYWORD}
 
 
