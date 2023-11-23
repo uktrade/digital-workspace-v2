@@ -2,10 +2,11 @@ import pytest
 from django.contrib.auth.models import Group
 from django.core.management import call_command
 
+from content.models import BasePage
 from peoplefinder.management.commands.create_people_finder_groups import (
     TEAM_ADMIN_GROUP_NAME,
 )
-from peoplefinder.models import Team
+from peoplefinder.models import Team, Person
 from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.person import PersonService
 from user.models import User
@@ -56,6 +57,12 @@ def django_db_setup(django_db_setup, django_db_blocker):
         assert AuditLogService.get_audit_log(user_john_smith.profile).count() == 2
 
         call_command("update_index")
+
+        yield
+
+        Team.objects.all().delete()
+        Person.objects.all().delete()
+        User.objects.all().delete()
 
 
 @pytest.fixture
