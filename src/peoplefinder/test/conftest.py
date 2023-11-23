@@ -1,6 +1,7 @@
 import pytest
 from django.contrib.auth.models import Group
 from django.core.management import call_command
+from django.db import connection
 
 from content.models import BasePage
 from peoplefinder.management.commands.create_people_finder_groups import (
@@ -63,6 +64,11 @@ def django_db_setup(django_db_setup, django_db_blocker):
         Team.objects.all().delete()
         Person.objects.all().delete()
         User.objects.all().delete()
+        with connection.cursor() as cursor:
+            cursor.execute("ALTER SEQUENCE peoplefinder_team_id_seq RESTART")
+            cursor.execute("UPDATE peoplefinder_team SET id = DEFAULT")
+            cursor.execute("ALTER SEQUENCE peoplefinder_newperson_id_seq RESTART")
+            cursor.execute("UPDATE peoplefinder_person SET id = DEFAULT")
 
 
 @pytest.fixture

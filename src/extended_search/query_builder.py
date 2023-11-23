@@ -15,6 +15,7 @@ from extended_search.index import (
     RelatedFields,
     SearchField,
     get_indexed_models,
+    get_indexed_field_name,
 )
 from extended_search.query import Filtered, Nested, OnlyFields
 from extended_search.settings import extended_search_settings, get_settings_field_key
@@ -377,14 +378,3 @@ class CustomQueryBuilder(QueryBuilder):
             ):
                 extended_model_classes.append(indexed_model)
         return extended_model_classes
-
-
-def get_indexed_field_name(
-    model_field_name: str,
-    analyzer: AnalysisType,
-):
-    field_name_suffix = (
-        extended_search_settings["analyzers"][analyzer.value]["index_fieldname_suffix"]
-        or ""
-    )
-    return f"{model_field_name}{field_name_suffix}"

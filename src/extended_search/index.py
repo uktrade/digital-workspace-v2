@@ -16,6 +16,11 @@ from extended_search.types import AnalysisType
 logger = logging.getLogger(__name__)
 
 
+#############################
+# Wagtail basic overrides
+#############################
+
+
 class Indexed(index.Indexed):
     search_fields = []
 
@@ -282,12 +287,6 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
 
 
 #############################
-# Wagtail overrides above
-# Our custom code below
-#############################
-
-
-#############################
 # One-to-many supporting code
 #############################
 
@@ -325,17 +324,15 @@ class IndexedField(BaseField):
             self.is_relation_of(parent_field)
 
         if self.search:
-            generated_fields += self.generate_search_fields(parent_field)
+            generated_fields += self.generate_search_fields()
         if self.autocomplete:
-            generated_fields += self.generate_autocomplete_fields(parent_field)
+            generated_fields += self.generate_autocomplete_fields()
         if self.filter:
-            generated_fields += self.generate_filter_fields(parent_field)
+            generated_fields += self.generate_filter_fields()
 
         return generated_fields
 
-    def generate_search_fields(
-        self, parent_field: Optional[BaseField] = None
-    ) -> list[SearchField]:
+    def generate_search_fields(self) -> list[SearchField]:
         generated_fields = []
         for variant_args, variant_kwargs in self.get_search_field_variants():
             kwargs = self.search_kwargs.copy()
@@ -345,16 +342,14 @@ class IndexedField(BaseField):
                     *variant_args,
                     model_field_name=self.model_field_name,
                     boost=self.boost,
-                    parent_field=parent_field,
+                    parent_field=self.parent_field,
                     configuration_model=self.configuration_model,
                     **kwargs,
                 )
             )
         return generated_fields
 
-    def generate_autocomplete_fields(
-        self, parent_field: Optional[BaseField] = None
-    ) -> list[AutocompleteField]:
+    def generate_autocomplete_fields(self) -> list[AutocompleteField]:
         generated_fields = []
         for variant_args, variant_kwargs in self.get_autocomplete_field_variants():
             kwargs = self.autocomplete_kwargs.copy()
@@ -363,16 +358,14 @@ class IndexedField(BaseField):
                 AutocompleteField(
                     *variant_args,
                     model_field_name=self.model_field_name,
-                    parent_field=parent_field,
+                    parent_field=self.parent_field,
                     configuration_model=self.configuration_model,
                     **kwargs,
                 )
             )
         return generated_fields
 
-    def generate_filter_fields(
-        self, parent_field: Optional[BaseField] = None
-    ) -> list[FilterField]:
+    def generate_filter_fields(self) -> list[FilterField]:
         generated_fields = []
         for variant_args, variant_kwargs in self.get_filter_field_variants():
             kwargs = self.filter_kwargs.copy()
@@ -381,7 +374,7 @@ class IndexedField(BaseField):
                 FilterField(
                     *variant_args,
                     model_field_name=self.model_field_name,
-                    parent_field=parent_field,
+                    parent_field=self.parent_field,
                     configuration_model=self.configuration_model,
                     **kwargs,
                 )
@@ -464,7 +457,6 @@ class MultiQueryIndexedField(IndexedField):
         return analyzers
 
     def get_search_field_variants(self):
-        from extended_search.query_builder import get_indexed_field_name
         from extended_search.settings import extended_search_settings
 
         return [
@@ -480,12 +472,6 @@ class MultiQueryIndexedField(IndexedField):
             )
             for analyzer in self.get_search_analyzers()
         ]
-
-    # def get_filter_field_variants(self):
-    #     return super().get_filter_field_variants()
-
-    # def get_autocomplete_field_variants(self):
-    #     return super().get_autocomplete_field_variants()
 
 
 #############################
@@ -511,3 +497,16 @@ class DWIndexedField(MultiQueryIndexedField):
         if self.keyword:
             analyzers.add(AnalysisType.KEYWORD)
         return analyzers
+
+
+def get_indexed_field_name(
+    model_field_name: str,
+    analyzer: AnalysisType,
+):
+    from extended_search.settings import extended_search_settings
+
+    field_name_suffix = (
+        extended_search_settings["analyzers"][analyzer.value]["index_fieldname_suffix"]
+        or ""
+    )
+    return f"{model_field_name}{field_name_suffix}"
