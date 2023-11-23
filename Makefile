@@ -223,7 +223,7 @@ test-all:
 	$(testrunner) pytest
 
 coverage:
-	$(testrunner) ./scripts/coverage.sh
+	$(testrunner) ../scripts/coverage.sh
 
 e2e-codegen:
 	cp .env .env.orig
