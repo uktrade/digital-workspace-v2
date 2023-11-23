@@ -9,7 +9,6 @@ from extended_search.index import Indexed
 from extended_search.query import OnlyFields
 from extended_search.query_builder import CustomQueryBuilder
 from extended_search.settings import extended_search_settings
-from peoplefinder.models import Person, Team
 
 
 def sanitize_search_query(query: Optional[str] = None) -> str:
