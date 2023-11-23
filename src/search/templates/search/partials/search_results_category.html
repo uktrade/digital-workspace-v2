@@ -1,12 +1,14 @@
 <div class="search-results__category">
     {% if show_bad_results_message %}
         <div class="low-score-message-container">
-            {% if search_category == "people" %}
-                <h2 class="govuk-heading-s">We couldn't find an exact match for '{{ search_query }}'</h2>
-                <p class="govuk-body-s">They may no longer work at DBT. Showing below are similar profiles.</p>
+            {% if is_results_count_low %}
+                <p class="govuk-body-s">
+                    You can improve your search results by checking your spelling or trying a different search term.
+                </p>
             {% else %}
-                <h2 class="govuk-heading-s">We couldn't find a strong match for '{{ search_query }}'</h2>
-                <p class="govuk-body-s">Try using fewer keyword or...</p>
+                <p class="govuk-body-s">
+                    You can improve your search results by using fewer keywords and searching for something less specific.
+                </p>
             {% endif %}
         </div>
         <script lang="javascript">
@@ -15,9 +17,7 @@
             });
         </script>
     {% endif %}
-    {% if show_heading %}
-        <h3 class="govuk-heading-s">{{ count }} {{ result_type_display }}</h3>
-    {% endif %}
+    {% if show_heading %}<h3 class="govuk-heading-s">{{ count }} {{ result_type_display }}</h3>{% endif %}
     {{ page }}
     <div class="search-results__list"
          data-search-category="{{ search_category }}">

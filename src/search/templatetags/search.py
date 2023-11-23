@@ -1,6 +1,7 @@
 from typing import Literal, Tuple
 
 from django import template
+from django.conf import settings
 from django.core.paginator import Paginator
 
 from search import search as search_vectors
@@ -79,6 +80,7 @@ def search_category(
         "search_results": search_results,
         "search_query": query,
         "count": count,
+        "is_results_count_low": count < settings.CUTOFF_SEARCH_RESULTS_VALUE,
         "show_bad_results_message": (
             show_bad_threshold_message
             and has_only_bad_results(
