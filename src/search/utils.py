@@ -7,8 +7,7 @@ from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
 from extended_search.backends.query import OnlyFields
 from extended_search.settings import extended_search_settings
-from peoplefinder.models import (Person, PersonIndexManager, Team,
-                                 TeamIndexManager)
+from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
 
 
 def sanitize_search_query(query: Optional[str] = None) -> str:
