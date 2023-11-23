@@ -35,18 +35,15 @@ PAGE_SIZE = 20
     "search/partials/search_results_category.html", takes_context=True
 )
 # @silk_profile(name="Search.TemplateTag.category")
-def search_category(context, *, category, limit=None, show_heading=False):
+def search_category(
+    context, *, category, tab_name=None, limit=None, show_heading=False
+):
     request = context["request"]
     query = context["search_query"]
     page = int(context["page"])
 
     search_vector = SEARCH_VECTORS[category](request)
-
-    # `list` needs to be called to force the database query to be evaluated
-    # before passing the value to the paginator. If this isn't done, the
-    # pages will have the pinned results removed after pagination and cause
-    # the pages to have odd lengths.
-    search_results = search_vector.search_results(query)
+    search_results = search_vector.search(query)
     search_results_count = search_results.count()
 
     if limit:
@@ -79,12 +76,40 @@ def search_category(context, *, category, limit=None, show_heading=False):
         "pinned_results": pinned_results,
         "num_pinned_results": f"{len(pinned_results)}",
         "search_results": search_results,
+        "tab_name": tab_name,
+        "tab_override": context["tab_override"],
         "search_query": query,
         "count": total_count,
         "show_heading": show_heading,
         "result_type_display": result_type_display,
         "is_limited": limit is not None and total_count > limit,
     }
+
+
+# Method for querying using wagtails default autocomplete functionality
+#
+def autocomplete(request, query):
+    limit = 3
+    search_results = {}
+
+    search_results.update(
+        {"tools": list(SEARCH_VECTORS["tools"](request).autocomplete(query)[:limit])}
+    )
+    search_results.update(
+        {
+            "pages": list(
+                SEARCH_VECTORS["all_pages"](request).autocomplete(query)[:limit]
+            )
+        }
+    )
+    search_results.update(
+        {"people": list(SEARCH_VECTORS["people"](request).autocomplete(query)[:limit])}
+    )
+    search_results.update(
+        {"teams": list(SEARCH_VECTORS["teams"](request).autocomplete(query)[:limit])}
+    )
+
+    return search_results
 
 
 @register.simple_tag(takes_context=True)

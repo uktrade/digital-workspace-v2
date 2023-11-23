@@ -9,20 +9,17 @@ from working_at_dit.models import PoliciesAndGuidanceHome
 
 
 class SearchVector:
-    def __init__(self, request, annotate_score=False):
+    def __init__(self, request):
         self.request = request
-        self.annotate_score = annotate_score
 
     def _wagtail_search(self, queryset, query_str, *args, **kwargs):
         """
-        Allows e.g. score annotation without polluting overridden search method
+        Allows base method overrides without polluting search method
         """
-        return_method = queryset.search(query_str, *args, **kwargs)
+        return queryset.search(query_str, *args, **kwargs).annotate_score("_score")
 
-        if self.annotate_score:
-            return_method = return_method.annotate_score("_score")
-
-        return return_method
+    def _wagtail_autocomplete(self, queryset, query, *args, **kwargs):
+        return queryset.autocomplete(query, *args, **kwargs)
 
     def get_queryset(self):
         raise NotImplementedError
@@ -31,8 +28,9 @@ class SearchVector:
         queryset = self.get_queryset()
         return self._wagtail_search(queryset, query_str, *args, **kwargs)
 
-    def search_results(self, query_str, *args, **kwargs):
-        return self.search(query_str)
+    def autocomplete(self, query_str, *args, **kwargs):
+        queryset = self.get_queryset()
+        return self._wagtail_autocomplete(queryset, query_str, *args, **kwargs)
 
     def pinned(self, query):
         return []
@@ -59,6 +57,10 @@ class PagesSearchVector(ModelSearchVector):
 
     def pinned(self, query_str):
         return self.get_queryset().pinned(query_str)
+
+    def autocomplete(self, query_str, *args, **kwargs):
+        queryset = self.get_queryset().not_pinned(query_str)
+        return self._wagtail_autocomplete(queryset, query_str, *args, **kwargs)
 
     def search(self, query_str, *args, **kwargs):
         queryset = self.get_queryset().not_pinned(query_str)
