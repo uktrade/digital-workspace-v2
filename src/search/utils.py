@@ -7,7 +7,8 @@ from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
 from extended_search.backends.query import OnlyFields
 from extended_search.settings import extended_search_settings
-from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
+from peoplefinder.models import (Person, PersonIndexManager, Team,
+                                 TeamIndexManager)
 
 
 def sanitize_search_query(query: Optional[str] = None) -> str:
@@ -219,12 +220,10 @@ def get_bad_score_threshold(query, category):
 
 # Triggers the conditional rendering on the FE message if the search yields low score results
 def has_only_bad_results(query, category, pinned_results, search_results):
-    # if pinned_results:
-    #     return False
-    # if not search_results:
-    #     return False
-    # bad_score_threshold = get_bad_score_threshold(query, category)
-    # highest_score = search_results[0]._score
-    # if highest_score > bad_score_threshold:
-    #     return False
-    return True
+    if pinned_results:
+        return False
+    if not search_results:
+        return False
+    bad_score_threshold = get_bad_score_threshold(query, category)
+    highest_score = search_results[0]._score
+    return highest_score <= bad_score_threshold
