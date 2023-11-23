@@ -2,6 +2,13 @@ import re
 import unicodedata
 from typing import Optional
 
+from django.conf import settings
+from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
+
+from extended_search.backends.query import OnlyFields
+from extended_search.settings import extended_search_settings
+from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
+
 
 def sanitize_search_query(query: Optional[str] = None) -> str:
     if query is None:
@@ -136,3 +143,86 @@ def split_query(query: str) -> list[str]:
         parts.append(group)
 
     return parts
+
+
+def get_query_info(fields, field, mapping, suffix_map):
+    if field is None:
+        return fields
+
+    if isinstance(field, Or):
+        for f in field.subqueries:
+            fields = get_query_info(fields, f, mapping, suffix_map)
+
+    elif isinstance(field, OnlyFields):
+        core_field = field.subquery.subquery
+
+        analyzer_name = "tokenizer"
+        for analyzer, suffix in suffix_map:
+            if suffix and suffix in field.fields[0]:
+                analyzer_name = analyzer
+
+        if isinstance(core_field, Phrase):
+            query_type = "phrase"
+        elif isinstance(core_field, Fuzzy):
+            query_type = "fuzzy"
+        elif isinstance(core_field, PlainText):
+            if core_field.operator == "and":
+                query_type = "query_and"
+            else:
+                query_type = "query_or"
+        fields.append(
+            {
+                "query_type": query_type,
+                "field": mapping["model_field_name"],
+                "analyzer": analyzer_name,
+                "boost": field.subquery.boost,
+            }
+        )
+    return fields
+
+
+def get_all_subqueries(query):
+    from content.models import ContentPage, ContentPageIndexManager
+
+    subqueries = {"all_pages": [], "people": [], "teams": []}
+    analyzer_field_suffices = [
+        (k, v["index_fieldname_suffix"])
+        for k, v in extended_search_settings["analyzers"].items()
+    ]
+    for mapping in ContentPageIndexManager.get_mapping():
+        field = ContentPageIndexManager._get_search_query_from_mapping(
+            query, ContentPage, mapping
+        )
+        get_query_info(subqueries["all_pages"], field, mapping, analyzer_field_suffices)
+    for mapping in PersonIndexManager.get_mapping():
+        field = PersonIndexManager._get_search_query_from_mapping(
+            query, Person, mapping
+        )
+        get_query_info(subqueries["people"], field, mapping, analyzer_field_suffices)
+    for mapping in TeamIndexManager.get_mapping():
+        field = TeamIndexManager._get_search_query_from_mapping(query, Team, mapping)
+        get_query_info(subqueries["teams"], field, mapping, analyzer_field_suffices)
+    return subqueries
+
+
+# Gets the average of all the boosts related to the query so that a threshold is identified
+def get_bad_score_threshold(query, category):
+    boost_values = set()
+    subqueries = get_all_subqueries(query)
+    for subquery in subqueries[category]:
+        boost_values.add(round(subquery["boost"], 2))
+
+    avg_boost_value = sum(boost_values) / len(boost_values)
+
+    return avg_boost_value * settings.BAD_SEARCH_SCORE_MULTIPLIERS.get(category, 1)
+
+
+# Triggers the conditional rendering on the FE message if the search yields low score results
+def has_only_bad_results(query, category, pinned_results, search_results):
+    if pinned_results:
+        return False
+    if not search_results:
+        return False
+    bad_score_threshold = get_bad_score_threshold(query, category)
+    highest_score = search_results[0]._score
+    return highest_score <= bad_score_threshold

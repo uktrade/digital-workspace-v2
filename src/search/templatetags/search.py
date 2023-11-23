@@ -1,10 +1,11 @@
 from typing import Literal, Tuple
 
 from django import template
+from django.conf import settings
 from django.core.paginator import Paginator
 
 from search import search as search_vectors
-
+from search.utils import has_only_bad_results
 
 register = template.Library()
 
@@ -33,7 +34,13 @@ PAGE_SIZE = 20
     "search/partials/search_results_category.html", takes_context=True
 )
 def search_category(
-    context, *, category, tab_name=None, limit=None, show_heading=False
+    context,
+    *,
+    category,
+    tab_name=None,
+    limit=None,
+    show_heading=False,
+    show_bad_results_message=True,
 ):
     request = context["request"]
     query = context["search_query"]
@@ -41,11 +48,12 @@ def search_category(
 
     search_vector = SEARCH_VECTORS[category](request)
     pinned_results = search_vector.pinned(query)
+    search_vector_results = search_vector.search(query)
     # `list` needs to be called to force the database query to be evaluated
     # before passing the value to the paginator. If this isn't done, the
     # pages will have the pinned results removed after pagination and cause
     # the pages to have odd lengths.
-    search_results = list(pinned_results) + list(search_vector.search(query))
+    search_results = list(pinned_results) + list(search_vector_results)
     count = len(search_results)
 
     if limit:
@@ -76,6 +84,13 @@ def search_category(
         "tab_override": context["tab_override"],
         "search_query": query,
         "count": count,
+        "is_results_count_low": count < settings.CUTOFF_SEARCH_RESULTS_VALUE,
+        "show_bad_results_message": (
+            show_bad_results_message
+            and has_only_bad_results(
+                query, category, pinned_results, search_vector_results
+            )
+        ),
         "show_heading": show_heading,
         "result_type_display": result_type_display,
         "is_limited": limit is not None and count > limit,

@@ -16,9 +16,8 @@ class SearchVector:
         """
         Allows e.g. score annotation without polluting overridden search method
         """
-        return_method = queryset.search(query, *args, **kwargs).annotate_score("_score")
 
-        return return_method
+        return queryset.search(query, *args, **kwargs).annotate_score("_score")
 
     def _wagtail_autocomplete(self, queryset, query, *args, **kwargs):
         return queryset.autocomplete(query, *args, **kwargs)

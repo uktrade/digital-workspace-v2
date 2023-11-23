@@ -680,13 +680,22 @@ DJANGO_FEEDBACK_GOVUK = {
 # Leaving Service
 LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
 
-
 # django-waffle
 # https://waffle.readthedocs.io/en/stable/starting/configuring.html
 WAFFLE_FLAG_MODEL = "core.FeatureFlag"
 
 
 # Search
+
+# Bad search score multipliers
+BAD_SEARCH_SCORE_MULTIPLIERS = {
+    "all_pages": env.int("ALL_PAGES_BAD_SEARCH_SCORE_MULTIPLIER", 1),
+    "people": env.int("PEOPLE_BAD_SEARCH_SCORE_MULTIPLIER", 1),
+    "teams": env.int("TEAMS_BAD_SEARCH_SCORE_MULTIPLIER", 1),
+}
+
+# Cut-off value for lots/few search results
+CUTOFF_SEARCH_RESULTS_VALUE = env.int("CUTOFF_SEARCH_RESULTS_VALUE", 20)
 
 # Profiles made inactive within this number of days will be shown in search results to
 # all users.
