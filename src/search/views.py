@@ -11,13 +11,8 @@ from django.views.decorators.http import require_http_methods
 
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import extended_search_settings
-<<<<<<< HEAD
-from search.templatetags.search import SEARCH_CATEGORIES
 from search.utils import get_all_subqueries
-=======
-from peoplefinder.models import Person, PersonIndexManager, Team, TeamIndexManager
 from search.templatetags import search as search_template_tag
->>>>>>> main
 
 logger = logging.getLogger(__name__)
 
