@@ -1,9 +1,11 @@
 from typing import Literal, Tuple
 
 from django import template
+from django.conf import settings
 from django.core.paginator import Paginator
 
 from search import search as search_vectors
+from search.utils import has_only_bad_results
 
 # from silk.profiling.profiler import silk_profile
 
@@ -36,7 +38,13 @@ PAGE_SIZE = 20
 )
 # @silk_profile(name="Search.TemplateTag.category")
 def search_category(
-    context, *, category, tab_name=None, limit=None, show_heading=False
+    context,
+    *,
+    category,
+    tab_name=None,
+    limit=None,
+    show_heading=False,
+    show_bad_results_message=True,
 ):
     request = context["request"]
     query = context["search_query"]
@@ -80,6 +88,16 @@ def search_category(
         "tab_override": context["tab_override"],
         "search_query": query,
         "count": total_count,
+        "is_results_count_low": total_count < settings.CUTOFF_SEARCH_RESULTS_VALUE,
+        "show_bad_results_message": (
+            show_bad_results_message
+            and has_only_bad_results(
+                query,
+                category,
+                pinned_results,
+                search_results,
+            )
+        ),
         "show_heading": show_heading,
         "result_type_display": result_type_display,
         "is_limited": limit is not None and total_count > limit,

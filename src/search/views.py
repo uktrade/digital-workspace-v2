@@ -8,15 +8,15 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
 from content.models import ContentPage
+from extended_search.models import Setting as SearchSetting
 from extended_search.query import OnlyFields
 from extended_search.query_builder import CustomQueryBuilder
-from extended_search.models import Setting as SearchSetting
 from extended_search.settings import settings_singleton
 from peoplefinder.models import Person, Team
 from search.templatetags import search as search_template_tag
+from search.utils import get_all_subqueries
 
 logger = logging.getLogger(__name__)
 
@@ -117,31 +117,7 @@ def explore(request: HttpRequest) -> HttpResponse:
         if "boost_parts" in k
     ]
 
-    subqueries = {"pages": [], "people": [], "teams": []}
-    analyzer_field_suffices = [
-        (k, v["index_fieldname_suffix"])
-        for k, v in settings_singleton["analyzers"].items()
-    ]
-    for index_field in ContentPage.indexed_fields:
-        field = CustomQueryBuilder.swap_variables(
-            CustomQueryBuilder._build_search_query(ContentPage, index_field),
-            query,
-        )
-        get_query_info(subqueries["pages"], field, index_field, analyzer_field_suffices)
-    for index_field in Person.indexed_fields:
-        field = CustomQueryBuilder.swap_variables(
-            CustomQueryBuilder._build_search_query(Person, index_field),
-            query,
-        )
-        get_query_info(
-            subqueries["people"], field, index_field, analyzer_field_suffices
-        )
-    for index_field in Team.indexed_fields:
-        field = CustomQueryBuilder.swap_variables(
-            CustomQueryBuilder._build_search_query(Team, index_field),
-            query,
-        )
-        get_query_info(subqueries["teams"], field, index_field, analyzer_field_suffices)
+    subqueries = get_all_subqueries(query)
 
     context = {
         "search_url": reverse("search:explore"),
@@ -153,39 +129,3 @@ def explore(request: HttpRequest) -> HttpResponse:
     }
 
     return TemplateResponse(request, "search/explore.html", context=context)
-
-
-def get_query_info(fields, field, index_field, suffix_map):
-    if field is None:
-        return fields
-
-    if isinstance(field, Or):
-        for f in field.subqueries:
-            fields = get_query_info(fields, f, index_field, suffix_map)
-
-    elif isinstance(field, OnlyFields):
-        core_field = field.subquery.subquery
-
-        analyzer_name = "tokenizer"
-        for analyzer, suffix in suffix_map:
-            if suffix and suffix in field.fields[0]:
-                analyzer_name = analyzer
-
-        if isinstance(core_field, Phrase):
-            query_type = "phrase"
-        elif isinstance(core_field, Fuzzy):
-            query_type = "fuzzy"
-        elif isinstance(core_field, PlainText):
-            if core_field.operator == "and":
-                query_type = "query_and"
-            else:
-                query_type = "query_or"
-        fields.append(
-            {
-                "query_type": query_type,
-                "field": index_field.model_field_name,
-                "analyzer": analyzer_name,
-                "boost": field.subquery.boost,
-            }
-        )
-    return fields

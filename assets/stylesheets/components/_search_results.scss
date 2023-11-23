@@ -213,3 +213,17 @@
     backdrop-filter: blur(0.25rem);
   }
 }
+
+.low-score-message-container {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #DBD5E9;
+  border-left: 8px solid #6F72AF;
+  display: flex;
+  flex-direction: column;
+  vertical-align: middle;
+  gap: 1rem;
+  h2, p {
+    margin: 0;
+  }
+}

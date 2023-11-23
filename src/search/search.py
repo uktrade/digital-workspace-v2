@@ -18,8 +18,8 @@ class SearchVector:
         """
         return queryset.search(query_str, *args, **kwargs).annotate_score("_score")
 
-    def _wagtail_autocomplete(self, queryset, query, *args, **kwargs):
-        return queryset.autocomplete(query, *args, **kwargs)
+    def _wagtail_autocomplete(self, queryset, query_str, *args, **kwargs):
+        return queryset.autocomplete(query_str, *args, **kwargs)
 
     def get_queryset(self):
         raise NotImplementedError
