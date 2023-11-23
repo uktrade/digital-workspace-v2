@@ -16,6 +16,11 @@ from extended_search.types import AnalysisType
 logger = logging.getLogger(__name__)
 
 
+#############################
+# Wagtail basic overrides
+#############################
+
+
 class Indexed(index.Indexed):
     search_fields = []
 
@@ -282,12 +287,6 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
 
 
 #############################
-# Wagtail overrides above
-# Our custom code below
-#############################
-
-
-#############################
 # One-to-many supporting code
 #############################
 
@@ -464,7 +463,6 @@ class MultiQueryIndexedField(IndexedField):
         return analyzers
 
     def get_search_field_variants(self):
-        from extended_search.query_builder import get_indexed_field_name
         from extended_search.settings import extended_search_settings
 
         return [
@@ -480,12 +478,6 @@ class MultiQueryIndexedField(IndexedField):
             )
             for analyzer in self.get_search_analyzers()
         ]
-
-    # def get_filter_field_variants(self):
-    #     return super().get_filter_field_variants()
-
-    # def get_autocomplete_field_variants(self):
-    #     return super().get_autocomplete_field_variants()
 
 
 #############################
@@ -511,3 +503,16 @@ class DWIndexedField(MultiQueryIndexedField):
         if self.keyword:
             analyzers.add(AnalysisType.KEYWORD)
         return analyzers
+
+
+def get_indexed_field_name(
+    model_field_name: str,
+    analyzer: AnalysisType,
+):
+    from extended_search.settings import extended_search_settings
+
+    field_name_suffix = (
+        extended_search_settings["analyzers"][analyzer.value]["index_fieldname_suffix"]
+        or ""
+    )
+    return f"{model_field_name}{field_name_suffix}"
