@@ -37,6 +37,7 @@ def search_category(
     context,
     *,
     category,
+    tab_name=None,
     limit=None,
     show_heading=False,
     show_bad_threshold_message=True,
@@ -73,11 +74,14 @@ def search_category(
 
     return {
         "request": request,
+        "perms": context["perms"],
         "search_category": category,
         "search_results_item_template": _get_result_template(category),
         "pinned_results": pinned_results,
         "num_pinned_results": f"{len(pinned_results)}",
         "search_results": search_results,
+        "tab_name": tab_name,
+        "tab_override": context["tab_override"],
         "search_query": query,
         "count": count,
         "is_results_count_low": count < settings.CUTOFF_SEARCH_RESULTS_VALUE,
@@ -91,6 +95,32 @@ def search_category(
         "result_type_display": result_type_display,
         "is_limited": limit is not None and count > limit,
     }
+
+
+# Method for querying using wagtails default autocomplete functionality
+#
+def autocomplete(request, query):
+    limit = 3
+    search_results = {}
+
+    search_results.update(
+        {"tools": list(SEARCH_VECTORS["tools"](request).autocomplete(query)[:limit])}
+    )
+    search_results.update(
+        {
+            "pages": list(
+                SEARCH_VECTORS["all_pages"](request).autocomplete(query)[:limit]
+            )
+        }
+    )
+    search_results.update(
+        {"people": list(SEARCH_VECTORS["people"](request).autocomplete(query)[:limit])}
+    )
+    search_results.update(
+        {"teams": list(SEARCH_VECTORS["teams"](request).autocomplete(query)[:limit])}
+    )
+
+    return search_results
 
 
 @register.simple_tag(takes_context=True)

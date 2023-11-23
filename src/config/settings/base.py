@@ -88,6 +88,8 @@ if env.str("SENTRY_DSN", None):
         release=GIT_COMMIT,
         integrations=[DjangoIntegration(), RedisIntegration()],
         send_default_pii=True,  # Enable associating exceptions to users
+        enable_tracing=env.bool("SENTRY_ENABLE_TRACING", False),
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
     )
 
 # Allow all hosts
@@ -682,6 +684,9 @@ LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
 # https://waffle.readthedocs.io/en/stable/starting/configuring.html
 WAFFLE_FLAG_MODEL = "core.FeatureFlag"
 
+
+# Search
+
 # Bad search score multipliers
 BAD_SEARCH_SCORE_MULTIPLIERS = {
     "all_pages": env.int("ALL_PAGES_BAD_SEARCH_SCORE_MULTIPLIER", 1),
@@ -691,3 +696,9 @@ BAD_SEARCH_SCORE_MULTIPLIERS = {
 
 # Cut-off value for lots/few search results
 CUTOFF_SEARCH_RESULTS_VALUE = env.int("CUTOFF_SEARCH_RESULTS_VALUE", 20)
+
+# Profiles made inactive within this number of days will be shown in search results to
+# all users.
+SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
+    "SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS", 90
+)
