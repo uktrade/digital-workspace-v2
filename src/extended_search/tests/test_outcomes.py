@@ -131,7 +131,7 @@ class TestPerModelFieldOverrides:
             IndexedModel.search_fields,
         )
 
-        # @TODO hopefully we can get a better boost indicator
+        # Not the best boost indicator - but it works
         for field_name, field_details in parent_mapping["properties"].items():
             if "title" in field_name:
                 assert "_all_text_boost_10_0" not in field_details["copy_to"]

@@ -45,7 +45,6 @@ class Indexed(index.Indexed):
 
     @classmethod
     def get_indexed_fields(cls, as_dict: bool = False):
-        # @TODO test
         processed_index_fields = {}
         class_mro = list(inspect.getmro(cls))
         class_mro.reverse()
@@ -446,13 +445,13 @@ class MultiQueryIndexedField(IndexedField):
 
     def get_autocomplete_analyzers(self):
         analyzers = set()
-        if self.autocomplete:  # @TODO
+        if self.autocomplete:
             analyzers.add(AnalysisType.NGRAM)
         return analyzers
 
     def get_filter_analyzers(self):
         analyzers = set()
-        if self.filter:  # @TODO
+        if self.filter:
             analyzers.add(AnalysisType.FILTER)
         return analyzers
 

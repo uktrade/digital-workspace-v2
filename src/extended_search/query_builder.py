@@ -232,7 +232,7 @@ class QueryBuilder:
 
     @classmethod
     def infer_analyzer_from_field(cls, field: index.BaseField):
-        # @TODO 😭
+        # @TODO Remove this approach once we upstream the work to wagtail
         if "es_extra" not in field.kwargs:
             return AnalysisType.TOKENIZED
 

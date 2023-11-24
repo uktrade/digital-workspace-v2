@@ -5,4 +5,4 @@ index.get_indexed_models = get_indexed_models
 index.class_is_indexed = class_is_indexed
 
 
-# @TODO THIS WAS ALL CAM'S IDEA
+# @TODO Remove this once we can upstream the overrides

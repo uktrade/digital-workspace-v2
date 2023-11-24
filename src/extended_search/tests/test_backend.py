@@ -485,7 +485,6 @@ class TestFilteredSearchQueryCompiler:
         compiler = FilteredSearchQueryCompiler(ContentPage.objects.all(), query)
         parent_compiler = ExtendedSearchQueryCompiler(ContentPage.objects.all(), query)
         result = compiler._process_lookup(field, "contains", 334)
-        # mock_column_name.assert_called_once_with(field)  # @TODO commented out func call for now
         mock_parent.assert_not_called()
         assert result == {"match": {"foobar": 334}}
         result = compiler._process_lookup(field, "excludes", "bar")
