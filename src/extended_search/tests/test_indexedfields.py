@@ -1,17 +1,23 @@
 import pytest
 
+from django.core.exceptions import FieldDoesNotExist
+from django.db.models.fields.related import ForeignObjectRel, OneToOneRel, RelatedField
+from modelcluster.fields import ParentalManyToManyField
+from wagtail.search import index
+
 from extended_search.index import (
     BaseField,
     DWIndexedField,
     IndexedField,
     ModelFieldNameMixin,
     MultiQueryIndexedField,
+    SearchField,
+    AutocompleteField,
+    FilterField,
     RelatedFields,
     get_indexed_field_name,
 )
 from extended_search.types import AnalysisType
-
-
 from extended_search import settings
 
 
@@ -21,6 +27,14 @@ class Base:
 
 
 class MixedIn(ModelFieldNameMixin, Base):
+    ...
+
+
+class RelatedParentalM2M(ParentalManyToManyField, RelatedField):
+    ...
+
+
+class ForeignO2O(OneToOneRel, ForeignObjectRel):
     ...
 
 
@@ -77,32 +91,30 @@ class TestBaseField:
         assert field.model_field_name == "bar"
         assert field.parent_field == "baz"
 
-    def test_basefield_inherits_from_modelfieldnamemixin(self):
-        raise AssertionError()
+    def test_basefield_inheritance(self):
+        assert issubclass(BaseField, ModelFieldNameMixin)
+        assert issubclass(BaseField, index.BaseField)
 
 
 class TestSearchField:
-    def test_searchfield_inherits_from_basefield(self):
-        raise AssertionError()
-
-    def test_searchfield_inherits_from_wagtail_searchfield(self):
-        raise AssertionError()
+    def test_searchfield_inheritance(self):
+        assert issubclass(SearchField, BaseField)
+        assert issubclass(SearchField, index.SearchField)
+        assert issubclass(SearchField, index.BaseField)
 
 
 class TestAutocompleteField:
-    def test_autocompletefield_inherits_from_basefield(self):
-        raise AssertionError()
-
-    def test_autocompletefield_inherits_from_wagtail_autocompletefield(self):
-        raise AssertionError()
+    def test_autocompletefield_inheritance(self):
+        assert issubclass(AutocompleteField, BaseField)
+        assert issubclass(AutocompleteField, index.AutocompleteField)
+        assert issubclass(AutocompleteField, index.BaseField)
 
 
 class TestFilterField:
-    def test_filterfield_inherits_from_basefield(self):
-        raise AssertionError()
-
-    def test_filterfield_inherits_from_wagtail_filterfield(self):
-        raise AssertionError()
+    def test_filterfield_inheritance(self):
+        assert issubclass(FilterField, BaseField)
+        assert issubclass(FilterField, index.FilterField)
+        assert issubclass(FilterField, index.BaseField)
 
 
 class TestRelatedFields:
@@ -112,34 +124,134 @@ class TestRelatedFields:
         assert field.model_field_name == field.field_name
         assert field.fields == ["bar", "baz"]
 
-    def test_generate_fields(self):
-        raise AssertionError()
+    def test_relatedfields_inheritance(self):
+        assert issubclass(RelatedFields, ModelFieldNameMixin)
+        assert issubclass(RelatedFields, index.RelatedFields)
 
-    def test_get_select_on_queryset(self):
-        raise AssertionError()
+    def test_get_select_on_queryset(self, mocker):
+        mock_qs = mocker.Mock()
+        mock_qs.select_related.return_value = "--select-related--"
+        mock_qs.prefetch_related.return_value = "--prefetch-related--"
+        mock_get_field = mocker.patch("extended_search.index.RelatedFields.get_field")
+        mock_field_m2o = mocker.Mock(spec=RelatedField)
+        mock_field_m2o.many_to_one = True
+        mock_field_m2o.one_to_one = False
+        mock_field_m2o.one_to_many = False
+        mock_field_m2o.many_to_many = False
+        mock_field_o2o = mocker.Mock(spec=RelatedField)
+        mock_field_o2o.many_to_one = False
+        mock_field_o2o.one_to_one = True
+        mock_field_o2o.one_to_many = False
+        mock_field_o2o.many_to_many = False
+        mock_field_o2m = mocker.Mock(spec=RelatedField)
+        mock_field_o2m.many_to_one = False
+        mock_field_o2m.one_to_one = False
+        mock_field_o2m.one_to_many = True
+        mock_field_o2m.many_to_many = False
+        mock_field_m2m = mocker.Mock(spec=RelatedField)
+        mock_field_m2m.many_to_one = False
+        mock_field_m2m.one_to_one = False
+        mock_field_m2m.one_to_many = False
+        mock_field_m2m.many_to_many = True
+        mock_field_parental = mocker.Mock(spec=RelatedParentalM2M)
+        mock_field_forel = mocker.Mock(spec=ForeignObjectRel)
+        mock_field_forel_o2orel = mocker.Mock(spec=ForeignO2O)
+        field = RelatedFields("foo", [], model_field_name="bar")
+        mock_get_field.side_effect = FieldDoesNotExist()
 
-    def test_relatedfields_inherits_from_modelfieldnamemixin(self):
-        ...
+        assert field.select_on_queryset(mock_qs) == mock_qs
+        mock_get_field.assert_called_once_with(mock_qs.model)
+        mock_qs.select_related.assert_not_called()
+        mock_qs.prefetch_related.assert_not_called()
 
-    def test_get_related_fields_returns_extended_relatedfields(self, mocker):
-        mock_func = mocker.patch(
-            "extended_search.index.Indexed._get_indexed_fields_from_mapping",
-            return_value=["SearchFieldObject <bar>"],
+        mock_get_field.side_effect = None
+        mock_get_field.return_value = mock_field_m2o
+        assert field.select_on_queryset(mock_qs) == "--select-related--"
+        mock_qs.select_related.assert_called_once_with("bar")
+        mock_qs.prefetch_related.assert_not_called()
+
+        mock_qs.reset_mock()
+        mock_get_field.return_value = mock_field_o2o
+        assert field.select_on_queryset(mock_qs) == "--select-related--"
+        mock_qs.select_related.assert_called_once_with("bar")
+        mock_qs.prefetch_related.assert_not_called()
+
+        mock_qs.reset_mock()
+        mock_get_field.return_value = mock_field_o2m
+        assert field.select_on_queryset(mock_qs) == "--prefetch-related--"
+        mock_qs.select_related.assert_not_called()
+        mock_qs.prefetch_related.assert_called_once_with("bar")
+
+        mock_qs.reset_mock()
+        mock_get_field.return_value = mock_field_m2m
+        assert field.select_on_queryset(mock_qs) == "--prefetch-related--"
+        mock_qs.select_related.assert_not_called()
+        mock_qs.prefetch_related.assert_called_once_with("bar")
+
+        mock_qs.reset_mock()
+        mock_get_field.return_value = mock_field_parental
+        assert field.select_on_queryset(mock_qs) == mock_qs
+        mock_qs.select_related.assert_not_called()
+        mock_qs.prefetch_related.assert_not_called()
+
+        mock_qs.reset_mock()
+        mock_get_field.return_value = mock_field_forel
+        assert field.select_on_queryset(mock_qs) == "--prefetch-related--"
+        mock_qs.select_related.assert_not_called()
+        mock_qs.prefetch_related.assert_called_once_with("bar")
+
+        mock_qs.reset_mock()
+        mock_get_field.return_value = mock_field_forel_o2orel
+        assert field.select_on_queryset(mock_qs) == "--select-related--"
+        mock_qs.select_related.assert_called_once_with("bar")
+        mock_qs.prefetch_related.assert_not_called()
+
+    def test_generate_fields(self, mocker):
+        mock_relation = mocker.patch(
+            "extended_search.index.RelatedFields.is_relation_of"
         )
-        result = RelatedFields.generate_fields("foo", [{"field_name": "baz"}])
-        mock_func.assert_called_once_with({"field_name": "baz"})
-        assert type(result) == list
-        assert type(result[0]) == RelatedFields
-        assert result[0].field_name == "foo"
-        assert result[0].fields == ["SearchFieldObject <bar>"]
+        field = RelatedFields("foo", [], model_field_name="bar")
+        assert field.fields == []
+        assert field.generate_fields() == [field]
+        assert field.fields == []
+        mock_relation.assert_not_called()
 
-        mock_func.reset_mock()
-        result = RelatedFields.generate_fields(
-            "foo",
-            [{"field_name": "baz"}, {"field_name": "bam"}, {"field_name": "foobar"}],
-        )
-        assert mock_func.call_count == 3
-        assert len(result[0].fields) == 3
+        parent_field = BaseField("dummy")
+        assert field.generate_fields(parent_field=parent_field) == [field]
+        assert field.fields == []
+        mock_relation.assert_called_once_with(parent_field)
+
+        mock_ifield1 = mocker.Mock(spec=IndexedField)
+        mock_ifield1.generate_fields.return_value = ["--search-field--"]
+        mock_ifield2 = mocker.Mock(spec=IndexedField)
+        mock_ifield2.generate_fields.return_value = ["--filter-field--"]
+        field.fields = [mock_ifield1, mock_ifield2]
+        assert field.generate_fields() == [field]
+        assert field.fields == ["--search-field--", "--filter-field--"]
+        mock_ifield1.generate_fields.assert_called_once_with(parent_field=field)
+        mock_ifield2.generate_fields.assert_called_once_with(parent_field=field)
+
+        mock_rfield = mocker.Mock(spec=RelatedFields)
+        mock_rfield.generate_fields.return_value = ["--related-field--"]
+        field.fields = [mock_rfield, mock_ifield1]
+        assert field.generate_fields() == [field]
+        assert field.fields == ["--related-field--", "--search-field--"]
+        mock_rfield.generate_fields.assert_called_once_with(parent_field=field)
+
+        mock_sfield = mocker.Mock(spec=BaseField)
+        field.fields = [mock_sfield, mock_ifield1]
+        assert field.generate_fields() == [field]
+        assert field.fields == [mock_sfield, "--search-field--"]
+        mock_sfield.is_relation_of.assert_called_once_with(field)
+
+        field.fields = [mock_ifield2, mock_sfield, mock_rfield, mock_ifield1]
+        assert field.generate_fields() == [field]
+        assert field.fields == [
+            "--filter-field--",
+            mock_sfield,
+            "--related-field--",
+            "--search-field--",
+        ]
 
 
 class TestIndexedField:
