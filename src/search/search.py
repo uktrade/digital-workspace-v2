@@ -99,11 +99,12 @@ class PeopleSearchVector(ModelSearchVector):
         if not self.request.user.has_perm("peoplefinder.can_view_inactive_profiles"):
             days = settings.SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS
             people = people.active_or_inactive_within(days=days)
+        return people.prefetch_related("key_skills", "additional_roles", "teams")
 
-        people = people.prefetch_related("key_skills", "additional_roles", "teams")
-
-        return people
-
+    def autocomplete(self, query, *args, **kwargs):
+        # never show inactive profiles on autocomplete
+        queryset = Person.objects.all().active()
+        return self._wagtail_autocomplete(queryset, query, *args, **kwargs)
 
 class TeamsSearchVector(ModelSearchVector):
     model = Team
