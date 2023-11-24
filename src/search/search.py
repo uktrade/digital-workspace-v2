@@ -106,6 +106,7 @@ class PeopleSearchVector(ModelSearchVector):
         queryset = Person.objects.all().active()
         return self._wagtail_autocomplete(queryset, query, *args, **kwargs)
 
+
 class TeamsSearchVector(ModelSearchVector):
     model = Team
 
