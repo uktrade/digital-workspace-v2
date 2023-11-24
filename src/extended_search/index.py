@@ -160,9 +160,9 @@ class ModelFieldNameMixin:
             return base_cls
 
         # Find where it was defined by walking the inheritance tree
-
+        base_model_field_name = self.get_base_model_field_name()
         for base_cls in inspect.getmro(cls):
-            if self.get_base_model_field_name() in base_cls.__dict__:
+            if hasattr(base_cls, base_model_field_name):
                 return base_cls
 
     def get_value(self, obj):

@@ -17,16 +17,8 @@ from extended_search.index import (
     SearchField,
     get_indexed_field_name,
 )
+from extended_search.tests.testing_classes import MixedIn
 from extended_search.types import AnalysisType
-
-
-class Base:
-    def __init__(self, *args, **kwargs) -> None:
-        ...
-
-
-class MixedIn(ModelFieldNameMixin, Base):
-    ...
 
 
 class RelatedParentalM2M(ParentalManyToManyField, RelatedField):
@@ -66,39 +58,48 @@ class TestModelFieldNameMixin:
 
     def test_get_definition_model(self, mocker):
         parent_model_class = mocker.Mock()
-        parent_model_class.__dict__ = {"foobar": 123}
+        parent_model_class.foobar = 123
         mock_getmro = mocker.patch("inspect.getmro", return_value=[parent_model_class])
-        mock_parent_get_definition_model = Base.get_definition_model = mocker.Mock(
-            return_value="foo"
+
+        mock_parent_get_definition_model = mocker.patch(
+            "extended_search.tests.testing_classes.Base.get_definition_model",
+            return_value=None,
         )
-        mock_parent_get_base_model_field_name = (
-            MixedIn.get_base_model_field_name
-        ) = mocker.Mock(return_value="foobar")
+        mock_get_base_model_field_name = mocker.patch(
+            "extended_search.index.ModelFieldNameMixin.get_base_model_field_name",
+            return_value="foobar",
+        )
+
         mock_model_class = mocker.Mock()
 
+        mock_parent_get_definition_model.return_value = "foo"
         field = MixedIn("foo", configuration_model="bar")
         assert field.get_definition_model(mock_model_class) == "bar"
         mock_parent_get_definition_model.assert_not_called()
-        mock_parent_get_base_model_field_name.assert_not_called()
+        mock_get_base_model_field_name.assert_not_called()
         mock_getmro.assert_not_called()
 
         field = MixedIn("foo")
         assert field.get_definition_model(mock_model_class) == "foo"
         mock_parent_get_definition_model.assert_called_once_with(mock_model_class)
         mock_parent_get_definition_model.reset_mock()
-        mock_parent_get_base_model_field_name.assert_not_called()
+        mock_get_base_model_field_name.assert_not_called()
         mock_getmro.assert_not_called()
 
         mock_parent_get_definition_model.return_value = None
         field = MixedIn("foo")
         assert field.get_definition_model(mock_model_class) == parent_model_class
         mock_parent_get_definition_model.assert_called_once_with(mock_model_class)
-        mock_parent_get_base_model_field_name.assert_called_once_with()
-        mock_parent_get_definition_model.reset_mock()
         mock_getmro.assert_called_once_with(mock_model_class)
+        mock_get_base_model_field_name.assert_called_once_with()
+        mock_parent_get_definition_model.reset_mock()
 
     def test_get_value(self, mocker):
-        mock_parent_get_value = Base.get_value = mocker.Mock(return_value="foo")
+        mock_parent_get_value = mocker.patch(
+            "extended_search.tests.testing_classes.Base.get_value",
+            return_value="foo",
+        )
+
         mock_model_class = mocker.Mock()
         mock_model_class.foo = None
         mock_model_class.bar = None
@@ -133,16 +134,50 @@ class TestModelFieldNameMixin:
         mock_parent_get_value.reset_mock()
 
     def test_is_relation_of(self):
-        raise AssertionError()
+        field = MixedIn("foo")
+        assert field.parent_field is None
 
-    def test_get_base_field(self):
-        raise AssertionError()
+        field.is_relation_of("bar")
+        assert field.parent_field == "bar"
 
-    def test_get_base_model_field_name(self):
-        raise AssertionError()
+        field.is_relation_of("baz")
+        assert field.parent_field == "baz"
 
-    def test_get_full_model_field_name(self):
-        raise AssertionError()
+    def test_get_base_field(self, mocker):
+        mock_parent_field = mocker.Mock()
+        mock_parent_field.get_base_field = mocker.Mock(return_value="foo")
+
+        field = MixedIn("foo")
+        assert field.get_base_field() == field
+
+        field.parent_field = mock_parent_field
+        assert field.get_base_field() == "foo"
+        mock_parent_field.get_base_field.assert_called_once_with()
+
+    def test_get_base_model_field_name(self, mocker):
+        mock_get_base_field = mocker.patch(
+            "extended_search.index.ModelFieldNameMixin.get_base_field",
+            return_value=MixedIn("bar", model_field_name="bazbar"),
+        )
+
+        field = MixedIn("foo")
+        assert field.parent_field is None
+        assert field.model_field_name == "foo"
+        assert field.get_base_model_field_name() == "bazbar"
+        mock_get_base_field.assert_called_once_with()
+
+    def test_get_full_model_field_name(self, mocker):
+        field = MixedIn("foo")
+        assert field.get_full_model_field_name() == "foo"
+
+        field = MixedIn("foo", model_field_name="bar")
+        assert field.get_full_model_field_name() == "bar"
+
+        field.parent_field = mocker.Mock()
+        field.parent_field.get_full_model_field_name = mocker.Mock(
+            return_value="baz",
+        )
+        assert field.get_full_model_field_name() == "baz.bar"
 
 
 class TestBaseField:
