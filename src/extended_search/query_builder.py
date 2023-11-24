@@ -309,7 +309,7 @@ class CustomQueryBuilder(QueryBuilder):
         parent; each has its own subquery using its own settings filtered by
         type, and all are joined together at the end.
         """
-        cache_key = type(model_class)
+        cache_key = model_class.__name__
         if not ignore_cache and settings.SEARCH_ENABLE_QUERY_CACHE:
             built_query = cache.get(cache_key, None)
             if built_query:
