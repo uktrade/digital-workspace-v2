@@ -306,6 +306,9 @@ class SearchSettings(NestedChainMap):
 
 
 settings_singleton = SearchSettings()
+
+# NB please don't import this directly, import the module as a whole
+# this is because it can get re-exported after a value is updated
 extended_search_settings = settings_singleton.to_dict()
 
 

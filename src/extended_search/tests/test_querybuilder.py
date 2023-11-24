@@ -15,7 +15,7 @@ from content.models import ContentPage
 from extended_search.index import IndexedField, RelatedFields, SearchField
 from extended_search.query import Filtered, Nested, OnlyFields
 from extended_search.query_builder import CustomQueryBuilder, QueryBuilder, Variable
-from extended_search.settings import extended_search_settings
+from extended_search import settings
 from extended_search.types import AnalysisType, SearchQueryType
 
 
@@ -266,7 +266,7 @@ class TestQueryBuilder:
 
     def test_get_boost_for_field(self, mocker):
         mock_get_key = mocker.patch(
-            "extended_search.query_builder.get_settings_field_key",
+            "extended_search.query_builder.search_settings.get_settings_field_key",
             return_value="--settings-key--",
         )
         field = mocker.Mock()
@@ -277,27 +277,33 @@ class TestQueryBuilder:
             field.get_definition_model.return_value, field
         )
 
-        extended_search_settings["boost_parts"]["fields"]["--settings-key--"] = 333.33
+        settings.extended_search_settings["boost_parts"]["fields"][
+            "--settings-key--"
+        ] = 333.33
         assert self.query_builder_class._get_boost_for_field(model, field) == 333.33
 
     def test_get_boost_for_analysistype(self):
         with pytest.raises(ValueError):
             self.query_builder_class._get_boost_for_analysistype("foo")
 
-        extended_search_settings["boost_parts"]["analyzers"]["explicit"] = 888.88
+        settings.extended_search_settings["boost_parts"]["analyzers"][
+            "explicit"
+        ] = 888.88
         assert (
             self.query_builder_class._get_boost_for_analysistype(AnalysisType.EXPLICIT)
             == 888.88
         )
         assert (
             self.query_builder_class._get_boost_for_analysistype(AnalysisType.TOKENIZED)
-            == extended_search_settings["boost_parts"]["analyzers"]["tokenized"]
+            == settings.extended_search_settings["boost_parts"]["analyzers"][
+                "tokenized"
+            ]
         )
         assert (
             self.query_builder_class._get_boost_for_analysistype(AnalysisType.KEYWORD)
-            == extended_search_settings["boost_parts"]["analyzers"]["explicit"]
+            == settings.extended_search_settings["boost_parts"]["analyzers"]["explicit"]
         )
-        extended_search_settings["boost_parts"]["analyzers"]["explicit"] = None
+        settings.extended_search_settings["boost_parts"]["analyzers"]["explicit"] = None
         assert (
             self.query_builder_class._get_boost_for_analysistype(AnalysisType.EXPLICIT)
             == 1.0
@@ -307,24 +313,30 @@ class TestQueryBuilder:
         with pytest.raises(ValueError):
             self.query_builder_class._get_boost_for_querytype("foo")
 
-        extended_search_settings["boost_parts"]["query_types"]["phrase"] = 888.88
+        settings.extended_search_settings["boost_parts"]["query_types"][
+            "phrase"
+        ] = 888.88
         assert (
             self.query_builder_class._get_boost_for_querytype(SearchQueryType.PHRASE)
             == 888.88
         )
         assert (
             self.query_builder_class._get_boost_for_querytype(SearchQueryType.QUERY_AND)
-            == extended_search_settings["boost_parts"]["query_types"]["query_and"]
+            == settings.extended_search_settings["boost_parts"]["query_types"][
+                "query_and"
+            ]
         )
         assert (
             self.query_builder_class._get_boost_for_querytype(SearchQueryType.QUERY_OR)
-            == extended_search_settings["boost_parts"]["query_types"]["query_or"]
+            == settings.extended_search_settings["boost_parts"]["query_types"][
+                "query_or"
+            ]
         )
         assert (
             self.query_builder_class._get_boost_for_querytype(SearchQueryType.FUZZY)
-            == extended_search_settings["boost_parts"]["query_types"]["fuzzy"]
+            == settings.extended_search_settings["boost_parts"]["query_types"]["fuzzy"]
         )
-        extended_search_settings["boost_parts"]["query_types"]["phrase"] = None
+        settings.extended_search_settings["boost_parts"]["query_types"]["phrase"] = None
         assert (
             self.query_builder_class._get_boost_for_querytype(SearchQueryType.PHRASE)
             == 1.0
@@ -415,7 +427,7 @@ class TestQueryBuilder:
             == AnalysisType.TOKENIZED
         )
 
-        analyzer_settings = extended_search_settings["analyzers"]
+        analyzer_settings = settings.extended_search_settings["analyzers"]
         for name, analyzer in analyzer_settings.items():
             field.kwargs = {"es_extra": {"es_analyzer": analyzer["es_analyzer"]}}
             assert self.query_builder_class.infer_analyzer_from_field(
@@ -516,9 +528,9 @@ class TestQueryBuilder:
         field = mocker.Mock()
         assert (
             len(
-                extended_search_settings["analyzers"][AnalysisType.TOKENIZED.value][
-                    "query_types"
-                ]
+                settings.extended_search_settings["analyzers"][
+                    AnalysisType.TOKENIZED.value
+                ]["query_types"]
             )
             > 0
         )
@@ -529,9 +541,9 @@ class TestQueryBuilder:
             == mock_combine_queries.return_value
         )
         expected = []
-        for q in extended_search_settings["analyzers"][AnalysisType.TOKENIZED.value][
-            "query_types"
-        ]:
+        for q in settings.extended_search_settings["analyzers"][
+            AnalysisType.TOKENIZED.value
+        ]["query_types"]:
             expected.append(
                 call(
                     model,
@@ -543,9 +555,9 @@ class TestQueryBuilder:
             )
         mock_build_specific.assert_has_calls(expected)
         assert len(mock_build_specific.call_args_list) == len(
-            extended_search_settings["analyzers"][AnalysisType.TOKENIZED.value][
-                "query_types"
-            ]
+            settings.extended_search_settings["analyzers"][
+                AnalysisType.TOKENIZED.value
+            ]["query_types"]
         )
 
     def test_combine_queries(self):

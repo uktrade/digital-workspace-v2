@@ -8,7 +8,7 @@ from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 from extended_search.index import Indexed
 from extended_search.query import OnlyFields
 from extended_search.query_builder import CustomQueryBuilder
-from extended_search.settings import extended_search_settings
+from extended_search import settings as search_settings
 
 
 def sanitize_search_query(query: Optional[str] = None) -> str:
@@ -186,7 +186,7 @@ def get_query_info_for_model(model_class: Indexed, query: str) -> list:
     query_info: list = []
     analyzer_field_suffices = [
         (k, v["index_fieldname_suffix"])
-        for k, v in extended_search_settings["analyzers"].items()
+        for k, v in search_settings.extended_search_settings["analyzers"].items()
     ]
     for index_field in model_class.indexed_fields:
         field = CustomQueryBuilder.swap_variables(

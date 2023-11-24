@@ -1,3 +1,4 @@
+import copy
 from types import NoneType
 
 import pytest
@@ -409,9 +410,39 @@ class TestSearchSettings:
             else:
                 raise AssertionError(f"{input} is not recognised")
 
-    @pytest.mark.xfail()
     def test_updated_settings_affect_exported_dict(self):
-        raise AssertionError()
+        from extended_search import settings  # 1
+        from extended_search.settings import extended_search_settings  # 2
+
+        original_settings = copy.deepcopy(settings.extended_search_settings)
+        assert original_settings == settings.extended_search_settings  # 1
+        assert original_settings == extended_search_settings  # 2
+
+        # update a setting
+        settings.settings_singleton["boost_parts"]["fields"]["--test--"] = 666.66
+
+        # no exported dicts changed yet
+        assert original_settings == settings.extended_search_settings  # 1
+        assert original_settings == extended_search_settings  # 2
+
+        # update the export
+        assert original_settings != settings.settings_singleton.to_dict()
+        settings.extended_search_settings = settings_singleton.to_dict()
+
+        # exported module dict changed
+        assert (
+            original_settings != settings.extended_search_settings
+        )  # <-- in general use this style import
+        # ... but exported dict still not changed yet :'(
+        assert original_settings == extended_search_settings
+
+        # re-import
+        from extended_search.settings import extended_search_settings
+
+        # all updated now
+        assert original_settings != extended_search_settings
+        assert extended_search_settings == settings.extended_search_settings
+        assert settings_singleton.to_dict() == settings.extended_search_settings
 
 
 class TestGetSettingsFieldKey:
