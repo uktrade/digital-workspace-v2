@@ -7,7 +7,6 @@ import environ
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.utils import ProgrammingError
-from django.utils.functional import cached_property
 from psycopg2.errors import UndefinedTable
 
 from extended_search import models
@@ -119,7 +118,7 @@ class NestedChainMap(ChainMap):
 
     def __missing__(self, key: str) -> Any:
         # Check if we're using a flat key that wasn't overridden from the dicts
-        if key in self.all_keys:
+        if key in self.all_keys():
             return self._getitem_from_nested_maps_for_prefixed_key(key, self)
         return super().__missing__(key)
 
@@ -155,8 +154,6 @@ class NestedChainMap(ChainMap):
                 ]
         return keys
 
-    # @TODO: just added the cached_property without too much testing
-    @cached_property
     def all_keys(self):
         """
         Returns a list of the *flattened* keys for all nested maps in this instance
@@ -235,7 +232,6 @@ class SearchSettings(NestedChainMap):
 
                     if isinstance(search_field, RelatedFields):
                         for ff in search_field.fields:
-                            # ff.is_relation_of(search_field) @TODO check this
                             fields[definition_cls].add(ff)
                     else:
                         fields[definition_cls].add(search_field)
@@ -256,7 +252,7 @@ class SearchSettings(NestedChainMap):
     def initialise_env_dict(self):
         # preserve same linked obj while re-initialising it
         self.env_vars.clear()
-        for key in self.all_keys:
+        for key in self.all_keys():
             try:
                 # check for a full string concatenated key
                 value = env(f"{SETTINGS_KEY}{self.nesting_separator}{key}")

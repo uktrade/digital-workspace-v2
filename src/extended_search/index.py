@@ -77,7 +77,6 @@ class Indexed(index.Indexed):
 
     @classmethod
     def get_search_fields(cls, ignore_cache=False):
-        # @TODO test for "cache"
         if cls not in cls.processed_search_fields:
             cls.processed_search_fields[cls] = []
         if cls.processed_search_fields[cls] and not ignore_cache:
@@ -100,7 +99,7 @@ class Indexed(index.Indexed):
 
     @classmethod
     def has_unique_index_fields(cls):
-        # @TODO: this doesn't account for a diverging MRO
+        # @TODO [DWPF-1066] this doesn't account for a diverging MRO
         parent_model = inspect.getmro(cls)[1]
         parent_indexed_fields = getattr(parent_model, "indexed_fields", [])
         return cls.indexed_fields != parent_indexed_fields
@@ -274,11 +273,12 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
             self.is_relation_of(parent_field)
 
         generated_fields = []
-        for field in self.fields:  # @TODO verify properly
+        for field in self.fields:
             if isinstance(field, IndexedField) or isinstance(field, RelatedFields):
                 generated_fields += field.generate_fields(parent_field=self)
             else:
-                field.is_relation_of(self)  # <- won't work on wagtail native fields
+                # is_relation_of won't work on Wagtail native fields
+                field.is_relation_of(self)
                 generated_fields.append(field)
 
         self.fields = generated_fields

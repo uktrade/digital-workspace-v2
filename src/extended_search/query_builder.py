@@ -8,17 +8,17 @@ from django.db import models
 from wagtail.search import index
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
+from extended_search import settings as search_settings
 from extended_search.index import (
     BaseField,
     Indexed,
     IndexedField,
     RelatedFields,
     SearchField,
-    get_indexed_models,
     get_indexed_field_name,
+    get_indexed_models,
 )
 from extended_search.query import Filtered, Nested, OnlyFields
-from extended_search import settings as search_settings
 from extended_search.types import AnalysisType, SearchQueryType
 
 logger = logging.getLogger(__name__)
@@ -81,7 +81,7 @@ class QueryBuilder:
             case AnalysisType.KEYWORD:
                 analysis_boost_key = "explicit"
             case AnalysisType.FILTER:
-                analysis_boost_key = 1.0  # @TODO figure out how to add this
+                raise ValueError("FILTER is not a valid AnalysisType for a query")
             case _:
                 raise ValueError(f"{analysis_type} must be a valid AnalysisType")
         if setting_boost := search_settings.extended_search_settings["boost_parts"][

@@ -111,7 +111,7 @@ def explore(request: HttpRequest) -> HttpResponse:
 
     boost_vars = [
         {"name": k, "value": settings_singleton[k]}
-        for k in settings_singleton.all_keys
+        for k in settings_singleton.all_keys()
         if "boost_parts" in k
     ]
 

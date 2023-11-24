@@ -1,4 +1,5 @@
 import copy
+from collections import ChainMap
 from types import NoneType
 
 import pytest
@@ -13,10 +14,9 @@ from extended_search.settings import (
     NestedChainMap,
     SearchSettings,
     extended_search_settings,
-    settings_singleton,
     get_settings_field_key,
+    settings_singleton,
 )
-from collections import ChainMap
 
 
 class TestDefaults:
@@ -138,7 +138,7 @@ class TestNestedChainMap:
         map1 = {"foo": "a", "bar": "b"}
         map2 = {"foo": 2, "foobar": "c"}
         instance = NestedChainMap(map1, map2)
-        assert instance.all_keys == ["a", "b"]
+        assert instance.all_keys() == ["a", "b"]
         with pytest.raises(KeyError):
             instance["baz"]
         mock_getitem.assert_not_called()
@@ -189,7 +189,7 @@ class TestNestedChainMap:
         assert [
             "--one--",
             "--two--",
-        ] == instance.all_keys
+        ] == instance.all_keys()
         mock_all.assert_called_with(instance, "")
 
     def test_get_item_from_nested_maps_for_prefixed_key(self, mocker):

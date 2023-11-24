@@ -117,19 +117,43 @@ class TestIndexed:
         assert "title_explicit" not in processed_index_field_names
 
     def test_get_search_fields(self):
-        search_fields = StandardIndexedModel.get_search_fields()
+        search_fields = StandardIndexedModel.get_search_fields(ignore_cache=True)
         assert type(search_fields) == list
         assert len(search_fields) == 2
         search_fields_field_names = [f.field_name for f in search_fields]
         assert "title" in search_fields_field_names
         assert "title_explicit" in search_fields_field_names
 
-        search_fields = InheritedStandardIndexedModelWithChanges.get_search_fields()
+        search_fields = InheritedStandardIndexedModelWithChanges.get_search_fields(
+            ignore_cache=True
+        )
         assert type(search_fields) == list
         assert len(search_fields) == 1
         search_fields_field_names = [f.field_name for f in search_fields]
         assert "title" in search_fields_field_names
         assert "title_explicit" not in search_fields_field_names
+
+    def test_get_search_fields_with_cache(self, mocker):
+        mock_parent_get_search_fields = mocker.patch(
+            "wagtail.search.index.Indexed.get_search_fields"
+        )
+
+        StandardIndexedModel.processed_search_fields = {}
+        search_fields = StandardIndexedModel.get_search_fields()
+        mock_parent_get_search_fields.assert_called_once_with()
+        assert StandardIndexedModel in StandardIndexedModel.processed_search_fields
+        assert (
+            StandardIndexedModel.processed_search_fields[StandardIndexedModel]
+            == search_fields
+        )
+
+        mock_parent_get_search_fields.reset_mock()
+        search_fields = StandardIndexedModel.get_search_fields()
+        mock_parent_get_search_fields.assert_not_called()
+
+        mock_parent_get_search_fields.reset_mock()
+        search_fields = StandardIndexedModel.get_search_fields(ignore_cache=True)
+        mock_parent_get_search_fields.assert_called_once_with()
 
     def test_has_unique_index_fields(self, mocker):
         assert StandardIndexedModel.has_unique_index_fields()
