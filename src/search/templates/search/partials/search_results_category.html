@@ -3,11 +3,11 @@
         <div class="low-score-message-container">
             {% if is_results_count_low %}
                 <p class="govuk-body-s">
-                    You can improve your search results by checking your spelling or trying a different search term.
+                    It looks like you didn't get very good {{ result_type_display }} results. You can improve your search results by checking your spelling or trying a different search term.
                 </p>
             {% else %}
                 <p class="govuk-body-s">
-                    You can improve your search results by using fewer keywords and searching for something less specific.
+                    It looks like you didn't get very good {{ result_type_display }} results. You can improve your search results by using fewer keywords and searching for something less specific.
                 </p>
             {% endif %}
         </div>
