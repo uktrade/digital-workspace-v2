@@ -1,21 +1,13 @@
 from unittest.mock import call
 
 import pytest
-from wagtail.search.query import (
-    And,
-    Boost,
-    Fuzzy,
-    Not,
-    Or,
-    Phrase,
-    PlainText,
-)
+from wagtail.search.query import And, Boost, Fuzzy, Not, Or, Phrase, PlainText
 
 from content.models import ContentPage
+from extended_search import settings
 from extended_search.index import IndexedField, RelatedFields, SearchField
 from extended_search.query import Filtered, Nested, OnlyFields
 from extended_search.query_builder import CustomQueryBuilder, QueryBuilder, Variable
-from extended_search import settings
 from extended_search.types import AnalysisType, SearchQueryType
 
 
@@ -192,13 +184,26 @@ class TestCustomQueryBuilder:
         with pytest.raises(ValueError):
             Variable("search_query", "anything").output("search query")
 
-    @pytest.mark.xfail
     def test_build_search_query(self, mocker):
-        model_class = mocker.Mock()
-        extended_model_class = mocker.Mock()
-        extended_model_class._meta.app_label = "mock"
-        extended_model_class.__name__ = "extended_model"
-        query = "foo"  # PlainText("foo")
+        class ModelClass:
+            class Meta:
+                app_label = "mock"
+
+            _meta = Meta()
+
+            # pytest mocking doesn't like dunder mocks so we built a whole class
+            # just for this one line..... 😮‍💨
+            __name__ = "base_model"
+
+        model_class = ModelClass()
+
+        class ExtendedModelClass(ModelClass):
+            # pytest mocking doesn't like dunder mocks so we built a whole class
+            # just for this one line..... 😮‍💨
+            __name__ = "extended_model"
+
+        extended_model_class = ExtendedModelClass()
+
         mock_get_extended_models = mocker.patch(
             "extended_search.query_builder.CustomQueryBuilder.get_extended_models_with_unique_indexed_fields",
             return_value=[extended_model_class],
@@ -211,8 +216,8 @@ class TestCustomQueryBuilder:
         mock_get_extended_models.assert_called_once_with(model_class)
         mock_get_query.assert_has_calls(
             [
-                call(extended_model_class, query),
-                call(model_class, query),
+                call(extended_model_class),
+                call(model_class),
             ]
         )
         assert repr(result) == repr(
