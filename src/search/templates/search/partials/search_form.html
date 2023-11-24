@@ -9,9 +9,11 @@
            placeholder="{{ placeholder|default:'Search site' }}"
            type="search"
            value="{{ search_query|default:'' }}"
-           hx-trigger="keyup changed delay:250ms"
+           hx-trigger="input keyup changed delay:150ms"
            hx-get="{% url 'search:autocomplete' %}"
-           hx-target="#autocomplete-results">
+           hx-target="#autocomplete-results"
+           onblur="document.getElementById('autocomplete-results').style.display='none'"
+           onfocus="document.getElementById('autocomplete-results').style.display='block'">
     <button type="submit">Search</button>
     <div id="autocomplete-results" class="autocomplete-overlay"></div>
 </form>
