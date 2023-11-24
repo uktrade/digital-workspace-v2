@@ -1,15 +1,12 @@
 import pytest
 
-from extended_search.index import AutocompleteField  # AbstractBaseField,
 from extended_search.index import (
     BaseField,
     DWIndexedField,
-    FilterField,
     IndexedField,
     ModelFieldNameMixin,
     MultiQueryIndexedField,
     RelatedFields,
-    SearchField,
     get_indexed_field_name,
 )
 from extended_search.types import AnalysisType
@@ -176,69 +173,187 @@ class TestIndexedField:
         assert field.autocomplete
         assert field.autocomplete_kwargs == {"baz": "foobar"}
 
-    def test_get_autocomplete_search_fields_returns_extended_autocompletefield(self):
-        result = IndexedField.generate_autocomplete_fields("foo")
-        assert type(result) == list
-        assert type(result[0]) == AutocompleteField
-        assert result[0].field_name == "foo"
-
-    def test_get_filterable_search_fields_returns_wagtail_filterfield(self):
-        result = IndexedField.generate_filter_fields("foo")
-        assert type(result) == list
-        assert type(result[0]) == FilterField
-        assert result[0].field_name == "foo"
-
-    def test_get_searchable_search_fields_returns_extended_searchfields(self, mocker):
-        mock_fieldname = mocker.patch(
-            "extended_search.query_builder.get_indexed_field_name",
-            return_value="bar",
-        )
-        mock_analyzer = mocker.patch(
-            "extended_search.index.Indexed._get_analyzer_name",
-            return_value="baz",
-        )
-        result = IndexedField.generate_search_fields("foo", [], 3.2)
-        # uses help methods
-        mock_fieldname.assert_called_once_with(
-            "foo",
-            AnalysisType.TOKENIZED,
-        )
-        # analyzer defaults to tokenized
-        mock_analyzer.assert_called_once_with(AnalysisType.TOKENIZED)
-        assert len(result) == 1
-        assert type(result[0]) == SearchField
-        assert result[0].field_name == "bar"
-        assert result[0].boost == 3.2
-        assert result[0].model_field_name == "foo"
-        assert result[0].kwargs["es_extra"] == {"analyzer": "baz"}
-
-    def test_get_searchable_search_fields_returns_field_per_analyzer(self, mocker):
-        mocker.patch(
-            "extended_search.query_builder.get_indexed_field_name",
-            return_value="bar",
-        )
-        mocker.patch(
-            "extended_search.index.Indexed._get_analyzer_name",
-            return_value="baz",
-        )
-        assert len(IndexedField.generate_search_fields("foo", [], boost=22.5)) == 1
-        assert len(IndexedField.generate_search_fields("foo", ["first"])) == 1
-        assert len(IndexedField.generate_search_fields("foo", ["first", "second"])) == 2
-        assert (
-            len(
-                IndexedField.generate_search_fields("foo", ["first", "second", "three"])
-            )
-            == 3
-        )
-
     def test_generate_fields(self, mocker):
-        raise AssertionError()
+        mock_generate_search = mocker.patch(
+            "extended_search.index.IndexedField.generate_search_fields",
+            return_value=["--search-field--", "--search-field-2--"],
+        )
+        mock_generate_autocomplete = mocker.patch(
+            "extended_search.index.IndexedField.generate_autocomplete_fields",
+            return_value=["--autocomplete-field--"],
+        )
+        mock_generate_filter = mocker.patch(
+            "extended_search.index.IndexedField.generate_filter_fields",
+            return_value=["--filter-field--", "--filter-field-2--"],
+        )
+        mock_relation = mocker.patch(
+            "extended_search.index.IndexedField.is_relation_of"
+        )
+        field = IndexedField("foo", model_field_name="bar")
+
+        assert field.generate_fields() == []
+        mock_generate_search.assert_not_called()
+        mock_generate_autocomplete.assert_not_called()
+        mock_generate_filter.assert_not_called()
+        mock_relation.assert_not_called()
+
+        parent_field = BaseField("dummy")
+        assert field.generate_fields(parent_field=parent_field) == []
+        mock_generate_search.assert_not_called()
+        mock_generate_autocomplete.assert_not_called()
+        mock_generate_filter.assert_not_called()
+        mock_relation.assert_called_once_with(parent_field)
+
+        field.search = True
+        assert field.generate_fields() == [
+            "--search-field--",
+            "--search-field-2--",
+        ]
+        mock_generate_search.assert_called_once_with()
+        mock_generate_autocomplete.assert_not_called()
+        mock_generate_filter.assert_not_called()
+
+        mock_generate_search.reset_mock()
+        field.search = False
+        field.autocomplete = True
+        assert field.generate_fields() == ["--autocomplete-field--"]
+        mock_generate_search.assert_not_called()
+        mock_generate_autocomplete.assert_called_once_with()
+        mock_generate_filter.assert_not_called()
+
+        mock_generate_autocomplete.reset_mock()
+        field.autocomplete = False
+        field.filter = True
+        assert field.generate_fields() == [
+            "--filter-field--",
+            "--filter-field-2--",
+        ]
+        mock_generate_search.assert_not_called()
+        mock_generate_autocomplete.assert_not_called()
+        mock_generate_filter.assert_called_once_with()
+
+        mock_generate_filter.reset_mock()
+        field.search = True
+        field.autocomplete = True
+        field.filter = True
+        assert field.generate_fields() == [
+            "--search-field--",
+            "--search-field-2--",
+            "--autocomplete-field--",
+            "--filter-field--",
+            "--filter-field-2--",
+        ]
+        mock_generate_search.assert_called_once_with()
+        mock_generate_autocomplete.assert_called_once_with()
+        mock_generate_filter.assert_called_once_with()
 
     def test_generate_search_fields(self, mocker):
-        raise AssertionError()
+        mock_get_variants = mocker.patch(
+            "extended_search.index.IndexedField.get_search_field_variants",
+            return_value=[],
+        )
+        mock_field = mocker.patch("extended_search.index.SearchField")
+        field = IndexedField("foo", model_field_name="bar")
+
+        assert field.generate_search_fields() == []
+
+        mock_get_variants.return_value = [
+            (("arg", "arg2"), {"kwarg": "value"}),
+        ]
+        result = field.generate_search_fields()
+        assert len(result) == 1
+        assert isinstance(result[0], mocker.MagicMock)
+        mock_field.assert_called_once_with(
+            "arg",
+            "arg2",
+            model_field_name="bar",
+            boost=1.0,
+            parent_field=None,
+            configuration_model=None,
+            kwarg="value",
+        )
+
+        mock_field.reset_mock()
+        field.parent_field = "baz"
+        field.configuration_model = "foobarbaz"
+        field.boost = 89.98
+        result = field.generate_search_fields()
+        mock_field.assert_called_once_with(
+            "arg",
+            "arg2",
+            model_field_name="bar",
+            boost=89.98,
+            parent_field="baz",
+            configuration_model="foobarbaz",
+            kwarg="value",
+        )
+
+        mock_field.reset_mock()
+        field.search_kwargs = {"another": 33, "yet_another": True}
+        result = field.generate_search_fields()
+        mock_field.assert_called_once_with(
+            "arg",
+            "arg2",
+            model_field_name="bar",
+            boost=89.98,
+            parent_field="baz",
+            configuration_model="foobarbaz",
+            kwarg="value",
+            another=33,
+            yet_another=True,
+        )
 
     def test_generate_autocomplete_fields(self, mocker):
-        raise AssertionError()
+        mock_get_variants = mocker.patch(
+            "extended_search.index.IndexedField.get_autocomplete_field_variants",
+            return_value=[],
+        )
+        mock_field = mocker.patch("extended_search.index.AutocompleteField")
+        field = IndexedField("foo", model_field_name="bar")
+
+        assert field.generate_autocomplete_fields() == []
+
+        mock_get_variants.return_value = [
+            (("arg", "arg2"), {"kwarg": "value"}),
+        ]
+        result = field.generate_autocomplete_fields()
+        assert len(result) == 1
+        assert isinstance(result[0], mocker.MagicMock)
+        mock_field.assert_called_once_with(
+            "arg",
+            "arg2",
+            model_field_name="bar",
+            parent_field=None,
+            configuration_model=None,
+            kwarg="value",
+        )
+
+        mock_field.reset_mock()
+        field.parent_field = "baz"
+        field.configuration_model = "foobarbaz"
+        result = field.generate_autocomplete_fields()
+        mock_field.assert_called_once_with(
+            "arg",
+            "arg2",
+            model_field_name="bar",
+            parent_field="baz",
+            configuration_model="foobarbaz",
+            kwarg="value",
+        )
+
+        mock_field.reset_mock()
+        field.autocomplete_kwargs = {"another": 33, "yet_another": True}
+        result = field.generate_autocomplete_fields()
+        mock_field.assert_called_once_with(
+            "arg",
+            "arg2",
+            model_field_name="bar",
+            parent_field="baz",
+            configuration_model="foobarbaz",
+            kwarg="value",
+            another=33,
+            yet_another=True,
+        )
 
     def test_generate_filter_fields(self, mocker):
         mock_get_variants = mocker.patch(
