@@ -111,12 +111,12 @@ class TestModelFieldNameMixin:
 
         mock_parent_get_value.return_value = None
         field = MixedIn("foo")
-        assert field.get_value(mock_model_class) == None
+        assert field.get_value(mock_model_class) is None
         mock_parent_get_value.assert_called_once_with(mock_model_class)
         mock_parent_get_value.reset_mock()
 
         field = MixedIn("foo", model_field_name="bar")
-        assert field.get_value(mock_model_class) == None
+        assert field.get_value(mock_model_class) is None
         mock_parent_get_value.assert_called_once_with(mock_model_class)
         mock_parent_get_value.reset_mock()
 
