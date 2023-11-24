@@ -110,7 +110,9 @@ class PeopleSearchVector(SearchVector):
         return self._wagtail_search(queryset, query, *args, **kwargs)
 
     def autocomplete(self, query, *args, **kwargs):
-        return self._wagtail_autocomplete(self.get_queryset(), query, *args, **kwargs)
+        # never show inactive profiles on autocomplete
+        queryset = Person.objects.all().active()
+        return self._wagtail_autocomplete(queryset, query, *args, **kwargs)
 
 
 class TeamsSearchVector(SearchVector):
