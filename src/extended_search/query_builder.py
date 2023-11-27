@@ -309,11 +309,12 @@ class CustomQueryBuilder(QueryBuilder):
         parent; each has its own subquery using its own settings filtered by
         type, and all are joined together at the end.
         """
-        cache_key = model_class.__name__
-        if not ignore_cache and settings.SEARCH_ENABLE_QUERY_CACHE:
-            built_query = cache.get(cache_key, None)
-            if built_query:
-                return built_query
+        if settings.SEARCH_ENABLE_QUERY_CACHE:
+            cache_key = model_class.__name__
+            if not ignore_cache:
+                built_query = cache.get(cache_key, None)
+                if built_query:
+                    return built_query
 
         extended_models = cls.get_extended_models_with_unique_indexed_fields(
             model_class
@@ -360,7 +361,8 @@ class CustomQueryBuilder(QueryBuilder):
         for q in queries:
             root_query |= q
 
-        cache.set(cache_key, root_query)
+        if settings.SEARCH_ENABLE_QUERY_CACHE:
+            cache.set(cache_key, root_query)
 
         logger.debug(root_query)
         return root_query
