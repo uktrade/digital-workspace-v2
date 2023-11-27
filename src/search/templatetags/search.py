@@ -5,8 +5,8 @@ from django.conf import settings
 from django.core.paginator import Paginator
 
 from search import search as search_vectors
-from search.utils import has_only_bad_results
 
+# from search.utils import has_only_bad_results
 # from silk.profiling.profiler import silk_profile
 
 
@@ -89,15 +89,15 @@ def search_category(
         "search_query": query,
         "count": total_count,
         "is_results_count_low": total_count < settings.CUTOFF_SEARCH_RESULTS_VALUE,
-        "show_bad_results_message": (
-            show_bad_results_message
-            and has_only_bad_results(
-                query,
-                category,
-                pinned_results,
-                search_results,
-            )
-        ),
+        "show_bad_results_message": False,  # (
+        #     show_bad_results_message
+        #     and has_only_bad_results(
+        #         query,
+        #         category,
+        #         pinned_results,
+        #         search_results,
+        #     )
+        # ),
         "show_heading": show_heading,
         "result_type_display": result_type_display,
         "is_limited": limit is not None and total_count > limit,
