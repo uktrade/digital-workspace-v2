@@ -12,7 +12,7 @@
            hx-trigger="input keyup changed delay:150ms"
            hx-get="{% url 'search:autocomplete' %}"
            hx-target="#autocomplete-results"
-           onblur="document.getElementById('autocomplete-results').style.display='none'"
+           onblur="setTimeout(() => {document.getElementById('autocomplete-results').style.display='none'}, 100)"
            onfocus="document.getElementById('autocomplete-results').style.display='block'">
     <button type="submit">Search</button>
     <div id="autocomplete-results" class="autocomplete-overlay"></div>
