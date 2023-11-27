@@ -15,7 +15,7 @@ INSTALLED_APPS += [  # noqa F405
 
 try:
     # Add django-silk for profiling
-    import silk
+    import silk  # noqa F401
 
     INSTALLED_APPS += [  # noqa F405
         "silk",
