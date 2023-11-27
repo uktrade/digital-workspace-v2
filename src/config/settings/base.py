@@ -98,11 +98,11 @@ ALLOWED_HOSTS = setup_allowed_hosts(["*"])
 
 # Set up Django
 LOCAL_APPS = [
+    "patch",
     "core",
     "feedback",
     "home",
     "content",
-    "search",
     "news",
     "working_at_dit",
     "tools",
@@ -174,7 +174,9 @@ INSTALLED_APPS = (
     + WAGTAIL_APPS
     + DJANGO_APPS
     + [
-        "extended_search",  # must be last because it depends on models being loaded into memory
+        # Search apps must be last because it depends on models being loaded into memory
+        "search",
+        "extended_search",
     ]
 )
 
@@ -464,6 +466,7 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
+
 # Twitter
 TWITTER_ACCESS_TOKEN = env("TWITTER_ACCESS_TOKEN")
 TWITTER_ACCESS_SECRET = env("TWITTER_ACCESS_SECRET")
@@ -702,3 +705,6 @@ CUTOFF_SEARCH_RESULTS_VALUE = env.int("CUTOFF_SEARCH_RESULTS_VALUE", 20)
 SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
     "SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS", 90
 )
+
+# Enable the caching of the generated search query DSLs
+SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)

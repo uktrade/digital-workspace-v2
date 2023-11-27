@@ -24,9 +24,8 @@ from wagtail.utils.decorators import cached_classmethod
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
-from extended_search.fields import IndexedField
 from extended_search.index import Indexed
-from extended_search.managers.index import ModelIndexManager
+from extended_search.index import DWIndexedField as IndexedField
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
@@ -139,38 +138,6 @@ class ContentPageQuerySet(PageQuerySet):
 
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
-
-
-class ContentPageIndexManager(ModelIndexManager):
-    fields = [
-        IndexedField(
-            "search_title",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=5.0,
-        ),
-        IndexedField(
-            "search_headings",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=3.0,
-        ),
-        IndexedField(
-            "excerpt",
-            tokenized=True,
-            explicit=True,
-            boost=2.0,
-        ),
-        IndexedField(
-            "search_content",
-            tokenized=True,
-            explicit=True,
-        ),
-        IndexedField("is_creatable", filter=True),
-        IndexedField("published_date", proximity=True),
-    ]
 
 
 class ContentOwnerMixin(models.Model):
@@ -295,7 +262,35 @@ class ContentPage(BasePage):
         null=True,
     )
 
-    search_fields = BasePage.search_fields + ContentPageIndexManager()
+    indexed_fields = [
+        IndexedField(
+            "search_title",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=5.0,
+        ),
+        IndexedField(
+            "search_headings",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=3.0,
+        ),
+        IndexedField(
+            "excerpt",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "search_content",
+            tokenized=True,
+            explicit=True,
+        ),
+        IndexedField("is_creatable", filter=True),
+        IndexedField("published_date", proximity=True),
+    ]
 
     @property
     def published_date(self):

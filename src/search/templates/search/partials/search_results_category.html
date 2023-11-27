@@ -3,11 +3,11 @@
         <div class="low-score-message-container">
             {% if is_results_count_low %}
                 <p class="govuk-body-s">
-                    You can improve your search results by checking your spelling or trying a different search term.
+                    It looks like you didn't get very good {{ result_type_display }} results. You can improve your search results by checking your spelling or trying a different search term.
                 </p>
             {% else %}
                 <p class="govuk-body-s">
-                    You can improve your search results by using fewer keywords and searching for something less specific.
+                    It looks like you didn't get very good {{ result_type_display }} results. You can improve your search results by using fewer keywords and searching for something less specific.
                 </p>
             {% endif %}
         </div>
@@ -21,7 +21,7 @@
     {{ page }}
     <div class="search-results__list"
          data-search-category="{{ search_category }}">
-        {% if pinned_results and not search_results.has_previous %}
+        {% if pinned_results %}
             <div class="pinned">
                 <h3 class="govuk-heading-s">Featured {{ result_type_display }}</h3>
 
@@ -34,11 +34,9 @@
         {% if search_results %}
             {% for result in search_results %}
                 {% comment %}
-                skip any pinned results that are already rendered above
+                Note: number_overall is the overall number of the result in the entire set of results (including pinned)
                 {% endcomment %}
-                {% if search_results.has_previous or forloop.counter > num_pinned_results|add:"0" %}
-                    {% include search_results_item_template with object=result type=search_category section=search_category number_overall=forloop.counter|add:num_pinned_results number_section=forloop.counter perms=perms only %}
-                {% endif %}
+                {% include search_results_item_template with object=result type=search_category section=search_category number_overall=forloop.counter|add:num_pinned_results number_section=forloop.counter perms=perms only %}
             {% endfor %}
 
         {% else %}

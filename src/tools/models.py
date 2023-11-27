@@ -1,12 +1,10 @@
+from content.models import ContentPage
 from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.shortcuts import redirect
+from extended_search.index import DWIndexedField as IndexedField
 from wagtail.admin.panels import FieldPanel
-
-from content.models import ContentPage
-from extended_search.managers.index import ModelIndexManager
-from extended_search.fields import IndexedField
 from working_at_dit.models import PageWithTopics
 
 
@@ -71,20 +69,6 @@ class IrapToolData(IrapToolDataAbstract):
         return self.product_name
 
 
-class ToolIndexManager(ModelIndexManager):
-    fields = [
-        IndexedField(
-            "search_tool_name",
-            fuzzy=True,
-            tokenized=True,
-            explicit=True,
-            autocomplete=True,
-            keyword=True,
-            boost=10.0,
-        ),
-    ]
-
-
 class Tool(PageWithTopics):
     is_creatable = True
     irap_tool = models.OneToOneField(
@@ -105,7 +89,17 @@ class Tool(PageWithTopics):
         max_length=2048,
     )
 
-    search_fields = PageWithTopics.search_fields + ToolIndexManager()
+    indexed_fields = [
+        IndexedField(
+            "search_tool_name",
+            fuzzy=True,
+            tokenized=True,
+            explicit=True,
+            autocomplete=True,
+            keyword=True,
+            boost=10.0,
+        ),
+    ]
 
     @property
     def search_tool_name(self):

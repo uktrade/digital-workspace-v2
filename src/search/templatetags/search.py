@@ -7,6 +7,8 @@ from django.core.paginator import Paginator
 from search import search as search_vectors
 
 # from search.utils import has_only_bad_results
+# from silk.profiling.profiler import silk_profile
+
 
 register = template.Library()
 
@@ -20,7 +22,7 @@ SEARCH_CATEGORIES: set[SearchCategory] = {
     "tools",
     "news",
 }
-SEARCH_VECTORS: dict[str, search_vectors.SearchVector] = {
+SEARCH_VECTORS: dict[str, search_vectors.ModelSearchVector] = {
     "all_pages": search_vectors.AllPagesSearchVector,
     "people": search_vectors.PeopleSearchVector,
     "teams": search_vectors.TeamsSearchVector,
@@ -34,6 +36,7 @@ PAGE_SIZE = 20
 @register.inclusion_tag(
     "search/partials/search_results_category.html", takes_context=True
 )
+# @silk_profile(name="Search.TemplateTag.category")
 def search_category(
     context,
     *,
@@ -45,17 +48,11 @@ def search_category(
 ):
     request = context["request"]
     query = context["search_query"]
-    page = context["page"]
+    page = int(context["page"])
 
     search_vector = SEARCH_VECTORS[category](request)
-    pinned_results = search_vector.pinned(query)
-    search_vector_results = search_vector.search(query)
-    # `list` needs to be called to force the database query to be evaluated
-    # before passing the value to the paginator. If this isn't done, the
-    # pages will have the pinned results removed after pagination and cause
-    # the pages to have odd lengths.
-    search_results = list(pinned_results) + list(search_vector_results)
-    count = len(search_results)
+    search_results = search_vector.search(query)
+    search_results_count = search_results.count()
 
     if limit:
         search_results = search_results[: int(limit)]
@@ -70,9 +67,15 @@ def search_category(
     result_type_display, result_type_display_plural = _get_result_type_displays(
         category
     )
-    if count != 1:
-        result_type_display = result_type_display_plural
 
+    pinned_results = []
+    if page == 1:
+        pinned_results = search_vector.pinned(query)
+
+    total_count = search_results_count + len(pinned_results)
+
+    if total_count != 1:
+        result_type_display = result_type_display_plural
     return {
         "request": request,
         "perms": context["perms"],
@@ -84,17 +87,20 @@ def search_category(
         "tab_name": tab_name,
         "tab_override": context["tab_override"],
         "search_query": query,
-        "count": count,
-        "is_results_count_low": count < settings.CUTOFF_SEARCH_RESULTS_VALUE,
+        "count": total_count,
+        "is_results_count_low": total_count < settings.CUTOFF_SEARCH_RESULTS_VALUE,
         "show_bad_results_message": False,  # (
         #     show_bad_results_message
         #     and has_only_bad_results(
-        #         query, category, pinned_results, search_vector_results
+        #         query,
+        #         category,
+        #         pinned_results,
+        #         search_results,
         #     )
         # ),
         "show_heading": show_heading,
         "result_type_display": result_type_display,
-        "is_limited": limit is not None and count > limit,
+        "is_limited": limit is not None and total_count > limit,
     }
 
 
@@ -125,6 +131,7 @@ def autocomplete(request, query):
 
 
 @register.simple_tag(takes_context=True)
+# @silk_profile(name="Search.TemplateTag.count")
 def search_count(context, *, category):
     request = context["request"]
     query = context["search_query"]

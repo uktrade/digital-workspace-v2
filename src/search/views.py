@@ -9,10 +9,12 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
+from content.models import ContentPage
 from extended_search.models import Setting as SearchSetting
-from extended_search.settings import extended_search_settings
-from search.utils import get_all_subqueries
+from extended_search.settings import settings_singleton
+from peoplefinder.models import Person, Team
 from search.templatetags import search as search_template_tag
+from search.utils import get_query_info_for_model
 
 logger = logging.getLogger(__name__)
 
@@ -108,12 +110,16 @@ def explore(request: HttpRequest) -> HttpResponse:
     page = request.GET.get("page", "1")
 
     boost_vars = [
-        {"name": k, "value": extended_search_settings[k]}
-        for k in extended_search_settings.all_keys
+        {"name": k, "value": settings_singleton[k]}
+        for k in settings_singleton.all_keys()
         if "boost_parts" in k
     ]
 
-    subqueries = get_all_subqueries(query)
+    subqueries = {
+        "pages": get_query_info_for_model(ContentPage, query),
+        "people": get_query_info_for_model(Person, query),
+        "teams": get_query_info_for_model(Team, query),
+    }
 
     context = {
         "search_url": reverse("search:explore"),

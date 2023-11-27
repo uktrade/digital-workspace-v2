@@ -2,14 +2,22 @@ from typing import Any, List, Union
 
 from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
+    Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
 )
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
-from extended_search.backends.query import Nested, OnlyFields
+from extended_search.query import Filtered, Nested, OnlyFields
 from extended_search.index import RelatedFields
+
+
+class FilteredSearchMapping(Elasticsearch7Mapping):
+    def get_field_column_name(self, field):
+        if type(field) == str and field == "content_type":
+            return "content_type"
+        return super().get_field_column_name(field)
 
 
 class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
@@ -53,15 +61,14 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
                     searchable_fields[field_name]
                 )
             else:
+                # @TODO this works but ideally we'd move get_field_column_name to handle this directly
                 field_name_parts = field_name.split(".")
-                if (
-                    len(field_name_parts) == 2
-                    and field_name_parts[0] in searchable_fields
-                ):
+                if field_name_parts[0] in searchable_fields:
                     field_name = self.mapping.get_field_column_name(
                         searchable_fields[field_name_parts[0]]
                     )
-                    field_name = f"{field_name}.{field_name_parts[1]}"
+                    field_name_remainder = ".".join(field_name_parts[1:])
+                    field_name = f"{field_name}.{field_name_remainder}"
 
             remapped_fields.append(field_name)
 
@@ -210,7 +217,7 @@ class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def get_searchable_fields(self):
         return [
             f
-            for f in self.queryset.model.search_fields
+            for f in self.queryset.model.get_search_fields()
             if isinstance(f, SearchField) or isinstance(f, RelatedFields)
         ]
 
@@ -231,6 +238,43 @@ class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
         }
 
 
+class FilteredSearchQueryCompiler(ExtendedSearchQueryCompiler):
+    def _compile_query(self, query, field, boost=1.0):
+        if isinstance(query, Filtered):
+            return self._compile_filtered_query(query, [field], boost)
+        return super()._compile_query(query, field, boost)
+
+    def _compile_filtered_query(self, query, fields, boost=1.0):
+        """
+        Add OS DSL elements to support Filtered fields
+        """
+        compiled_filters = [self._process_lookup(*f) for f in query.filters]
+        if len(compiled_filters) == 1:
+            compiled_filters = compiled_filters[0]
+
+        return {
+            "bool": {
+                "must": self._join_and_compile_queries(query.subquery, fields, boost),
+                "filter": compiled_filters,
+            }
+        }
+
+    def _process_lookup(self, field, lookup, value):
+        # @TODO not pretty given get_field_column_name is already overridden
+        if type(field) == str:
+            column_name = field
+        else:
+            column_name = self.mapping.get_field_column_name(field)
+
+        if lookup == "contains":
+            return {"match": {column_name: value}}
+
+        if lookup == "excludes":
+            return {"bool": {"mustNot": {"terms": {column_name: value}}}}
+
+        return super()._process_lookup(field, lookup, value)
+
+
 class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def _compile_query(self, query, field, boost=1.0):
         if isinstance(query, Fuzzy):
@@ -246,8 +290,11 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
         match_query = super()._compile_fuzzy_query(query, fields)
 
         if boost != 1.0:
-            for field in fields:
-                match_query["match"][field.field_name]["boost"] = boost
+            if "multi_match" in match_query:
+                match_query["multi_match"]["boost"] = boost
+            else:
+                for field in fields:
+                    match_query["match"][field.field_name]["boost"] = boost
 
         return match_query
 
@@ -271,16 +318,24 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
         return match_query
 
 
-class CustomSearchQueryCompiler(
-    BoostSearchQueryCompiler,
-    NestedSearchQueryCompiler,
-    OnlyFieldSearchQueryCompiler,
+class CustomSearchMapping(
+    FilteredSearchMapping,
 ):
     ...
 
 
+class CustomSearchQueryCompiler(
+    BoostSearchQueryCompiler,
+    FilteredSearchQueryCompiler,
+    NestedSearchQueryCompiler,
+    OnlyFieldSearchQueryCompiler,
+):
+    mapping_class = CustomSearchMapping
+
+
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = CustomSearchQueryCompiler
+    mapping_class = CustomSearchMapping
 
 
 SearchBackend = CustomSearchBackend

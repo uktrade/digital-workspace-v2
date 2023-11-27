@@ -65,16 +65,15 @@ class TestSearchView:
         assertContains(r, "(1)")
 
     # Currently no teams-only search exists
-
     @pytest.mark.opensearch
-    def test_search_for_team(self, another_normal_user):
+    def test_search_for_team(self, normal_user):
         r = self._search("software")
 
         assertContains(r, "pf-person-search-result")
         assertContains(r, "pf-team-card")
 
         # The normal_user is in the Software team.
-        assertContains(r, str(another_normal_user.profile.slug))
+        assertContains(r, str(normal_user.profile.slug))
         assertContains(r, "/teams/software/")
         assertContains(r, "(2)")
 
