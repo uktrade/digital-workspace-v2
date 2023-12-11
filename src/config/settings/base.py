@@ -8,6 +8,7 @@ from dbt_copilot_python.database import database_url_from_env
 from dbt_copilot_python.network import setup_allowed_hosts
 from dbt_copilot_python.utility import is_copilot
 from django.urls import reverse_lazy
+from django_log_formatter_asim import ASIMFormatter
 from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
@@ -497,8 +498,8 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "ecs_formatter": {
-            "()": ECSFormatter,
+        "asim_formatter": {
+            "()": ASIMFormatter,
         },
         "simple": {
             "format": "{asctime} {levelname} {message}",
@@ -508,7 +509,7 @@ LOGGING = {
     "handlers": {
         "ecs": {
             "class": "logging.StreamHandler",
-            "formatter": "ecs_formatter",
+            "formatter": "asim_formatter",
         },
         "simple": {
             "class": "logging.StreamHandler",
