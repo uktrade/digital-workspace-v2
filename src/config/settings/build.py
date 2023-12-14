@@ -1,5 +1,8 @@
 from .base import *  # noqa
 
+import os
+import sys
+
 from django_log_formatter_asim import ASIMFormatter
 
 APP_ENV = "build"
