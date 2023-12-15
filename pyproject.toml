@@ -61,6 +61,7 @@ dj-database-url = "^2.1.0"
 pillow = "10.0.1"
 wagtail-generic-chooser = "^0.6"
 django-waffle = "^4.0.0"
+aws-xray-sdk = "^2.12.1"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.4.2"
