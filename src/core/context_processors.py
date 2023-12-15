@@ -1,7 +1,7 @@
 from core.forms import PageProblemFoundForm
 
 
-def page_problem_form(request):
+def global_context(request):
     return {
         "USER_IS_AUTHENTICATED": request.user.is_authenticated,
         "PAGE_PROBLEM_FORM": PageProblemFoundForm(
