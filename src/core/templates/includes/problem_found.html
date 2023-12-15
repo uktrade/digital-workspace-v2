@@ -1,17 +1,19 @@
-<details class="govuk-details" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">Is there anything wrong with this page?</span>
-    </summary>
-    <div class="govuk-details__text">
-        <fieldset class="govuk-fieldset">
-            <form action="{% url "page_problem_found" %}" novalidate method='post'>
-                {% csrf_token %}
-                {% include "includes/govt_uk_form.html" with form=PAGE_PROBLEM_FORM %}
-                <input type="submit"
-                       value="Submit"
-                       class="govuk-button govuk-button"
-                       data-module="govuk-button" />
-            </form>
-        </fieldset>
-    </div>
-</details>
+{% if USER_IS_AUTHENTICATED %}
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">Is there anything wrong with this page?</span>
+        </summary>
+        <div class="govuk-details__text">
+            <fieldset class="govuk-fieldset">
+                <form action="{% url "page_problem_found" %}" novalidate method='post'>
+                    {% csrf_token %}
+                    {% include "includes/govt_uk_form.html" with form=PAGE_PROBLEM_FORM %}
+                    <input type="submit"
+                           value="Submit"
+                           class="govuk-button govuk-button"
+                           data-module="govuk-button" />
+                </form>
+            </fieldset>
+        </div>
+    </details>
+{% endif %}
