@@ -4,4 +4,4 @@ APP_ENV = "build"
 
 SEARCH_ENABLE_QUERY_CACHE = False  # Don't access Redis at build time
 
-LOGGING["handlers"]["ecs"]["formatting"] = "asim_formatter"  # noqa F405
+LOGGING["handlers"]["ecs"]["formatter"] = "asim_formatter"  # noqa F405
