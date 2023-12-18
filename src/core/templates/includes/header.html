@@ -39,7 +39,9 @@
                     {% if not search_url %}
                         {% url 'search:all' as search_url %}
                     {% endif %}
-                    {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
+                    {% if USER_IS_AUTHENTICATED %}
+                        {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
+                    {% endif %}
                 </div>
             </div>
         </div>
