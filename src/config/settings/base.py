@@ -720,7 +720,8 @@ if env.bool("ENABLE_XRAY", default=False):
         "PLUGINS": (),
         "SAMPLING": True,
         "SAMPLING_RULES": None,
-        "AWS_XRAY_TRACING_NAME": None,  # the segment name for segments generated from incoming requests
+        # the segment name for segments generated from incoming requests
+        "AWS_XRAY_TRACING_NAME": 'intranet/digital-workspace',
         "DYNAMIC_NAMING": None,  # defines a pattern that host names should match
         "STREAMING_THRESHOLD": None,  # defines when a segment starts to stream out its children subsegments
     }
