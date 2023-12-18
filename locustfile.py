@@ -124,6 +124,6 @@ class User(HttpUser):
     tasks = [
         SearchBrowsing,
         NormalBrowsing,
-        SitemapBrowsing,
+        # SitemapBrowsing,
     ]
     wait_time = between(5, 9)
