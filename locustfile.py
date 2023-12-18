@@ -18,7 +18,6 @@ MENU_PATHS = [
     "teams",
     "tools",
 ]
-SITEMAP_URLS: list[str] = []
 
 
 def clean_path(path: str) -> str:
@@ -96,18 +95,20 @@ class NormalBrowsing(TaskSet):
 
 
 class SitemapBrowsing(TaskSet):
+    sitemap_urls: list[str] = []
+
     def get_random_path_from_sitemap(self):
-        if not SITEMAP_URLS:
+        if not self.sitemap_urls:
             sitemap_xml = self.client.get(
                 "sitemap.xml",
                 headers=sso_headers,
             )
 
             root = ET.fromstring(sitemap_xml.text)
-            SITEMAP_URLS = [url[0].text for url in root]
+            self.sitemap_urls = [url[0].text for url in root]
 
-        random_index = random.randint(0, len(SITEMAP_URLS) - 1)
-        random_url = SITEMAP_URLS[random_index]
+        random_index = random.randint(0, len(self.sitemap_urls) - 1)
+        random_url = self.sitemap_urls[random_index]
         return get_url_path(random_url)
 
     @task(80)
@@ -120,5 +121,9 @@ class SitemapBrowsing(TaskSet):
 
 
 class User(HttpUser):
-    tasks = [SearchBrowsing, NormalBrowsing, SitemapBrowsing, 4]
+    tasks = [
+        SearchBrowsing,
+        NormalBrowsing,
+        SitemapBrowsing,
+    ]
     wait_time = between(5, 9)
