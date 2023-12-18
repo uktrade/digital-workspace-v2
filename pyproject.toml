@@ -62,6 +62,7 @@ pillow = "10.0.1"
 wagtail-generic-chooser = "^0.6"
 django-waffle = "^4.0.0"
 django-log-formatter-asim = "^0.0.2"
+aws-xray-sdk = "^2.12.1"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.4.2"
