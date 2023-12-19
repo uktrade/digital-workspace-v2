@@ -126,4 +126,4 @@ class User(HttpUser):
         NormalBrowsing,
         # SitemapBrowsing,
     ]
-    wait_time = between(5, 9)
+    wait_time = between(4.5, 4.5)
