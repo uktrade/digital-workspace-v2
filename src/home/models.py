@@ -152,15 +152,14 @@ class HomePage(BasePage):
         )
         context["news_items"] = news_items
 
-        #  Tweets
-        if not cache.get("homepage_tweets"):
-            cache.set(
-                "homepage_tweets",
-                sorted(get_tweets(), key=lambda x: x.created_at, reverse=True),
-                3000,
-            )
+        # Tweets
+        tweets = cache.get("homepage_tweets")
 
-        context["tweets"] = cache.get("homepage_tweets")[:3]
+        if tweets is None:
+            tweets = sorted(get_tweets(), key=lambda x: x.created_at, reverse=True)
+            cache.set("homepage_tweets", tweets, 60 * 60)  # cache for 1 hour
+
+        context["tweets"] = tweets[:3]
 
         # Popular on Digital Workspace
         context["whats_popular_items"] = WhatsPopular.objects.all()
