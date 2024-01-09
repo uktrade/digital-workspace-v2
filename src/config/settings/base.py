@@ -581,6 +581,8 @@ LOGGING = {
 if is_copilot():
     LOGGING["handlers"]["ecs"]["formatter"] = "asim_formatter"
 
+DLFA_INCLUDE_RAW_LOG = True
+
 # Remove SSO protection from health check and Hawk authed URLs
 AUTHBROKER_ANONYMOUS_PATHS = (
     "/pingdom/ping.xml",
