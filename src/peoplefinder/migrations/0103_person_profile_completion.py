@@ -25,8 +25,8 @@ class Migration(migrations.Migration):
             name="profile_completion",
             field=models.IntegerField(default=0),
         ),
-        migrations.RunPython(
-            populate_profile_completion,
-            reverse_code=migrations.RunPython.noop,
-        ),
+        # migrations.RunPython(
+        #     populate_profile_completion,
+        #     reverse_code=migrations.RunPython.noop,
+        # ),
     ]
