@@ -20,7 +20,7 @@ def test_add_news_page(superuser, page: Page):
 
     page.get_by_role("button", name="Pages").click()
     page.get_by_role("link", name="Home", exact=True).click()
-    page.get_by_role("link", name="Explore child pages of 'News and views'").click()
+    page.get_by_role("link", name="Explore child pages of 'News'").click()
     page.get_by_role("button", name="Actions").click()
     page.get_by_role("link", name="Add child page").click()
 

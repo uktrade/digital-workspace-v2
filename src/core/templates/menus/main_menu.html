@@ -2,9 +2,12 @@
     {% for item in menu_items %}
         <li class="govuk-header__navigation-item {{ item.active_class }}">
             {% if item.active_class %}
-                <a class="{{ item.active_class }}" href="{{ item.href }}">{{ item.text }}</a>
+                <a class="{{ item.active_class }}"
+                   data-testid="main-menu-{{ item.text|lower }}"
+                   href="{{ item.href }}">{{ item.text }}</a>
             {% else %}
                 <a class="govuk-header__link govuk-header__link--ws"
+                   data-testid="main-menu-{{ item.text|lower }}"
                    href="{{ item.href }}">{{ item.text }}</a>
             {% endif %}
         </li>
