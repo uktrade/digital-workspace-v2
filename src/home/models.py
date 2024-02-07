@@ -176,7 +176,7 @@ class HomePage(BasePage):
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):
-            govuk_news_feed_url = "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=department-for-international-trade"
+            govuk_news_feed_url = "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=department-for-international-trade&organisations%5B%5D=department-for-business-and-trade"
 
             response = requests.get(
                 govuk_news_feed_url,
