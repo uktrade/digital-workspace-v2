@@ -8,7 +8,6 @@ from news.factories import NewsPageFactory
 from .utils import login
 
 
-
 @pytest.mark.e2e
 def test_homepage(superuser, user, page: Page):
     NewsPageFactory.create_batch(5)
