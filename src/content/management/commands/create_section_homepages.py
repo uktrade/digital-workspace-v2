@@ -48,7 +48,7 @@ class Command(BaseCommand):
             Page.objects.get(slug="news-and-views")
         except Page.DoesNotExist:
             news_home = NewsHome(
-                title="News and views",
+                title="News",
                 slug="news-and-views",
                 live=True,
                 first_published_at=datetime.now(),

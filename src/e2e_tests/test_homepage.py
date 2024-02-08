@@ -5,11 +5,14 @@ from playwright.sync_api import Page, expect
 
 from news.factories import NewsPageFactory
 
+from .utils import login
+
 
 @pytest.mark.e2e
-def test_homepage(page: Page):
+def test_homepage(superuser, user, page: Page):
     NewsPageFactory.create_batch(5)
 
+    login(page, user)
     page.goto("/")
     expect(page).to_have_title(re.compile(r"Home.*"))
 
@@ -24,7 +27,7 @@ def test_homepage(page: Page):
     page.get_by_role("heading", name="How do I?").click()
     page.get_by_role("heading", name="DBT news from GOV.UK").click()
 
-    news = page.get_by_role("link", name="News and views")
+    news = page.get_by_test_id("main-menu-news")
     expect(news).to_have_attribute("href", "/news-and-views/")
     news.click()
     page.get_by_role("heading", name="All news categories").click()
