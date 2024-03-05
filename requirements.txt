@@ -54,7 +54,7 @@ django-timezone-field==6.0.1 ; python_version >= "3.11" and python_version < "4.
 django-treebeard==4.7 ; python_version >= "3.11" and python_version < "4.0"
 django-waffle==4.0.0 ; python_version >= "3.11" and python_version < "4.0"
 django-webpack-loader==1.8.1 ; python_version >= "3.11" and python_version < "4.0"
-django==4.2.9 ; python_version >= "3.11" and python_version < "4.0"
+django==4.2.11 ; python_version >= "3.11" and python_version < "4.0"
 djangorestframework==3.14.0 ; python_version >= "3.11" and python_version < "4.0"
 docopt==0.6.2 ; python_version >= "3.11" and python_version < "4.0"
 draftjs-exporter==2.1.7 ; python_version >= "3.11" and python_version < "4.0"
