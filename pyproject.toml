@@ -10,23 +10,22 @@ readme = "README.md"
 python = "^3.12"
 # Django
 django = "^4.2"
-django-crispy-forms = "^1.14.0"
 django-environ = "^0.10.0"
-# django_redis = "^5.2.0"
 django-settings-export = "^1.2.1"
 # TODO: Set django-simple-history to the next release after 3.4.0 (when released)
 django-simple-history = { git = "https://github.com/uktrade/django-simple-history.git", rev = "29108a5" }
 django-storages = "^1.13.2"
-django-webpack-loader = "^1.8.1"
+django-webpack-loader = "^3.0"
 djangorestframework = "^3.14.0"
+crispy-forms-gds = "^0.2.6"
 # DIT Django
 django-audit-log-middleware = "^0.0.4"
 django-hawk-drf = "^1.1.0"
-django-chunk-upload-handlers = "^0.0.13"
+django-chunk-upload-handlers = "^0.0.14"
 django-feedback-govuk = "^0.2.5"
 django_log_formatter_ecs = "^0.0.5"
-django-staff-sso-client = "^4.1.1"
-notifications-python-client = "^8.0.0"
+django-staff-sso-client = "^4.2"
+notifications-python-client = "^8.2"
 # Wagtail
 wagtail = "^5.2"
 wagtailmedia = "^0.14.2"
@@ -36,7 +35,7 @@ wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortab
 # OpenSearch
 elasticsearch = "<7.14.0"         # highest version for OpenSearch support
 elasticsearch-dsl = "^7.4.0"
-django-elasticsearch-dsl = "^7.3"
+django-elasticsearch-dsl = "^7.4"
 # Peoplefinder
 markdown = "^3.5.1"
 requests-hawk = "^1.1.1"

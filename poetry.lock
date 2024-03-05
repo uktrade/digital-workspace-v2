@@ -758,18 +758,18 @@ toml = ["tomli"]
 
 [[package]]
 name = "crispy-forms-gds"
-version = "0.2.4"
+version = "0.2.6"
 description = "Django application to add 'django-crispy-forms' layout objects for the GOV.UK Design System."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "crispy-forms-gds-0.2.4.tar.gz", hash = "sha256:6963b7ec7d2dcc652e5741f62dc1b5de30cb31c58751b0657198856a17b6b1ae"},
-    {file = "crispy_forms_gds-0.2.4-py2.py3-none-any.whl", hash = "sha256:7a3d1bc94098bafea6e0b8d404747c12b5a45fa2f7e1afd1ac529cc2816bedcb"},
+    {file = "crispy-forms-gds-0.2.6.tar.gz", hash = "sha256:c9adcb6f69955068c544362392ccdaa19f94af486370a2891782f4f2578554c9"},
+    {file = "crispy_forms_gds-0.2.6-py2.py3-none-any.whl", hash = "sha256:3c8901749d13e9e88df974c00025c2d1ed999e89266b2b10e71542721caa172b"},
 ]
 
 [package.dependencies]
-Django = ">=2.2"
-django-crispy-forms = ">=1.9.0"
+Django = ">=3.2"
+django-crispy-forms = ">=1.9"
 
 [[package]]
 name = "cron-descriptor"
@@ -1056,17 +1056,17 @@ tzdata = "*"
 
 [[package]]
 name = "django-chunk-upload-handlers"
-version = "0.0.13"
+version = "0.0.14"
 description = "Chunking Django file handlers for S3 and ClamAV service uploads"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "django_chunk_upload_handlers-0.0.13.tar.gz", hash = "sha256:9959a4e8211ec7afee266f02034441898f31540e84b558d6ec6509c408af211c"},
+    {file = "django_chunk_upload_handlers-0.0.14.tar.gz", hash = "sha256:4a8c7113f1fea9f307b4caa79995dc5824c7f5bc70bdc486cb93b5091d782854"},
 ]
 
 [package.dependencies]
 boto3 = ">=1.17.89"
-django = ">=2.2.24"
+django = ">=4.2.9,<4.3.0"
 django-storages = ">=1.11.1"
 
 [[package]]
@@ -1331,17 +1331,17 @@ resolved_reference = "29108a5b94397ba6107e6899db957289c75468c1"
 
 [[package]]
 name = "django-staff-sso-client"
-version = "4.2.1"
+version = "4.2.2"
 description = "Reusable Django app to facilitate gov.uk Staff Single Sign On"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django_staff_sso_client-4.2.1-py3-none-any.whl", hash = "sha256:99c0e7007a7e17c998a69612c43340a4bc14a88b204da6836a9928a3aa93313b"},
-    {file = "django_staff_sso_client-4.2.1.tar.gz", hash = "sha256:3f5d0ef48b49563a1f78b2d5d8902408c792009997afec41f61ddf68fd894b77"},
+    {file = "django_staff_sso_client-4.2.2-py3-none-any.whl", hash = "sha256:de94952af49fd14b8b4c32a26bcf47ab6369377fb4798683ca0654cca878f817"},
+    {file = "django_staff_sso_client-4.2.2.tar.gz", hash = "sha256:1a36b3d740d4360b44221004156443092163277cb467b5775ba2a522345b8786"},
 ]
 
 [package.dependencies]
-Django = ">=3.0,<5.0"
+Django = ">=4.2.10,<5.0"
 requests-oauthlib = "*"
 
 [package.extras]
@@ -1428,13 +1428,13 @@ django = ">=3.2"
 
 [[package]]
 name = "django-webpack-loader"
-version = "1.8.1"
+version = "3.0.1"
 description = "Transparently use webpack with django"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-webpack-loader-1.8.1.tar.gz", hash = "sha256:073beda18e2929fa5cd83bafbcaaf975e5945e84a17bfa81927cb6c9f5a17b94"},
-    {file = "django_webpack_loader-1.8.1-py2.py3-none-any.whl", hash = "sha256:2d50a902256cf94bdd87eac3e7687989c9aa757a63af21db68773115216cedee"},
+    {file = "django-webpack-loader-3.0.1.tar.gz", hash = "sha256:51331b33da76688eb4d3bf3ea3bb56434b0c1dfb2dcd88cbfb0a39618f68dd7a"},
+    {file = "django_webpack_loader-3.0.1-py2.py3-none-any.whl", hash = "sha256:d65b48c46e9e02b66255b1459c1e7a6664b4d3a6874b0b1e9d1d92518e6e999c"},
 ]
 
 [[package]]
@@ -2463,12 +2463,12 @@ setuptools = "*"
 
 [[package]]
 name = "notifications-python-client"
-version = "8.0.1"
+version = "8.2.0"
 description = "Python API client for GOV.UK Notify."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "notifications_python_client-8.0.1-py3-none-any.whl", hash = "sha256:e89f5ad7caf17065ede88a1c2270c32cc24de75843856e524a2336f952260b4c"},
+    {file = "notifications_python_client-8.2.0-py3-none-any.whl", hash = "sha256:8cd8bd01ae603a972a5413c430ca42b16f6481f37d98406c3e9b68c1c192f59e"},
 ]
 
 [package.dependencies]
@@ -4219,4 +4219,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "add9485ea725dfa6740309f8e892c95c0f495094c5133579949acfeda66bcc00"
+content-hash = "f6911a71fdd12fafadf07f37577342a07d9895d035d61fe9b08e65dc5e81480a"
