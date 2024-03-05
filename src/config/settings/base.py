@@ -144,7 +144,7 @@ WAGTAIL_APPS = [
     "wagtail.admin",
     "wagtail",
     "wagtail.contrib.routable_page",
-    "wagtail.contrib.modeladmin",
+    "wagtail_modeladmin",
     "wagtailmedia",
     "wagtailmenus",
     "wagtail_draftail_anchors",

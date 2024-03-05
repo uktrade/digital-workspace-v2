@@ -1,10 +1,10 @@
 from typing import Any, List, Union
 
-from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
+    Field,
 )
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
@@ -320,7 +320,8 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
 class CustomSearchMapping(
     FilteredSearchMapping,
-): ...
+):
+    ...
 
 
 class CustomSearchQueryCompiler(

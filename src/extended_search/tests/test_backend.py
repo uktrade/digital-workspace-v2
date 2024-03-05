@@ -1,9 +1,10 @@
 import inspect
 from unittest.mock import call
 
-from wagtail.search.backends.elasticsearch5 import Elasticsearch5SearchQueryCompiler
-from wagtail.search.backends.elasticsearch6 import Field
-from wagtail.search.backends.elasticsearch7 import Elasticsearch7SearchQueryCompiler
+from wagtail.search.backends.elasticsearch7 import (
+    Elasticsearch7SearchQueryCompiler,
+    Field,
+)
 from wagtail.search.index import RelatedFields, SearchField
 from wagtail.search.query import (
     MATCH_NONE,
@@ -37,18 +38,18 @@ class TestExtendedSearchQueryCompiler:
         query = PlainText("quid")
         compiler = ExtendedSearchQueryCompiler(ContentPage.objects.all(), query)
         assert compiler._remap_fields(None) is None
-        es5_compiler = Elasticsearch5SearchQueryCompiler(
+        es7_compiler = Elasticsearch7SearchQueryCompiler(
             ContentPage.objects.all(), query
         )
-        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        assert es7_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
 
         compiler = ExtendedSearchQueryCompiler(Person.objects.all(), query)
-        es5_compiler = Elasticsearch5SearchQueryCompiler(Person.objects.all(), query)
-        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es7_compiler = Elasticsearch7SearchQueryCompiler(Person.objects.all(), query)
+        assert es7_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
 
         compiler = ExtendedSearchQueryCompiler(Team.objects.all(), query)
-        es5_compiler = Elasticsearch5SearchQueryCompiler(Team.objects.all(), query)
-        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es7_compiler = Elasticsearch7SearchQueryCompiler(Team.objects.all(), query)
+        assert es7_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
 
     def test_remap_fields_handles_parent_relations(self, mocker):
         field1 = mocker.Mock(field_name="--field-1--")
@@ -115,25 +116,25 @@ class TestExtendedSearchQueryCompiler:
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._compile_plaintext_query",
         )
         mock_compile_plaintext_es7 = mocker.patch(
-            "wagtail.search.backends.elasticsearch6.Elasticsearch6SearchQueryCompiler._compile_plaintext_query",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler._compile_plaintext_query",
         )
         mock_compile_phrase = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._compile_phrase_query",
         )
         mock_compile_phrase_es7 = mocker.patch(
-            "wagtail.search.backends.elasticsearch6.Elasticsearch6SearchQueryCompiler._compile_phrase_query",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler._compile_phrase_query",
         )
         mock_compile_fuzzy = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._compile_fuzzy_query",
         )
         mock_compile_fuzzy_es7 = mocker.patch(
-            "wagtail.search.backends.elasticsearch6.Elasticsearch6SearchQueryCompiler._compile_fuzzy_query",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler._compile_fuzzy_query",
         )
         mock_compile = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._compile_query",
         )
         mock_compile_es7 = mocker.patch(
-            "wagtail.search.backends.elasticsearch6.Elasticsearch6SearchQueryCompiler._compile_query",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler._compile_query",
         )
         mock_join_and_compile = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._join_and_compile_queries",
