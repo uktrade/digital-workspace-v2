@@ -5,19 +5,19 @@ repos:
     -   id: pii_secret_filename
         files: ''
         language: python
-        language_version: python3.11
+        language_version: python3.12
         pass_filenames: true
         require_serial: true
     -   id: pii_secret_file_content
         files: ''
         language: python
-        language_version: python3.11
+        language_version: python3.12
         pass_filenames: true
         require_serial: true
     -   id: pii_secret_file_content_ner
         files: ''
         language: python
-        language_version: python3.11
+        language_version: python3.12
         # args: [--ner_output_file=ner_output_file.txt] # uncomment to output NER entities
         pass_filenames: true
         require_serial: true
