@@ -70,7 +70,6 @@ opentelemetry-propagator-aws-xray = "^1.0.1"
 opentelemetry-sdk-extension-aws = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
-poetry = "^1.4.2"
 # Linters
 black = "^23.3.0"
 djlint = "^1.23.2"
