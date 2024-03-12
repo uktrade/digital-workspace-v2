@@ -105,12 +105,12 @@ db-reset: # Reset the database
 setup: # Run the first use commands to set up the project for development
 	docker-compose --profile playwright --profile opensearch --profile celery-beat down
 	make build
-	make reset-db
+	make db-reset
 	sleep 3
 	make migrate
 	make data-countries
 	make menus
-	make create_section_homepages
+	make create-section-homepages
 	make wagtail-groups
 	make pf-groups
 	make ingest-uk-staff-locations
