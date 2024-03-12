@@ -27,7 +27,7 @@ jobs:
       - run:
           name: build frontend
           command: |
-            nvm install 18
+            nvm install 20
             npm ci
             npm run build
       - run:
@@ -50,7 +50,7 @@ jobs:
       - run:
           name: build frontend
           command: |
-            nvm install 18
+            nvm install 20
             npm ci
             npm run build
       - run:
