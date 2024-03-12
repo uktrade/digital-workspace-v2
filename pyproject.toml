@@ -54,7 +54,6 @@ requests = "^2.28.2"
 boto3 = "^1.26.115"
 pyjwt = { extras = ["crypto"], version = "^2.6.0" }
 django-celery-beat = "^2.5.0"
-pillow = "10.2.0"
 wagtail-generic-chooser = "^0.6"
 dj-database-url = "^2.1.0"
 django-waffle = "^4.0.0"
@@ -97,8 +96,6 @@ mkdocs-material = "^9.1.5"
 mkdocs-minify-plugin = "^0.6.4"
 mkdocs-redirects = "^1.2.0"
 mkdocstrings-python = "^0.9.0"
-pillow = "^10.2.0"
-cairosvg = "^2.7.0"
 
 [build-system]
 requires = ["poetry-core"]
