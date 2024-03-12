@@ -2,6 +2,8 @@ SHELL := /bin/sh
 
 APPLICATION_NAME="Digital Workspace"
 
+.PHONY: help
+
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?# "; printf "\033[93;01m%-30s %-30s\033[0m\n", "Command", "Description"}; {split($$1,a,":"); printf "\033[96m%-30s\033[0m \033[92m%s\033[0m\n", a[1], $$2}'
 
@@ -10,19 +12,19 @@ help:
 #
 
 # Run a command in a new container
-wagtail-run = docker-compose run --rm wagtail
+wagtail-run = docker compose run --rm wagtail
 # Run a command in an existing container
-wagtail-exec = docker-compose exec wagtail
+wagtail-exec = docker compose exec wagtail
 # Run on existing container if available otherwise a new one
 wagtail := ${if $(shell docker ps -q -f name=wagtail),$(wagtail-exec),$(wagtail-run)}
 
 # Run a command in a new container (without deps)
-wagtail-run-no-deps = docker-compose run --rm --no-deps wagtail
+wagtail-run-no-deps = docker compose run --rm --no-deps wagtail
 # Run on existing container if available otherwise a new one (without deps)
 wagtail-no-deps := ${if $(shell docker ps -q -f name=wagtail),$(wagtail-exec),$(wagtail-run-no-deps)}
 
 # Run tests in a new container named 'testrunner'
-testrunner = docker-compose run --rm --name testrunner wagtail
+testrunner = docker compose run --rm --name testrunner wagtail
 
 chown = $(wagtail-exec) chown $(shell id -u):$(shell id -g)
 
@@ -32,22 +34,22 @@ chown = $(wagtail-exec) chown $(shell id -u):$(shell id -g)
 #
 
 build: # Build the app's docker containers
-	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose build
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker compose build
 
 build-all: # Build all docker containers (inc. testrunner, opensearch dash)
-	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker-compose --profile playwright --profile opensearch build
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 BUILDKIT_INLINE_CACHE=1 docker compose --profile playwright --profile opensearch build
 
 up: # Start the app's docker containers
-	docker-compose up
+	docker compose up
 
 up-all: # Start all docker containers in the background (inc. testrunner, opensearch dash)
-	docker-compose --profile playwright --profile opensearch --profile celery-beat up -d
+	docker compose --profile playwright --profile opensearch --profile celery-beat up -d
 
 down: # Stop the app's docker containers
-	docker-compose down
+	docker compose down
 
 down-all: # Stop all docker containers (inc. testrunner, opensearch dash)
-	docker-compose --profile playwright --profile opensearch --profile celery-beat down
+	docker compose --profile playwright --profile opensearch --profile celery-beat down
 
 #
 # Linting
@@ -98,12 +100,12 @@ db-from-dump: # Create the database from a local file
 	PGPASSWORD='postgres' psql -h localhost -U postgres digital_workspace -f dw.dump
 
 db-reset: # Reset the database
-	docker-compose stop db
+	docker compose stop db
 	rm -rf ./.db/
-	docker-compose up -d db
+	docker compose up -d db
 
 setup: # Run the first use commands to set up the project for development
-	docker-compose --profile playwright --profile opensearch --profile celery-beat down
+	docker compose --profile playwright --profile opensearch --profile celery-beat down
 	make build
 	make db-reset
 	sleep 3
@@ -164,8 +166,8 @@ test-fresh: # Run (only) unit tests with pytest using a clean database
 
 test-e2e: # Run (only) end to end tests with playwright and pytest
 	make up-all
-	docker-compose exec playwright poetry run pytest -m "e2e" $(tests)
-	docker-compose stop playwright
+	docker compose exec playwright poetry run pytest -m "e2e" $(tests)
+	docker compose stop playwright
 
 test-all: # Run all tests with pytest
 	$(testrunner) pytest
@@ -176,8 +178,8 @@ coverage: # Run tests with pytest and generate coverage report
 e2e-codegen: # Set up local environment and run Playwright's interactive test recorder
 	cp .env .env.orig
 	cp .env.ci .env
-	docker-compose stop wagtail
-	docker-compose run --rm -d -p 8000:8000 --env DJANGO_SETTINGS_MODULE=config.settings.test --name wagtail-test-server wagtail
+	docker compose stop wagtail
+	docker compose run --rm -d -p 8000:8000 --env DJANGO_SETTINGS_MODULE=config.settings.test --name wagtail-test-server wagtail
 	sleep 5
 	poetry run playwright codegen http://localhost:8000
 	mv .env.orig .env
