@@ -1,9 +1,12 @@
 import * as Sentry from "@sentry/browser";
 
+/**
+ * Return config from meta html elements.
+ * @param {string} name - The end part of the meta name attribute.
+ * @returns {(string|undefined)}
+ */
 function config(name) {
-  const meta = document.querySelector(`meta[name="intranet:${name}"]`);
-
-  return meta !== null ? meta.content : null;
+  return document.querySelector(`meta[name="intranet:${name}"]`)?.content;
 }
 
 function sentryInit() {

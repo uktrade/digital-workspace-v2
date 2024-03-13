@@ -23,9 +23,11 @@
         <meta name="theme-color" content="#cd1632" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         {# App specific metadata #}
-        <meta name="intranet:release" content="{{ settings.GIT_COMMIT|default_if_none:'' }}">
+        <meta name="intranet:release"
+              content="{{ settings.GIT_COMMIT|default_if_none:'' }}">
         <meta name="intranet:environment" content="{{ settings.APP_ENV }}">
-        <meta name="intranet:sentry:dsn" content="{{ settings.SENTRY_DSN|default_if_none:'' }}">
+        <meta name="intranet:sentry:dsn"
+              content="{{ settings.SENTRY_DSN|default_if_none:'' }}">
         {% render_bundle 'init' 'js' %}
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager -->
