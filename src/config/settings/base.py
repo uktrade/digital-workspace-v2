@@ -81,10 +81,12 @@ IGNORE_ANTI_VIRUS = env.bool("IGNORE_ANTI_VIRUS", False)
 if env.str("DJANGO_EMAIL_BACKEND", None):
     EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND")
 
+# Sentry
+SENTRY_DSN = env.str("SENTRY_DSN", None)
 # Configure Sentry if a DSN is set
-if env.str("SENTRY_DSN", None):
+if SENTRY_DSN:
     sentry_sdk.init(
-        dsn=env("SENTRY_DSN"),
+        dsn=SENTRY_DSN,
         environment=APP_ENV,
         release=GIT_COMMIT,
         integrations=[DjangoIntegration(), RedisIntegration()],
@@ -492,6 +494,9 @@ SETTINGS_EXPORT = [
     "GTM_AUTH",
     "PERM_SEC_NAME",
     "LEAVING_SERVICE_URL",
+    "GIT_COMMIT",
+    "APP_ENV",
+    "SENTRY_DSN",
 ]
 
 LOGGING = {
