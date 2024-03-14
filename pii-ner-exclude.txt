@@ -44,7 +44,6 @@ access_key_id
 access_key_id}'
 acf_field
 action="https://people.trade.gov.uk
-active_site_alert
 AdditionalRole
 AE
 AG
