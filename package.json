@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@ministryofjustice/frontend": "^1.8.0",
-        "@sentry/browser": "^7.106.1",
+        "@sentry/browser": "^6.19.7",
         "cropperjs": "^1.5.13",
         "css-loader": "^5.2.7",
         "govuk-frontend": "^4.5.0",
