@@ -18,9 +18,9 @@ wagtail-exec = docker compose exec wagtail
 # Run on existing container if available otherwise a new one
 wagtail := ${if $(shell docker ps -q -f name=wagtail),$(wagtail-exec),$(wagtail-run)}
 
-# Run a command in a new container (without deps)
+# Run a command in a new container (without dependencies)
 wagtail-run-no-deps = docker compose run --rm --no-deps wagtail
-# Run on existing container if available otherwise a new one (without deps)
+# Run on existing container if available otherwise a new one (without dependencies)
 wagtail-no-deps := ${if $(shell docker ps -q -f name=wagtail),$(wagtail-exec),$(wagtail-run-no-deps)}
 
 # Run tests in a new container named 'testrunner'
@@ -76,8 +76,6 @@ shell: # Open a Django shell in the wagtail container
 bash: # Run bash in the wagtail container
 	$(wagtail) bash
 
-db-shell: # Run the psql shell against the DB container
-	PGPASSWORD='postgres' psql -h localhost -U postgres digital_workspace
 
 check-requirements: # Check whether requirements.txt needs re-generation based on pyproject.toml
 	$(wagtail-no-deps) poetry export --without-hashes | cmp -- requirements.txt -
@@ -93,7 +91,10 @@ local-setup: # Run the local setup commands for the host machine interpreter
 	poetry install --with dev
 	npm install
 
-dump-db: # Export the database to a local file
+db-shell: # Run the psql shell against the DB container
+	PGPASSWORD='postgres' psql -h localhost -U postgres digital_workspace
+
+db-dump: # Export the database to a local file
 	pg_dump digital_workspace -U postgres -h localhost -p 5432 -O -x -c -f dw.dump
 
 db-from-dump: # Create the database from a local file
