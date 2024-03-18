@@ -83,6 +83,7 @@ if env.str("DJANGO_EMAIL_BACKEND", None):
 
 # Sentry
 SENTRY_DSN = env.str("SENTRY_DSN", None)
+SENTRY_BROWSER_TRACES_SAMPLE_RATE = env.float("SENTRY_BROWSER_TRACES_SAMPLE_RATE", 0.0)
 # Configure Sentry if a DSN is set
 if SENTRY_DSN:
     sentry_sdk.init(
@@ -497,6 +498,7 @@ SETTINGS_EXPORT = [
     "GIT_COMMIT",
     "APP_ENV",
     "SENTRY_DSN",
+    "SENTRY_BROWSER_TRACES_SAMPLE_RATE",
 ]
 
 LOGGING = {

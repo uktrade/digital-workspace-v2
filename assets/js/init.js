@@ -25,7 +25,7 @@ function sentryInit() {
     release: config("release"),
     environment: config("environment"),
     integrations: [new BrowserTracing()],
-    tracesSampleRate: 1.0,
+    tracesSampleRate: Number(config("sentry:browser-traces-sample-rate")),
   });
 }
 

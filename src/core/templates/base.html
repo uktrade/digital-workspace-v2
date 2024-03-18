@@ -28,6 +28,8 @@
         <meta name="intranet:environment" content="{{ settings.APP_ENV }}">
         <meta name="intranet:sentry:dsn"
               content="{{ settings.SENTRY_DSN|default_if_none:'' }}">
+        <meta name="intranet:sentry:browser-traces-sample-rate"
+              content="{{ settings.SENTRY_BROWSER_TRACES_SAMPLE_RATE }}">
         {% render_bundle 'init' 'js' %}
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager -->
