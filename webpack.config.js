@@ -7,6 +7,7 @@ module.exports = {
   mode: 'production',
   context: __dirname,
   entry: {
+    init: ['./assets/js/init.js'],
     main: ['./assets/js/application.js', './assets/stylesheets/application.scss'],
     peoplefinder: ['./assets/js/peoplefinder.js'],
   },
