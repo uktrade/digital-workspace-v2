@@ -12,11 +12,10 @@ Digital Workspace is the intranet for the Department for Business and Trade (DBT
 ```bash
 cp .env.example .env         # ... and set variables as appropriate *
 
-make build
 npm install
 npm run build
 
-make first-use               # ... use make up after this has run
+make setup
 ```
 
 **You will need SSO auth details (`AUTHBROKER_*` in your `.env` file) to allow the project to run, but there are a lot of other details that would help make the experience better; ask another dev for their .env so that you can get a head start.**
