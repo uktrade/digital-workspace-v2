@@ -12,9 +12,6 @@ Digital Workspace is the intranet for the Department for Business and Trade (DBT
 ```bash
 cp .env.example .env         # ... and set variables as appropriate *
 
-npm install
-npm run build
-
 make setup
 ```
 
