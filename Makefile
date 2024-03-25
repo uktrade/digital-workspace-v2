@@ -83,6 +83,7 @@ clean: # Clean up python cache and webpack assets
 local-setup: # Run the local setup commands for the host machine interpreter
 	poetry install --with dev
 	npm install
+	npm run build
 
 db-shell: # Run the psql shell against the DB container
 	PGPASSWORD='postgres' psql -h localhost -U postgres digital_workspace
@@ -99,6 +100,8 @@ db-reset: # Reset the database
 	docker compose up -d db
 
 setup: # Run the first use commands to set up the project for development
+	npm install
+	npm run build
 	docker compose --profile playwright --profile opensearch --profile celery-beat down
 	make build
 	make db-reset
@@ -112,7 +115,6 @@ setup: # Run the first use commands to set up the project for development
 	make ingest-uk-staff-locations
 	make superuser
 	make index
-	make local-setup
 	make up
 
 superuser: # Create a superuser
