@@ -1,16 +1,15 @@
-from typing import Any, List, Union
+from typing import Union
 
-from wagtail.search.backends.elasticsearch6 import Field
+from extended_search.index import RelatedFields
+from extended_search.query import Filtered, Nested, OnlyFields
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
+    Field,
 )
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
-
-from extended_search.query import Filtered, Nested, OnlyFields
-from extended_search.index import RelatedFields
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
@@ -101,34 +100,14 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
             return field
         return Field(field)
 
-    def backport_fields(self, fields: List[Any]) -> List[str]:
-        """
-        Convert a list of Field objects to a list of strings to be compatible
-        with older versions of the code.
-        """
-        if not fields:
-            return fields
-
-        if not isinstance(fields[0], list):
-            return [self.to_string(f) for f in fields]
-
-        new_fields = []
-        for field in fields:
-            backported_fields = self.backport_fields(field)
-            for backported_field in backported_fields:
-                new_fields.append(backported_field)
-        return new_fields
-
     def _compile_plaintext_query(self, query, fields, boost=1.0):
-        return super()._compile_plaintext_query(
-            query, self.backport_fields(fields), boost
-        )
+        return super()._compile_plaintext_query(query, fields, boost)
 
     def _compile_fuzzy_query(self, query, fields):
-        return super()._compile_fuzzy_query(query, self.backport_fields(fields))
+        return super()._compile_fuzzy_query(query, fields)
 
     def _compile_phrase_query(self, query, fields):
-        return super()._compile_phrase_query(query, self.backport_fields(fields))
+        return super()._compile_phrase_query(query, fields)
 
     def get_inner_query(self):
         """
