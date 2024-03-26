@@ -1,4 +1,4 @@
-from typing import Any, List, Union
+from typing import Union
 
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
@@ -102,9 +102,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         return Field(field)
 
     def _compile_plaintext_query(self, query, fields, boost=1.0):
-        return super()._compile_plaintext_query(
-            query, fields, boost
-        )
+        return super()._compile_plaintext_query(query, fields, boost)
 
     def _compile_fuzzy_query(self, query, fields):
         return super()._compile_fuzzy_query(query, fields)
