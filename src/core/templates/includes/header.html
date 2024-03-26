@@ -3,6 +3,7 @@
 {% load cookie_banner %}
 {% load site_alert %}
 
+{% cookie_banner %}
 <header class="govuk-header govuk-header--ws search-v2"
         role="banner"
         data-module="govuk-header">
@@ -48,7 +49,6 @@
         </div>
     </div>
 </header>
-{% cookie_banner %}
 {% if USER_IS_AUTHENTICATED %}
     {% site_alert %}
 {% endif %}
