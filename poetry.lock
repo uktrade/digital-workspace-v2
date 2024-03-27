@@ -102,21 +102,6 @@ files = [
 pycodestyle = ">=2.10.0"
 
 [[package]]
-name = "aws-xray-sdk"
-version = "2.13.0"
-description = "The AWS X-Ray SDK for Python (the SDK) enables Python developers to record and emit information from within their applications to the AWS X-Ray service."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "aws-xray-sdk-2.13.0.tar.gz", hash = "sha256:816186126917bc35ae4e6e2f304702a43d494ecef34a39e6330f5018bdecc9f5"},
-    {file = "aws_xray_sdk-2.13.0-py2.py3-none-any.whl", hash = "sha256:d18604a8688b4bed03ce4a858cc9acd72b71400e085bf7512fc31cf657ca85f9"},
-]
-
-[package.dependencies]
-botocore = ">=1.11.3"
-wrapt = "*"
-
-[[package]]
 name = "babel"
 version = "2.13.0"
 description = "Internationalization utilities"
@@ -4171,4 +4156,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "8f1fc00eb50ca9a2cc967eb14bc35ae2c0870624ab52f1215b14e6f8f8731a27"
+content-hash = "c4bfdf8437016d7eb9f4f0a3be4ebe8405cc63eeba4bbc1529c54fd76af7e2e5"

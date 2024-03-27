@@ -13,6 +13,7 @@ from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
+
 # Set directories to be used across settings
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
@@ -699,20 +700,3 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 
 # Enable the caching of the generated search query DSLs
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
-
-if env.bool("ENABLE_XRAY", default=False):
-    MIDDLEWARE.insert(0, "aws_xray_sdk.ext.django.middleware.XRayMiddleware")
-    INSTALLED_APPS.append("aws_xray_sdk.ext.django")
-
-    XRAY_RECORDER = {
-        "AWS_XRAY_DAEMON_ADDRESS": "127.0.0.1:2000",
-        "AUTO_INSTRUMENT": True,  # If turned on built-in database queries and template rendering will be recorded as subsegments
-        "AWS_XRAY_CONTEXT_MISSING": "LOG_ERROR",
-        "PLUGINS": (),
-        "SAMPLING": True,
-        "SAMPLING_RULES": None,
-        # the segment name for segments generated from incoming requests
-        "AWS_XRAY_TRACING_NAME": "intranet/digital-workspace",
-        "DYNAMIC_NAMING": None,  # defines a pattern that host names should match
-        "STREAMING_THRESHOLD": None,  # defines when a segment starts to stream out its children subsegments
-    }
