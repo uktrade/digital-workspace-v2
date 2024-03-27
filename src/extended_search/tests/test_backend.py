@@ -423,7 +423,7 @@ class TestNestedSearchQueryCompiler:
         assert "nested" in result
         assert result["nested"]["path"] == query.path
         assert result["nested"]["query"] == parent_compiler._compile_query(
-            query.subquery, [field]
+            query.subquery, field
         )
 
 
@@ -461,7 +461,7 @@ class TestFilteredSearchQueryCompiler:
         assert "bool" in result
         assert result["bool"]["filter"] == "foobar"
         assert result["bool"]["must"] == parent_compiler._compile_query(
-            query.subquery, [field]
+            query.subquery, field
         )
         query = Filtered(
             Phrase("quid"),
