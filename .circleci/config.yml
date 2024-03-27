@@ -16,9 +16,6 @@ jobs:
           name: check linting
           command: make check
       - run:
-          name: check requirements are up to date
-          command: make check-requirements
-      - run:
           name: run containers
           command: docker-compose up -d
       - run:

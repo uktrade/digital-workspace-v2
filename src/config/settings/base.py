@@ -24,8 +24,6 @@ if os.path.exists(env_file):
     env.read_env(env_file)
 env.read_env()
 
-VCAP_SERVICES = env.json("VCAP_SERVICES", {})
-
 # Set required configuration from environment
 # Should be one of the following: "local", "test", "dev", "staging", "training", "prod", "build"
 APP_ENV = env.str("APP_ENV", "local")
@@ -44,18 +42,9 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 AUTH_USER_MODEL = "user.User"
 
 # AWS
-if "aws-s3-bucket" in VCAP_SERVICES:
-    app_bucket_creds = VCAP_SERVICES["aws-s3-bucket"][0]["credentials"]
-    AWS_REGION = app_bucket_creds["aws_region"]
-    AWS_S3_REGION_NAME = app_bucket_creds["aws_region"]
-    AWS_STORAGE_BUCKET_NAME = app_bucket_creds["bucket_name"]
-    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-    AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
-else:
-    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_REGION = env("AWS_REGION")
-    AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_REGION = env("AWS_REGION")
+AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
 
 # Asset path used in parser
 NEW_ASSET_PATH = env("NEW_ASSET_PATH")
@@ -234,11 +223,7 @@ if is_copilot():
         )
     }
 else:
-    if "postgres" in VCAP_SERVICES:
-        DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
-    else:
-        DATABASE_URL = os.getenv("DATABASE_URL")
-
+    DATABASE_URL = os.getenv("DATABASE_URL")
     DATABASES = {
         "default": env.db(),
     }
@@ -327,10 +312,7 @@ with open(stop_words_file) as stop_words_file:
             continue
         stop_words.append(line.strip())
 
-if "opensearch" in VCAP_SERVICES:
-    OPENSEARCH_URL = VCAP_SERVICES["opensearch"][0]["credentials"]["uri"]
-else:
-    OPENSEARCH_URL = env("OPENSEARCH_URL")
+OPENSEARCH_URL = env("OPENSEARCH_URL")
 
 ELASTICSEARCH_DSL = {
     "default": {
@@ -438,14 +420,7 @@ CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 
 # Redis
-if "redis" in VCAP_SERVICES:
-    credentials = VCAP_SERVICES["redis"][0]["credentials"]
-    CELERY_BROKER_URL = "rediss://:{0}@{1}:{2}/0?ssl_cert_reqs=required".format(
-        credentials["password"],
-        credentials["host"],
-        credentials["port"],
-    )
-elif is_copilot():
+if is_copilot():
     CELERY_BROKER_URL = (
         env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
     )

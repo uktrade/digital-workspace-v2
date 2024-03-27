@@ -467,7 +467,6 @@ v2
 VA
 Valid
 VC
-VCAP S3
 Video
 Video Card
 Video or Audio
