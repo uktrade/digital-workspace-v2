@@ -21,12 +21,10 @@ from extended_search.tests.testing_classes import MixedIn
 from extended_search.types import AnalysisType
 
 
-class RelatedParentalM2M(ParentalManyToManyField, RelatedField):
-    ...
+class RelatedParentalM2M(ParentalManyToManyField, RelatedField): ...
 
 
-class ForeignO2O(OneToOneRel, ForeignObjectRel):
-    ...
+class ForeignO2O(OneToOneRel, ForeignObjectRel): ...
 
 
 class TestModelFieldNameMixin:

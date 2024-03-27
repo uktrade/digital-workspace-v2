@@ -13,8 +13,7 @@ class AbstractModel(Model):
         abstract = True
 
 
-class IndexedModel(Indexed, Model):
-    ...
+class IndexedModel(Indexed, Model): ...
 
 
 class AbstractIndexedModel(IndexedModel):
@@ -22,8 +21,7 @@ class AbstractIndexedModel(IndexedModel):
         abstract = True
 
 
-class ChildModel(IndexedModel):
-    ...
+class ChildModel(IndexedModel): ...
 
 
 class StandardIndexedModel(IndexedModel):
@@ -38,8 +36,7 @@ class StandardIndexedModel(IndexedModel):
     ]
 
 
-class InheritedStandardIndexedModel(StandardIndexedModel):
-    ...
+class InheritedStandardIndexedModel(StandardIndexedModel): ...
 
 
 class InheritedStandardIndexedModelWithChanges(StandardIndexedModel):

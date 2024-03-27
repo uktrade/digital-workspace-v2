@@ -547,9 +547,11 @@ class PersonService:
     def get_profile_section_values(
         self, person: "Person", profile_section: ProfileSections
     ) -> List[Tuple[str, str, str]]:
-        profile_section_fields: List[
-            Tuple[str, str]
-        ] = self.get_profile_section_mapping(profile_section,).get("fields", [])
+        profile_section_fields: List[Tuple[str, str]] = (
+            self.get_profile_section_mapping(
+                profile_section,
+            ).get("fields", [])
+        )
         values = []
         for field_name, field_label in profile_section_fields:
             field_value = getattr(person, field_name)
