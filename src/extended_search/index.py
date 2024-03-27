@@ -220,16 +220,13 @@ class BaseField(ModelFieldNameMixin, index.BaseField):
         return super().get_attname(cls)
 
 
-class SearchField(index.SearchField, BaseField, index.BaseField):
-    ...
+class SearchField(index.SearchField, BaseField, index.BaseField): ...
 
 
-class AutocompleteField(index.AutocompleteField, BaseField, index.BaseField):
-    ...
+class AutocompleteField(index.AutocompleteField, BaseField, index.BaseField): ...
 
 
-class FilterField(index.FilterField, BaseField, index.BaseField):
-    ...
+class FilterField(index.FilterField, BaseField, index.BaseField): ...
 
 
 class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
