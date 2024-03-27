@@ -53,13 +53,17 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         if fields is None:
             return None
 
+        if not fields:
+            return super()._remap_fields(fields)
+
         remapped_fields = []
+
         searchable_fields = {f.field_name: f for f in self.get_searchable_fields()}
         for field_name in fields:
-            if field_name in searchable_fields:
-                field_name = self.mapping.get_field_column_name(
-                    searchable_fields[field_name]
-                )
+            field = searchable_fields.get(field_name)
+            if field:
+                field_name = self.mapping.get_field_column_name(field)
+                remapped_fields.append(Field(field_name, field.boost or 1))
             else:
                 # @TODO this works but ideally we'd move get_field_column_name to handle this directly
                 field_name_parts = field_name.split(".")
@@ -69,8 +73,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
                     )
                     field_name_remainder = ".".join(field_name_parts[1:])
                     field_name = f"{field_name}.{field_name_remainder}"
-
-            remapped_fields.append(field_name)
+                    remapped_fields.append(Field(field_name, field.boost or 1))
 
         return [Field(field) for field in remapped_fields]
 
