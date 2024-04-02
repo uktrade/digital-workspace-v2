@@ -4,6 +4,7 @@ import pytest
 from wagtail.search.query import And, Boost, Fuzzy, Not, Or, Phrase, PlainText
 
 from content.models import ContentPage
+from django.test import override_settings
 from extended_search import settings
 from extended_search.index import IndexedField, RelatedFields, SearchField
 from extended_search.query import Filtered, Nested, OnlyFields
@@ -184,6 +185,7 @@ class TestCustomQueryBuilder:
         with pytest.raises(ValueError):
             Variable("search_query", "anything").output("search query")
 
+    @override_settings(SEARCH_ENABLE_QUERY_CACHE=False)
     def test_build_search_query(self, mocker):
         class ModelClass:
             class Meta:

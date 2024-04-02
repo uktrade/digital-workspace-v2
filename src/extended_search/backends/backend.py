@@ -50,8 +50,8 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         """
         Convert field names into index column names
         """
-        if fields is None:
-            return None
+        # if fields is None:
+        #     return None
 
         if not fields:
             return super()._remap_fields(fields)
