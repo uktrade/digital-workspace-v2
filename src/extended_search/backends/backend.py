@@ -73,9 +73,9 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
                     )
                     field_name_remainder = ".".join(field_name_parts[1:])
                     field_name = f"{field_name}.{field_name_remainder}"
-                    remapped_fields.append(Field(field_name, field.boost or 1))
+                    remapped_fields.append(Field(field_name, 1))
 
-        return [Field(field) for field in remapped_fields]
+        return remapped_fields
 
     def _join_and_compile_queries(self, query, fields, boost=1.0):
         """
@@ -175,7 +175,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
         if isinstance(field, list) and len(field) == 1:
             field = field[0]
 
-        if field.field_name == self.mapping.all_field_name:
+        if field.field_name == self.mapping.all_field_name and remapped_fields:
             # We are using the "_all_text" field proxy (i.e. the search()
             # method was called without the fields kwarg), but now we want to
             # limit the downstream fields compiled to those explicitly defined
@@ -184,7 +184,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 query.subquery, remapped_fields, boost
             )
 
-        elif field.field_name in remapped_fields:
+        elif field.field_name in query.fields:
             # Fields were defined explicitly upstream, and we are dealing with
             # one that's in the OnlyFields filter
             return self._compile_query(query.subquery, field, boost)
@@ -292,11 +292,15 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 match_query["multi_match"]["boost"] = boost
             else:
                 for field in fields:
+                    # TODO: Revisit this....
                     query = match_query["match_phrase"][field.field_name]
-                    match_query["match_phrase"][field.field_name] = {
-                        "query": query,
-                        "boost": boost,
-                    }
+                    if isinstance(query, dict) and "boost" in query:
+                        match_query["match_phrase"][field.field_name]["boost"] = boost
+                    else:
+                        match_query["match_phrase"][field.field_name] = {
+                            "query": query,
+                            "boost": boost,
+                        }
 
         return match_query
 
