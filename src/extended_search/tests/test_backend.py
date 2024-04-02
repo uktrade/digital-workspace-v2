@@ -42,15 +42,21 @@ class TestExtendedSearchQueryCompiler:
         es7_compiler = Elasticsearch7SearchQueryCompiler(
             ContentPage.objects.all(), query
         )
-        assert [rf.field_name for rf in es7_compiler.remapped_fields] == [rf.field_name for rf in compiler._remap_fields(compiler.fields)]
+        assert [rf.field_name for rf in es7_compiler.remapped_fields] == [
+            rf.field_name for rf in compiler._remap_fields(compiler.fields)
+        ]
 
         compiler = ExtendedSearchQueryCompiler(Person.objects.all(), query)
         es7_compiler = Elasticsearch7SearchQueryCompiler(Person.objects.all(), query)
-        assert [rf.field_name for rf in es7_compiler.remapped_fields] == [rf.field_name for rf in compiler._remap_fields(compiler.fields)]
+        assert [rf.field_name for rf in es7_compiler.remapped_fields] == [
+            rf.field_name for rf in compiler._remap_fields(compiler.fields)
+        ]
 
         compiler = ExtendedSearchQueryCompiler(Team.objects.all(), query)
         es7_compiler = Elasticsearch7SearchQueryCompiler(Team.objects.all(), query)
-        assert [rf.field_name for rf in es7_compiler.remapped_fields] == [rf.field_name for rf in compiler._remap_fields(compiler.fields)]
+        assert [rf.field_name for rf in es7_compiler.remapped_fields] == [
+            rf.field_name for rf in compiler._remap_fields(compiler.fields)
+        ]
 
     def test_remap_fields_handles_parent_relations(self, mocker):
         field1 = mocker.Mock(field_name="--field-1--")
@@ -294,7 +300,7 @@ class TestOnlyFieldSearchQueryCompiler:
         query = OnlyFields(PlainText("quid"), fields=["foo"])
         compiler = OnlyFieldSearchQueryCompiler(ContentPage.objects.all(), query)
         compiler._compile_query(query, Field("bar"), 3.5)
-        assert call(["foo"]) in  mock_remap.call_args_list
+        assert call(["foo"]) in mock_remap.call_args_list
 
     def test_compile_query_onlyfields_logic(self, mocker):
         remapped_field = mocker.Mock(field_name="baz")
