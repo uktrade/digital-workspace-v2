@@ -1,18 +1,19 @@
 import atoma
 import requests
+from content.models import BasePage
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
+from home import NEW_HOMEPAGE_FLAG
+from home.util import get_tweets
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+from news.models import NewsPage
+from waffle import flag_is_active
 from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
-
-from content.models import BasePage
-from home.util import get_tweets
-from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
 
@@ -133,6 +134,11 @@ class HomePage(BasePage):
 
     promote_panels = []
 
+    def get_template(self, request, *args, **kwargs):
+        if flag_is_active(request, NEW_HOMEPAGE_FLAG):
+            return "home/home_page_new.html"
+        return "home/home_page.html"
+
     def get_context(self, request, *args, **kwargs):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
@@ -152,14 +158,15 @@ class HomePage(BasePage):
         )
         context["news_items"] = news_items
 
-        # Tweets
-        tweets = cache.get("homepage_tweets")
+        if not flag_is_active(request, NEW_HOMEPAGE_FLAG):
+            # Tweets
+            tweets = cache.get("homepage_tweets")
 
-        if tweets is None:
-            tweets = sorted(get_tweets(), key=lambda x: x.created_at, reverse=True)
-            cache.set("homepage_tweets", tweets, 60 * 60)  # cache for 1 hour
+            if tweets is None:
+                tweets = sorted(get_tweets(), key=lambda x: x.created_at, reverse=True)
+                cache.set("homepage_tweets", tweets, 60 * 60)  # cache for 1 hour
 
-        context["tweets"] = tweets[:3]
+            context["tweets"] = tweets[:3]
 
         # Popular on Digital Workspace
         context["whats_popular_items"] = WhatsPopular.objects.all()
