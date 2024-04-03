@@ -129,11 +129,9 @@ su-all: # Makes all users a superuser
 
 migrations: # Run Django makemigrations command
 	$(wagtail) python manage.py makemigrations
-	$(chown) */migrations/*
 
 empty-migration: # Run Django makemigrations command with `--empty` flag
 	$(wagtail) python manage.py makemigrations --empty $(app)
-	$(chown) */migrations/*
 
 checkmigrations: # Run Django makemigrations command with `--check` flag
 	$(wagtail) python manage.py makemigrations --check

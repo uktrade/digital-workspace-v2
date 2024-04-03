@@ -1,7 +1,6 @@
-from .models import IntranetProfile
-
-
 def create_intranet_profile(user):
+    from .models import IntranetProfile
+
     if hasattr(user, "intranet"):
         return IntranetProfile.objects.create(user=user)
 
