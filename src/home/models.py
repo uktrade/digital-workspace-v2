@@ -6,11 +6,13 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+from waffle import flag_is_active
 from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
 
 from content.models import BasePage
+from home import NEW_HOMEPAGE_FLAG
 from home.util import get_tweets
 from news.models import NewsPage
 from working_at_dit.models import HowDoI
@@ -132,6 +134,11 @@ class HomePage(BasePage):
     subpage_types = []
 
     promote_panels = []
+
+    def get_template(self, request, *args, **kwargs):
+        if flag_is_active(request, NEW_HOMEPAGE_FLAG):
+            return "home/home_page_new.html"
+        return "home/home_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
