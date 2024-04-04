@@ -13,6 +13,7 @@ from core.admin import admin_site
 from core.urls import urlpatterns as core_urlpatterns
 from peoplefinder.urls import api_urlpatterns, people_urlpatterns, teams_urlpatterns
 
+
 urlpatterns = [
     # URLs for Staff SSO Auth broker
     path("auth/", include(authbroker_client_urls)),

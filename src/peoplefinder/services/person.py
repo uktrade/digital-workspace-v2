@@ -30,6 +30,7 @@ from peoplefinder.tasks import notify_user_about_profile_changes, person_update_
 from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
 
+
 logger = logging.getLogger(__name__)
 
 LEFT_DIT_LOG_MESSAGE = """People Finder deletion request: {profile_name}

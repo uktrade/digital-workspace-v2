@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import RedirectView
 
-from .views import explore, search, autocomplete
+from .views import autocomplete, explore, search
 
 
 app_name = "search"

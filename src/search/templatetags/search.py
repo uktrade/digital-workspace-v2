@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 
 from search import search as search_vectors
 
+
 # from search.utils import has_only_bad_results
 # from silk.profiling.profiler import silk_profile
 

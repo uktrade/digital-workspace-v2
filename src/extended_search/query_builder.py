@@ -21,6 +21,7 @@ from extended_search.index import (
 from extended_search.query import Filtered, Nested, OnlyFields
 from extended_search.types import AnalysisType, SearchQueryType
 
+
 logger = logging.getLogger(__name__)
 
 
