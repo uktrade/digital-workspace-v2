@@ -17,6 +17,7 @@ from extended_search.index import (
     get_indexed_models,
 )
 
+
 env_file_path = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
     ".env",

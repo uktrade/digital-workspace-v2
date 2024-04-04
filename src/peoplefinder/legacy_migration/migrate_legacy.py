@@ -56,6 +56,7 @@ from peoplefinder.services.person import PersonService
 from peoplefinder.services.team import TeamService
 from user.models import User
 
+
 BATCH_SIZE = 100
 
 logger = logging.getLogger(__name__)

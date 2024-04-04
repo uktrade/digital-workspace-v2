@@ -1,7 +1,7 @@
 import tweepy
 from django.conf import settings
-from tweepy.auth import OAuthHandler
 from sentry_sdk import capture_exception
+from tweepy.auth import OAuthHandler
 
 
 def get_tweets():

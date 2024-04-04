@@ -31,6 +31,7 @@ from .db_utils import (
     recreate_db,
 )
 
+
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 
