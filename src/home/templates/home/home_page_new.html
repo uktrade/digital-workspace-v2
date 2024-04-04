@@ -4,34 +4,36 @@
 {% load wagtailimages_tags %}
 {% load twitter_tags %}
 
+{% block body_classes %}homepage{% endblock %}
+
 {% block main_content %}
-    <article class="ws-home-wrapper">
+    <article class="ws-home-new-wrapper">
         <h1 class="ws-hide">Digital Workspace</h1>
-        <section aria-labelledby="home-news-items">
+        <section class="block-wrapper" aria-labelledby="home-news-items">
             <h2 id="home-news-items" class="ws-hide">News items</h2>
-            <ul class="ws-home-grid-items">
-                <li class="quick-links-wrapper" aria-hidden="true">
-                    <nav aria-labelledby="quick-link-menu" class="quick-links">
-                        <h3 class="govuk-heading-m" id="quick-link-menu">Quick links</h3>
-                        <ul>
-                            {% for quick_link in quick_links %}
-                                <li>
-                                    <a class="govuk-link" href="{% pageurl quick_link.link_to %}">{{ quick_link.title }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </nav>
-                </li>
+            <ul class="two-cols">
                 {% for news_item in news_items %}
                     <li class="news-item news-item-{{ forloop.counter }}"
                         data-testid="home-news-item">
-                        {% include "home/includes/news_item.html" with news_item=news_item %}
+                        {% include "home/includes/news_item_new.html" with news_item=news_item %}
                     </li>
                 {% endfor %}
             </ul>
             <a class="govuk-link" href="/news-and-views/">View all news</a>
         </section>
-        <section>
+        <section class="block-wrapper">
+            <nav aria-labelledby="quick-link-menu" class="quick-links">
+                <h3 class="govuk-heading-m" id="quick-link-menu">Quick links</h3>
+                <ul>
+                    {% for quick_link in quick_links %}
+                        <li>
+                            <a class="govuk-link" href="{% pageurl quick_link.link_to %}">{{ quick_link.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </section>
+        <section class="block-wrapper">
             {% comment %} used to be known as "What's popular?"" {% endcomment %}
             <h2 class="govuk-heading-m">Popular on Digital Workspace</h2>
             <ul class="ws-home-grid-items">
@@ -50,7 +52,7 @@
             </ul>
         </section>
 
-        <section>
+        <section class="block-wrapper">
             <h2 class="govuk-heading-m">How do I?</h2>
             <ul class="how-do-i">
                 {% for how_do_i_item in how_do_i_items %}
@@ -65,15 +67,15 @@
         </section>
 
         {% if not hide_news %}
-            <section>
+            <section class="block-wrapper">
                 <h2 class="govuk-heading-m">DBT news from GOV.UK</h2>
-                <ul class="govuk-news">
+                <ul class="two-cols">
                     {% for govuk_news_item in govuk_feed %}
                         <li>
                             <p>
                                 <a class="govuk-link" href="{{ govuk_news_item.links.0.href }}">{{ govuk_news_item.title.value }}</a>
                             </p>
-                            <p class="govuk-body-s">{{ govuk_news_item.updated }}</p>
+                            <p class="govuk-body-s">{{ govuk_news_item.updated|date:"j F Y" }}</p>
                         </li>
                     {% endfor %}
                 </ul>

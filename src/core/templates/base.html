@@ -63,7 +63,7 @@
         {% block stylesheets %}{% endblock %}
         {% block libraries %}{% endblock %}
     </head>
-    <body class="govuk-template__body ">
+    <body class="govuk-template__body {% block body_classes %}{% endblock %} ">
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.GTM_CODE }}"
