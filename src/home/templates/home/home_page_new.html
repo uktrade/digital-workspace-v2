@@ -2,28 +2,44 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-{% load twitter_tags %}
+{% load site_alert %}
 
 {% block body_classes %}homepage{% endblock %}
 
 {% block content %}
     <article class="ws-home-wrapper new-home">
         <h1 class="ws-hide">Digital Workspace</h1>
+
+        <section class="homepage-site-alert">
+            {% site_alert %}
+        </section>
+
+        <section>
+            <h2 class="govuk-heading-m">Updates</h2>
+            <ul class="recently-updated-wrapper">
+                {% for recently_updated in recently_updated %}
+                    <li>
+                        <a class="govuk-link" href="{% pageurl recently_updated.link_to %}">{{ recently_updated.title }}</a>
+                    </li>
+                {% empty %}
+                    <li>
+                        <p class="govuk-body-s">Updates to pages you've bookmarked or viewed recently will appear here.</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
         <section aria-labelledby="home-news-items">
             <h2 class="govuk-heading-m" id="home-news-items">Latest News</h2>
 
-            <div class="main-news-item">
-                {% include "home/includes/news_item_new.html" with news_item=news_items.0 main=True %}
-            </div>
+            <div class="main-news-item">{% include "home/includes/news_item_main.html" with news_item=news_items.0 %}</div>
 
             <ul class="ws-news-grid-items">
                 {% for news_item in news_items %}
-                    {% if not forloop.first %}
-                        <li class="news-item news-item-{{ forloop.counter }}"
-                            data-testid="home-news-item">
-                            {% include "home/includes/news_item_new.html" with news_item=news_item %}
-                        </li>
-                    {% endif %}
+                    <li class="news-item news-item-{{ forloop.counter }}"
+                        data-testid="home-news-item">
+                        {% include "home/includes/news_item_new.html" with news_item=news_item %}
+                    </li>
                 {% endfor %}
             </ul>
             <a class="govuk-link" href="/news-and-views/">View all news</a>
@@ -67,21 +83,6 @@
             </ul>
         </section>
 
-        {% comment %} <section>
-            <h3 class="govuk-heading-m" id="recently-updated-menu">Recent updates</h3>
-            <ul class="recently-updated-wrapper">
-                {% for recently_updated in recently_updated %}
-                    <li>
-                        <a class="govuk-link" href="{% pageurl recently_updated.link_to %}">{{ recently_updated.title }}</a>
-                    </li>
-                {% empty %}
-                    <li>
-                        <p class="govuk-body-s">Updates to pages you've bookmarked or viewed recently will appear here.</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        </section> {% endcomment %}
-
         <section>
             <h3 class="govuk-heading-m" id="recently-viewed-menu">Recently viewed</h3>
             <ul class="recently-viewed-wrapper">
@@ -107,20 +108,6 @@
                 {% endfor %}
             </ul>
         </section>
-
-        {% comment %} <section>
-            <h2 class="govuk-heading-m">How do I?</h2>
-            <ul class="how-do-i">
-                {% for how_do_i_item in how_do_i_items %}
-                    <li>
-                        <a class="govuk-link" href="{% pageurl how_do_i_item %}">{{ how_do_i_item }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-            <p class="ws-all-how-to">
-                <a class="govuk-link" href="/working-at-dbt/how-do-i/">View all "How do I?" guides</a>
-            </p>
-        </section> {% endcomment %}
 
         <section>
             <h2 class="govuk-heading-m">Popular pages</h2>

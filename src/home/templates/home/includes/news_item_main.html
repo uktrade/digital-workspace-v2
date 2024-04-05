@@ -2,12 +2,14 @@
 {% load wagtailimages_tags %}
 
 <div class="home-news-item">
-    <a href="{% pageurl news_item %}" class="frame">{% image news_item.preview_image fill-196x127 %}</a>
+    <div class="frame">
+        <a href="{% pageurl news_item %}">{% image news_item.preview_image fill-900x585 %}</a>
+    </div>
     <div class="home-news-item-text-content">
-        <h4 class="govuk-body-s">
-            <a class="govuk-link" href="{% pageurl news_item %}">{{ news_item.title|truncatewords_html:10 }}</a>
+        <h4 class="govuk-heading-s">
+            <a class="govuk-link" href="{% pageurl news_item %}">{{ news_item.title }}</a>
         </h4>
-        {% if show_excerpt %}<p class="govuk-body-s">{{ news_item.excerpt|truncatewords_html:10 }}</p>{% endif %}
+        <p class="govuk-body-s">{{ news_item.excerpt|truncatewords_html:10 }}</p>
         <p class="govuk-body-xs ws-secondary-meta">
             {% if show_author %}
                 {% if news_item.perm_sec_as_author %}
