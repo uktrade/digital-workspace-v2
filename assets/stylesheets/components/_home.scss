@@ -215,7 +215,7 @@
 
   .main-news-item {
     .frame {
-      aspect-ratio: 21/9;
+      //   aspect-ratio: 21/9;
 
       img {
         inline-size: 100%;
@@ -233,15 +233,6 @@
 
       .frame {
         flex: none none 30%;
-        // aspect-ratio: 1/1;
-
-        // img {
-        //   inline-size: 100%;
-        //   block-size: 100%;
-        //   object-fit: cover;
-        //   max-inline-size: 100px;
-        //   max-height: 100px;
-        // }
       }
 
       .home-news-item-text-content {
