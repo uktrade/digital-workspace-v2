@@ -1,0 +1,12 @@
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <span class="govuk-phase-banner__text">
+            {% if using_new_homepage %}
+                <a class="govuk-link" href="/?dwft_new_homepage=0">Click here to return to the old homepage</a>
+            {% else %}
+                We are testing a new homepage. <a class="govuk-link" href="/?dwft_new_homepage=1">Click here try it</a>
+            {% endif %}
+        </span>
+    </p>
+</div>
+<hr class="govuk-section-break govuk-section-break--visible">

@@ -2,9 +2,14 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load home_tags %}
 {% load twitter_tags %}
 
 {% block body_classes %}homepage{% endblock %}
+
+{% block pre_content %}
+    {% home_banner %}
+{% endblock %}
 
 {% block content %}
     <article class="ws-home-wrapper new-home">

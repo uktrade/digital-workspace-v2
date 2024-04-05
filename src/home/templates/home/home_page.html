@@ -2,9 +2,11 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load home_tags %}
 {% load twitter_tags %}
 
 {% block main_content %}
+    {% home_banner %}
     <article class="ws-home-wrapper">
         <h1 class="ws-hide">Digital Workspace</h1>
         <section aria-labelledby="home-news-items">
@@ -114,5 +116,4 @@
             {% endif %}
         {% endif %}
     </article>
-    <a href="?dwft_new_homepage=1">NEW HOME PAGE</a>
 {% endblock main_content %}
