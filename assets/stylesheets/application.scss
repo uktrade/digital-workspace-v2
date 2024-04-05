@@ -19,6 +19,7 @@ $moj-assets-path: "/static/moj-frontend/";
 
 // GOV.UK Design System Overrides
 @import "govuk-overrides/header";
+@import "govuk-overrides/homepage";
 @import "govuk-overrides/main";
 @import "govuk-overrides/footer";
 
@@ -28,6 +29,7 @@ $moj-assets-path: "/static/moj-frontend/";
 @import "components/content_page";
 @import "components/cookie_bar";
 @import "components/home";
+@import "components/home_new";
 @import "components/layout";
 @import "components/news_article";
 @import "components/news_article_comments";

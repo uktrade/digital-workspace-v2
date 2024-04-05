@@ -1,0 +1,32 @@
+.ws-home-new-wrapper {
+  margin-top: 16px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  .block-wrapper {
+    background-color: govuk-colour("light-grey");
+    // border-bottom: 5px solid $brand-color-red;
+    padding: 24px;
+    margin: 12px;
+  }
+
+  .quick-links {
+    li {
+      padding: 0 0 6px;
+      margin: 0;
+    }
+  }
+
+  .two-cols {
+    columns: 2 auto;
+  }
+}

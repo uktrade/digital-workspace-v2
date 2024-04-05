@@ -4,6 +4,8 @@
 {% load wagtailimages_tags %}
 {% load twitter_tags %}
 
+{% block body_classes %}homepage{% endblock %}
+
 {% block content %}
     <article class="ws-home-wrapper new-home">
         <h1 class="ws-hide">Digital Workspace</h1>
@@ -15,7 +17,6 @@
             </div>
 
             <ul class="ws-news-grid-items">
-
                 {% for news_item in news_items %}
                     {% if not forloop.first %}
                         <li class="news-item news-item-{{ forloop.counter }}"
@@ -29,15 +30,15 @@
         </section>
 
         {% if not hide_news %}
-            <section>
+            <section class="block-wrapper">
                 <h2 class="govuk-heading-m">DBT news from GOV.UK</h2>
-                <ul class="govuk-news">
+                <ul class="two-cols">
                     {% for govuk_news_item in govuk_feed %}
                         <li>
                             <p>
                                 <a class="govuk-link" href="{{ govuk_news_item.links.0.href }}">{{ govuk_news_item.title.value }}</a>
                             </p>
-                            <p class="govuk-body-s">{{ govuk_news_item.updated }}</p>
+                            <p class="govuk-body-s">{{ govuk_news_item.updated|date:"j F Y" }}</p>
                         </li>
                     {% endfor %}
                 </ul>
