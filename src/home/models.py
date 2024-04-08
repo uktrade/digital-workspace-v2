@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from home import NEW_HOMEPAGE_FLAG
 from home.util import get_tweets
+from intranet_profile import get_bookmarks, get_recent_page_views
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from news.models import NewsPage
@@ -198,6 +199,9 @@ class HomePage(BasePage):
             )
 
         context["govuk_feed"] = cache.get("homepage_govuk_news")
+
+        context["bookmarks"] = get_bookmarks(request.user)
+        context["recently_viewed"] = get_recent_page_views(request.user, 10)
 
         context["hide_news"] = settings.HIDE_NEWS
 

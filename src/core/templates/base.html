@@ -1,6 +1,6 @@
-{% load workspace_navigation static bookmarks %}
+{% load workspace_navigation static %}
 {% load render_bundle webpack_static from webpack_loader %}
-{% load static wagtailcore_tags %}
+{% load static wagtailcore_tags bookmarks %}
 
 {% load git_info %}
 <!DOCTYPE html>
@@ -83,11 +83,16 @@
                   id="main-content"
                   role="main"
                   tabindex="1">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+
+                <div style="display: flex;
+                            justify-content: space-between;
+                            align-items: center">
                     {% block breadcrumbs %}
                         {% breadcrumbs %}
-                    {% endblock %}
-                    {% bookmark_page user page %}
+                    {% endblock breadcrumbs %}
+                    {% block bookmark %}
+                        {% bookmark_page user page %}
+                    {% endblock bookmark %}
                 </div>
                 {% block main_content %}{% endblock %}
                 {% block page_problem %}
