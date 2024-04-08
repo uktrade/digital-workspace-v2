@@ -1,4 +1,5 @@
 from core.forms import PageProblemFoundForm
+from home import FEATURE_HOMEPAGE
 
 
 def global_context(request):
@@ -7,4 +8,5 @@ def global_context(request):
         "PAGE_PROBLEM_FORM": PageProblemFoundForm(
             initial={"page_url": request.build_absolute_uri()}
         ),
+        "FEATURE_HOMEPAGE": FEATURE_HOMEPAGE,
     }

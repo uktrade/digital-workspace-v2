@@ -1,1 +1,1 @@
-NEW_HOMEPAGE_FLAG = "new_homepage"
+FEATURE_HOMEPAGE = "new_homepage"

@@ -2,14 +2,13 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-{% load home_tags %}
 {% load twitter_tags %}
 
 {% block bookmark %}
 {% endblock bookmark %}
 
 {% block main_content %}
-    {% home_banner %}
+    {% include "home/includes/home_banner.html" %}
     <article class="ws-home-wrapper">
         <h1 class="ws-hide">Digital Workspace</h1>
         <section aria-labelledby="home-news-items">

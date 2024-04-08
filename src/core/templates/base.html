@@ -1,8 +1,8 @@
-{% load workspace_navigation static %}
+{% load workspace_navigation bookmarks %}
 {% load render_bundle webpack_static from webpack_loader %}
-{% load static wagtailcore_tags bookmarks %}
-
+{% load static wagtailcore_tags waffle_tags %}
 {% load git_info %}
+
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
     <head>
@@ -83,7 +83,6 @@
                   id="main-content"
                   role="main"
                   tabindex="1">
-
                 <div style="display: flex;
                             justify-content: space-between;
                             align-items: center">
@@ -91,7 +90,9 @@
                         {% breadcrumbs %}
                     {% endblock breadcrumbs %}
                     {% block bookmark %}
-                        {% bookmark_page user page %}
+                        {% flag FEATURE_HOMEPAGE %}
+                            {% bookmark_page user page %}
+                        {% endflag %}
                     {% endblock bookmark %}
                 </div>
                 {% block main_content %}{% endblock %}
