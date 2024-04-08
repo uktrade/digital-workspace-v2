@@ -17,12 +17,12 @@ def bookmark(request, *args, **kwargs):
         bookmark = not is_page_bookmarked(user, page)
 
         if bookmark:
-            Bookmark.objects.get_or_create(profile=user.intranet, page=page)
+            Bookmark.objects.get_or_create(user=user, page=page)
         else:
-            Bookmark.objects.get(profile=user.intranet, page=page).delete()
+            Bookmark.objects.get(user=user, page=page).delete()
 
         return TemplateResponse(
             request,
-            "intranet_profile/bookmark_page.html",
+            "interactions/bookmark_page.html",
             bookmark_page(user, page),
         )
