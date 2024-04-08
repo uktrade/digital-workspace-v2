@@ -5,9 +5,11 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import reverse
+
 from home import FEATURE_HOMEPAGE
 from home.util import get_tweets
-from interactions import get_bookmarks, get_recent_page_views
+from interactions import get_bookmarks, get_recent_page_views, get_updated_pages
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from news.models import NewsPage
@@ -199,10 +201,22 @@ class HomePage(BasePage):
             )
 
         context["govuk_feed"] = cache.get("homepage_govuk_news")
+        context["hide_news"] = settings.HIDE_NEWS
 
+        # Personalised page list
         context["bookmarks"] = get_bookmarks(request.user)
         context["recently_viewed"] = get_recent_page_views(request.user, 10)
 
-        context["hide_news"] = settings.HIDE_NEWS
+        # Updates
+        updates = []
+        if request.user.profile.profile_completion < 99:
+            updates.append(
+                f"Please complete <a href='{reverse('profile-view', args=[request.user.profile.slug])}'>your profile</a>, it's currently at {request.user.profile.profile_completion}%"
+            )
+        for page in get_updated_pages(request.user):
+            updates.append(
+                f"<a href='{page.get_url(request)}'>{page}</a> has been updated"
+            )
+        context["updates"] = updates
 
         return context

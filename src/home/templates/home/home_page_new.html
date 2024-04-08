@@ -21,23 +21,24 @@
             {% site_alert %}
         </section>
 
-        <section>
-            <h2 class="govuk-heading-m">Updates</h2>
-            <ul class="recently-updated-wrapper">
-                {% for recently_updated in recently_updated %}
-                    <li>
-                        <a class="govuk-link" href="{% pageurl recently_updated.link_to %}">{{ recently_updated.title }}</a>
-                    </li>
-                {% empty %}
-                    <li>
-                        <p class="govuk-body-s">Updates to pages you've bookmarked or viewed recently will appear here.</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        </section>
+        {% if updates %}
+            <section class="updates">
+                <h2 class="govuk-heading-m">Updates</h2>
+                <ul>
+                    {% for update in updates %}
+                        <li>
+                            <p class="govuk-body-s">{{ update|safe }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
 
         <section aria-labelledby="home-news-items">
-            <h2 class="govuk-heading-m" id="home-news-items">Latest News</h2>
+            <div class="header-with-action">
+                <h2 class="govuk-heading-m" id="home-news-items">Latest News</h2>
+                <a class="govuk-link" href="/news-and-views/">View all news</a>
+            </div>
 
             <div class="main-news-item">
                 {% if news_items %}
@@ -55,11 +56,10 @@
                     {% endif %}
                 {% endfor %}
             </ul>
-            <a class="govuk-link" href="/news-and-views/">View all news</a>
         </section>
 
         {% if not hide_news %}
-            <section class="block-wrapper">
+            <section class="block-wrapper govuk-news">
                 <h2 class="govuk-heading-m">DBT news from GOV.UK</h2>
                 <ul class="two-cols">
                     {% for govuk_news_item in govuk_feed %}
@@ -67,7 +67,7 @@
                             <p>
                                 <a class="govuk-link" href="{{ govuk_news_item.links.0.href }}">{{ govuk_news_item.title.value }}</a>
                             </p>
-                            <p class="govuk-body-s">{{ govuk_news_item.updated|date:"j F Y" }}</p>
+                            <p class="govuk-body-xs">{{ govuk_news_item.updated|date:"j F Y" }}</p>
                         </li>
                     {% endfor %}
                 </ul>
@@ -79,11 +79,11 @@
 {% block tertiary_col_content %}
     <article class="ws-home-wrapper new-home">
         <section>
-            <h3 class="govuk-heading-m" id="bookmark-menu">Bookmarks</h3>
+            <h3 class="govuk-heading-m" id="bookmark-menu">Your bookmarks</h3>
             <ul class="bookmarks-wrapper">
                 {% for bookmark in bookmarks %}
                     <li>
-                        <a class="govuk-link" href="{{ bookmark.get_url }}">{{ bookmark.title }}</a>
+                        <a class="govuk-link" href="{{ bookmark.page.get_url }}">{{ bookmark.page.title }}</a>
                     </li>
                 {% empty %}
                     <li>
@@ -103,7 +103,7 @@
             <ul class="recently-viewed-wrapper">
                 {% for recently_viewed in recently_viewed %}
                     <li>
-                        <a class="govuk-link" href="{{ recently_viewed.get_url }}">{{ recently_viewed.title }}</a>
+                        <a class="govuk-link" href="{{ recently_viewed.page.get_url }}">{{ recently_viewed.page.title }}</a>
                     </li>
                 {% empty %}
                     <li>
