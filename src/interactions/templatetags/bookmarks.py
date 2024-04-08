@@ -3,12 +3,12 @@ from django.urls import reverse
 from django.templatetags.static import static
 from wagtail.models import Page
 
-from intranet_profile import is_page_bookmarked
+from interactions import is_page_bookmarked
 
 register = template.Library()
 
 
-@register.inclusion_tag("intranet_profile/bookmark_page.html")
+@register.inclusion_tag("interactions/bookmark_page.html")
 def bookmark_page(user, page):
     if page is None:
         return {}
@@ -21,8 +21,8 @@ def bookmark_page(user, page):
     icon = "bookmark.svg" if is_bookmarked else "bookmark-outline.svg"
 
     return {
-        "img_src": static(f"intranet_profile/{icon}"),
-        "post_url": reverse("profile:bookmark"),
+        "img_src": static(f"interactions/{icon}"),
+        "post_url": reverse("interactions:bookmark"),
         "user": user,
         "page": page,
         "is_bookmarked": is_bookmarked,

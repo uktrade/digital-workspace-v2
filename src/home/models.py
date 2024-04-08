@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from home import FEATURE_HOMEPAGE
 from home.util import get_tweets
-from intranet_profile import get_bookmarks, get_recent_page_views
+from interactions import get_bookmarks, get_recent_page_views
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from news.models import NewsPage
