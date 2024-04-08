@@ -22,20 +22,18 @@
             {% site_alert %}
         </section>
 
-        <section>
-            <h2 class="govuk-heading-m">Updates</h2>
-            <ul class="recently-updated-wrapper">
-                {% for recently_updated in recently_updated %}
-                    <li>
-                        <a class="govuk-link" href="{% pageurl recently_updated.link_to %}">{{ recently_updated.title }}</a>
-                    </li>
-                {% empty %}
-                    <li>
-                        <p class="govuk-body-s">Updates to pages you've bookmarked or viewed recently will appear here.</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        </section>
+        {% if updates %}
+            <section>
+                <h2 class="govuk-heading-m">Updates</h2>
+                <ul class="recently-updated-wrapper">
+                    {% for update in updates %}
+                        <li>
+                            <p class="govuk-body-s">{{ update|safe }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
 
         <section aria-labelledby="home-news-items">
             <h2 class="govuk-heading-m" id="home-news-items">Latest News</h2>
@@ -76,7 +74,7 @@
 {% block tertiary_col_content %}
     <article class="ws-home-wrapper new-home">
         <section>
-            <h3 class="govuk-heading-m" id="bookmark-menu">Bookmarks</h3>
+            <h3 class="govuk-heading-m" id="bookmark-menu">Your bookmarks</h3>
             <ul class="bookmarks-wrapper">
                 {% for bookmark in bookmarks %}
                     <li>

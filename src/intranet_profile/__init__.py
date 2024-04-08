@@ -17,3 +17,16 @@ def get_bookmarks(user):
 
 def is_page_bookmarked(user, page):
     return user.intranet.bookmarks.filter(pk=page.pk).exists()
+
+
+def get_updated_pages(user):
+    from .models import RecentPageView
+
+    pages = []
+    for page_view in RecentPageView.objects.filter(profile=user.intranet):
+        if (
+            page_view.page.last_published_at is not None
+            and page_view.last_viewed_at > page_view.page.last_published_at
+        ):
+            pages.append(page_view.page)
+    return pages
