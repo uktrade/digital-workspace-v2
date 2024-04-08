@@ -18,7 +18,7 @@ def get_updated_pages(user):
     from .models import RecentPageView
 
     for page_view in RecentPageView.objects.filter(
-        profile=user.intranet, page__last_published_at__isnull=False
+        user=user, page__last_published_at__isnull=False
     ):
-        if page_view.updated_at > page_view.page.last_published_at:
+        if page_view.updated_at < page_view.page.last_published_at:  # type: ignore #
             yield page_view.page

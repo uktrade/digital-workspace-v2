@@ -3,6 +3,12 @@
 
   section {
     border-bottom: 1px solid $brand-color-grey50;
+
+    .header-with-action {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
   }
 
   section.homepage-site-alert {
@@ -16,8 +22,6 @@
       margin-bottom: 10px;
 
       .frame {
-        //   aspect-ratio: 21/9;
-
         img {
           inline-size: 100%;
           block-size: 100%;
@@ -32,60 +36,9 @@
         background-color: rgba(255, 255, 255, 0.85);
         width: 100%;
         padding: 10px;
-
-        // .ws-secondary-meta {
-        //   position: absolute;
-        //   bottom: 10px;
-        //   right: 10px;
-        // }
       }
     }
   }
-
-  //   .home-newsreel {
-  //     display: flex;
-  //     block-size: auto;
-  //     overflow-x: auto;
-  //     overflow-y: hidden;
-  //     scrollbar-color: #fff #000;
-  //   }
-
-  //   .home-newsreel::-webkit-scrollbar {
-  //     block-size: 1rem;
-  //   }
-
-  //   .home-newsreel::-webkit-scrollbar-track {
-  //     background-color: #000;
-  //   }
-
-  //   .home-newsreel::-webkit-scrollbar-thumb {
-  //     background-color: #000;
-  //     background-image: linear-gradient(
-  //       #000 0,
-  //       #000 0.25rem,
-  //       #fff 0.25rem,
-  //       #fff 0.75rem,
-  //       #000 0.75rem
-  //     );
-  //   }
-
-  //   .home-newsreel > * {
-  //     flex: 0 0 196px;
-  //   }
-
-  //   .home-newsreel > img {
-  //     block-size: 100%;
-  //     flex-basis: auto;
-  //     width: auto;
-  //   }
-
-  //   .home-newsreel > * + * {
-  //     margin-inline-start: 20px;
-  //   }
-
-  //   .home-newsreel.overflowing {
-  //     padding-block-end: 20px;
-  //   }
 
   .ws-news-grid-items {
     margin-bottom: 20px;
@@ -134,11 +87,7 @@
 
   @media only screen and (min-width: 768px) {
     .ws-news-grid-items {
-      //   display: grid;
-      //   grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      //   height: 130px;
-      //   overflow-y: hidden;
       display: flex;
       block-size: auto;
       overflow-x: auto;

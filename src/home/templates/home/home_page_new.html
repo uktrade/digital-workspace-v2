@@ -35,7 +35,10 @@
         {% endif %}
 
         <section aria-labelledby="home-news-items">
-            <h2 class="govuk-heading-m" id="home-news-items">Latest News</h2>
+            <div class="header-with-action">
+                <h2 class="govuk-heading-m" id="home-news-items">Latest News</h2>
+                <a class="govuk-link" href="/news-and-views/">View all news</a>
+            </div>
 
             <div class="main-news-item">
                 {% if news_items %}
@@ -53,7 +56,6 @@
                     {% endif %}
                 {% endfor %}
             </ul>
-            <a class="govuk-link" href="/news-and-views/">View all news</a>
         </section>
 
         {% if not hide_news %}
@@ -81,7 +83,7 @@
             <ul class="bookmarks-wrapper">
                 {% for bookmark in bookmarks %}
                     <li>
-                        <a class="govuk-link" href="{{ bookmark.get_url }}">{{ bookmark.title }}</a>
+                        <a class="govuk-link" href="{{ bookmark.page.get_url }}">{{ bookmark.page.title }}</a>
                     </li>
                 {% empty %}
                     <li>
@@ -101,7 +103,7 @@
             <ul class="recently-viewed-wrapper">
                 {% for recently_viewed in recently_viewed %}
                     <li>
-                        <a class="govuk-link" href="{{ recently_viewed.get_url }}">{{ recently_viewed.title }}</a>
+                        <a class="govuk-link" href="{{ recently_viewed.page.get_url }}">{{ recently_viewed.page.title }}</a>
                     </li>
                 {% empty %}
                     <li>

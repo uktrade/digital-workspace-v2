@@ -12,6 +12,12 @@
   margin-bottom: 0;
 }
 
+.breadcrumb-bookmark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .govuk-heading-m a,
 .govuk-heading-s a {
   text-decoration: none;
