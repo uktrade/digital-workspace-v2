@@ -29,7 +29,6 @@ from extended_search.index import DWIndexedField as IndexedField
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
-from intranet_profile import is_page_bookmarked
 
 User = get_user_model()
 
@@ -326,11 +325,6 @@ class ContentPage(BasePage):
         FieldPanel("pinned_phrases"),
         FieldPanel("excluded_phrases"),
     ]
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        context["is_bookmarked"] = is_page_bookmarked(request.user, self)
-        return context
 
     def full_clean(self, *args, **kwargs):
         self._generate_search_field_content()

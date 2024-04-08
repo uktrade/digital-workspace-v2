@@ -1,4 +1,4 @@
-{% load workspace_navigation static %}
+{% load workspace_navigation static bookmarks %}
 {% load render_bundle webpack_static from webpack_loader %}
 {% load static wagtailcore_tags %}
 
@@ -86,7 +86,7 @@
                 {% block breadcrumbs %}
                     {% breadcrumbs %}
                 {% endblock %}
-                {% include 'includes/bookmark_page.html' %}
+                {% bookmark_page user page %}
                 {% block main_content %}{% endblock %}
                 {% block page_problem %}
                     {% include "includes/problem_found.html" %}
