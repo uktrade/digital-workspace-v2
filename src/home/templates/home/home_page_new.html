@@ -1,10 +1,16 @@
 {% extends "2_col_content.html" %}
+{% extends "2_col_content.html" %}
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load home_tags %}
 {% load site_alert %}
 
 {% block body_classes %}homepage{% endblock %}
+
+{% block pre_content %}
+    {% home_banner %}
+{% endblock %}
 
 {% block content %}
     <article class="ws-home-wrapper new-home">
@@ -36,10 +42,12 @@
 
             <ul class="ws-news-grid-items">
                 {% for news_item in news_items %}
-                    <li class="news-item news-item-{{ forloop.counter }}"
-                        data-testid="home-news-item">
-                        {% include "home/includes/news_item_new.html" with news_item=news_item %}
-                    </li>
+                    {% if not forloop.first %}
+                        <li class="news-item news-item-{{ forloop.counter }}"
+                            data-testid="home-news-item">
+                            {% include "home/includes/news_item_new.html" with news_item=news_item %}
+                        </li>
+                    {% endif %}
                 {% endfor %}
             </ul>
             <a class="govuk-link" href="/news-and-views/">View all news</a>

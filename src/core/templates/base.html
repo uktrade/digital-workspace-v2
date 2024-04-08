@@ -1,4 +1,4 @@
-{% load workspace_navigation static %}
+{% load workspace_navigation static bookmarks %}
 {% load render_bundle webpack_static from webpack_loader %}
 {% load static wagtailcore_tags %}
 
@@ -83,9 +83,12 @@
                   id="main-content"
                   role="main"
                   tabindex="1">
-                {% block breadcrumbs %}
-                    {% breadcrumbs %}
-                {% endblock %}
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    {% block breadcrumbs %}
+                        {% breadcrumbs %}
+                    {% endblock %}
+                    {% bookmark_page user page %}
+                </div>
                 {% block main_content %}{% endblock %}
                 {% block page_problem %}
                     {% include "includes/problem_found.html" %}
