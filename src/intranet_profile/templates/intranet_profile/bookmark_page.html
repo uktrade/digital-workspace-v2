@@ -1,10 +1,12 @@
 {% load static %}
-<a href="#"
-   hx-post="{{ post_url }}"
-   hx-vals='{"page_id": {{ page.id }}}'
-   hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-   hx-trigger="click"
-   hx-target="this"
-   hx-swap="outerHTML">
-    <img src="{{ img_src }}" style="width: 2rem;">
-</a>
+{% if page %}
+    <a href="#"
+       hx-post="{{ post_url }}"
+       hx-vals='{"page_id": {{ page.id }}}'
+       hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+       hx-trigger="click"
+       hx-target="this"
+       hx-swap="outerHTML">
+        <img src="{{ img_src }}" style="width: 2rem;">
+    </a>
+{% endif %}
