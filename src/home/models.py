@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
-from home import NEW_HOMEPAGE_FLAG
+from home import FEATURE_HOMEPAGE
 from home.util import get_tweets
 from intranet_profile import get_bookmarks, get_recent_page_views
 from modelcluster.fields import ParentalKey
@@ -136,12 +136,13 @@ class HomePage(BasePage):
     promote_panels = []
 
     def get_template(self, request, *args, **kwargs):
-        if flag_is_active(request, NEW_HOMEPAGE_FLAG):
+        if flag_is_active(request, FEATURE_HOMEPAGE):
             return "home/home_page_new.html"
         return "home/home_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
+        context["is_homepage"] = True
 
         # Quick links
         quick_links = QuickLink.objects.all().order_by("result_weighting", "title")
@@ -159,7 +160,7 @@ class HomePage(BasePage):
         )
         context["news_items"] = news_items
 
-        if not flag_is_active(request, NEW_HOMEPAGE_FLAG):
+        if not flag_is_active(request, FEATURE_HOMEPAGE):
             # Tweets
             tweets = cache.get("homepage_tweets")
 
