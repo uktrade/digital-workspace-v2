@@ -11,5 +11,9 @@ def get_recent_page_views(user, limit=10):
     return user.intranet.recent_page_views.all()[:limit]
 
 
+def get_bookmarks(user):
+    return user.intranet.bookmarks.all()
+
+
 def is_page_bookmarked(user, page):
     return user.intranet.bookmarks.filter(pk=page.pk).exists()

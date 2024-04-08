@@ -80,12 +80,14 @@
             <ul class="bookmarks-wrapper">
                 {% for bookmark in bookmarks %}
                     <li>
-                        <a class="govuk-link" href="{% pageurl bookmark.link_to %}">{{ bookmark.title }}</a>
+                        <a class="govuk-link" href="{{ bookmark.get_url }}">{{ bookmark.title }}</a>
                     </li>
                 {% empty %}
                     <li>
                         <p class="govuk-body-s">
-                            You have not yet saved any bookmarks. User the ** icon at the top of a page to save it to here.
+                            You have not yet saved any bookmarks. Use the
+                            <img src="{% static "intranet_profile/bookmark-outline.svg" %}" style="width: 1rem;">
+                            icon at the top of a page to save it to here.
                         </p>
                     </li>
                 {% endfor %}
@@ -97,7 +99,7 @@
             <ul class="recently-viewed-wrapper">
                 {% for recently_viewed in recently_viewed %}
                     <li>
-                        <a class="govuk-link" href="{% pageurl recently_viewed.link_to %}">{{ recently_viewed.title }}</a>
+                        <a class="govuk-link" href="{{ recently_viewed.get_url }}">{{ recently_viewed.title }}</a>
                     </li>
                 {% empty %}
                     <li>
