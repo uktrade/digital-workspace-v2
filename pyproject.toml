@@ -141,3 +141,4 @@ profile = "django"
 ignore = "T002,H006,H017,H023"
 preserve_blank_lines = true
 extend_exclude = "htmlcov,staticfiles,static,node_modules"
+custom_blocks = "flag"

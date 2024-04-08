@@ -1,0 +1,13 @@
+{% load waffle_tags %}
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+        <span class="govuk-phase-banner__text">
+            {% flag FEATURE_HOMEPAGE %}
+                <a class="govuk-link" href="/?dwft_{{ FEATURE_HOMEPAGE }}=0">Click here to return to the old homepage</a>
+            {% else %}
+                We are testing a new homepage. <a class="govuk-link" href="/?dwft_{{ FEATURE_HOMEPAGE }}=1">Click here try it</a>
+            {% endflag %}
+        </span>
+    </p>
+</div>
+<hr class="govuk-section-break govuk-section-break--visible">

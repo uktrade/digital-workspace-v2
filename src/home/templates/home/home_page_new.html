@@ -2,7 +2,6 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-{% load home_tags %}
 {% load site_alert %}
 
 {% block bookmark %}
@@ -11,7 +10,7 @@
 {% block body_classes %}homepage{% endblock %}
 
 {% block pre_content %}
-    {% home_banner %}
+    {% include "home/includes/home_banner.html" %}
 {% endblock %}
 
 {% block content %}
@@ -38,7 +37,11 @@
         <section aria-labelledby="home-news-items">
             <h2 class="govuk-heading-m" id="home-news-items">Latest News</h2>
 
-            <div class="main-news-item">{% include "home/includes/news_item_main.html" with news_item=news_items.0 %}</div>
+            <div class="main-news-item">
+                {% if news_items %}
+                    {% include "home/includes/news_item_main.html" with news_item=news_items.0 %}
+                {% endif %}
+            </div>
 
             <ul class="ws-news-grid-items">
                 {% for news_item in news_items %}
@@ -84,7 +87,8 @@
                     <li>
                         <p class="govuk-body-s">
                             You have not yet saved any bookmarks. Use the
-                            <img src="{% static "intranet_profile/bookmark-outline.svg" %}" style="width: 1rem;">
+                            <img src="{% static 'interactions/bookmark-outline.svg' %}"
+                                 style="width: 1rem">
                             icon at the top of a page to save it to here.
                         </p>
                     </li>

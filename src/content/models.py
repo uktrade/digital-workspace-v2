@@ -99,7 +99,7 @@ class ContentPageQuerySet(PageQuerySet):
     def restricted_q(self, restriction_type):
         from wagtail.models import BaseViewRestriction, PageViewRestriction
 
-        if type(restriction_type) == str:
+        if isinstance(restriction_type, str):
             restriction_type = [
                 restriction_type,
             ]

@@ -108,7 +108,7 @@ LOCAL_APPS = [
     "pingdom.apps.PingdomConfig",
     "peoplefinder.apps.PeoplefinderConfig",
     "countries.apps.CountriesConfig",
-    "intranet_profile.apps.IntranetProfileConfig",
+    "interactions.apps.InteractionsConfig",
 ]
 
 THIRD_PARTY_APPS = [
