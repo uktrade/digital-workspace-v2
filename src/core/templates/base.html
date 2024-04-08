@@ -83,10 +83,12 @@
                   id="main-content"
                   role="main"
                   tabindex="1">
-                {% block breadcrumbs %}
-                    {% breadcrumbs %}
-                {% endblock %}
-                {% bookmark_page user page %}
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    {% block breadcrumbs %}
+                        {% breadcrumbs %}
+                    {% endblock %}
+                    {% bookmark_page user page %}
+                </div>
                 {% block main_content %}{% endblock %}
                 {% block page_problem %}
                     {% include "includes/problem_found.html" %}
