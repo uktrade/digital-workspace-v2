@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
+from django.utils.html import format_html
 
 from home import FEATURE_HOMEPAGE
 from home.util import get_tweets
@@ -211,11 +212,19 @@ class HomePage(BasePage):
         updates = []
         if request.user.profile.profile_completion < 99:
             updates.append(
-                f"Please complete <a href='{reverse('profile-view', args=[request.user.profile.slug])}'>your profile</a>, it's currently at {request.user.profile.profile_completion}%"
+                format_html(
+                    "Please complete <a href='{}'>your profile</a>, it's currently at {}%",
+                    reverse("profile-view", args=[request.user.profile.slug]),
+                    request.user.profile.profile_completion,
+                )
             )
         for page in get_updated_pages(request.user):
             updates.append(
-                f"<a href='{page.get_url(request)}'>{page}</a> has been updated"
+                format_html(
+                    "<a href='{}'>{}</a> has been updated",
+                    page.get_url(request),
+                    page,
+                )
             )
         context["updates"] = updates
 
