@@ -22,9 +22,9 @@
         </section>
 
         {% if updates %}
-            <section>
+            <section class="updates">
                 <h2 class="govuk-heading-m">Updates</h2>
-                <ul class="recently-updated-wrapper">
+                <ul>
                     {% for update in updates %}
                         <li>
                             <p class="govuk-body-s">{{ update|safe }}</p>
@@ -59,7 +59,7 @@
         </section>
 
         {% if not hide_news %}
-            <section class="block-wrapper">
+            <section class="block-wrapper govuk-news">
                 <h2 class="govuk-heading-m">DBT news from GOV.UK</h2>
                 <ul class="two-cols">
                     {% for govuk_news_item in govuk_feed %}
@@ -67,7 +67,7 @@
                             <p>
                                 <a class="govuk-link" href="{{ govuk_news_item.links.0.href }}">{{ govuk_news_item.title.value }}</a>
                             </p>
-                            <p class="govuk-body-s">{{ govuk_news_item.updated|date:"j F Y" }}</p>
+                            <p class="govuk-body-xs">{{ govuk_news_item.updated|date:"j F Y" }}</p>
                         </li>
                     {% endfor %}
                 </ul>
