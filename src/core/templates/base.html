@@ -90,11 +90,9 @@
                         {% breadcrumbs %}
                     {% endblock breadcrumbs %}
                     {% block bookmark %}
-                        {% if not is_homepage %}
-                            {% flag FEATURE_HOMEPAGE %}
-                                {% bookmark_page user page %}
-                            {% endflag %}
-                        {% endif %}
+                        {% flag FEATURE_HOMEPAGE %}
+                            {% bookmark_page user page %}
+                        {% endflag %}
                     {% endblock bookmark %}
                 </div>
                 {% block main_content %}{% endblock %}

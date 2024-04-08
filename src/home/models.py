@@ -142,7 +142,6 @@ class HomePage(BasePage):
 
     def get_context(self, request, *args, **kwargs):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
-        context["is_homepage"] = True
 
         # Quick links
         quick_links = QuickLink.objects.all().order_by("result_weighting", "title")
