@@ -11,10 +11,10 @@ register = template.Library()
 @register.inclusion_tag("intranet_profile/bookmark_page.html")
 def bookmark_page(user, page):
     if page is None:
-        return ""
+        return {}
 
     if not isinstance(page, Page):
-        return ""
+        return {}
 
     is_bookmarked = is_page_bookmarked(user, page)
 
