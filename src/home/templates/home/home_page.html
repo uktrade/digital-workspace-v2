@@ -82,40 +82,6 @@
                     {% endfor %}
                 </ul>
             </section>
-
-            {% if tweets|length > 0 %}
-                <section>
-                    <h2 class="govuk-heading-m">Latest tweets</h2>
-                    <ul class="tweets">
-                        {% for tweet in tweets %}
-                            <li>
-                                <div class="img-wrapper">
-                                    <img alt="Profile image for {{ tweet.user.name }} account"
-                                         src="{{ tweet.user.profile_image_url }}">
-                                </div>
-                                <div class="details">
-                                    {% if tweet.user.name == "Department for International Trade" %}
-                                        <p class="govuk-body-s">
-                                            <strong>DIT</strong>
-                                        </p>
-                                    {% else %}
-                                        <p class="govuk-body-s">
-                                            <strong>{{ tweet.user.name }}</strong>
-                                        </p>
-                                    {% endif %}
-                                    <p class="govuk-body-s">
-                                        <a class="govuk-link"
-                                           target="_blank"
-                                           href="https://twitter.com/{{ tweet.user.screen_name }}">@{{ tweet.user.screen_name }}</a>
-                                    </p>
-                                    <p class="govuk-body-s created">{{ tweet.created_at }}</p>
-                                    <p class="govuk-body-s">{{ tweet.text|add_twitter_link }}</p>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </section>
-            {% endif %}
         {% endif %}
     </article>
 {% endblock main_content %}

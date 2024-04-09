@@ -7,9 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
-
 from home import FEATURE_HOMEPAGE
-from home.util import get_tweets
 from interactions import get_bookmarks, get_recent_page_views, get_updated_pages
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -161,16 +159,6 @@ class HomePage(BasePage):
             )[:8]
         )
         context["news_items"] = news_items
-
-        if not flag_is_active(request, FEATURE_HOMEPAGE):
-            # Tweets
-            tweets = cache.get("homepage_tweets")
-
-            if tweets is None:
-                tweets = sorted(get_tweets(), key=lambda x: x.created_at, reverse=True)
-                cache.set("homepage_tweets", tweets, 60 * 60)  # cache for 1 hour
-
-            context["tweets"] = tweets[:3]
 
         # Popular on Digital Workspace
         context["whats_popular_items"] = WhatsPopular.objects.all()

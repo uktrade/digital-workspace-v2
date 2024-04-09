@@ -455,7 +455,6 @@ TransitionHome
 Turks
 Tuvalu
 TW
-TWITTER_OAUTH_CONSUMER_KEY
 type="search"/
 UG
 United Arab Emirates
