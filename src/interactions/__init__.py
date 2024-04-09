@@ -1,7 +1,12 @@
-def get_recent_page_views(user, limit=10):
+def get_recent_page_views(user, *, limit=10, exclude_pages=None):
     from .models import RecentPageView
 
-    return RecentPageView.objects.select_related("page").filter(user=user)[:limit]
+    qs = RecentPageView.objects.select_related("page").filter(user=user)
+
+    if exclude_pages:
+        qs = qs.exclude(page__in=exclude_pages)
+
+    return qs[:limit]
 
 
 def get_bookmarks(user):

@@ -194,7 +194,9 @@ class HomePage(BasePage):
 
         # Personalised page list
         context["bookmarks"] = get_bookmarks(request.user)
-        context["recently_viewed"] = get_recent_page_views(request.user, 10)
+        context["recently_viewed"] = get_recent_page_views(
+            request.user, limit=10, exclude_pages=[self]
+        )
 
         # Updates
         updates = []

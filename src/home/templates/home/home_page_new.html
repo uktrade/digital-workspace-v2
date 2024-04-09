@@ -17,9 +17,12 @@
     <article class="ws-home-wrapper new-home">
         <h1 class="ws-hide">Digital Workspace</h1>
 
-        <section class="homepage-site-alert">
-            {% site_alert %}
-        </section>
+        {# spaceless is required to enable the use of the :empty pseudo css selector #}
+        {% spaceless %}
+            <section class="homepage-site-alert">
+                {% site_alert %}
+            </section>
+        {% endspaceless %}
 
         {% if updates %}
             <section class="updates">
