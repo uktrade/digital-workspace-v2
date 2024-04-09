@@ -17,6 +17,7 @@
 
     &:empty {
       margin: 0;
+      padding: 0 !important;
     }
   }
 
@@ -26,7 +27,9 @@
     }
 
     li {
-      list-style-position: inside;
+      list-style-position: outside;
+      margin-left: 1rem;
+      padding-left: 0.3rem;
 
       p {
         display: inline;

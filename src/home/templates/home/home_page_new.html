@@ -24,19 +24,6 @@
             </section>
         {% endspaceless %}
 
-        {% if updates %}
-            <section class="updates">
-                <h2 class="govuk-heading-m">Updates</h2>
-                <ul>
-                    {% for update in updates %}
-                        <li>
-                            <p class="govuk-body-s">{{ update }}</p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </section>
-        {% endif %}
-
         <section aria-labelledby="home-news-items">
             <div class="header-with-action">
                 <h2 class="govuk-heading-m" id="home-news-items">Latest News</h2>
@@ -70,7 +57,7 @@
                             <p>
                                 <a class="govuk-link" href="{{ govuk_news_item.links.0.href }}">{{ govuk_news_item.title.value }}</a>
                             </p>
-                            <p class="govuk-body-xs">{{ govuk_news_item.updated|date:"j F Y" }}</p>
+                            <p class="govuk-body-xs">{{ govuk_news_item.updated|date:"DATE_FORMAT" }}</p>
                         </li>
                     {% endfor %}
                 </ul>
@@ -81,6 +68,19 @@
 
 {% block tertiary_col_content %}
     <article class="ws-home-wrapper new-home">
+        {% if updates %}
+            <section class="updates">
+                <h2 class="govuk-heading-m">Updates</h2>
+                <ul>
+                    {% for update in updates %}
+                        <li>
+                            <p class="govuk-body-s">{{ update }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+
         <section>
             <h3 class="govuk-heading-m" id="bookmark-menu">Your bookmarks</h3>
             <ul class="bookmarks-wrapper">
