@@ -5,10 +5,10 @@ from typing import Optional
 from django.conf import settings
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
+from extended_search import settings as search_settings
 from extended_search.index import Indexed
 from extended_search.query import OnlyFields
 from extended_search.query_builder import CustomQueryBuilder
-from extended_search import settings as search_settings
 
 
 def sanitize_search_query(query: Optional[str] = None) -> str:

@@ -1,11 +1,17 @@
+import csv
 import logging
 
 from django.conf import settings
+from django.contrib.postgres.aggregates import StringAgg
+from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
+from django.views.decorators.http import require_GET
 from notifications_python_client.notifications import NotificationsAPIClient
 from sentry_sdk import capture_message
 
 from core.forms import PageProblemFoundForm
+from user.models import User
 
 
 logger = logging.getLogger(__name__)
@@ -86,3 +92,31 @@ def page_problem_found(request):
         "core/page_problem_found.html",
         {"form": form, "message_sent": message_sent},
     )
+
+
+@require_GET
+def user_groups_report(request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    header = ["ID", "Email", "First name", "Last name", "Groups"]
+
+    qs = (
+        User.objects.filter(groups__isnull=False)
+        .annotate(group_names=StringAgg("groups__name", delimiter=", "))
+        .values_list("id", "email", "first_name", "last_name", "group_names")
+    )
+
+    filename = "user_groups.csv"
+
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+    writer = csv.writer(response)
+    writer.writerow(header)
+    for obj in qs:
+        writer.writerow(obj)
+
+    return response

@@ -13,6 +13,7 @@ from wagtail.search import index
 
 from extended_search.types import AnalysisType
 
+
 logger = logging.getLogger(__name__)
 
 

@@ -22,6 +22,7 @@ from core.models import IngestedModel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
 
+
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
 

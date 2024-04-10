@@ -114,7 +114,8 @@ markers = [
 omit = ["*/migrations/*", "*/test/*", "e2e_tests/*"]
 
 [tool.ruff]
-extend-select = ["B", "S"]
+src = ["src"]
+extend-select = ["B", "S", "I"]
 ignore = ["B904", "E501", "N818", "S101"]
 extend-exclude = [
     "manage.py",

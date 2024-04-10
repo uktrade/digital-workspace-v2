@@ -8,10 +8,10 @@ from wagtail.search.index import RelatedFields, SearchField
 from wagtail.search.query import (
     MATCH_NONE,
     Fuzzy,
-    Phrase,
-    PlainText,
     MatchAll,
     Not,
+    Phrase,
+    PlainText,
     SearchQuery,
 )
 
