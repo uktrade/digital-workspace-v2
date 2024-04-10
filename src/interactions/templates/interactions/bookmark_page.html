@@ -11,6 +11,7 @@
         }
     </style>
     <a href="#"
+       title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
        hx-post="{{ post_url }}"
        hx-vals='{"page_id": {{ page.id }}}'
        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
