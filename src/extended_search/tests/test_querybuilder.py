@@ -1,10 +1,10 @@
 from unittest.mock import call
 
 import pytest
+from django.test import override_settings
 from wagtail.search.query import And, Boost, Fuzzy, Not, Or, Phrase, PlainText
 
 from content.models import ContentPage
-from django.test import override_settings
 from extended_search import settings
 from extended_search.index import IndexedField, RelatedFields, SearchField
 from extended_search.query import Filtered, Nested, OnlyFields

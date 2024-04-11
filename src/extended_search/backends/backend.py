@@ -307,8 +307,7 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
 class CustomSearchMapping(
     FilteredSearchMapping,
-):
-    ...
+): ...
 
 
 class CustomSearchQueryCompiler(
