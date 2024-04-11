@@ -284,9 +284,8 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
         if boost != 1.0:
             if "multi_match" in match_query:
                 match_query["multi_match"]["boost"] = boost
-            else:
+            elif "match_phrase" in match_query:
                 for field in fields:
-                    # TODO: Revisit this....
                     query = match_query["match_phrase"][field.field_name]
                     if isinstance(query, dict) and "boost" in query:
                         match_query["match_phrase"][field.field_name]["boost"] = boost
