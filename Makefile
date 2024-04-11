@@ -225,3 +225,12 @@ ingest-uk-staff-locations: # Create the list of the department's offices
 
 serve-docs: # Serve mkdocs on port 8002
 	poetry run mkdocs serve -a localhost:8002
+
+test-data:
+	make data-countries
+	make menus
+	make create-section-homepages
+	make wagtail-groups
+	make pf-groups
+	make ingest-uk-staff-locations
+	make index
