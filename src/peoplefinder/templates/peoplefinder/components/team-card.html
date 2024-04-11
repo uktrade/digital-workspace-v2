@@ -1,33 +1,28 @@
 {% load markdown %}
 <div class="pf-team-card">
     <p class="pf-team-card__name mb-10">
-        {% if number_overall %}
+        <a
+            class="govuk-link"
+            href="{% url 'team-view' team.slug %}"
             {# only search has this context var #}
-            <a class="govuk-link"
-               href="{% url 'team-view' team.slug %}"
-               onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'team-view' team.slug %}', 'search_result_selected_type': 'team', 'search_result_selected_section': 'teams', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }} })">{{ team.name }}</a>
-        {% else %}
-            <a class="govuk-link"
-               href="{% url 'team-view' team.slug %}"
-               onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'team-view' team.slug %}', 'search_result_selected_type': 'team', 'search_result_selected_section': 'teams', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }}, 'search_ui': 'team-breadcrumb' })">{{ team.name }}</a>
-        {% endif %}
+            {% if number_overall %}
+                onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'team-view' team.slug %}', 'search_result_selected_type': 'team', 'search_result_selected_section': 'teams', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }}, 'search_ui': 'team-breadcrumb' })"
+            {% endif %}
+        >{{ team.name }}</a>
     </p>
     {% if team.all_parents %}
         <div class="govuk-breadcrumbs p-0">
             <ol class="govuk-breadcrumbs__list">
                 {% for parent_team in team.all_parents %}
                     <li class="govuk-breadcrumbs__list-item">
-
-                        {% if number_overall %}
+                        <a
+                            class="govuk-link"
+                            href="{% url 'team-view' parent_team.slug %}"
                             {# only search has this context var #}
-                            <a class="govuk-link"
-                               href="{% url 'team-view' parent_team.slug %}"
-                               onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'team-view' team.slug %}', 'search_result_selected_type': 'team', 'search_result_selected_section': 'teams', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }}, 'search_ui': 'team-breadcrumb' })">{{ parent_team.short_name }}</a>
-                        {% else %}
-                            <a class="govuk-link"
-                               href="{% url 'team-view' parent_team.slug %}"
-                               onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'team-view' parent_team.slug %}', 'search_result_selected_type': 'team', 'search_result_selected_section': 'teams', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }}, 'search_ui': 'team-breadcrumb' })">{{ parent_team.short_name }}</a>
-                        {% endif %}
+                            {% if number_overall %}
+                                onclick="dataLayer.push({ 'event': 'search_result', 'search_result_selected_url': '{% url 'team-view' parent_team.slug %}', 'search_result_selected_type': 'parent_team', 'search_result_selected_section': 'teams', 'search_result_selected_number_overall': {{ number_overall }}, 'search_result_selected_number_section': {{ number_section }}, 'search_ui': 'team-breadcrumb' })"
+                            {% endif %}
+                        >{{ parent_team.short_name }}</a>
                     </li>
                 {% endfor %}
             </ol>

@@ -214,6 +214,9 @@ wagtail-groups: # Create the wagtail groups
 pf-groups: # Create the pf groups
 	$(wagtail) python manage.py create_people_finder_groups
 
+pf-test-teams: # Add test data for peoplefinder teams (suitable for local dev)
+	$(wagtail) python manage.py create_test_teams
+
 create-section-homepages: # Create the section homepages
 	$(wagtail) python manage.py create_section_homepages
 
@@ -222,6 +225,16 @@ data-countries: # Import the countries data
 
 ingest-uk-staff-locations: # Create the list of the department's offices
 	$(wagtail) python manage.py ingest_uk_staff_locations
+
+local-test-data: # Add all test data for local development
+	make data-countries
+	make menus
+	make create-section-homepages
+	make wagtail-groups
+	make pf-groups
+	make pf-test-teams
+	make ingest-uk-staff-locations
+	make index
 
 serve-docs: # Serve mkdocs on port 8002
 	poetry run mkdocs serve -a localhost:8002
