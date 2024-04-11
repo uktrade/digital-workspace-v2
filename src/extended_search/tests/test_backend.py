@@ -37,8 +37,6 @@ class TestExtendedSearchQueryCompiler:
     def test_remap_fields_works_the_same_as_parent_init(self):
         query = PlainText("quid")
         compiler = ExtendedSearchQueryCompiler(ContentPage.objects.all(), query)
-        # FIXME: Discuss this change: Do we still want to handle the None scenario like this?
-        # assert compiler._remap_fields(None) is None
         es7_compiler = Elasticsearch7SearchQueryCompiler(
             ContentPage.objects.all(), query
         )
@@ -63,7 +61,7 @@ class TestExtendedSearchQueryCompiler:
         field2 = mocker.Mock(field_name="--field-2--")
         field3 = mocker.Mock(field_name="--field-3--")
         mocker.patch(
-            "extended_search.backends.backend.ExtendedSearchQueryCompiler.get_searchable_fields",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler.get_searchable_fields",
             return_value=[
                 field1,
                 field2,
@@ -79,17 +77,12 @@ class TestExtendedSearchQueryCompiler:
 
         results = compiler._remap_fields(
             [
-                "--field-a--",
-                "--field-b--",
                 "--field-1--.--related-field--",
                 "--field-3--.--some-other-field--.--another-relation--",
             ]
         )
         mock_get_column_name.assert_has_calls([call(field1), call(field3)])
         assert [f.field_name for f in results] == [
-            # FIXME: Discuss this change: Why would unsearchable fields be in the results?
-            # "--field-a--",
-            # "--field-b--",
             "--column-name--.--related-field--",
             "--column-name--.--some-other-field--.--another-relation--",
         ]

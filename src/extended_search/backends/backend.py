@@ -43,16 +43,10 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         return super().get_boosted_fields(boostable_fields)
 
-    def get_searchable_fields(self):
-        return self.queryset.model.get_searchable_search_fields()
-
     def _remap_fields(self, fields):
         """
         Convert field names into index column names
         """
-        # if fields is None:
-        #     return None
-
         if not fields:
             return super()._remap_fields(fields)
 
