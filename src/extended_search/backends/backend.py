@@ -15,7 +15,7 @@ from extended_search.query import Filtered, Nested, OnlyFields
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
     def get_field_column_name(self, field):
-        if type(field) == str and field == "content_type":
+        if isinstance(field, str) and field == "content_type":
             return "content_type"
         return super().get_field_column_name(field)
 
@@ -244,7 +244,7 @@ class FilteredSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
     def _process_lookup(self, field, lookup, value):
         # @TODO not pretty given get_field_column_name is already overridden
-        if type(field) == str:
+        if isinstance(field, str):
             column_name = field
         else:
             column_name = self.mapping.get_field_column_name(field)
