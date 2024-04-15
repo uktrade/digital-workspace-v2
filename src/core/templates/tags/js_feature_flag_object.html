@@ -1,0 +1,1 @@
+{# djlint:off #}[{% for flag in feature_flags %}{% for k, v in flag.items %}{ "{{ k }}": {{ v|lower }} }{% endfor %}{% if not forloop.last %},{% endif %}{% endfor %}]
