@@ -260,6 +260,22 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
             return self._compile_phrase_query(query, [field], boost)
         return super()._compile_query(query, field, boost)
 
+
+    def _compile_plaintext_query(self, query, fields, boost=1.0):
+        """
+        Support boosting
+        """
+        match_query = super()._compile_plaintext_query(query, fields, boost=1.0)
+
+        if boost != 1.0:
+            if "match" in match_query:
+                for field in fields:
+                    match_query["match"][field.field_name]["boost"] = boost
+            elif "multi_match" in match_query:
+                match_query["multi_match"]["boost"] = boost
+
+        return match_query
+
     def _compile_fuzzy_query(self, query, fields, boost=1.0):
         """
         Support boosting
@@ -271,7 +287,7 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 match_query["multi_match"]["boost"] = boost
             elif "match" in match_query:
                 for field in fields:
-                    match_query["match"][field.field_name]["boost"] = field.boost * boost
+                    match_query["match"][field.field_name]["boost"] = boost
 
         return match_query
 
