@@ -9,6 +9,7 @@ from wagtail.search.backends.elasticsearch7 import (
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
+from extended_search import settings as search_settings
 from extended_search.index import RelatedFields
 from extended_search.query import Filtered, Nested, OnlyFields
 
@@ -53,6 +54,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         remapped_fields = []
 
         searchable_fields = {f.field_name: f for f in self.get_searchable_fields()}
+
         for field_name in fields:
             field = searchable_fields.get(field_name)
             if field:
@@ -62,12 +64,26 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
                 # @TODO this works but ideally we'd move get_field_column_name to handle this directly
                 field_name_parts = field_name.split(".")
                 if field_name_parts[0] in searchable_fields:
+                    parent_related_field = searchable_fields[field_name_parts[0]]
                     field_name = self.mapping.get_field_column_name(
-                        searchable_fields[field_name_parts[0]]
+                        parent_related_field
                     )
                     field_name_remainder = ".".join(field_name_parts[1:])
                     field_name = f"{field_name}.{field_name_remainder}"
-                    remapped_fields.append(Field(field_name, 1))
+
+                    # Get the field boost from the settings so it can be managed in the DB.
+                    child_field = parent_related_field.get_related_field(
+                        field_name_remainder
+                    )
+                    field_settings_key = search_settings.get_settings_field_key(
+                        self.queryset.model, child_field
+                    )
+                    field_boost = float(
+                        search_settings.extended_search_settings["boost_parts"][
+                            "fields"
+                        ].get(field_settings_key, 1)
+                    )
+                    remapped_fields.append(Field(field_name, boost=field_boost))
 
         return remapped_fields
 
@@ -271,7 +287,9 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 match_query["multi_match"]["boost"] = boost * fields[0].boost
             elif "match" in match_query:
                 for field in fields:
-                    match_query["match"][field.field_name]["boost"] = boost * field.boost
+                    match_query["match"][field.field_name]["boost"] = (
+                        boost * field.boost
+                    )
 
         return match_query
 
@@ -288,7 +306,9 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 for field in fields:
                     query = match_query["match_phrase"][field.field_name]
                     if isinstance(query, dict) and "boost" in query:
-                        match_query["match_phrase"][field.field_name]["boost"] = boost * field.boost
+                        match_query["match_phrase"][field.field_name]["boost"] = (
+                            boost * field.boost
+                        )
                     else:
                         match_query["match_phrase"][field.field_name] = {
                             "query": query,
