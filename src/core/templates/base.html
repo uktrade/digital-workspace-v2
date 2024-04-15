@@ -2,7 +2,7 @@
 {% load render_bundle webpack_static from webpack_loader %}
 {% load static wagtailcore_tags %}
 
-{% load git_info feature_flags %}
+{% load git_info %}
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
     <head>
@@ -38,7 +38,6 @@
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl+ '&gtm_auth={{ settings.GTM_AUTH }}&amp;gtm_preview=env-2&gtm_cookies_win=x';f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','{{ settings.GTM_CODE }}');
-            dataLayer.push({"feature_flags": {% js_feature_flag_object %}})
             gtm_data_then_click = function(object, data) {
                 dataLayer.push(data);
                 url=object.getAttribute("href");
@@ -46,6 +45,7 @@
                 return false;
             };
             </script>
+            {% include "includes/gtm_datalayer_info.html" %}
             <!-- End Google Tag Manager -->
         {% endif %}
         <link rel="shortcut icon"
