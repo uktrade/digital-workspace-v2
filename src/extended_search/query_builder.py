@@ -119,7 +119,8 @@ class QueryBuilder:
             field,
         )
 
-        return query_boost * analyzer_boost * field_boost
+        return query_boost * analyzer_boost
+        # return query_boost * analyzer_boost * field_boost
 
     @classmethod
     def _build_searchquery_for_query_field_querytype_analysistype(
