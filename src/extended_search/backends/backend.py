@@ -271,7 +271,7 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 match_query["multi_match"]["boost"] = boost
             else:
                 for field in fields:
-                    match_query["match"][field.field_name]["boost"] = boost
+                    match_query["match"][field.field_name]["boost"] = field.boost * boost
 
         return match_query
 
