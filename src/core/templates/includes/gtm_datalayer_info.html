@@ -2,7 +2,7 @@
 initial_page_data = {
     "feature_flags": [{% for flag in FEATURE_FLAGS %}{% for k, v in flag.items %}{ "{{ k }}": {{ v|lower }} }{% endfor %}{% if not forloop.last %},{% endif %}{% endfor %}],
     "page_info": {
-        "age_in_days": {{ self.days_since_last_published|default_if_none:"NA" }},
+        "age_in_days": {% if self.days_since_last_published is not None %}{{ self.days_since_last_published }}{% else %}"NA"{% endif %},
         "type": "{{ self.content_type.name|default_if_none:"NA" }}",
         "tags": {
             "topics": [{% for topic in self.topics.all %}"{{ topic.topic.title }}"{% if not forloop.last %},{% endif %}{% endfor %}],
