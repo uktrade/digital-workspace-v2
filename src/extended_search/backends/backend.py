@@ -1,6 +1,5 @@
 from typing import Union
 
-from django.apps import apps
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,

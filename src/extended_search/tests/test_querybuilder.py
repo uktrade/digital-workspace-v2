@@ -281,9 +281,9 @@ class TestQueryBuilder:
         with pytest.raises(ValueError):
             self.query_builder_class._get_boost_for_analysistype("foo")
 
-        settings.extended_search_settings["boost_parts"]["analyzers"]["explicit"] = (
-            888.88
-        )
+        settings.extended_search_settings["boost_parts"]["analyzers"][
+            "explicit"
+        ] = 888.88
         assert (
             self.query_builder_class._get_boost_for_analysistype(AnalysisType.EXPLICIT)
             == 888.88
@@ -308,9 +308,9 @@ class TestQueryBuilder:
         with pytest.raises(ValueError):
             self.query_builder_class._get_boost_for_querytype("foo")
 
-        settings.extended_search_settings["boost_parts"]["query_types"]["phrase"] = (
-            888.88
-        )
+        settings.extended_search_settings["boost_parts"]["query_types"][
+            "phrase"
+        ] = 888.88
         assert (
             self.query_builder_class._get_boost_for_querytype(SearchQueryType.PHRASE)
             == 888.88
