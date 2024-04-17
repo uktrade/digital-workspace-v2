@@ -1,11 +1,11 @@
 <script>
 initial_page_data = {
-    "feature_flags": [{% for flag in FEATURE_FLAGS %}{% for k, v in flag.items %}{ "{{ k }}": {{ v|lower }} }{% endfor %}{% if not forloop.last %},{% endif %}{% endfor %}],
+    "feature_flags": [{% for flag in FEATURE_FLAGS %}{% for k, v in flag.items %}{ "{{ k }}": {{ v|lower }} }{% endfor %}{% endfor %}],
     "page_info": {
         "age_in_days": {% if self.days_since_last_published is not None %}{{ self.days_since_last_published }}{% else %}"NA"{% endif %},
         "type": "{{ self.content_type.name|default_if_none:"NA" }}",
         "tags": {
-            "topics": [{% for topic in self.topics.all %}"{{ topic.topic.title }}"{% if not forloop.last %},{% endif %}{% endfor %}],
+            "topics": [{% for topic in self.topics.all %}"{{ topic.topic.title }}"{% endfor %}],
         }
     },
     "user_info": {
@@ -15,8 +15,8 @@ initial_page_data = {
                 "team_slug": "{{ role.team.slug }}",
                 "job_title": "{{ role.job_title }}",
             }
-        {% if not forloop.last %},{% endif %}{% endfor %}],
-        "professions": [{% for profession in request.user.profile.professions.all %}"{{ profession.code }}"{% if not forloop.last %},{% endif %}{% endfor %}],
+        {% endfor %}],
+        "professions": [{% for profession in request.user.profile.professions.all %}"{{ profession.code }}"{% endfor %}],
         "grade": {% if request.user.profile.grade %}"{{ request.user.profile.grade.code }}"{% else %}"NA"{% endif %},
         "is_line_manager": {{ request.user.profile.is_line_manager|lower }},
         "working_location": "{{ request.user.profile.get_office_location_display|default_if_none:"NA" }}",
