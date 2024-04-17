@@ -291,6 +291,9 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
         return [
             RelatedFields(
                 field_name=self.field_name,
+                model_field_name=self.model_field_name,
+                parent_field=self.parent_field,
+                configuration_model=self.configuration_model,
                 fields=generated_fields,
             )
         ]
@@ -496,26 +499,27 @@ class MultiQueryIndexedField(IndexedField):
         from extended_search import settings as search_settings
 
         field_settings_key = search_settings.get_settings_field_key(cls, self)
-        field_boost = float(
-            search_settings.extended_search_settings["boost_parts"]["fields"].get(
-                field_settings_key, 1
-            )
-        )
+        field_boosts = search_settings.extended_search_settings["boost_parts"]["fields"]
+        field_boost = field_boosts.get(field_settings_key)
 
-        return [
-            (
-                (get_indexed_field_name(self.model_field_name, analyzer),),
-                {
-                    "boost": field_boost,
-                    "es_extra": {
-                        "analyzer": search_settings.extended_search_settings[
-                            "analyzers"
-                        ][analyzer.value]["es_analyzer"]
-                    },
+        search_field_variants = []
+
+        for analyzer in self.get_search_analyzers():
+            variant_args = (get_indexed_field_name(self.model_field_name, analyzer),)
+            variant_kwargs = {
+                "es_extra": {
+                    "analyzer": search_settings.extended_search_settings["analyzers"][
+                        analyzer.value
+                    ]["es_analyzer"]
                 },
-            )
-            for analyzer in self.get_search_analyzers()
-        ]
+            }
+
+            if field_boost is not None:
+                variant_kwargs["boost"] = float(field_boost)
+
+            search_field_variants.append((variant_args, variant_kwargs))
+
+        return search_field_variants
 
 
 #############################
