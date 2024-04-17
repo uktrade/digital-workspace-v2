@@ -118,6 +118,7 @@ class QueryBuilder:
     @classmethod
     def _build_searchquery_for_query_field_querytype_analysistype(
         cls,
+        model_class: models.Model,
         base_field_name: str,
         query_type: SearchQueryType,
         analysis_type: AnalysisType,
@@ -133,7 +134,9 @@ class QueryBuilder:
 
         field_name = get_indexed_field_name(base_field_name, analysis_type)
         return OnlyFields(
-            Boost(Variable("search_query", query_type), boost), fields=[field_name]
+            Boost(Variable("search_query", query_type), boost),
+            fields=[field_name],
+            only_model=model_class,
         )
 
     @classmethod
@@ -143,12 +146,15 @@ class QueryBuilder:
         return q1 or q2
 
     @classmethod
-    def _build_search_query_for_searchfield(cls, field, subquery, analyzer):
+    def _build_search_query_for_searchfield(
+        cls, model_class, field, subquery, analyzer
+    ):
         for query_type in search_settings.extended_search_settings["analyzers"][
             analyzer.value
         ]["query_types"]:
             query_element = (
                 cls._build_searchquery_for_query_field_querytype_analysistype(
+                    model_class,
                     field.model_field_name,
                     SearchQueryType(query_type),
                     analyzer,
@@ -162,18 +168,19 @@ class QueryBuilder:
         return subquery
 
     @classmethod
-    def _build_search_query_for_indexfield(cls, field, subquery):
+    def _build_search_query_for_indexfield(cls, model_class, field, subquery):
         if not field.search:
             return subquery
 
         for analyzer in field.get_search_analyzers():
             subquery = cls._build_search_query_for_searchfield(
-                field, subquery, analyzer
+                model_class, field, subquery, analyzer
             )
 
         if field.fuzzy:
             query_element = (
                 cls._build_searchquery_for_query_field_querytype_analysistype(
+                    model_class,
                     field.model_field_name,
                     SearchQueryType("fuzzy"),
                     AnalysisType.TOKENIZED,
@@ -194,7 +201,7 @@ class QueryBuilder:
         field: index.BaseField,
     ):
         if isinstance(field, IndexedField):
-            return cls._build_search_query_for_indexfield(field, None)
+            return cls._build_search_query_for_indexfield(model_class, field, None)
 
         if isinstance(field, RelatedFields):
             internal_subquery = None
@@ -210,6 +217,7 @@ class QueryBuilder:
 
         if isinstance(field, SearchField):
             return cls._build_search_query_for_searchfield(
+                model_class,
                 field,
                 None,
                 cls.infer_analyzer_from_field(field),

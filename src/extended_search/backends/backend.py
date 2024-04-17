@@ -1,5 +1,6 @@
 from typing import Union
 
+from django.apps import apps
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,
@@ -44,7 +45,7 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         return super().get_boosted_fields(boostable_fields)
 
-    def _remap_fields(self, fields):
+    def _remap_fields(self, fields, *args, **kwargs):
         """
         Convert field names into index column names
         """
@@ -53,7 +54,9 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         remapped_fields = []
 
-        searchable_fields = {f.field_name: f for f in self.get_searchable_fields()}
+        searchable_fields = {
+            f.field_name: f for f in self.get_searchable_fields(*args, **kwargs)
+        }
 
         for field_name in fields:
             field = searchable_fields.get(field_name)
@@ -172,6 +175,15 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
     SearchQuery
     """
 
+    def get_searchable_fields(self, *args, only_model, **kwargs):
+        if not only_model:
+            return super().get_searchable_fields()
+        return [
+            f
+            for f in only_model.get_search_fields(ignore_cache=True)
+            if isinstance(f, SearchField) or isinstance(f, RelatedFields)
+        ]
+
     def _compile_query(self, query, field, boost=1.0):
         """
         Override the parent method to handle specifics of the OnlyFields
@@ -180,7 +192,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
         if not isinstance(query, OnlyFields):
             return super()._compile_query(query, field, boost)
 
-        remapped_fields = self._remap_fields(query.fields)
+        remapped_fields = self._remap_fields(query.fields, only_model=query.only_model)
 
         if isinstance(field, list) and len(field) == 1:
             field = field[0]
@@ -207,7 +219,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
 
 class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
-    def get_searchable_fields(self):
+    def get_searchable_fields(self, *args, **kwargs):
         return [
             f
             for f in self.queryset.model.get_search_fields()
@@ -326,8 +338,8 @@ class CustomSearchMapping(
 class CustomSearchQueryCompiler(
     BoostSearchQueryCompiler,
     FilteredSearchQueryCompiler,
-    NestedSearchQueryCompiler,
     OnlyFieldSearchQueryCompiler,
+    NestedSearchQueryCompiler,
 ):
     mapping_class = CustomSearchMapping
 
