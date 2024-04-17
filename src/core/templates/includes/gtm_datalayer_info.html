@@ -12,7 +12,7 @@ initial_page_data = {
         "profile_slug": "{{ request.user.profile.slug }}",
         "roles": [{% for role in request.user.profile.roles.all %}
             {
-                "team_slug: "{{ role.team.slug }}",
+                "team_slug": "{{ role.team.slug }}",
                 "job_title": "{{ role.job_title }}",
             }
         {% if not forloop.last %},{% endif %}{% endfor %}],
