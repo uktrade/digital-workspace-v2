@@ -7,6 +7,7 @@ from wagtail.admin.panels import FieldPanel, InlinePanel
 
 from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
 from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import RelatedFields
 
 
 class WorkingAtDITHome(ContentPage):
@@ -139,15 +140,16 @@ class PageTopic(models.Model):
 
 
 class PageWithTopics(ContentPage):
-    @property
-    def search_topics(self):
-        return " ".join(self.topics.all().values_list("topic__title", flat=True))
-
     indexed_fields = [
-        IndexedField(
-            "search_topics",
-            tokenized=True,
-            explicit=True,
+        RelatedFields(
+            "topics",
+            [
+                IndexedField(
+                    "title",
+                    tokenized=True,
+                    explicit=True,
+                ),
+            ],
         ),
     ]
 
