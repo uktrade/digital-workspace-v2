@@ -71,7 +71,6 @@ class Indexed(index.Indexed):
         for k, v in processed_index_fields.items():
             processed_index_fields[k] = []
             for f in v:
-                processed_index_fields[k] += f.generate_fields()
                 processed_index_fields[k] += f.generate_fields(cls)
         return processed_index_fields
 
