@@ -6,7 +6,6 @@ import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import RelatedFields
-from working_at_dit.models import PageWithTopics
 
 
 class NetworksHome(ContentPage):
