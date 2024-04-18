@@ -312,6 +312,9 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
                     return f.get_related_field(new_field_name)
                 return f
 
+    def __repr__(self) -> str:
+        return f"<RelatedFields {self.field_name} fields={sorted([str(f) for f in self.fields])}>"
+
 
 #############################
 # One-to-many supporting code
