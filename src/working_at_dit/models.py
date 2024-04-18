@@ -71,6 +71,8 @@ class Topic(ContentOwnerMixin, ContentPage):
         InlinePanel("topic_themes", label="Themes"),
     ]
 
+    indexed_fields = ContentOwnerMixin.indexed_fields
+
 
 class TopicHome(BasePage):
     template = "content/content_page.html"
@@ -177,6 +179,8 @@ class HowDoI(ContentOwnerMixin, PageWithTopics):
         FieldPanel("include_link_on_homepage"),
     ]
 
+    indexed_fields = ContentOwnerMixin.indexed_fields
+
 
 class HowDoIHome(ContentPage):
     template = "content/content_page.html"
@@ -198,12 +202,16 @@ class Guidance(ContentOwnerMixin, PageWithTopics):
 
     subpage_types = ["working_at_dit.Guidance"]
 
+    indexed_fields = ContentOwnerMixin.indexed_fields
+
 
 class Policy(ContentOwnerMixin, PageWithTopics):
     template = "working_at_dit/content_with_related_topics.html"
     is_creatable = True
 
     subpage_types = ["working_at_dit.Policy"]
+
+    indexed_fields = ContentOwnerMixin.indexed_fields
 
 
 class PoliciesHome(BasePage):

@@ -25,7 +25,7 @@ from wagtail.utils.decorators import cached_classmethod
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from extended_search.index import DWIndexedField as IndexedField
-from extended_search.index import Indexed
+from extended_search.index import Indexed, RelatedFields
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
@@ -163,6 +163,19 @@ class ContentOwnerMixin(models.Model):
     content_owner_panels = [
         FieldPanel("content_owner", widget=PersonChooser),
         FieldPanel("content_contact_email"),
+    ]
+
+    # This should be imported in the model that uses this mixin, e.g: Network.indexed_fields = [ *** ] + ContentOwnerMixin.indexed_fields
+    indexed_fields = [
+        RelatedFields(
+            "content_owner",
+            [
+                IndexedField("first_name", explicit=True),
+                IndexedField("preferred_first_name", explicit=True),
+                IndexedField("last_name", explicit=True),
+            ],
+        ),
+        IndexedField("content_contact_email", explicit=True),
     ]
 
     @cached_classmethod
