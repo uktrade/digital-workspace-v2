@@ -105,6 +105,15 @@ class Indexed(index.Indexed):
         parent_indexed_fields = getattr(parent_model, "indexed_fields", [])
         return cls.indexed_fields != parent_indexed_fields
 
+    @classmethod
+    def get_root_index_model(cls):
+        class_mro = list(inspect.getmro(cls))
+        class_mro.reverse()
+        for model in class_mro:
+            if model != Indexed and issubclass(model, Indexed):
+                return model
+        return cls
+
 
 def get_indexed_models() -> list[Type[Indexed]]:
     """

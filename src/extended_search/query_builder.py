@@ -210,8 +210,20 @@ class QueryBuilder:
                     internal_subquery,
                     cls._build_search_query(model_class, related_field),
                 )
+
+            path = field.model_field_name
+            root_index_model = model_class.get_root_index_model()
+            if field.configuration_model != root_index_model:
+                path = (
+                    field.configuration_model._meta.app_label
+                    + "_"
+                    + field.configuration_model.__name__.lower()
+                    + "__"
+                    + field.model_field_name
+                )
+
             return cls._combine_queries(
-                Nested(subquery=internal_subquery, path=field.model_field_name),
+                Nested(subquery=internal_subquery, path=path),
                 None,
             )
 

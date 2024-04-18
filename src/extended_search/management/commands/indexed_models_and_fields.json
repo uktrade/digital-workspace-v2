@@ -135,6 +135,7 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
+        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_categories>",
@@ -144,8 +145,6 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: search_topics>",
-        "<SearchField: search_topics_explicit>",
         "<SearchField: title>"
     ],
     "<class 'news.models.NewsHome'>": [
@@ -257,6 +256,7 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
+        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
@@ -265,8 +265,6 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: search_topics>",
-        "<SearchField: search_topics_explicit>",
         "<SearchField: title>"
     ],
     "<class 'working_at_dit.models.HowDoI'>": [
@@ -287,6 +285,7 @@
         "<FilterField: title>",
         "<FilterField: translation_key>",
         "<RelatedFields content_owner fields=['<SearchField: first_name_explicit>', '<SearchField: last_name_explicit>', '<SearchField: preferred_first_name_explicit>']>",
+        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: content_contact_email_explicit>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
@@ -296,8 +295,6 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: search_topics>",
-        "<SearchField: search_topics_explicit>",
         "<SearchField: title>"
     ],
     "<class 'working_at_dit.models.HowDoIHome'>": [
@@ -345,6 +342,7 @@
         "<FilterField: title>",
         "<FilterField: translation_key>",
         "<RelatedFields content_owner fields=['<SearchField: first_name_explicit>', '<SearchField: last_name_explicit>', '<SearchField: preferred_first_name_explicit>']>",
+        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: content_contact_email_explicit>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
@@ -354,8 +352,6 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: search_topics>",
-        "<SearchField: search_topics_explicit>",
         "<SearchField: title>"
     ],
     "<class 'working_at_dit.models.Policy'>": [
@@ -376,6 +372,7 @@
         "<FilterField: title>",
         "<FilterField: translation_key>",
         "<RelatedFields content_owner fields=['<SearchField: first_name_explicit>', '<SearchField: last_name_explicit>', '<SearchField: preferred_first_name_explicit>']>",
+        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: content_contact_email_explicit>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
@@ -385,8 +382,6 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: search_topics>",
-        "<SearchField: search_topics_explicit>",
         "<SearchField: title>"
     ],
     "<class 'working_at_dit.models.PoliciesHome'>": [
@@ -461,6 +456,7 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
+        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
@@ -472,8 +468,6 @@
         "<SearchField: search_tool_name>",
         "<SearchField: search_tool_name_explicit>",
         "<SearchField: search_tool_name_keyword>",
-        "<SearchField: search_topics>",
-        "<SearchField: search_topics_explicit>",
         "<SearchField: title>"
     ],
     "<class 'tools.models.ToolsHome'>": [
@@ -520,6 +514,7 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
+        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
@@ -528,8 +523,6 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: search_topics>",
-        "<SearchField: search_topics_explicit>",
         "<SearchField: title>"
     ],
     "<class 'about_us.models.AboutUsHome'>": [
@@ -549,6 +542,7 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
+        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
@@ -557,8 +551,6 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: search_topics>",
-        "<SearchField: search_topics_explicit>",
         "<SearchField: title>"
     ],
     "<class 'transition.models.Transition'>": [
@@ -660,6 +652,7 @@
         "<FilterField: title>",
         "<FilterField: translation_key>",
         "<RelatedFields content_owner fields=['<SearchField: first_name_explicit>', '<SearchField: last_name_explicit>', '<SearchField: preferred_first_name_explicit>']>",
+        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: content_contact_email_explicit>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
@@ -669,8 +662,6 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: search_topics>",
-        "<SearchField: search_topics_explicit>",
         "<SearchField: title>"
     ],
     "<class 'country_fact_sheet.models.CountryFactSheetHome'>": [

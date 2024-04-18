@@ -165,7 +165,7 @@ class ContentOwnerMixin(models.Model):
         FieldPanel("content_contact_email"),
     ]
 
-    # This should be imported in the model that uses this mixin, e.g: Network.indexed_fields = [ *** ] + ContentOwnerMixin.indexed_fields
+    # This should be imported in the model that uses this mixin, e.g: Network.indexed_fields = [ ... ] + ContentOwnerMixin.indexed_fields
     indexed_fields = [
         RelatedFields(
             "content_owner",
@@ -278,6 +278,18 @@ class ContentPage(BasePage):
         help_text="A comma separated list of excluded keywords and phrases. "
         "Do not use quotes for phrases. The page will be removed "
         "from search results for these terms",
+    )
+
+    #
+    # Topics
+    # This would ideally belong on PageWithTopics, but the Network model uses it
+    # and it's not worth the effort to refactor it.
+    #
+
+    topics = models.ManyToManyField(
+        "working_at_dit.Topic",
+        through="working_at_dit.PageTopic",
+        related_name="+",
     )
 
     #
