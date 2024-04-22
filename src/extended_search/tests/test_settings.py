@@ -51,36 +51,53 @@ class TestDefaults:
         assert "query_and" in DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"]
         assert "query_or" in DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"]
         assert "phrase" in DEFAULT_SETTINGS["analyzers"]["keyword"]["query_types"]
-        assert type(DEFAULT_SETTINGS["boost_parts"]["query_types"]["phrase"]) == float
-        assert (
-            type(DEFAULT_SETTINGS["boost_parts"]["query_types"]["query_and"]) == float
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["query_types"]["phrase"], float
         )
-        assert type(DEFAULT_SETTINGS["boost_parts"]["query_types"]["query_or"]) == float
-        assert type(DEFAULT_SETTINGS["boost_parts"]["analyzers"]["explicit"]) == float
-        assert type(DEFAULT_SETTINGS["boost_parts"]["analyzers"]["tokenized"]) == float
-        assert type(DEFAULT_SETTINGS["analyzers"]["tokenized"]["es_analyzer"]) == str
-        assert type(
-            DEFAULT_SETTINGS["analyzers"]["tokenized"]["index_fieldname_suffix"]
-        ) in (str, NoneType)
-        assert type(DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]) == list
-        assert type(DEFAULT_SETTINGS["analyzers"]["explicit"]["es_analyzer"]) == str
-        assert type(
-            DEFAULT_SETTINGS["analyzers"]["explicit"]["index_fieldname_suffix"]
-        ) in (str, NoneType)
-        assert type(DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"]) == list
-        assert type(DEFAULT_SETTINGS["analyzers"]["keyword"]["es_analyzer"]) == str
-        assert type(
-            DEFAULT_SETTINGS["analyzers"]["keyword"]["index_fieldname_suffix"]
-        ) in (str, NoneType)
-        assert type(DEFAULT_SETTINGS["analyzers"]["keyword"]["query_types"]) == list
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["query_types"]["query_and"], float
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["query_types"]["query_or"], float
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["analyzers"]["explicit"], float
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["analyzers"]["tokenized"], float
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["tokenized"]["es_analyzer"], str
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["tokenized"]["index_fieldname_suffix"],
+            (str, NoneType),
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"], list
+        )
+        assert isinstance(DEFAULT_SETTINGS["analyzers"]["explicit"]["es_analyzer"], str)
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["explicit"]["index_fieldname_suffix"],
+            (str, NoneType),
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"], list
+        )
+        assert isinstance(DEFAULT_SETTINGS["analyzers"]["keyword"]["es_analyzer"], str)
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["keyword"]["index_fieldname_suffix"],
+            (str, NoneType),
+        )
+        assert isinstance(DEFAULT_SETTINGS["analyzers"]["keyword"]["query_types"], list)
         for v in DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]:
-            assert type(v) == str
+            assert isinstance(v, str)
             assert v in ["phrase", "query_and", "query_or"]
         for v in DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"]:
-            assert type(v) == str
+            assert isinstance(v, str)
             assert v in ["phrase", "query_and", "query_or"]
         for v in DEFAULT_SETTINGS["analyzers"]["keyword"]["query_types"]:
-            assert type(v) == str
+            assert isinstance(v, str)
             assert v in ["phrase", "query_and", "query_or"]
 
 
