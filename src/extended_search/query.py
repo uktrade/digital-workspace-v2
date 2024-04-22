@@ -1,4 +1,6 @@
 from typing import Optional
+
+from django.db import models
 from wagtail.search.query import SearchQuery
 
 
@@ -59,12 +61,14 @@ class Filtered(SearchQuery):
             repr(self.subquery),
             ", ".join([f"{f}" for f in self.filters]),
         )
-    
+
+
 class FunctionScore(SearchQuery):
     remapped_fields = None
 
     def __init__(
         self,
+        model_class:models.Model,
         subquery: SearchQuery,
         function_name: str,
         function_params: dict,
@@ -82,6 +86,7 @@ class FunctionScore(SearchQuery):
         if field is not None and not isinstance(field, str):
             raise TypeError("The `field` parameter must be a string")
 
+        self.model_class = model_class
         self.subquery = subquery
         self.function_name = function_name
         self.function_params = function_params

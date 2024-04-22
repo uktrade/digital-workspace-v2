@@ -316,7 +316,8 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
                         }
 
         return match_query
-    
+
+
 class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
     def _compile_query(self, query, field, boost=1.0):
         if isinstance(query, FunctionScore):
@@ -328,11 +329,24 @@ class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
             params = query.function_params
         else:  # it's a decay query
             score_functions = {
-                f.function_name: f for f in self.queryset.model.get_score_functions()
+                f.function_name: f for f in query.model_class.get_score_functions()
             }
-            remapped_field_name = self.mapping.get_field_column_name(
-                score_functions[query.function_name]
-            )
+            score_func = score_functions[query.function_name]
+            remapped_field_name = score_func.score_name + "_filter"
+
+            # TODO update condition to check if not root class
+            # if query.model_class:
+            #     remapped_field_name = (
+            #         query.model_class._meta.app_label
+            #         + "_"
+            #         + query.model_class.__name__.lower()
+            #         + "__"
+            #         + score_func.score_name
+            #     )
+
+            # remapped_field_name = self.mapping.get_field_column_name(
+            #     score_functions[query.function_name]
+            # )
             params = {remapped_field_name: query.function_params["_field_name_"]}
 
         return {
@@ -341,6 +355,7 @@ class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 query.function_name: params,
             }
         }
+
 
 class CustomSearchMapping(
     FilteredSearchMapping,

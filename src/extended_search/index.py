@@ -54,11 +54,16 @@ class Indexed(index.Indexed):
             if class_is_indexed(model_class) and issubclass(model_class, Indexed):
                 for f in model_class.indexed_fields:
                     f.configuration_model = model_class
-                    if not isinstance(f, ScoreFunction):
+                    if isinstance(f, BaseField):
                         if f.model_field_name not in model_field_names:
                             processed_index_fields[f.model_field_name] = []
                             model_field_names.append(f.model_field_name)
                         processed_index_fields[f.model_field_name].append(f)
+                    else:
+                        if f.field_name not in model_field_names:
+                            processed_index_fields[f.field_name] = []
+                            model_field_names.append(f.field_name)
+                        processed_index_fields[f.field_name].append(f)
 
         if as_dict:
             return processed_index_fields
@@ -105,19 +110,20 @@ class Indexed(index.Indexed):
         parent_model = inspect.getmro(cls)[1]
         parent_indexed_fields = getattr(parent_model, "indexed_fields", [])
         return cls.indexed_fields != parent_indexed_fields
-    
+
     # TODO review approch to get search fields
     @classmethod
     def get_score_functions(cls):
-        if cls.has_indexmanager_direct_inner_class():
-            cls.IndexManager.get_search_fields()
-            return cls.IndexManager.score_functions
+        # if cls.has_indexmanager_direct_inner_class():
+        #     cls.IndexManager.get_search_fields()
+        #     return cls.IndexManager.score_functions
 
         return [
             field
-            for field in cls.get_search_fields()
+            for field in cls.get_indexed_fields()
             if isinstance(field, ScoreFunction)
         ]
+
 
 def get_indexed_models() -> list[Type[Indexed]]:
     """
@@ -309,7 +315,8 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
                     return f.get_related_field(new_field_name)
                 return f
 
-class ScoreFunction(index.BaseField):
+
+class ScoreFunction:
     SUPPORTED_FUNCTIONS = ["script_score", "gauss", "exp", "linear"]
 
     def __init__(self, function_name, **kwargs) -> None:
@@ -351,9 +358,12 @@ class ScoreFunction(index.BaseField):
                     f"The '{function_name}' function requires a 'decay' parameter"
                 )
             self.field_name = kwargs["field_name"]
+            # TODO RENAME & DISCUSS
+            self.score_name = f"{self.field_name}_scorefunction"
             self.scale = kwargs["scale"]
             self.decay = kwargs["decay"]
             self.params = {
+                # TODO look into this field_name, see comment below
                 "_field_name_": {  # NB important this is the model field name
                     "scale": self.scale,
                     "decay": self.decay,
@@ -365,6 +375,23 @@ class ScoreFunction(index.BaseField):
             if "origin" in kwargs:
                 self.origin = kwargs["origin"]
                 self.params["_field_name_"]["origin"] = self.origin
+
+    def generate_fields(
+        self,
+        parent_field: Optional[BaseField] = None,
+    ) -> list[BaseField]:
+        generated_fields = []
+
+        if self.field_name:
+            generated_fields.append(
+                FilterField(
+                    self.score_name,
+                    model_field_name=self.field_name,
+                    parent_field=parent_field,
+                )
+            )
+
+        return generated_fields
 
 
 #############################
@@ -493,7 +520,7 @@ class IndexedField(BaseField):
                 ((self.model_field_name,), {}),
             ]
         return []
-    
+
 
 #############################
 # Multi-query search code
