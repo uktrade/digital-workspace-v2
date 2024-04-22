@@ -11,7 +11,7 @@ from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, Plain
 
 from extended_search import settings as search_settings
 from extended_search.index import RelatedFields
-from extended_search.query import Filtered, Nested, OnlyFields
+from extended_search.query import Filtered, FunctionScore, Nested, OnlyFields
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
@@ -316,7 +316,31 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
                         }
 
         return match_query
+    
+class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
+    def _compile_query(self, query, field, boost=1.0):
+        if isinstance(query, FunctionScore):
+            return self._compile_function_score_query(query, [field], boost)
+        return super()._compile_query(query, field, boost)
 
+    def _compile_function_score_query(self, query, fields, boost=1.0):
+        if query.function_name == "script_score":
+            params = query.function_params
+        else:  # it's a decay query
+            score_functions = {
+                f.function_name: f for f in self.queryset.model.get_score_functions()
+            }
+            remapped_field_name = self.mapping.get_field_column_name(
+                score_functions[query.function_name]
+            )
+            params = {remapped_field_name: query.function_params["_field_name_"]}
+
+        return {
+            "function_score": {
+                "query": self._join_and_compile_queries(query.subquery, fields, boost),
+                query.function_name: params,
+            }
+        }
 
 class CustomSearchMapping(
     FilteredSearchMapping,
@@ -324,6 +348,7 @@ class CustomSearchMapping(
 
 
 class CustomSearchQueryCompiler(
+    FunctionScoreSearchQueryCompiler,
     BoostSearchQueryCompiler,
     FilteredSearchQueryCompiler,
     NestedSearchQueryCompiler,
