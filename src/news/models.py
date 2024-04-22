@@ -161,8 +161,8 @@ class NewsPage(PageWithTopics):
         ScoreFunction(
             "gauss",
             field_name="last_published_at",
-            scale="1d",
-            decay=0.1,
+            scale="365d",
+            decay=0.3,
         ),
     ]
 
