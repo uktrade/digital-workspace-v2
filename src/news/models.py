@@ -13,7 +13,8 @@ from wagtail.snippets.models import register_snippet
 
 from content.models import BasePage
 from core.utils import set_seen_cookie_banner
-from extended_search.index import DWIndexedField as IndexedField, ScoreFunction
+from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import ScoreFunction
 from news.forms import CommentForm
 from working_at_dit.models import PageWithTopics
 
@@ -158,11 +159,11 @@ class NewsPage(PageWithTopics):
             filter=True,
         ),
         ScoreFunction(
-                "gauss",
-                field_name="last_published_at",
-                scale="365d",
-                decay=0.3,
-            ),
+            "gauss",
+            field_name="last_published_at",
+            scale="1d",
+            decay=0.1,
+        ),
     ]
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504
