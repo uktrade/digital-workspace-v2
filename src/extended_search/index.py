@@ -111,13 +111,8 @@ class Indexed(index.Indexed):
         parent_indexed_fields = getattr(parent_model, "indexed_fields", [])
         return cls.indexed_fields != parent_indexed_fields
 
-    # TODO review approch to get search fields
     @classmethod
     def get_score_functions(cls):
-        # if cls.has_indexmanager_direct_inner_class():
-        #     cls.IndexManager.get_search_fields()
-        #     return cls.IndexManager.score_functions
-
         return [
             field
             for field in cls.get_indexed_fields()
@@ -358,7 +353,6 @@ class ScoreFunction:
                     f"The '{function_name}' function requires a 'decay' parameter"
                 )
             self.field_name = kwargs["field_name"]
-            # TODO RENAME & DISCUSS
             self.score_name = f"{self.field_name}_scorefunction"
             self.scale = kwargs["scale"]
             self.decay = kwargs["decay"]
