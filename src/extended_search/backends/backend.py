@@ -335,6 +335,16 @@ class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
             # This is in place of get_field_column_name to build the name of the indexed field.
             remapped_field_name = score_func.score_name + "_filter"
 
+            # NOTE: The below will be needed to facilitate score functions on non-root-model fields
+            # if True:
+            #     remapped_field_name = (
+            #         query.model_class._meta.app_label
+            #         + "_"
+            #         + query.model_class.__name__.lower()
+            #         + "__"
+            #         + remapped_field_name
+            #     )
+
             params = {remapped_field_name: query.function_params["_field_name_"]}
 
         return {
