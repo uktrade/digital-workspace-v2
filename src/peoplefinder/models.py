@@ -19,8 +19,8 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
-from extended_search.index import DWIndexedField as IndexedField, ScoreFunction
-from extended_search.index import Indexed, RelatedFields
+from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import Indexed, RelatedFields, ScoreFunction
 
 
 # United Kingdom
@@ -687,10 +687,10 @@ class Person(Indexed, models.Model):
         ScoreFunction(
             "linear",
             field_name="profile_completion",
-            origin=-100,
-            offset=100,
-            scale="100",
-            decay=0.9,
+            origin=100,
+            offset=5,
+            scale=50,
+            decay=0.5,
         ),
         IndexedField(
             "is_active",
