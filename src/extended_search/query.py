@@ -68,7 +68,7 @@ class FunctionScore(SearchQuery):
 
     def __init__(
         self,
-        model_class:models.Model,
+        model_class: models.Model,
         subquery: SearchQuery,
         function_name: str,
         function_params: dict,

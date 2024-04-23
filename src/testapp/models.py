@@ -43,7 +43,32 @@ class StandardIndexedModel(IndexedModel):
     ]
 
 
-class InheritedStandardIndexedModel(StandardIndexedModel): ...
+class StandardIndexedModelWithScoreFunction(StandardIndexedModel):
+    indexed_fields = [
+        ScoreFunction(
+            "gauss",
+            field_name="age",
+            origin=0,
+            scale=1,
+            decay=0.5,
+        ),
+    ]
+
+
+class StandardIndexedModelWithScoreFunctionOriginFifty(StandardIndexedModel):
+    indexed_fields = [
+        ScoreFunction(
+            "gauss",
+            field_name="age",
+            origin=50,
+            scale=1,
+            decay=0.5,
+        ),
+    ]
+
+
+class InheritedStandardIndexedModel(StandardIndexedModel):
+    new_age = models.IntegerField()
 
 
 class InheritedStandardIndexedModelWithChanges(StandardIndexedModel):
@@ -58,24 +83,14 @@ class InheritedStandardIndexedModelWithChanges(StandardIndexedModel):
     ]
 
 
-class InheritedStandardIndexedModelWithScoreFunction(StandardIndexedModel):
+class InheritedStandardIndexedModelWithChangesWithScoreFunction(
+    InheritedStandardIndexedModel
+):
     indexed_fields = [
         ScoreFunction(
             "gauss",
-            field_name="age",
+            field_name="new_age",
             origin=0,
-            scale=1,
-            decay=0.5,
-        ),
-    ]
-
-
-class InheritedStandardIndexedModelWithScoreFunctionOriginFifty(StandardIndexedModel):
-    indexed_fields = [
-        ScoreFunction(
-            "gauss",
-            field_name="age",
-            origin=50,
             scale=1,
             decay=0.5,
         ),

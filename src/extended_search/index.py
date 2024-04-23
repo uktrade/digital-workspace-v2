@@ -119,6 +119,15 @@ class Indexed(index.Indexed):
             if isinstance(field, ScoreFunction)
         ]
 
+    @classmethod
+    def get_root_index_model(cls):
+        class_mro = list(inspect.getmro(cls))
+        class_mro.reverse()
+        for model in class_mro:
+            if model != Indexed and issubclass(model, Indexed):
+                return model
+        return cls
+
 
 def get_indexed_models() -> list[Type[Indexed]]:
     """
@@ -313,6 +322,7 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
 
 class ScoreFunction:
     SUPPORTED_FUNCTIONS = ["script_score", "gauss", "exp", "linear"]
+    configuration_model: Optional[models.Model] = None
 
     def __init__(self, function_name, **kwargs) -> None:
         if function_name not in self.SUPPORTED_FUNCTIONS:
@@ -353,7 +363,6 @@ class ScoreFunction:
                     f"The '{function_name}' function requires a 'decay' parameter"
                 )
             self.field_name = kwargs["field_name"]
-            self.score_name = f"{self.field_name}_scorefunction"
             self.scale = kwargs["scale"]
             self.decay = kwargs["decay"]
             self.params = {
@@ -370,6 +379,23 @@ class ScoreFunction:
                 self.origin = kwargs["origin"]
                 self.params["_field_name_"]["origin"] = self.origin
 
+    def get_score_name(self):
+        if not self.configuration_model:
+            raise AttributeError(
+                "The configuration_model attribute must be set on the "
+                "ScoreFunction instance to use it."
+            )
+        score_name = f"{self.field_name}_scorefunction"
+        if self.configuration_model != self.configuration_model.get_root_index_model():
+            score_name = (
+                self.configuration_model._meta.app_label
+                + "_"
+                + self.configuration_model.__name__.lower()
+                + "__"
+                + score_name
+            )
+        return score_name
+
     def generate_fields(
         self,
         parent_field: Optional[BaseField] = None,
@@ -379,7 +405,7 @@ class ScoreFunction:
         if self.field_name:
             generated_fields.append(
                 FilterField(
-                    self.score_name,
+                    self.get_score_name(),
                     model_field_name=self.field_name,
                     parent_field=parent_field,
                 )
