@@ -68,7 +68,7 @@
 
 {% block tertiary_col_content %}
     <article class="ws-home-wrapper new-home">
-        {% if updates %}
+        {% comment %} {% if updates %}
             <section class="updates">
                 <h2 class="govuk-heading-m">Updates</h2>
                 <ul>
@@ -79,7 +79,7 @@
                     {% endfor %}
                 </ul>
             </section>
-        {% endif %}
+        {% endif %} {% endcomment %}
 
         <section>
             <h3 class="govuk-heading-m" id="bookmark-menu">Your bookmarks</h3>
@@ -96,21 +96,6 @@
                                  style="width: 1rem">
                             icon at the top of a page to save it to here.
                         </p>
-                    </li>
-                {% endfor %}
-            </ul>
-        </section>
-
-        <section>
-            <h3 class="govuk-heading-m" id="recently-viewed-menu">Recently viewed</h3>
-            <ul class="recently-viewed-wrapper">
-                {% for recently_viewed in recently_viewed %}
-                    <li>
-                        <a class="govuk-link" href="{{ recently_viewed.page.get_url }}">{{ recently_viewed.page.title }}</a>
-                    </li>
-                {% empty %}
-                    <li>
-                        <p class="govuk-body-s">The most recent pages you visit will appear here.</p>
                     </li>
                 {% endfor %}
             </ul>
@@ -140,6 +125,21 @@
                                 <a class="govuk-link" href="{{ whats_popular_item.external_url }}">{{ whats_popular_item.title }}</a>
                             {% endif %}
                         </p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section>
+            <h3 class="govuk-heading-m" id="recently-viewed-menu">Recently viewed</h3>
+            <ul class="recently-viewed-wrapper">
+                {% for recently_viewed in recently_viewed %}
+                    <li>
+                        <a class="govuk-link" href="{{ recently_viewed.page.get_url }}">{{ recently_viewed.page.title }}</a>
+                    </li>
+                {% empty %}
+                    <li>
+                        <p class="govuk-body-s">The most recent pages you visit will appear here.</p>
                     </li>
                 {% endfor %}
             </ul>

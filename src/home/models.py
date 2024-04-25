@@ -198,24 +198,24 @@ class HomePage(BasePage):
             request.user, limit=10, exclude_pages=[self]
         )
 
-        # Updates
-        updates = []
-        if request.user.profile.profile_completion < 99:
-            updates.append(
-                format_html(
-                    "Please complete <a href='{}'>your profile</a>, it's currently at {}%",
-                    reverse("profile-view", args=[request.user.profile.slug]),
-                    request.user.profile.profile_completion,
-                )
-            )
-        for page in get_updated_pages(request.user):
-            updates.append(
-                format_html(
-                    "<a href='{}'>{}</a> has been updated",
-                    page.get_url(request),
-                    page,
-                )
-            )
-        context["updates"] = updates
+        # # Updates
+        # updates = []
+        # if request.user.profile.profile_completion < 99:
+        #     updates.append(
+        #         format_html(
+        #             "Please complete <a href='{}'>your profile</a>, it's currently at {}%",
+        #             reverse("profile-view", args=[request.user.profile.slug]),
+        #             request.user.profile.profile_completion,
+        #         )
+        #     )
+        # for page in get_updated_pages(request.user):
+        #     updates.append(
+        #         format_html(
+        #             "<a href='{}'>{}</a> has been updated",
+        #             page.get_url(request),
+        #             page,
+        #         )
+        #     )
+        # context["updates"] = updates
 
         return context
