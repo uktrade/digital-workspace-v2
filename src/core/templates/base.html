@@ -44,9 +44,6 @@
                 setTimeout(function(){location.href = url}, 500);
                 return false;
             };
-            dataLayer.push({
-                feature_new_homepage: {% flag FEATURE_HOMEPAGE %}true{% else %}false{% endflag %},
-            });
             </script>
             <!-- End Google Tag Manager -->
         {% endif %}
