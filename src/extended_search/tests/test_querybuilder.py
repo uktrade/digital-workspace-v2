@@ -1,9 +1,9 @@
 from unittest.mock import call
 
 import pytest
+from django.test import override_settings
 from wagtail.search.query import And, Boost, Fuzzy, Not, Or, Phrase, PlainText
 
-from content.models import ContentPage
 from extended_search import settings
 from extended_search.index import IndexedField, RelatedFields, SearchField
 from extended_search.query import Filtered, Nested, OnlyFields
@@ -184,6 +184,7 @@ class TestCustomQueryBuilder:
         with pytest.raises(ValueError):
             Variable("search_query", "anything").output("search query")
 
+    @override_settings(SEARCH_ENABLE_QUERY_CACHE=False)
     def test_build_search_query(self, mocker):
         class ModelClass:
             class Meta:
@@ -252,22 +253,11 @@ class TestQueryBuilder:
             "extended_search.query_builder.QueryBuilder._get_boost_for_analysistype",
             return_value=125,
         )
-        mock_boost_f = mocker.patch(
-            "extended_search.query_builder.QueryBuilder._get_boost_for_field",
-            return_value=33.3,
-        )
-        field = mocker.Mock()
-        model = mocker.Mock()
         assert self.query_builder_class._get_boost_for_field_querytype_analysistype(
-            model, SearchQueryType.FUZZY, AnalysisType.EXPLICIT, field
-        ) == (
-            mock_boost_qt.return_value
-            * mock_boost_at.return_value
-            * mock_boost_f.return_value
-        )
+            SearchQueryType.FUZZY, AnalysisType.EXPLICIT
+        ) == (mock_boost_qt.return_value * mock_boost_at.return_value)
         mock_boost_qt.assert_called_once_with(SearchQueryType.FUZZY)
         mock_boost_at.assert_called_once_with(AnalysisType.EXPLICIT)
-        mock_boost_f.assert_called_once_with(model, field)
 
     def test_get_boost_for_field(self, mocker):
         mock_get_key = mocker.patch(
@@ -376,7 +366,7 @@ class TestQueryBuilder:
             self.query_builder_class._build_search_query(model, indexed_field)
             == "index-query"
         )
-        mock_build_query_indexfield.assert_called_once_with(indexed_field, model, None)
+        mock_build_query_indexfield.assert_called_once_with(indexed_field, None)
         mock_build_query_searchfield.assert_not_called()
         mock_combine_queries.assert_not_called()
         mock_infer_analyzer.assert_not_called()
@@ -388,7 +378,7 @@ class TestQueryBuilder:
         )
         mock_build_query_indexfield.assert_not_called()
         mock_build_query_searchfield.assert_called_once_with(
-            search_field, model, None, mock_infer_analyzer.return_value
+            search_field, None, mock_infer_analyzer.return_value
         )
         mock_combine_queries.assert_not_called()
         mock_infer_analyzer.assert_called_once_with(search_field)
@@ -451,7 +441,6 @@ class TestQueryBuilder:
             "extended_search.query_builder.QueryBuilder._build_searchquery_for_query_field_querytype_analysistype",
             return_value="search-query-for-query-field-qt-at",
         )
-        model = mocker.Mock()
         field = mocker.Mock()
         field.model_field_name = "model-field-name"
         field.search = False
@@ -459,21 +448,17 @@ class TestQueryBuilder:
         field.get_search_analyzers.return_value = ["--analyzer-1--"]
 
         assert (
-            self.query_builder_class._build_search_query_for_indexfield(
-                field, model, "bar"
-            )
+            self.query_builder_class._build_search_query_for_indexfield(field, "bar")
             == "bar"
         )
 
         field.search = True
         assert (
-            self.query_builder_class._build_search_query_for_indexfield(
-                field, model, "bar"
-            )
+            self.query_builder_class._build_search_query_for_indexfield(field, "bar")
             == mock_build_for_searchfield.return_value
         )
         mock_build_for_searchfield.assert_called_once_with(
-            field, model, "bar", "--analyzer-1--"
+            field, "bar", "--analyzer-1--"
         )
         mock_combine_queries.assert_not_called()
 
@@ -481,17 +466,13 @@ class TestQueryBuilder:
         mock_combine_queries.reset_mock()
         field.get_search_analyzers.return_value = ["--analyzer-1--", "--analyzer-2--"]
         assert (
-            self.query_builder_class._build_search_query_for_indexfield(
-                field, model, "bar"
-            )
+            self.query_builder_class._build_search_query_for_indexfield(field, "bar")
             == mock_build_for_searchfield.return_value
         )
         assert len(mock_build_for_searchfield.call_args_list) == 2
+        mock_build_for_searchfield.assert_any_call(field, "bar", "--analyzer-1--")
         mock_build_for_searchfield.assert_any_call(
-            field, model, "bar", "--analyzer-1--"
-        )
-        mock_build_for_searchfield.assert_any_call(
-            field, model, mock_build_for_searchfield.return_value, "--analyzer-2--"
+            field, mock_build_for_searchfield.return_value, "--analyzer-2--"
         )
         assert len(mock_combine_queries.call_args_list) == 0
 
@@ -500,21 +481,16 @@ class TestQueryBuilder:
         field.get_search_analyzers.return_value = ["--analyzer-1--"]
         field.fuzzy = True
         assert (
-            self.query_builder_class._build_search_query_for_indexfield(
-                field, model, "bar"
-            )
+            self.query_builder_class._build_search_query_for_indexfield(field, "bar")
             == mock_combine_queries.return_value
         )
         assert len(mock_build_for_searchfield.call_args_list) == 1
-        mock_build_for_searchfield.assert_any_call(
-            field, model, "bar", "--analyzer-1--"
-        )
+        mock_build_for_searchfield.assert_any_call(field, "bar", "--analyzer-1--")
         assert len(mock_combine_queries.call_args_list) == 1
         mock_combine_queries.assert_any_call(
             mock_build_searchquery.return_value, mock_build_for_searchfield.return_value
         )
         mock_build_searchquery.assert_called_once_with(
-            model,
             "model-field-name",
             SearchQueryType("fuzzy"),
             AnalysisType.TOKENIZED,
@@ -529,7 +505,6 @@ class TestQueryBuilder:
         mock_combine_queries = mocker.patch(
             "extended_search.query_builder.QueryBuilder._combine_queries",
         )
-        model = mocker.Mock()
         field = mocker.Mock()
         assert (
             len(
@@ -541,7 +516,7 @@ class TestQueryBuilder:
         )
         assert (
             self.query_builder_class._build_search_query_for_searchfield(
-                field, model, "sub-query", AnalysisType.TOKENIZED
+                field, "sub-query", AnalysisType.TOKENIZED
             )
             == mock_combine_queries.return_value
         )
@@ -551,7 +526,6 @@ class TestQueryBuilder:
         ]["query_types"]:
             expected.append(
                 call(
-                    model,
                     field.model_field_name,
                     SearchQueryType(q),
                     AnalysisType.TOKENIZED,
@@ -592,7 +566,6 @@ class TestQueryBuilder:
         field.get_full_model_field_name.return_value = "-model-field-name-"
         mock_boost.return_value = 333.33
         result = self.query_builder_class._build_searchquery_for_query_field_querytype_analysistype(
-            ContentPage,
             "title",
             SearchQueryType.PHRASE,
             AnalysisType.EXPLICIT,
@@ -606,13 +579,10 @@ class TestQueryBuilder:
         assert isinstance(subquery, Boost)
         assert subquery.boost == 333.33
         subquery = subquery.subquery
-        mock_boost.assert_called_with(
-            ContentPage, SearchQueryType.PHRASE, AnalysisType.EXPLICIT, field
-        )
+        mock_boost.assert_called_with(SearchQueryType.PHRASE, AnalysisType.EXPLICIT)
         field = mocker.Mock(spec=SearchField)
         field.get_full_model_field_name.return_value = "-model-field-name-"
         result = self.query_builder_class._build_searchquery_for_query_field_querytype_analysistype(
-            ContentPage,
             "title",
             SearchQueryType.PHRASE,
             AnalysisType.EXPLICIT,
