@@ -117,8 +117,8 @@ omit = ["*/migrations/*", "*/test/*", "e2e_tests/*"]
 
 [tool.ruff]
 src = ["src"]
-extend-select = ["B", "S", "I"]
-ignore = ["B904", "E501", "N818", "S101"]
+lint.extend-select = ["B", "S", "I"]
+lint.ignore = ["B904", "E501", "N818", "S101"]
 extend-exclude = [
     "manage.py",
     "*/migrations/*",
@@ -134,7 +134,7 @@ extend-exclude = [
     ".pythonrc.py",
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 lines-after-imports = 2
 
 [tool.djlint]

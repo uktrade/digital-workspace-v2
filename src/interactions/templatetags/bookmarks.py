@@ -1,9 +1,10 @@
 from django import template
-from django.urls import reverse
 from django.templatetags.static import static
+from django.urls import reverse
 from wagtail.models import Page
 
 from interactions import is_page_bookmarked
+
 
 register = template.Library()
 

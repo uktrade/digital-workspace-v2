@@ -1,21 +1,20 @@
 import atoma
 import requests
-from content.models import BasePage
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.urls import reverse
-from django.utils.html import format_html
-from home import FEATURE_HOMEPAGE
-from interactions import get_bookmarks, get_recent_page_views, get_updated_pages
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from news.models import NewsPage
 from waffle import flag_is_active
 from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
+
+from content.models import BasePage
+from home import FEATURE_HOMEPAGE
+from interactions import get_bookmarks, get_recent_page_views
+from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
 
