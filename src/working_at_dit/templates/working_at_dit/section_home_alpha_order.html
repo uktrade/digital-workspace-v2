@@ -1,6 +1,9 @@
 {% extends "1_col_content.html" %}
 {% load wagtailcore_tags %}
 
+{% block bookmark %}
+{% endblock bookmark %}
+
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
     {% for block in page.body %}
