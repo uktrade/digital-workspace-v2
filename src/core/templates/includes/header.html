@@ -1,4 +1,4 @@
-{% load menu_tags %}
+{% load menu_tags waffle_tags %}
 {% load render_bundle webpack_static from webpack_loader %}
 {% load cookie_banner %}
 {% load site_alert %}
@@ -49,6 +49,9 @@
     </div>
 </header>
 {% cookie_banner %}
-{% if USER_IS_AUTHENTICATED %}
-    {% site_alert %}
-{% endif %}
+{% flag FEATURE_HOMEPAGE %}
+{% else %}
+    {% if USER_IS_AUTHENTICATED %}
+        {% site_alert %}
+    {% endif %}
+{% endflag %}

@@ -13,9 +13,9 @@ from testapp.models import (
 class TestIndexed:
     def test_get_indexed_fields(self):
         indexed_fields = StandardIndexedModel.get_indexed_fields()
-        assert type(indexed_fields) == list
+        assert isinstance(indexed_fields, list)
         assert len(indexed_fields) == 1
-        assert type(indexed_fields[0]) == DWIndexedField
+        assert isinstance(indexed_fields[0], DWIndexedField)
         assert indexed_fields[0].autocomplete is False
         assert indexed_fields[0].autocomplete_kwargs == {}
         assert indexed_fields[0].boost == 5.0
@@ -32,9 +32,9 @@ class TestIndexed:
         assert indexed_fields[0].tokenized
 
         indexed_fields = InheritedStandardIndexedModelWithChanges.get_indexed_fields()
-        assert type(indexed_fields) == list
+        assert isinstance(indexed_fields, list)
         assert len(indexed_fields) == 1
-        assert type(indexed_fields[0]) == DWIndexedField
+        assert isinstance(indexed_fields[0], DWIndexedField)
         assert indexed_fields[0].autocomplete is False
         assert indexed_fields[0].autocomplete_kwargs == {}
         assert indexed_fields[0].boost == 50.0
@@ -52,10 +52,10 @@ class TestIndexed:
 
     def test_get_indexed_fields_as_dict(self):
         indexed_fields = StandardIndexedModel.get_indexed_fields(as_dict=True)
-        assert type(indexed_fields) == dict
+        assert isinstance(indexed_fields, dict)
         assert "title" in indexed_fields
         assert len(indexed_fields["title"]) == 1
-        assert type(indexed_fields["title"][0]) == DWIndexedField
+        assert isinstance(indexed_fields["title"][0], DWIndexedField)
         assert indexed_fields["title"][0].autocomplete is False
         assert indexed_fields["title"][0].autocomplete_kwargs == {}
         assert indexed_fields["title"][0].boost == 5.0
@@ -74,10 +74,10 @@ class TestIndexed:
         indexed_fields = InheritedStandardIndexedModelWithChanges.get_indexed_fields(
             as_dict=True
         )
-        assert type(indexed_fields) == dict
+        assert isinstance(indexed_fields, dict)
         assert "title" in indexed_fields
         assert len(indexed_fields["title"]) == 1
-        assert type(indexed_fields["title"][0]) == DWIndexedField
+        assert isinstance(indexed_fields["title"][0], DWIndexedField)
         assert indexed_fields["title"][0].autocomplete is False
         assert indexed_fields["title"][0].autocomplete_kwargs == {}
         assert indexed_fields["title"][0].boost == 50.0
@@ -95,7 +95,7 @@ class TestIndexed:
 
     def test_generate_from_indexed_fields(self):
         processed_index_fields = StandardIndexedModel.generate_from_indexed_fields()
-        assert type(processed_index_fields) == dict
+        assert isinstance(processed_index_fields, dict)
         assert "title" in processed_index_fields
         assert len(processed_index_fields["title"]) == 2
         processed_index_field_names = [
@@ -107,7 +107,7 @@ class TestIndexed:
         processed_index_fields = (
             InheritedStandardIndexedModelWithChanges.generate_from_indexed_fields()
         )
-        assert type(processed_index_fields) == dict
+        assert isinstance(processed_index_fields, dict)
         assert "title" in processed_index_fields
         assert len(processed_index_fields["title"]) == 1
         processed_index_field_names = [
@@ -118,7 +118,7 @@ class TestIndexed:
 
     def test_get_search_fields(self):
         search_fields = StandardIndexedModel.get_search_fields(ignore_cache=True)
-        assert type(search_fields) == list
+        assert isinstance(search_fields, list)
         assert len(search_fields) == 2
         search_fields_field_names = [f.field_name for f in search_fields]
         assert "title" in search_fields_field_names
@@ -127,7 +127,7 @@ class TestIndexed:
         search_fields = InheritedStandardIndexedModelWithChanges.get_search_fields(
             ignore_cache=True
         )
-        assert type(search_fields) == list
+        assert isinstance(search_fields, list)
         assert len(search_fields) == 1
         search_fields_field_names = [f.field_name for f in search_fields]
         assert "title" in search_fields_field_names

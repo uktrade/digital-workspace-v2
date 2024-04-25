@@ -108,6 +108,7 @@ LOCAL_APPS = [
     "pingdom.apps.PingdomConfig",
     "peoplefinder.apps.PeoplefinderConfig",
     "countries.apps.CountriesConfig",
+    "interactions.apps.InteractionsConfig",
 ]
 
 THIRD_PARTY_APPS = [
@@ -144,7 +145,7 @@ WAGTAIL_APPS = [
     "wagtail.admin",
     "wagtail",
     "wagtail.contrib.routable_page",
-    "wagtail.contrib.modeladmin",
+    "wagtail_modeladmin",
     "wagtailmedia",
     "wagtailmenus",
     "wagtail_draftail_anchors",
@@ -445,17 +446,6 @@ CACHES = {
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
-
-
-# Twitter
-TWITTER_ACCESS_TOKEN = env("TWITTER_ACCESS_TOKEN")
-TWITTER_ACCESS_SECRET = env("TWITTER_ACCESS_SECRET")
-
-TWITTER_OAUTH_CONSUMER_KEY = env("TWITTER_OAUTH_CONSUMER_KEY")
-TWITTER_OAUTH_CONSUMER_SECRET = env("TWITTER_OAUTH_CONSUMER_SECRET")
-
-TWITTER_DEPT_USER = env("TWITTER_DEPT_USER")
-TWITTER_PERM_SEC_USER = env("TWITTER_PERM_SEC_USER", default=None)
 
 # Google Tag Manager
 GTM_CODE = env("GTM_CODE", default=None)

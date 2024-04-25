@@ -46,6 +46,8 @@ urlpatterns = [
     path("sitemap.xml", sitemap),
     # Feedback
     path("feedback/", include(feedback_urls), name="feedback"),
+    # Interactions
+    path("interactions/", include("interactions.urls")),
 ]
 
 # If django-silk is installed, add its URLs
