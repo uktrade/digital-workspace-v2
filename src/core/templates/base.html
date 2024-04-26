@@ -89,9 +89,9 @@
                         {% breadcrumbs %}
                     {% endblock breadcrumbs %}
                     {% block bookmark %}
-                        {% flag FEATURE_HOMEPAGE %}
+                        {% if FEATURE_FLAGS.new_homepage %}
                             {% bookmark_page user page %}
-                        {% endflag %}
+                        {% endif %}
                     {% endblock bookmark %}
                 </div>
                 {% block main_content %}{% endblock %}

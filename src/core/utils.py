@@ -13,7 +13,7 @@ def set_seen_cookie_banner(request, response):
 
 
 def get_all_feature_flags(request):
-    return [
-        {flag.name: flag_is_active(request, flag.name)}
+    return {
+        flag.name: flag_is_active(request, flag.name)
         for flag in FeatureFlag.objects.all()
-    ]
+    }
