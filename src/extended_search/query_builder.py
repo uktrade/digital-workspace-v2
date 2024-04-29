@@ -263,7 +263,7 @@ class CustomQueryBuilder(QueryBuilder):
                 model_class=model_class,
                 subquery=query,
                 function_name=score_configuration.function_name,
-                function_params=score_configuration.params,  
+                function_params=score_configuration.params,
             )
 
         return query

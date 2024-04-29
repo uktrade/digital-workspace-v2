@@ -333,7 +333,10 @@ class ScoreFunction:
                 )
 
             if "script" in kwargs:
-                if type(kwargs["script"]) != dict or "source" not in kwargs["script"]:
+                if (
+                    not isinstance(kwargs["script"], dict)
+                    or "source" not in kwargs["script"]
+                ):
                     raise AttributeError(
                         "The 'script' parameter must be a dict containing a 'source' key"
                     )

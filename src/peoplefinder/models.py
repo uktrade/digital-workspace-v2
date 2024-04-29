@@ -19,8 +19,8 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
-from extended_search.index import DWIndexedField as IndexedField, ScoreFunction
-from extended_search.index import Indexed, RelatedFields
+from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import Indexed, RelatedFields, ScoreFunction
 
 
 # United Kingdom
