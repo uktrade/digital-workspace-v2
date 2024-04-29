@@ -215,6 +215,13 @@ class ContentPage(BasePage):
         use_json_field=True,
     )
 
+    links = StreamField(
+        [
+            ("link_list",blocks.LinkListBlock()),
+        ],
+         blank=True
+    )
+
     excerpt = models.CharField(
         max_length=700,
         blank=True,
@@ -317,6 +324,7 @@ class ContentPage(BasePage):
 
     content_panels = BasePage.content_panels + [
         FieldPanel("excerpt", widget=widgets.Textarea),
+        FieldPanel("links"),
         FieldPanel("body"),
     ]
 

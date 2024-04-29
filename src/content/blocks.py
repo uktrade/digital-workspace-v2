@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from wagtail import blocks
+from wagtail.fields import StreamField
 from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
@@ -161,3 +162,27 @@ class EmbedVideoBlock(blocks.StructBlock):
         template = "blocks/video_embed.html"
         icon = "media"
         label = "Embed Video"
+
+class TitleBlock(blocks.CharBlock):
+    """A (section) heading"""
+
+    class Meta:
+        label = "Title"
+        icon = "title"
+        classname = "full title"
+        template = "blocks/title.html"
+
+class PagePickerBlock(blocks.PageChooserBlock):
+
+    class Meta:
+        # template = "blocks/video_embed.html"
+        label = "Link"
+
+class LinkListBlock(blocks.StructBlock):
+
+    title = TitleBlock(search_index=False)
+    links = blocks.ListBlock(PagePickerBlock(),search_index=False)
+
+    class Meta:
+        template = "blocks/link_list.html"
+        label = "Link list"
