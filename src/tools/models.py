@@ -72,6 +72,7 @@ class IrapToolData(IrapToolDataAbstract):
 
 class Tool(PageWithTopics):
     is_creatable = True
+    
     irap_tool = models.OneToOneField(
         IrapToolData,
         on_delete=models.SET_NULL,
@@ -123,9 +124,8 @@ class Tool(PageWithTopics):
 
 class ToolsHome(ContentPage):
     is_creatable = False
-
     subpage_types = ["tools.Tool"]
-
+    template = "content/content_page.html"
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 

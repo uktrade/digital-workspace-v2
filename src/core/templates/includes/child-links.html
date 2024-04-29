@@ -4,7 +4,7 @@
             <ul class="govuk-list">
             {% for child in children %}
                 <li>
-                    <a class="govuk-link" href="{% pageurl child %}">{{ child.title }}</a>
+                    <a class="govuk-link" href="{{ child.url }}">{{ child.title }}</a>
                 </li>
             {% endfor %}
             </ul>

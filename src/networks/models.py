@@ -12,12 +12,16 @@ class NetworksHome(ContentPage):
 
     subpage_types = ["networks.Network"]
 
+    template = "content/content_page.html"
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = (
             Network.objects.live().public().child_of(self).order_by("title")
         )
+        context["attribution"] = False
+        context["num_cols"] = 3
 
         return context
 
@@ -96,6 +100,8 @@ class Network(ContentOwnerMixin, ContentPage):
         "networks.NetworksHome",
         "networks.Network",
     ]
+
+    template = "content/content_page.html"
     subpage_types = ["networks.Network"]
 
     content_panels = ContentPage.content_panels + [
@@ -122,6 +128,7 @@ class Network(ContentOwnerMixin, ContentPage):
         context["children"] = (
             Network.objects.live().public().child_of(self).order_by("title")
         )
+        context["attribution"] = True
 
         return context
 
