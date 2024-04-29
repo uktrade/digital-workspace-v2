@@ -2,10 +2,12 @@
 {% load wagtailimages_tags %}
 
 {% block content %}
-{% include_block self.title %}
-<ul>
-{% for page in self.links  %}
-        <li><a href={% pageurl page %}>{{page.title}}</a></li>
-{% endfor %}
-</ul>
+    {% include_block self.title %}
+    <ul>
+        {% for page in self.links %}
+            <li>
+                <a href={% pageurl page %}>{{ page.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

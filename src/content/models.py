@@ -217,9 +217,9 @@ class ContentPage(BasePage):
 
     links = StreamField(
         [
-            ("link_list",blocks.LinkListBlock()),
+            ("link_list", blocks.LinkListBlock()),
         ],
-         blank=True
+        blank=True,
     )
 
     excerpt = models.CharField(
