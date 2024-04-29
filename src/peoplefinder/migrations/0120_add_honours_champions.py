@@ -5,8 +5,7 @@ from django.db import migrations
 
 def insert_additional_role_data(apps, schema_editor):
     AdditionalRole = apps.get_model("peoplefinder", "AdditionalRole")
-    honours_champions = AdditionalRole(code="honours_champion", name="Honours champion")
-    honours_champions.save()
+    AdditionalRole.objects.create(code="honours_champion", name="Honours champion")
 
 
 class Migration(migrations.Migration):
@@ -15,5 +14,4 @@ class Migration(migrations.Migration):
         ("peoplefinder", "0119_alter_person_options"),
     ]
 
-
-operations = [migrations.RunPython(insert_additional_role_data)]
+    operations = [migrations.RunPython(insert_additional_role_data)]
