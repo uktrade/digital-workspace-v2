@@ -2,15 +2,18 @@
 
 from django.db import migrations
 
+
 def insert_additional_role_data(apps, schema_editor):
-     AdditionalRole = apps.get_model("peoplefinder", "AdditionalRole")
-     honours_champions = AdditionalRole(code="honours_champion", name="Honours champion")
-     honours_champions.save()
+    AdditionalRole = apps.get_model("peoplefinder", "AdditionalRole")
+    honours_champions = AdditionalRole(code="honours_champion", name="Honours champion")
+    honours_champions.save()
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ("peoplefinder", "0119_alter_person_options"),
     ]
+
 
 operations = [migrations.RunPython(insert_additional_role_data)]
