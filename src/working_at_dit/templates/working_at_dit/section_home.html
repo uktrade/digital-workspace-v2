@@ -9,11 +9,5 @@
     {% for block in page.body %}
         {% include_block block %}
     {% endfor %}
-    <ul class="govuk-list">
-        {% for child in children %}
-            <li>
-                <a class="govuk-link" href="{% pageurl child %}">{{ child.title }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+    {% include "includes/child-links.html" with children=children num_cols=1 display="basic" %}
 {% endblock %}
