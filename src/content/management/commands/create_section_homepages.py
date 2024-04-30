@@ -9,7 +9,6 @@ from country_fact_sheet.models import CountryFactSheetHome
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome
-from transition.models import TransitionHome
 from working_at_dit.models import (
     GuidanceHome,
     HowDoIHome,
@@ -61,24 +60,6 @@ class Command(BaseCommand):
             home_page.save()
 
             news_home.save_revision().publish()
-
-        try:
-            Page.objects.get(slug="transition-hub")
-        except Page.DoesNotExist:
-            transition = TransitionHome(
-                title="Transition",
-                slug="transition-hub",
-                live=True,
-                first_published_at=datetime.now(),
-                show_in_menus=True,
-                depth=2,
-                legacy_path="/transition-hub/",
-            )
-
-            home_page.add_child(instance=transition)
-            home_page.save()
-
-            transition.save_revision().publish()
 
         try:
             Page.objects.get(slug="working-at-dbt")

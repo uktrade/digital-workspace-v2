@@ -72,7 +72,7 @@ class IrapToolData(IrapToolDataAbstract):
 
 class Tool(PageWithTopics):
     is_creatable = True
-    
+
     irap_tool = models.OneToOneField(
         IrapToolData,
         on_delete=models.SET_NULL,
@@ -126,9 +126,12 @@ class ToolsHome(ContentPage):
     is_creatable = False
     subpage_types = ["tools.Tool"]
     template = "content/content_page.html"
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = Tool.objects.live().public().order_by("title")
+        context["num_cols"] = 3
+        context["target_blank"] = True
 
         return context
