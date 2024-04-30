@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, Subquery
 from django.forms import widgets
+from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import (
@@ -94,6 +95,13 @@ class BasePage(Page, Indexed):
             return first_revision_with_user.user
         else:
             return None
+
+    @property
+    def days_since_last_published(self):
+        if self.last_published_at:
+            result = timezone.now() - self.last_published_at
+            return result.days
+        return None
 
 
 class ContentPageQuerySet(PageQuerySet):

@@ -277,7 +277,7 @@ class Person(Indexed, models.Model):
         "user.User", models.CASCADE, null=True, blank=True, related_name="profile"
     )
     manager = models.ForeignKey(
-        "Person", models.SET_NULL, null=True, blank=True, related_name="+"
+        "Person", models.SET_NULL, null=True, blank=True, related_name="direct_reports"
     )
     country = models.ForeignKey(
         "countries.Country",
@@ -752,6 +752,10 @@ class Person(Indexed, models.Model):
         return self.contact_email or self.email
 
     @property
+    def is_line_manager(self) -> bool:
+        return self.direct_reports.exists()
+
+    @property
     def all_languages(self) -> str:
         return ", ".join(
             filter(None, [self.fluent_languages, self.intermediate_languages])
@@ -760,6 +764,10 @@ class Person(Indexed, models.Model):
     @property
     def has_photo(self) -> bool:
         return bool(self.photo)
+
+    def days_since_account_creation(self) -> int:
+        period = timezone.now() - self.created_at
+        return period.days
 
     @property
     def search_teams(self):
