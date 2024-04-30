@@ -129,6 +129,7 @@ class Network(ContentOwnerMixin, ContentPage):
             Network.objects.live().public().child_of(self).order_by("title")
         )
         context["attribution"] = True
+        context["num_cols"] = 3
 
         return context
 

@@ -72,7 +72,6 @@ class IrapToolData(IrapToolDataAbstract):
 
 class Tool(PageWithTopics):
     is_creatable = True
-
     irap_tool = models.OneToOneField(
         IrapToolData,
         on_delete=models.SET_NULL,
