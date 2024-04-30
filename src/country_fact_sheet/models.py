@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class CountryFactSheetHome(ContentPage):
+    template = "content/content_page.html"
     country_factsheets_help_text = (
         "Uploaded PDF documents in the selected collection will be displayed"
         " as a list of country factsheets on the page."
@@ -71,6 +72,7 @@ class CountryFactSheetHome(ContentPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+        context["attribution"] = True
 
         if context["page"].hmtc_region_factsheets_collection:
             context["hmtc_region_factsheets"] = Document.objects.filter(
