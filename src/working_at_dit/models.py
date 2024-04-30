@@ -72,12 +72,14 @@ class Topic(ContentOwnerMixin, ContentPage):
 
 
 class TopicHome(BasePage):
-    template = "working_at_dit/section_home.html"
+    template = "content/content_page.html"
     subpage_types = ["working_at_dit.Topic"]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["children"] = Topic.objects.live().public().order_by("title")
+        context["display"] = "basic"
+        context["bookmark"] = True
 
         return context
 
@@ -175,13 +177,15 @@ class HowDoI(ContentOwnerMixin, PageWithTopics):
 
 
 class HowDoIHome(ContentPage):
-    template = "working_at_dit/section_home.html"
+    template = "content/content_page.html"
     subpage_types = ["working_at_dit.HowDoI"]  # Should not be able to create children
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = HowDoI.objects.live().public().order_by("title")
+        context["display"] = "basic"
+        context["bookmark"] = True
 
         return context
 
@@ -237,7 +241,7 @@ class GuidanceHome(BasePage):
 
 
 class PoliciesAndGuidanceHome(BasePage):
-    template = "working_at_dit/section_home.html"
+    template = "content/content_page.html"
     subpage_types = [
         "working_at_dit.PoliciesHome",
         "working_at_dit.GuidanceHome",
@@ -250,5 +254,7 @@ class PoliciesAndGuidanceHome(BasePage):
             PoliciesHome.objects.live().public().first(),
             GuidanceHome.objects.live().public().first(),
         ]
+        context["display"] = "basic"
+        context["bookmark"] = True
 
         return context

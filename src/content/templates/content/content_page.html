@@ -1,6 +1,11 @@
 {% extends "1_col_content.html" %}
 {% load wagtailcore_tags %}
 
+{% if bookmark %}
+    {% block bookmark %}
+    {% endblock bookmark %}
+{% endif %}
+
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
     {% if attribution %}
