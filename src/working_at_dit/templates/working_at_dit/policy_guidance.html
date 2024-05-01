@@ -4,7 +4,7 @@
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
     {% include "includes/attribution.html" with page=page %}
-    {% for block in page.links %}
+    {% for block in page.curated_pages %}
         {% include_block block %}
     {% endfor %}
     {% for block in page.body %}

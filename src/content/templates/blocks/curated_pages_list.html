@@ -3,10 +3,10 @@
 
 {% block content %}
     {% include_block self.title %}
-    <ul>
-        {% for page in self.links %}
+    <ul class="govuk-list ">
+        {% for page in self.pages %}
             <li>
-                <a href={% pageurl page %}>{{ page.title }}</a>
+                <a class="govuk-link" href={% pageurl page %}>{{ page.title }}</a>
             </li>
         {% endfor %}
     </ul>
