@@ -205,7 +205,7 @@ class Policy(ContentOwnerMixin, PageWithTopics):
 
 
 class PoliciesHome(BasePage):
-    template = "content/content_page.html"
+    template = "working_at_dit/section_home_alpha_order.html"
     subpage_types = [
         "working_at_dit.Policy",
     ]
@@ -218,13 +218,12 @@ class PoliciesHome(BasePage):
         context["subpage_groups"] = [
             list(g) for k, g in groupby(policies, key=lambda x: x.title.lower()[0])
         ]
-        context["bookmark"] = True
 
         return context
 
 
 class GuidanceHome(BasePage):
-    template = "content/content_page.html"
+    template = "working_at_dit/section_home_alpha_order.html"
     subpage_types = [
         "working_at_dit.Guidance",
     ]
@@ -237,7 +236,6 @@ class GuidanceHome(BasePage):
         context["subpage_groups"] = [
             list(g) for k, g in groupby(guidance, key=lambda x: x.title.lower()[0])
         ]
-        context["bookmark"] = True
 
         return context
 

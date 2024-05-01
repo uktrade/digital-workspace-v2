@@ -72,7 +72,6 @@ class CountryFactSheetHome(ContentPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["attribution"] = True
 
         if context["page"].hmtc_region_factsheets_collection:
             context["hmtc_region_factsheets"] = Document.objects.filter(
