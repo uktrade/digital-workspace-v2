@@ -1,7 +1,7 @@
 import pytest
+from wagtail.search.query import PlainText
 
 from extended_search.query import Filtered, Nested, OnlyFields
-from wagtail.search.query import PlainText
 
 
 class TestOnlyFields:

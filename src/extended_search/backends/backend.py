@@ -1,21 +1,22 @@
-from typing import Any, List, Union
+from typing import Union
 
-from wagtail.search.backends.elasticsearch6 import Field
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
+    Field,
 )
 from wagtail.search.index import SearchField
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
-from extended_search.query import Filtered, Nested, OnlyFields
+from extended_search import settings as search_settings
 from extended_search.index import RelatedFields
+from extended_search.query import Filtered, Nested, OnlyFields
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
     def get_field_column_name(self, field):
-        if type(field) == str and field == "content_type":
+        if isinstance(field, str) and field == "content_type":
             return "content_type"
         return super().get_field_column_name(field)
 
@@ -43,36 +44,48 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         return super().get_boosted_fields(boostable_fields)
 
-    def get_searchable_fields(self):
-        return self.queryset.model.get_searchable_search_fields()
-
     def _remap_fields(self, fields):
         """
         Convert field names into index column names
         """
-        if fields is None:
-            return None
+        if not fields:
+            return super()._remap_fields(fields)
 
         remapped_fields = []
+
         searchable_fields = {f.field_name: f for f in self.get_searchable_fields()}
+
         for field_name in fields:
-            if field_name in searchable_fields:
-                field_name = self.mapping.get_field_column_name(
-                    searchable_fields[field_name]
-                )
+            field = searchable_fields.get(field_name)
+            if field:
+                field_name = self.mapping.get_field_column_name(field)
+                remapped_fields.append(Field(field_name, field.boost or 1))
             else:
                 # @TODO this works but ideally we'd move get_field_column_name to handle this directly
                 field_name_parts = field_name.split(".")
                 if field_name_parts[0] in searchable_fields:
+                    parent_related_field = searchable_fields[field_name_parts[0]]
                     field_name = self.mapping.get_field_column_name(
-                        searchable_fields[field_name_parts[0]]
+                        parent_related_field
                     )
                     field_name_remainder = ".".join(field_name_parts[1:])
                     field_name = f"{field_name}.{field_name_remainder}"
 
-            remapped_fields.append(field_name)
+                    # Get the field boost from the settings so it can be managed in the DB.
+                    child_field = parent_related_field.get_related_field(
+                        field_name_remainder
+                    )
+                    field_settings_key = search_settings.get_settings_field_key(
+                        self.queryset.model, child_field
+                    )
+                    field_boost = float(
+                        search_settings.extended_search_settings["boost_parts"][
+                            "fields"
+                        ].get(field_settings_key, 1)
+                    )
+                    remapped_fields.append(Field(field_name, boost=field_boost))
 
-        return [Field(field) for field in remapped_fields]
+        return remapped_fields
 
     def _join_and_compile_queries(self, query, fields, boost=1.0):
         """
@@ -101,34 +114,14 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
             return field
         return Field(field)
 
-    def backport_fields(self, fields: List[Any]) -> List[str]:
-        """
-        Convert a list of Field objects to a list of strings to be compatible
-        with older versions of the code.
-        """
-        if not fields:
-            return fields
-
-        if not isinstance(fields[0], list):
-            return [self.to_string(f) for f in fields]
-
-        new_fields = []
-        for field in fields:
-            backported_fields = self.backport_fields(field)
-            for backported_field in backported_fields:
-                new_fields.append(backported_field)
-        return new_fields
-
     def _compile_plaintext_query(self, query, fields, boost=1.0):
-        return super()._compile_plaintext_query(
-            query, self.backport_fields(fields), boost
-        )
+        return super()._compile_plaintext_query(query, fields, boost)
 
     def _compile_fuzzy_query(self, query, fields):
-        return super()._compile_fuzzy_query(query, self.backport_fields(fields))
+        return super()._compile_fuzzy_query(query, fields)
 
     def _compile_phrase_query(self, query, fields):
-        return super()._compile_phrase_query(query, self.backport_fields(fields))
+        return super()._compile_phrase_query(query, fields)
 
     def get_inner_query(self):
         """
@@ -192,7 +185,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
         if isinstance(field, list) and len(field) == 1:
             field = field[0]
 
-        if field.field_name == self.mapping.all_field_name:
+        if field.field_name == self.mapping.all_field_name and remapped_fields:
             # We are using the "_all_text" field proxy (i.e. the search()
             # method was called without the fields kwarg), but now we want to
             # limit the downstream fields compiled to those explicitly defined
@@ -201,7 +194,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 query.subquery, remapped_fields, boost
             )
 
-        elif field.field_name in remapped_fields:
+        elif field.field_name in query.fields:
             # Fields were defined explicitly upstream, and we are dealing with
             # one that's in the OnlyFields filter
             return self._compile_query(query.subquery, field, boost)
@@ -261,7 +254,7 @@ class FilteredSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
     def _process_lookup(self, field, lookup, value):
         # @TODO not pretty given get_field_column_name is already overridden
-        if type(field) == str:
+        if isinstance(field, str):
             column_name = field
         else:
             column_name = self.mapping.get_field_column_name(field)
@@ -291,10 +284,12 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
         if boost != 1.0:
             if "multi_match" in match_query:
-                match_query["multi_match"]["boost"] = boost
-            else:
+                match_query["multi_match"]["boost"] = boost * fields[0].boost
+            elif "match" in match_query:
                 for field in fields:
-                    match_query["match"][field.field_name]["boost"] = boost
+                    match_query["match"][field.field_name]["boost"] = (
+                        boost * field.boost
+                    )
 
         return match_query
 
@@ -306,22 +301,26 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
         if boost != 1.0:
             if "multi_match" in match_query:
-                match_query["multi_match"]["boost"] = boost
-            else:
+                match_query["multi_match"]["boost"] = boost * fields[0].boost
+            elif "match_phrase" in match_query:
                 for field in fields:
                     query = match_query["match_phrase"][field.field_name]
-                    match_query["match_phrase"][field.field_name] = {
-                        "query": query,
-                        "boost": boost,
-                    }
+                    if isinstance(query, dict) and "boost" in query:
+                        match_query["match_phrase"][field.field_name]["boost"] = (
+                            boost * field.boost
+                        )
+                    else:
+                        match_query["match_phrase"][field.field_name] = {
+                            "query": query,
+                            "boost": boost * field.boost,
+                        }
 
         return match_query
 
 
 class CustomSearchMapping(
     FilteredSearchMapping,
-):
-    ...
+): ...
 
 
 class CustomSearchQueryCompiler(

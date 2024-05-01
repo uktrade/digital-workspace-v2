@@ -76,13 +76,6 @@ shell: # Open a Django shell in the wagtail container
 bash: # Run bash in the wagtail container
 	$(wagtail) bash
 
-
-check-requirements: # Check whether requirements.txt needs re-generation based on pyproject.toml
-	$(wagtail-no-deps) poetry export --without-hashes | cmp -- requirements.txt -
-
-requirements: # Export the requirements to requirements.txt
-	$(wagtail-no-deps) poetry export --without-hashes --output ../requirements.txt
-
 clean: # Clean up python cache and webpack assets
 	npm run clean
 	find . -name '__pycache__' -exec rm -rf {} +
@@ -136,11 +129,9 @@ su-all: # Makes all users a superuser
 
 migrations: # Run Django makemigrations command
 	$(wagtail) python manage.py makemigrations
-	$(chown) */migrations/*
 
 empty-migration: # Run Django makemigrations command with `--empty` flag
 	$(wagtail) python manage.py makemigrations --empty $(app)
-	$(chown) */migrations/*
 
 checkmigrations: # Run Django makemigrations command with `--check` flag
 	$(wagtail) python manage.py makemigrations --check
@@ -179,10 +170,11 @@ coverage: # Run tests with pytest and generate coverage report
 	$(testrunner) ../scripts/coverage.sh
 
 e2e-codegen: # Set up local environment and run Playwright's interactive test recorder
-	cp .env .env.orig
+	if [ ! -f .env.orig ]; then cp .env .env.orig; echo "backed up .env to .env.orig"; else echo "!! found existing .env.orig backup"; fi
 	cp .env.ci .env
 	docker compose stop wagtail
 	docker compose run --rm -d -p 8000:8000 --env DJANGO_SETTINGS_MODULE=config.settings.test --name wagtail-test-server wagtail
+	poetry run playwright install chromium
 	sleep 5
 	poetry run playwright codegen http://localhost:8000
 	mv .env.orig .env
@@ -220,6 +212,9 @@ wagtail-groups: # Create the wagtail groups
 pf-groups: # Create the pf groups
 	$(wagtail) python manage.py create_people_finder_groups
 
+pf-test-teams: # Add test data for peoplefinder teams (suitable for local dev)
+	$(wagtail) python manage.py create_test_teams
+
 create-section-homepages: # Create the section homepages
 	$(wagtail) python manage.py create_section_homepages
 
@@ -228,6 +223,16 @@ data-countries: # Import the countries data
 
 ingest-uk-staff-locations: # Create the list of the department's offices
 	$(wagtail) python manage.py ingest_uk_staff_locations
+
+local-test-data: # Add all test data for local development
+	make data-countries
+	make menus
+	make create-section-homepages
+	make wagtail-groups
+	make pf-groups
+	make pf-test-teams
+	make ingest-uk-staff-locations
+	make index
 
 serve-docs: # Serve mkdocs on port 8002
 	poetry run mkdocs serve -a localhost:8002

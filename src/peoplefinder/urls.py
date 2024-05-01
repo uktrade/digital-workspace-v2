@@ -38,6 +38,7 @@ from peoplefinder.views.team import (
     TeamTreeView,
 )
 
+
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
     path(

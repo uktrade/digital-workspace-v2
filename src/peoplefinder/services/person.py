@@ -30,6 +30,7 @@ from peoplefinder.tasks import notify_user_about_profile_changes, person_update_
 from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
 
+
 logger = logging.getLogger(__name__)
 
 LEFT_DIT_LOG_MESSAGE = """People Finder deletion request: {profile_name}
@@ -547,9 +548,11 @@ class PersonService:
     def get_profile_section_values(
         self, person: "Person", profile_section: ProfileSections
     ) -> List[Tuple[str, str, str]]:
-        profile_section_fields: List[
-            Tuple[str, str]
-        ] = self.get_profile_section_mapping(profile_section,).get("fields", [])
+        profile_section_fields: List[Tuple[str, str]] = (
+            self.get_profile_section_mapping(
+                profile_section,
+            ).get("fields", [])
+        )
         values = []
         for field_name, field_label in profile_section_fields:
             field_value = getattr(person, field_name)
@@ -600,7 +603,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 55, (
+    assert len(Person._meta.get_fields()) == 56, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )

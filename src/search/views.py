@@ -16,6 +16,7 @@ from peoplefinder.models import Person, Team
 from search.templatetags import search as search_template_tag
 from search.utils import get_query_info_for_model
 
+
 logger = logging.getLogger(__name__)
 
 

@@ -13,6 +13,7 @@ from wagtail.search import index
 
 from extended_search.types import AnalysisType
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -220,16 +221,13 @@ class BaseField(ModelFieldNameMixin, index.BaseField):
         return super().get_attname(cls)
 
 
-class SearchField(index.SearchField, BaseField, index.BaseField):
-    ...
+class SearchField(index.SearchField, BaseField, index.BaseField): ...
 
 
-class AutocompleteField(index.AutocompleteField, BaseField, index.BaseField):
-    ...
+class AutocompleteField(index.AutocompleteField, BaseField, index.BaseField): ...
 
 
-class FilterField(index.FilterField, BaseField, index.BaseField):
-    ...
+class FilterField(index.FilterField, BaseField, index.BaseField): ...
 
 
 class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
@@ -283,6 +281,20 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
 
         self.fields = generated_fields
         return [self]
+
+    def get_related_field(self, field_name):
+        """
+        Return the "child most" related field for a given field name.
+
+        Example:
+            `author.books.title` would return the title SearchField
+        """
+        for f in self.fields:
+            if f.field_name == field_name:
+                if isinstance(f, RelatedFields):
+                    new_field_name = field_name.split(".")[1:]
+                    return f.get_related_field(new_field_name)
+                return f
 
 
 #############################

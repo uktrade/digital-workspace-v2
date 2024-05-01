@@ -13,6 +13,7 @@ from core.admin import admin_site
 from core.urls import urlpatterns as core_urlpatterns
 from peoplefinder.urls import api_urlpatterns, people_urlpatterns, teams_urlpatterns
 
+
 urlpatterns = [
     # URLs for Staff SSO Auth broker
     path("auth/", include(authbroker_client_urls)),
@@ -45,6 +46,8 @@ urlpatterns = [
     path("sitemap.xml", sitemap),
     # Feedback
     path("feedback/", include(feedback_urls), name="feedback"),
+    # Interactions
+    path("interactions/", include("interactions.urls")),
 ]
 
 # If django-silk is installed, add its URLs

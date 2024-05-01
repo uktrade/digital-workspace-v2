@@ -6,12 +6,14 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+from waffle import flag_is_active
 from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
 
 from content.models import BasePage
-from home.util import get_tweets
+from home import FEATURE_HOMEPAGE
+from interactions import get_bookmarks, get_recent_page_views
 from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
@@ -133,6 +135,11 @@ class HomePage(BasePage):
 
     promote_panels = []
 
+    def get_template(self, request, *args, **kwargs):
+        if flag_is_active(request, FEATURE_HOMEPAGE):
+            return "home/home_page_new.html"
+        return "home/home_page.html"
+
     def get_context(self, request, *args, **kwargs):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
@@ -151,15 +158,6 @@ class HomePage(BasePage):
             )[:8]
         )
         context["news_items"] = news_items
-
-        # Tweets
-        tweets = cache.get("homepage_tweets")
-
-        if tweets is None:
-            tweets = sorted(get_tweets(), key=lambda x: x.created_at, reverse=True)
-            cache.set("homepage_tweets", tweets, 60 * 60)  # cache for 1 hour
-
-        context["tweets"] = tweets[:3]
 
         # Popular on Digital Workspace
         context["whats_popular_items"] = WhatsPopular.objects.all()
@@ -191,7 +189,32 @@ class HomePage(BasePage):
             )
 
         context["govuk_feed"] = cache.get("homepage_govuk_news")
-
         context["hide_news"] = settings.HIDE_NEWS
+
+        # Personalised page list
+        context["bookmarks"] = get_bookmarks(request.user)
+        context["recently_viewed"] = get_recent_page_views(
+            request.user, limit=10, exclude_pages=[self]
+        )
+
+        # # Updates
+        # updates = []
+        # if request.user.profile.profile_completion < 99:
+        #     updates.append(
+        #         format_html(
+        #             "Please complete <a href='{}'>your profile</a>, it's currently at {}%",
+        #             reverse("profile-view", args=[request.user.profile.slug]),
+        #             request.user.profile.profile_completion,
+        #         )
+        #     )
+        # for page in get_updated_pages(request.user):
+        #     updates.append(
+        #         format_html(
+        #             "<a href='{}'>{}</a> has been updated",
+        #             page.get_url(request),
+        #             page,
+        #         )
+        #     )
+        # context["updates"] = updates
 
         return context

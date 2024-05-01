@@ -455,7 +455,6 @@ TransitionHome
 Turks
 Tuvalu
 TW
-TWITTER_OAUTH_CONSUMER_KEY
 type="search"/
 UG
 United Arab Emirates
@@ -467,7 +466,6 @@ v2
 VA
 Valid
 VC
-VCAP S3
 Video
 Video Card
 Video or Audio

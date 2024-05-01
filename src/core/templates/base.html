@@ -1,8 +1,8 @@
-{% load workspace_navigation static %}
+{% load workspace_navigation bookmarks %}
 {% load render_bundle webpack_static from webpack_loader %}
-{% load static wagtailcore_tags %}
-
+{% load static wagtailcore_tags waffle_tags %}
 {% load git_info %}
+
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
     <head>
@@ -45,6 +45,7 @@
                 return false;
             };
             </script>
+            {% include "includes/gtm_datalayer_info.html" %}
             <!-- End Google Tag Manager -->
         {% endif %}
         <link rel="shortcut icon"
@@ -63,7 +64,7 @@
         {% block stylesheets %}{% endblock %}
         {% block libraries %}{% endblock %}
     </head>
-    <body class="govuk-template__body ">
+    <body class="govuk-template__body {% block body_classes %}{% endblock %} ">
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.GTM_CODE }}"
@@ -83,9 +84,16 @@
                   id="main-content"
                   role="main"
                   tabindex="1">
-                {% block breadcrumbs %}
-                    {% breadcrumbs %}
-                {% endblock %}
+                <div class="breadcrumb-bookmark">
+                    {% block breadcrumbs %}
+                        {% breadcrumbs %}
+                    {% endblock breadcrumbs %}
+                    {% block bookmark %}
+                        {% if FEATURE_FLAGS.new_homepage %}
+                            {% bookmark_page user page %}
+                        {% endif %}
+                    {% endblock bookmark %}
+                </div>
                 {% block main_content %}{% endblock %}
                 {% block page_problem %}
                     {% include "includes/problem_found.html" %}

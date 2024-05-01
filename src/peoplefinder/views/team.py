@@ -15,6 +15,7 @@ from peoplefinder.services.team import TeamService
 
 from .base import PeoplefinderView
 
+
 # TODO: Potential to refactor for the common parts.
 
 

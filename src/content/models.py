@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, Subquery
 from django.forms import widgets
+from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import (
@@ -24,11 +25,12 @@ from wagtail.utils.decorators import cached_classmethod
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from core.utils import set_seen_cookie_banner
-from extended_search.index import Indexed
 from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import Indexed
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
+
 
 User = get_user_model()
 
@@ -94,12 +96,19 @@ class BasePage(Page, Indexed):
         else:
             return None
 
+    @property
+    def days_since_last_published(self):
+        if self.last_published_at:
+            result = timezone.now() - self.last_published_at
+            return result.days
+        return None
+
 
 class ContentPageQuerySet(PageQuerySet):
     def restricted_q(self, restriction_type):
         from wagtail.models import BaseViewRestriction, PageViewRestriction
 
-        if type(restriction_type) == str:
+        if isinstance(restriction_type, str):
             restriction_type = [
                 restriction_type,
             ]

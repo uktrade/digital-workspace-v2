@@ -17,6 +17,7 @@ from extended_search.index import DWIndexedField as IndexedField
 from news.forms import CommentForm
 from working_at_dit.models import PageWithTopics
 
+
 UserModel = get_user_model()
 
 

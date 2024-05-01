@@ -48,6 +48,7 @@ from peoplefinder.types import EditSections, ProfileSections
 
 from .base import HtmxFormView, PeoplefinderView
 
+
 User = get_user_model()
 
 

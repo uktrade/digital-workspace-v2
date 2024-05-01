@@ -13,6 +13,7 @@ from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
+
 # Set directories to be used across settings
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
@@ -23,8 +24,6 @@ env_file = os.path.join(PROJECT_ROOT_DIR, ".env")
 if os.path.exists(env_file):
     env.read_env(env_file)
 env.read_env()
-
-VCAP_SERVICES = env.json("VCAP_SERVICES", {})
 
 # Set required configuration from environment
 # Should be one of the following: "local", "test", "dev", "staging", "training", "prod", "build"
@@ -44,18 +43,9 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 AUTH_USER_MODEL = "user.User"
 
 # AWS
-if "aws-s3-bucket" in VCAP_SERVICES:
-    app_bucket_creds = VCAP_SERVICES["aws-s3-bucket"][0]["credentials"]
-    AWS_REGION = app_bucket_creds["aws_region"]
-    AWS_S3_REGION_NAME = app_bucket_creds["aws_region"]
-    AWS_STORAGE_BUCKET_NAME = app_bucket_creds["bucket_name"]
-    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-    AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
-else:
-    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_REGION = env("AWS_REGION")
-    AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_REGION = env("AWS_REGION")
+AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
 
 # Asset path used in parser
 NEW_ASSET_PATH = env("NEW_ASSET_PATH")
@@ -118,6 +108,7 @@ LOCAL_APPS = [
     "pingdom.apps.PingdomConfig",
     "peoplefinder.apps.PeoplefinderConfig",
     "countries.apps.CountriesConfig",
+    "interactions.apps.InteractionsConfig",
 ]
 
 THIRD_PARTY_APPS = [
@@ -154,7 +145,7 @@ WAGTAIL_APPS = [
     "wagtail.admin",
     "wagtail",
     "wagtail.contrib.routable_page",
-    "wagtail.contrib.modeladmin",
+    "wagtail_modeladmin",
     "wagtailmedia",
     "wagtailmenus",
     "wagtail_draftail_anchors",
@@ -234,11 +225,7 @@ if is_copilot():
         )
     }
 else:
-    if "postgres" in VCAP_SERVICES:
-        DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
-    else:
-        DATABASE_URL = os.getenv("DATABASE_URL")
-
+    DATABASE_URL = os.getenv("DATABASE_URL")
     DATABASES = {
         "default": env.db(),
     }
@@ -327,10 +314,7 @@ with open(stop_words_file) as stop_words_file:
             continue
         stop_words.append(line.strip())
 
-if "opensearch" in VCAP_SERVICES:
-    OPENSEARCH_URL = VCAP_SERVICES["opensearch"][0]["credentials"]["uri"]
-else:
-    OPENSEARCH_URL = env("OPENSEARCH_URL")
+OPENSEARCH_URL = env("OPENSEARCH_URL")
 
 ELASTICSEARCH_DSL = {
     "default": {
@@ -438,14 +422,7 @@ CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 
 # Redis
-if "redis" in VCAP_SERVICES:
-    credentials = VCAP_SERVICES["redis"][0]["credentials"]
-    CELERY_BROKER_URL = "rediss://:{0}@{1}:{2}/0?ssl_cert_reqs=required".format(
-        credentials["password"],
-        credentials["host"],
-        credentials["port"],
-    )
-elif is_copilot():
+if is_copilot():
     CELERY_BROKER_URL = (
         env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
     )
@@ -469,17 +446,6 @@ CACHES = {
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
-
-
-# Twitter
-TWITTER_ACCESS_TOKEN = env("TWITTER_ACCESS_TOKEN")
-TWITTER_ACCESS_SECRET = env("TWITTER_ACCESS_SECRET")
-
-TWITTER_OAUTH_CONSUMER_KEY = env("TWITTER_OAUTH_CONSUMER_KEY")
-TWITTER_OAUTH_CONSUMER_SECRET = env("TWITTER_OAUTH_CONSUMER_SECRET")
-
-TWITTER_DEPT_USER = env("TWITTER_DEPT_USER")
-TWITTER_PERM_SEC_USER = env("TWITTER_PERM_SEC_USER", default=None)
 
 # Google Tag Manager
 GTM_CODE = env("GTM_CODE", default=None)
@@ -724,20 +690,3 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 
 # Enable the caching of the generated search query DSLs
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
-
-if env.bool("ENABLE_XRAY", default=False):
-    MIDDLEWARE.insert(0, "aws_xray_sdk.ext.django.middleware.XRayMiddleware")
-    INSTALLED_APPS.append("aws_xray_sdk.ext.django")
-
-    XRAY_RECORDER = {
-        "AWS_XRAY_DAEMON_ADDRESS": "127.0.0.1:2000",
-        "AUTO_INSTRUMENT": True,  # If turned on built-in database queries and template rendering will be recorded as subsegments
-        "AWS_XRAY_CONTEXT_MISSING": "LOG_ERROR",
-        "PLUGINS": (),
-        "SAMPLING": True,
-        "SAMPLING_RULES": None,
-        # the segment name for segments generated from incoming requests
-        "AWS_XRAY_TRACING_NAME": "intranet/digital-workspace",
-        "DYNAMIC_NAMING": None,  # defines a pattern that host names should match
-        "STREAMING_THRESHOLD": None,  # defines when a segment starts to stream out its children subsegments
-    }

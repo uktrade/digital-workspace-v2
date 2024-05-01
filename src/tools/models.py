@@ -1,10 +1,11 @@
-from content.models import ContentPage
 from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.shortcuts import redirect
-from extended_search.index import DWIndexedField as IndexedField
 from wagtail.admin.panels import FieldPanel
+
+from content.models import ContentPage
+from extended_search.index import DWIndexedField as IndexedField
 from working_at_dit.models import PageWithTopics
 
 
