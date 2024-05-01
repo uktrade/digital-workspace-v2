@@ -211,6 +211,7 @@ class ContentPage(BasePage):
                     help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
                 ),
             ),
+            ("cta", blocks.CTABlock()),
         ],
         use_json_field=True,
     )

@@ -161,3 +161,16 @@ class EmbedVideoBlock(blocks.StructBlock):
         template = "blocks/video_embed.html"
         icon = "media"
         label = "Embed Video"
+
+
+class CTABlock(blocks.StructBlock):
+    """Call to action section"""
+
+    CTA_page = blocks.PageChooserBlock(required=False)
+    CTA_url = blocks.URLBlock(required=False)
+    CTA_text = blocks.CharBlock(required=True, max_length=40)
+
+    class Meta:
+        template = "blocks/cta.html"
+        icon = "placeholder"
+        label = "CTA Button"
