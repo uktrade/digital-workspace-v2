@@ -71,6 +71,7 @@ class IrapToolData(IrapToolDataAbstract):
 
 
 class Tool(PageWithTopics):
+    template = "content/content_page.html"
     is_creatable = True
     irap_tool = models.OneToOneField(
         IrapToolData,
