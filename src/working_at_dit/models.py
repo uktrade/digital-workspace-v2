@@ -165,6 +165,7 @@ class PageWithTopics(ContentPage):
 
 
 class HowDoI(ContentOwnerMixin, PageWithTopics):
+    template = "working_at_dit/content_with_related_topics.html"
     subpage_types = []  # Should not be able to create children
 
     include_link_on_homepage = models.BooleanField(
@@ -191,7 +192,7 @@ class HowDoIHome(ContentPage):
 
 
 class Guidance(ContentOwnerMixin, PageWithTopics):
-    template = "working_at_dit/policy_guidance.html"
+    template = "working_at_dit/content_with_related_topics.html"
     is_creatable = True
 
     subpage_types = ["working_at_dit.Guidance"]
