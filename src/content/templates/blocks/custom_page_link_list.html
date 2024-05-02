@@ -2,8 +2,8 @@
 {% load wagtailimages_tags %}
 
 {% block content %}
-    {% include_block self.title %}
-    <ul class="govuk-list ">
+    <h2 class="govuk-heading-m" id="{{ self.title|slugify }}">{{ self.title }}</h2>
+    <ul class="govuk-list">
         {% for page in self.pages %}
             <li>
                 <a class="govuk-link" href={% pageurl page %}>{{ page.title }}</a>

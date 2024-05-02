@@ -180,11 +180,12 @@ class PagePickerBlock(blocks.PageChooserBlock):
         label = "Link"
 
 
-class CuratedPagesListBlock(blocks.StructBlock):
+class CustomPageLinkListBlock(blocks.StructBlock):
 
     title = TitleBlock(search_index=False)
     pages = blocks.ListBlock(PagePickerBlock(), search_index=False)
 
     class Meta:
-        template = "blocks/curated_pages_list.html"
-        label = "Page group"
+        template = "blocks/custom_page_link_list.html"
+        label = "Link box"
+        help_text = "Test"

@@ -223,9 +223,9 @@ class ContentPage(BasePage):
         use_json_field=True,
     )
 
-    curated_pages = StreamField(
+    custom_page_links = StreamField(
         [
-            ("page_groups", blocks.CuratedPagesListBlock()),
+            ("page_links", blocks.CustomPageLinkListBlock()),
         ],
         blank=True,
     )
@@ -332,7 +332,7 @@ class ContentPage(BasePage):
 
     content_panels = BasePage.content_panels + [
         FieldPanel("excerpt", widget=widgets.Textarea),
-        FieldPanel("curated_pages"),
+        FieldPanel("custom_page_links"),
         FieldPanel("body"),
     ]
 
