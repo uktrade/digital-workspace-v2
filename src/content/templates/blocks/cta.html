@@ -1,7 +1,7 @@
 {% load wagaitalcore_tags %}
 
-{% if self.CTA_page %}
-    <a href="{{ self.CTA_page.url }}">{{ self.CTA_text }}</a>
+{% if self.page %}
+    <a href="{{ self.page.url }}">{{ self.text }}</a>
 {% else %}
-    <a href="{{ self.CTA_url }}">{{ self.CTA_text }}</a>
+    <a href="{{ self.url }}">{{ self.text }}</a>
 {% endif %}

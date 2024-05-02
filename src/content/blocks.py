@@ -166,9 +166,9 @@ class EmbedVideoBlock(blocks.StructBlock):
 class CTABlock(blocks.StructBlock):
     """Call to action section"""
 
-    CTA_page = blocks.PageChooserBlock(required=False)
-    CTA_url = blocks.URLBlock(required=False)
-    CTA_text = blocks.CharBlock(required=True, max_length=40)
+    text = blocks.CharBlock(required=True, max_length=40)
+    page = blocks.PageChooserBlock(required=False)
+    url = blocks.URLBlock(required=False)
 
     class Meta:
         template = "blocks/cta.html"
