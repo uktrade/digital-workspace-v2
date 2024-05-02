@@ -66,3 +66,14 @@
   max-width: 100%;
   height: auto;
 }
+
+.ws-streamfield-content__cta-link-container {
+  padding: govuk-spacing(9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  a {
+    padding: govuk-spacing(6);
+  }
+}
