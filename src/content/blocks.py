@@ -176,7 +176,6 @@ class TitleBlock(blocks.CharBlock):
 class PagePickerBlock(blocks.PageChooserBlock):
 
     class Meta:
-        # template = "blocks/video_embed.html"
         label = "Link"
 
 
