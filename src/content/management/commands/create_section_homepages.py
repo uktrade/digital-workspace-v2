@@ -4,12 +4,11 @@ from django.core.management.base import BaseCommand
 from wagtail.models import Page
 
 from about_us.models import AboutUsHome
-from content.models import ContentPage, PrivacyPolicyHome
+from content.models import ContentPage
 from country_fact_sheet.models import CountryFactSheetHome
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome
-from transition.models import TransitionHome
 from working_at_dit.models import (
     GuidanceHome,
     HowDoIHome,
@@ -61,24 +60,6 @@ class Command(BaseCommand):
             home_page.save()
 
             news_home.save_revision().publish()
-
-        try:
-            Page.objects.get(slug="transition-hub")
-        except Page.DoesNotExist:
-            transition = TransitionHome(
-                title="Transition",
-                slug="transition-hub",
-                live=True,
-                first_published_at=datetime.now(),
-                show_in_menus=True,
-                depth=2,
-                legacy_path="/transition-hub/",
-            )
-
-            home_page.add_child(instance=transition)
-            home_page.save()
-
-            transition.save_revision().publish()
 
         try:
             Page.objects.get(slug="working-at-dbt")
@@ -240,24 +221,6 @@ class Command(BaseCommand):
             home_page.save()
 
             networks.save_revision().publish()
-
-        try:
-            Page.objects.get(slug="privacy-policy")
-        except Page.DoesNotExist:
-            privacy_policy = PrivacyPolicyHome(
-                title="Privacy Policy",
-                slug="privacy-policy",
-                live=True,
-                first_published_at=datetime.now(),
-                show_in_menus=True,
-                depth=7,
-                legacy_path="/working-at-dit/policies-and-guidance/privacy-policies/",
-            )
-
-            home_page.add_child(instance=privacy_policy)
-            home_page.save()
-
-            privacy_policy.save_revision().publish()
 
         try:
             Page.objects.get(slug="country-fact-sheets")

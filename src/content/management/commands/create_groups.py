@@ -6,7 +6,6 @@ from about_us.models import AboutUsHome
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome
-from transition.models import TransitionHome
 from working_at_dit.models import (
     HowDoIHome,
     PoliciesAndGuidanceHome,
@@ -22,7 +21,6 @@ TOP_LEVEL_PAGE_TYPES = [
     PoliciesAndGuidanceHome,
     ToolsHome,
     TopicHome,
-    TransitionHome,
     WorkingAtDITHome,
 ]
 
