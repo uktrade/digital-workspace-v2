@@ -199,7 +199,7 @@ class Guidance(ContentOwnerMixin, PageWithTopics):
 
 
 class Policy(ContentOwnerMixin, PageWithTopics):
-    template = "working_at_dit/policy_guidance.html"
+    template = "working_at_dit/content_with_related_topics.html"
     is_creatable = True
 
     subpage_types = ["working_at_dit.Policy"]

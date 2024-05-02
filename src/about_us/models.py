@@ -14,6 +14,7 @@ class AboutUs(PageWithTopics):
         context["children"] = (
             AboutUs.objects.live().public().child_of(page).order_by("title")
         )
+        context["num_cols"] = 3
 
         return context
 
