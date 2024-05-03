@@ -68,12 +68,8 @@
 }
 
 .ws-streamfield-content__cta-link-container {
-  padding: govuk-spacing(9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  a {
-    padding: govuk-spacing(6);
+  a, a:visited {
+    color: #000;
+    padding: govuk-spacing(4);
   }
 }

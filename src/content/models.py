@@ -219,7 +219,12 @@ class ContentPage(BasePage):
                     help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
                 ),
             ),
-            ("cta", blocks.CTABlock()),
+            (
+                "cta",
+                blocks.CTABlock(
+                    help_text="""The CTA button is an eye-catching link to direct users to a specific page or URL. You can define page or URL in the textboxes below. Please use this component sparingly."""
+                ),
+            ),
         ],
         use_json_field=True,
     )
