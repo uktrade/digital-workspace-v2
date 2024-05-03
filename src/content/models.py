@@ -382,6 +382,30 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
+class CustomServicePage(ContentPage):
+    template = "content/content_page.html"
+    subpage_types = []
+    
+    primary = StreamField(
+        [
+            ("page_links", blocks.CustomPageLinkListBlock()),
+        ],
+        blank=True,
+    )
+
+    secondary = StreamField(
+        [
+            ("page_links", blocks.CustomPageLinkListBlock()),
+        ],
+        blank=True,
+    )
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        return context
+
+
 class SearchExclusionPageLookUp(models.Model):
     objects = SearchKeywordOrPhraseQuerySet.as_manager()
 
