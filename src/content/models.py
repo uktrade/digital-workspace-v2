@@ -222,7 +222,7 @@ class ContentPage(BasePage):
             (
                 "cta",
                 blocks.CTABlock(
-                    help_text="""The CTA button is an eye-catching link to direct users to a specific page or URL. You can define page or URL in the textboxes below. Please use this component sparingly."""
+                    help_text="""The CTA button is an eye-catching link designed to direct users to a specific page or URL. You can define the label for the button below, as well as the page or URL to which you want the button to point. Please use this component sparingly."""
                 ),
             ),
         ],
