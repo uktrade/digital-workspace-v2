@@ -174,3 +174,30 @@ class CTABlock(blocks.StructBlock):
         template = "blocks/cta.html"
         icon = "placeholder"
         label = "CTA Button"
+
+
+class TitleBlock(blocks.CharBlock):
+    """A (section) heading"""
+
+    class Meta:
+        label = "Title"
+        icon = "title"
+        classname = "full title"
+        template = "blocks/title.html"
+
+
+class PagePickerBlock(blocks.PageChooserBlock):
+
+    class Meta:
+        label = "Link"
+
+
+class CustomPageLinkListBlock(blocks.StructBlock):
+
+    title = TitleBlock(search_index=False)
+    pages = blocks.ListBlock(PagePickerBlock(), search_index=False)
+
+    class Meta:
+        template = "blocks/custom_page_link_list.html"
+        label = "Link box"
+        help_text = "Test"
