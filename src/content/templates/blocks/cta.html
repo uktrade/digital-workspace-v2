@@ -1,0 +1,8 @@
+<div class="ws-streamfield-content__cta-link-container">
+    {% if self.page %}
+        <a href="{{ self.page.url }}"
+           class="govuk-button govuk-button--secondary">{{ self.text }}</a>
+    {% else %}
+        <a href="{{ self.url }}" class="govuk-button govuk-button--secondary">{{ self.text }}</a>
+    {% endif %}
+</div>
