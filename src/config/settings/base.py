@@ -101,7 +101,6 @@ LOCAL_APPS = [
     "working_at_dit",
     "tools",
     "about_us",
-    "transition",
     "networks",
     "country_fact_sheet",
     "user.apps.UserConfig",

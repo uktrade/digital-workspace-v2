@@ -408,21 +408,3 @@ class SearchPinPageLookUp(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
     # TODO: Remove historical records.
     history = HistoricalRecords()
-
-
-class PrivacyPolicyHome(ContentPage):
-    is_creatable = False
-
-    subpage_types = [
-        "content.PrivacyPolicy",
-    ]
-
-    template = "content/content_page.html"
-
-
-class PrivacyPolicy(ContentPage):
-    is_creatable = True
-
-    subpage_types = []
-
-    template = "content/content_page.html"
