@@ -172,7 +172,7 @@ class CTABlock(blocks.StructBlock):
 
     class Meta:
         template = "blocks/cta.html"
-        icon = "placeholder"
+        icon = "thumbtack"
         label = "CTA Button"
 
 
