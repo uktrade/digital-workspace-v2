@@ -390,7 +390,7 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
 
 class CustomServicePage(ContentPage):
     template = "content/content_page.html"
-    
+
     primary = StreamField(
         [
             ("page_links", blocks.CustomPageLinkListBlock()),
