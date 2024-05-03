@@ -390,11 +390,11 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
 
 class CustomServicePage(ContentPage):
     template = "content/content_page.html"
-    subpage_types = []
     
     primary = StreamField(
         [
             ("page_links", blocks.CustomPageLinkListBlock()),
+            ("cta", blocks.CTABlock()),
         ],
         blank=True,
     )
@@ -402,6 +402,7 @@ class CustomServicePage(ContentPage):
     secondary = StreamField(
         [
             ("page_links", blocks.CustomPageLinkListBlock()),
+            ("cta", blocks.CTABlock()),
         ],
         blank=True,
     )
