@@ -161,3 +161,30 @@ class EmbedVideoBlock(blocks.StructBlock):
         template = "blocks/video_embed.html"
         icon = "media"
         label = "Embed Video"
+
+
+class TitleBlock(blocks.CharBlock):
+    """A (section) heading"""
+
+    class Meta:
+        label = "Title"
+        icon = "title"
+        classname = "full title"
+        template = "blocks/title.html"
+
+
+class PagePickerBlock(blocks.PageChooserBlock):
+
+    class Meta:
+        label = "Link"
+
+
+class CustomPageLinkListBlock(blocks.StructBlock):
+
+    title = TitleBlock(search_index=False)
+    pages = blocks.ListBlock(PagePickerBlock(), search_index=False)
+
+    class Meta:
+        template = "blocks/custom_page_link_list.html"
+        label = "Link box"
+        help_text = "Test"
