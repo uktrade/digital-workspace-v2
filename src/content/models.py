@@ -389,24 +389,32 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
-class CustomServicePage(ContentPage):
-    template = "content/content_page.html"
+class ServiceNavigation(ContentPage):
+    template = "content/navigation_page.html"
 
-    primary = StreamField(
+    primary_content = StreamField(
         [
-            ("page_links", blocks.CustomPageLinkListBlock()),
+            ("curated_page_links", blocks.CustomPageLinkListBlock()),
             ("cta", blocks.CTABlock()),
         ],
         blank=True,
     )
 
-    secondary = StreamField(
+    secondary_content = StreamField(
         [
-            ("page_links", blocks.CustomPageLinkListBlock()),
+            ("curated_page_links", blocks.CustomPageLinkListBlock()),
             ("cta", blocks.CTABlock()),
         ],
         blank=True,
     )
+
+    content_panels = BasePage.content_panels + [
+        FieldPanel(
+            "primary_content",
+        ),
+        FieldPanel("body"),
+        FieldPanel("secondary_content"),
+    ]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
