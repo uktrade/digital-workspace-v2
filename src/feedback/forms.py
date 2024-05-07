@@ -3,7 +3,7 @@ from django.forms import HiddenInput, RadioSelect
 from django_feedback_govuk.forms import SUBMIT_BUTTON, BaseFeedbackForm
 from django_feedback_govuk.models import SatisfactionOptions
 
-from feedback.models import SearchFeedbackV1, SearchFeedbackV2
+from feedback.models import SearchFeedbackV1, SearchFeedbackV2, ABFeedback
 
 
 class SearchFeedbackV1Form(BaseFeedbackForm):
@@ -44,6 +44,59 @@ class SearchFeedbackV1Form(BaseFeedbackForm):
             )
         )
         self.helper.layout.append(SUBMIT_BUTTON)
+
+
+class ABFeedbackForm(BaseFeedbackForm):
+    class Meta:
+        model = ABFeedback
+        fields = ["satisfaction", "comment","page", "submitter"]
+        widgets = {
+            "page": HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["satisfaction"].label = ""
+        self.fields["satisfaction"].required = True
+        self.fields["satisfaction"].widget = RadioSelect()
+        self.fields["satisfaction"].choices = SatisfactionOptions.choices
+        self.fields["comment"].label = ""
+        self.fields["page"].label= ""
+        self.fields["page"].required = False
+
+        self.helper.layout.remove(SUBMIT_BUTTON)
+        self.helper.layout.append(
+            Fieldset(
+                Field.radios(
+                    "satisfaction",
+                    template="django_feedback_govuk/widgets/star_rating/star_rating.html",
+                ),
+                legend="How do you feel about your experience today?",
+                legend_size=Size.MEDIUM,
+            )
+        )
+        self.helper.layout.append(
+            Fieldset(
+                HTML(
+                    "<p class='govuk-hint'>If you do not want to be contacted"
+                    " about more research opportunities, you can let us know"
+                    " here.</p>"
+                ),
+                Field("comment"),
+                legend="Tell us why you gave that rating",
+                legend_size=Size.MEDIUM,
+            )
+        )
+        self.helper.layout.append(SUBMIT_BUTTON)
+        self.helper.layout.append(
+            Button(
+                "close",
+                "Close feedback form",
+                css_class="govuk-button--secondary",
+                formmethod="dialog",
+            )
+        )
 
 
 class SearchFeedbackV2Form(BaseFeedbackForm):

@@ -645,6 +645,11 @@ DJANGO_FEEDBACK_GOVUK = {
             "form": "django_feedback_govuk.forms.FeedbackForm",
             "view": "django_feedback_govuk.views.FeedbackView",
         },
+        "ab-v1": {
+            "model": "feedback.models.ABFeedback",
+            "form": "feedback.forms.ABFeedbackForm",
+            "view": "feedback.views.ABFeedbackFormView",
+        },
         "search-v1": {
             "model": "feedback.models.SearchFeedbackV1",
             "form": "feedback.forms.SearchFeedbackV1Form",

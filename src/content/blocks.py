@@ -201,3 +201,9 @@ class CustomPageLinkListBlock(blocks.StructBlock):
         template = "blocks/custom_page_link_list.html"
         label = "Link box"
         help_text = "Test"
+
+class FeedbackBlock(blocks.StaticBlock):
+    class Meta:
+        template = "blocks/feedback.html"
+        icon = "thumbtack"
+        label = "Feedback"
