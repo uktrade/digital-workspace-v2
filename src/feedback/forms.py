@@ -49,33 +49,22 @@ class SearchFeedbackV1Form(BaseFeedbackForm):
 class ABFeedbackForm(BaseFeedbackForm):
     class Meta:
         model = ABFeedback
-        fields = ["satisfaction", "comment","page", "submitter"]
+        fields = ["useful","comment","page", "submitter"]
         widgets = {
+            "useful": HiddenInput(),
             "page": HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["satisfaction"].label = ""
-        self.fields["satisfaction"].required = True
-        self.fields["satisfaction"].widget = RadioSelect()
-        self.fields["satisfaction"].choices = SatisfactionOptions.choices
+        self.fields["useful"].label = ""
         self.fields["comment"].label = ""
         self.fields["page"].label= ""
-        self.fields["page"].required = False
 
         self.helper.layout.remove(SUBMIT_BUTTON)
-        self.helper.layout.append(
-            Fieldset(
-                Field.radios(
-                    "satisfaction",
-                    template="django_feedback_govuk/widgets/star_rating/star_rating.html",
-                ),
-                legend="How do you feel about your experience today?",
-                legend_size=Size.MEDIUM,
-            )
-        )
+        self.helper.layout.append(Field("page"))
+        self.helper.layout.append(Field("useful"))
         self.helper.layout.append(
             Fieldset(
                 HTML(
@@ -84,7 +73,7 @@ class ABFeedbackForm(BaseFeedbackForm):
                     " here.</p>"
                 ),
                 Field("comment"),
-                legend="Tell us why you gave that rating",
+                legend="Why is the page not useful?",
                 legend_size=Size.MEDIUM,
             )
         )

@@ -12,18 +12,20 @@
     </div>
 </div>
 
-<dialog id="search-feedback-dialog">
+<dialog id="feedback-dialog">
     {% feedback_submit form_id="ab-v1" %}
     <script>
-        const dialog = document.querySelector("#search-feedback-dialog");
+        const dialog = document.querySelector("#feedback-dialog");
         const form = dialog.querySelector("form");
         const search_header = document.querySelector("#search-feedback .search-feedback-header");
 
+        console.log(form)
+
         function positiveResponse() {
             // Clear all form fields except the hidden ones
-            clearSearchFeedbackForm();
+            clearFeedbackForm();
             // Mark the `useful` hidden field to `true`
-            //form.querySelector("#id_useful").value = "true";
+            form.querySelector("#id_useful").value = "true";
             // Submit the form
             submitFeedbackForm();
         }
@@ -32,13 +34,13 @@
             // Clear all form fields except the hidden ones
             clearFeedbackForm();
             // Mark the `useful` hidden field to `false`
-            //form.querySelector("#id_useful").value = "false";
+            form.querySelector("#id_useful").value = "false";
             // Show the feedback form
-            openSearchFeedbackDialog();
+            openFeedbackDialog();
         }
 
-        function openSearchFeedbackDialog() {
-            document.querySelector("#search-feedback-dialog").showModal();
+        function openFeedbackDialog() {
+            document.querySelector("#feedback-dialog").showModal();
         }
 
         function showThankYouMessage() {
