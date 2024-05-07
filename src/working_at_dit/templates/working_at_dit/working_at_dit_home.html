@@ -8,6 +8,9 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">{{ page.title }}</h1>
+            {% comment %} {% if page.is_published %}
+                <a href="{% url 'page_name_here' page.id%}" class="govuk-button govuk-button--secondary">Check out the new HR Service Page</a>
+            {% endif %} {% endcomment %}
             {% for block in page.body %}
                 {% include_block block %}
             {% endfor %}
@@ -21,7 +24,7 @@
                                 <span class="govuk-accordion__section-button"
                                       id="accordion-default-heading-1">{{ theme.title }}</span>
                             </h2>
-                            <p class='govuk-body accordion-section-description'>{{ theme.summary }}</p>
+                            <p class="govuk-body accordion-section-description">{{ theme.summary }}</p>
                         </div>
                         <div id="accordion-default-content-1"
                              class="govuk-accordion__section-content"
