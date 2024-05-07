@@ -18,7 +18,7 @@ class WorkingAtDITHome(ContentPage):
     subpage_types = [
         "working_at_dit.Topic",
         "working_at_dit.HowDoI",
-        "content.CustomServicePage",
+        "content.ServiceNavigation",
     ]
 
     def get_context(self, request, *args, **kwargs):
