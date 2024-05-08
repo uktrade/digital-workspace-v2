@@ -66,3 +66,11 @@
   max-width: 100%;
   height: auto;
 }
+
+.ws-streamfield-content__cta-link-container {
+  padding-top: govuk-spacing(2);
+  a, a:visited {
+    color: $govuk-text-colour;
+    padding: govuk-spacing(4);
+  }
+}

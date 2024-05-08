@@ -219,8 +219,21 @@ class ContentPage(BasePage):
                     help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
                 ),
             ),
+            (
+                "cta",
+                blocks.CTABlock(
+                    help_text="""The CTA button is an eye-catching link designed to direct users to a specific page or URL. You can define the label for the button below, as well as the page or URL to which you want the button to point. Please use this component sparingly."""
+                ),
+            ),
         ],
         use_json_field=True,
+    )
+
+    custom_page_links = StreamField(
+        [
+            ("page_links", blocks.CustomPageLinkListBlock()),
+        ],
+        blank=True,
     )
 
     excerpt = models.CharField(
@@ -325,6 +338,7 @@ class ContentPage(BasePage):
 
     content_panels = BasePage.content_panels + [
         FieldPanel("excerpt", widget=widgets.Textarea),
+        FieldPanel("custom_page_links"),
         FieldPanel("body"),
     ]
 
@@ -400,21 +414,3 @@ class SearchPinPageLookUp(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
     # TODO: Remove historical records.
     history = HistoricalRecords()
-
-
-class PrivacyPolicyHome(ContentPage):
-    is_creatable = False
-
-    subpage_types = [
-        "content.PrivacyPolicy",
-    ]
-
-    template = "content/content_page.html"
-
-
-class PrivacyPolicy(ContentPage):
-    is_creatable = True
-
-    subpage_types = []
-
-    template = "content/content_page.html"
