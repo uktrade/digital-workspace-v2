@@ -173,11 +173,7 @@ class CTABlock(blocks.StructBlock):
     class Meta:
         template = "blocks/cta.html"
         icon = "thumbtack"
-        label = "Call to action (CTA) button"
-        help_text = (
-            "The CTA button is an eye-catching link designed to "
-            "direct users to a specific page or URL."
-        )
+        label = "CTA Button"
 
 
 class TitleBlock(blocks.CharBlock):
@@ -204,7 +200,4 @@ class CustomPageLinkListBlock(blocks.StructBlock):
     class Meta:
         template = "blocks/custom_page_link_list.html"
         label = "Link box"
-        help_text = (
-            "The link box is designed to direct users to a specific page. "
-            "You can define the title for the link(s) below, as well as the page(s) which you want the link(s) to point to."
-        )
+        help_text = "Test"
