@@ -33,7 +33,6 @@ from testapp.models import (
     StandardIndexedModel,
 )
 from tools.models import Tool, ToolsHome
-from transition.models import Transition, TransitionHome
 from working_at_dit.models import (
     Guidance,
     GuidanceHome,
@@ -263,8 +262,6 @@ class TestProject:
                 ToolsHome,
                 AboutUs,
                 AboutUsHome,
-                Transition,
-                TransitionHome,
                 NetworksHome,
                 Network,
                 CountryFactSheetHome,
