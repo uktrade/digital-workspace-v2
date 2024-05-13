@@ -8,7 +8,7 @@ import modelcluster.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("content", "0022_contentpage_topics"),
+        ("content", "0027_contentpage_topics"),
         ("working_at_dit", "0007_guidance_content_contact_email_and_more"),
     ]
 
