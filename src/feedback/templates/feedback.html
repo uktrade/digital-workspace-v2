@@ -17,8 +17,6 @@
         const form = dialog.querySelector("form");
         const search_header = document.querySelector("#search-feedback .search-feedback-header");
 
-        console.log(form)
-
         function positiveResponse() {
             // Clear all form fields except the hidden ones
             clearFeedbackForm();
@@ -61,8 +59,6 @@
             const formData = new FormData(form);
 
             formData.set('page_url','{{page.url}}');
-
-            console.log(formData)
 
             fetch(form.action, {
                 method: "POST",
