@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("working_at_dit", "0007_guidance_content_contact_email_and_more"),
-        ("content", "0021_alter_contentpage_excerpt"),
+        ("content", "0026_alter_contentpage_body"),
     ]
 
     operations = [
