@@ -3,17 +3,17 @@
 
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    <div class="ws-children-3-col">
+    <div class="ws-content-grid">
         {% for block in page.primary_content %}
-            <div class="ws-col-child">{% include_block block %}</div>
+            <div>{% include_block block %}</div>
         {% endfor %}
     </div>
     {% for block in page.body %}
         {% include_block block %}
     {% endfor %}
-    <div class="ws-children-3-col">
+    <div class="ws-content-grid">
         {% for block in page.secondary_content %}
-            <div class="ws-col-child">{% include_block block %}</div>
+            <div>{% include_block block %}</div>
         {% endfor %}
     </div>
 {% endblock %}
