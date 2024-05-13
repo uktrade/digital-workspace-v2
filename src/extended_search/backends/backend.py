@@ -44,7 +44,12 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         return super().get_boosted_fields(boostable_fields)
 
-    def _remap_fields(self, fields, *args, **kwargs):
+    def _remap_fields(
+        self,
+        fields,
+        get_searchable_fields__args: tuple,
+        get_searchable_fields__kwargs: dict,
+    ):
         """
         Convert field names into index column names
         """
@@ -54,7 +59,11 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
         remapped_fields = []
 
         searchable_fields = {
-            f.field_name: f for f in self.get_searchable_fields(*args, **kwargs)
+            f.field_name: f
+            for f in self.get_searchable_fields(
+                *get_searchable_fields__args,
+                **get_searchable_fields__kwargs,
+            )
         }
 
         for field_name in fields:
