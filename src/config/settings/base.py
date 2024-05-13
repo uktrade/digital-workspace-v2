@@ -649,6 +649,9 @@ DJANGO_FEEDBACK_GOVUK = {
             "model": "feedback.models.FeedbackV2",
             "form": "feedback.forms.FeedbackV2Form",
             "view": "feedback.views.FeedbackV2FormView",
+            "copy": {
+                "SUBMIT_TITLE": None,
+            },
         },
         "search-v1": {
             "model": "feedback.models.SearchFeedbackV1",

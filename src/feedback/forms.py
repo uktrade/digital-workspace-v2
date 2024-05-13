@@ -66,15 +66,11 @@ class FeedbackV2Form(BaseFeedbackForm):
         self.fields["page_url"].label = ""
 
         self.helper.layout.remove(SUBMIT_BUTTON)
+        self.helper.layout.append(Fieldset(legend="Providing feedback on your experience will help us improve the service",legend_size=Size.MEDIUM))
         self.helper.layout.append(Field("page_url"))
         self.helper.layout.append(Field("useful"))
         self.helper.layout.append(
             Fieldset(
-                # HTML(
-                #     "<p class='govuk-hint'>If you do not want to be contacted"
-                #     " about more research opportunities, you can let us know"
-                #     " here.</p>"
-                # ),
                 Field("comment"),
                 Field("contactable"),
                 legend="Why was this page not useful?",
