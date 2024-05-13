@@ -645,7 +645,7 @@ DJANGO_FEEDBACK_GOVUK = {
             "form": "django_feedback_govuk.forms.FeedbackForm",
             "view": "django_feedback_govuk.views.FeedbackView",
         },
-        "hr-v1":{
+        "hr-v1": {
             "model": "feedback.models.FeedbackV2",
             "form": "feedback.forms.FeedbackV2Form",
             "view": "feedback.views.FeedbackV2FormView",

@@ -8,6 +8,7 @@ class FeedbackV2(BaseFeedback):
     contactable = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
 
+
 class SearchFeedbackV1(BaseFeedback):
     satisfaction = models.CharField(max_length=30, choices=SatisfactionOptions.choices)
     comment = models.TextField(blank=True)

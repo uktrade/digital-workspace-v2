@@ -3,7 +3,7 @@ from django.forms import HiddenInput, RadioSelect
 from django_feedback_govuk.forms import SUBMIT_BUTTON, BaseFeedbackForm
 from django_feedback_govuk.models import SatisfactionOptions
 
-from feedback.models import SearchFeedbackV1, SearchFeedbackV2, FeedbackV2
+from feedback.models import FeedbackV2, SearchFeedbackV1, SearchFeedbackV2
 
 
 class SearchFeedbackV1Form(BaseFeedbackForm):
@@ -49,7 +49,7 @@ class SearchFeedbackV1Form(BaseFeedbackForm):
 class FeedbackV2Form(BaseFeedbackForm):
     class Meta:
         model = FeedbackV2
-        fields = ["useful","comment","page_url","contactable", "submitter"]
+        fields = ["useful", "comment", "page_url", "contactable", "submitter"]
         widgets = {
             "useful": HiddenInput(),
             "page_url": HiddenInput(),
@@ -60,8 +60,10 @@ class FeedbackV2Form(BaseFeedbackForm):
 
         self.fields["useful"].label = ""
         self.fields["comment"].label = ""
-        self.fields["contactable"].label="Do you wish to be contacted for further research opportunities?"
-        self.fields["page_url"].label= ""
+        self.fields["contactable"].label = (
+            "Do you wish to be contacted for further research opportunities?"
+        )
+        self.fields["page_url"].label = ""
 
         self.helper.layout.remove(SUBMIT_BUTTON)
         self.helper.layout.append(Field("page_url"))
