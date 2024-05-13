@@ -66,7 +66,12 @@ class FeedbackV2Form(BaseFeedbackForm):
         self.fields["page_url"].label = ""
 
         self.helper.layout.remove(SUBMIT_BUTTON)
-        self.helper.layout.append(Fieldset(legend="Providing feedback on your experience will help us improve the service",legend_size=Size.MEDIUM))
+        self.helper.layout.append(
+            Fieldset(
+                legend="Providing feedback on your experience will help us improve the service",
+                legend_size=Size.MEDIUM,
+            )
+        )
         self.helper.layout.append(Field("page_url"))
         self.helper.layout.append(Field("useful"))
         self.helper.layout.append(
