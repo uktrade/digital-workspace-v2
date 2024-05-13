@@ -197,7 +197,6 @@ class ContentPage(BasePage):
 
     body = StreamField(
         [
-            ("feedback", blocks.FeedbackBlock(blank=True)),
             ("heading2", blocks.Heading2Block()),
             ("heading3", blocks.Heading3Block()),
             ("heading4", blocks.Heading4Block()),
