@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+
+.ws-navigational-link{
+    color: $great-blue;
+    font-family: "Roboto Flex", sans-serif;
+}
+
+.ws-navigational-link::after{
+    content: "\002192";
+    color: black;
+}
