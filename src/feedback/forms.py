@@ -3,7 +3,7 @@ from django.forms import HiddenInput, RadioSelect
 from django_feedback_govuk.forms import SUBMIT_BUTTON, BaseFeedbackForm
 from django_feedback_govuk.models import SatisfactionOptions
 
-from feedback.models import SearchFeedbackV1, SearchFeedbackV2, ABFeedback
+from feedback.models import SearchFeedbackV1, SearchFeedbackV2, FeedbackV2
 
 
 class SearchFeedbackV1Form(BaseFeedbackForm):
@@ -46,13 +46,13 @@ class SearchFeedbackV1Form(BaseFeedbackForm):
         self.helper.layout.append(SUBMIT_BUTTON)
 
 
-class ABFeedbackForm(BaseFeedbackForm):
+class FeedbackV2Form(BaseFeedbackForm):
     class Meta:
-        model = ABFeedback
-        fields = ["useful","comment","page", "submitter"]
+        model = FeedbackV2
+        fields = ["useful","comment","page_url","contactable", "submitter"]
         widgets = {
             "useful": HiddenInput(),
-            "page": HiddenInput(),
+            "page_url": HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -60,21 +60,23 @@ class ABFeedbackForm(BaseFeedbackForm):
 
         self.fields["useful"].label = ""
         self.fields["comment"].label = ""
-        self.fields["page"].label= ""
+        self.fields["contactable"].label="Do you wish to be contacted for further research opportunities?"
+        self.fields["page_url"].label= ""
 
         self.helper.layout.remove(SUBMIT_BUTTON)
-        self.helper.layout.append(Field("page"))
+        self.helper.layout.append(Field("page_url"))
         self.helper.layout.append(Field("useful"))
         self.helper.layout.append(
             Fieldset(
-                HTML(
-                    "<p class='govuk-hint'>If you do not want to be contacted"
-                    " about more research opportunities, you can let us know"
-                    " here.</p>"
-                ),
+                # HTML(
+                #     "<p class='govuk-hint'>If you do not want to be contacted"
+                #     " about more research opportunities, you can let us know"
+                #     " here.</p>"
+                # ),
                 Field("comment"),
-                legend="Why is the page not useful?",
-                legend_size=Size.MEDIUM,
+                Field("contactable"),
+                legend="Why was this page not useful?",
+                legend_size=Size.SMALL,
             )
         )
         self.helper.layout.append(SUBMIT_BUTTON)

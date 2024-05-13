@@ -2,9 +2,10 @@ from django.db import models
 from django_feedback_govuk.models import BaseFeedback, SatisfactionOptions
 
 
-class ABFeedback(BaseFeedback):
-    page = models.ForeignKey('content.ContentPage', on_delete=models.CASCADE, null=True)
+class FeedbackV2(BaseFeedback):
+    page_url = models.CharField(blank=True)
     useful = models.BooleanField(default=True)
+    contactable = models.BooleanField(default=False)
     comment = models.TextField(blank=True)
 
 class SearchFeedbackV1(BaseFeedback):

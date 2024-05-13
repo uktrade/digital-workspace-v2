@@ -13,7 +13,7 @@
 </div>
 
 <dialog id="feedback-dialog">
-    {% feedback_submit form_id="ab-v1" %}
+    {% feedback_submit form_id="hr-v1" %}
     <script>
         const dialog = document.querySelector("#feedback-dialog");
         const form = dialog.querySelector("form");
@@ -62,7 +62,7 @@
         function submitFeedbackForm() {
             const formData = new FormData(form);
 
-            formData.set('page','{{page.pk}}');
+            formData.set('page_url','{{page.url}}');
 
             console.log(formData)
 
