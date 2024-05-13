@@ -217,12 +217,6 @@ class ContentPage(BasePage):
                     help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
                 ),
             ),
-            (
-                "cta",
-                blocks.CTABlock(
-                    help_text="""The CTA button is an eye-catching link designed to direct users to a specific page or URL. You can define the label for the button below, as well as the page or URL to which you want the button to point. Please use this component sparingly."""
-                ),
-            ),
         ],
         use_json_field=True,
     )
@@ -384,6 +378,39 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
         query_parts = split_query(query)
 
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
+
+
+class ServiceNavigation(ContentPage):
+    template = "content/navigation_page.html"
+
+    primary_content = StreamField(
+        [
+            ("curated_page_links", blocks.CustomPageLinkListBlock()),
+            ("cta", blocks.CTABlock()),
+        ],
+        blank=True,
+    )
+
+    secondary_content = StreamField(
+        [
+            ("curated_page_links", blocks.CustomPageLinkListBlock()),
+            ("cta", blocks.CTABlock()),
+        ],
+        blank=True,
+    )
+
+    content_panels = BasePage.content_panels + [
+        FieldPanel(
+            "primary_content",
+        ),
+        FieldPanel("body"),
+        FieldPanel("secondary_content"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        return context
 
 
 class SearchExclusionPageLookUp(models.Model):
