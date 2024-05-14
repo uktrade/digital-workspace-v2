@@ -69,7 +69,7 @@ opentelemetry-sdk-extension-aws = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 # Linters
-black = "^24.3.0"
+black = "^24.4.2"
 djlint = "^1.23.2"
 ruff = "^0.4.4"
 # Testing
