@@ -258,13 +258,14 @@ class CustomQueryBuilder(QueryBuilder):
                         query_elements,
                     )
 
-        for score_configuration in score_configurations:
-            query = FunctionScore(
-                model_class=model_class,
-                subquery=query,
-                function_name=score_configuration.function_name,
-                function_params=score_configuration.params,
-            )
+        if query:
+            for score_configuration in score_configurations:
+                query = FunctionScore(
+                    model_class=score_configuration.configuration_model,
+                    subquery=query,
+                    function_name=score_configuration.function_name,
+                    function_params=score_configuration.params,
+                )
 
         return query
 

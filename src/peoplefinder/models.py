@@ -687,10 +687,10 @@ class Person(Indexed, models.Model):
         ScoreFunction(
             "linear",
             field_name="profile_completion",
-            origin=-100,
-            offset=100,
-            scale="100",
-            decay=0.9,
+            origin=100,
+            offset=5,
+            scale=50,
+            decay=0.5,
         ),
         IndexedField(
             "is_active",

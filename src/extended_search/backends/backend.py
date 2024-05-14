@@ -332,21 +332,9 @@ class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
                 f.function_name: f for f in query.model_class.get_score_functions()
             }
             score_func = score_functions[query.function_name]
-            remapped_field_name = score_func.score_name + "_filter"
 
-            # TODO update condition to check if not root class
-            # if query.model_class:
-            #     remapped_field_name = (
-            #         query.model_class._meta.app_label
-            #         + "_"
-            #         + query.model_class.__name__.lower()
-            #         + "__"
-            #         + score_func.score_name
-            #     )
-
-            # remapped_field_name = self.mapping.get_field_column_name(
-            #     score_functions[query.function_name]
-            # )
+            # This is in place of get_field_column_name to build the name of the indexed field.
+            remapped_field_name = score_func.get_score_name() + "_filter"
             params = {remapped_field_name: query.function_params["_field_name_"]}
 
         return {
