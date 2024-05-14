@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 
 import dj_database_url
 import environ
@@ -198,6 +199,9 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
+        "DIRS": [
+            Path(PROJECT_ROOT_DIR) / "dw-design-system",
+        ],
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",

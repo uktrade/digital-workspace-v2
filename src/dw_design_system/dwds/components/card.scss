@@ -1,0 +1,8 @@
+.card {
+  padding: var(--gap-s);
+  border: 1px solid black;
+
+  .card-body {
+    color: red;
+  }
+}
