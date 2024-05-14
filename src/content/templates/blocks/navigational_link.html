@@ -1,0 +1,6 @@
+{% if self.page%}
+    <a href="{{ self.page.url }}" class="ws-navigational-link">{{ self.title }}</a>
+{% else %}
+    <a href="{{ self.url }}" class="ws-navigational-link">{{ self.title }}</a>
+{% endif %}
+

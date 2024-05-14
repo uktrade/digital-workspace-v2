@@ -3,14 +3,13 @@
 .ws-navigational-link{
     display: flex;
     justify-content: space-between;
-    color: $great-blue;
+    color: $brand-color-navy;
     font-family: "Roboto Flex", sans-serif;
     font-size: 19px;
-    font-weight: 700;
+    font-weight: 500;
     text-decoration: none;
 }
 
 .ws-navigational-link::after{
     content: "\002192";
-    color: black;
 }
