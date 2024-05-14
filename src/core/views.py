@@ -10,6 +10,7 @@ from django.views.decorators.http import require_GET
 from notifications_python_client.notifications import NotificationsAPIClient
 from sentry_sdk import capture_message
 
+from content.models import ContentOwnerMixin
 from core.forms import PageProblemFoundForm
 from user.models import User
 
@@ -118,5 +119,36 @@ def user_groups_report(request: HttpRequest, *args, **kwargs) -> HttpResponse:
     writer.writerow(header)
     for obj in qs:
         writer.writerow(obj)
+
+    return response
+
+
+@require_GET
+def content_owners_report(request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    header = ["URL", "Content owner", "Content owner email", "Last updated"]
+    results = [
+        (
+            p.get_full_url(request),
+            p.content_owner.full_name,
+            p.content_contact_email,
+            p.last_published_at,
+        )
+        for model in ContentOwnerMixin.get_all_subclasses()
+        for p in model.objects.all()
+    ]
+
+    filename = "content_owners.csv"
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+    writer = csv.writer(response)
+    writer.writerow(header)
+    for result in results:
+        writer.writerow(result)
 
     return response
