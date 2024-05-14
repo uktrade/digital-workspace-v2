@@ -178,6 +178,17 @@ class ContentOwnerMixin(models.Model):
     class Meta:
         abstract = True
 
+    @classmethod
+    def get_all_subclasses(cls):
+        subclasses = []
+        direct_subclasses = cls.__subclasses__()
+
+        for direct_subclass in direct_subclasses:
+            subclasses.append(direct_subclass)
+            subclasses.extend(direct_subclass.get_all_subclasses())
+
+        return subclasses
+
 
 class ContentPage(BasePage):
     objects = PageManager.from_queryset(ContentPageQuerySet)()
