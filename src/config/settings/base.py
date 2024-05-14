@@ -646,9 +646,9 @@ DJANGO_FEEDBACK_GOVUK = {
             "view": "django_feedback_govuk.views.FeedbackView",
         },
         "hr-v1": {
-            "model": "feedback.models.FeedbackV2",
-            "form": "feedback.forms.FeedbackV2Form",
-            "view": "feedback.views.FeedbackV2FormView",
+            "model": "feedback.models.HRFeedback",
+            "form": "feedback.forms.HRFeedbackForm",
+            "view": "feedback.views.HRFeedbackFormView",
             "copy": {
                 "SUBMIT_TITLE": None,
             },

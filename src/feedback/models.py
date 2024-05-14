@@ -2,7 +2,7 @@ from django.db import models
 from django_feedback_govuk.models import BaseFeedback, SatisfactionOptions
 
 
-class FeedbackV2(BaseFeedback):
+class HRFeedback(BaseFeedback):
     page_url = models.CharField(blank=True)
     useful = models.BooleanField(default=True)
     contactable = models.BooleanField(default=False)
