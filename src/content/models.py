@@ -24,7 +24,6 @@ from wagtail.utils.decorators import cached_classmethod
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
-from core.utils import set_seen_cookie_banner
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed
 from peoplefinder.widgets import PersonChooser
@@ -81,7 +80,6 @@ class BasePage(Page, Indexed):
 
     def serve(self, request):
         response = super().serve(request)
-        set_seen_cookie_banner(request, response)
 
         return response
 
@@ -179,6 +177,17 @@ class ContentOwnerMixin(models.Model):
 
     class Meta:
         abstract = True
+
+    @classmethod
+    def get_all_subclasses(cls):
+        subclasses = []
+        direct_subclasses = cls.__subclasses__()
+
+        for direct_subclass in direct_subclasses:
+            subclasses.append(direct_subclass)
+            subclasses.extend(direct_subclass.get_all_subclasses())
+
+        return subclasses
 
 
 class ContentPage(BasePage):

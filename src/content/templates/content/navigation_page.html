@@ -2,6 +2,7 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
+    {% include 'feedback.html' %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
     <div class="ws-content-grid">
         {% for block in page.primary_content %}

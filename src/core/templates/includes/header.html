@@ -1,6 +1,5 @@
 {% load menu_tags waffle_tags %}
 {% load render_bundle webpack_static from webpack_loader %}
-{% load cookie_banner %}
 {% load site_alert %}
 
 <header class="govuk-header govuk-header--ws search-v2"
@@ -48,7 +47,6 @@
         </div>
     </div>
 </header>
-{% cookie_banner %}
 {% if FEATURE_FLAGS.new_homepage %}
 {% else %}
     {% if USER_IS_AUTHENTICATED %}

@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 
 import dj_database_url
 import environ
@@ -198,6 +199,9 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
+        "DIRS": [
+            Path(PROJECT_ROOT_DIR) / "dw-design-system",
+        ],
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -644,6 +648,14 @@ DJANGO_FEEDBACK_GOVUK = {
             "model": "django_feedback_govuk.models.Feedback",
             "form": "django_feedback_govuk.forms.FeedbackForm",
             "view": "django_feedback_govuk.views.FeedbackView",
+        },
+        "hr-v1": {
+            "model": "feedback.models.HRFeedback",
+            "form": "feedback.forms.HRFeedbackForm",
+            "view": "feedback.views.HRFeedbackFormView",
+            "copy": {
+                "SUBMIT_TITLE": None,
+            },
         },
         "search-v1": {
             "model": "feedback.models.SearchFeedbackV1",
