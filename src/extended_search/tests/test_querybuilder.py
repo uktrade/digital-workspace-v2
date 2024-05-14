@@ -339,9 +339,13 @@ class TestQueryBuilder:
 
     def test__get_search_query(self, mocker):
         model = mocker.Mock()
+        model._meta.app_label = "mock_app"
+        model.__name__ = "model"
+
         indexed_field = mocker.Mock(spec=IndexedField)
         indexed_field.model_field_name = "indexed"
         related_fields = mocker.Mock(spec=RelatedFields)
+        related_fields.configuration_model = model
         related_fields.model_field_name = "related"
         search_field = mocker.Mock(spec=SearchField)
         search_field.model_field_name = "search"
@@ -403,7 +407,7 @@ class TestQueryBuilder:
                 else:
                     assert isinstance(called[0], Nested)
                     assert called[0].subquery == query
-                    assert called[0].path == "related"
+                    assert called[0].path == "mock_app_model__related"
                     assert called[1] is None
                     count += 1
         assert count == 3

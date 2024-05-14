@@ -290,10 +290,17 @@ class TestOnlyFieldSearchQueryCompiler:
         mock_remap = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._remap_fields"
         )
-        query = OnlyFields(PlainText("quid"), fields=["foo"], only_model=ContentPage)
+        query = OnlyFields(
+            PlainText("quid"),
+            fields=["foo"],
+            only_model=ContentPage,
+        )
         compiler = OnlyFieldSearchQueryCompiler(ContentPage.objects.all(), query)
         compiler._compile_query(query, Field("bar"), 3.5)
-        assert call(["foo"], only_model=ContentPage) in mock_remap.call_args_list
+        assert (
+            call(["foo"], get_searchable_fields__kwargs={"only_model": ContentPage})
+            in mock_remap.call_args_list
+        )
 
     def test_compile_query_onlyfields_logic(self, mocker):
         remapped_field = mocker.Mock(field_name="baz")
