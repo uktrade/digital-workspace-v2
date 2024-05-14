@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
@@ -47,12 +47,17 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
     def _remap_fields(
         self,
         fields,
-        get_searchable_fields__args: tuple,
-        get_searchable_fields__kwargs: dict,
+        get_searchable_fields__args: Optional[tuple] = None,
+        get_searchable_fields__kwargs: Optional[dict] = None,
     ):
         """
         Convert field names into index column names
         """
+        if get_searchable_fields__args is None:
+            get_searchable_fields__args = ()
+        if get_searchable_fields__kwargs is None:
+            get_searchable_fields__kwargs = {}
+
         if not fields:
             return super()._remap_fields(fields)
 
@@ -200,7 +205,12 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
         if not isinstance(query, OnlyFields):
             return super()._compile_query(query, field, boost)
 
-        remapped_fields = self._remap_fields(query.fields, only_model=query.only_model)
+        remapped_fields = self._remap_fields(
+            query.fields,
+            get_searchable_fields__kwargs={
+                "only_model": query.only_model,
+            },
+        )
 
         if isinstance(field, list) and len(field) == 1:
             field = field[0]
