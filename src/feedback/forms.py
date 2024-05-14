@@ -3,7 +3,7 @@ from django.forms import HiddenInput, RadioSelect
 from django_feedback_govuk.forms import SUBMIT_BUTTON, BaseFeedbackForm
 from django_feedback_govuk.models import SatisfactionOptions
 
-from feedback.models import SearchFeedbackV1, SearchFeedbackV2
+from feedback.models import HRFeedback, SearchFeedbackV1, SearchFeedbackV2
 
 
 class SearchFeedbackV1Form(BaseFeedbackForm):
@@ -44,6 +44,53 @@ class SearchFeedbackV1Form(BaseFeedbackForm):
             )
         )
         self.helper.layout.append(SUBMIT_BUTTON)
+
+
+class HRFeedbackForm(BaseFeedbackForm):
+    class Meta:
+        model = HRFeedback
+        fields = ["useful", "comment", "page_url", "contactable", "submitter"]
+        widgets = {
+            "useful": HiddenInput(),
+            "page_url": HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["useful"].label = ""
+        self.fields["comment"].label = ""
+        self.fields["contactable"].label = (
+            "Do you wish to be contacted for further research opportunities?"
+        )
+        self.fields["page_url"].label = ""
+
+        self.helper.layout.remove(SUBMIT_BUTTON)
+        self.helper.layout.append(
+            Fieldset(
+                legend="Providing feedback on your experience will help us improve the service",
+                legend_size=Size.MEDIUM,
+            )
+        )
+        self.helper.layout.append(Field("page_url"))
+        self.helper.layout.append(Field("useful"))
+        self.helper.layout.append(
+            Fieldset(
+                Field("comment"),
+                Field("contactable"),
+                legend="Why was this page not useful?",
+                legend_size=Size.SMALL,
+            )
+        )
+        self.helper.layout.append(SUBMIT_BUTTON)
+        self.helper.layout.append(
+            Button(
+                "close",
+                "Close feedback form",
+                css_class="govuk-button--secondary",
+                formmethod="dialog",
+            )
+        )
 
 
 class SearchFeedbackV2Form(BaseFeedbackForm):
