@@ -408,7 +408,6 @@ SD
 SE
 search_and_profile_bar.html
 search_keyword_or_phrase__pk
-seen_cookie_banner
 self.seo_title
 SerializerMethodField
 Server-Authorization'
@@ -451,7 +450,6 @@ Tobago
 ToolsHome
 TopicHome
 TopicTheme
-TransitionHome
 Turks
 Tuvalu
 TW

@@ -1,0 +1,12 @@
+{% load wagtailcore_tags %}
+
+{% block content %}
+    <h2 class="govuk-heading-m" id="{{ self.title|slugify }}">{{ self.title }}</h2>
+    <ul class="govuk-list">
+        {% for page in self.pages %}
+            <li>
+                <a class="govuk-link" href={% pageurl page %}>{{ page.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

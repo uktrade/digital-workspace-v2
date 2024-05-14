@@ -12,7 +12,6 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.snippets.models import register_snippet
 
 from content.models import BasePage
-from core.utils import set_seen_cookie_banner
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import ScoreFunction
 from news.forms import CommentForm
@@ -222,7 +221,6 @@ class NewsPage(PageWithTopics):
         context["comment_form"] = CommentForm()
 
         response = TemplateResponse(request, self.template, context)
-        set_seen_cookie_banner(request, response)
 
         return response
 
@@ -250,7 +248,6 @@ class NewsHome(RoutablePageMixin, BasePage):
             self.get_template(request),
             context,
         )
-        set_seen_cookie_banner(request, response)
 
         return response
 
@@ -264,7 +261,6 @@ class NewsHome(RoutablePageMixin, BasePage):
             self.get_template(request),
             context,
         )
-        set_seen_cookie_banner(request, response)
 
         return response
 

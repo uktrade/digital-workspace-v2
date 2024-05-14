@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class CountryFactSheetHome(ContentPage):
+    template = "country_fact_sheet/country_fact_sheet_home.html"
     country_factsheets_help_text = (
         "Uploaded PDF documents in the selected collection will be displayed"
         " as a list of country factsheets on the page."

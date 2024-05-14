@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, Subquery
 from django.forms import widgets
+from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import (
@@ -23,7 +24,6 @@ from wagtail.utils.decorators import cached_classmethod
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
-from core.utils import set_seen_cookie_banner
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed
 from peoplefinder.widgets import PersonChooser
@@ -80,7 +80,6 @@ class BasePage(Page, Indexed):
 
     def serve(self, request):
         response = super().serve(request)
-        set_seen_cookie_banner(request, response)
 
         return response
 
@@ -94,6 +93,13 @@ class BasePage(Page, Indexed):
             return first_revision_with_user.user
         else:
             return None
+
+    @property
+    def days_since_last_published(self):
+        if self.last_published_at:
+            result = timezone.now() - self.last_published_at
+            return result.days
+        return None
 
 
 class ContentPageQuerySet(PageQuerySet):
@@ -215,6 +221,13 @@ class ContentPage(BasePage):
         use_json_field=True,
     )
 
+    custom_page_links = StreamField(
+        [
+            ("page_links", blocks.CustomPageLinkListBlock()),
+        ],
+        blank=True,
+    )
+
     excerpt = models.CharField(
         max_length=700,
         blank=True,
@@ -317,6 +330,7 @@ class ContentPage(BasePage):
 
     content_panels = BasePage.content_panels + [
         FieldPanel("excerpt", widget=widgets.Textarea),
+        FieldPanel("custom_page_links"),
         FieldPanel("body"),
     ]
 
@@ -366,6 +380,39 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
+class ServiceNavigation(ContentPage):
+    template = "content/navigation_page.html"
+
+    primary_content = StreamField(
+        [
+            ("curated_page_links", blocks.CustomPageLinkListBlock()),
+            ("cta", blocks.CTABlock()),
+        ],
+        blank=True,
+    )
+
+    secondary_content = StreamField(
+        [
+            ("curated_page_links", blocks.CustomPageLinkListBlock()),
+            ("cta", blocks.CTABlock()),
+        ],
+        blank=True,
+    )
+
+    content_panels = BasePage.content_panels + [
+        FieldPanel(
+            "primary_content",
+        ),
+        FieldPanel("body"),
+        FieldPanel("secondary_content"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        return context
+
+
 class SearchExclusionPageLookUp(models.Model):
     objects = SearchKeywordOrPhraseQuerySet.as_manager()
 
@@ -392,21 +439,3 @@ class SearchPinPageLookUp(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
     # TODO: Remove historical records.
     history = HistoricalRecords()
-
-
-class PrivacyPolicyHome(ContentPage):
-    is_creatable = False
-
-    subpage_types = [
-        "content.PrivacyPolicy",
-    ]
-
-    template = "content/content_page.html"
-
-
-class PrivacyPolicy(ContentPage):
-    is_creatable = True
-
-    subpage_types = []
-
-    template = "content/content_page.html"
