@@ -112,15 +112,10 @@ class Network(ContentOwnerMixin, ContentPage):
     base_form_class = NetworkForm
 
     indexed_fields = [
-        RelatedFields(
-            "topics",
-            [
-                IndexedField(
-                    "title",
-                    tokenized=True,
-                    explicit=True,
-                ),
-            ],
+        IndexedField(
+            "topic_titles",
+            tokenized=True,
+            explicit=True,
         ),
     ] + ContentOwnerMixin.indexed_fields
 

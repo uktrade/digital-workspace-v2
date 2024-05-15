@@ -293,6 +293,10 @@ class ContentPage(BasePage):
         topic_ids = self.page_topics.all().values_list("topic__pk", flat=True)
         return Topic.objects.filter(pk__in=topic_ids)
 
+    @property
+    def topic_titles(self):
+        return [topic.title for topic in self.topics]
+
     #
     # Search
     # Specific fields and settings to manage search. Extra fields are generally
