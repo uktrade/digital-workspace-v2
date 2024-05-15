@@ -7,7 +7,6 @@ from wagtail.admin.panels import FieldPanel, InlinePanel
 
 from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
 from extended_search.index import DWIndexedField as IndexedField
-from extended_search.index import RelatedFields
 
 
 class WorkingAtDITHome(ContentPage):
