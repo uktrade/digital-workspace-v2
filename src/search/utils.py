@@ -7,7 +7,7 @@ from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
 from extended_search import settings as search_settings
 from extended_search.index import Indexed
-from extended_search.query import OnlyFields
+from extended_search.query import Nested, OnlyFields
 from extended_search.query_builder import CustomQueryBuilder
 
 
@@ -150,7 +150,9 @@ def get_query_info(fields, field, index_field, suffix_map):
     if field is None:
         return fields
 
-    if isinstance(field, Or):
+    if isinstance(field, Nested):
+        fields = get_query_info(fields, field.subquery, index_field, suffix_map)
+    elif isinstance(field, Or):
         for f in field.subqueries:
             fields = get_query_info(fields, f, index_field, suffix_map)
 
@@ -194,7 +196,8 @@ def get_query_info_for_model(model_class: Indexed, query: str) -> list:
             query,
         )
         get_query_info(query_info, field, index_field, analyzer_field_suffices)
-    return query_info
+
+    return sorted(query_info, key=lambda x: x["field"])
 
 
 def get_bad_score_threshold(query, category):

@@ -628,6 +628,12 @@ class Person(Indexed, models.Model):
                 ),
             ],
         ),
+        IndexedField(
+            "other_key_skills",
+            tokenized=True,
+            explicit=True,
+            boost=0.8,
+        ),
         RelatedFields(
             "learning_interests",
             [

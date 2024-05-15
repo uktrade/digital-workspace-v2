@@ -5,6 +5,7 @@ from wagtail.admin.panels import FieldPanel
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
 from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import RelatedFields
 
 
 class NetworksHome(ContentPage):
@@ -110,17 +111,18 @@ class Network(ContentOwnerMixin, ContentPage):
     ]
     base_form_class = NetworkForm
 
-    @property
-    def search_topics(self):
-        return " ".join(self.topics.all().values_list("topic__title", flat=True))
-
     indexed_fields = [
-        IndexedField(
-            "search_topics",
-            tokenized=True,
-            explicit=True,
+        RelatedFields(
+            "topics",
+            [
+                IndexedField(
+                    "title",
+                    tokenized=True,
+                    explicit=True,
+                ),
+            ],
         ),
-    ]
+    ] + ContentOwnerMixin.indexed_fields
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

@@ -35,5 +35,8 @@
     "engines": {
         "npm": ">8.0.0",
         "node": ">20.0.0"
+    },
+    "devDependencies": {
+        "prettier": "3.2.5"
     }
 }

@@ -7,6 +7,7 @@ from wagtail.admin.panels import FieldPanel, InlinePanel
 
 from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
 from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import RelatedFields
 
 
 class WorkingAtDITHome(ContentPage):
@@ -43,7 +44,7 @@ class Topic(ContentOwnerMixin, ContentPage):
             ContentPage.objects.public()
             .live()
             .filter(
-                topics__topic=self,
+                page_topics__topic=self,
                 content_type__app_label="working_at_dit",
             )
             .filter(Q(content_type__model="policy") | Q(content_type__model="guidance"))
@@ -70,6 +71,8 @@ class Topic(ContentOwnerMixin, ContentPage):
     content_panels = ContentPage.content_panels + [
         InlinePanel("topic_themes", label="Themes"),
     ]
+
+    indexed_fields = ContentOwnerMixin.indexed_fields
 
 
 class TopicHome(BasePage):
@@ -111,7 +114,7 @@ class PageTopic(models.Model):
     page = ParentalKey(
         "content.ContentPage",
         on_delete=models.CASCADE,
-        related_name="topics",
+        related_name="page_topics",
     )
 
     topic = models.ForeignKey(
@@ -124,44 +127,31 @@ class PageTopic(models.Model):
         FieldPanel("topic"),
     ]
 
-    indexed_fields = [
-        IndexedField(
-            "topic",
-            tokenized=True,
-            explicit=True,
-        ),
-    ]
-
-    search_fields = []
-
     class Meta:
         unique_together = ("page", "topic")
 
 
 class PageWithTopics(ContentPage):
-    @property
-    def search_topics(self):
-        return " ".join(self.topics.all().values_list("topic__title", flat=True))
-
     indexed_fields = [
-        IndexedField(
-            "search_topics",
-            tokenized=True,
-            explicit=True,
+        RelatedFields(
+            "topics",
+            [
+                IndexedField(
+                    "title",
+                    tokenized=True,
+                    explicit=True,
+                ),
+            ],
         ),
     ]
 
     content_panels = ContentPage.content_panels + [
-        InlinePanel("topics", label="Topics"),
+        InlinePanel("page_topics", label="Topics"),
     ]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
-        context["page_topics"] = PageTopic.objects.filter(
-            page=self,
-        ).order_by("topic__title")
-
+        context["page_topics"] = self.page_topics.order_by("topic__title")
         return context
 
 
@@ -176,6 +166,8 @@ class HowDoI(ContentOwnerMixin, PageWithTopics):
     content_panels = PageWithTopics.content_panels + [
         FieldPanel("include_link_on_homepage"),
     ]
+
+    indexed_fields = ContentOwnerMixin.indexed_fields
 
 
 class HowDoIHome(ContentPage):
@@ -198,12 +190,16 @@ class Guidance(ContentOwnerMixin, PageWithTopics):
 
     subpage_types = ["working_at_dit.Guidance"]
 
+    indexed_fields = ContentOwnerMixin.indexed_fields
+
 
 class Policy(ContentOwnerMixin, PageWithTopics):
     template = "working_at_dit/content_with_related_topics.html"
     is_creatable = True
 
     subpage_types = ["working_at_dit.Policy"]
+
+    indexed_fields = ContentOwnerMixin.indexed_fields
 
 
 class PoliciesHome(BasePage):
