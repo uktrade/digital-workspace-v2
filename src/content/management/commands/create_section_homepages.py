@@ -245,6 +245,7 @@ class Command(BaseCommand):
         try:
             Page.objects.get(slug="blogs")
         except Page.DoesNotExist:
+            self.stdout.write("Creating BlogIndex")
             blog_index = BlogIndex(
                 title="Blogs",
                 slug="blogs",
@@ -259,3 +260,5 @@ class Command(BaseCommand):
             home_page.save()
 
             blog_index.save_revision().publish()
+        else:
+            self.stdout.write("BlogIndex already found")

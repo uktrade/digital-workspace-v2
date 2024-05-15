@@ -489,10 +489,13 @@ class BlogIndex(BasePage):
     ]
     is_creatable = False
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["children"] = self.get_children()
+        return context
 
-class BlogPost(ContentOwnerMixin, ContentPage):
+
+class BlogPost(ContentPage):
     template = "content/blog_post.html"
     subpage_types = []
     is_creatable = True
-
-    indexed_fields = [] + ContentOwnerMixin.indexed_fields
