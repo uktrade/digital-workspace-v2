@@ -286,11 +286,12 @@ class ContentPage(BasePage):
     # and it's not worth the effort to refactor it.
     #
 
-    topics = models.ManyToManyField(
-        "working_at_dit.Topic",
-        through="working_at_dit.PageTopic",
-        related_name="+",
-    )
+    @property
+    def topics(self):
+        from working_at_dit.models import Topic
+
+        topic_ids = self.page_topics.all().values_list("topic__pk", flat=True)
+        return Topic.objects.filter(pk__in=topic_ids)
 
     #
     # Search
