@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 from wagtail.models import Page
 
 from about_us.models import AboutUsHome
-from content.models import ContentPage
+from content.models import BlogIndex, ContentPage
 from country_fact_sheet.models import CountryFactSheetHome
 from networks.models import NetworksHome
 from news.models import NewsHome
@@ -239,3 +240,22 @@ class Command(BaseCommand):
             home_page.save()
 
             country_fact_sheet_homepage.save_revision().publish()
+
+        # Blogs
+        try:
+            Page.objects.get(slug="blogs")
+        except Page.DoesNotExist:
+            blog_index = BlogIndex(
+                title="Blogs",
+                slug="blogs",
+                live=True,
+                first_published_at=timezone.now(),
+                show_in_menus=True,
+                depth=9,  # FIXME: work out what this is
+                legacy_path=None,
+            )
+
+            home_page.add_child(instance=blog_index)
+            home_page.save()
+
+            blog_index.save_revision().publish()
