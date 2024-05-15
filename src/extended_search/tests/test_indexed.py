@@ -6,7 +6,7 @@ from wagtail.models import Page
 from wagtailmedia.models import Media
 
 from about_us.models import AboutUs, AboutUsHome
-from content.models import BasePage, ContentPage, ServiceNavigation, BlogIndex, BlogPost
+from content.models import BasePage, BlogIndex, BlogPost, ContentPage, ServiceNavigation
 from country_fact_sheet.models import CountryFactSheetHome
 from extended_search.index import DWIndexedField, class_is_indexed, get_indexed_models
 from extended_search.management.commands.create_index_fields_json import (
