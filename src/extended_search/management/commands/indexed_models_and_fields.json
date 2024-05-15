@@ -108,7 +108,6 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
-        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_categories>",
@@ -118,7 +117,9 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: title>"
+        "<SearchField: title>",
+        "<SearchField: topic_titles>",
+        "<SearchField: topic_titles_explicit>"
     ],
     "<class 'news.models.NewsHome'>": [
         "<AutocompleteField: title>",
@@ -229,7 +230,6 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
-        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
@@ -238,7 +238,9 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: title>"
+        "<SearchField: title>",
+        "<SearchField: topic_titles>",
+        "<SearchField: topic_titles_explicit>"
     ],
     "<class 'working_at_dit.models.HowDoI'>": [
         "<AutocompleteField: title>",
@@ -258,7 +260,6 @@
         "<FilterField: title>",
         "<FilterField: translation_key>",
         "<RelatedFields content_owner fields=['<SearchField: first_name_explicit>', '<SearchField: last_name_explicit>', '<SearchField: preferred_first_name_explicit>']>",
-        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: content_contact_email_explicit>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
@@ -268,7 +269,9 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: title>"
+        "<SearchField: title>",
+        "<SearchField: topic_titles>",
+        "<SearchField: topic_titles_explicit>"
     ],
     "<class 'working_at_dit.models.HowDoIHome'>": [
         "<AutocompleteField: title>",
@@ -315,7 +318,6 @@
         "<FilterField: title>",
         "<FilterField: translation_key>",
         "<RelatedFields content_owner fields=['<SearchField: first_name_explicit>', '<SearchField: last_name_explicit>', '<SearchField: preferred_first_name_explicit>']>",
-        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: content_contact_email_explicit>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
@@ -325,7 +327,9 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: title>"
+        "<SearchField: title>",
+        "<SearchField: topic_titles>",
+        "<SearchField: topic_titles_explicit>"
     ],
     "<class 'working_at_dit.models.Policy'>": [
         "<AutocompleteField: title>",
@@ -345,7 +349,6 @@
         "<FilterField: title>",
         "<FilterField: translation_key>",
         "<RelatedFields content_owner fields=['<SearchField: first_name_explicit>', '<SearchField: last_name_explicit>', '<SearchField: preferred_first_name_explicit>']>",
-        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: content_contact_email_explicit>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
@@ -355,7 +358,9 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: title>"
+        "<SearchField: title>",
+        "<SearchField: topic_titles>",
+        "<SearchField: topic_titles_explicit>"
     ],
     "<class 'working_at_dit.models.PoliciesHome'>": [
         "<AutocompleteField: title>",
@@ -429,7 +434,6 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
-        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
@@ -441,7 +445,9 @@
         "<SearchField: search_tool_name>",
         "<SearchField: search_tool_name_explicit>",
         "<SearchField: search_tool_name_keyword>",
-        "<SearchField: title>"
+        "<SearchField: title>",
+        "<SearchField: topic_titles>",
+        "<SearchField: topic_titles_explicit>"
     ],
     "<class 'tools.models.ToolsHome'>": [
         "<AutocompleteField: title>",
@@ -487,7 +493,6 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
-        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
@@ -496,7 +501,9 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: title>"
+        "<SearchField: title>",
+        "<SearchField: topic_titles>",
+        "<SearchField: topic_titles_explicit>"
     ],
     "<class 'about_us.models.AboutUsHome'>": [
         "<AutocompleteField: title>",
@@ -515,7 +522,6 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
-        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
@@ -524,7 +530,9 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: title>"
+        "<SearchField: title>",
+        "<SearchField: topic_titles>",
+        "<SearchField: topic_titles_explicit>"
     ],
     "<class 'networks.models.NetworksHome'>": [
         "<AutocompleteField: title>",
@@ -571,7 +579,6 @@
         "<FilterField: title>",
         "<FilterField: translation_key>",
         "<RelatedFields content_owner fields=['<SearchField: first_name_explicit>', '<SearchField: last_name_explicit>', '<SearchField: preferred_first_name_explicit>']>",
-        "<RelatedFields topics fields=['<SearchField: title>', '<SearchField: title_explicit>']>",
         "<SearchField: content_contact_email_explicit>",
         "<SearchField: excerpt>",
         "<SearchField: excerpt_explicit>",
@@ -581,7 +588,9 @@
         "<SearchField: search_headings_explicit>",
         "<SearchField: search_title>",
         "<SearchField: search_title_explicit>",
-        "<SearchField: title>"
+        "<SearchField: title>",
+        "<SearchField: topic_titles>",
+        "<SearchField: topic_titles_explicit>"
     ],
     "<class 'country_fact_sheet.models.CountryFactSheetHome'>": [
         "<AutocompleteField: title>",
