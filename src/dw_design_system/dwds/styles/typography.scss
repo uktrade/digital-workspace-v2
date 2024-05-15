@@ -1,3 +1,27 @@
-h1 {
-  color: var(--text-colour);
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap');
+
+// here as examples only
+
+.roboto-light {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-light);
+  font-style: normal;
+}
+
+.roboto-regular {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-normal);
+  font-style: normal;
+}
+
+.roboto-bold {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-bold);
+  font-style: normal;
+}
+
+.roboto-regular-italic {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-normal);
+  font-style: italic;
 }

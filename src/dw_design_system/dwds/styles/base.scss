@@ -1,0 +1,23 @@
+// not yet used since our components are only on some pages
+* {
+	box-sizing: border-box;
+	max-inline-size: var(--measure);
+}
+
+html,
+body,
+div,
+header,
+nav,
+main,
+footer {
+	max-inline-size: none;
+}
+
+body {
+	font-family: var(--font-family-primary);
+	font-size: var(--font-size-m);
+	line-height: var(--font-lineheight-body);
+	background-color: var(--color-background);
+	color: var(--color-text);
+}

@@ -1,6 +1,9 @@
 // Styles
 @forward "styles/variables";
 @forward "styles/typography";
+@forward "styles/layout-primitives";
+// @forward "styles/base";  // Use once we migrate everything to the new approach
+@forward "styles/temporary-base";  // Remove this once we switch to the above base.scss
 
 // Components
 @forward "components/card";

@@ -1,0 +1,60 @@
+// Stack
+// https://every-layout.dev/layouts/stack/
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.stack>* {
+    margin-block: 0;
+}
+
+.stack>*+* {
+    margin-block-start: var(--space, 1.5rem);
+}
+
+
+// Box
+// https://every-layout.dev/layouts/box/
+
+.box {
+    padding: var(--s1);
+    border: var(--border-thin) solid;
+    --color-light: #fff;
+    --color-dark: #000;
+    color: var(--color-dark);
+    background-color: var(--color-light);
+}
+
+.box * {
+    color: inherit;
+}
+
+.box.invert {
+    color: var(--color-light);
+    background-color: var(--color-dark);
+}
+
+
+// Center
+// https://every-layout.dev/layouts/center/
+
+.center {
+    box-sizing: content-box;
+    margin-inline: auto;
+    max-inline-size: var(--measure);
+}
+
+
+// Cluster
+// https://every-layout.dev/layouts/cluster/
+
+.cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space, 1rem);
+    justify-content: flex-start;
+    align-items: center;
+}
