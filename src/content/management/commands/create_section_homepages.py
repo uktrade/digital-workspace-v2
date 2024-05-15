@@ -252,7 +252,6 @@ class Command(BaseCommand):
                 live=True,
                 first_published_at=timezone.now(),
                 show_in_menus=True,
-                depth=9,  # FIXME: work out what this is
                 legacy_path=None,
             )
 
