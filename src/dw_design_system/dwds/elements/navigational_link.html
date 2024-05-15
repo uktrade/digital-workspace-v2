@@ -1,0 +1,7 @@
+{% if self.page and self.text %}
+    <a href="{{ self.page.url }}" class="dwds-navigational-link">{{ self.text }}</a>
+{% elif self.pages and self.title %}
+    <a href="#" class="dwds-navigational-link">{{ self.title }}</a>
+{% elif self.url %}
+    <a href="{{ self.url }}" class="dwds-navigational-link">{{ self.text }}</a>
+{% endif %}
