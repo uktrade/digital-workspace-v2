@@ -62,7 +62,7 @@
         "<SearchField: search_title_explicit>",
         "<SearchField: title>"
     ],
-    "<class 'content.models.ServiceNavigation'>": [
+    "<class 'content.models.NavigationPage'>": [
         "<AutocompleteField: title>",
         "<FilterField: content_type>",
         "<FilterField: depth>",
