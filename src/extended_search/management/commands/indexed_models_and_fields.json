@@ -68,7 +68,6 @@
         "<FilterField: depth>",
         "<FilterField: first_published_at>",
         "<FilterField: id>",
-        "<FilterField: is_creatable>",
         "<FilterField: last_published_at>",
         "<FilterField: latest_revision_created_at>",
         "<FilterField: live>",
@@ -79,14 +78,6 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
-        "<SearchField: excerpt>",
-        "<SearchField: excerpt_explicit>",
-        "<SearchField: search_content>",
-        "<SearchField: search_content_explicit>",
-        "<SearchField: search_headings>",
-        "<SearchField: search_headings_explicit>",
-        "<SearchField: search_title>",
-        "<SearchField: search_title_explicit>",
         "<SearchField: title>"
     ],
     "<class 'content.models.BlogIndex'>": [
