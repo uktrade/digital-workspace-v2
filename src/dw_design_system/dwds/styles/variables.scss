@@ -1,5 +1,8 @@
 :root {
+  // Colour
   --text-colour: black;
+  --dbt-blue: #00285F;
+  --gds-active-highlight: #fd0;
 
   // Size
   --gap-xxs: 0.125rem;
@@ -9,4 +12,10 @@
   --gap-l: 2rem;
   --gap-xl: 4rem;
   --gap-xxl: 8rem;
+  --font-l: 19px;
+
+  // Typography
+  --font-family-primary: "Roboto Flex", sans-serif;
+  --font-weight-normal: 400;
+
 }
