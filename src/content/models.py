@@ -422,21 +422,16 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
-class ServiceNavigation(ContentPage):
+class NavigationPage(BasePage):
     template = "content/navigation_page.html"
 
-    primary_content = StreamField(
-        [
-            ("curated_page_links", blocks.CustomPageLinkListBlock()),
-            ("cta", blocks.CTABlock()),
-        ],
+    primary_elements = StreamField(
+        [],
         blank=True,
     )
 
-    secondary_content = StreamField(
+    secondary_elements = StreamField(
         [
-            ("curated_page_links", blocks.CustomPageLinkListBlock()),
-            ("cta", blocks.CTABlock()),
             ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
             ("dw_cta", dwds_blocks.CTABlock()),
         ],
@@ -444,11 +439,8 @@ class ServiceNavigation(ContentPage):
     )
 
     content_panels = BasePage.content_panels + [
-        FieldPanel(
-            "primary_content",
-        ),
-        FieldPanel("body"),
-        FieldPanel("secondary_content"),
+        FieldPanel("primary_elements"),
+        FieldPanel("secondary_elements"),
     ]
 
     def get_context(self, request, *args, **kwargs):
