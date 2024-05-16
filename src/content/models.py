@@ -22,6 +22,7 @@ from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
+import dw_design_system.dwds.components as dwds_blocks
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from extended_search.index import DWIndexedField as IndexedField
@@ -398,6 +399,7 @@ class ServiceNavigation(ContentPage):
         [
             ("curated_page_links", blocks.CustomPageLinkListBlock()),
             ("cta", blocks.CTABlock()),
+            ("navigation_card", dwds_blocks.NavigationCardBlock()),
         ],
         blank=True,
     )
@@ -406,6 +408,7 @@ class ServiceNavigation(ContentPage):
         [
             ("curated_page_links", blocks.CustomPageLinkListBlock()),
             ("cta", blocks.CTABlock()),
+            ("navigation_card", dwds_blocks.NavigationCardBlock()),
         ],
         blank=True,
     )
