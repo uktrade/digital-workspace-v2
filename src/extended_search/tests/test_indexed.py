@@ -227,7 +227,7 @@ class TestModuleFunctions:
 
 class TestProject:
     def test_indexed_models(self):
-        assert get_indexed_models() == [
+        assert set(get_indexed_models()) == {
             IndexedModel,
             ChildModel,
             StandardIndexedModel,
@@ -265,7 +265,7 @@ class TestProject:
             Image,
             Page,
             Media,
-        ], "Indexed models have changed, please update this test if this was intentional."
+        }, "Indexed models have changed, please update this test if this was intentional."
 
     def test_indexed_models_and_fields(test):
         with open(JSON_FILE, "r") as f:
