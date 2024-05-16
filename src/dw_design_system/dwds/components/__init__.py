@@ -1,5 +1,6 @@
-from .link_list import CustomPageLinkListBlock
 from .cta import CTABlock
+from .link_list import CustomPageLinkListBlock
+
 
 __all__ = [
     "CTABlock",
