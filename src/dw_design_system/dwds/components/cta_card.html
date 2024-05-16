@@ -1,6 +1,6 @@
-<div class="cta_card">
-    {% include '../elements/navigational_link.html' with title=title page=page %}
-    <div class="cta_card_body">
-        <p>{{ text }}</p>
-    </div>
+<div class="dwds-cta-card">
+        {% include '../elements/navigational_link.html' with url=self.url text=self.title %}
+    {% if description %}
+        <p>{{ description }}</p>
+    {% endif %}
 </div>

@@ -1,8 +1,7 @@
-.cta_card{
+.dwds-cta-card{
+    background-color: #d3d3d3;
     padding: var(--gap-s);
-    border: 1px solid black;
-    .cta_card_body{
-        color: green;
-    }
-
+    border: var(--gap-xxs) solid #000;
+    border-top-width: thick;
+    border-top-color: var(--dbt-blue);
 }
