@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+
+.dwds-ws-navigational-link{
+    display: flex;
+    justify-content: space-between;
+    color: green;
+    font-family: "Roboto Flex", sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.dwds-navigational-link::after{
+    content: "\002192";
+}
