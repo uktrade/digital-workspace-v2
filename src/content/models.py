@@ -24,6 +24,7 @@ from wagtail.utils.decorators import cached_classmethod
 
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
+import dw_design_system.dwds.components as dwds_blocks
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed
 from peoplefinder.widgets import PersonChooser
@@ -406,6 +407,8 @@ class ServiceNavigation(ContentPage):
         [
             ("curated_page_links", blocks.CustomPageLinkListBlock()),
             ("cta", blocks.CTABlock()),
+            ("curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
+            ("cta", dwds_blocks.CTABlock()),
         ],
         blank=True,
     )

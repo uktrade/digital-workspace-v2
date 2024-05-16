@@ -2,8 +2,16 @@
   // Colour
   --color-text: black;
   --color-text-highlight: #fff;
+  --color-link: #2a127e;
+  --color-link-hover: #fff;
+  --color-link-active: #fff;
+  --color-link-visited: #fff;
   --color-background: white;
   --color-background-highlight: white;
+  --color-background-card: white;
+  --color-background-card-highlight: blue;
+  --color-border: white;
+  --color-border-highlight: white;
 
   // Size
   --ratio: 1.5;
@@ -29,4 +37,3 @@
   --font-lineheight-headings: 1.25rem;
   --font-lineheight-interface: 1rem;
 }
-
