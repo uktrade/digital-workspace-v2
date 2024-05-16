@@ -565,7 +565,7 @@ def audit_log_migrator() -> Callable[[Versions], Optional[LegacyAuditLog]]:
 
 
 def get_content_obj(
-    related_obj: Union[People, Groups, Memberships]
+    related_obj: Union[People, Groups, Memberships],
 ) -> Optional[Union[Person, Team, TeamMember]]:
     if isinstance(related_obj, People):
         user = get_user_for_legacy_person(related_obj)

@@ -132,7 +132,7 @@ def content_owners_report(request: HttpRequest, *args, **kwargs) -> HttpResponse
     results = [
         (
             p.get_full_url(request),
-            p.content_owner.full_name,
+            p.content_owner.full_name if p.content_owner else "",
             p.content_contact_email,
             p.last_published_at,
         )
