@@ -45,7 +45,9 @@
                 return false;
             };
             </script>
-            {% include "includes/gtm_datalayer_info.html" %}
+            {% if not request.is_preview %}
+                {% include "includes/gtm_datalayer_info.html" %}
+            {% endif %}
             <!-- End Google Tag Manager -->
         {% endif %}
         <link rel="shortcut icon"
