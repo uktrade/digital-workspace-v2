@@ -1,0 +1,27 @@
+// implements a .dwds container class to hold "globals" while our approach is
+// limited to specific pages and parts of pages
+//
+// replace with base styling eventually to use real globals
+
+.dwds * {
+	box-sizing: border-box;
+	max-inline-size: var(--measure);
+}
+
+html,
+body,
+div,
+header,
+nav,
+main,
+footer {
+	max-inline-size: none;
+}
+
+.dwds {
+	font-family: var(--font-family-primary);
+	font-size: var(--font-size-m);
+	line-height: var(--font-lineheight-body);
+	background-color: var(--color-background);
+	color: var(--color-text);
+}
