@@ -22,6 +22,7 @@ from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
+import dw_design_system.dwds.components as dwds_blocks
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from extended_search.index import DWIndexedField as IndexedField
@@ -421,31 +422,25 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
-class ServiceNavigation(ContentPage):
+class NavigationPage(BasePage):
     template = "content/navigation_page.html"
 
-    primary_content = StreamField(
-        [
-            ("curated_page_links", blocks.CustomPageLinkListBlock()),
-            ("cta", blocks.CTABlock()),
-        ],
+    primary_elements = StreamField(
+        [],
         blank=True,
     )
 
-    secondary_content = StreamField(
+    secondary_elements = StreamField(
         [
-            ("curated_page_links", blocks.CustomPageLinkListBlock()),
-            ("cta", blocks.CTABlock()),
+            ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
+            ("dw_cta", dwds_blocks.CTABlock()),
         ],
         blank=True,
     )
 
     content_panels = BasePage.content_panels + [
-        FieldPanel(
-            "primary_content",
-        ),
-        FieldPanel("body"),
-        FieldPanel("secondary_content"),
+        FieldPanel("primary_elements"),
+        FieldPanel("secondary_elements"),
     ]
 
     def get_context(self, request, *args, **kwargs):
