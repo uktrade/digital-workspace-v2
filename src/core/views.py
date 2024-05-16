@@ -137,7 +137,7 @@ def content_owners_report(request: HttpRequest, *args, **kwargs) -> HttpResponse
             p.last_published_at,
         )
         for model in ContentOwnerMixin.get_all_subclasses()
-        for p in model.objects.all()
+        for p in model.objects.all().live().public()
     ]
 
     filename = "content_owners.csv"
