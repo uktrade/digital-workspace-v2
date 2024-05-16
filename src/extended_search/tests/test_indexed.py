@@ -273,4 +273,8 @@ class TestProject:
             assert (
                 get_indexed_models_and_fields_dict()
                 == expected_indexed_models_and_fields
+            ), (
+                "Indexed models and fields have changed."
+                " If this was intentional, please update the JSON file by running the"
+                " `create_index_fields_json` management command."
             )
