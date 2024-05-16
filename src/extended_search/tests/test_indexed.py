@@ -6,11 +6,7 @@ from wagtail.models import Page
 from wagtailmedia.models import Media
 
 from about_us.models import AboutUs, AboutUsHome
-from content.models import (
-    BasePage,
-    ContentPage,
-    ServiceNavigation,
-)
+from content.models import BasePage, BlogIndex, BlogPost, ContentPage, ServiceNavigation
 from country_fact_sheet.models import CountryFactSheetHome
 from extended_search.index import DWIndexedField, class_is_indexed, get_indexed_models
 from extended_search.management.commands.create_index_fields_json import (
@@ -231,7 +227,7 @@ class TestModuleFunctions:
 
 class TestProject:
     def test_indexed_models(self):
-        assert get_indexed_models() == [
+        assert set(get_indexed_models()) == {
             IndexedModel,
             ChildModel,
             StandardIndexedModel,
@@ -261,13 +257,15 @@ class TestProject:
             NetworksHome,
             Network,
             CountryFactSheetHome,
+            BlogIndex,
+            BlogPost,
             Person,
             Team,
             Document,
             Image,
             Page,
             Media,
-        ], "Indexed models have changed, please update this test if this was intentional."
+        }, "Indexed models have changed, please update this test if this was intentional."
 
     def test_indexed_models_and_fields(test):
         with open(JSON_FILE, "r") as f:
@@ -275,4 +273,8 @@ class TestProject:
             assert (
                 get_indexed_models_and_fields_dict()
                 == expected_indexed_models_and_fields
+            ), (
+                "Indexed models and fields have changed."
+                " If this was intentional, please update the JSON file by running the"
+                " `create_index_fields_json` management command."
             )

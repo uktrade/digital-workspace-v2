@@ -480,3 +480,22 @@ class SearchPinPageLookUp(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
     # TODO: Remove historical records.
     history = HistoricalRecords()
+
+
+class BlogIndex(BasePage):
+    template = "content/blog_index.html"
+    subpage_types = [
+        "content.BlogPost",
+    ]
+    is_creatable = False
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["children"] = self.get_children()
+        return context
+
+
+class BlogPost(ContentPage):
+    template = "content/blog_post.html"
+    subpage_types = []
+    is_creatable = True
