@@ -9,6 +9,6 @@ class CTABlock(blocks.StructBlock):
     url = blocks.URLBlock(required=False)
 
     class Meta:
-        template = "dw_design_system/dwds/components/cta.html"
+        template = "dwds/components/cta.html"
         icon = "thumbtack"
         label = "CTA"

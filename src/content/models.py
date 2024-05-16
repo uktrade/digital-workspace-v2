@@ -437,8 +437,8 @@ class ServiceNavigation(ContentPage):
         [
             ("curated_page_links", blocks.CustomPageLinkListBlock()),
             ("cta", blocks.CTABlock()),
-            ("curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
-            ("cta", dwds_blocks.CTABlock()),
+            ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
+            ("dw_cta", dwds_blocks.CTABlock()),
         ],
         blank=True,
     )

@@ -30,6 +30,7 @@ class CustomPageLinkListBlock(blocks.StructBlock):
         context = parent_context or {}
         context.update(
             {
+                "title": value["title"],
                 "list": [
                     {"url": page.get_url(), "text": page.title}
                     for page in value["pages"]
