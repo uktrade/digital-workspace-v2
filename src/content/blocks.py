@@ -187,13 +187,11 @@ class TitleBlock(blocks.CharBlock):
 
 
 class PagePickerBlock(blocks.PageChooserBlock):
-
     class Meta:
         label = "Link"
 
 
 class CustomPageLinkListBlock(blocks.StructBlock):
-
     title = TitleBlock(search_index=False)
     pages = blocks.ListBlock(PagePickerBlock(), search_index=False)
 
