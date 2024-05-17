@@ -1,5 +1,4 @@
 .dwds-link-list {
-    font-family: var(--font-family-primary);
     border: var(--s-5) solid var(--color-border);
     border-top-width: var(--s-1);
     padding: var(--s1);
@@ -27,11 +26,11 @@
 
 .dwds-link-list li :active {
     background-color: var(--color-link-background-active);
-    color: var(--color-link-list);
+    color: var(--color-link);
 }
 
 .dwds-link-list li :visited {
-    color: var(--color-link-list);
+    color: var(--color-link);
 }
 
 .dwds-link-list li :hover {
