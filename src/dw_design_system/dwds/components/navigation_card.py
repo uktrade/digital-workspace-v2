@@ -11,4 +11,4 @@ class NavigationCardBlock(blocks.StructBlock):
     class Meta:
         label = "Navigation Card"
         icon = "link"
-        template = "components/navigation_card.html"
+        template = "dwds/components/navigation_card.html"

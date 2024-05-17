@@ -1,0 +1,14 @@
+.dwds-navigation-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--s0);
+
+    border: var(--s-5) solid var(--color-border);
+    border-top: var(--s-1) solid var(--color-border);
+    padding: var(--s1);
+
+    p {
+        margin: 0;
+    }
+}

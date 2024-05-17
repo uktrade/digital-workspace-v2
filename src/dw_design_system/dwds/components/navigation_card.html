@@ -1,4 +1,4 @@
 <div class="dwds-navigation-card">
-    {% include "../elements/navigational_link.html" with url=url text=title %}
-    {% if summary %}<p>{{ summary }}</p>{% endif %}
+    {% include "dwds/elements/navigational_link.html" with url=self.url text=self.title %}
+    {% if self.summary %}<p>{{ self.summary }}</p>{% endif %}
 </div>
