@@ -36,6 +36,7 @@ def test_scorefunction_closer_to_zero_is_better(db, mocker):
     assert len(results) == 2
     assert results[0].pk == obj1.pk
     assert results[1].pk == obj2.pk
+    assert results[0]._score > results[1]._score
 
 
 def test_scorefunction_closer_to_fifty_is_better(db, mocker):
@@ -62,6 +63,7 @@ def test_scorefunction_closer_to_fifty_is_better(db, mocker):
     assert len(results) == 2
     assert results[0].pk == obj2.pk
     assert results[1].pk == obj1.pk
+    assert results[0]._score > results[1]._score
 
 
 @pytest.mark.skip(
@@ -93,3 +95,4 @@ def test_inherited_scorefunction_closer_to_zero_is_better(db, mocker):
     assert len(results) == 2
     assert results[0].pk == obj1.pk
     assert results[1].pk == obj2.pk
+    assert results[0]._score > results[1]._score
