@@ -1,8 +1,6 @@
 <div class="dwds-link-list">
     <h2>{{ title }}</h2>
-    {% if description %}
-        <p>{{ description }}</p>
-    {% endif %}
+    {% if description %}<p>{{ description }}</p>{% endif %}
     <ul>
         {% for item in list %}
             <li>

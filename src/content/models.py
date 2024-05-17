@@ -432,8 +432,8 @@ class NavigationPage(BasePage):
 
     secondary_elements = StreamField(
         [
-            ("dw_curated_page_links", dwds_blocks.link_list.CustomPageLinkListBlock()),
-            ("dw_cta", dwds_blocks.cta.CTABlock()),
+            ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
+            ("dw_cta", dwds_blocks.CTABlock()),
         ],
         blank=True,
     )
