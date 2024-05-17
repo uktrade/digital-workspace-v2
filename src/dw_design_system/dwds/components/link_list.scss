@@ -2,7 +2,7 @@
     font-family: var(--font-family-primary);
     border: var(--s-5) solid var(--color-border);
     border-top-width: var(--s-1);
-    padding: var(--s0);
+    padding: var(--s1);
 
     h2 {
         font-weight: var(--font-weight-bold);
@@ -32,4 +32,8 @@
 
 .dwds-link-list li :visited {
     color: var(--color-link-list);
+}
+
+.dwds-link-list li :hover {
+    text-decoration-thickness: var(--s-4);
 }
