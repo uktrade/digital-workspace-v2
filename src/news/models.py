@@ -161,6 +161,7 @@ class NewsPage(PageWithTopics):
             "gauss",
             field_name="last_published_at",
             scale="365d",
+            offset="14d",
             decay=0.3,
         ),
     ]
