@@ -1,6 +1,6 @@
 <script>
 initial_page_data = {
-    {% for k, v in FEATURE_FLAGS.items %}"feature_flag_{{ forloop.counter }}": "{{ k }}: {{ v|lower }}"
+    {% for k, v in FEATURE_FLAGS.items %}"feature_flag_{{ forloop.counter }}": "{{ k }}: {{ v|lower }}",
     {% endfor %}
 
     "page_age_in_days": {% if self.days_since_last_published is not None %}{{ self.days_since_last_published }}{% else %}"NA"{% endif %},

@@ -2,19 +2,21 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
-    {% include 'feedback.html' %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    <div class="ws-content-grid">
-        {% for block in page.primary_content %}
-            <div>{% include_block block %}</div>
+    <div class="dwds">
+        {% include 'feedback.html' %}
+        <h1>{{ page.title }}</h1>
+        <div class="ws-content-grid">
+            {% for block in page.primary_content %}
+                <div>{% include_block block %}</div>
+            {% endfor %}
+        </div>
+        {% for block in page.body %}
+            {% include_block block %}
         {% endfor %}
-    </div>
-    {% for block in page.body %}
-        {% include_block block %}
-    {% endfor %}
-    <div class="ws-content-grid">
-        {% for block in page.secondary_content %}
-            <div>{% include_block block %}</div>
-        {% endfor %}
+        <div class="ws-content-grid">
+            {% for block in page.secondary_content %}
+                <div>{% include_block block %}</div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

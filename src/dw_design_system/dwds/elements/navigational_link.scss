@@ -1,0 +1,26 @@
+.dwds-navigational-link{
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-link);
+    font-family: var(--font-family-primary);
+    font-size: var(--s1);
+    font-weight: var(--font-weight-normal);
+    text-decoration: none;
+    align-items: baseline;
+}
+
+.dwds-navigational-link::after{
+    content: "\002192";
+    padding-inline-start: var(--s0);
+}
+
+.dwds-navigational-link:hover{
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-link);
+}
+
+.dwds-navigational-link:active{
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-link);
+    background-color: var(--color-link-background-active);
+}

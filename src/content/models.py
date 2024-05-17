@@ -22,10 +22,11 @@ from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
+import dw_design_system.dwds.components as dwds_blocks
 from content import blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from extended_search.index import DWIndexedField as IndexedField
-from extended_search.index import Indexed
+from extended_search.index import Indexed, RelatedFields
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
@@ -165,6 +166,19 @@ class ContentOwnerMixin(models.Model):
         FieldPanel("content_contact_email"),
     ]
 
+    # This should be imported in the model that uses this mixin, e.g: Network.indexed_fields = [ ... ] + ContentOwnerMixin.indexed_fields
+    indexed_fields = [
+        RelatedFields(
+            "content_owner",
+            [
+                IndexedField("first_name", explicit=True),
+                IndexedField("preferred_first_name", explicit=True),
+                IndexedField("last_name", explicit=True),
+            ],
+        ),
+        IndexedField("content_contact_email", explicit=True),
+    ]
+
     @cached_classmethod
     def get_edit_handler(cls):
         return TabbedInterface(
@@ -177,6 +191,17 @@ class ContentOwnerMixin(models.Model):
 
     class Meta:
         abstract = True
+
+    @classmethod
+    def get_all_subclasses(cls):
+        subclasses = []
+        direct_subclasses = cls.__subclasses__()
+
+        for direct_subclass in direct_subclasses:
+            subclasses.append(direct_subclass)
+            subclasses.extend(direct_subclass.get_all_subclasses())
+
+        return subclasses
 
 
 class ContentPage(BasePage):
@@ -255,6 +280,23 @@ class ContentPage(BasePage):
         "Do not use quotes for phrases. The page will be removed "
         "from search results for these terms",
     )
+
+    #
+    # Topics
+    # This would ideally belong on PageWithTopics, but the Network model uses it
+    # and it's not worth the effort to refactor it.
+    #
+
+    @property
+    def topics(self):
+        from working_at_dit.models import Topic
+
+        topic_ids = self.page_topics.all().values_list("topic__pk", flat=True)
+        return Topic.objects.filter(pk__in=topic_ids)
+
+    @property
+    def topic_titles(self):
+        return [topic.title for topic in self.topics]
 
     #
     # Search
@@ -380,31 +422,25 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
-class ServiceNavigation(ContentPage):
+class NavigationPage(BasePage):
     template = "content/navigation_page.html"
 
-    primary_content = StreamField(
-        [
-            ("curated_page_links", blocks.CustomPageLinkListBlock()),
-            ("cta", blocks.CTABlock()),
-        ],
+    primary_elements = StreamField(
+        [],
         blank=True,
     )
 
-    secondary_content = StreamField(
+    secondary_elements = StreamField(
         [
-            ("curated_page_links", blocks.CustomPageLinkListBlock()),
-            ("cta", blocks.CTABlock()),
+            ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
+            ("dw_cta", dwds_blocks.CTABlock()),
         ],
         blank=True,
     )
 
     content_panels = BasePage.content_panels + [
-        FieldPanel(
-            "primary_content",
-        ),
-        FieldPanel("body"),
-        FieldPanel("secondary_content"),
+        FieldPanel("primary_elements"),
+        FieldPanel("secondary_elements"),
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -439,3 +475,22 @@ class SearchPinPageLookUp(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
     # TODO: Remove historical records.
     history = HistoricalRecords()
+
+
+class BlogIndex(BasePage):
+    template = "content/blog_index.html"
+    subpage_types = [
+        "content.BlogPost",
+    ]
+    is_creatable = False
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["children"] = self.get_children()
+        return context
+
+
+class BlogPost(ContentPage):
+    template = "content/blog_post.html"
+    subpage_types = []
+    is_creatable = True
