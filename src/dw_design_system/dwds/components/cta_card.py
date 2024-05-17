@@ -1,7 +1,9 @@
 from wagtail import blocks
 
+
 class CTACardBlock(blocks.StructBlock):
     """Call to action section"""
+
     title = blocks.CharBlock(required=True, max_length=80)
     description = blocks.CharBlock(required=False, max_length=80)
     page = blocks.PageChooserBlock(required=False)
@@ -16,7 +18,7 @@ class CTACardBlock(blocks.StructBlock):
         context = parent_context or {}
         url = ""
 
-        if(value["page"]):
+        if value["page"]:
             url = value["page"].url
         else:
             url = value["url"]

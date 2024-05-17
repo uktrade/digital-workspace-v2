@@ -1,8 +1,6 @@
 <div class="box dwds-cta-card">
     <div class="center">
         {% include '../elements/navigational_link.html' with url=url text=title %}
-        {% if description %}
-            <p>{{ description }}</p>
-        {% endif %}
+        {% if description %}<p>{{ description }}</p>{% endif %}
     </div>
 </div>
