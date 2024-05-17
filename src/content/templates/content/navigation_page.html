@@ -6,7 +6,7 @@
         {% include 'feedback.html' %}
         <h1>{{ page.title }}</h1>
         <div class="ws-content-grid">
-            {% for block in page.primary_content %}
+            {% for block in page.primary_elements %}
                 <div>{% include_block block %}</div>
             {% endfor %}
         </div>
@@ -14,7 +14,7 @@
             {% include_block block %}
         {% endfor %}
         <div class="ws-content-grid">
-            {% for block in page.secondary_content %}
+            {% for block in page.secondary_elements %}
                 <div>{% include_block block %}</div>
             {% endfor %}
         </div>
