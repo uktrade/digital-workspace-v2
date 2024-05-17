@@ -69,4 +69,8 @@ class Migration(migrations.Migration):
                 blank=True,
             ),
         ),
+        migrations.RemoveField(
+            model_name="contentpage",
+            name="custom_page_links",
+        ),
     ]

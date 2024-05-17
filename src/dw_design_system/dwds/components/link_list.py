@@ -27,20 +27,3 @@ class CustomPageLinkListBlock(blocks.StructBlock):
             ],
         )
         return context
-
-
-# Old blocks not to be used for dwds link list component.
-class TitleBlock(blocks.CharBlock):
-    """A (section) heading"""
-
-    class Meta:
-        label = "Title"
-        icon = "title"
-        classname = "full title"
-        template = "blocks/title.html"
-
-
-class PagePickerBlock(blocks.PageChooserBlock):
-
-    class Meta:
-        label = "Link"
