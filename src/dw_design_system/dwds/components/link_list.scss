@@ -1,2 +1,36 @@
 .dwds-link-list {
+    font-family: var(--font-family-primary);
+    border: var(--s-5) solid var(--color-border);
+    border-top-width: var(--s-1);
+    padding: var(--s0);
+
+    h2 {
+        font-weight: var(--font-weight-bold);
+    }
+
+    p {
+        font-weight: var(--font-weight-light);
+        font-size: var();
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+    li {
+        color: var(--color-link-list);
+        text-align: start;
+        padding-top: var(--s-2);
+    }
+}
+
+.dwds-link-list li :active {
+    background-color: var(--color-link-background-active);
+    color: var(--color-link-list);
+}
+
+.dwds-link-list li :visited {
+    color: var(--color-link-list);
 }
