@@ -695,8 +695,8 @@ class Person(Indexed, models.Model):
             field_name="profile_completion",
             origin=100,
             offset=5,
-            scale=0,
-            decay=0.1,
+            scale=50,
+            decay=0.05,
         ),
         IndexedField(
             "is_active",
