@@ -696,7 +696,7 @@ class Person(Indexed, models.Model):
             origin=100,
             offset=5,
             scale=50,
-            decay=0.05,
+            decay=0.95,
         ),
         IndexedField(
             "is_active",
