@@ -25,7 +25,9 @@ class Migration(migrations.Migration):
                             [
                                 (
                                     "title",
-                                    content.archived_blocks.TitleBlock(search_index=False),
+                                    content.archived_blocks.TitleBlock(
+                                        search_index=False
+                                    ),
                                 ),
                                 (
                                     "pages",
