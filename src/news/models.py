@@ -13,6 +13,7 @@ from wagtail.snippets.models import register_snippet
 
 from content.models import BasePage
 from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import ScoreFunction
 from news.forms import CommentForm
 from working_at_dit.models import PageWithTopics
 
@@ -155,6 +156,13 @@ class NewsPage(PageWithTopics):
         IndexedField(
             "pinned_on_home",
             filter=True,
+        ),
+        ScoreFunction(
+            "gauss",
+            field_name="last_published_at",
+            scale="365d",
+            offset="14d",
+            decay=0.3,
         ),
     ]
 

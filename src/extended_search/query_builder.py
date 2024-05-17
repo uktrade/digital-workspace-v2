@@ -14,11 +14,12 @@ from extended_search.index import (
     Indexed,
     IndexedField,
     RelatedFields,
+    ScoreFunction,
     SearchField,
     get_indexed_field_name,
     get_indexed_models,
 )
-from extended_search.query import Filtered, Nested, OnlyFields
+from extended_search.query import Filtered, FunctionScore, Nested, OnlyFields
 from extended_search.types import AnalysisType, SearchQueryType
 
 
@@ -265,13 +266,27 @@ class CustomQueryBuilder(QueryBuilder):
     @classmethod
     def build_query_for_model(cls, model_class) -> Optional[SearchQuery]:
         query = None
+        score_configurations = []
         for field in model_class.get_indexed_fields():
-            query_elements = cls._build_search_query(model_class, field)
-            if query_elements is not None:
-                query = cls._combine_queries(
-                    query,
-                    query_elements,
+            if isinstance(field, ScoreFunction):
+                score_configurations.append(field)
+            else:
+                query_elements = cls._build_search_query(model_class, field)
+                if query_elements is not None:
+                    query = cls._combine_queries(
+                        query,
+                        query_elements,
+                    )
+
+        if query:
+            for score_configuration in score_configurations:
+                query = FunctionScore(
+                    model_class=score_configuration.configuration_model,
+                    subquery=query,
+                    function_name=score_configuration.function_name,
+                    function_params=score_configuration.params,
                 )
+
         return query
 
     @classmethod

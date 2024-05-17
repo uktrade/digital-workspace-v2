@@ -24,8 +24,11 @@ from testapp.models import (
     IndexedModel,
     InheritedStandardIndexedModel,
     InheritedStandardIndexedModelWithChanges,
+    InheritedStandardIndexedModelWithChangesWithScoreFunction,
     Model,
     StandardIndexedModel,
+    StandardIndexedModelWithScoreFunction,
+    StandardIndexedModelWithScoreFunctionOriginFifty,
 )
 from tools.models import Tool, ToolsHome
 from working_at_dit.models import (
@@ -233,6 +236,9 @@ class TestProject:
             StandardIndexedModel,
             InheritedStandardIndexedModel,
             InheritedStandardIndexedModelWithChanges,
+            StandardIndexedModelWithScoreFunction,
+            StandardIndexedModelWithScoreFunctionOriginFifty,
+            InheritedStandardIndexedModelWithChangesWithScoreFunction,
             HomePage,
             BasePage,
             ContentPage,
