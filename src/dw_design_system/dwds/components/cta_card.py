@@ -33,7 +33,7 @@ class CTACardBlock(blocks.StructBlock):
         url = ""
 
         if value["page"]:
-            url = value["page"].url
+            url = value["page"].get_url()
         else:
             url = value["url"]
 
