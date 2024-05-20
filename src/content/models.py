@@ -418,7 +418,9 @@ class NavigationPage(BasePage):
     template = "content/navigation_page.html"
 
     primary_elements = StreamField(
-        [],
+        [
+            ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),
+        ],
         blank=True,
     )
 
@@ -426,6 +428,7 @@ class NavigationPage(BasePage):
         [
             ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
             ("dw_cta", dwds_blocks.CTACardBlock()),
+            ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),
         ],
         blank=True,
     )
