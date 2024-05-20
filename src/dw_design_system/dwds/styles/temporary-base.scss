@@ -25,3 +25,7 @@ footer {
 	background-color: var(--color-background);
 	color: var(--color-text);
 }
+
+.dwds-stack > * + * {
+	margin-block-start: var(--s1);
+}
