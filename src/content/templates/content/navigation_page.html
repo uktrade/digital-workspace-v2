@@ -4,7 +4,7 @@
 {% block content %}
     <div class="dwds">
         <h1>{{ page.title }}</h1>
-        <div class= "dwds-primary-elements-grid">
+        <div class= "grid">
             {% for block in page.primary_elements %}
                 <div>{% include_block block %}</div>
             {% endfor %}

@@ -25,9 +25,3 @@ footer {
 	background-color: var(--color-background);
 	color: var(--color-text);
 }
-
-.dwds-primary-elements-grid {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: var(--s1);
-}
