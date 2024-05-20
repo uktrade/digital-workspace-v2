@@ -3,7 +3,6 @@
 
 {% block content %}
     <div class="dwds">
-        {% include 'feedback.html' %}
         <h1>{{ page.title }}</h1>
         <div class= "dwds-primary-elements-grid">
             {% for block in page.primary_elements %}
@@ -15,6 +14,7 @@
 
 {% block tertiary_col_content %}
     <div class="dwds stack">
+        {% include 'feedback.html' %}
         {% for block in page.secondary_elements %}
             <div>{% include_block block %}</div>
         {% endfor %}
