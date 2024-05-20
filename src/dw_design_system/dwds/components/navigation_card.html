@@ -1,0 +1,4 @@
+<div class="stack box dwds-navigation-card">
+    {% include "dwds/elements/navigational_link.html" with url=self.url text=self.title %}
+    {% if self.summary %}<p>{{ self.summary }}</p>{% endif %}
+</div>
