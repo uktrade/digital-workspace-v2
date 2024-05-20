@@ -418,7 +418,7 @@ class NavigationPage(BasePage):
     template = "content/navigation_page.html"
 
     primary_elements = StreamField(
-        [],
+        [("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock())],
         blank=True,
     )
 

@@ -29,3 +29,9 @@ footer {
 .dwds-stack > * + * {
 	margin-block-start: var(--s1);
 }
+
+.dwds-primary-elements-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: var(--s1);
+}
