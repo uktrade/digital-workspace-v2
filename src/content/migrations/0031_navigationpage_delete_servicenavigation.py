@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
+import content.archived_blocks
 import dw_design_system.dwds.components.link_list
 import wagtail.blocks
 import wagtail.fields
@@ -39,14 +40,14 @@ class Migration(migrations.Migration):
                                     [
                                         (
                                             "title",
-                                            dw_design_system.dwds.components.link_list.TitleBlock(
+                                            content.archived_blocks.TitleBlock(
                                                 search_index=False
                                             ),
                                         ),
                                         (
                                             "pages",
                                             wagtail.blocks.ListBlock(
-                                                dw_design_system.dwds.components.link_list.PagePickerBlock(),
+                                                content.archived_blocks.PagePickerBlock(),
                                                 search_index=False,
                                             ),
                                         ),
