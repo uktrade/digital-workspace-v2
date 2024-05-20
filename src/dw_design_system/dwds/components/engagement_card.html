@@ -1,0 +1,12 @@
+{% load wagtailimages_tags %}
+
+<div class="dwds-engagement-card">
+    <a href="{{ url }}">
+        {% if thumbnail %}
+            {% image thumbnail fill-300x150 %}
+        {% endif %}
+        <h2>{{ title }}</h2>
+        <p>{{ author }}</p>
+        <time datetime="{{ date|date:'Y-m-d H:i:s' }}">{{ date }}</time>
+    </a>
+</div>

@@ -428,6 +428,7 @@ class NavigationPage(BasePage):
         [
             ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
             ("dw_cta", dwds_blocks.CTACardBlock()),
+            ("dw_engagement_card", dwds_blocks.EngagementCardBlock()),
             ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),
         ],
         blank=True,
