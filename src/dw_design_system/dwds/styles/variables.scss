@@ -16,7 +16,7 @@
   --color-border-highlight: white;
 
   // Size
-  --ratio: 1.5;
+  --ratio: 1.25;
   --s-5: calc(var(--s-4) / var(--ratio));
   --s-4: calc(var(--s-3) / var(--ratio));
   --s-3: calc(var(--s-2) / var(--ratio));
@@ -28,6 +28,8 @@
   --s3: calc(var(--s2) * var(--ratio));
   --s4: calc(var(--s3) * var(--ratio));
   --s5: calc(var(--s4) * var(--ratio));
+  --border-width-card: 2px;
+  --border-top-width-card: var(--s-2);
 
   // Typography
   --measure: 70ch;
@@ -38,4 +40,5 @@
   --font-lineheight-body: 1.5rem;
   --font-lineheight-headings: 1.25rem;
   --font-lineheight-interface: 1rem;
+  --font-lineheight-headings: 1.6rem;
 }

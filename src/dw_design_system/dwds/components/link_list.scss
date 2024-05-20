@@ -1,14 +1,10 @@
 .dwds-link-list {
-    border: var(--s-5) solid var(--color-border);
-    border-top-width: var(--s-1);
-    padding: var(--s1);
+    border: var(--border-width-card) solid var(--color-border);
+    border-top-width: var(--border-top-width-card);
+    padding: var(--s0);
 
     h2 {
         font-weight: var(--font-weight-bold);
-    }
-
-    p {
-        font-weight: var(--font-weight-light);
     }
 
     ul {

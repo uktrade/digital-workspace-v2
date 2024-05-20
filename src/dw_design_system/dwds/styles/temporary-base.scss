@@ -18,6 +18,15 @@ footer {
 	max-inline-size: none;
 }
 
+h2 {
+	line-height: var(--font-lineheight-headings);
+}
+
+h1 {
+	font-size: var(--s3);
+	line-height: var(--font-lineheight-headings);
+}
+
 .dwds {
 	font-family: var(--font-family-primary);
 	font-size: var(--font-size-m);
