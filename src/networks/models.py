@@ -110,13 +110,7 @@ class Network(ContentOwnerMixin, ContentPage):
     ]
     base_form_class = NetworkForm
 
-    indexed_fields = [
-        IndexedField(
-            "topic_titles",
-            tokenized=True,
-            explicit=True,
-        ),
-    ] + ContentOwnerMixin.indexed_fields
+    indexed_fields = [] + ContentOwnerMixin.indexed_fields
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

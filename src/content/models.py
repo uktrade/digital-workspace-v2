@@ -12,6 +12,7 @@ from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import (
     FieldPanel,
+    InlinePanel,
     ObjectList,
     TabbedInterface,
     TitleFieldPanel,
@@ -339,6 +340,11 @@ class ContentPage(BasePage):
         ),
         IndexedField("is_creatable", filter=True),
         IndexedField("published_date", proximity=True),
+        IndexedField(
+            "topic_titles",
+            tokenized=True,
+            explicit=True,
+        ),
     ]
 
     @property
@@ -364,8 +370,10 @@ class ContentPage(BasePage):
     subpage_types = []
 
     content_panels = BasePage.content_panels + [
-        FieldPanel("excerpt", widget=widgets.Textarea),
         FieldPanel("body"),
+        FieldPanel("excerpt", widget=widgets.Textarea),
+        FieldPanel("custom_page_links"),
+        InlinePanel("tagged_items", label="Tags"),
     ]
 
     promote_panels = [
@@ -374,6 +382,18 @@ class ContentPage(BasePage):
         FieldPanel("pinned_phrases"),
         FieldPanel("excluded_phrases"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["page_topics"] = self.page_topics.order_by("topic__title")
+
+        tag_set = []
+        # TODO: Enable when we want to show tags to users.
+        # for tagged_item in self.tagged_items.select_related("tag").all():
+        #     tag_set.append(tagged_item.tag)
+        context["tag_set"] = tag_set
+
+        return context
 
     def full_clean(self, *args, **kwargs):
         self._generate_search_field_content()

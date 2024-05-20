@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 
 {% block main_content %}
+    {% block pre_content %}{% endblock %}
     <div class="ws-primary-content">
         <article>
             {% block content %}{% endblock %}
         </article>
+        <ul class="tag-set">
+            {% include 'includes/tag_set.html' %}
+        </ul>
     </div>
+    {% block post_content %}{% endblock %}
 {% endblock %}

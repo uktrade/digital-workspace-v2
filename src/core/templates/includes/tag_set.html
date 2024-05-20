@@ -1,0 +1,3 @@
+{% for tag in tag_set %}
+    <a href="{{ tag.get_absolute_url }}"><li><strong class="govuk-tag govuk-tag--yellow">{{ tag.name }}</strong></li></a>
+{% endfor %}

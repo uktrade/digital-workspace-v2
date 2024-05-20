@@ -119,7 +119,7 @@ class PageTopic(models.Model):
     topic = models.ForeignKey(
         "working_at_dit.Topic",
         on_delete=models.CASCADE,
-        related_name="topic_Pages",
+        related_name="topic_pages",
     )
 
     panels = [
@@ -130,23 +130,9 @@ class PageTopic(models.Model):
         unique_together = ("page", "topic")
 
 
+# TODO: Remove this page type in the hierarchy (lots of work!)
 class PageWithTopics(ContentPage):
-    indexed_fields = [
-        IndexedField(
-            "topic_titles",
-            tokenized=True,
-            explicit=True,
-        ),
-    ]
-
-    content_panels = ContentPage.content_panels + [
-        InlinePanel("page_topics", label="Topics"),
-    ]
-
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        context["page_topics"] = self.page_topics.order_by("topic__title")
-        return context
+    pass
 
 
 class HowDoI(ContentOwnerMixin, PageWithTopics):
