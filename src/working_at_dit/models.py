@@ -130,9 +130,24 @@ class PageTopic(models.Model):
         unique_together = ("page", "topic")
 
 
-# TODO: Remove this page type in the hierarchy (lots of work!)
+# TODO: Possibly remove this page type in the hierarchy? (lots of work!)
 class PageWithTopics(ContentPage):
-    pass
+    indexed_fields = [
+        IndexedField(
+            "topic_titles",
+            tokenized=True,
+            explicit=True,
+        ),
+    ]
+
+    content_panels = ContentPage.content_panels + [
+        InlinePanel("page_topics", label="Topics"),
+    ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["page_topics"] = self.page_topics.order_by("topic__title")
+        return context
 
 
 class HowDoI(ContentOwnerMixin, PageWithTopics):

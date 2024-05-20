@@ -340,11 +340,6 @@ class ContentPage(BasePage):
         ),
         IndexedField("is_creatable", filter=True),
         IndexedField("published_date", proximity=True),
-        IndexedField(
-            "topic_titles",
-            tokenized=True,
-            explicit=True,
-        ),
     ]
 
     @property
@@ -372,7 +367,6 @@ class ContentPage(BasePage):
     content_panels = BasePage.content_panels + [
         FieldPanel("body"),
         FieldPanel("excerpt", widget=widgets.Textarea),
-        InlinePanel("page_topics", label="Topics"),
         InlinePanel("tagged_items", label="Tags"),
     ]
 
@@ -385,7 +379,6 @@ class ContentPage(BasePage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["page_topics"] = self.page_topics.order_by("topic__title")
 
         tag_set = []
         # TODO: Enable when we want to show tags to users.
