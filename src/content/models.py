@@ -372,7 +372,7 @@ class ContentPage(BasePage):
     content_panels = BasePage.content_panels + [
         FieldPanel("body"),
         FieldPanel("excerpt", widget=widgets.Textarea),
-        FieldPanel("custom_page_links"),
+        InlinePanel("page_topics", label="Topics"),
         InlinePanel("tagged_items", label="Tags"),
     ]
 
