@@ -426,7 +426,9 @@ class NavigationPage(BasePage):
     template = "content/navigation_page.html"
 
     primary_elements = StreamField(
-        [],
+        [
+            ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),
+        ],
         blank=True,
     )
 

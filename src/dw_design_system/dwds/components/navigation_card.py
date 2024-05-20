@@ -5,7 +5,7 @@ class NavigationCardBlock(blocks.StructBlock):
     """A nav card to direct users"""
 
     title = blocks.CharBlock(required=True)
-    url = blocks.URLBlock(required=True)
+    page = blocks.PageChooserBlock(required=True)
     summary = blocks.CharBlock(required=False, max_length=50)
 
     class Meta:
