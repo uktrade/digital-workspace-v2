@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("peoplefinder", "0121_merge_20240430_0948"),
-        ("content", "0027_alter_servicenavigation_primary_content_and_more"),
+        ("content", "0026_alter_contentpage_body"),
     ]
 
     operations = [
