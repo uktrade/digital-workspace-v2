@@ -10,7 +10,7 @@ urlpatterns = [
     path(
         "report/content-owners/",
         views.content_owners_report,
-        name="report-content_owners",
+        name="report_content_owners",
     ),
     path("tag/<slug:slug>", views.tag_index, name="tag-index"),
 ]
