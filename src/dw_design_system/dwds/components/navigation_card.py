@@ -17,7 +17,7 @@ class NavigationCardBlock(blocks.StructBlock):
         context = parent_context or {}
         context.update(
             title=value["title"],
-            description=value["summary"],
             url=value["page"].get_url(),
+            summary=value["summary"],
         )
         return context
