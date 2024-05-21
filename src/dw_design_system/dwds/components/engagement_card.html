@@ -1,6 +1,6 @@
 {% load wagtailimages_tags %}
 
-<div class="stack box dwds-engagement-card">
+<div class="stack box dwds-engagement-card {% if is_news %}dwds-engagement-card--dark{% endif %}">
     <a href="{{ url }}">
         {% if thumbnail %}
             {% image thumbnail fill-300x150 %}

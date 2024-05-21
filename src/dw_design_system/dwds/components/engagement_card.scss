@@ -1,9 +1,24 @@
 .dwds-engagement-card {
-    padding: var(--s0);
-    border-top: var(--s-3) solid var(--color-border-dark);
-    background-color: var(--color-background-card);
+    padding: 0;
+    border: var(--s-5) solid var(--color-border);
+    border-top: none;
+
+    &::before {
+        content: '';
+        display: block;
+        height: var(--s-2);
+        background-color: var(--color-border-dark);
+        width: calc(100% + var(--s-5) * 2);
+        margin-left: calc(var(--s-5) * -1);
+    }
+
+    &--dark {
+        border-color: var(--color-background-card);
+        background-color: var(--color-background-card);
+    }
 
     a {
+        padding: var(--s0);
         color: var(--color-link);
         font-family: var(--font-family-primary);
         font-size: var(--s1);
