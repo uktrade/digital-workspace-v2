@@ -6,7 +6,7 @@
     &::before {
         content: '';
         display: block;
-        height: var(--s-2);
+        height: var(--s-1);
         background-color: var(--color-border-dark);
         width: calc(100% + var(--s-5) * 2);
         margin-left: calc(var(--s-5) * -1);
