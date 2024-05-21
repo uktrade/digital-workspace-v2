@@ -2,10 +2,10 @@ from core.models.tags import Tag,TaggedPage
 from wagtail import blocks
 
 def get_tag_choices():
-    return [(tag.name, tag.name) for tag in Tag.objects.all()]
+    return [(tag.slug, tag.name) for tag in Tag.objects.all()]
 
 def get_ordering_choices():
-    return [("-last_updated","last_updated"),("-alphabetical","alphabetical"),("-published_date","publish_date")]
+    return [("-pub_date","last updated")]
 
 class TaggedPageListBlock(blocks.StructBlock):
     title = blocks.CharBlock(
@@ -30,7 +30,12 @@ class TaggedPageListBlock(blocks.StructBlock):
         if value["ordering_choice"]:
             ordering = value["ordering_choice"]
 
-        pages = TaggedPage.objects.select_related("content_object")
+        # Query tag via slug, return nothing if not found
+        tag = Tag._default_manager.all().get(slug=value["tag"])
+        if tag:
+            pages = TaggedPage.objects.filter(tag=tag).select_related("content_object").all()
+        else:
+            pages = []
 
         context.update(
             title=value["title"],
