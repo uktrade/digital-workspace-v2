@@ -16,7 +16,7 @@
   --color-border-highlight: white;
 
   // Size
-  --ratio: 1.5;
+  --ratio: 1.25;
   --s-5: calc(var(--s-4) / var(--ratio));
   --s-4: calc(var(--s-3) / var(--ratio));
   --s-3: calc(var(--s-2) / var(--ratio));
@@ -28,14 +28,17 @@
   --s3: calc(var(--s2) * var(--ratio));
   --s4: calc(var(--s3) * var(--ratio));
   --s5: calc(var(--s4) * var(--ratio));
+  --border-width-card: 2px;
+  --border-top-width-card: var(--s-2);
+  --text-underline-hover: 3px;
 
   // Typography
   --measure: 70ch;
-  --font-family-primary: "Roboto", sans-serif;
+  --font-family-primary: "Roboto Flex", sans-serif;
   --font-weight-light: 300;
   --font-weight-normal: 400;
-  --font-weight-bold: 700;
+  --font-weight-bold: 600;
   --font-lineheight-body: 1.5rem;
-  --font-lineheight-headings: 1.25rem;
+  --font-lineheight-headings: 1.6rem;
   --font-lineheight-interface: 1rem;
 }

@@ -66,18 +66,6 @@ html {
   }
 }
 
-.ws-content-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: govuk-spacing(6);
-  }
-
-@media screen and (max-width:640px) {
-  .ws-content-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 .ws-excerpt {
   margin: 0;
   padding: 0;
