@@ -1,6 +1,19 @@
 from wagtail import blocks
 
+def get_tag_choices():
+    return [(tag.name, tag.name) for tag in Tags.objects.all()]
+
 class TaggedPageListBlock(blocks.StructBlock):
+    title = blocks.CharBlock(
+        label="Title",
+        icon="title",
+        classname="full title",
+        max_length=40,
+        search_index=False,
+    )
+    description = blocks.CharBlock(required=False, max_length=40)
+    tag = blocks.ChoiceBlock(Tags.objects.all())
+
     class Meta:
        template = "dwds/components/link_list.html"
        label = "Link list"
