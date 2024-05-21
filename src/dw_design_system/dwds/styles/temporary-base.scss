@@ -6,6 +6,8 @@
 .dwds * {
 	box-sizing: border-box;
 	max-inline-size: var(--measure);
+	overflow-wrap: break-word;
+	hyphens: auto;
 }
 
 html,
@@ -16,6 +18,15 @@ nav,
 main,
 footer {
 	max-inline-size: none;
+}
+
+h2 {
+	line-height: var(--font-lineheight-headings);
+}
+
+h1 {
+	font-size: var(--s3);
+	line-height: var(--font-lineheight-headings);
 }
 
 .dwds {

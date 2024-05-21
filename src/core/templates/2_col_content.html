@@ -8,7 +8,9 @@
                 <article>
                     {% block content %}{% endblock %}
                 </article>
+                {% include 'includes/tag_set.html' %}
             </div>
+            {% block post_content %}{% endblock %}
         </div>
         <div class="govuk-grid-column-one-third">
             <div class="ws-secondary-content">

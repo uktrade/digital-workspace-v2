@@ -5,13 +5,14 @@
     font-family: var(--font-family-primary);
     font-size: var(--s1);
     font-weight: var(--font-weight-normal);
+    line-height: var(--font-lineheight-headings);
     text-decoration: none;
     align-items: baseline;
+    gap: var(--s0);
 }
 
 .dwds-navigational-link::after{
     content: "\002192";
-    padding-inline-start: var(--s0);
 }
 
 .dwds-navigational-link:hover{
@@ -23,4 +24,8 @@
     text-decoration-line: underline;
     text-decoration-color: var(--color-link);
     background-color: var(--color-link-background-active);
+}
+
+.dwds-navigational-link > * {
+    max-width: calc(100% - var(--s0) - 2ch); // 100% - gap - width of the arrow
 }

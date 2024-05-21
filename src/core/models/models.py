@@ -35,7 +35,7 @@ class SiteAlertBanner(models.Model):
             )
 
 
-register(Document, app=__package__)
+register(Document, "core")
 
 
 class IngestedModelManager(models.Manager):

@@ -1,4 +1,5 @@
 .dwds-navigation-card {
-    border: var(--s-5) solid var(--color-border);
-    border-top: var(--s-1) solid var(--color-border);
+    border: var(--border-width-card) solid var(--color-border);
+    border-top: var(--border-top-width-card) solid var(--color-border);
+    padding: var(--s0);
 }
