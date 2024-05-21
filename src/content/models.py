@@ -12,6 +12,7 @@ from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import (
     FieldPanel,
+    InlinePanel,
     ObjectList,
     TabbedInterface,
     TitleFieldPanel,
@@ -284,7 +285,8 @@ class ContentPage(BasePage):
     def topics(self):
         from working_at_dit.models import Topic
 
-        topic_ids = self.page_topics.all().values_list("topic__pk", flat=True)
+        # This needs to be a list comprehension to work nicely with modelcluster.
+        topic_ids = [page_topic.topic.pk for page_topic in self.page_topics.all()]
         return Topic.objects.filter(pk__in=topic_ids)
 
     @property
@@ -364,8 +366,9 @@ class ContentPage(BasePage):
     subpage_types = []
 
     content_panels = BasePage.content_panels + [
-        FieldPanel("excerpt", widget=widgets.Textarea),
         FieldPanel("body"),
+        FieldPanel("excerpt", widget=widgets.Textarea),
+        InlinePanel("tagged_items", label="Tags"),
     ]
 
     promote_panels = [
@@ -374,6 +377,17 @@ class ContentPage(BasePage):
         FieldPanel("pinned_phrases"),
         FieldPanel("excluded_phrases"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        tag_set = []
+        # TODO: Enable when we want to show tags to users.
+        # for tagged_item in self.tagged_items.select_related("tag").all():
+        #     tag_set.append(tagged_item.tag)
+        context["tag_set"] = tag_set
+
+        return context
 
     def full_clean(self, *args, **kwargs):
         self._generate_search_field_content()

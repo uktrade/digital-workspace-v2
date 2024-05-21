@@ -1,9 +1,14 @@
+from django.db.models import Count
 from django.templatetags.static import static
 from django.utils.html import format_html
 from wagtail import hooks
+from wagtail.admin.panels import FieldPanel
+from wagtail.admin.ui.tables import Column
+from wagtail.snippets.models import register_snippet
+from wagtail.snippets.views.snippets import SnippetViewSet
 from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
-from core.models import SiteAlertBanner
+from core.models import SiteAlertBanner, Tag
 
 
 class SiteAlertBannerAdmin(ModelAdmin):
@@ -24,3 +29,22 @@ def global_admin_css():
     return format_html(
         '<link rel="stylesheet" href="{}">', static("stylesheets/wagtailtheme.css")
     )
+
+
+class TagsSnippetViewSet(SnippetViewSet):
+    panels = [
+        FieldPanel("name"),
+    ]
+    model = Tag
+    icon = "tag"
+    add_to_admin_menu = True
+    menu_label = "Tags"
+    menu_order = 300
+    list_display = ["name", Column("tagged_page_count"), "link"]
+    search_fields = ("name",)
+
+    def get_queryset(self, request):
+        return self.model.objects.annotate(tagged_page_count=Count("taggedpage_set"))
+
+
+register_snippet(TagsSnippetViewSet)

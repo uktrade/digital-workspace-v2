@@ -119,7 +119,7 @@ class PageTopic(models.Model):
     topic = models.ForeignKey(
         "working_at_dit.Topic",
         on_delete=models.CASCADE,
-        related_name="topic_Pages",
+        related_name="topic_pages",
     )
 
     panels = [
@@ -130,6 +130,7 @@ class PageTopic(models.Model):
         unique_together = ("page", "topic")
 
 
+# TODO: Possibly remove this page type in the hierarchy? (lots of work!)
 class PageWithTopics(ContentPage):
     indexed_fields = [
         IndexedField(

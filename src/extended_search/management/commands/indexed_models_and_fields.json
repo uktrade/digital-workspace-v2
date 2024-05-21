@@ -1,4 +1,8 @@
 {
+    "<class 'core.models.tags.Tag'>": [
+        "<AutocompleteField: name>",
+        "<SearchField: name>"
+    ],
     "<class 'home.models.HomePage'>": [
         "<AutocompleteField: title>",
         "<FilterField: content_type>",
