@@ -14,6 +14,6 @@
         <h3>{{ title }}</h3>
     </a>
     <p>{{ excerpt|truncatechars:50 }}</p>
-    <p>{{ author }}</p>
+    {% if author %}<p>{{ author }}</p>{% endif %}
     <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date }}</time>
 {% endblock %}
