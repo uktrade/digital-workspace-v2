@@ -9,6 +9,9 @@
             {% include_block block %}
         {% endfor %}
     </div>
+{% endblock content %}
+
+{% block post_content %}
     {% if self.allow_comments %}
         {% if comment_count > 0 %}
             <div class="news-article-comments">
@@ -99,7 +102,7 @@
             }
         </script>
     {% endif %}
-{% endblock %}
+{% endblock post_content %}
 
 {% block tertiary_col_content %}
     {% include "news/includes/news_categories.html" %}
