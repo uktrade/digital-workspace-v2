@@ -36,6 +36,16 @@ MODERATOR_PAGE_PERMISSIONS = EDITOR_PAGE_PERMISSIONS + [
     "unlock_page",
 ]
 
+MODERATOR_ROOT_COLLECTION_PERMISSIONS = [
+    "add_media",
+    "change_media",
+    "add_image",
+    "change_image",
+    "choose_image",
+    "add_document",
+    "change_document",
+]
+
 NEWS_MODERATOR_ROOT_COLLECTION_PERMISSIONS = [
     "add_media",
     "change_media",
@@ -118,12 +128,25 @@ class Command(BaseCommand):
         news_moderators.permissions.add(wagtail_admin_permission)
         news_moderators.save()
 
+        # Root collection permissions
         root_collection = Collection.objects.get(name="Root")
-        root_collection_permissions = Permission.objects.filter(
+
+        # Moderator root collection permissions
+        root_collection_moderator_permissions = Permission.objects.filter(
+            codename__in=MODERATOR_ROOT_COLLECTION_PERMISSIONS
+        )
+        for permission in root_collection_moderator_permissions:
+            GroupCollectionPermission.objects.get_or_create(
+                group=moderators,
+                collection=root_collection,
+                permission=permission,
+            )
+
+        # News moderator root collection permissions
+        root_collection_new_moderator_permissions = Permission.objects.filter(
             codename__in=NEWS_MODERATOR_ROOT_COLLECTION_PERMISSIONS
         )
-
-        for permission in root_collection_permissions:
+        for permission in root_collection_new_moderator_permissions:
             GroupCollectionPermission.objects.get_or_create(
                 group=news_moderators,
                 collection=root_collection,
