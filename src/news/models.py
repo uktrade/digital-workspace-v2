@@ -125,14 +125,6 @@ class NewsPage(PageWithTopics):
         default=True,
     )
 
-    preview_image = models.ForeignKey(
-        "wagtailimages.Image",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-
     featured_on_news_home = models.BooleanField(
         default=False,
         help_text="If checked, this will cause the page to "
@@ -167,7 +159,6 @@ class NewsPage(PageWithTopics):
     ]
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504
-        FieldPanel("preview_image"),
         InlinePanel("news_categories", label="News categories"),
         FieldPanel("allow_comments"),
         FieldPanel("perm_sec_as_author"),

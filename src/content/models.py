@@ -218,6 +218,14 @@ class ContentPage(BasePage):
         blank=True, null=True, help_text="""Legacy content, pre-conversion"""
     )
 
+    preview_image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
     body = StreamField(
         [
             ("heading2", blocks.Heading2Block()),
@@ -366,6 +374,7 @@ class ContentPage(BasePage):
     content_panels = BasePage.content_panels + [
         FieldPanel("excerpt", widget=widgets.Textarea),
         FieldPanel("body"),
+        FieldPanel("preview_image"),
     ]
 
     promote_panels = [
