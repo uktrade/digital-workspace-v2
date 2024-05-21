@@ -2,7 +2,7 @@
     border: var(--border-width-card) solid var(--color-border);
     border-top-width: var(--border-top-width-card);
     padding: var(--s0);
-
+   
     h2 {
         font-weight: var(--font-weight-bold);
     }
@@ -30,5 +30,5 @@
 }
 
 .dwds-link-list li :hover {
-    text-decoration-thickness: var(--s-4);
+    text-decoration-thickness: var(--text-underline-hover);
 }
