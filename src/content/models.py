@@ -284,7 +284,8 @@ class ContentPage(BasePage):
     def topics(self):
         from working_at_dit.models import Topic
 
-        topic_ids = self.page_topics.all().values_list("topic__pk", flat=True)
+        # This needs to be a list comprehension to work nicely with modelcluster.
+        topic_ids = [page_topic.topic.pk for page_topic in self.page_topics.all()]
         return Topic.objects.filter(pk__in=topic_ids)
 
     @property
