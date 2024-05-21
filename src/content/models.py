@@ -219,6 +219,14 @@ class ContentPage(BasePage):
         blank=True, null=True, help_text="""Legacy content, pre-conversion"""
     )
 
+    preview_image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
     body = StreamField(
         [
             ("heading2", blocks.Heading2Block()),
@@ -368,6 +376,7 @@ class ContentPage(BasePage):
     content_panels = BasePage.content_panels + [
         FieldPanel("body"),
         FieldPanel("excerpt", widget=widgets.Textarea),
+        FieldPanel("preview_image"),
         InlinePanel("tagged_items", label="Tags"),
     ]
 
@@ -442,6 +451,7 @@ class NavigationPage(BasePage):
         [
             ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
             ("dw_cta", dwds_blocks.CTACardBlock()),
+            ("dw_engagement_card", dwds_blocks.EngagementCardBlock()),
             ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),
         ],
         blank=True,
