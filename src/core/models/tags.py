@@ -24,7 +24,7 @@ class Tag(Indexed, TagBase):
         return format_html('<a href="{}">view</a>', self.get_absolute_url())
 
     def get_absolute_url(self):
-        return reverse("tag-index", kwargs={"slug": self.slug})
+        return reverse("tag_index", kwargs={"slug": self.slug})
 
 
 class TaggedItem(ItemBase):
