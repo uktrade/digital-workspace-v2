@@ -12,3 +12,12 @@ class NavigationCardBlock(blocks.StructBlock):
         label = "Navigation Card"
         icon = "link"
         template = "dwds/components/navigation_card.html"
+
+    def get_context(self, value, parent_context=None):
+        context = parent_context or {}
+        context.update(
+            title=value["title"],
+            description=value["summary"],
+            url=value["page"].get_url(),
+        )
+        return context
