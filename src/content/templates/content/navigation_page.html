@@ -1,22 +1,22 @@
-{% extends "1_col_content.html" %}
+{% extends "2_col_content.html" %}
 {% load wagtailcore_tags %}
 
 {% block content %}
     <div class="dwds">
-        {% include 'feedback.html' %}
         <h1>{{ page.title }}</h1>
-        <div class="ws-content-grid">
+        <div class="grid">
             {% for block in page.primary_elements %}
-                <div>{% include_block block %}</div>
+                {% include_block block %}
             {% endfor %}
         </div>
-        {% for block in page.body %}
+    </div>
+{% endblock %}
+
+{% block tertiary_col_content %}
+    <div class="dwds stack">
+        {% include 'feedback.html' %}
+        {% for block in page.secondary_elements %}
             {% include_block block %}
         {% endfor %}
-        <div class="ws-content-grid">
-            {% for block in page.secondary_elements %}
-                <div>{% include_block block %}</div>
-            {% endfor %}
-        </div>
     </div>
 {% endblock %}
