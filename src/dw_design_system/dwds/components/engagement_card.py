@@ -25,6 +25,7 @@ class EngagementCardBlock(blocks.StructBlock):
 
         context.update(
             title=page.title,
+            excerpt=page.excerpt,
             author=author,
             thumbnail=getattr(page, "preview_image", None),
             date=page.published_date,

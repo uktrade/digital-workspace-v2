@@ -1,0 +1,30 @@
+.dwds-card {
+    border: var(--border-width-card) solid var(--color-border);
+    border-top: none;
+
+    align-items: baseline;
+
+    &::before {
+        content: '';
+        display: block;
+        height: var(--s-3);
+        background-color: var(--color-border);
+        width: calc(100% + var(--border-width-card) * 2);
+        margin-left: calc(var(--border-width-card) * -1);
+    }
+
+    &--dark {
+        border-color: var(--color-background-card);
+        background-color: var(--color-background-card);
+
+        &::before {
+            background-color: var(--color-border-dark);
+        }
+    }
+
+
+    .dwds-card-container {
+        padding: var(--s0);
+    }
+
+}
