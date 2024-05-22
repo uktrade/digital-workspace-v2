@@ -4,8 +4,6 @@
 {% block card_container_classes %}dwds-cta-card{% endblock %}
 
 {% block card_content %}
-    <div class="center">
-        {% include '../elements/navigational_link.html' with url=url text=title %}
-        {% if description %}<p>{{ description }}</p>{% endif %}
-    </div>
+    {% include '../elements/navigational_link.html' with url=url text=title %}
+    {% if description %}<p>{{ description }}</p>{% endif %}
 {% endblock %}

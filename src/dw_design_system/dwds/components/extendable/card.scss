@@ -1,30 +1,21 @@
 .dwds-card {
-    border: var(--border-width-card) solid var(--color-border);
-    border-top: none;
-
+    border-top: var(--s-3) solid var(--color-border);
     align-items: baseline;
 
-    &::before {
-        content: '';
-        display: block;
-        height: var(--s-3);
-        background-color: var(--color-border);
-        width: calc(100% + var(--border-width-card) * 2);
-        margin-left: calc(var(--border-width-card) * -1);
+    .dwds-card-container {
+        height: 100%;
+        border: var(--border-width-card) solid var(--color-border);
+        border-top: none;
+        padding-top: var(--s1);
     }
 
-    &--dark {
-        border-color: var(--color-background-card);
-        background-color: var(--color-background-card);
+}
 
-        &::before {
-            background-color: var(--color-border-dark);
-        }
-    }
-
+.dwds-card--dark {
+    border-top: var(--s-3) solid var(--color-border-dark);
 
     .dwds-card-container {
-        padding: var(--s0);
+        background-color: var(--color-background-card);
+        border-color: var(--color-background-card);
     }
-
 }
