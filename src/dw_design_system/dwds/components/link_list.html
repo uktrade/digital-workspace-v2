@@ -1,4 +1,10 @@
-<div class="dwds-link-list">
+
+{% extends "dwds/components/extendable/card.html" %}
+
+
+{% block card_container_classes %}dwds-link-list{% endblock %}
+
+{% block card_content %}
     <h2>{{ title }}</h2>
     {% if description %}<p>{{ description }}</p>{% endif %}
     <ul>
@@ -8,4 +14,4 @@
             </li>
         {% endfor %}
     </ul>
-</div>
+{% endblock %}

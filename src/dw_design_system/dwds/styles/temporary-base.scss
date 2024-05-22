@@ -10,24 +10,12 @@
 	hyphens: auto;
 }
 
+
 html,
-body,
-div,
-header,
-nav,
-main,
-footer {
+body {
 	max-inline-size: none;
 }
 
-h2 {
-	line-height: var(--font-lineheight-headings);
-}
-
-h1 {
-	font-size: var(--s3);
-	line-height: var(--font-lineheight-headings);
-}
 
 .dwds {
 	font-family: var(--font-family-primary);
@@ -35,4 +23,30 @@ h1 {
 	line-height: var(--font-lineheight-body);
 	background-color: var(--color-background);
 	color: var(--color-text);
+
+	div,
+	header,
+	nav,
+	main,
+	footer {
+		max-inline-size: none;
+	}
+
+	h1 {
+		font-size: var(--s3);
+		font-weight: var(--font-weight-bold);
+		line-height: var(--font-lineheight-headings);
+		color: var(--color-heading);
+	}
+
+	h2 {
+		line-height: var(--font-lineheight-headings);
+		color: var(--color-heading);
+	}
+
+	h3 {
+		font-weight: var(--font-weight-bold);
+		line-height: var(--font-lineheight-headings);
+		color: var(--color-heading);
+	}
 }

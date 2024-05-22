@@ -1,0 +1,21 @@
+.dwds-card {
+    border-top: var(--s-3) solid var(--color-border);
+    align-items: baseline;
+
+    .dwds-card-container {
+        height: 100%;
+        border: var(--border-width-card) solid var(--color-border);
+        border-top: none;
+        padding-top: var(--s1);
+    }
+
+}
+
+.dwds-card--dark {
+    border-top: var(--s-3) solid var(--color-border-dark);
+
+    .dwds-card-container {
+        background-color: var(--color-background-card);
+        border-color: var(--color-background-card);
+    }
+}
