@@ -14,7 +14,7 @@ Feedback component
 <div id="{{ prefix }}-feedback"
      class="feedback {% if classes %}{{ classes }}{% endif %}">
     {% if title %}<h1 class="govuk-heading-m">{{ title }}</h1>{% endif %}
-    <div class="{{ prefix }}-feedback-header govuk-!-padding-1 govuk-!-padding-left-2">
+    <div class="feedback-header govuk-!-padding-1 govuk-!-padding-left-2">
         <div class="govuk-body-s govuk-body--inverse govuk-!-margin-bottom-0 govuk-!-margin-right-2">
             {% if question %}
                 {{ question }}
@@ -39,7 +39,7 @@ Feedback component
     <script>
         const dialog = document.querySelector("#{{ prefix }}-feedback-dialog");
         const form = dialog.querySelector("form");
-        const header = document.querySelector("#{{ prefix }}-feedback .{{ prefix }}-feedback-header");
+        const header = document.querySelector("#{{ prefix }}-feedback .feedback-header");
 
         function positiveResponse() {
             // Clear all form fields except the hidden ones
