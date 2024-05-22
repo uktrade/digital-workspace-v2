@@ -1,6 +1,8 @@
 .dwds-link-list {
     h2 {
-        font-weight: var(--font-weight-bold);
+        font-size: var(--s1);
+        font-weight: var(--font-weight-normal);
+        line-height: var(--font-lineheight-headings);
     }
 
     ul {

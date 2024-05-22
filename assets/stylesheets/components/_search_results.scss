@@ -196,7 +196,6 @@
     align-items: center;
     background-color: $govuk-brand-colour;
     min-height: 3.5rem;
-    width: 100%;
     > * {
       display: inline-flex;
     }
@@ -207,6 +206,12 @@
       color: govuk-colour("white");
     }
   }
+}
+
+#navigation-page-feedback {
+    .feedback-header {
+        width: 100%;
+    }
 }
 
 .feedback-dialog {
