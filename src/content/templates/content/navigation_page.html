@@ -28,8 +28,10 @@
     </div>
 {% endblock %}
 
-<script>
+{% block scripts %}
+    <script>
     function navigationFeedbackData(formData) {
         formData.set('page_url','{{page.url}}');
     }
-</script>
+    </script>
+{% endblock %}
