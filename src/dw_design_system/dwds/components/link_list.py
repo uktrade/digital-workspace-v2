@@ -11,10 +11,10 @@ class CustomPageLinkListBlock(blocks.StructBlock):
         label="Title",
         icon="title",
         classname="full title",
-        max_length=40,
+        max_length=30,
         search_index=False,
     )
-    description = blocks.CharBlock(required=False, max_length=40)
+    description = blocks.CharBlock(required=False, max_length=70)
     pages = blocks.ListBlock(blocks.PageChooserBlock(label="Page"), search_index=False)
 
     def get_context(self, value, parent_context=None):
