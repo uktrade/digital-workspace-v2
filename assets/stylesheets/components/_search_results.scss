@@ -209,8 +209,11 @@
 }
 
 #navigation-page-feedback {
+    display: block;
+
     .feedback-header {
-        width: 100%;
+        text-align: right;
+        display: block;
     }
 }
 
