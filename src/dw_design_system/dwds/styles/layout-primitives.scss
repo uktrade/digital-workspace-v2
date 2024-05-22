@@ -12,7 +12,7 @@
 }
 
 .stack > * + * {
-    margin-block-start: var(--space, 1.5rem);
+    margin-block-start: var(--space);
 }
 
 
@@ -107,11 +107,11 @@
   display: flex;
   flex-direction: column;
   min-block-size: 100vh;
-  padding: 1rem;
+  padding: var(--space);
 }
 
 .cover > * {
-  margin-block: 1rem;
+  margin-block: var(--space);
 }
 
 .cover > :first-child:not(h1) {
@@ -201,11 +201,11 @@
 }
 
 .reel > * + * {
-  margin-inline-start: 1rem;
+  margin-inline-start: var(--space);
 }
 
 .reel.overflowing {
-  padding-block-end: 1rem;
+  padding-block-end: var(--space);
 }
 
 
@@ -243,7 +243,7 @@
 }
 
 .with-icon .icon {
-  margin-inline-end: 1rem;
+  margin-inline-end: var(--space);
 }
 
 
