@@ -1,4 +1,8 @@
-<div class="stack box dwds-navigation-card">
+{% extends "dwds/components/extendable/card.html" %}
+
+{% block card_container_classes %}dwds-navigation-card{% endblock %}
+
+{% block card_content %}
     {% include "dwds/elements/navigational_link.html" with url=url text=title %}
     {% if summary %}<p>{{ summary }}</p>{% endif %}
-</div>
+{% endblock %}

@@ -1,8 +1,4 @@
 .dwds-link-list {
-    border: var(--border-width-card) solid var(--color-border);
-    border-top-width: var(--border-top-width-card);
-    padding: var(--s0);
-   
     h2 {
         font-weight: var(--font-weight-bold);
     }
@@ -11,24 +7,26 @@
         list-style-type: none;
         margin: 0;
         padding: 0;
-      }
+    }
 
     li {
-        color: var(--color-link-list);
         text-align: start;
         padding-top: var(--s-2);
+
+        a {
+            color: var(--color-link);
+        }
+
+        a:active {
+            background-color: var(--color-link-background-active);
+        }
+
+        a:visited {
+            color: var(--color-link-visited);
+        }
+
+        a:hover {
+            text-decoration-thickness: var(--text-underline-hover);
+        }
     }
-}
-
-.dwds-link-list li :active {
-    background-color: var(--color-link-background-active);
-    color: var(--color-link);
-}
-
-.dwds-link-list li :visited {
-    color: var(--color-link);
-}
-
-.dwds-link-list li :hover {
-    text-decoration-thickness: var(--text-underline-hover);
 }

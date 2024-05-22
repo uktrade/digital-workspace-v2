@@ -1,9 +1,17 @@
 {% extends "2_col_content.html" %}
 {% load wagtailcore_tags %}
 
+{% block pre_content %}
+    <div class="govuk-grid-row">
+        <div class="flex:spacebetween dwds govuk-grid-column-full">
+            <h1>{{ page.title }}</h1>
+            {% include "feedback.html" with form_id="hr-v1" classes="" prefix="navigation-page" custom_submit_data_function="navigationFeedbackData" %}
+        </div>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div class="dwds">
-        <h1>{{ page.title }}</h1>
         <div class="grid">
             {% for block in page.primary_elements %}
                 {% include_block block %}
@@ -14,9 +22,14 @@
 
 {% block tertiary_col_content %}
     <div class="dwds stack">
-        {% include 'feedback.html' %}
         {% for block in page.secondary_elements %}
             {% include_block block %}
         {% endfor %}
     </div>
 {% endblock %}
+
+<script>
+    function navigationFeedbackData(formData) {
+        formData.set('page_url','{{page.url}}');
+    }
+</script>

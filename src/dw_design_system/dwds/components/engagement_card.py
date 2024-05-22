@@ -19,12 +19,15 @@ class EngagementCardBlock(blocks.StructBlock):
             return context
         page = page.specific
 
-        author = page.owner.get_full_name()
+        author = None
         if content_owner := getattr(page, "content_owner", None):
             author = content_owner.full_name
+        elif page.owner:
+            author = page.owner.get_full_name()
 
         context.update(
             title=page.title,
+            excerpt=page.excerpt,
             author=author,
             thumbnail=getattr(page, "preview_image", None),
             date=page.published_date,

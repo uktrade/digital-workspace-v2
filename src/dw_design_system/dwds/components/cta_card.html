@@ -1,6 +1,9 @@
-<div class="box dwds-cta-card">
-    <div class="center">
-        {% include '../elements/navigational_link.html' with url=url text=title %}
-        {% if description %}<p>{{ description }}</p>{% endif %}
-    </div>
-</div>
+{% extends "dwds/components/extendable/card.html" %}
+
+{% block card_classes %}dwds-card--dark{% endblock %}
+{% block card_container_classes %}dwds-cta-card{% endblock %}
+
+{% block card_content %}
+    {% include '../elements/navigational_link.html' with url=url text=title %}
+    {% if description %}<p>{{ description }}</p>{% endif %}
+{% endblock %}

@@ -1,19 +1,22 @@
 :root {
+  // Brand colours - for re-use here only (TO DISCUSS WITH MARCEL)
+  --dbt-blue: #00285F;
+
   // Colour
+  --color-heading: var(--dbt-blue);
   --color-text: black;
   --color-text-highlight: #fff;
-  --color-link: #00285F;
+  --color-link: var(--dbt-blue);
   --color-link-hover: #fff;
   --color-link-active: #fff;
   --color-link-background-active: #fbff00;
-  --color-link-visited: #fff;
-  --color-link-list: #0063BE;
+  // TODO: Need to choose a better colour for visited links
+  --color-link-visited: purple;
   --color-background: white;
   --color-background-highlight: white;
   --color-background-card: #dde5ed;
-  --color-background-card-highlight: #59CBE84D;
   --color-border: #D6E0E5;
-  --color-border-dark: #04043f;
+  --color-border-dark: var(--dbt-blue);
   --color-border-highlight: white;
 
   // Size
