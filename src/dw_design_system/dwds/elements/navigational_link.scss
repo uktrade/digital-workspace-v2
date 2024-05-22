@@ -8,7 +8,7 @@
     line-height: var(--font-lineheight-headings);
     text-decoration: none;
     align-items: baseline;
-    gap: var(--s0);
+    gap: var(--space);
 }
 
 .dwds-navigational-link::after{
@@ -27,5 +27,5 @@
 }
 
 .dwds-navigational-link > * {
-    max-width: calc(100% - var(--s0) - 2ch); // 100% - gap - width of the arrow
+    max-width: calc(100% - var(--space) - 2ch); // 100% - gap - width of the arrow
 }

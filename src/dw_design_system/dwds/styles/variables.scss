@@ -10,8 +10,7 @@
   --color-link-hover: #fff;
   --color-link-active: #fff;
   --color-link-background-active: #fbff00;
-  // TODO: Need to choose a better colour for visited links
-  --color-link-visited: purple;
+  --color-link-visited: #551a8b;
   --color-background: white;
   --color-background-highlight: white;
   --color-background-card: #dde5ed;
@@ -32,6 +31,9 @@
   --s3: calc(var(--s2) * var(--ratio));
   --s4: calc(var(--s3) * var(--ratio));
   --s5: calc(var(--s4) * var(--ratio));
+  --space: var(--s0);
+
+  // Borders and element widths
   --border-width-card: 2px;
   --border-top-width-card: var(--s-2);
   --text-underline-hover: 3px;

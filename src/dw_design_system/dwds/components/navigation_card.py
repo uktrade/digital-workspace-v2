@@ -4,9 +4,9 @@ from wagtail import blocks
 class NavigationCardBlock(blocks.StructBlock):
     """A nav card to direct users"""
 
-    title = blocks.CharBlock(required=True)
+    title = blocks.CharBlock(required=True, max_length=30)
     page = blocks.PageChooserBlock(required=True)
-    summary = blocks.CharBlock(required=False, max_length=50)
+    summary = blocks.CharBlock(required=False, max_length=70)
 
     class Meta:
         label = "Navigation Card"

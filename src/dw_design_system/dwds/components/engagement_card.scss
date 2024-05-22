@@ -22,8 +22,10 @@
     }
 
     h3 {
-        margin-top: var(--s0);
-        margin-bottom: var(--s-1);
+        margin: 0;
+        font-size: var(--s1);
+        font-weight: var(--font-weight-normal);
+        line-height: var(--font-lineheight-headings);
     }
 
     .dwds-engagement-card--excerpt {}

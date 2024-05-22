@@ -1,5 +1,7 @@
 from wagtail import blocks
 
+from content.utils import truncate_words_and_chars
+
 
 class EngagementCardBlock(blocks.StructBlock):
     page = blocks.PageChooserBlock(page_type="content.ContentPage")
@@ -26,8 +28,12 @@ class EngagementCardBlock(blocks.StructBlock):
             author = page.owner.get_full_name()
 
         context.update(
-            title=page.title,
-            excerpt=page.excerpt,
+            title=truncate_words_and_chars(
+                page.title, words=7, chars=30, include_elipsis=True
+            ),
+            excerpt=truncate_words_and_chars(
+                page.excerpt, words=10, chars=70, include_elipsis=True
+            ),
             author=author,
             thumbnail=getattr(page, "preview_image", None),
             date=page.published_date,

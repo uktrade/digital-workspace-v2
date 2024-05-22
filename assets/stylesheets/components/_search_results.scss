@@ -202,10 +202,20 @@
     .govuk-button {
       width: auto !important;
     }
-    .govuk-body--inverse {
+
+    div.govuk-body-s {
       color: govuk-colour("white");
     }
   }
+}
+
+#navigation-page-feedback {
+    display: block;
+
+    .feedback-header {
+        text-align: right;
+        display: block;
+    }
 }
 
 .feedback-dialog {
