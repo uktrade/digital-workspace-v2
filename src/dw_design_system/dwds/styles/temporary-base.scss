@@ -51,3 +51,13 @@ body {
 		font-size: var(--s1);
 	}
 }
+
+.dwds {
+	.feedback-header {
+		background-color: var(--color-background);
+
+		div {
+			color: var(--color-text) !important;
+		}
+	}
+}

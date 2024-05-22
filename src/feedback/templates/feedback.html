@@ -15,7 +15,7 @@ Feedback component
      class="feedback {% if classes %}{{ classes }}{% endif %}">
     {% if title %}<h1 class="govuk-heading-m">{{ title }}</h1>{% endif %}
     <div class="feedback-header govuk-!-padding-1 govuk-!-padding-left-2">
-        <div class="govuk-body-s govuk-body--inverse govuk-!-margin-bottom-0 govuk-!-margin-right-2">
+        <div class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-margin-right-2">
             {% if question %}
                 {{ question }}
             {% else %}
@@ -67,7 +67,7 @@ Feedback component
 
         function showThankYouMessage() {
             // Update text to say thanks.
-            header.innerHTML = '<div class="govuk-body-s govuk-body--inverse govuk-!-margin-bottom-0">Thanks for your feedback.</div>';
+            header.innerHTML = '<div class="govuk-body-s govuk-!-margin-bottom-0">Thanks for your feedback.</div>';
         }
 
         form.addEventListener("submit", (event) => {
