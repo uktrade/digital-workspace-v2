@@ -54,7 +54,7 @@
 .cluster {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space, 1rem);
+    gap: var(--space);
     justify-content: flex-start;
     align-items: center;
 }
@@ -66,7 +66,7 @@
 .with-sidebar {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s1);
+  gap: var(--space);
 }
 
 .with-sidebar > :first-child {
@@ -86,7 +86,7 @@
 .switcher {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s1);
+  gap: var(--space);
 }
 
 .switcher > * {
@@ -132,7 +132,7 @@
 
 .grid {
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: var(--space);
 }
 
 @supports (width: min(250px, 100%)) {
