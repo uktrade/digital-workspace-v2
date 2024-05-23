@@ -2,11 +2,9 @@
 {% load wagtailcore_tags %}
 
 {% block pre_content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1>{{ page.title }}</h1>
-        </div>
-        <div class="govuk-grid-column-one-third">
+    <div class="with-sidebar-right">
+        <h1>{{ page.title }}</h1>
+        <div>
             {% include "feedback.html" with form_id="hr-v1" classes="" prefix="navigation-page" custom_submit_data_function="navigationFeedbackData" %}
         </div>
     </div>
