@@ -13,7 +13,13 @@
     <a href="{{ url }}">
         <h3>{{ title }}</h3>
     </a>
-    <p class="dwds-engagement-card--excerpt">{{ excerpt|truncatechars:50 }}</p>
-    {% if author %}<p class="dwds-engagement-card--author">{{ author }}</p>{% endif %}
-    <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date }}</time>
+    {% if excerpt %}<p class="dwds-engagement-card--excerpt">{{ excerpt }}</p>{% endif %}
+    <p class="dwds-engagement-card--author">
+        {% if author %}
+            {{ author }}
+            <br>
+        {% endif %}
+        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date }}</time>
+    </p>
+
 {% endblock %}

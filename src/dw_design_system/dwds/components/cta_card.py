@@ -5,8 +5,8 @@ from wagtail import blocks
 class CTACardBlock(blocks.StructBlock):
     """Call to action section"""
 
-    title = blocks.CharBlock(required=True, max_length=80)
-    description = blocks.CharBlock(required=False, max_length=80)
+    title = blocks.CharBlock(required=True, max_length=30)
+    description = blocks.CharBlock(required=False, max_length=70)
     page = blocks.PageChooserBlock(required=False)
     url = blocks.URLBlock(required=False)
 
