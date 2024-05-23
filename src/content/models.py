@@ -505,7 +505,7 @@ class BlogIndex(BasePage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["children"] = self.get_children()
+        context["children"] = self.get_children().live().public().order_by("title")
         return context
 
 
