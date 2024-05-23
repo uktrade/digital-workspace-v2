@@ -1,8 +1,8 @@
-{% extends "2_col_content.html" %}
+{% extends "2_col_content_dwds.html" %}
 {% load wagtailcore_tags %}
 
 {% block pre_content %}
-    <div class="govuk-grid-row dwds">
+    <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1>{{ page.title }}</h1>
         </div>
@@ -12,18 +12,16 @@
     </div>
 {% endblock %}
 
-{% block content %}
-    <div class="dwds">
-        <div class="grid">
-            {% for block in page.primary_elements %}
-                {% include_block block %}
-            {% endfor %}
-        </div>
+{% block primary_content %}
+    <div class="grid">
+        {% for block in page.primary_elements %}
+            {% include_block block %}
+        {% endfor %}
     </div>
 {% endblock %}
 
-{% block tertiary_col_content %}
-    <div class="dwds stack">
+{% block secondary_content %}
+    <div class="stack">
         {% for block in page.secondary_elements %}
             {% include_block block %}
         {% endfor %}
