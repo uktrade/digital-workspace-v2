@@ -21,10 +21,10 @@ class TaggedPageListBlock(blocks.StructBlock):
         label="Title",
         icon="title",
         classname="full title",
-        max_length=40,
+        max_length=30,
         search_index=False,
     )
-    description = blocks.CharBlock(required=False, max_length=40)
+    description = blocks.CharBlock(required=False, max_length=70)
     tag = blocks.ChoiceBlock(label="Tag", choices=get_tag_choices, required=True)
     ordering_choice = blocks.ChoiceBlock(
         label="Ordering",
@@ -48,13 +48,14 @@ class TaggedPageListBlock(blocks.StructBlock):
         if tag:
             pages = (
                 TaggedPage.objects.filter(tag=tag)
+                .filter(content_object__public=True)
                 .filter(content_object__live=True)
                 .select_related("content_object")
                 .order_by(ordering)
                 .all()
             )
         else:
-            pages = []
+            pages = ()
 
         context.update(
             title=value["title"],
