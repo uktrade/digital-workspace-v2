@@ -127,16 +127,6 @@ class BasePage(Page, Indexed):
         TitleFieldPanel("title"),
     ]
 
-    indexed_fields = [
-        IndexedField(
-            "title",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=1.0,
-        ),
-    ]
-
     @property
     def published_date(self):
         return self.last_published_at
