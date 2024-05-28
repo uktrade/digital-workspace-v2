@@ -2,7 +2,7 @@
 {% load wagtailimages_tags %}
 
 {% block card_classes %}
-    {% if is_news %}dwds-card--dark{% endif %}
+    {% if is_news_or_blog_post %}dwds-card--dark{% endif %}
 {% endblock %}
 {% block card_container_classes %}dwds-engagement-card{% endblock %}
 
