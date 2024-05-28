@@ -524,28 +524,28 @@ class NavigationPage(SearchFieldsMixin, BasePage):
 
     def _generate_search_block_content(self, block):
         if block.block_type == "dw_navigation_card":
-            self.search_headings += f" {strip_tags(block.title)}"
-            self.search_content += f" {strip_tags(block.summary)}"
+            self.search_headings += f" {strip_tags(block.value["title"])}"
+            self.search_content += f" {strip_tags(block.value["summary"])}"
             return
 
         if block.block_type == "dw_curated_page_links":
-            self.search_headings += f" {strip_tags(block.title)}"
-            self.search_content += f" {strip_tags(block.description)}"
-            self.search_content += " " + " ".join(p.title for p in block.pages)
+            self.search_headings += f" {strip_tags(block.value["title"])}"
+            self.search_content += f" {strip_tags(block.value["description"])}"
+            self.search_content += " " + " ".join(p.title for p in block.value["pages"])
             return
 
         if block.block_type == "dw_cta":
-            self.search_headings += f" {strip_tags(block.title)}"
-            self.search_content += f" {strip_tags(block.description)}"
+            self.search_headings += f" {strip_tags(block.value["title"])}"
+            self.search_content += f" {strip_tags(block.value["description"])}"
             return
 
         if block.block_type == "dw_engagement_card":
-            self.search_headings += f" {strip_tags(block.page.title)}"
+            self.search_headings += f" {strip_tags(block.value["page"].title)}"
             return
 
         if block.block_type == "dw_navigation_card":
-            self.search_headings += f" {strip_tags(block.page.title)}"
-            self.search_content += f" {strip_tags(block.summary)}"
+            self.search_headings += f" {strip_tags(block.value["page"].title)}"
+            self.search_content += f" {strip_tags(block.value["summary"])}"
             return
 
         return
