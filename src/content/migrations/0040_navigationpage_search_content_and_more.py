@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("content", "0038_alter_navigationpage_primary_elements_and_more"),
+        ("content", "0039_alter_navigationpage_secondary_elements"),
     ]
 
     operations = [
