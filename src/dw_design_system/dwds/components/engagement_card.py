@@ -12,6 +12,7 @@ class EngagementCardBlock(blocks.StructBlock):
         label = "Engagement Card"
 
     def get_context(self, value, parent_context=None):
+        from content.models import BlogPost
         from news.models import NewsPage
 
         context = parent_context or {}
@@ -38,7 +39,7 @@ class EngagementCardBlock(blocks.StructBlock):
             thumbnail=getattr(page, "preview_image", None),
             date=page.published_date,
             url=page.url,
-            is_news=isinstance(page, NewsPage),
+            is_highlighted=isinstance(page, NewsPage) or isinstance(page, BlogPost),
         )
 
         return context
