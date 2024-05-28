@@ -205,11 +205,100 @@ class ContentOwnerMixin(models.Model):
         return subclasses
 
 
-class ContentPage(BasePage):
+class SearchFieldsMixin(models.Model):
+    """
+    Specific fields and settings to manage search. Extra fields are generally
+    defined to make custom and specific indexing as defined in /docs/search.md
+
+    Usage:
+    - Add this mixin to a model
+    - Define the fields that should be indexed in search_stream_fields.
+      Example: ["body"]
+    - Define the blocks that should be indexed in search_heading_blocks and
+      search_content_blocks
+    - Add SearchFieldsMixin.indexed_fields to the Model's indexed_fields list
+    - Run self._generate_search_field_content() in full_clean() to generate
+      search fields
+    - Optionally override _generate_search_block_content to add custom block
+      indexing
+    """
+
+    class Meta:
+        abstract = True
+
+    search_stream_fields: list[str] = []
+    search_heading_blocks: list[str] = []
+    search_content_blocks: list[str] = []
+
+    search_title = models.CharField(
+        max_length=255,
+    )
+    search_headings = models.TextField(
+        blank=True,
+        null=True,
+    )
+    search_content = models.TextField(
+        blank=True,
+        null=True,
+    )
+
+    def _generate_search_block_content(self, block):
+        if block.block_type in self.search_heading_blocks:
+            self.search_headings += f" {strip_tags(block.value)}"
+            return
+
+        if block.block_type in self.search_content_blocks:
+            self.search_content += f" {strip_tags_with_spaces(str(block.value))}"
+            return
+
+        return
+
+    def _generate_search_field_content(self):
+        self.search_title = self.title
+        self.search_headings = ""
+        self.search_content = ""
+        for stream_field_name in self.search_stream_fields:
+            stream_field = getattr(self, stream_field_name)
+            for block in stream_field:
+                self._generate_search_block_content(block)
+
+    indexed_fields = [
+        IndexedField(
+            "search_title",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=5.0,
+        ),
+        IndexedField(
+            "search_headings",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=3.0,
+        ),
+        IndexedField(
+            "excerpt",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
+        IndexedField(
+            "search_content",
+            tokenized=True,
+            explicit=True,
+        ),
+    ]
+
+
+class ContentPage(SearchFieldsMixin, BasePage):
     objects = PageManager.from_queryset(ContentPageQuerySet)()
 
     is_creatable = False
     show_in_menus = True
+    search_stream_fields = ["body"]
+    search_heading_blocks = ["heading2", "heading3", "heading4", "heading5"]
+    search_content_blocks = ["text_section"]
 
     legacy_guid = models.CharField(
         blank=True, null=True, max_length=255, help_text="""Wordpress GUID"""
@@ -307,46 +396,16 @@ class ContentPage(BasePage):
     # defined to make custom and specific indexing as defined in /docs/search.md
     #
 
-    search_title = models.CharField(
-        max_length=255,
-    )
+    def _generate_search_block_content(self, block):
+        super()._generate_search_block_content(block)
 
-    search_headings = models.TextField(
-        blank=True,
-        null=True,
-    )
+        if block.block_type == "image":
+            self.search_content += f" {block.value['caption']}"
+            return
 
-    search_content = models.TextField(
-        blank=True,
-        null=True,
-    )
+        return
 
-    indexed_fields = [
-        IndexedField(
-            "search_title",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=5.0,
-        ),
-        IndexedField(
-            "search_headings",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=3.0,
-        ),
-        IndexedField(
-            "excerpt",
-            tokenized=True,
-            explicit=True,
-            boost=2.0,
-        ),
-        IndexedField(
-            "search_content",
-            tokenized=True,
-            explicit=True,
-        ),
+    indexed_fields = SearchFieldsMixin.indexed_fields + [
         IndexedField("is_creatable", filter=True),
         IndexedField("published_date", proximity=True),
     ]
@@ -354,18 +413,6 @@ class ContentPage(BasePage):
     @property
     def published_date(self):
         return self.last_published_at
-
-    def _generate_search_field_content(self):
-        self.search_title = self.title
-        self.search_headings = ""
-        self.search_content = ""
-        for block in self.body:
-            if block.block_type in ["heading2", "heading3", "heading4", "heading5"]:
-                self.search_headings += f" {strip_tags(block.value)}"
-            elif block.block_type == "text_section":
-                self.search_content += f" {strip_tags_with_spaces(str(block.value))}"
-            elif block.block_type == "image":
-                self.search_content += f" {block.value['caption']}"
 
     #
     # Wagtail admin configuration
@@ -437,8 +484,10 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
-class NavigationPage(BasePage):
+class NavigationPage(SearchFieldsMixin, BasePage):
     template = "content/navigation_page.html"
+
+    search_stream_fields: list[str] = ["primary_elements", "secondary_elements"]
 
     primary_elements = StreamField(
         [
@@ -463,10 +512,47 @@ class NavigationPage(BasePage):
         FieldPanel("secondary_elements"),
     ]
 
+    indexed_fields = SearchFieldsMixin.indexed_fields + [
+        IndexedField("primary_elements"),
+        IndexedField("secondary_elements"),
+    ]
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         return context
+
+    def _generate_search_block_content(self, block):
+        if block.block_type == "dw_navigation_card":
+            self.search_headings += f" {strip_tags(block.title)}"
+            self.search_content += f" {strip_tags(block.summary)}"
+            return
+
+        if block.block_type == "dw_curated_page_links":
+            self.search_headings += f" {strip_tags(block.title)}"
+            self.search_content += f" {strip_tags(block.description)}"
+            self.search_content += " " + " ".join(p.title for p in block.pages)
+            return
+
+        if block.block_type == "dw_cta":
+            self.search_headings += f" {strip_tags(block.title)}"
+            self.search_content += f" {strip_tags(block.description)}"
+            return
+
+        if block.block_type == "dw_engagement_card":
+            self.search_headings += f" {strip_tags(block.page.title)}"
+            return
+
+        if block.block_type == "dw_navigation_card":
+            self.search_headings += f" {strip_tags(block.page.title)}"
+            self.search_content += f" {strip_tags(block.summary)}"
+            return
+
+        return
+
+    def full_clean(self, *args, **kwargs):
+        self._generate_search_field_content()
+        super().full_clean(*args, **kwargs)
 
 
 class SearchExclusionPageLookUp(models.Model):
