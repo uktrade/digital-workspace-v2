@@ -68,7 +68,54 @@ class Theme(models.Model):
         ordering = ["-title"]
 
 
+class BasePageQuerySet(PageQuerySet):
+    def restricted_q(self, restriction_type):
+        from wagtail.models import BaseViewRestriction, PageViewRestriction
+
+        if isinstance(restriction_type, str):
+            restriction_type = [
+                restriction_type,
+            ]
+
+        RESTRICTION_CHOICES = BaseViewRestriction.RESTRICTION_CHOICES
+        types = [t for t, _ in RESTRICTION_CHOICES if t in restriction_type]
+
+        q = Q()
+        for restriction in (
+            PageViewRestriction.objects.filter(restriction_type__in=types)
+            .select_related("page")
+            .all()
+        ):
+            q |= self.descendant_of_q(restriction.page, inclusive=True)
+
+        return q if q else Q(pk__in=[])
+
+    def public_or_login(self):
+        return self.exclude(self.restricted_q(["password", "groups"]))
+
+    def pinned_q(self, query):
+        pinned = SearchPinPageLookUp.objects.filter_by_query(query)
+
+        return Q(pk__in=Subquery(pinned.values("object_id")))
+
+    def pinned(self, query):
+        return self.filter(self.pinned_q(query))
+
+    def not_pinned(self, query):
+        return self.exclude(self.pinned_q(query))
+
+    def exclusions_q(self, query):
+        exclusions = SearchExclusionPageLookUp.objects.filter_by_query(query)
+
+        return Q(pk__in=Subquery(exclusions.values("object_id")))
+
+    def exclusions(self, query):
+        return self.filter(self.exclusions_q(query))
+
+
 class BasePage(Page, Indexed):
+    objects = PageManager.from_queryset(BasePageQuerySet)()
+
     legacy_path = models.CharField(
         max_length=500,
         blank=True,
@@ -79,6 +126,20 @@ class BasePage(Page, Indexed):
     content_panels = [
         TitleFieldPanel("title"),
     ]
+
+    indexed_fields = [
+        IndexedField(
+            "title",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=1.0,
+        ),
+    ]
+
+    @property
+    def published_date(self):
+        return self.last_published_at
 
     def serve(self, request):
         response = super().serve(request)
@@ -104,49 +165,7 @@ class BasePage(Page, Indexed):
         return None
 
 
-class ContentPageQuerySet(PageQuerySet):
-    def restricted_q(self, restriction_type):
-        from wagtail.models import BaseViewRestriction, PageViewRestriction
-
-        if isinstance(restriction_type, str):
-            restriction_type = [
-                restriction_type,
-            ]
-
-        RESTRICTION_CHOICES = BaseViewRestriction.RESTRICTION_CHOICES
-        types = [t for t, _ in RESTRICTION_CHOICES if t in restriction_type]
-
-        q = Q()
-        for restriction in (
-            PageViewRestriction.objects.filter(restriction_type__in=types)
-            .select_related("page")
-            .all()
-        ):
-            q |= self.descendant_of_q(restriction.page, inclusive=True)
-
-        return q if q else Q(pk__in=[])
-
-    def pinned_q(self, query):
-        pinned = SearchPinPageLookUp.objects.filter_by_query(query)
-
-        return Q(pk__in=Subquery(pinned.values("object_id")))
-
-    def public_or_login(self):
-        return self.exclude(self.restricted_q(["password", "groups"]))
-
-    def pinned(self, query):
-        return self.filter(self.pinned_q(query))
-
-    def not_pinned(self, query):
-        return self.exclude(self.pinned_q(query))
-
-    def exclusions_q(self, query):
-        exclusions = SearchExclusionPageLookUp.objects.filter_by_query(query)
-
-        return Q(pk__in=Subquery(exclusions.values("object_id")))
-
-    def exclusions(self, query):
-        return self.filter(self.exclusions_q(query))
+class ContentPageQuerySet(BasePageQuerySet): ...
 
 
 class ContentOwnerMixin(models.Model):
@@ -407,12 +426,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
 
     indexed_fields = SearchFieldsMixin.indexed_fields + [
         IndexedField("is_creatable", filter=True),
-        IndexedField("published_date", proximity=True),
     ]
-
-    @property
-    def published_date(self):
-        return self.last_published_at
 
     #
     # Wagtail admin configuration

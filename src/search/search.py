@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from content.models import ContentPage
+from content.models import BasePage, ContentPage
 from extended_search.query_builder import CustomQueryBuilder
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
@@ -69,11 +69,11 @@ class PagesSearchVector(ModelSearchVector):
 
 
 class AllPagesSearchVector(PagesSearchVector):
-    model = ContentPage
+    model = BasePage
 
 
 class GuidanceSearchVector(PagesSearchVector):
-    model = ContentPage
+    model = BasePage
 
     def get_queryset(self):
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()
