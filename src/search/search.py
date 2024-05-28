@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from content.models import BasePage, ContentPage
+from content.models import BasePage
 from extended_search.query_builder import CustomQueryBuilder
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
