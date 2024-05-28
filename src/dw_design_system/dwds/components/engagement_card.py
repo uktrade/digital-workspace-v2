@@ -4,7 +4,7 @@ from content.utils import truncate_words_and_chars
 
 
 class EngagementCardBlock(blocks.StructBlock):
-    page = blocks.PageChooserBlock(page_type=["content.BlogPost", "news.NewsPage"])
+    page = blocks.PageChooserBlock(page_type="content.ContentPage")
 
     class Meta:
         template = "dwds/components/engagement_card.html"
@@ -39,10 +39,7 @@ class EngagementCardBlock(blocks.StructBlock):
             thumbnail=getattr(page, "preview_image", None),
             date=page.published_date,
             url=page.url,
-            is_news_or_blog_post=[
-                isinstance(page, NewsPage),
-                isinstance(page, BlogPost),
-            ],
+            is_highlighted=isinstance(page, NewsPage) or isinstance(page, BlogPost),
         )
 
         return context
