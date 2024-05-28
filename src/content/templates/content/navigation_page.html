@@ -1,29 +1,25 @@
-{% extends "2_col_content.html" %}
+{% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
 
-{% block pre_content %}
-    <div class="govuk-grid-row dwds">
-        <div class="govuk-grid-column-two-thirds">
-            <h1>{{ page.title }}</h1>
-        </div>
-        <div class="govuk-grid-column-one-third">
+{% block page_title %}
+    <div class="with-sidebar-right">
+        <h1>{{ page.title }}</h1>
+        <div>
             {% include "feedback.html" with form_id="hr-v1" classes="" prefix="navigation-page" custom_submit_data_function="navigationFeedbackData" %}
         </div>
     </div>
-{% endblock %}
+{% endblock page_title %}
 
-{% block content %}
-    <div class="dwds">
-        <div class="grid">
-            {% for block in page.primary_elements %}
-                {% include_block block %}
-            {% endfor %}
-        </div>
+{% block primary_content %}
+    <div class="grid">
+        {% for block in page.primary_elements %}
+            {% include_block block %}
+        {% endfor %}
     </div>
 {% endblock %}
 
-{% block tertiary_col_content %}
-    <div class="dwds stack">
+{% block secondary_content %}
+    <div class="stack">
         {% for block in page.secondary_elements %}
             {% include_block block %}
         {% endfor %}
