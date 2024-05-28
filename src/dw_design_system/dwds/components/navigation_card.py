@@ -8,7 +8,7 @@ class NavigationCardBlock(blocks.StructBlock):
     title = blocks.CharBlock(
         required=False,
         max_length=30,
-        help_text="By default, the navigation card component will render the name of the page you linked above. If you have to change this behavior, add an ad hoc title in the box below. Please use sparingly.",
+        help_text="By default, the name of the page will be the title. Override it using the below field.",
     )
     summary = blocks.CharBlock(required=False, max_length=70)
 
