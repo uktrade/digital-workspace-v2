@@ -63,7 +63,6 @@
 
   // Sidebar
   // https://every-layout.dev/layouts/sidebar/
-
   .with-sidebar,
   .with-sidebar-right {
     display: flex;
@@ -87,12 +86,12 @@
     flex-grow: 1;
   }
 
+
   .with-sidebar-right > :first-child {
     flex-basis: 0;
     flex-grow: 999;
     min-inline-size: 50%;
   }
-
 
   // Switcher
   // https://every-layout.dev/layouts/switcher/
