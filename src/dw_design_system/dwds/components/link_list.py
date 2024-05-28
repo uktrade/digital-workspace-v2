@@ -48,7 +48,6 @@ class TaggedPageListBlock(blocks.StructBlock):
         if tag:
             pages = (
                 TaggedPage.objects.filter(tag=tag)
-                .filter(content_object__public=True)
                 .filter(content_object__live=True)
                 .select_related("content_object")
                 .order_by(ordering)
