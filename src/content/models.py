@@ -1,5 +1,6 @@
 import html
-from typing import Optional
+import logging
+from typing import Optional, Tuple
 
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -10,6 +11,7 @@ from django.forms import widgets
 from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
+from wagtail import blocks
 from wagtail.admin.panels import (
     FieldPanel,
     InlinePanel,
@@ -24,7 +26,7 @@ from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
 import dw_design_system.dwds.components as dwds_blocks
-from content import blocks
+from content import blocks as content_blocks
 from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
@@ -32,6 +34,8 @@ from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
 
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -223,8 +227,6 @@ class SearchFieldsMixin(models.Model):
     - Add this mixin to a model
     - Define the fields that should be indexed in search_stream_fields.
       Example: ["body"]
-    - Define the blocks that should be indexed in search_heading_blocks and
-      search_content_blocks
     - Add SearchFieldsMixin.indexed_fields to the Model's indexed_fields list
     - Run self._generate_search_field_content() in full_clean() to generate
       search fields
@@ -236,7 +238,6 @@ class SearchFieldsMixin(models.Model):
         abstract = True
 
     search_stream_fields: list[str] = []
-    search_heading_blocks: list[str] = []
     search_content_blocks: list[str] = []
 
     search_title = models.CharField(
@@ -251,9 +252,33 @@ class SearchFieldsMixin(models.Model):
         null=True,
     )
 
+    def _get_searchable_content_from_structblock(
+        self, block: blocks.StructBlock
+    ) -> Tuple[str, str]:
+        heading = ""
+        content = ""
+        for block in self.child_blocks.values():
+            if isinstance(block, content_blocks.HeadingBlock) and not heading:
+                heading = " ".join(block.get_searchable_content()) + " "
+            else:
+                try:
+                    content += " ".join(block.get_searchable_content()) + " "
+                except AttributeError as e:
+                    logger.exception(e)
+
+        return heading, content.strip()
+
     def _generate_search_block_content(self, block):
-        if block.block_type in self.search_heading_blocks:
-            self.search_headings += f" {strip_tags(block.value)}"
+        if isinstance(block, content_blocks.HeadingBlock):
+            self.search_headings += f"{strip_tags(block.value)} "
+            return
+
+        if isinstance(block, blocks.StructBlock):
+            sb_heading, sb_content = self._get_searchable_content_from_structblock(
+                block
+            )
+            self.search_headings += f"{sb_heading} "
+            self.search_content += f"{sb_content} "
             return
 
         if block.block_type in self.search_content_blocks:
@@ -266,10 +291,14 @@ class SearchFieldsMixin(models.Model):
         self.search_title = self.title
         self.search_headings = ""
         self.search_content = ""
+
         for stream_field_name in self.search_stream_fields:
             stream_field = getattr(self, stream_field_name)
             for block in stream_field:
                 self._generate_search_block_content(block)
+
+        self.search_headings = self.search_headings.strip()
+        self.search_content = self.search_content.strip()
 
     indexed_fields = [
         IndexedField(
@@ -306,7 +335,6 @@ class ContentPage(SearchFieldsMixin, BasePage):
     is_creatable = False
     show_in_menus = True
     search_stream_fields = ["body"]
-    search_heading_blocks = ["heading2", "heading3", "heading4", "heading5"]
     search_content_blocks = ["text_section"]
 
     legacy_guid = models.CharField(
@@ -327,25 +355,33 @@ class ContentPage(SearchFieldsMixin, BasePage):
 
     body = StreamField(
         [
-            ("heading2", blocks.Heading2Block()),
-            ("heading3", blocks.Heading3Block()),
-            ("heading4", blocks.Heading4Block()),
-            ("heading5", blocks.Heading5Block()),
+            ("heading2", content_blocks.Heading2Block()),
+            ("heading3", content_blocks.Heading3Block()),
+            ("heading4", content_blocks.Heading4Block()),
+            ("heading5", content_blocks.Heading5Block()),
             (
                 "text_section",
-                blocks.TextBlock(
+                content_blocks.TextBlock(
                     blank=True,
                     features=RICH_TEXT_FEATURES,
                     help_text="""Some text to describe what this section is about (will be
             displayed above the list of child pages)""",
                 ),
             ),
-            ("image", blocks.ImageBlock()),
-            ("embed_video", blocks.EmbedVideoBlock(help_text="""Embed a video""")),
-            ("media", blocks.InternalMediaBlock(help_text="""Link to a media block""")),
+            ("image", content_blocks.ImageBlock()),
+            (
+                "embed_video",
+                content_blocks.EmbedVideoBlock(help_text="""Embed a video"""),
+            ),
+            (
+                "media",
+                content_blocks.InternalMediaBlock(
+                    help_text="""Link to a media block"""
+                ),
+            ),
             (
                 "data_table",
-                blocks.DataTableBlock(
+                content_blocks.DataTableBlock(
                     help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
                 ),
             ),
@@ -404,15 +440,6 @@ class ContentPage(SearchFieldsMixin, BasePage):
     # Specific fields and settings to manage search. Extra fields are generally
     # defined to make custom and specific indexing as defined in /docs/search.md
     #
-
-    def _generate_search_block_content(self, block):
-        super()._generate_search_block_content(block)
-
-        if block.block_type == "image":
-            self.search_content += f" {block.value['caption']}"
-            return
-
-        return
 
     indexed_fields = SearchFieldsMixin.indexed_fields + [
         IndexedField("is_creatable", filter=True),
@@ -525,34 +552,6 @@ class NavigationPage(SearchFieldsMixin, BasePage):
         context = super().get_context(request, *args, **kwargs)
 
         return context
-
-    def _generate_search_block_content(self, block):
-        if block.block_type == "dw_navigation_card":
-            self.search_headings += f" {strip_tags(block.value["title"])}"
-            self.search_content += f" {strip_tags(block.value["summary"])}"
-            return
-
-        if block.block_type == "dw_curated_page_links":
-            self.search_headings += f" {strip_tags(block.value["title"])}"
-            self.search_content += f" {strip_tags(block.value["description"])}"
-            self.search_content += " " + " ".join(p.title for p in block.value["pages"])
-            return
-
-        if block.block_type == "dw_cta":
-            self.search_headings += f" {strip_tags(block.value["title"])}"
-            self.search_content += f" {strip_tags(block.value["description"])}"
-            return
-
-        if block.block_type == "dw_engagement_card":
-            self.search_headings += f" {strip_tags(block.value["page"].title)}"
-            return
-
-        if block.block_type == "dw_navigation_card":
-            self.search_headings += f" {strip_tags(block.value["page"].title)}"
-            self.search_content += f" {strip_tags(block.value["summary"])}"
-            return
-
-        return
 
     def full_clean(self, *args, **kwargs):
         self._generate_search_field_content()

@@ -1,11 +1,13 @@
 from django.core.exceptions import ValidationError
 from wagtail import blocks
 
+from content import blocks as content_blocks
 
-class CTACardBlock(blocks.StructBlock):
+
+class CTACardBlock(content_blocks.StructBlock):
     """Call to action section"""
 
-    title = blocks.CharBlock(required=True, max_length=30)
+    title = content_blocks.HeadingBlock(required=True, max_length=30)
     description = blocks.CharBlock(required=False, max_length=70)
     page = blocks.PageChooserBlock(required=False)
     url = blocks.URLBlock(required=False)
@@ -43,3 +45,9 @@ class CTACardBlock(blocks.StructBlock):
             url=url,
         )
         return context
+
+    def get_heading(self) -> str:
+        heading = super().get_heading()
+        if not heading and self.page:
+            return self.page.title
+        return heading
