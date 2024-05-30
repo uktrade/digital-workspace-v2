@@ -1,4 +1,3 @@
-
 from django.core.exceptions import ValidationError
 from wagtail import blocks
 from wagtail.contrib.table_block.blocks import TableBlock
