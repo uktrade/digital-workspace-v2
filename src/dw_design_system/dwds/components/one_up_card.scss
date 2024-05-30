@@ -1,18 +1,9 @@
 .dwds-one-up-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
-
-    h3 {
-        font-size: var(--s1);
-        line-height: var(--font-lineheight-headings);
-    }
     
     a {
         text-decoration: none;
-    }
-
-    p {
-        font-size: var(--s0);
     }
 
     a:hover {
@@ -26,16 +17,13 @@
         background-color: var(--color-link-background-active);
     }
 
+    p, time {
+        font-size: var(--s0);
+    }
+    
     img {
         height: auto;
         width: 100%;
-    }
-
-    .dwds-one-up-card--date{
-
-    }
-
-    .dwds-one-up-card--excerpt{
-       
+        border: var(--border-width) solid var(--color-border);
     }
 }

@@ -229,7 +229,6 @@ class ContentPage(BasePage):
 
     body = StreamField(
         [
-            ("dw_one_up_card", dwds_blocks.OneUpCardBlock()),
             ("heading2", blocks.Heading2Block()),
             ("heading3", blocks.Heading3Block()),
             ("heading4", blocks.Heading4Block()),

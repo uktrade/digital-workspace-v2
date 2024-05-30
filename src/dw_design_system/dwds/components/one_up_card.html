@@ -2,21 +2,20 @@
 {% load wagtailimages_tags %}
 {% block card_container_classes %}dwds-one-up-card{% endblock %}
 {% block card_content %}
-    <div>
-        <a href="{{ url }}">
-            <h3>{{ title }}</h3>
-        </a>
-        {% if excerpt %}<p class="dwds-one-up-card--excerpt">{{ excerpt }}</p>{% endif %}
-        <p class="dwds-one-up-card--date">
-            <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date }}</time>
-        </p>
-    </div>
-    <div>
-        {% if thumbnail %}
-            {% image thumbnail fill-300x200 %}
-        {% endif %}
+    <div class="switcher">
         <div class="stack">
-            <p class="">Dummy Tag</p>
+            <a href="{{ url }}">
+                <h2>{{ title }}</h2>
+            </a>
+            {% if excerpt %}<p class="dwds-one-up-card--excerpt">{{ excerpt|truncatechars:70 }}</p>{% endif %}
+        </div>
+        <div class="stack">
+            {% if thumbnail %}
+                {% image thumbnail fill-300x200 %}
+            {% endif %}
         </div>
     </div>
+    <abbr title="{{ date }}">
+        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j M Y' }}</time>
+    </abbr>
 {% endblock %}

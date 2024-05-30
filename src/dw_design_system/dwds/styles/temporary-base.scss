@@ -31,6 +31,15 @@ body {
 		max-inline-size: none;
 	}
 
+	h1, h2, h3, h4, h5, h6, p, time {
+		font-family: var(--font-family-primary);
+		font-size: var(--font-size-m);
+		line-height: var(--font-lineheight-body);
+		font-weight: var(--font-weight-normal);
+		background-color: var(--color-background);
+		color: var(--color-text);
+	}
+
     h1, h2, h3, h4, h5, h6 {
 		font-weight: var(--font-weight-bold);
 		line-height: var(--font-lineheight-headings);
