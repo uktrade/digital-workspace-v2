@@ -21,12 +21,8 @@
   // https://every-layout.dev/layouts/box/
 
   .box {
-    padding: var(--s1);
-    border: var(--border-thin) solid;
-    --color-light: #fff;
-    --color-dark: #000;
-    color: var(--color-dark);
-    background-color: var(--color-light);
+    padding: var(--space);
+    border: var(--border-width) solid;
   }
 
   .box.invert {
