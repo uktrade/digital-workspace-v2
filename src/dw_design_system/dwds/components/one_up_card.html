@@ -7,7 +7,7 @@
             <a href="{{ url }}">
                 <h2>{{ title }}</h2>
             </a>
-            {% if excerpt %}<p class="dwds-one-up-card--excerpt">{{ excerpt|truncatechars:70 }}</p>{% endif %}
+            {% if excerpt %}<p>{{ excerpt|truncatechars:70 }}</p>{% endif %}
         </div>
         <div class="stack">
             {% if thumbnail %}
