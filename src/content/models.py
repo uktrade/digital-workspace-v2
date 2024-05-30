@@ -286,12 +286,6 @@ class SearchFieldsMixin(models.Model):
             boost=3.0,
         ),
         IndexedField(
-            "excerpt",
-            tokenized=True,
-            explicit=True,
-            boost=2.0,
-        ),
-        IndexedField(
             "search_content",
             tokenized=True,
             explicit=True,
@@ -411,6 +405,12 @@ class ContentPage(SearchFieldsMixin, BasePage):
     #
 
     indexed_fields = SearchFieldsMixin.indexed_fields + [
+        IndexedField(
+            "excerpt",
+            tokenized=True,
+            explicit=True,
+            boost=2.0,
+        ),
         IndexedField("is_creatable", filter=True),
     ]
 
