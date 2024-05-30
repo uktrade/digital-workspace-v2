@@ -234,8 +234,6 @@ class SearchFieldsMixin(models.Model):
     - Add SearchFieldsMixin.indexed_fields to the Model's indexed_fields list
     - Run self._generate_search_field_content() in full_clean() to generate
       search fields
-    - Optionally override _generate_search_block_content to add custom block
-      indexing
     """
 
     class Meta:
@@ -257,18 +255,20 @@ class SearchFieldsMixin(models.Model):
 
     def _generate_search_field_content(self):
         self.search_title = self.title
-        self.search_headings = ""
-        self.search_content = ""
+        search_headings = []
+        search_content = []
 
         for stream_field_name in self.search_stream_fields:
             stream_field = getattr(self, stream_field_name)
             for block in stream_field:
-                search_headings, search_content = get_search_content_for_block(block)
-                self.search_headings += search_headings
-                self.search_content += search_content
+                block_search_headings, block_search_content = (
+                    get_search_content_for_block(block)
+                )
+                search_headings += block_search_headings
+                search_content += block_search_content
 
-        self.search_headings = self.search_headings.strip()
-        self.search_content = self.search_content.strip()
+        self.search_headings = " ".join(search_headings)
+        self.search_content = " ".join(search_content)
 
     indexed_fields = [
         IndexedField(

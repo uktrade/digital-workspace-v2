@@ -136,31 +136,28 @@ def truncate_words_and_chars(text, words, chars, truncate=None, include_elipsis=
     return words_result
 
 
-def get_search_content_for_block(self, block) -> tuple[str, str]:
-    search_headings = ""
-    search_content = ""
+def get_search_content_for_block(block: blocks.Block) -> tuple[list[str], list[str]]:
+    search_headings = []
+    search_content = []
 
     if isinstance(block, content_blocks.HeadingBlock):
-        search_headings += strip_tags(" ".join(block.get_searchable_content()))
-        return search_headings, search_content
+        search_headings.append(strip_tags(" ".join(block.get_searchable_content())))
 
-    if isinstance(block, blocks.StructBlock):
+    elif isinstance(block, blocks.StructBlock):
         block_headings = ""
         if hasattr(block, "get_searchable_heading"):
             block_headings = block.get_searchable_heading()
 
-        for child_block in self.child_blocks.values():
-            child_headings, child_content = self._generate_search_block_content(
-                child_block
-            )
-            search_content += child_content
+        for child_block in block.child_blocks.values():
+            child_headings, child_content = get_search_content_for_block(child_block)
+            search_content.append(child_content)
 
             if not block_headings:
                 block_headings = child_headings
 
-        search_headings += block_headings
-        return search_headings, search_content
+        search_headings.append(block_headings)
 
-    search_content += strip_tags(" ".join(block.get_searchable_content()))
+    else:
+        search_content.append(strip_tags(" ".join(block.get_searchable_content())))
 
     return search_headings, search_content
