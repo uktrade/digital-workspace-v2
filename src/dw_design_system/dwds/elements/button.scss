@@ -1,4 +1,10 @@
 .dwds-button{
     color: var(--color-text-highlight);
     background-color: var(--color-button-primary);
+    padding: var(--space);
+    text-align: center;
+    text-decoration: none;
+    border-bottom: solid;
+    border-bottom-width: var(--border-width);
+    border-bottom-color: var(--color-button-border);
 }
