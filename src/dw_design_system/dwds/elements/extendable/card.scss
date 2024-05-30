@@ -1,0 +1,21 @@
+.dwds-card {
+    border-top: var(--border-top-width-card) solid var(--color-border);
+    align-items: baseline;
+
+    & > div {
+        height: 100%;
+        border: var(--border-width) solid var(--color-border);
+        border-top: none;
+        padding: var(--space);
+    }
+}
+
+.dwds-card--dark {
+    border-top-color: var(--color-border-dark);
+
+    & > div {
+        background-color: var(--color-background-card);
+        // hides the border while preserving the internal spacing
+        border-color: var(--color-background-card);
+    }
+}
