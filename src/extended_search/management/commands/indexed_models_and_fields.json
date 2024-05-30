@@ -82,8 +82,6 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
-        "<SearchField: excerpt>",
-        "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
         "<SearchField: search_content_explicit>",
         "<SearchField: search_headings>",
