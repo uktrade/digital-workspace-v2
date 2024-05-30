@@ -1,10 +1,9 @@
 from wagtail import blocks
 
-from content import blocks as content_blocks
 from content.utils import truncate_words_and_chars
 
 
-class EngagementCardBlock(content_blocks.StructBlock):
+class EngagementCardBlock(blocks.StructBlock):
     page = blocks.PageChooserBlock(page_type="content.ContentPage")
 
     class Meta:
@@ -45,5 +44,5 @@ class EngagementCardBlock(content_blocks.StructBlock):
 
         return context
 
-    def get_heading(self) -> str:
+    def get_searchable_heading(self):
         return self.page.title

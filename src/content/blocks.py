@@ -1,3 +1,4 @@
+from typing import Optional
 
 from django.core.exceptions import ValidationError
 from wagtail import blocks
@@ -5,14 +6,6 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
-
-
-class StructBlock(blocks.StructBlock):
-    def get_heading(self) -> str:
-        for block in self.child_blocks.values():
-            if isinstance(block, HeadingBlock):
-                return " ".join(block.get_searchable_content())
-        return ""
 
 
 class HeadingBlock(blocks.CharBlock):

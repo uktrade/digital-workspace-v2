@@ -3,7 +3,7 @@ from wagtail import blocks
 from content import blocks as content_blocks
 
 
-class NavigationCardBlock(content_blocks.StructBlock):
+class NavigationCardBlock(blocks.StructBlock):
     """A nav card to direct users"""
 
     page = blocks.PageChooserBlock()
@@ -29,8 +29,5 @@ class NavigationCardBlock(content_blocks.StructBlock):
         )
         return context
 
-    def get_heading(self) -> str:
-        heading = super().get_heading()
-        if not heading and self.page:
-            return self.page.title
-        return heading
+    def get_searchable_heading(self):
+        return self.title or self.page.title

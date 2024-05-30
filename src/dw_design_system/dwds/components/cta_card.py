@@ -4,7 +4,7 @@ from wagtail import blocks
 from content import blocks as content_blocks
 
 
-class CTACardBlock(content_blocks.StructBlock):
+class CTACardBlock(blocks.StructBlock):
     """Call to action section"""
 
     title = content_blocks.HeadingBlock(required=True, max_length=30)
@@ -46,8 +46,5 @@ class CTACardBlock(content_blocks.StructBlock):
         )
         return context
 
-    def get_heading(self) -> str:
-        heading = super().get_heading()
-        if not heading and self.page:
-            return self.page.title
-        return heading
+    def get_searchable_heading(self):
+        return self.title or self.page.title

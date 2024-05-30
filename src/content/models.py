@@ -1,6 +1,6 @@
 import html
 import logging
-from typing import Optional, Tuple
+from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -11,7 +11,6 @@ from django.forms import widgets
 from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
-from wagtail import blocks
 from wagtail.admin.panels import (
     FieldPanel,
     InlinePanel,
@@ -27,7 +26,12 @@ from wagtail.utils.decorators import cached_classmethod
 
 import dw_design_system.dwds.components as dwds_blocks
 from content import blocks as content_blocks
-from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
+from content.utils import (
+    get_search_content_for_block,
+    manage_excluded,
+    manage_pinned,
+    truncate_words_and_chars,
+)
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
 from peoplefinder.widgets import PersonChooser
@@ -238,7 +242,6 @@ class SearchFieldsMixin(models.Model):
         abstract = True
 
     search_stream_fields: list[str] = []
-    search_content_blocks: list[str] = []
 
     search_title = models.CharField(
         max_length=255,
@@ -252,41 +255,6 @@ class SearchFieldsMixin(models.Model):
         null=True,
     )
 
-    def _get_searchable_content_from_structblock(
-        self, block: blocks.StructBlock
-    ) -> Tuple[str, str]:
-        heading = ""
-        content = ""
-        for block in self.child_blocks.values():
-            if isinstance(block, content_blocks.HeadingBlock) and not heading:
-                heading = " ".join(block.get_searchable_content()) + " "
-            else:
-                try:
-                    content += " ".join(block.get_searchable_content()) + " "
-                except AttributeError as e:
-                    logger.exception(e)
-
-        return heading, content.strip()
-
-    def _generate_search_block_content(self, block):
-        if isinstance(block, content_blocks.HeadingBlock):
-            self.search_headings += f"{strip_tags(block.value)} "
-            return
-
-        if isinstance(block, blocks.StructBlock):
-            sb_heading, sb_content = self._get_searchable_content_from_structblock(
-                block
-            )
-            self.search_headings += f"{sb_heading} "
-            self.search_content += f"{sb_content} "
-            return
-
-        if block.block_type in self.search_content_blocks:
-            self.search_content += f" {strip_tags_with_spaces(str(block.value))}"
-            return
-
-        return
-
     def _generate_search_field_content(self):
         self.search_title = self.title
         self.search_headings = ""
@@ -295,7 +263,9 @@ class SearchFieldsMixin(models.Model):
         for stream_field_name in self.search_stream_fields:
             stream_field = getattr(self, stream_field_name)
             for block in stream_field:
-                self._generate_search_block_content(block)
+                search_headings, search_content = get_search_content_for_block(block)
+                self.search_headings += search_headings
+                self.search_content += search_content
 
         self.search_headings = self.search_headings.strip()
         self.search_content = self.search_content.strip()
@@ -335,7 +305,6 @@ class ContentPage(SearchFieldsMixin, BasePage):
     is_creatable = False
     show_in_menus = True
     search_stream_fields = ["body"]
-    search_content_blocks = ["text_section"]
 
     legacy_guid = models.CharField(
         blank=True, null=True, max_length=255, help_text="""Wordpress GUID"""

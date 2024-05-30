@@ -1,5 +1,9 @@
 from django.contrib.contenttypes.models import ContentType
+from django.utils.html import strip_tags
 from django.utils.text import Truncator
+from wagtail import blocks
+
+from content import blocks as content_blocks
 
 
 def remove_orphan_keyword_and_phrases():
@@ -130,3 +134,33 @@ def truncate_words_and_chars(text, words, chars, truncate=None, include_elipsis=
     if include_elipsis and words_result != text:
         return words_result + "…"
     return words_result
+
+
+def get_search_content_for_block(self, block) -> tuple[str, str]:
+    search_headings = ""
+    search_content = ""
+
+    if isinstance(block, content_blocks.HeadingBlock):
+        search_headings += strip_tags(" ".join(block.get_searchable_content()))
+        return search_headings, search_content
+
+    if isinstance(block, blocks.StructBlock):
+        block_headings = ""
+        if hasattr(block, "get_searchable_heading"):
+            block_headings = block.get_searchable_heading()
+
+        for child_block in self.child_blocks.values():
+            child_headings, child_content = self._generate_search_block_content(
+                child_block
+            )
+            search_content += child_content
+
+            if not block_headings:
+                block_headings = child_headings
+
+        search_headings += block_headings
+        return search_headings, search_content
+
+    search_content += strip_tags(" ".join(block.get_searchable_content()))
+
+    return search_headings, search_content
