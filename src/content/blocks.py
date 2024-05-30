@@ -1,4 +1,3 @@
-from typing import Tuple
 
 from django.core.exceptions import ValidationError
 from wagtail import blocks
