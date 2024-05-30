@@ -1,19 +1,22 @@
-{% extends "dwds/components/extendable/card.html" %}
+{% extends "dwds/elements/extendable/card.html" %}
 {% load wagtailimages_tags %}
-
-{% block card_classes %}
-    {% if is_highlighted %}dwds-card--dark{% endif %}
-{% endblock %}
-{% block card_container_classes %}dwds-engagement-card{% endblock %}
+{% block card_container_classes %}dwds-one-up-card{% endblock %}
 {% block card_content %}
-    {% if thumbnail %}
-            {% image thumbnail fill-196x127 %}
-    {% endif %}
-    <a href="{{ url }}">
-        <h3>{{ title }}</h3>
-    </a>
-    {% if excerpt %}<p class="dwds-engagement-card--excerpt">{{ excerpt }}</p>{% endif %}
-    <p class="dwds-engagement-card--author">
-        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date }}</time>
-    </p>
+    <div>
+        <a href="{{ url }}">
+            <h3>{{ title }}</h3>
+        </a>
+        {% if excerpt %}<p class="dwds-one-up-card--excerpt">{{ excerpt }}</p>{% endif %}
+        <p class="dwds-one-up-card--date">
+            <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date }}</time>
+        </p>
+    </div>
+    <div>
+        {% if thumbnail %}
+            {% image thumbnail fill-300x200 %}
+        {% endif %}
+        <div class="stack">
+            <p class="">Dummy Tag</p>
+        </div>
+    </div>
 {% endblock %}

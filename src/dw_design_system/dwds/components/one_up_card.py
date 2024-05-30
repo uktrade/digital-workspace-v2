@@ -2,6 +2,7 @@ from wagtail import blocks
 
 from content.utils import truncate_words_and_chars
 
+
 class OneUpCardBlock(blocks.StructBlock):
     page = blocks.PageChooserBlock(page_type="content.ContentPage")
 
@@ -32,7 +33,7 @@ class OneUpCardBlock(blocks.StructBlock):
                 page.title, words=7, chars=30, include_elipsis=True
             ),
             excerpt=truncate_words_and_chars(
-                page.excerpt, words=10, chars=70, include_elipsis=True
+                page.excerpt, words=200, chars=200, include_elipsis=True
             ),
             author=author,
             thumbnail=getattr(page, "preview_image", None),

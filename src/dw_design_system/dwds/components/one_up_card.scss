@@ -1,0 +1,41 @@
+.dwds-one-up-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    h3 {
+        font-size: var(--s1);
+        line-height: var(--font-lineheight-headings);
+    }
+    
+    a {
+        text-decoration: none;
+    }
+
+    p {
+        font-size: var(--s0);
+    }
+
+    a:hover {
+        text-decoration-line: underline;
+        text-decoration-color: var(--color-link);
+    }
+
+    a:active {
+        text-decoration-line: underline;
+        text-decoration-color: var(--color-link);
+        background-color: var(--color-link-background-active);
+    }
+
+    img {
+        height: auto;
+        width: 100%;
+    }
+
+    .dwds-one-up-card--date{
+
+    }
+
+    .dwds-one-up-card--excerpt{
+       
+    }
+}
