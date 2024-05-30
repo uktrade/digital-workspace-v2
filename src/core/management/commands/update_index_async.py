@@ -7,13 +7,6 @@ class Command(BaseCommand):
         " command"
     )
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            "--email",
-            help="Test user's email address",
-            dest="email",
-        )
-
     def handle(self, *args, **options):
         from core.tasks import update_search_index
 
