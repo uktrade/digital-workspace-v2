@@ -6,6 +6,7 @@ from .navigation_card import NavigationCardBlock
 
 __all__ = [
     "CTACardBlock",
+    "OneUpCardBlock",
     "EngagementCardBlock",
     "TaggedPageListBlock",
     "CustomPageLinkListBlock",
