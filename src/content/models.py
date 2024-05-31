@@ -121,6 +121,14 @@ class BasePageQuerySet(PageQuerySet):
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
 
+    def annotate_with_unique_views_all_time(self):
+        return self.annotate(
+            unique_views_all_time=models.Count(
+                "interactions_recentpageviews",
+                distinct=True,
+            )
+        )
+
     def annotate_with_unique_views_past_month(self):
         return self.annotate(
             unique_views_past_month=models.Count(

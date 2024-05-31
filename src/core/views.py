@@ -7,13 +7,19 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
+from django.views.generic.base import View
 from notifications_python_client.notifications import NotificationsAPIClient
 from sentry_sdk import capture_message
+from wagtail.admin.views.generic.base import WagtailAdminTemplateMixin
+from wagtail.models import Page
+from wagtail.search.backends import get_search_backend
 
-from content.models import ContentOwnerMixin
+from content.models import BasePage, ContentOwnerMixin
 from core.forms import PageProblemFoundForm
 from core.models import Tag, TaggedPage
+from extended_search.backends.backend import CustomSearchBackend
 from user.models import User
 
 
@@ -165,3 +171,50 @@ def tag_index(request: HttpRequest, slug: str, *args, **kwargs) -> HttpResponse:
         "tagged_pages": tagged_pages,
     }
     return TemplateResponse(request, "core/tag_index.html", context=context)
+
+
+class AdminInfoView(WagtailAdminTemplateMixin, View):
+    template_name = "core/admin/pages/info.html"
+
+    def get_page_title(self):
+        return _("Editing %(page_type)s") % {
+            "page_type": self.page_class.get_verbose_name()
+        }
+
+    def get_page_subtitle(self):
+        return self.page.get_admin_display_title()
+
+    def dispatch(self, request, page_id):
+        self.page = get_object_or_404(Page.objects.all(), id=page_id)
+        self.page_class = self.page.specific_class
+
+        if not request.user.is_superuser:
+            raise PermissionDenied
+
+        return super().dispatch(request)
+
+    def get(self, request):
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        annotated_page = (
+            BasePage.objects.filter(pk=self.page.pk)
+            .annotate_with_unique_views_all_time()
+            .annotate_with_unique_views_past_month()
+            .first()
+        )
+
+        backend_name = settings.WAGTAILSEARCH_BACKENDS["default"]["BACKEND"]
+        backend = get_search_backend(backend_name)
+        mapping = backend.mapping_class(self.page_class)
+        opensearch_document = mapping.get_document(self.page)
+
+        context.update(
+            page=self.page,
+            total_unique_page_views=annotated_page.unique_views_all_time,
+            unique_page_views_last_month=annotated_page.unique_views_past_month,
+            opensearch_document=opensearch_document,
+        )
+        return context
