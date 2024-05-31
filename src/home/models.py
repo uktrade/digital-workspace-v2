@@ -141,11 +141,26 @@ class HomePage(BasePage):
         return "home/home_page.html"
 
     def get_context(self, request, *args, **kwargs):
+        is_new_homepage = flag_is_active(request, FEATURE_HOMEPAGE)
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
         # Quick links
         quick_links = QuickLink.objects.all().order_by("result_weighting", "title")
+        if is_new_homepage:
+            quick_links = [
+                {"url": obj.link_to.get_url(request), "text": obj.title}
+                for obj in quick_links
+            ]
         context["quick_links"] = quick_links
+
+        # Popular on Digital Workspace
+        whats_popular_items = WhatsPopular.objects.all()
+        if is_new_homepage:
+            whats_popular_items = [
+                {"url": obj.link_to.get_url(request), "text": obj.title}
+                for obj in whats_popular_items
+            ]
+        context["whats_popular_items"] = whats_popular_items
 
         # News
         news_items = (
@@ -158,9 +173,6 @@ class HomePage(BasePage):
             )[:8]
         )
         context["news_items"] = news_items
-
-        # Popular on Digital Workspace
-        context["whats_popular_items"] = WhatsPopular.objects.all()
 
         # How do I
         context["how_do_i_items"] = (
@@ -187,8 +199,13 @@ class HomePage(BasePage):
                 feed.entries[:6],
                 3000,
             )
-
-        context["govuk_feed"] = cache.get("homepage_govuk_news")
+        govuk_feed = cache.get("homepage_govuk_news")
+        if is_new_homepage:
+            govuk_feed = [
+                {"url": obj.links[0].href, "text": obj.title.value}
+                for obj in govuk_feed
+            ]
+        context["govuk_feed"] = govuk_feed
         context["hide_news"] = settings.HIDE_NEWS
 
         # Personalised page list
