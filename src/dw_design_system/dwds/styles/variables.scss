@@ -38,9 +38,9 @@
   --s4: calc(var(--s3) * var(--ratio));
   --s5: calc(var(--s4) * var(--ratio));
   --space: var(--s0);
-  --button-large-padding: var(--s-1);
-  --button-medium-padding: var(--s-3);
-  --button-small-padding: var(--s-5);
+  --button-padding-large: var(--s-1);
+  --button-padding-medium: var(--s-3);
+  --button-padding-small: var(--s-5);
 
   // Borders and element widths
   --border-width: 2px;
