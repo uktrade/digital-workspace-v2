@@ -148,6 +148,11 @@ class BasePageQuerySet(PageQuerySet):
 
 
 class BasePage(Page, Indexed):
+    class Meta:
+        permissions = [
+            ("view_info_page", "Can view the info page in the Wagtail admin"),
+        ]
+
     objects = PageManager.from_queryset(BasePageQuerySet)()
 
     legacy_path = models.CharField(

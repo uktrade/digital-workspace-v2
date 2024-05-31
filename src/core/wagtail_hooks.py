@@ -60,8 +60,7 @@ class PageInfoAdminButton(PageListingButton):
 
     @property
     def show(self):
-        # Only show to superusers
-        return self.user.is_superuser
+        return self.user.has_perm("content.view_info_page")
 
 
 @hooks.register("register_page_listing_more_buttons")

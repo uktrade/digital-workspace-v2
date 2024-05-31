@@ -188,7 +188,7 @@ class AdminInfoView(WagtailAdminTemplateMixin, View):
         self.page = get_object_or_404(Page.objects.all(), id=page_id)
         self.page_class = self.page.specific_class
 
-        if not request.user.is_superuser:
+        if not request.user.has_perm("content.view_info_page"):
             raise PermissionDenied
 
         return super().dispatch(request)
