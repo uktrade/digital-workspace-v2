@@ -16,11 +16,11 @@
         <h2 class="w-header__title">Page views stats</h2>
         <table>
             <tr>
-                <th>Total unique page views</th>
+                <th style="text-align: left;">Total unique page views</th>
                 <td>{{ total_unique_page_views }}</td>
             </tr>
             <tr>
-                <th>Unique page views in the past 4 weeks</th>
+                <th style="text-align: left;">Unique page views in the past 4 weeks</th>
                 <td>{{ unique_page_views_last_month }}</td>
             </tr>
         </table>
@@ -30,7 +30,7 @@
         <table>
             {% for key, value in opensearch_document.items %}
                 <tr>
-                    <th>{{ key }}</th>
+                    <th style="text-align: left;">{{ key }}</th>
                     <td>{{ value }}</td>
                 </tr>
             {% endfor %}
