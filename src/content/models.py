@@ -1,4 +1,5 @@
 import html
+import logging
 from typing import Optional
 
 from django.contrib.auth import get_user_model
@@ -24,14 +25,21 @@ from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
 import dw_design_system.dwds.components as dwds_blocks
-from content import blocks
-from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
+from content import blocks as content_blocks
+from content.utils import (
+    get_search_content_for_block,
+    manage_excluded,
+    manage_pinned,
+    truncate_words_and_chars,
+)
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
 
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -68,7 +76,54 @@ class Theme(models.Model):
         ordering = ["-title"]
 
 
+class BasePageQuerySet(PageQuerySet):
+    def restricted_q(self, restriction_type):
+        from wagtail.models import BaseViewRestriction, PageViewRestriction
+
+        if isinstance(restriction_type, str):
+            restriction_type = [
+                restriction_type,
+            ]
+
+        RESTRICTION_CHOICES = BaseViewRestriction.RESTRICTION_CHOICES
+        types = [t for t, _ in RESTRICTION_CHOICES if t in restriction_type]
+
+        q = Q()
+        for restriction in (
+            PageViewRestriction.objects.filter(restriction_type__in=types)
+            .select_related("page")
+            .all()
+        ):
+            q |= self.descendant_of_q(restriction.page, inclusive=True)
+
+        return q if q else Q(pk__in=[])
+
+    def public_or_login(self):
+        return self.exclude(self.restricted_q(["password", "groups"]))
+
+    def pinned_q(self, query):
+        pinned = SearchPinPageLookUp.objects.filter_by_query(query)
+
+        return Q(pk__in=Subquery(pinned.values("object_id")))
+
+    def pinned(self, query):
+        return self.filter(self.pinned_q(query))
+
+    def not_pinned(self, query):
+        return self.exclude(self.pinned_q(query))
+
+    def exclusions_q(self, query):
+        exclusions = SearchExclusionPageLookUp.objects.filter_by_query(query)
+
+        return Q(pk__in=Subquery(exclusions.values("object_id")))
+
+    def exclusions(self, query):
+        return self.filter(self.exclusions_q(query))
+
+
 class BasePage(Page, Indexed):
+    objects = PageManager.from_queryset(BasePageQuerySet)()
+
     legacy_path = models.CharField(
         max_length=500,
         blank=True,
@@ -79,6 +134,10 @@ class BasePage(Page, Indexed):
     content_panels = [
         TitleFieldPanel("title"),
     ]
+
+    @property
+    def published_date(self):
+        return self.last_published_at
 
     def serve(self, request):
         response = super().serve(request)
@@ -104,49 +163,7 @@ class BasePage(Page, Indexed):
         return None
 
 
-class ContentPageQuerySet(PageQuerySet):
-    def restricted_q(self, restriction_type):
-        from wagtail.models import BaseViewRestriction, PageViewRestriction
-
-        if isinstance(restriction_type, str):
-            restriction_type = [
-                restriction_type,
-            ]
-
-        RESTRICTION_CHOICES = BaseViewRestriction.RESTRICTION_CHOICES
-        types = [t for t, _ in RESTRICTION_CHOICES if t in restriction_type]
-
-        q = Q()
-        for restriction in (
-            PageViewRestriction.objects.filter(restriction_type__in=types)
-            .select_related("page")
-            .all()
-        ):
-            q |= self.descendant_of_q(restriction.page, inclusive=True)
-
-        return q if q else Q(pk__in=[])
-
-    def pinned_q(self, query):
-        pinned = SearchPinPageLookUp.objects.filter_by_query(query)
-
-        return Q(pk__in=Subquery(pinned.values("object_id")))
-
-    def public_or_login(self):
-        return self.exclude(self.restricted_q(["password", "groups"]))
-
-    def pinned(self, query):
-        return self.filter(self.pinned_q(query))
-
-    def not_pinned(self, query):
-        return self.exclude(self.pinned_q(query))
-
-    def exclusions_q(self, query):
-        exclusions = SearchExclusionPageLookUp.objects.filter_by_query(query)
-
-        return Q(pk__in=Subquery(exclusions.values("object_id")))
-
-    def exclusions(self, query):
-        return self.filter(self.exclusions_q(query))
+class ContentPageQuerySet(BasePageQuerySet): ...
 
 
 class ContentOwnerMixin(models.Model):
@@ -205,11 +222,83 @@ class ContentOwnerMixin(models.Model):
         return subclasses
 
 
-class ContentPage(BasePage):
+class SearchFieldsMixin(models.Model):
+    """
+    Specific fields and settings to manage search. Extra fields are generally
+    defined to make custom and specific indexing as defined in /docs/search.md
+
+    Usage:
+    - Add this mixin to a model
+    - Define the fields that should be indexed in search_stream_fields.
+      Example: ["body"]
+    - Add SearchFieldsMixin.indexed_fields to the Model's indexed_fields list
+    - Run self._generate_search_field_content() in full_clean() to generate
+      search fields
+    """
+
+    class Meta:
+        abstract = True
+
+    search_stream_fields: list[str] = []
+
+    search_title = models.CharField(
+        max_length=255,
+    )
+    search_headings = models.TextField(
+        blank=True,
+        null=True,
+    )
+    search_content = models.TextField(
+        blank=True,
+        null=True,
+    )
+
+    def _generate_search_field_content(self):
+        self.search_title = self.title
+        search_headings = []
+        search_content = []
+
+        for stream_field_name in self.search_stream_fields:
+            stream_field = getattr(self, stream_field_name)
+            for stream_child in stream_field:
+                block_search_headings, block_search_content = (
+                    get_search_content_for_block(stream_child.block, stream_child.value)
+                )
+                search_headings += block_search_headings
+                search_content += block_search_content
+
+        self.search_headings = " ".join(search_headings)
+        self.search_content = " ".join(search_content)
+
+    indexed_fields = [
+        IndexedField(
+            "search_title",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=5.0,
+        ),
+        IndexedField(
+            "search_headings",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=3.0,
+        ),
+        IndexedField(
+            "search_content",
+            tokenized=True,
+            explicit=True,
+        ),
+    ]
+
+
+class ContentPage(SearchFieldsMixin, BasePage):
     objects = PageManager.from_queryset(ContentPageQuerySet)()
 
     is_creatable = False
     show_in_menus = True
+    search_stream_fields = ["body"]
 
     legacy_guid = models.CharField(
         blank=True, null=True, max_length=255, help_text="""Wordpress GUID"""
@@ -229,25 +318,33 @@ class ContentPage(BasePage):
 
     body = StreamField(
         [
-            ("heading2", blocks.Heading2Block()),
-            ("heading3", blocks.Heading3Block()),
-            ("heading4", blocks.Heading4Block()),
-            ("heading5", blocks.Heading5Block()),
+            ("heading2", content_blocks.Heading2Block()),
+            ("heading3", content_blocks.Heading3Block()),
+            ("heading4", content_blocks.Heading4Block()),
+            ("heading5", content_blocks.Heading5Block()),
             (
                 "text_section",
-                blocks.TextBlock(
+                content_blocks.TextBlock(
                     blank=True,
                     features=RICH_TEXT_FEATURES,
                     help_text="""Some text to describe what this section is about (will be
             displayed above the list of child pages)""",
                 ),
             ),
-            ("image", blocks.ImageBlock()),
-            ("embed_video", blocks.EmbedVideoBlock(help_text="""Embed a video""")),
-            ("media", blocks.InternalMediaBlock(help_text="""Link to a media block""")),
+            ("image", content_blocks.ImageBlock()),
+            (
+                "embed_video",
+                content_blocks.EmbedVideoBlock(help_text="""Embed a video"""),
+            ),
+            (
+                "media",
+                content_blocks.InternalMediaBlock(
+                    help_text="""Link to a media block"""
+                ),
+            ),
             (
                 "data_table",
-                blocks.DataTableBlock(
+                content_blocks.DataTableBlock(
                     help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
                 ),
             ),
@@ -307,65 +404,15 @@ class ContentPage(BasePage):
     # defined to make custom and specific indexing as defined in /docs/search.md
     #
 
-    search_title = models.CharField(
-        max_length=255,
-    )
-
-    search_headings = models.TextField(
-        blank=True,
-        null=True,
-    )
-
-    search_content = models.TextField(
-        blank=True,
-        null=True,
-    )
-
-    indexed_fields = [
-        IndexedField(
-            "search_title",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=5.0,
-        ),
-        IndexedField(
-            "search_headings",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=3.0,
-        ),
+    indexed_fields = SearchFieldsMixin.indexed_fields + [
         IndexedField(
             "excerpt",
             tokenized=True,
             explicit=True,
             boost=2.0,
         ),
-        IndexedField(
-            "search_content",
-            tokenized=True,
-            explicit=True,
-        ),
         IndexedField("is_creatable", filter=True),
-        IndexedField("published_date", proximity=True),
     ]
-
-    @property
-    def published_date(self):
-        return self.last_published_at
-
-    def _generate_search_field_content(self):
-        self.search_title = self.title
-        self.search_headings = ""
-        self.search_content = ""
-        for block in self.body:
-            if block.block_type in ["heading2", "heading3", "heading4", "heading5"]:
-                self.search_headings += f" {strip_tags(block.value)}"
-            elif block.block_type == "text_section":
-                self.search_content += f" {strip_tags_with_spaces(str(block.value))}"
-            elif block.block_type == "image":
-                self.search_content += f" {block.value['caption']}"
 
     #
     # Wagtail admin configuration
@@ -437,8 +484,10 @@ class SearchKeywordOrPhraseQuerySet(models.QuerySet):
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
-class NavigationPage(BasePage):
+class NavigationPage(SearchFieldsMixin, BasePage):
     template = "content/navigation_page.html"
+
+    search_stream_fields: list[str] = ["primary_elements", "secondary_elements"]
 
     primary_elements = StreamField(
         [
@@ -463,10 +512,19 @@ class NavigationPage(BasePage):
         FieldPanel("secondary_elements"),
     ]
 
+    indexed_fields = SearchFieldsMixin.indexed_fields + [
+        IndexedField("primary_elements"),
+        IndexedField("secondary_elements"),
+    ]
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         return context
+
+    def full_clean(self, *args, **kwargs):
+        self._generate_search_field_content()
+        super().full_clean(*args, **kwargs)
 
 
 class SearchExclusionPageLookUp(models.Model):
