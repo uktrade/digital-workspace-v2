@@ -23,7 +23,6 @@ class TaggedPageListBlock(blocks.StructBlock):
         icon="title",
         classname="full title",
         max_length=30,
-        search_index=False,
     )
     description = blocks.CharBlock(required=False, max_length=70)
     tag = blocks.ChoiceBlock(label="Tag", choices=get_tag_choices, required=True)
@@ -79,10 +78,9 @@ class CustomPageLinkListBlock(blocks.StructBlock):
         icon="title",
         classname="full title",
         max_length=30,
-        search_index=False,
     )
     description = blocks.CharBlock(required=False, max_length=70)
-    pages = blocks.ListBlock(blocks.PageChooserBlock(label="Page"), search_index=False)
+    pages = blocks.ListBlock(blocks.PageChooserBlock(label="Page"))
 
     def get_context(self, value, parent_context=None):
         context = parent_context or {}
