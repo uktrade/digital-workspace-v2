@@ -30,9 +30,10 @@
                 <a class="govuk-link" href="/news-and-views/">View all news</a>
             </div>
 
-            <div class="main-news-item">
+            {% comment %} Remove 'dwds' class when using the other base template. {% endcomment %}
+            <div class="main-news-item dwds">
                 {% if news_items %}
-                    {% include "home/includes/news_item_main.html" with news_item=news_items.0 %}
+                    {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
                 {% endif %}
             </div>
 

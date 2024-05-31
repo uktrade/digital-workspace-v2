@@ -1,0 +1,23 @@
+.dwds-one-up-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    
+    a {
+        text-decoration: none;
+
+        &:hover, &:active {
+            text-decoration-line: underline;
+            text-decoration-color: var(--color-link);
+        }
+
+        &:active {
+            background-color: var(--color-link-background-active);
+        }
+    }
+    
+    img {
+        height: auto;
+        width: 100%;
+        border: var(--border-width) solid var(--color-border);
+    }
+}

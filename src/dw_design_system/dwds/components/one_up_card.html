@@ -1,0 +1,21 @@
+{% extends "dwds/elements/extendable/card.html" %}
+{% load wagtailimages_tags %}
+{% block card_container_classes %}dwds-one-up-card{% endblock %}
+{% block card_content %}
+    <div class="switcher">
+        <div class="stack">
+            <a href="{{ url }}">
+                <h2>{{ title }}</h2>
+            </a>
+            {% if excerpt %}<p>{{ excerpt|truncatechars:70 }}</p>{% endif %}
+        </div>
+        <div class="stack">
+            {% if thumbnail %}
+                {% image thumbnail fill-300x200 %}
+            {% endif %}
+        </div>
+    </div>
+    <abbr title="{{ date }}">
+        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j M Y' }}</time>
+    </abbr>
+{% endblock %}
