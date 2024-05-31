@@ -4,12 +4,16 @@
 {% block main_content %}
     {% block pre_content %}{% endblock %}
     <div class="ws-primary-content">
-        {% block bookmark %}
-        {% if FEATURE_FLAGS.new_homepage %}
-            {% bookmark_page user page %}
-        {% endif %}
-        {% endblock bookmark %}
         <article>
+            <div class="dwds">
+                <div class="stack">
+                    {% block bookmark %}
+                    {% if FEATURE_FLAGS.new_homepage %}
+                        {% bookmark_page user page %}
+                    {% endif %}
+                    {% endblock bookmark %}
+                </div>
+            </div>
             {% block content %}{% endblock %}
         </article>
         {% include 'includes/tag_set.html' %}

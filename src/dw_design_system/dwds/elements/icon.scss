@@ -1,0 +1,15 @@
+.icon {
+    // FIXME: dicuss with team
+    width: var(--icon-width) !important;
+    height: var(--icon-height) !important;
+
+    color: var(--color-icon);
+
+    transition: fill-opacity 0.3s ease;
+
+    fill-opacity: 0;
+
+    &.is-filled {
+        fill-opacity: 1;
+    }
+}

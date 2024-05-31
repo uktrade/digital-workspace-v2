@@ -1,0 +1,4 @@
+{% load static %}
+<svg id="{{ id }}" class="icon{% if is_filled %} is-filled{% endif %}">
+    <use href="{% static 'icons.svg' %}#{% if use_id %}{{ use_id }}{% else %}{{ id }}{% endif %}" />
+</svg>

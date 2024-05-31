@@ -19,10 +19,7 @@ def bookmark_page(user, page):
 
     is_bookmarked = is_page_bookmarked(user, page)
 
-    icon = "bookmark.svg" if is_bookmarked else "bookmark-outline.svg"
-
     return {
-        "img_src": static(f"interactions/{icon}"),
         "post_url": reverse("interactions:bookmark"),
         "user": user,
         "page": page,

@@ -1,14 +1,11 @@
-{% load static %}
 {% if page %}
     <style>
-        /* button */
         .bookmark-page {
             all: unset;
 
-            display: inline-flex;
-            gap: var(--s-2);
-            align-items: center;
-            margin-bottom: var(--s1);
+            &[data-is-htmx="true"] .icon {
+                animation: throb 0.3s ease;
+            }
 
             &:hover {
                 cursor: pointer;
@@ -18,35 +15,11 @@
                 outline: revert;
             }
         }
-
-        /* svg icon */
-        .bookmark-icon {
-            color: var(--dbt-blue);
-            fill-opacity: 0;
-
-            .bookmark-icon__bookmark {
-                transition: fill-opacity 0.5s linear;
-            }
-
-            &.is-bookmarked .bookmark-icon__bookmark {
-                fill-opacity: 1;
-            }
-        }
-        .bookmark-icon__fill {
-            transform-origin: center 5px;
-            transition: all 300ms ease;
-            transform: scale(1, 0);
-        }
-        .bookmark-icon.is-bookmarked .bookmark-icon__fill {
-            transform: scale(1, 1);
-        }
-        .bookmark-icon.is-bookmarked .bookmark-icon__fill {
-            transform: scale(1, 1);
-        }
     </style>
     <button
-       class="bookmark-page"
+       class="bookmark-page with-icon"
        title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
+       data-is-htmx="{{ request.headers.hx_request }}"
        hx-post="{{ post_url }}"
        hx-vals='{"page_id": {{ page.id }}}'
        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
@@ -54,16 +27,7 @@
        hx-select="button"
        hx-target="this"
        hx-swap="outerHTML">
-        <svg id="bookmark-icon"
-             class="bookmark-icon{% if is_bookmarked %} is-bookmarked{% endif %}"
-             width="2em"
-             height="2em"
-             version="1.1"
-             viewBox="0 0 32 32"
-             xmlns="http://www.w3.org/2000/svg">
-            <circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="2"/>
-            <path class="bookmark-icon__bookmark" d="m10 24 6-4 6 4v-15c0-1.5-1.5-3-3-3h-6c-1.5 0-3 1.5-3 3z" fill="#ffdd00" stroke="currentColor" stroke-width="2" />
-        </svg>
-        <span class="dwds dwds-link">{% if is_bookmarked %}Bookmarked{% else %}Bookmark{% endif %}</span>
+        {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
+        <span>{% if is_bookmarked %}Bookmarked{% else %}Bookmark{% endif %}</span>
     </button>
 {% endif %}
