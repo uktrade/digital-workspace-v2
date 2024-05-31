@@ -32,4 +32,4 @@ class Bookmark(UserPage):
 
 
 class RecentPageView(UserPage):
-    pass
+    count = models.PositiveIntegerField(default=1)
