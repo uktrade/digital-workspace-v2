@@ -2,8 +2,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.html import strip_tags
 from django.utils.text import Truncator
 from wagtail import blocks
+from wagtail.blocks.struct_block import StructValue
 
 from content import blocks as content_blocks
+from dw_design_system.dwds.components.link_list import CustomPageLinkListBlock
 
 
 def remove_orphan_keyword_and_phrases():
@@ -136,28 +138,40 @@ def truncate_words_and_chars(text, words, chars, truncate=None, include_elipsis=
     return words_result
 
 
-def get_search_content_for_block(block: blocks.Block) -> tuple[list[str], list[str]]:
+def get_search_content_for_block(
+    block: blocks.Block, value: StructValue
+) -> tuple[list[str], list[str]]:
     search_headings = []
     search_content = []
 
     if isinstance(block, content_blocks.HeadingBlock):
-        search_headings.append(strip_tags(" ".join(block.get_searchable_content())))
+        search_headings.append(
+            strip_tags(" ".join(block.get_searchable_content(value)))
+        )
 
     elif isinstance(block, blocks.StructBlock):
         block_headings = ""
         if hasattr(block, "get_searchable_heading"):
-            block_headings = block.get_searchable_heading()
+            block_headings = block.get_searchable_heading(value)
 
         for child_block in block.child_blocks.values():
-            child_headings, child_content = get_search_content_for_block(child_block)
-            search_content.append(child_content)
+            child_value = value[child_block.name]
+            child_headings, child_content = get_search_content_for_block(
+                child_block, child_value
+            )
+            search_content += child_content
 
             if not block_headings:
-                block_headings = child_headings
+                block_headings = " ".join(child_headings)
 
         search_headings.append(block_headings)
 
     else:
-        search_content.append(strip_tags(" ".join(block.get_searchable_content())))
+        if hasattr(block, "get_searchable_content"):
+            search_content.append(
+                strip_tags(" ".join(block.get_searchable_content(value)))
+            )
+        else:
+            search_content.append(strip_tags(str(block.value)))
 
     return search_headings, search_content

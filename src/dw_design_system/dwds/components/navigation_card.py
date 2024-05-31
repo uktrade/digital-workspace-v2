@@ -29,5 +29,7 @@ class NavigationCardBlock(blocks.StructBlock):
         )
         return context
 
-    def get_searchable_heading(self):
-        return self.title or self.page.title
+    def get_searchable_heading(self, value):
+        title = value["title"]
+        page = value["page"]
+        return title or page.title

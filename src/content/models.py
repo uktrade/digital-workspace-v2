@@ -260,9 +260,9 @@ class SearchFieldsMixin(models.Model):
 
         for stream_field_name in self.search_stream_fields:
             stream_field = getattr(self, stream_field_name)
-            for block in stream_field:
+            for stream_child in stream_field:
                 block_search_headings, block_search_content = (
-                    get_search_content_for_block(block)
+                    get_search_content_for_block(stream_child.block, stream_child.value)
                 )
                 search_headings += block_search_headings
                 search_content += block_search_content

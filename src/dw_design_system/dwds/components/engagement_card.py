@@ -44,5 +44,6 @@ class EngagementCardBlock(blocks.StructBlock):
 
         return context
 
-    def get_searchable_heading(self):
-        return self.page.title
+    def get_searchable_heading(self, value):
+        page = value["page"]
+        return page.title
