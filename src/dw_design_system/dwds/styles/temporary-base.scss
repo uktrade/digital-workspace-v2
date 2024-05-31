@@ -48,6 +48,10 @@ body {
 	h3 {
 		font-size: var(--s1);
 	}
+
+	a, .dwds-link {
+		color: var(--color-link);
+	}
 }
 
 .dwds {

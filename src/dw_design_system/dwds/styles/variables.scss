@@ -19,6 +19,9 @@
   --color-border-dark: var(--dbt-blue);
   --color-border-highlight: white;
   --color-button-primary: var(--dbt-light-blue);
+  --color-button-primary-hover: var(--dbt-blue);
+  --color-button-secondary: #F3F2F1;
+  --color-button-secondary-hover: #dbdad9;
   --color-button-border: black;
 
   // Size
@@ -35,6 +38,9 @@
   --s4: calc(var(--s3) * var(--ratio));
   --s5: calc(var(--s4) * var(--ratio));
   --space: var(--s0);
+  --button-large-padding: var(--s-1);
+  --button-medium-padding: var(--s-3);
+  --button-small-padding: var(--s-5);
 
   // Borders and element widths
   --border-width: 2px;

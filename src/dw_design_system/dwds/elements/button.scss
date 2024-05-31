@@ -1,10 +1,61 @@
-.dwds-button{
+.dwds-button {
+    font-family: var(--font-family-primary); // Remove when dwds is the standard
     color: var(--color-text-highlight);
-    background-color: var(--color-button-primary);
-    padding: var(--space);
-    text-align: center;
+    background-color: var(--color-button-primary); // Using primary as GDS defaults to primary button colours
+    padding: var(--button-medium-padding);
+    font-weight: var(--font-weight-light);
     text-decoration: none;
+    border: none;
     border-bottom: solid;
     border-bottom-width: var(--border-width);
     border-bottom-color: var(--color-button-border);
+    cursor: pointer;
+
+    &--primary {
+        color: var(--color-text-highlight);
+        background-color: var(--color-button-primary);
+
+        &:hover {
+            background-color: var(--color-button-primary-hover);
+        } 
+    }
+
+    &--secondary {
+        color: var(--color-text);
+        background-color: var(--color-button-secondary);
+
+        &:hover {
+            background-color: var(--color-button-secondary-hover);
+        }
+    
+        &:focus {
+            border-color: var(--color-link-background-active);
+            outline: 3px solid transparent;
+            box-shadow: inset 0 0 0 1px var(--color-link-background-active);
+        }
+        // Speak to Paul about the a11y stuff
+        // &:active {
+        //     background-color: var(--color-link-background-active);
+        // }
+    
+        &:focus-visible {
+            outline: var(--color-link-background-active) auto 1px;
+        }
+    }
+
+    &--small {
+        padding: var(--button-small-padding);
+        font-size: small;
+        border-bottom-width: var(--border-width-small);
+     }
+    
+    &--medium {
+        padding: var(--button-medium-padding);
+        font-size: medium;
+    }
+    
+     &--large {
+        padding: var(--button-large-padding);
+        font-size: large;
+    } 
 }
