@@ -5,7 +5,6 @@ from wagtail import blocks
 from wagtail.blocks.struct_block import StructValue
 
 from content import blocks as content_blocks
-from dw_design_system.dwds.components.link_list import CustomPageLinkListBlock
 
 
 def remove_orphan_keyword_and_phrases():
