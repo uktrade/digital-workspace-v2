@@ -1,0 +1,38 @@
+{% load static wagtailcore_tags %}
+
+<style>
+    .bookmark-list {
+        list-style-image: url("{% static 'interactions/bookmark.svg' %}");
+
+        li::marker {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+{% if bookmarks %}
+    <ul class="bookmark-list">
+        {% for bookmark in bookmarks %}
+            <li>
+                <p>
+                    <a href="{% pageurl bookmark.page %}">{{ bookmark.page }}</a>
+                </p>
+                <p>
+                    <button
+                        hx-delete="{% url 'interactions:bookmark-remove' bookmark.pk %}"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-target="closest li"
+                        hx-swap="outerHTML"
+                    >Remove</button>
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>
+        You have not yet saved any bookmarks. Use the
+        <img src="{% static 'interactions/bookmark-outline.svg' %}"
+            style="width: 1rem">
+        icon at the top of a page to save it to here.
+    </p>
+{% endif %}

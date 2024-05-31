@@ -1,12 +1,15 @@
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
+from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
 from wagtail.models import Page
 
-from . import is_page_bookmarked
+from . import is_page_bookmarked, get_bookmarks
 from .models import Bookmark
 from .templatetags.bookmarks import bookmark_page
 
 
+@require_http_methods(["POST"])
 def bookmark(request, *args, **kwargs):
     user = request.user
 
@@ -26,3 +29,21 @@ def bookmark(request, *args, **kwargs):
             "interactions/bookmark_page.html",
             bookmark_page(user, page),
         )
+
+
+@require_http_methods(["DELETE"])
+def remove_bookmark(request, pk, *args, **kwargs):
+    Bookmark.objects.get(pk=pk, user=request.user).delete()
+
+    return HttpResponse()
+
+
+@require_http_methods(["GET"])
+def bookmark_index(request, *args, **kwargs):
+    context = {"bookmarks": get_bookmarks(request.user)}
+
+    return TemplateResponse(
+        request,
+        "interactions/bookmark_index.html",
+        context=context,
+    )

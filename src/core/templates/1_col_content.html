@@ -1,8 +1,14 @@
 {% extends "base.html" %}
+{% load bookmarks %}
 
 {% block main_content %}
     {% block pre_content %}{% endblock %}
     <div class="ws-primary-content">
+        {% block bookmark %}
+        {% if FEATURE_FLAGS.new_homepage %}
+            {% bookmark_page user page %}
+        {% endif %}
+        {% endblock bookmark %}
         <article>
             {% block content %}{% endblock %}
         </article>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="bookmark-icon" width="32" height="32" version="1.1" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+ <circle cx="16" cy="16" r="15.06" fill="none" stroke="#000" stroke-width="1.882"/>
+ <path class="bookmark-icon__fill" d="m10 24 6-4 6 4v-15c0-1.5-1.5-3-3-3h-6c-1.5 0-3 1.5-3 3z" fill="none" image-rendering="auto" stroke="#000" stroke-width="1.96"/>
+</svg>
