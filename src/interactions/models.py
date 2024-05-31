@@ -21,7 +21,7 @@ class UserPage(models.Model):
     page = models.ForeignKey(
         Page,
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="%(app_label)s_%(class)ss",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

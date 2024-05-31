@@ -34,6 +34,7 @@ from content.utils import (
 )
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
+from interactions.models import RecentPageView
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
@@ -119,6 +120,23 @@ class BasePageQuerySet(PageQuerySet):
 
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
+
+    def annotate_with_unique_views_past_month(self):
+        return self.annotate(
+            unique_views_past_month=models.Count(
+                "interactions_recentpageviews",
+                filter=Q(
+                    interactions_recentpageviews__updated_at__gte=timezone.now()
+                    - timezone.timedelta(weeks=4)
+                ),
+                distinct=True,
+            )
+        )
+
+    def order_by_most_recent_unique_views_past_month(self):
+        return self.annotate_with_unique_views_past_month().order_by(
+            "-unique_views_past_month"
+        )
 
 
 class BasePage(Page, Indexed):
