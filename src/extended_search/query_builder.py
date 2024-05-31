@@ -369,25 +369,29 @@ class CustomQueryBuilder(QueryBuilder):
         # Build query for root model passed in to method, filter to exclude docs
         # with contenttypes matching any of the already queried models.
         subquery = cls.build_query_for_model(model_class)
-        root_query = Filtered(
-            subquery=subquery,
-            filters=[
-                (
-                    "content_type",
-                    "excludes",
-                    queried_content_types,
-                ),
-            ],
-        )
+        if subquery is not None:
+            root_query = Filtered(
+                subquery=subquery,
+                filters=[
+                    (
+                        "content_type",
+                        "excludes",
+                        queried_content_types,
+                    ),
+                ],
+            )
+            # Add root_query to the front of the list
+            queries.insert(0, root_query)
 
-        for q in queries:
-            root_query |= q
+        search_query = queries[0]
+        for q in queries[1:]:
+            search_query |= q
 
         if settings.SEARCH_ENABLE_QUERY_CACHE:
-            cache.set(cache_key, root_query)
+            cache.set(cache_key, search_query)
 
-        logger.debug(root_query)
-        return root_query
+        logger.debug(search_query)
+        return search_query
 
     @classmethod
     def get_extended_models_with_unique_indexed_fields(

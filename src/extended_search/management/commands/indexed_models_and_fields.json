@@ -82,6 +82,12 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
+        "<SearchField: search_content>",
+        "<SearchField: search_content_explicit>",
+        "<SearchField: search_headings>",
+        "<SearchField: search_headings_explicit>",
+        "<SearchField: search_title>",
+        "<SearchField: search_title_explicit>",
         "<SearchField: title>"
     ],
     "<class 'content.models.BlogIndex'>": [
