@@ -2,7 +2,8 @@
 
 <style>
     .bookmark-list {
-        list-style-image: url("{% static 'interactions/bookmark.svg' %}");
+        /* FIXME: this doesn't work */
+        list-style-image: url("{% static 'icons.svg' %}#bookmark-icon");
 
         li::marker {
             font-size: 2rem;
