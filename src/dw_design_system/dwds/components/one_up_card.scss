@@ -5,6 +5,10 @@
     a {
         text-decoration: none;
 
+        h2{
+            margin-top: 0;
+        }
+
         &:hover, &:active {
             text-decoration-line: underline;
             text-decoration-color: var(--color-link);
@@ -13,6 +17,10 @@
         &:active {
             background-color: var(--color-link-background-active);
         }
+    }
+
+    p{
+        color: var(--dbt-light-blue)
     }
     
     img {

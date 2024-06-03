@@ -7,7 +7,7 @@
             <a href="{{ url }}">
                 <h2>{{ title }}</h2>
             </a>
-            {% if excerpt %}<p>{{ excerpt|truncatechars:70 }}</p>{% endif %}
+            {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
         </div>
         <div class="stack">
             {% if thumbnail %}
@@ -15,7 +15,5 @@
             {% endif %}
         </div>
     </div>
-    <abbr title="{{ date }}">
-        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j M Y' }}</time>
-    </abbr>
+    <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j M Y' }}</time>
 {% endblock %}
