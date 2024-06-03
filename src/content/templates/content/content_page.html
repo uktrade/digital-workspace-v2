@@ -1,13 +1,15 @@
 {% extends "1_col_content.html" %}
-{% load wagtailcore_tags %}
-
-{% if bookmark %}
-    {% block bookmark %}
-    {% endblock bookmark %}
-{% endif %}
+{% load wagtailcore_tags bookmarks %}
 
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
+    {% block bookmark %}
+    <div class="dwds">
+        {% if FEATURE_FLAGS.new_homepage %}
+            {% bookmark_page user page %}
+        {% endif %}
+    </div>
+    {% endblock bookmark %}
     {% if attribution %}
         {% include "includes/attribution.html" with page=page %}
     {% endif %}

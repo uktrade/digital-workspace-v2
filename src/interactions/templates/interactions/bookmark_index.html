@@ -1,11 +1,10 @@
-{% extends '1_col_content.html' %}
+{% extends 'dwds_content.html' %}
 
 {% load bookmarks %}
 
 {% block title %}{{ user.profile.full_name }}'s bookmarks{% endblock %}
 
-{% block content %}
-{# <span class="govuk-caption-l">Bookmarks</span> #}
+{% block primary_content %}
 <h1 class="govuk-heading-l">{{ user.profile.full_name }}'s bookmarks</h1>
 
 <p class="govuk-body">Here are all the pages you have bookmarked:</p>

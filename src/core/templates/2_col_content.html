@@ -7,15 +7,6 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="ws-primary-content">
-                <div class="dwds">
-                    <div class="stack">
-                        {% block bookmark %}
-                        {% if FEATURE_FLAGS.new_homepage %}
-                            {% bookmark_page user page %}
-                        {% endif %}
-                        {% endblock bookmark %}
-                    </div>
-                </div>
                 <article>
                     {% block content %}
                     {% endblock content %}

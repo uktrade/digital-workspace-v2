@@ -3,6 +3,12 @@
         .bookmark-page {
             all: unset;
 
+            display: flex;
+            align-items: center;
+            gap: var(--s-4);
+
+            color: var(--dbt-blue);
+
             &[data-is-htmx="true"] .icon {
                 animation: throb 0.3s ease;
             }
@@ -17,7 +23,7 @@
         }
     </style>
     <button
-       class="bookmark-page with-icon"
+       class="bookmark-page"
        title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
        data-is-htmx="{{ request.headers.hx_request }}"
        hx-post="{{ post_url }}"
