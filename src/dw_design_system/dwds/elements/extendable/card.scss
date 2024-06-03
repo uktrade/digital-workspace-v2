@@ -1,6 +1,7 @@
 .dwds-card {
     border-top: var(--border-top-width-card) solid var(--color-border);
     align-items: baseline;
+    background-color: var(--color-background);
 
     & > div {
         height: 100%;

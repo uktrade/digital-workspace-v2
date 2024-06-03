@@ -20,7 +20,7 @@ body {
 	font-size: var(--font-size-m);
 	line-height: var(--font-lineheight-body);
 	font-weight: var(--font-weight-normal);
-	background-color: var(--color-background);
+	// background-color: var(--color-background);
 	color: var(--color-text);
 
 	div,
@@ -52,6 +52,11 @@ body {
 	a {
 		color: var(--color-link);
 	}
+
+	ul {
+		list-style: none;
+		padding: 0;
+	}
 }
 
 .dwds {
@@ -63,4 +68,9 @@ body {
 			color: var(--color-text) !important;
 		}
 	}
+}
+
+#content-background {
+	background-repeat: no-repeat;
+	background-position: center top;
 }

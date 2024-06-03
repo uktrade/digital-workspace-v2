@@ -8,103 +8,62 @@
 {% block bookmark %}
 {% endblock bookmark %}
 
-{% block body_classes %}homepage{% endblock %}
+{% block body_classes %}
+    homepage
+{% endblock body_classes %}
 
 {% block pre_content %}
-    {% include "home/includes/home_banner.html" %}
-{% endblock %}
- 
+    {% include "home/includes/home_banner.html" with hide_hr=True %}
+{% endblock pre_content %}
+
+{% block page_title %}
+{% endblock page_title %}
+
 {% block primary_content %}
-    <img class="homepage-bg-img"
-         src="{% webpack_static 'splash-bg-1.png' %}"
-         alt="abstract backgound image" />
+    <style>
+        #content-background {
+            background-image: url("{% webpack_static 'splash-bg-1.png' %}");
+        }
+    </style>
     <article>
         {# spaceless is required to enable the use of the :empty pseudo css selector #}
         {% spaceless %}
-            <section">
+            <section>
                 {% site_alert %}
             </section>
         {% endspaceless %}
 
-        <section>
-            <h2>Latest News</h2>
+        <section class="stack">
             {% if news_items %}
                 {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
             {% endif %}
- 
-            <ul>
+
+            <ul class="grid">
                 {% for news_item in news_items %}
                     {% if not forloop.first %}
                         <li data-testid="home-news-item">
-                            {% include "dwds/components/engagement_card.html" with title=news_item.title excerpt=news_item.excerpt thumbnail=news_items.preview_image url=news_items.url date=news_items.last_published_at %}
+                            {% include "dwds/components/engagement_card.html" with title=news_item.title excerpt=news_item.excerpt thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at %}
                         </li>
                     {% endif %}
                 {% endfor %}
             </ul>
             <a href="/news-and-views/">View all news</a>
+            {% if not hide_news %}
+                {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
+            {% endif %}
         </section>
 
-        {% if not hide_news %}
-            <section>
-                {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
-            </section>
-        {% endif %}
     </article>
 {% endblock primary_content %}
 
 {% block secondary_content %}
-    {% comment %} {% if updates %}
-            <section class="updates">
-                <h2 class="govuk-heading-m">Updates</h2>
-                <ul>
-                    {% for update in updates %}
-                        <li>
-                            <p class="govuk-body-s">{{ update }}</p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </section>
-    {% endif %} {% endcomment %}
-
-    {% comment %} <section>
-            <h3 class="govuk-heading-m" id="bookmark-menu">Your bookmarks</h3>
-            <ul class="bookmarks-wrapper">
-                {% for bookmark in bookmarks %}
-                    <li>
-                        <a class="govuk-link" href="{{ bookmark.page.get_url }}">{{ bookmark.page.title }}</a>
-                    </li>
-                {% empty %}
-                    <li>
-                        <p class="govuk-body-s">
-                            You have not yet saved any bookmarks. Use the
-                            <img src="{% static 'interactions/bookmark-outline.svg' %}" style="width: 1rem">
-                            icon at the top of a page to save it to here.
-                        </p>
-                    </li>
-                {% endfor %}
-            </ul>
-    </section> {% endcomment %}
-
-    <section>
-        {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
-    </section>
-
-    <section>
-        {% include "dwds/components/link_list.html" with title="Popular pages" list=whats_popular_items %}
-    </section>
-
-    {% comment %} <section>
-            <h3>Recently viewed</h3>
-            <ul>
-                {% for recently_viewed in recently_viewed %}
-                    <li>
-                        <a href="{{ recently_viewed.page.get_url }}">{{ recently_viewed.page.title }}</a>
-                    </li>
-                {% empty %}
-                    <li>
-                        <p>The most recent pages you visit will appear here.</p>
-                    </li>
-                {% endfor %}
-            </ul>
-    </section> {% endcomment %}
+    <article >
+        {% comment %} TODO: to add bookmark card {% endcomment %}
+        <section class="stack">
+            {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
+        </section>
+        {% comment %} <section>
+            {% include "dwds/components/link_list.html" with title="Popular pages" list=whats_popular_items %}
+        </section> {% endcomment %}
+    </article>
 {% endblock secondary_content %}

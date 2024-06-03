@@ -15,8 +15,8 @@
                 {% else %}
                     {{ self.title }}
                 {% endif %}
-            {% endblock %}
-            {% block title_suffix %}- Digital Workspace{% endblock %}
+            {% endblock title %}
+            {% block title_suffix %}- Digital Workspace{% endblock title_suffix %}
         </title>
         <meta name="viewport"
               content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -63,8 +63,8 @@
         <meta property="og:image"
               content="{% webpack_static 'govuk-opengraph-image.png' %}">
         {% render_bundle 'main' 'css' %}
-        {% block stylesheets %}{% endblock %}
-        {% block libraries %}{% endblock %}
+        {% block stylesheets %}{% endblock stylesheets %}
+        {% block libraries %}{% endblock libraries %}
     </head>
     <body class="govuk-template__body {% block body_classes %}{% endblock %} ">
         {% if settings.GTM_CODE %}
@@ -81,30 +81,32 @@
            data-module="govuk-skip-link"
            class="govuk-skip-link">Skip to main content</a>
         {% include "includes/header.html" %}
-        <div class="govuk-width-container">
-            <main class="govuk-main-wrapper "
-                  id="main-content"
-                  role="main"
-                  tabindex="1">
-                <div class="breadcrumb-bookmark">
-                    {% block breadcrumbs %}
-                        {% breadcrumbs %}
-                    {% endblock breadcrumbs %}
-                    {% block bookmark %}
-                        {% if FEATURE_FLAGS.new_homepage %}
-                            {% bookmark_page user page %}
-                        {% endif %}
-                    {% endblock bookmark %}
-                </div>
-                {% block main_content %}{% endblock %}
-                {% block page_problem %}
-                    {% include "includes/problem_found.html" %}
-                {% endblock %}
-            </main>
+        <div id="content-background">
+            <div class="govuk-width-container">
+                <main class="govuk-main-wrapper "
+                      id="main-content"
+                      role="main"
+                      tabindex="1">
+                    <div class="breadcrumb-bookmark">
+                        {% block breadcrumbs %}
+                            {% breadcrumbs %}
+                        {% endblock breadcrumbs %}
+                        {% block bookmark %}
+                            {% if FEATURE_FLAGS.new_homepage %}
+                                {% bookmark_page user page %}
+                            {% endif %}
+                        {% endblock bookmark %}
+                    </div>
+                    {% block main_content %}{% endblock main_content %}
+                    {% block page_problem %}
+                        {% include "includes/problem_found.html" %}
+                    {% endblock page_problem %}
+                </main>
+            </div>
         </div>
         {% include "includes/footer.html" %}
         {% render_bundle 'main' 'js' %}
-        {% block scripts %}{% endblock %}
+        {% block scripts %}{% endblock scripts %}
         {% git_info %}
     </body>
 </html>
