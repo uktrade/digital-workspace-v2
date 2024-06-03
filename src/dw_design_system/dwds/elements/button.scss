@@ -4,9 +4,7 @@
     padding: var(--button-padding-medium);
     text-decoration: none;
     border: none;
-    border-bottom: solid;
-    border-bottom-width: var(--border-width);
-    border-bottom-color: var(--color-button-border);
+    border-bottom: var(--border-width) solid var(--color-button-border);
     cursor: pointer;
 
     &:hover {
