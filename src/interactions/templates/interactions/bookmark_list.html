@@ -22,6 +22,7 @@
                 </p>
                 <p>
                     <button
+                        class="dwds-button dwds-button--small dwds-button--secondary"
                         hx-delete="{% url 'interactions:bookmark-remove' bookmark.pk %}"
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                         hx-target="closest li"
