@@ -10,7 +10,8 @@
   --color-link: var(--dbt-blue);
   --color-link-hover: #fff;
   --color-link-active: #fff;
-  --color-link-background-active: #fbff00;
+  --color-link-background-active: #fd0; // GDS yellow
+  --color-button-background-active: #fd0;
   --color-link-visited: #551a8b;
   --color-background: white;
   --color-background-highlight: white;
@@ -18,6 +19,11 @@
   --color-border: #D6E0E5;
   --color-border-dark: var(--dbt-blue);
   --color-border-highlight: white;
+  --color-button-primary: var(--dbt-light-blue);
+  --color-button-primary-hover: #014C92;
+  --color-button-secondary: #F3F2F1;
+  --color-button-secondary-hover: #dbdad9;
+  --color-button-border: black;
 
   // Size
   --ratio: 1.25;
@@ -33,6 +39,9 @@
   --s4: calc(var(--s3) * var(--ratio));
   --s5: calc(var(--s4) * var(--ratio));
   --space: var(--s0);
+  --button-padding-large: var(--s-1);
+  --button-padding-medium: var(--s-3);
+  --button-padding-small: var(--s-5);
 
   // Borders and element widths
   --border-width: 2px;
