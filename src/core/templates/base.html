@@ -16,7 +16,9 @@
                     {{ self.title }}
                 {% endif %}
             {% endblock title %}
-            {% block title_suffix %}- Digital Workspace{% endblock title_suffix %}
+            {% block title_suffix %}
+                - Digital Workspace
+            {% endblock title_suffix %}
         </title>
         <meta name="viewport"
               content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -63,8 +65,10 @@
         <meta property="og:image"
               content="{% webpack_static 'govuk-opengraph-image.png' %}">
         {% render_bundle 'main' 'css' %}
-        {% block stylesheets %}{% endblock stylesheets %}
-        {% block libraries %}{% endblock libraries %}
+        {% block stylesheets %}
+        {% endblock stylesheets %}
+        {% block libraries %}
+        {% endblock libraries %}
     </head>
     <body class="govuk-template__body {% block body_classes %}{% endblock %} ">
         {% if settings.GTM_CODE %}
@@ -97,7 +101,8 @@
                             {% endif %}
                         {% endblock bookmark %}
                     </div>
-                    {% block main_content %}{% endblock main_content %}
+                    {% block main_content %}
+                    {% endblock main_content %}
                     {% block page_problem %}
                         {% include "includes/problem_found.html" %}
                     {% endblock page_problem %}
@@ -106,7 +111,8 @@
         </div>
         {% include "includes/footer.html" %}
         {% render_bundle 'main' 'js' %}
-        {% block scripts %}{% endblock scripts %}
+        {% block scripts %}
+        {% endblock scripts %}
         {% git_info %}
     </body>
 </html>
