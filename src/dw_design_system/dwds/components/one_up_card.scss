@@ -4,7 +4,10 @@
     
     a {
         text-decoration: none;
-        margin: 0;
+
+        h2{
+            margin: 0;
+        }
 
         &:hover, &:active {
             text-decoration-line: underline;
