@@ -19,7 +19,6 @@ from wagtail.search.backends import get_search_backend
 from content.models import BasePage, ContentOwnerMixin
 from core.forms import PageProblemFoundForm
 from core.models import Tag, TaggedPage
-from extended_search.backends.backend import CustomSearchBackend
 from user.models import User
 
 
