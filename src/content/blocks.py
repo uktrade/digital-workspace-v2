@@ -6,7 +6,19 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
 
-class Heading2Block(blocks.CharBlock):
+class HeadingBlock(blocks.CharBlock):
+    """A (section) heading
+    Base block used to provide functionality for all heading blocks
+
+    Usage:
+    - If you know the heading level you want, use the appropriate block,
+      otherwise use this block
+    """
+
+    ...
+
+
+class Heading2Block(HeadingBlock):
     """A (section) heading"""
 
     class Meta:
@@ -16,7 +28,7 @@ class Heading2Block(blocks.CharBlock):
         template = "blocks/heading_2.html"
 
 
-class Heading3Block(blocks.CharBlock):
+class Heading3Block(HeadingBlock):
     """A (section) heading"""
 
     class Meta:
@@ -26,7 +38,7 @@ class Heading3Block(blocks.CharBlock):
         template = "blocks/heading_3.html"
 
 
-class Heading4Block(blocks.CharBlock):
+class Heading4Block(HeadingBlock):
     """A (section) heading"""
 
     class Meta:
@@ -36,7 +48,7 @@ class Heading4Block(blocks.CharBlock):
         template = "blocks/heading_4.html"
 
 
-class Heading5Block(blocks.CharBlock):
+class Heading5Block(HeadingBlock):
     """A (section) heading"""
 
     class Meta:

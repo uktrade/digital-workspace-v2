@@ -6,6 +6,7 @@
 @forward "styles/temporary-base"; // Remove this once we switch to the above base.scss
 
 // Components
+@forward "components/one_up_card";
 @forward "components/engagement_card";
 @forward "components/link_list";
 @forward "components/navigation_card";
