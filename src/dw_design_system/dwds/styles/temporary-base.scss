@@ -57,6 +57,7 @@ body {
 .dwds {
 	.feedback-header {
 		background-color: var(--color-background);
+		padding-right: 0 !important;
 
 		div {
 			color: var(--color-text) !important;
