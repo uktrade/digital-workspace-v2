@@ -48,11 +48,16 @@ body {
 	h3 {
 		font-size: var(--s1);
 	}
+
+	a {
+		color: var(--color-link);
+	}
 }
 
 .dwds {
 	.feedback-header {
 		background-color: var(--color-background);
+		padding-right: 0 !important;
 
 		div {
 			color: var(--color-text) !important;

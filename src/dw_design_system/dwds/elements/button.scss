@@ -1,0 +1,54 @@
+.dwds-button {
+    color: var(--color-text-highlight);
+    background-color: var(--color-button-primary); // Using primary & medium for default (GDS defaults to primary button colours).
+    padding: var(--button-padding-medium);
+    text-decoration: none;
+    border: none;
+    border-bottom: var(--border-width) solid var(--color-button-border);
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--color-button-primary-hover);     
+    }
+
+    &--secondary {
+        color: var(--color-text);
+        background-color: var(--color-button-secondary);
+
+        &:hover {
+            background-color: var(--color-button-secondary-hover);
+        }
+    }
+
+    &--small {
+        padding: var(--button-padding-small);
+        font-size: var(--s-1);
+        border-bottom-width: var(--border-width-small);
+     }
+    
+     &--large {
+        padding: var(--button-padding-large);
+        font-size: var(--s1);
+        font-weight: var(--font-weight-normal);
+    } 
+
+    &:active {
+        top: 2px;
+        position: relative;
+
+    }
+
+    &:active:before {
+        top: -4px;
+    }
+
+    &:focus {
+        background-color: var(--color-button-background-active);
+        color: var(--color-text); 
+    }
+    
+    &:focus-visible {
+        outline: var(--color-button-background-active) 1px;
+        color: var(--color-text); 
+    }
+}
