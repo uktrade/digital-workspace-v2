@@ -200,6 +200,7 @@ class AdminInfoView(WagtailAdminTemplateMixin, View):
 
         annotated_page = (
             BasePage.objects.filter(pk=self.page.pk)
+            .annotate_with_total_views()
             .annotate_with_unique_views_all_time()
             .annotate_with_unique_views_past_month()
             .first()
@@ -212,6 +213,7 @@ class AdminInfoView(WagtailAdminTemplateMixin, View):
 
         context.update(
             page=self.page,
+            total_page_views=annotated_page.total_views,
             total_unique_page_views=annotated_page.unique_views_all_time,
             unique_page_views_last_month=annotated_page.unique_views_past_month,
             opensearch_document=opensearch_document,
