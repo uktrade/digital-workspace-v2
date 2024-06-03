@@ -34,7 +34,6 @@ from content.utils import (
 )
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
-from interactions.models import RecentPageView
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
