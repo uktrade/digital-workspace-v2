@@ -107,7 +107,7 @@ class Indexed(index.Indexed):
     @classmethod
     def has_unique_index_fields(cls):
         # @TODO [DWPF-1066] this doesn't account for a diverging MRO
-        parent_model = inspect.getmro(cls)[1]
+        parent_model = cls.indexed_get_parent()
         parent_indexed_fields = getattr(parent_model, "indexed_fields", [])
         return cls.indexed_fields != parent_indexed_fields
 

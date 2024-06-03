@@ -1,5 +1,6 @@
 from wagtail import blocks
 
+from content import blocks as content_blocks
 from core.models.tags import Tag, TaggedPage
 
 
@@ -17,12 +18,11 @@ def get_ordering_choices():
 
 
 class TaggedPageListBlock(blocks.StructBlock):
-    title = blocks.CharBlock(
+    title = content_blocks.HeadingBlock(
         label="Title",
         icon="title",
         classname="full title",
         max_length=30,
-        search_index=False,
     )
     description = blocks.CharBlock(required=False, max_length=70)
     tag = blocks.ChoiceBlock(label="Tag", choices=get_tag_choices, required=True)
@@ -73,15 +73,14 @@ class CustomPageLinkListBlock(blocks.StructBlock):
         label = "Link list"
         help_text = "List of links to specific pages"
 
-    title = blocks.CharBlock(
+    title = content_blocks.HeadingBlock(
         label="Title",
         icon="title",
         classname="full title",
         max_length=30,
-        search_index=False,
     )
     description = blocks.CharBlock(required=False, max_length=70)
-    pages = blocks.ListBlock(blocks.PageChooserBlock(label="Page"), search_index=False)
+    pages = blocks.ListBlock(blocks.PageChooserBlock(label="Page"))
 
     def get_context(self, value, parent_context=None):
         context = parent_context or {}
