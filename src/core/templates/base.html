@@ -85,30 +85,32 @@
            data-module="govuk-skip-link"
            class="govuk-skip-link">Skip to main content</a>
         {% include "includes/header.html" %}
-        <div id="content-background">
+        {% block pre_main %}
             <div class="govuk-width-container">
-                <main class="govuk-main-wrapper "
-                      id="main-content"
-                      role="main"
-                      tabindex="1">
-                    <div class="breadcrumb-bookmark">
-                        {% block breadcrumbs %}
-                            {% breadcrumbs %}
-                        {% endblock breadcrumbs %}
-                        {% block bookmark %}
-                            {% if FEATURE_FLAGS.new_homepage %}
-                                {% bookmark_page user page %}
-                            {% endif %}
-                        {% endblock bookmark %}
-                    </div>
-                    {% block main_content %}
-                    {% endblock main_content %}
-                    {% block page_problem %}
-                        {% include "includes/problem_found.html" %}
-                    {% endblock page_problem %}
-                </main>
+            {% endblock pre_main %}
+            <main class="govuk-main-wrapper "
+                  id="main-content"
+                  role="main"
+                  tabindex="1">
+                <div class="breadcrumb-bookmark">
+                    {% block breadcrumbs %}
+                        {% breadcrumbs %}
+                    {% endblock breadcrumbs %}
+                    {% block bookmark %}
+                        {% if FEATURE_FLAGS.new_homepage %}
+                            {% bookmark_page user page %}
+                        {% endif %}
+                    {% endblock bookmark %}
+                </div>
+                {% block main_content %}
+                {% endblock main_content %}
+                {% block page_problem %}
+                    {% include "includes/problem_found.html" %}
+                {% endblock page_problem %}
+            </main>
+            {% block post_main %}
             </div>
-        </div>
+        {% endblock post_main %}
         {% include "includes/footer.html" %}
         {% render_bundle 'main' 'js' %}
         {% block scripts %}

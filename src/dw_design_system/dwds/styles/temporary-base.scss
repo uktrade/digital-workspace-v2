@@ -30,7 +30,12 @@ body {
         max-inline-size: none;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         font-weight: var(--font-weight-bold);
         line-height: var(--font-lineheight-headings);
         color: var(--color-heading);
@@ -62,4 +67,12 @@ body {
             color: var(--color-text) !important;
         }
     }
+}
+
+.dwds-container {
+    max-width: 1250px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space);
+    padding-right: var(--space);
 }
