@@ -3,8 +3,10 @@
 
 {% block card_classes %}
     {% if is_highlighted %}dwds-card--dark{% endif %}
-{% endblock %}
-{% block card_container_classes %}dwds-engagement-card{% endblock %}
+{% endblock card_classes %}
+{% block card_container_classes %}
+    dwds-engagement-card
+{% endblock card_container_classes %}
 
 {% block card_content %}
     {% if thumbnail %}
@@ -21,5 +23,4 @@
         {% endif %}
         <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date }}</time>
     </p>
-
-{% endblock %}
+{% endblock card_content %}

@@ -1,21 +1,4 @@
 .dwds {
-  // Stack
-  // https://every-layout.dev/layouts/stack/
-
-  .stack {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-
-  .stack > * {
-    margin-block: 0;
-  }
-
-  .stack > * + * {
-    margin-block-start: var(--space);
-  }
-
 
   // Box
   // https://every-layout.dev/layouts/box/
@@ -130,22 +113,6 @@
   .cover > h1 {
     margin-block: auto;
   }
-
-
-  // Grid
-  // https://every-layout.dev/layouts/grid/
-
-  .grid {
-    display: grid;
-    grid-gap: var(--space);
-  }
-
-  @supports (width: min(250px, 100%)) {
-    .grid {
-      grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
-    }
-  }
-
 
 
   // Frame

@@ -1,6 +1,8 @@
 {% extends "dwds/elements/extendable/card.html" %}
 {% load wagtailimages_tags %}
-{% block card_container_classes %}dwds-one-up-card{% endblock %}
+{% block card_container_classes %}
+    dwds-one-up-card
+{% endblock card_container_classes %}
 {% block card_content %}
     <div class="switcher">
         <div class="stack">
@@ -16,4 +18,4 @@
         </div>
     </div>
     <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j M Y' }}</time>
-{% endblock %}
+{% endblock card_content %}
