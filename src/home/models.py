@@ -12,6 +12,7 @@ from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
 
 from content.models import BasePage
+from core.models.models import SiteAlertBanner
 from home import FEATURE_HOMEPAGE
 from interactions import get_bookmarks, get_recent_page_views
 from news.models import NewsPage
@@ -214,6 +215,10 @@ class HomePage(BasePage):
         context["recently_viewed"] = get_recent_page_views(
             request.user, limit=10, exclude_pages=[self]
         )
+
+        context["active_site_alert"] = SiteAlertBanner.objects.filter(
+            activated=True
+        ).first()
 
         # # Updates
         # updates = []

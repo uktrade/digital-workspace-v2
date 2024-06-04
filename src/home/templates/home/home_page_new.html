@@ -26,15 +26,9 @@
 
 {% block primary_content %}
     <article>
-        {# spaceless is required to enable the use of the :empty pseudo css selector #}
-        {% spaceless %}
-            <section class="homepage-site-alert dwds">
-               {% include 'dwds/components/banner.html' with text="This is a dummy Text about something important such as when the days end and time stops" link="localhost:8000" link_text="share your views"%}
-            </section>
-        {% endspaceless %}
-
         <section>
             <div class="stack">
+                {% include 'dwds/components/banner.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
                 {% if news_items %}
                     {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
                 {% endif %}

@@ -1,8 +1,11 @@
-<div class="stack dwds-banner">
-        <p role="alert">
-            {{ text }}
-            {% if link %}
-                <a href="{{ link }}">{{ link_text }}</a>
-            {% endif %}
-        </p>
-</div>
+{% if text %}
+    <div class="dwds-banner">
+        {% if link %}
+            <a href="{{ link }}">
+                <p role="alert">{{ text }}</p>
+            </a>
+        {% else %}
+            <p role="alert">{{ text }}</p>
+        {% endif %}
+    </div>
+{% endif %}
