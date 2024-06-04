@@ -2,7 +2,7 @@
 
 <style>
     .bookmark-list {
-        /* FIXME: this doesn't work */
+        /* TODO: Use a bookmark icon for the list style. The code below doesn't work. */
         /*
         list-style-image: url("{% static 'interactions/bookmark-circle.svg' %}");
 
@@ -33,6 +33,7 @@
         {% endfor %}
     </ul>
 {% else %}
+    <!-- TODO: This needs to be switched to the new design -->
     <p>
         You have not yet saved any bookmarks. Use the
         <img src="{% static 'interactions/bookmark-outline.svg' %}"
