@@ -3,10 +3,18 @@
     list-style: none;
     padding: 0;
   }
-  
+
   #content-background {
     background-image: url("../images/splash-bg-1.png");
     background-repeat: no-repeat;
     background-position: center top;
+
+    .govuk-phase-banner__text {
+      color: var(--color-text-highlight);
+
+      a {
+        color: var(--color-text-highlight);
+      }
+    }
   }
 }
