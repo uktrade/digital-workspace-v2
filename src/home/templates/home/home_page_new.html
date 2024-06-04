@@ -32,7 +32,7 @@
                 {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
             {% endif %}
 
-            <ul class="grid home-news-items">
+            <ul class="grid grid-small home-news-items">
                 {% for news_item in news_items %}
                     {% if not forloop.first %}
                         <li data-testid="home-news-item">

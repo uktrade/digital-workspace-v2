@@ -163,6 +163,7 @@ class HomePage(BasePage):
         context["whats_popular_items"] = whats_popular_items
 
         # News
+        news_items_count = 6 if is_new_homepage else 8
         news_items = (
             NewsPage.objects.live()
             .public()
@@ -170,7 +171,7 @@ class HomePage(BasePage):
                 "-pinned_on_home",
                 "home_news_order_pages__order",
                 "-first_published_at",
-            )[:8]
+            )[:news_items_count]
         )
         context["news_items"] = news_items
 

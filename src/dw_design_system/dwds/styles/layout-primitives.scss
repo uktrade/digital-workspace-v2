@@ -144,8 +144,11 @@
     .grid {
       grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
     }
+    // 3 columns grid
+    .grid-small {
+      grid-template-columns: repeat(auto-fit, minmax(min(var(--card-min-width), 100%), 1fr));
+    }
   }
-
 
 
   // Frame
