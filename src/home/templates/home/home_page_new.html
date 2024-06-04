@@ -19,8 +19,7 @@
 {% endblock page_title %}
 
 {% block primary_content %}
-    {# FIXME: The div below should be article, but for some reason that messes with the widths!!! #}
-    <div>
+    <article>
         {# spaceless is required to enable the use of the :empty pseudo css selector #}
         {% spaceless %}
             <section>
@@ -28,27 +27,28 @@
             </section>
         {% endspaceless %}
 
-        {# FIXME: The div below should be section, but for some reason that messes with the widths!!! #}
-        <div class="stack">
-            {% if news_items %}
-                {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
-            {% endif %}
+        <section>
+            <div class="stack">
+                {% if news_items %}
+                    {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
+                {% endif %}
 
-            <div class="grid grid-small home-news-items">
-                {% for news_item in news_items %}
-                    {% if not forloop.first %}
-                        <div data-testid="home-news-item">
-                            {% include "dwds/components/engagement_card.html" with title=news_item.title excerpt=news_item.excerpt thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at %}
-                        </div>
-                    {% endif %}
-                {% endfor %}
+                <div class="grid grid-small home-news-items">
+                    {% for news_item in news_items %}
+                        {% if not forloop.first %}
+                            <div data-testid="home-news-item">
+                                {% include "dwds/components/engagement_card.html" with title=news_item.title excerpt=news_item.excerpt thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <a href="/news-and-views/">View all news</a>
+                {% if not hide_news %}
+                    {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
+                {% endif %}
             </div>
-            <a href="/news-and-views/">View all news</a>
-            {% if not hide_news %}
-                {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
-            {% endif %}
-        </div>
-    </div>
+        </section>
+    </article>
 {% endblock primary_content %}
 
 {% block secondary_content %}

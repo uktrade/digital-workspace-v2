@@ -1,4 +1,10 @@
 .new-home {
+
+  article,
+  section {
+    display: inline;
+  }
+
   #content-background {
     background-image: url("../images/splash-bg-1.png");
     background-repeat: no-repeat;
