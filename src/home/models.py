@@ -163,7 +163,7 @@ class HomePage(BasePage):
         context["whats_popular_items"] = whats_popular_items
 
         # News
-        news_items_count = 6 if is_new_homepage else 8
+        news_items_count = 7 if is_new_homepage else 8
         news_items = (
             NewsPage.objects.live()
             .public()
