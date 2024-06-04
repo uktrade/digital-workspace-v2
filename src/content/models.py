@@ -120,8 +120,46 @@ class BasePageQuerySet(PageQuerySet):
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
 
+    def annotate_with_total_views(self):
+        return self.annotate(
+            total_views=models.Sum(
+                "interactions_recentpageviews__count",
+                distinct=True,
+            )
+        )
+
+    def annotate_with_unique_views_all_time(self):
+        return self.annotate(
+            unique_views_all_time=models.Count(
+                "interactions_recentpageviews",
+                distinct=True,
+            )
+        )
+
+    def annotate_with_unique_views_past_month(self):
+        return self.annotate(
+            unique_views_past_month=models.Count(
+                "interactions_recentpageviews",
+                filter=Q(
+                    interactions_recentpageviews__updated_at__gte=timezone.now()
+                    - timezone.timedelta(weeks=4)
+                ),
+                distinct=True,
+            )
+        )
+
+    def order_by_most_recent_unique_views_past_month(self):
+        return self.annotate_with_unique_views_past_month().order_by(
+            "-unique_views_past_month"
+        )
+
 
 class BasePage(Page, Indexed):
+    class Meta:
+        permissions = [
+            ("view_info_page", "Can view the info page in the Wagtail admin"),
+        ]
+
     objects = PageManager.from_queryset(BasePageQuerySet)()
 
     legacy_path = models.CharField(

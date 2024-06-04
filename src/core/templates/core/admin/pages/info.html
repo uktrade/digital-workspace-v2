@@ -1,0 +1,46 @@
+{% extends "wagtailadmin/generic/base.html" %}
+{% load wagtailadmin_tags %}
+{% load i18n %}
+{% load l10n %}
+{% block bodyclass %}{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+{% block content %}
+    {% comment %} {% get_comments_enabled as comments_enabled %}
+    {% page_permissions page as page_perms %} {% endcomment %}
+
+    {% include 'wagtailadmin/shared/headers/page_edit_header.html' with title=header_title %}
+
+    <div class="nice-padding w-mt-8">
+        <h1 class="w-header__title" id="header-title">Information about '{{ page.title }}'</h1>
+
+        <h2 class="w-header__title">Page views stats</h2>
+        <table class="listing">
+            <tr>
+                <th style="text-align: left;">Total page views</th>
+                <td>{% firstof total_page_views "0" %}</td>
+            </tr>
+            <tr>
+                <th style="text-align: left;">Total unique page views</th>
+                <td>{{ total_unique_page_views }}</td>
+            </tr>
+            <tr>
+                <th style="text-align: left;">Unique page views in the past 4 weeks</th>
+                <td>{{ unique_page_views_last_month }}</td>
+            </tr>
+        </table>
+
+        <h2 class="w-header__title">Search info</h2>
+        <p>The entire search document in OpenSearch</p>
+        <table class="listing">
+            {% for key, value in opensearch_document.items %}
+                <tr>
+                    <th style="text-align: left;">{{ key }}</th>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+
+{% endblock %}
