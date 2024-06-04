@@ -5,8 +5,8 @@
 {% block title %}{{ user.profile.full_name }}'s bookmarks{% endblock %}
 
 {% block primary_content %}
-<h1 class="govuk-heading-l">{{ user.profile.full_name }}'s bookmarks</h1>
+<h1>{{ user.profile.full_name }}'s bookmarks</h1>
 
-<p class="govuk-body">Here are all the pages you have bookmarked:</p>
+<p>Here are all the pages you have bookmarked:</p>
 {% bookmark_list user %}
 {% endblock %}
