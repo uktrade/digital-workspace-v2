@@ -52,6 +52,15 @@ body {
 	a {
 		color: var(--color-link);
 	}
+
+	a:focus{
+		text-decoration: underline var(--color-link) var(--text-underline-hover);
+		background-color: var(--color-link-background-active);
+	}
+
+	a:focus-visible {
+		outline: none;
+	}
 }
 
 .dwds {
