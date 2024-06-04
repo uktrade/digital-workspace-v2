@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block body_classes %}dwds{% endblock %}
 
 {% block pre_main %}
-    <div id="content-background">
-        <div class="dwds-container">
-        {% endblock pre_main %}
+    <div id="content-background"></div>
+    <div class="dwds-container">
+    {% endblock pre_main %}
 
-        {% block main_content %}
-            <div class="dwds" style="margin-bottom: var(--s2)">
+    {% block main_content %}
+        <div class="dwds" style="margin-bottom: var(--s2)">
+            <div class="stack">
                 {% block pre_content %}
                 {% endblock pre_content %}
                 {% block page_title %}
@@ -36,9 +36,5 @@
                 {% block post_content %}
                 {% endblock post_content %}
             </div>
-        {% endblock main_content %}
-
-        {% block post_main %}
         </div>
-    </div>
-{% endblock post_main %}
+    {% endblock main_content %}

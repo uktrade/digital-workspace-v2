@@ -4,6 +4,12 @@
 {% load wagtailimages_tags %}
 {% load site_alert %}
 
+
+{% block pre_main %}
+    <div id="content-background"></div>
+    {{ block.super }}
+{% endblock pre_main %}
+
 {% block bookmark %}
 {% endblock bookmark %}
 

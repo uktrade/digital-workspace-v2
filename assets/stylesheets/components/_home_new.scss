@@ -6,20 +6,18 @@
   }
 
   #content-background {
+    margin-bottom: -20rem;
+    height: 20rem;
     background-image: url("../images/splash-bg-1.png");
-    background-repeat: no-repeat;
-    background-position: center top;
+    background-size: cover;
 
-    .govuk-phase-banner {
-      margin-bottom: var(--s5);
-    }
+  }
 
-    .govuk-phase-banner__text {
+  .govuk-phase-banner__text {
+    color: var(--color-text-highlight);
+
+    a {
       color: var(--color-text-highlight);
-
-      a {
-        color: var(--color-text-highlight);
-      }
     }
   }
 }
