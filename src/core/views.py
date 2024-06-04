@@ -184,7 +184,7 @@ class AdminInfoView(WagtailAdminTemplateMixin, View):
         return self.page.get_admin_display_title()
 
     def dispatch(self, request, page_id):
-        self.page = get_object_or_404(Page.objects.all(), id=page_id)
+        self.page = get_object_or_404(Page.objects.all(), id=page_id).specific
         self.page_class = self.page.specific_class
 
         if not request.user.has_perm("content.view_info_page"):
