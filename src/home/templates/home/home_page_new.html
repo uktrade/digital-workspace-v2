@@ -8,7 +8,7 @@
 {% endblock bookmark %}
 
 {% block body_classes %}
-    homepage new-home
+    {{ block.super }} homepage new-home
 {% endblock body_classes %}
 
 {% block pre_content %}
@@ -33,11 +33,11 @@
                     {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
                 {% endif %}
 
-                <div class="grid grid-small home-news-items">
+                <div class="grid grid-cards home-news-items">
                     {% for news_item in news_items %}
                         {% if not forloop.first %}
                             <div data-testid="home-news-item">
-                                {% include "dwds/components/engagement_card.html" with title=news_item.title excerpt=news_item.excerpt thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at is_highlighted=True %}
+                                {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at is_highlighted=True %}
                             </div>
                         {% endif %}
                     {% endfor %}

@@ -1,0 +1,48 @@
+.dwds {
+
+    // Container
+
+    .dwds-container {
+        max-width: 1250px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: var(--space);
+        padding-right: var(--space);
+    }
+
+    // Stack
+    // https://every-layout.dev/layouts/stack/
+
+    .stack {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .stack > * {
+        margin-block: 0;
+    }
+
+    .stack > * + * {
+        margin-block-start: var(--space);
+    }
+
+
+    // Grid
+    // https://every-layout.dev/layouts/grid/
+
+    .grid {
+        display: grid;
+        grid-gap: var(--space);
+    }
+
+    @supports (width: min(250px, 100%)) {
+        .grid {
+            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+        }
+
+        .grid-cards {
+            grid-template-columns: repeat(auto-fit, minmax(min(var(--card-min-width), 100%), 1fr));
+        }
+    }
+}
