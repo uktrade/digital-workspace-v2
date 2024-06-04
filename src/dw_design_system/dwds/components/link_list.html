@@ -1,8 +1,8 @@
-
 {% extends "dwds/elements/extendable/card.html" %}
 
-
-{% block card_container_classes %}dwds-link-list{% endblock %}
+{% block card_container_classes %}
+    dwds-link-list
+{% endblock card_container_classes %}
 
 {% block card_content %}
     <h2>{{ title }}</h2>
@@ -14,4 +14,4 @@
             </li>
         {% endfor %}
     </ul>
-{% endblock %}
+{% endblock card_content %}
