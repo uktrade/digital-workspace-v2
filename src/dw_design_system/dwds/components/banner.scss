@@ -1,0 +1,12 @@
+.dwds-banner{
+    padding: var(--s-1);
+    background-color: var(--color-button-primary);
+    p {
+        padding: var(--s-1);
+        opacity: 1;
+        color: white;
+        a, a:visited, a:link {
+        color: white;
+      }
+    }
+}

@@ -2,7 +2,6 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-{% load site_alert %}
 
 {% block bookmark %}
 {% endblock bookmark %}
@@ -19,8 +18,8 @@
 
         {# spaceless is required to enable the use of the :empty pseudo css selector #}
         {% spaceless %}
-            <section class="homepage-site-alert">
-                {% site_alert %}
+            <section class="homepage-site-alert dwds">
+               {% include 'dwds/components/banner.html' with text="This is a dummy Text about something important such as when the days end and time stops" link="localhost:8000" link_text="share your views"%}
             </section>
         {% endspaceless %}
 
