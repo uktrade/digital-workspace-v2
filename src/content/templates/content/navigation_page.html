@@ -16,7 +16,7 @@
             {% include_block block %}
         {% endfor %}
     </div>
-{% endblock %}
+{% endblock primary_content %}
 
 {% block secondary_content %}
     <div class="stack">
@@ -24,7 +24,7 @@
             {% include_block block %}
         {% endfor %}
     </div>
-{% endblock %}
+{% endblock secondary_content %}
 
 {% block scripts %}
     <script>
@@ -32,4 +32,4 @@
         formData.set('page_url','{{page.url}}');
     }
     </script>
-{% endblock %}
+{% endblock scripts %}
