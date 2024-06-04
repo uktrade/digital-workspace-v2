@@ -37,7 +37,7 @@
                     {% for news_item in news_items %}
                         {% if not forloop.first %}
                             <div data-testid="home-news-item">
-                                {% include "dwds/components/engagement_card.html" with title=news_item.title excerpt=news_item.excerpt thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at %}
+                                {% include "dwds/components/engagement_card.html" with title=news_item.title excerpt=news_item.excerpt thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at is_highlighted=True %}
                             </div>
                         {% endif %}
                     {% endfor %}
