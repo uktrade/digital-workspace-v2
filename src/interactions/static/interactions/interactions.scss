@@ -1,0 +1,47 @@
+.bookmark-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+
+    padding-left: 0;
+
+    list-style: none;
+
+    li {
+        display: grid;
+        grid-template-columns: min-content 1fr;
+        gap: var(--s-4) var(--s-2);
+
+        svg {
+            grid-row: 1 / 3;
+            grid-column: 1;
+        }
+    }
+}
+
+.empty-bookmark-list {
+    // FIXME
+}
+
+.bookmark-page-input {
+    all: unset;
+
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+
+    color: var(--dbt-blue);
+
+    /* i.e. it's a response from the server and not from the initial template load */
+    &[data-is-htmx="true"] .icon {
+        animation: boing 0.3s ease;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:focus-visible {
+        outline: revert;
+    }
+}
