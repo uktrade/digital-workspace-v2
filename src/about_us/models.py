@@ -26,7 +26,6 @@ class AboutUs(PageWithTopics):
 
 class AboutUsHome(PageWithTopics):
     is_creatable = False
-    template = "content/content_page.html"
     subpage_types = ["about_us.AboutUs"]
 
     def get_context(self, request, *args, **kwargs):
