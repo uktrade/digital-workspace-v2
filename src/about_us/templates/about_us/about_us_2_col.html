@@ -1,4 +1,5 @@
 {% extends "2_col_content.html" %}
+
 {% load wagtailcore_tags %}
 
 {% block page_content %}
@@ -17,3 +18,7 @@
         {% endfor %}
     </ul>
 {% endblock tertiary_col_content %}
+
+{% block page_bottom %}
+    {% include "includes/child-links.html" with children=children num_cols=num_cols %}
+{% endblock page_bottom %}

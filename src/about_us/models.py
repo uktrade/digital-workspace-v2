@@ -7,6 +7,11 @@ class AboutUs(PageWithTopics):
     parent_page_types = ["about_us.AboutUsHome", "about_us.AboutUs"]
     subpage_types = ["about_us.AboutUs"]
 
+    def get_template(self, request, *args, **kwargs):
+        if self.page_topics.all().exists():
+            return "about_us/about_us_2_col.html"
+        return "about_us/about_us_1_col.html"
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 

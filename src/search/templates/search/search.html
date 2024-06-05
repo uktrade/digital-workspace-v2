@@ -6,13 +6,16 @@ context:
     search_category
     page
 {% endcomment %}
+
 {% block title %}
     Search results for '{{ search_query }}'
 {% endblock title %}
+
 {% block location %}
     Search
 {% endblock location %}
-{% block content %}
+
+{% block page_content %}
     {% include 'search/partials/search_results.html' %}
     <script lang="javascript">
         document.onload = dataLayer.push({
@@ -30,4 +33,4 @@ context:
             searchinput.focus();
         });
     </script>
-{% endblock content %}
+{% endblock page_content %}

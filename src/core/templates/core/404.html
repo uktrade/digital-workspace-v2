@@ -1,11 +1,16 @@
 {% extends "1_col_content.html" %}
 
-{% block title %}Page not found{% endblock %}
+{% block title %}
+    Page not found
+{% endblock title %}
 
-{% block content %}
+{% block page_title %}
     <h1 class="govuk-heading-m">Page not found</h1>
+{% endblock page_title %}
+
+{% block page_content %}
     <p class="govuk-body">If you entered a web address, check it is correct.</p>
     <p class="govuk-body">
         You can browse from the <a class="govuk-link" href="/">homepage</a> or use the search box above to find the information you need.
     </p>
-{% endblock %}
+{% endblock page_content %}

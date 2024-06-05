@@ -181,7 +181,7 @@ class NewsPage(PageWithTopics):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
+        context["attribution"] = True
         comments = Comment.objects.filter(
             news_page=self,
             parent_id=None,

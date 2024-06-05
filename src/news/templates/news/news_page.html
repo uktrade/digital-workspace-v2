@@ -1,15 +1,19 @@
 {% extends "2_col_content.html" %}
 {% load wagtailcore_tags %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    {% include "includes/attribution.html" with page=page is_news_page=True perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=True %}
+{% block page_attribution %}
+    {% if attribution %}
+        {% include "includes/attribution.html" with page=page is_news_page=True perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=True %}
+    {% endif %}
+{% endblock page_attribution %}
+
+{% block page_content %}
     <div class="ws-streamfield-content">
         {% for block in page.body %}
             {% include_block block %}
         {% endfor %}
     </div>
-{% endblock content %}
+{% endblock page_content %}
 
 {% block post_content %}
     {% if self.allow_comments %}

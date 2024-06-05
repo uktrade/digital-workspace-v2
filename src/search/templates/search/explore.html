@@ -10,7 +10,7 @@
     Search
 {% endblock location %}
 
-{% block content %}
+{% block page_content %}
     {% if messages %}
         {% for message in messages %}
             {% if message.tags == 'info' %}
@@ -196,4 +196,4 @@
         <p class="govuk-body">You do not have permission to view this page</p>
     {% endif %}
 
-{% endblock content %}
+{% endblock page_content %}

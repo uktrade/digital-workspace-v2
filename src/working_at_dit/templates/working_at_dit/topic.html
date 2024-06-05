@@ -1,9 +1,7 @@
 {% extends "2_col_content.html" %}
 {% load wagtailcore_tags %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    {% include "includes/attribution.html" with page=page %}
+{% block page_content %}
     {% for block in page.body %}
         {% include_block block %}
     {% endfor %}
@@ -19,21 +17,19 @@
     {% endif %}
     {% if policies_and_guidance %}
         <h2 class="govuk-heading-m">Policies and Guidance</h2>
-        {% for page in policies_and_guidance %}
+        {% for pg_page in policies_and_guidance %}
             <ul class="govuk-list">
                 <li>
-                    <a class="govuk-link" href="{{ page.url }}">{{ page.title }}</a>
+                    <a class="govuk-link" href="{{ pg_page.url }}">{{ pg_page.title }}</a>
                     <br />
-                    <span class="govuk-body-s ws-secondary-meta">{{ page.last_published_at }}</span>
+                    <span class="govuk-body-s ws-secondary-meta">{{ pg_page.last_published_at }}</span>
                 </li>
             </ul>
         {% endfor %}
     {% endif %}
-
-{% endblock %}
+{% endblock page_content %}
 
 {% block tertiary_col_content %}
-
     {% if tools %}
         <h2 class="govuk-heading-m">Tools</h2>
         <ul class="govuk-list">
@@ -55,5 +51,4 @@
             {% endfor %}
         </ul>
     {% endif %}
-
-{% endblock %}
+{% endblock tertiary_col_content %}
