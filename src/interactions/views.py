@@ -1,10 +1,10 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
-from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from wagtail.models import Page
 
-from . import is_page_bookmarked, get_bookmarks
+from . import get_bookmarks, is_page_bookmarked
 from .models import Bookmark
 from .templatetags.bookmarks import bookmark_page_input
 
