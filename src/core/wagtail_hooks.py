@@ -1,9 +1,11 @@
 from django.db.models import Count
 from django.templatetags.static import static
 from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.panels import FieldPanel
 from wagtail.admin.ui.tables import Column
+from wagtail.admin.widgets import PageListingButton
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
@@ -48,3 +50,24 @@ class TagsSnippetViewSet(SnippetViewSet):
 
 
 register_snippet(TagsSnippetViewSet)
+
+
+class PageInfoAdminButton(PageListingButton):
+    label = _("Info")
+    icon_name = "info-circle"
+    aria_label_format = _("View info for '%(title)s'")
+    url_name = "admin-page-info"
+
+    @property
+    def show(self):
+        return self.user.has_perm("content.view_info_page")
+
+
+@hooks.register("register_page_listing_more_buttons")
+def page_listing_more_buttons(page, user, next_url=None):
+    yield PageInfoAdminButton(
+        page=page,
+        next_url=next_url,
+        user=user,
+        priority=1,
+    )
