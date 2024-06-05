@@ -16,11 +16,14 @@
         <h3>{{ title }}</h3>
     </a>
     {% if excerpt %}<p class="dwds-engagement-card--excerpt">{{ excerpt }}</p>{% endif %}
-    <p class="dwds-engagement-card--author">
-        {% if author %}
-            {{ author }}
-            <br>
-        {% endif %}
-        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j M Y' }}</time>
-    </p>
+    <div class="dwds-card--footer">
+        <p>
+            {% if author %}
+                {{ author }}
+                <br>
+            {% endif %}
+            <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j M Y' }}</time>
+        </p>
+    </div>
+
 {% endblock card_content %}
