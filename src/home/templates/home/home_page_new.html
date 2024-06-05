@@ -52,8 +52,8 @@
 
 {% block secondary_content %}
     <article>
-        {% comment %} TODO: to add bookmark card {% endcomment %}
         <section class="stack">
+            {% include 'interactions/bookmark_card.html' %}
             {% if active_site_alert %}
                 {% include 'dwds/components/banner_card.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
             {% endif %}

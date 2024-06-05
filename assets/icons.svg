@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="bookmark-icon" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="15" stroke="var(--icon-outline-stroke)" fill="var(--icon-outline-fill)" />
+      <path d="m10 24 6-4 6 4v-14c0-1.5-1.5-3-3-3h-6c-1.5 0-3 1.5-3 3z" stroke="var(--icon-path-stroke)" fill="var(--icon-path-fill)" />
+    </symbol>
+  </defs>
+</svg>

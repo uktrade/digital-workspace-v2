@@ -1,0 +1,12 @@
+{% extends 'dwds_content.html' %}
+
+{% load bookmarks %}
+
+{% block title %}{{ user.profile.full_name }}'s bookmarks{% endblock %}
+
+{% block primary_content %}
+    <h1>{{ user.profile.full_name }}'s bookmarks</h1>
+
+    <p>Here are all the pages you have bookmarked:</p>
+    {% bookmark_list user %}
+{% endblock %}
