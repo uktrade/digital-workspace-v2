@@ -41,7 +41,9 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-                <a href="/news-and-views/">View all news</a>
+                <span>
+                    <a href="/news-and-views/">View all news</a>
+                </span>
                 {% if not hide_news %}
                     {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
                 {% endif %}

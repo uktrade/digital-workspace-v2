@@ -21,6 +21,6 @@
             {{ author }}
             <br>
         {% endif %}
-        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date }}</time>
+        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j M Y' }}</time>
     </p>
 {% endblock card_content %}
