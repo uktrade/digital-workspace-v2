@@ -1,12 +1,19 @@
-.dwds-banner{
-    background-color: var(--color-button-primary);
-    opacity: var(--opacity-soft);
+.dwds-banner-card {
+    h3 {
+        color: var(--color-text-highlight);
+        font-size: var(--s1);
+        font-weight: var(--font-weight-normal);
+        line-height: var(--font-lineheight-headings);
+    }
 
-    a, a:visited, a:link {
-      color: var(--color-text-highlight); 
-      p {
-          padding: var(--s-1);
-          color: var(--color-text-highlight);
-      }
+    a,
+    a:visited,
+    a:link {
+        color: var(--color-text-highlight);
+
+        p {
+            margin: 0;
+            color: var(--color-text-highlight);
+        }
     }
 }

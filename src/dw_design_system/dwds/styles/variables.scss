@@ -2,6 +2,7 @@
   // Brand colours - for re-use in this file only
   --dbt-blue: #00285F;
   --dbt-light-blue: #0063BE;
+  --dbt-light-blue-rgb: 0, 99, 190;
 
   // Colour
   --color-heading: var(--dbt-blue);
@@ -62,5 +63,5 @@
   --card-min-width: 15rem;
 
   // Opacity
-  --opacity-soft: 0.9;
+  --opacity-soft: 0.8;
 }
