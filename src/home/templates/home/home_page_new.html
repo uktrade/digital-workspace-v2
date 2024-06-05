@@ -26,13 +26,6 @@
 
 {% block primary_content %}
     <article>
-        {# spaceless is required to enable the use of the :empty pseudo css selector #}
-        {% spaceless %}
-            <section>
-                {% site_alert %}
-            </section>
-        {% endspaceless %}
-
         <section>
             <div class="stack">
                 {% if news_items %}
@@ -61,6 +54,7 @@
     <article>
         {% comment %} TODO: to add bookmark card {% endcomment %}
         <section class="stack">
+            {% include 'dwds/components/banner_card.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
             {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
         </section>
         {% comment %} <section>

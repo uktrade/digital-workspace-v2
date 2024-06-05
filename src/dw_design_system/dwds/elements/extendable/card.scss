@@ -20,3 +20,14 @@
         border-color: var(--color-background-card);
     }
 }
+
+.dwds-card--blue {
+    border-top-color: var(--dbt-light-blue);
+    background-color: transparent;
+    
+    & > div {
+        background-color: rgba(var(--dbt-light-blue-rgb), var(--opacity-soft));
+        // hides the border while preserving the internal spacing
+        border-color: var(--dbt-light-blue);
+    }
+}

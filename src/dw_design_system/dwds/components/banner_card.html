@@ -1,0 +1,15 @@
+{% extends "dwds/elements/extendable/card.html" %}
+
+{% block card_classes %}dwds-card--blue{% endblock %}
+{% block card_container_classes %}dwds-banner-card{% endblock %}
+
+{% block card_content %}
+    {% if link %}
+        <h3>Notice</h3>
+        <a href="{{ link }}">
+            <p role="alert">{{ text }}</p>
+        </a>
+    {% else %}
+        <p role="alert">{{ text }}</p>
+    {% endif %}
+{% endblock %}
