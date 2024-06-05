@@ -19,9 +19,10 @@
                 {% if attribution %}
                     {% include "includes/attribution.html" with page=page %}
                 {% endif %}
-            {% endblock %}
+            {% endblock page_attribution %}
 
-            {% block page_content %}{% endblock %}
+            {% block page_content %}
+            {% endblock page_content %}
         </article>
         {% include 'includes/tag_set.html' %}
     </div>
