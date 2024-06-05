@@ -20,7 +20,14 @@
 }
 
 .empty-bookmark-list {
-    // FIXME
+    img {
+        width: 4rem;
+    }
+
+    p:nth-of-type(2) {
+        display: flex;
+        gap: var(--s-2);
+    }
 }
 
 .bookmark-page-input {

@@ -22,13 +22,13 @@
     </ul>
 {% else %}
     <div class="empty-bookmark-list">
-        <img src="{% static 'interactions/open-empty-box.webp' %}" alt="An open empty box" width="64px">
+        <img src="{% static 'interactions/open-empty-box.webp' %}" alt="An open empty box">
         <p>No bookmarks yet.</p>
-        <div style="display: flex; gap: var(--s-2);">
-            <div>
+        <p>
+            <span>
                 {% include 'dwds/elements/icon.html' with use_id='bookmark-icon' %}
-            </div>
-            <p>Click the bookmark icon on pages to bookmark them here</p>
-        </div>
+            </span>
+            <span>Click the bookmark icon on pages to bookmark them here</span>
+        </p>
     </div>
 {% endif %}
