@@ -2,14 +2,24 @@
 
 <style>
     .bookmark-list {
-        /* TODO: Use a bookmark icon for the list style. The code below doesn't work. */
-        /*
-        list-style-image: url("{% static 'interactions/bookmark-circle.svg' %}");
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-2);
 
-        li::marker {
-            font-size: 2rem;
+        padding-left: 0;
+
+        list-style: none;
+
+        li {
+            display: grid;
+            grid-template-columns: min-content 1fr;
+            gap: var(--s-4) var(--s-2);
+
+            svg {
+                grid-row: 1 / 3;
+                grid-column: 1;
+            }
         }
-        */
     }
 </style>
 
@@ -17,10 +27,11 @@
     <ul class="bookmark-list">
         {% for bookmark in bookmarks %}
             <li>
-                <p>
+                {% include 'dwds/elements/icon.html' with use_id='bookmark-icon' is_filled=True %}
+                <div>
                     <a href="{% pageurl bookmark.page %}">{{ bookmark.page }}</a>
-                </p>
-                <p>
+                </div>
+                <div>
                     <button
                         class="dwds-button dwds-button--small dwds-button--secondary"
                         hx-delete="{% url 'interactions:bookmark-remove' bookmark.pk %}"
@@ -28,16 +39,15 @@
                         hx-target="closest li"
                         hx-swap="outerHTML"
                     >Remove</button>
-                </p>
+                </div>
             </li>
         {% endfor %}
     </ul>
 {% else %}
-    <!-- TODO: This needs to be switched to the new design -->
+    <img src="{% static 'interactions/open-empty-box.webp' %}" alt="An open empty box" width="64px">
+    <p>No bookmarks yet.</p>
     <p>
-        You have not yet saved any bookmarks. Use the
-        <img src="{% static 'interactions/bookmark-outline.svg' %}"
-            style="width: 1rem">
-        icon at the top of a page to save it to here.
+        {% include 'dwds/elements/icon.html' with use_id='bookmark-icon' %}
+        <span>Click the bookmark icon on pages to bookmark them here</span>
     </p>
 {% endif %}

@@ -9,8 +9,8 @@ from interactions import is_page_bookmarked, get_bookmarks
 register = template.Library()
 
 
-@register.inclusion_tag("interactions/bookmark_page.html")
-def bookmark_page(user, page):
+@register.inclusion_tag("interactions/bookmark_page_input.html")
+def bookmark_page_input(user, page):
     if page is None:
         return {}
 

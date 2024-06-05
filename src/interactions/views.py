@@ -6,7 +6,7 @@ from wagtail.models import Page
 
 from . import is_page_bookmarked, get_bookmarks
 from .models import Bookmark
-from .templatetags.bookmarks import bookmark_page
+from .templatetags.bookmarks import bookmark_page_input
 
 
 @require_http_methods(["POST"])
@@ -26,8 +26,8 @@ def bookmark(request, *args, **kwargs):
 
         return TemplateResponse(
             request,
-            "interactions/bookmark_page.html",
-            bookmark_page(user, page),
+            "interactions/bookmark_page_input.html",
+            bookmark_page_input(user, page),
         )
 
 

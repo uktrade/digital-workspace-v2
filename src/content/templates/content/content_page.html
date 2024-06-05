@@ -6,7 +6,7 @@
     {% block bookmark %}
     <div class="dwds">
         {% if FEATURE_FLAGS.new_homepage %}
-            {% bookmark_page user page %}
+            {% bookmark_page_input user page %}
         {% endif %}
     </div>
     {% endblock bookmark %}
