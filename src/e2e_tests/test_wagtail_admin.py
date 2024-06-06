@@ -39,7 +39,7 @@ def test_add_news_page(superuser, page: Page):
     page.get_by_role("button", name="Save draft").click()
 
     # Publish
-    page.locator("li.footer__container nav .dropdown-toggle").click()
+    page.locator("nav.footer__container .w-dropdown--dropdown-button").click()
     page.get_by_role("button", name="Publish").click()
 
     # Check the page is visible in the admin.
