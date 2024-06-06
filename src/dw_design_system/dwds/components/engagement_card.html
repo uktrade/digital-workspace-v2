@@ -18,9 +18,7 @@
     {% if excerpt %}<p class="dwds-engagement-card--excerpt">{{ excerpt }}</p>{% endif %}
     <p>
         {% if author %}
-            <span>
-                {{ author }}
-            </span>
+            <span>{{ author }}</span>
             <br>
         {% endif %}
         <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j M Y' }}</time>
