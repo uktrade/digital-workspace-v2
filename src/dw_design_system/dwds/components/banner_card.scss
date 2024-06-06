@@ -6,6 +6,10 @@
         line-height: var(--font-lineheight-headings);
     }
 
+    p {
+        color: var(--color-text-highlight);
+    }
+
     a,
     a:visited,
     a:link {

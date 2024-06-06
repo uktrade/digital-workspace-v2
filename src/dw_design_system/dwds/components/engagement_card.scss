@@ -28,8 +28,15 @@
         line-height: var(--font-lineheight-headings);
     }
 
-    .dwds-engagement-card--excerpt {}
-
-    .dwds-engagement-card--author {}
-
+    & > :last-child {
+        height: 100%;
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+    
+        span {
+            display: inline-block;
+            flex-basis: 100%;
+        }
+    }
 }
