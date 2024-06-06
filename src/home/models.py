@@ -14,7 +14,7 @@ from wagtail_adminsortable.models import AdminSortable
 from content.models import BasePage
 from core.models.models import SiteAlertBanner
 from home import FEATURE_HOMEPAGE
-from interactions import get_bookmarks, get_recent_page_views
+from interactions import get_bookmarks
 from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
