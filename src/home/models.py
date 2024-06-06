@@ -14,7 +14,7 @@ from wagtail_adminsortable.models import AdminSortable
 from content.models import BasePage
 from core.models.models import SiteAlertBanner
 from home import FEATURE_HOMEPAGE
-from interactions import get_bookmarks, get_recent_page_views
+from interactions import get_bookmarks
 from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
@@ -145,24 +145,6 @@ class HomePage(BasePage):
         is_new_homepage = flag_is_active(request, FEATURE_HOMEPAGE)
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
-        # Quick links
-        quick_links = QuickLink.objects.all().order_by("result_weighting", "title")
-        if is_new_homepage:
-            quick_links = [
-                {"url": obj.link_to.get_url(request), "text": obj.title}
-                for obj in quick_links
-            ]
-        context["quick_links"] = quick_links
-
-        # Popular on Digital Workspace
-        whats_popular_items = WhatsPopular.objects.all()
-        if is_new_homepage:
-            whats_popular_items = [
-                {"url": obj.link_to.get_url(request), "text": obj.title}
-                for obj in whats_popular_items
-            ]
-        context["whats_popular_items"] = whats_popular_items
-
         # News
         news_items_count = 7 if is_new_homepage else 8
         news_items = (
@@ -175,16 +157,6 @@ class HomePage(BasePage):
             )[:news_items_count]
         )
         context["news_items"] = news_items
-
-        # How do I
-        context["how_do_i_items"] = (
-            HowDoI.objects.filter(include_link_on_homepage=True)
-            .live()
-            .public()
-            .order_by(
-                "title",
-            )[:10]
-        )
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):
@@ -210,11 +182,43 @@ class HomePage(BasePage):
         context["govuk_feed"] = govuk_feed
         context["hide_news"] = settings.HIDE_NEWS
 
+        # Quick links
+        quick_links = QuickLink.objects.all().order_by("result_weighting", "title")
+        if is_new_homepage:
+            quick_links = [
+                {"url": obj.link_to.get_url(request), "text": obj.title}
+                for obj in quick_links
+            ]
+        context["quick_links"] = quick_links
+
+        # Popular on Digital Workspace
+        if not is_new_homepage:
+            whats_popular_items = WhatsPopular.objects.all()
+            context["whats_popular_items"] = whats_popular_items
+        # else:
+        #     whats_popular_items = WhatsPopular.objects.all()
+        #     whats_popular_items = [
+        #         {"url": obj.link_to.get_url(request), "text": obj.title}
+        #         for obj in whats_popular_items
+        #     ]
+        #     context["whats_popular_items"] = whats_popular_items
+
+        # How do I
+        if not is_new_homepage:
+            context["how_do_i_items"] = (
+                HowDoI.objects.filter(include_link_on_homepage=True)
+                .live()
+                .public()
+                .order_by(
+                    "title",
+                )[:10]
+            )
+
         # Personalised page list
         context["bookmarks"] = get_bookmarks(request.user)
-        context["recently_viewed"] = get_recent_page_views(
-            request.user, limit=10, exclude_pages=[self]
-        )
+        # context["recently_viewed"] = get_recent_page_views(
+        #     request.user, limit=10, exclude_pages=[self]
+        # )
 
         context["active_site_alert"] = SiteAlertBanner.objects.filter(
             activated=True

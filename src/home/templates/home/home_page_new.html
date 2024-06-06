@@ -35,9 +35,7 @@
                 <div class="grid grid-cards home-news-items">
                     {% for news_item in news_items %}
                         {% if not forloop.first %}
-                            <div data-testid="home-news-item">
-                                {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at is_highlighted=True %}
-                            </div>
+                            {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at is_highlighted=True %}
                         {% endif %}
                     {% endfor %}
                 </div>
