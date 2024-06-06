@@ -25,6 +25,7 @@
   --color-button-secondary: #F3F2F1;
   --color-button-secondary-hover: #dbdad9;
   --color-button-border: black;
+  --color-icon: var(--dbt-blue);
 
   // Size
   --ratio: 1.25;
@@ -64,4 +65,8 @@
 
   // Opacity
   --opacity-soft: 0.8;
+
+  // Icons
+  --icon-width: 1.5em;
+  --icon-height: 1.5em;
 }

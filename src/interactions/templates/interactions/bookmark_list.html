@@ -1,0 +1,31 @@
+{% load static wagtailcore_tags %}
+
+{% if bookmarks %}
+    <ul class="bookmark-list">
+        {% for bookmark in bookmarks %}
+            <li>
+                {% include 'dwds/elements/icon.html' with use_id='bookmark-icon' is_filled=True %}
+                <div>
+                    <a href="{% pageurl bookmark.page %}">{{ bookmark.page }}</a>
+                </div>
+                <div>
+                    <button class="dwds-button dwds-button--small dwds-button--secondary"
+                            hx-delete="{% url 'interactions:bookmark-remove' bookmark.pk %}"
+                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                            hx-target="closest li"
+                            hx-swap="outerHTML">Remove</button>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="empty-bookmark-list">
+        <img src="{% static 'interactions/open-empty-box.webp' %}"
+             alt="An open empty box">
+        <p>No bookmarks yet.</p>
+        <p>
+            <span>{% include 'dwds/elements/icon.html' with use_id='bookmark-icon' %}</span>
+            <span>Click the bookmark icon on pages to bookmark them here</span>
+        </p>
+    </div>
+{% endif %}
