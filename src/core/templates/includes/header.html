@@ -20,7 +20,11 @@
         <div class="govuk-header__content gov-grid-column-two-thirds">
             <a href="/"
                class="govuk-header__link govuk-header__link--ws govuk-header__service-name govuk-header__service-name--ws">
-                Digital Workspace
+                {% if FEATURE_FLAGS.new_homepage %}
+                    DBT Intranet
+                {% else %}
+                    Digital Workspace
+                {% endif %}
             </a>
         </div>
         {% include 'includes/profile_panel.html' %}
