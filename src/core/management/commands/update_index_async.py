@@ -1,6 +1,5 @@
 from django.core.cache import cache
 from django.core.management.base import BaseCommand
-from wagtail.search.management.commands.update_index import Command
 
 
 class Command(BaseCommand):
