@@ -1,0 +1,4481 @@
+{
+    "<class 'core.models.tags.Tag'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "name": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "name_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'home.models.HomePage'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'content.models.BasePage'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'content.models.ContentPage'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'content.models.NavigationPage'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_navigationpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_navigationpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_navigationpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_navigationpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_navigationpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_navigationpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'content.models.BlogIndex'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'content.models.BlogPost'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_blogpost__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_blogpost__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_blogpost__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_blogpost__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_blogpost__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_blogpost__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_blogpost__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_blogpost__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_blogpost__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'news.models.NewsPage'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "news_newspage__last_published_at_scorefunction_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "working_at_dit_pagewithtopics__topic_titles_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_pagewithtopics__topic_titles": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "news_newspage__search_categories": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "news_newspage__search_categories_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "news_newspage__pinned_on_home_filter": {
+                "type": "boolean"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'news.models.NewsHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.WorkingAtDITHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "working_at_dit_workingatdithome__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "working_at_dit_workingatdithome__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "working_at_dit_workingatdithome__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "working_at_dit_workingatdithome__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "working_at_dit_workingatdithome__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_workingatdithome__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_workingatdithome__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "working_at_dit_workingatdithome__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "working_at_dit_workingatdithome__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.Topic'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "working_at_dit_topic__content_owner": {
+                "type": "nested",
+                "properties": {
+                    "working_at_dit_topic__first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "working_at_dit_topic__preferred_first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "working_at_dit_topic__last_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    }
+                }
+            },
+            "working_at_dit_topic__content_contact_email_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.TopicHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.PageWithTopics'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "working_at_dit_pagewithtopics__topic_titles_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_pagewithtopics__topic_titles": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.HowDoI'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "working_at_dit_pagewithtopics__topic_titles_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_pagewithtopics__topic_titles": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_howdoi__content_owner": {
+                "type": "nested",
+                "properties": {
+                    "working_at_dit_howdoi__first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "working_at_dit_howdoi__preferred_first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "working_at_dit_howdoi__last_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    }
+                }
+            },
+            "working_at_dit_howdoi__content_contact_email_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.HowDoIHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "working_at_dit_howdoihome__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "working_at_dit_howdoihome__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "working_at_dit_howdoihome__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "working_at_dit_howdoihome__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "working_at_dit_howdoihome__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_howdoihome__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_howdoihome__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "working_at_dit_howdoihome__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "working_at_dit_howdoihome__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.Guidance'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "working_at_dit_pagewithtopics__topic_titles_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_pagewithtopics__topic_titles": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_guidance__content_owner": {
+                "type": "nested",
+                "properties": {
+                    "working_at_dit_guidance__first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "working_at_dit_guidance__preferred_first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "working_at_dit_guidance__last_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    }
+                }
+            },
+            "working_at_dit_guidance__content_contact_email_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.Policy'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "working_at_dit_pagewithtopics__topic_titles_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_pagewithtopics__topic_titles": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_policy__content_owner": {
+                "type": "nested",
+                "properties": {
+                    "working_at_dit_policy__first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "working_at_dit_policy__preferred_first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "working_at_dit_policy__last_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    }
+                }
+            },
+            "working_at_dit_policy__content_contact_email_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.PoliciesHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.GuidanceHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'working_at_dit.models.PoliciesAndGuidanceHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'tools.models.Tool'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "working_at_dit_pagewithtopics__topic_titles_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "working_at_dit_pagewithtopics__topic_titles": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "tools_tool__search_tool_name_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_10_0"
+                ]
+            },
+            "tools_tool__search_tool_name": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_10_0"
+                ]
+            },
+            "tools_tool__search_tool_name_keyword": {
+                "type": "text",
+                "analyzer": "no_spaces",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_10_0"
+                ]
+            },
+            "tools_tool__search_tool_name_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            },
+            "_all_text_boost_10_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'tools.models.ToolsHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "tools_toolshome__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "tools_toolshome__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "tools_toolshome__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "tools_toolshome__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "tools_toolshome__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "tools_toolshome__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "tools_toolshome__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "tools_toolshome__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "tools_toolshome__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'about_us.models.AboutUs'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "about_us_aboutus__topic_titles_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "about_us_aboutus__topic_titles": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'about_us.models.AboutUsHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "about_us_aboutushome__topic_titles_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "about_us_aboutushome__topic_titles": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'networks.models.NetworksHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "networks_networkshome__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "networks_networkshome__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "networks_networkshome__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "networks_networkshome__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "networks_networkshome__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "networks_networkshome__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "networks_networkshome__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "networks_networkshome__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "networks_networkshome__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'networks.models.Network'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "content_contentpage__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "content_contentpage__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "content_contentpage__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "content_contentpage__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "content_contentpage__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "networks_network__topic_titles_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "networks_network__topic_titles": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "networks_network__content_owner": {
+                "type": "nested",
+                "properties": {
+                    "networks_network__first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "networks_network__preferred_first_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    },
+                    "networks_network__last_name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_0"
+                        ]
+                    }
+                }
+            },
+            "networks_network__content_contact_email_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'country_fact_sheet.models.CountryFactSheetHome'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "country_fact_sheet_countryfactsheethome__search_title_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "country_fact_sheet_countryfactsheethome__search_title": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_5_0"
+                ]
+            },
+            "country_fact_sheet_countryfactsheethome__search_headings_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "country_fact_sheet_countryfactsheethome__search_headings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_3_0"
+                ]
+            },
+            "country_fact_sheet_countryfactsheethome__search_content_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "country_fact_sheet_countryfactsheethome__search_content": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "country_fact_sheet_countryfactsheethome__excerpt_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "country_fact_sheet_countryfactsheethome__excerpt": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "country_fact_sheet_countryfactsheethome__is_creatable_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_5_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'peoplefinder.models.Person'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "full_name_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_7_0"
+                ]
+            },
+            "full_name": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_7_0"
+                ]
+            },
+            "full_name_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "first_name_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_7_0"
+                ]
+            },
+            "first_name": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_7_0"
+                ]
+            },
+            "first_name_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "preferred_first_name_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_7_0"
+                ]
+            },
+            "preferred_first_name": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_7_0"
+                ]
+            },
+            "preferred_first_name_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "last_name_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_7_0"
+                ]
+            },
+            "last_name": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_7_0"
+                ]
+            },
+            "last_name_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "email": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "email_keyword": {
+                "type": "text",
+                "analyzer": "no_spaces",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "contact_email": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "contact_email_keyword": {
+                "type": "text",
+                "analyzer": "no_spaces",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "primary_phone_number": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "primary_phone_number_keyword": {
+                "type": "text",
+                "analyzer": "no_spaces",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "secondary_phone_number": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "secondary_phone_number_keyword": {
+                "type": "text",
+                "analyzer": "no_spaces",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "search_grade_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "search_buildings": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "roles": {
+                "type": "nested",
+                "properties": {
+                    "peoplefinder_person__job_title_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_3_0"
+                        ]
+                    },
+                    "peoplefinder_person__job_title": {
+                        "type": "text",
+                        "analyzer": "snowball",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_3_0"
+                        ]
+                    }
+                }
+            },
+            "key_skills": {
+                "type": "nested",
+                "properties": {
+                    "peoplefinder_person__name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_0_8"
+                        ]
+                    },
+                    "peoplefinder_person__name": {
+                        "type": "text",
+                        "analyzer": "snowball",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_0_8"
+                        ]
+                    }
+                }
+            },
+            "other_key_skills_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_0_8"
+                ]
+            },
+            "other_key_skills": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_0_8"
+                ]
+            },
+            "learning_interests": {
+                "type": "nested",
+                "properties": {
+                    "peoplefinder_person__name": {
+                        "type": "text",
+                        "analyzer": "snowball",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_0_8"
+                        ]
+                    }
+                }
+            },
+            "additional_roles": {
+                "type": "nested",
+                "properties": {
+                    "peoplefinder_person__name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_0_8"
+                        ]
+                    },
+                    "peoplefinder_person__name": {
+                        "type": "text",
+                        "analyzer": "snowball",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_0_8"
+                        ]
+                    }
+                }
+            },
+            "networks": {
+                "type": "nested",
+                "properties": {
+                    "peoplefinder_person__name_explicit": {
+                        "type": "text",
+                        "analyzer": "simple",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_5"
+                        ]
+                    },
+                    "peoplefinder_person__name": {
+                        "type": "text",
+                        "analyzer": "snowball",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_1_5"
+                        ]
+                    },
+                    "peoplefinder_person__name_filter": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "networks_filter": {
+                "type": "integer"
+            },
+            "international_building": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "search_location": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "fluent_languages": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "search_teams_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "search_teams": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "profile_completion_scorefunction_filter": {
+                "type": "integer"
+            },
+            "is_active_filter": {
+                "type": "boolean"
+            },
+            "became_inactive_filter": {
+                "type": "date"
+            },
+            "professions_filter": {
+                "type": "integer"
+            },
+            "grade_id_filter": {
+                "type": "integer"
+            },
+            "do_not_work_for_dit_filter": {
+                "type": "boolean"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_0_8": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_1_5": {
+                "type": "text"
+            },
+            "_all_text_boost_3_0": {
+                "type": "text"
+            },
+            "_all_text_boost_4_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_7_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'peoplefinder.models.Team'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "name_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "name": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "name_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "abbreviation_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "abbreviation": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "abbreviation_keyword": {
+                "type": "text",
+                "analyzer": "no_spaces",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_4_0"
+                ]
+            },
+            "description_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "description": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_1_0"
+                ]
+            },
+            "roles_in_team_explicit": {
+                "type": "text",
+                "analyzer": "simple",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "roles_in_team": {
+                "type": "text",
+                "analyzer": "snowball",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_1_0": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            },
+            "_all_text_boost_4_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'wagtail.documents.models.Document'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "collection_id_filter": {
+                "type": "integer"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_10_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "tags": {
+                "type": "nested",
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_10_0"
+                        ]
+                    },
+                    "name_edgengrams": {
+                        "type": "text",
+                        "analyzer": "edgengram_analyzer",
+                        "search_analyzer": "standard"
+                    }
+                }
+            },
+            "uploaded_by_user_id_filter": {
+                "type": "integer"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_10_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'wagtail.images.models.Image'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "collection_id_filter": {
+                "type": "integer"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_10_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "tags": {
+                "type": "nested",
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_10_0"
+                        ]
+                    },
+                    "name_edgengrams": {
+                        "type": "text",
+                        "analyzer": "edgengram_analyzer",
+                        "search_analyzer": "standard"
+                    }
+                }
+            },
+            "uploaded_by_user_id_filter": {
+                "type": "integer"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_10_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'wagtail.models.Page'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_2_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "id_filter": {
+                "type": "integer"
+            },
+            "live_filter": {
+                "type": "boolean"
+            },
+            "owner_id_filter": {
+                "type": "integer"
+            },
+            "content_type_id_filter": {
+                "type": "integer"
+            },
+            "path_filter": {
+                "type": "keyword"
+            },
+            "depth_filter": {
+                "type": "integer"
+            },
+            "locked_filter": {
+                "type": "boolean"
+            },
+            "show_in_menus_filter": {
+                "type": "boolean"
+            },
+            "first_published_at_filter": {
+                "type": "date"
+            },
+            "last_published_at_filter": {
+                "type": "date"
+            },
+            "latest_revision_created_at_filter": {
+                "type": "date"
+            },
+            "locale_id_filter": {
+                "type": "integer"
+            },
+            "translation_key_filter": {
+                "type": "keyword"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_2_0": {
+                "type": "text"
+            }
+        }
+    },
+    "<class 'wagtailmedia.models.Media'>": {
+        "properties": {
+            "pk": {
+                "type": "keyword",
+                "store": true
+            },
+            "content_type": {
+                "type": "keyword"
+            },
+            "_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "collection_id_filter": {
+                "type": "integer"
+            },
+            "title": {
+                "type": "text",
+                "copy_to": [
+                    "_all_text",
+                    "_all_text_boost_10_0"
+                ]
+            },
+            "title_edgengrams": {
+                "type": "text",
+                "analyzer": "edgengram_analyzer",
+                "search_analyzer": "standard"
+            },
+            "title_filter": {
+                "type": "keyword"
+            },
+            "tags": {
+                "type": "nested",
+                "properties": {
+                    "name": {
+                        "type": "text",
+                        "copy_to": [
+                            "_all_text",
+                            "_all_text_boost_10_0"
+                        ]
+                    },
+                    "name_edgengrams": {
+                        "type": "text",
+                        "analyzer": "edgengram_analyzer",
+                        "search_analyzer": "standard"
+                    }
+                }
+            },
+            "uploaded_by_user_id_filter": {
+                "type": "integer"
+            },
+            "_all_text": {
+                "type": "text"
+            },
+            "_all_text_boost_10_0": {
+                "type": "text"
+            }
+        }
+    }
+}
