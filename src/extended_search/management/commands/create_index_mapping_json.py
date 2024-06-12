@@ -1,10 +1,7 @@
 from pathlib import Path
 
 from django.core.management.base import BaseCommand
-from wagtail.documents.models import Document
-from wagtail.images.models import Image
 from wagtail.search.backends import get_search_backend
-from wagtailmedia.models import Media
 
 from extended_search.index import get_indexed_models
 
