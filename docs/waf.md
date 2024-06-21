@@ -13,6 +13,7 @@ Below is a list of all the known URLs that should be bypassed:
 
 - `/django-admin/*` 
 - `/admin/pages/{PAGE_ID}/edit/` where `{PAGE_ID}` is an integer
+- `/admin/pages/add/*`
 - `/admin/media/audio/add/`
 - `/admin/media/audio/chooser/upload/`
 - `/admin/media/audio/chooser/create/`
