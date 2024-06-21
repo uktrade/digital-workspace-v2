@@ -11,7 +11,7 @@ This firewall causes some issues with users who are uploading files, this means 
 
 Below is a list of all the known URLs that should be bypassed:
 
-- `/admin/pages/{PAGE_ID}/edit/`  where `{PAGE_ID}` is an integer
+- `/admin/pages/{PAGE_ID}/edit/` where `{PAGE_ID}` is an integer
 - `/admin/media/audio/add/`
 - `/admin/media/audio/chooser/upload/`
 - `/admin/media/audio/chooser/create/`
