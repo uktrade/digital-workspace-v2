@@ -57,7 +57,9 @@
                 {% include 'dwds/components/banner_card.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
             {% endif %}
             {% include 'interactions/bookmark_card.html' %}
-            {% include "dwds/components/cta_card.html" with url=hr_page.get_url title="Human Resources" description="We're trialling a new Human Resources section. Help us improve it and give your feedback." %}
+            {% if hr_page %}
+                {% include "dwds/components/cta_card.html" with url=hr_page.get_url title="Human Resources" description="We're trialling a new Human Resources section. Help us improve it and give your feedback." %}
+            {% endif %}
             {% if quick_links %}
                 {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
             {% endif %}
