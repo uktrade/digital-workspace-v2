@@ -57,6 +57,12 @@
         }
       }
     }
+
+    .notice-wrapper {
+        border-bottom: 5px solid #1d70b8;
+        background-color: #f3f2f1;
+        padding: 12px;
+    }
   }
 
   .how-do-i,
@@ -162,10 +168,10 @@
         order: 5;
       }
 
-      .quick-links-wrapper {
+      .notice-wrapper {
         order: 6;
-        padding: 0;
-        margin: 0 0 24px 0;
+        margin-bottom: 24px;
+        height: fit-content;
       }
 
       .news-item-6 {
@@ -176,8 +182,10 @@
         order: 8;
       }
 
-      .news-item-8 {
+      .quick-links-wrapper {
         order: 9;
+        padding: 0;
+        margin: 0 0 24px 0;
       }
     }
 

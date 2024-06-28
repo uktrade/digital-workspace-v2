@@ -701,3 +701,7 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 
 # Enable the caching of the generated search query DSLs
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
+
+
+# Temporary to show hardcoded page link
+HR_PAGE_PK = env.int("HR_PAGE_PK", 7059)  # the PK of the HR page on prod

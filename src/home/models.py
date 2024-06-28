@@ -11,7 +11,7 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
 
-from content.models import BasePage
+from content.models import BasePage, NavigationPage
 from core.models.models import SiteAlertBanner
 from home import FEATURE_HOMEPAGE
 from interactions import get_bookmarks
@@ -190,6 +190,9 @@ class HomePage(BasePage):
                 for obj in quick_links
             ]
         context["quick_links"] = quick_links
+
+        # HR page notice
+        context["hr_page"] = NavigationPage.objects.get(pk=settings.HR_PAGE_PK)
 
         # Popular on Digital Workspace
         if not is_new_homepage:
