@@ -2,9 +2,10 @@
 {% extends "1_col_content.html" %}
 
 {% load feedback_tags %}
-{% block content %}
+
+{% block page_content %}
     {% if not hide_back_button %}
         <a href="{% url 'submitted-feedback' %}" class="govuk-back-link">Back</a>
     {% endif %}
     {% feedback_listing %}
-{% endblock content %}
+{% endblock page_content %}

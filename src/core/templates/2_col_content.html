@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bookmarks %}
 
 {% block main_content %}
     {% block pre_content %}
@@ -7,8 +8,24 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="ws-primary-content">
                 <article>
-                    {% block content %}
-                    {% endblock content %}
+                    {% block page_title %}
+                        {% if page.title %}<h1 class="govuk-heading-l">{{ page.title }}</h1>{% endif %}
+                    {% endblock page_title %}
+
+                    {% block page_bookmark %}
+                        {% if FEATURE_FLAGS.new_homepage and page %}
+                            <div class="dwds">{% bookmark_page_input user page %}</div>
+                        {% endif %}
+                    {% endblock page_bookmark %}
+
+                    {% block page_attribution %}
+                        {% if attribution %}
+                            {% include "includes/attribution.html" with page=page %}
+                        {% endif %}
+                    {% endblock page_attribution %}
+
+                    {% block page_content %}
+                    {% endblock page_content %}
                 </article>
                 {% include 'includes/tag_set.html' %}
             </div>
