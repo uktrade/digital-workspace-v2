@@ -97,10 +97,6 @@ class PersonSerializer(serializers.ModelSerializer):
             "photo_small",
         ]
 
-    uk_office_location = serializers.SlugRelatedField(
-        slug_field="name",
-        read_only=True,
-    )
     people_finder_id = serializers.IntegerField(source="pk")
     staff_sso_id = serializers.CharField(source="user.legacy_sso_user_id", default=None)
     profile_url = serializers.SerializerMethodField()
@@ -123,6 +119,10 @@ class PersonSerializer(serializers.ModelSerializer):
     formatted_grade = serializers.StringRelatedField(read_only=True, source="grade")
     location_other_uk = serializers.CharField(source="regional_building")
     location_other_overseas = serializers.CharField(source="international_building")
+    uk_office_location = serializers.SlugRelatedField(
+        slug_field="name",
+        read_only=True,
+    )
     key_skills = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="code"
     )
