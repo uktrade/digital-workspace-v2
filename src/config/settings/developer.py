@@ -28,6 +28,7 @@ PATTERN_LIBRARY = {
         ("dwds-extendable-elements", ["dwds/elements/extendable"]),
         ("dwds-components", ["dwds/components"]),
         ("dwds-layouts", ["dwds/layouts"]),
+        ("interactions-components", ["interactions/components"]),
     ),
     # Configure which files to detect as templates.
     "TEMPLATE_SUFFIX": ".html",

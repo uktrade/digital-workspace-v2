@@ -1,0 +1,17 @@
+name: Bookmark list
+
+context:
+  bookmarks:
+    - pk: 1
+      page: Page 1
+    - pk: 2
+      page: Page 2
+    - pk: 3
+      page: Page 3
+    - pk: 4
+      page: Page 4
+
+tags:
+  pageurl:
+    bookmark.page:
+      raw: "#"
