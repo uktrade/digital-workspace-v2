@@ -215,11 +215,6 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
                 filter=Q(roles__isnull=False),
                 distinct=True,
             ),
-            formatted_buildings=StringAgg(
-                "buildings__name",
-                delimiter=", ",
-                distinct=True,
-            ),
             formatted_networks=StringAgg(
                 "networks__name",
                 delimiter=", ",
