@@ -13,7 +13,7 @@ class CTACardBlock(blocks.StructBlock):
     url = blocks.URLBlock(required=False)
 
     class Meta:
-        template = "dwds/components/cta_card.html"
+        template = "dwds/components/cta_card/cta_card.html"
         icon = "info-circle"
         label = "CTA Card"
 

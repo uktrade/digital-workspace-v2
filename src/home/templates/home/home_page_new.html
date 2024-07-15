@@ -29,13 +29,13 @@
         <section>
             <div class="stack">
                 {% if news_items %}
-                    {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
+                    {% include "dwds/components/one_up_card/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
                 {% endif %}
 
                 <div class="grid grid-cards home-news-items">
                     {% for news_item in news_items %}
                         {% if not forloop.first %}
-                            {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at is_highlighted=True %}
+                            {% include "dwds/components/engagement_card/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at is_highlighted=True %}
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -43,7 +43,7 @@
                     <a href="/news-and-views/">View all news</a>
                 </span>
                 {% if not hide_news %}
-                    {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
+                    {% include "dwds/components/link_list/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
                 {% endif %}
             </div>
         </section>
@@ -54,15 +54,15 @@
     <article>
         <section class="stack">
             {% if active_site_alert %}
-                {% include 'dwds/components/banner_card.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
+                {% include 'dwds/components/banner_card/banner_card.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
             {% endif %}
             {% include 'interactions/bookmark_card.html' %}
             {% if quick_links %}
-                {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
+                {% include "dwds/components/link_list/link_list.html" with title="Quick links" list=quick_links %}
             {% endif %}
         </section>
         {% comment %} <section>
-            {% include "dwds/components/link_list.html" with title="Popular pages" list=whats_popular_items %}
+            {% include "dwds/components/link_list/link_list.html" with title="Popular pages" list=whats_popular_items %}
         </section> {% endcomment %}
     </article>
 {% endblock secondary_content %}

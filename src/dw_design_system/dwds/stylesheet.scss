@@ -8,17 +8,17 @@
 @forward "styles/temporary-base"; // Remove this once we switch to the above base.scss
 
 // Components
-@forward "components/one_up_card";
-@forward "components/engagement_card";
-@forward "components/link_list";
-@forward "components/navigation_card";
-@forward "components/cta_card";
-@forward "components/banner_card";
+@forward "components/one_up_card/one_up_card";
+@forward "components/engagement_card/engagement_card";
+@forward "components/link_list/link_list";
+@forward "components/navigation_card/navigation_card";
+@forward "components/cta_card/cta_card";
+@forward "components/banner_card/banner_card";
 
 // Elements
+@forward "elements/extendable/card/card";
 @forward "elements/navigational_link";
 @forward "elements/button";
-@forward "elements/extendable/card";
 @forward "elements/icon";
 
 // App specific stylesheets

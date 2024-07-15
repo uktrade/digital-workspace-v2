@@ -1,0 +1,15 @@
+name: Engagement Card
+
+context:
+    is_highlighted: true
+    url: https://google.com
+    title: Google
+    excerpt: Search the web
+    author: John Doe
+    date: 2020-01-01 00:00:00
+    thumbnail: true
+
+tags:
+    image:
+        thumbnail fill-196x127:
+            raw: <img src="https://via.placeholder.com/196x127" width="196" height="127" alt="">

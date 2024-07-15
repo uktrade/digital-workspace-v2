@@ -1,0 +1,6 @@
+name: Navigation Card
+
+context:
+    url: https://google.com
+    title: Google
+    summary: Search the web

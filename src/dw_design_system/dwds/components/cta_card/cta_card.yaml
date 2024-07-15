@@ -1,0 +1,6 @@
+name: CTA Card
+
+context:
+    url: https://google.com
+    title: Google
+    description: Search the web
