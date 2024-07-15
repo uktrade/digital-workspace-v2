@@ -1,0 +1,6 @@
+name: Bookmark card
+
+# tags:
+#   bookmark_list:
+#     user:
+#       template_name: "interactions/components/bookmark_list/bookmark_list.html"

@@ -26,7 +26,7 @@ def bookmark_page_input(user, page):
     }
 
 
-@register.inclusion_tag("interactions/bookmark_list.html")
+@register.inclusion_tag("interactions/components/bookmark_list/bookmark_list.html")
 def bookmark_list(user, limit: int | None = None):
     bookmarks = get_bookmarks(user)
 

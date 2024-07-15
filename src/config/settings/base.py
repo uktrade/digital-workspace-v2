@@ -719,6 +719,7 @@ PATTERN_LIBRARY = {
     "SECTIONS": (
         # ("pages", ["patterns/pages"]),
         ("dwds-components", ["dwds/components"]),
+        ("interactions-components", ["interactions/components"]),
     ),
     # Configure which files to detect as templates.
     "TEMPLATE_SUFFIX": ".html",
