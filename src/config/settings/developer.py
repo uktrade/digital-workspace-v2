@@ -11,7 +11,32 @@ if SKIP_CLAM_AV_FILE_UPLOAD:
 
 INSTALLED_APPS += [  # noqa F405
     "django_extensions",
+    "pattern_library",
+    "dw_pattern_library",
 ]
+
+if DEBUG:  # noqa F405
+    X_FRAME_OPTIONS = "SAMEORIGIN"
+
+TEMPLATES[0]["OPTIONS"]["builtins"] = ["pattern_library.loader_tags"]  # noqa F405
+
+PATTERN_LIBRARY = {
+    # Groups of templates for the pattern library navigation. The keys
+    # are the group titles and the values are lists of template name prefixes that will
+    # be searched to populate the groups.
+    "SECTIONS": (
+        # ("pages", ["patterns/pages"]),
+        ("dwds-components", ["dwds/components"]),
+    ),
+    # Configure which files to detect as templates.
+    "TEMPLATE_SUFFIX": ".html",
+    # # Set which template components should be rendered inside of,
+    # # so they may use page-level component dependencies like CSS.
+    "PATTERN_BASE_TEMPLATE_NAME": "pattern-library-base.html",
+    # # Any template in BASE_TEMPLATE_NAMES or any template that extends a template in
+    # # BASE_TEMPLATE_NAMES is a "page" and will be rendered as-is without being wrapped.
+    "BASE_TEMPLATE_NAMES": ["base.html"],
+}
 
 try:
     # Add django-silk for profiling

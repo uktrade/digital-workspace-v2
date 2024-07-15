@@ -54,6 +54,11 @@ urlpatterns = [
 if "silk" in settings.INSTALLED_APPS:
     urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
 
+if "pattern_library" in settings.INSTALLED_APPS:
+    urlpatterns += [
+        path("pattern-library/", include("pattern_library.urls")),
+    ]
+
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns

@@ -1,0 +1,23 @@
+{% load render_bundle webpack_static from webpack_loader %}
+
+<!DOCTYPE html>
+<html lang="en" class="govuk-template ">
+    <head>
+        <meta charset="utf-8" />
+        <title>Pattern Base</title>
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <meta name="theme-color" content="#cd1632" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        {% render_bundle 'init' 'js' %}
+        {% render_bundle 'main' 'css' %}
+    </head>
+    <body class="govuk-template__body {% block body_classes %}{% endblock %} dwds">
+        <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+        {% block content %}
+            {# pattern_library_rendered_pattern is where the pattern library will inject the rendered pattern. #}
+            {{ pattern_library_rendered_pattern }}
+        {% endblock %}
+        {% render_bundle 'main' 'js' %}
+    </body>
+</html>
