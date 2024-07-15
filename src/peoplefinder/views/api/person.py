@@ -59,8 +59,6 @@ class PersonSerializer(serializers.ModelSerializer):
             "primary_phone_number",
             "secondary_phone_number",
             "formatted_location",
-            "buildings",
-            "formatted_buildings",
             "city",
             "country",
             "country_name",
@@ -113,11 +111,7 @@ class PersonSerializer(serializers.ModelSerializer):
     works_saturday = serializers.SerializerMethodField()
     works_sunday = serializers.SerializerMethodField()
     formatted_location = serializers.SerializerMethodField()
-    buildings = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="code"
-    )
-    formatted_buildings = serializers.CharField()
-    city = serializers.CharField(source="town_city_or_region")
+    city = serializers.SerializerMethodField()
     country = serializers.SlugRelatedField(read_only=True, slug_field="iso_2_code")
     country_name = serializers.StringRelatedField(read_only=True, source="country")
     grade = serializers.SlugRelatedField(read_only=True, slug_field="code")
@@ -193,6 +187,11 @@ class PersonSerializer(serializers.ModelSerializer):
 
     def get_works_sunday(self, obj):
         return self._workday(obj, "sun")
+
+    def get_city(self, obj):
+        if obj.uk_office_location:
+            return obj.uk_office_location.city
+        return obj.town_city_or_region
 
     def get_formatted_location(self, obj):
         parts = (
