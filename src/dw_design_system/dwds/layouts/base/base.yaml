@@ -1,0 +1,8 @@
+name: DWDS Base template
+
+context:
+    page:
+        title: DWDS Base template
+    pre_content: This is some "pre_content" text
+    content: This is some "content" text
+    post_content: This is some "post_content" text

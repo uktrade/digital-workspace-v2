@@ -1,0 +1,1 @@
+An extendable element that should not be used directly, instead use one of the components that extend it.

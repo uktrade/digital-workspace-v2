@@ -1,0 +1,11 @@
+name: DWDS 2 col template
+
+context:
+    page:
+        title: DWDS 2 col template
+    pre_primary_content: This is some "pre_primary_content" text
+    primary_content: This is some "primary_content" text
+    post_primary_content: This is some "post_primary_content" text
+    pre_secondary_content: This is some "pre_secondary_content" text
+    secondary_content: This is some "secondary_content" text
+    post_secondary_content: This is some "post_secondary_content" text

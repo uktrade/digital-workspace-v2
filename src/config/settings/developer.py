@@ -25,8 +25,9 @@ PATTERN_LIBRARY = {
     # are the group titles and the values are lists of template name prefixes that will
     # be searched to populate the groups.
     "SECTIONS": (
-        ("extendable-elements", ["dwds/elements/extendable"]),
-        ("components", ["dwds/components"]),
+        ("dwds-extendable-elements", ["dwds/elements/extendable"]),
+        ("dwds-components", ["dwds/components"]),
+        ("dwds-layouts", ["dwds/layouts"]),
     ),
     # Configure which files to detect as templates.
     "TEMPLATE_SUFFIX": ".html",

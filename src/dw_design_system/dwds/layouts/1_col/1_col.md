@@ -1,0 +1,1 @@
+A single column layout for a page using the DWDS.
