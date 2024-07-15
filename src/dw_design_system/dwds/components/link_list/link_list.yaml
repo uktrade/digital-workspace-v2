@@ -1,0 +1,26 @@
+name: Link List
+
+context:
+  title: Link List
+  description: A list of links
+  list:
+    - url: https://google.com
+      text: Google
+    - url: https://google.com
+      text: Google
+    - url: https://google.com
+      text: Google
+    - url: https://google.com
+      text: Google
+    - url: https://google.com
+      text: Google
+    - url: https://google.com
+      text: Google
+    - url: https://google.com
+      text: Google
+    - url: https://google.com
+      text: Google
+    - url: https://google.com
+      text: Google
+    - url: https://google.com
+      text: Google

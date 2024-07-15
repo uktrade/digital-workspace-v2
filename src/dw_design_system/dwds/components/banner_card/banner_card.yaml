@@ -1,0 +1,5 @@
+name: Banner Card
+
+context:
+  link: https://google.com
+  text: Google

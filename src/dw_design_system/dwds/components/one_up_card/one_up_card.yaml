@@ -1,0 +1,13 @@
+name: One Up Card
+
+context:
+  url: https://google.com
+  title: Google
+  excerpt: Search the web
+  date: 2020-01-01 00:00:00
+  thumbnail: true
+
+tags:
+  image:
+    thumbnail fill-300x200:
+      raw: <img src="https://via.placeholder.com/300x200" width="300" height="200" alt="">
