@@ -1,0 +1,29 @@
+{% extends "dwds/layouts/base.html" %}
+
+{% block content %}
+    <div class="with-sidebar-right">
+        <div class="primary-content">
+            {% block pre_primary_content %}
+                {{ pre_primary_content }}
+            {% endblock pre_primary_content %}
+            {% block primary_content %}
+                {{ primary_content }}
+            {% endblock primary_content %}
+            {% block post_primary_content %}
+                {{ post_primary_content }}
+                {% include 'includes/tag_set.html' %}
+            {% endblock post_primary_content %}
+        </div>
+        <div class="secondary-content">
+            {% block pre_secondary_content %}
+                {{ pre_secondary_content }}
+            {% endblock pre_secondary_content %}
+            {% block secondary_content %}
+                {{ secondary_content }}
+            {% endblock secondary_content %}
+            {% block post_secondary_content %}
+                {{ post_secondary_content }}
+            {% endblock post_secondary_content %}
+        </div>
+    </div>
+{% endblock content %}

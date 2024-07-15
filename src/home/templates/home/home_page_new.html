@@ -1,4 +1,4 @@
-{% extends "dwds_content.html" %}
+{% extends "dwds/layouts/2_col.html" %}
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
@@ -56,7 +56,7 @@
             {% if active_site_alert %}
                 {% include 'dwds/components/banner_card.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
             {% endif %}
-            {% include 'interactions/bookmark_card.html' %}
+            {% include 'interactions/components/bookmark_card/bookmark_card.html' %}
             {% if quick_links %}
                 {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
             {% endif %}
