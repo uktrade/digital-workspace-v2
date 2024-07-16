@@ -1,11 +1,5 @@
 {% extends "dwds/layouts/1_col.html" %}
 
-{% load static %}
-{% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
-{% load site_alert %}
-{% load dw_design_system %}
-
 {% block title %}
     DW Design System components
 {% endblock title %}
@@ -17,8 +11,61 @@
 
 {% block primary_content %}
     {% for component in components %}
-        <h3>{{ component.name }}</h3>
-        <pre>{{ component.template }}</pre>
-        {% render_component component.template component.context %}
+        {% include "dw_design_system/partials/component.html" %}
     {% endfor %}
 {% endblock primary_content %}
+
+{% block scripts %}
+    <style type="text/css">
+        .component-wrapper {
+            button {
+                padding: 5px 10px;
+            }
+        }
+        .component-container {
+            resize: horizontal;
+            overflow: auto;
+            padding: 25px;
+            border: 1px dotted #ccc;
+            max-width: 100%;
+            width: 50%;
+        }
+
+        .component-context {
+            width: 100%;
+        }
+    </style>
+    <script>
+        function getComponentContext(hx_event) {
+            return hx_event.srcElement.parentElement.getElementsByClassName('component-context')[0].value
+        }
+        function debounce(func, wait) {
+            let timeout;
+
+            return (...args) => {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        document.querySelectorAll('.component-wrapper .component-html').forEach(function(componentHtml) {
+            componentHtml.innerText = componentHtml.parentElement.querySelector('.component-container').innerHTML;
+        });
+        document.querySelectorAll('.component-wrapper button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var container = this.parentElement.querySelector('.component-container');
+                container.style.width = this.innerText;
+            });
+        });
+        document.querySelectorAll('.component-wrapper .component-context').forEach(function(textarea) {
+            textarea.style.height = "1px";
+            textarea.style.height = textarea.scrollHeight + "px";
+        });
+
+    </script>
+{% endblock scripts %}

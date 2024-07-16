@@ -1,62 +1,47 @@
+import json
+
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
-from django.utils import timezone
-from wagtail.images.models import Image
+
+from dw_design_system.templatetags.dw_design_system import render_component
+from dw_design_system.utils import CustomJSONDecoder, get_components, to_json
 
 
 def components(request: HttpRequest) -> HttpResponse:
-    thumbnail_file = Image.objects.first()
-    print("CAM WAS HERE")
-    print(thumbnail_file)
-    components = [
-        {
-            "name": "Banner Card",
-            "template": "dwds/components/banner_card.html",
-            "context": {
-                "link": "https://www.gov.uk",
-                "text": "This is a banner card for GOV.UK",
-            },
-        },
-        {
-            "name": "CTA Card",
-            "template": "dwds/components/cta_card.html",
-            "context": {
-                "link": "https://www.gov.uk",
-                "title": "This is a banner card for GOV.UK",
-                "description": "This is a description for the CTA card",
-            },
-        },
-        {
-            "name": "Engagement Card",
-            "template": "dwds/components/engagement_card.html",
-            "context": {
-                "is_highlighted": True,
-                "url": "https://www.gov.uk",
-                "title": "This is an engagement card for GOV.UK",
-                "excerpt": "This is an excerpt for the engagement card",
-                "author": "John Doe",
-                "date": timezone.now(),
-                "thumbnail": thumbnail_file,
-            },
-        },
-        {
-            "name": "Link List",
-            "template": "dwds/components/link_list.html",
-            "context": {},
-        },
-        {
-            "name": "Navigation Card",
-            "template": "dwds/components/navigation_card.html",
-            "context": {},
-        },
-        {
-            "name": "One Up Card",
-            "template": "dwds/components/one_up_card.html",
-            "context": {},
-        },
-    ]
+    components = []
+    for component in get_components():
+        new_component = component.copy()
+        new_component.update(
+            context_json=json.dumps(
+                new_component["context"],
+                indent=4,
+                default=to_json,
+            )
+        )
+        components.append(new_component)
+
     return render(
         request,
         "dw_design_system/components.html",
         {"components": components},
+    )
+
+
+def get_component(request: HttpRequest) -> HttpResponse:
+    component_template = request.POST.get("template")
+    new_context_str = request.POST.get("context")
+    new_context = json.loads(new_context_str, cls=CustomJSONDecoder)
+    component = next(
+        (c for c in get_components() if c["template"] == component_template), None
+    )
+
+    if not component:
+        return HttpResponse(status=404)
+
+    context = component["context"]
+    if new_context:
+        context = new_context
+
+    return HttpResponse(
+        render_component(request, component["template"], context),
     )
