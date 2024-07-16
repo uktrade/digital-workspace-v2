@@ -1,0 +1,12 @@
+{% extends "dwds_content.html" %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load site_alert %}
+{% load dw_design_system %}
+
+{% block primary_content %}
+    {% for component_template, component_context in components %}
+        {% render_component component_template component_context %}
+    {% endfor %}
+{% endblock primary_content %}
