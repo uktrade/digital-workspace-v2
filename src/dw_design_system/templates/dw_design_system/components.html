@@ -1,12 +1,24 @@
-{% extends "dwds_content.html" %}
+{% extends "dwds/layouts/1_col.html" %}
+
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load site_alert %}
 {% load dw_design_system %}
 
+{% block title %}
+    DW Design System components
+{% endblock title %}
+
+{% block page_title %}
+    <br />
+    <h1>DW Design System components</h1>
+{% endblock page_title %}
+
 {% block primary_content %}
-    {% for component_template, component_context in components %}
-        {% render_component component_template component_context %}
+    {% for component in components %}
+        <h3>{{ component.name }}</h3>
+        <pre>{{ component.template }}</pre>
+        {% render_component component.template component.context %}
     {% endfor %}
 {% endblock primary_content %}
