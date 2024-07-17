@@ -14,17 +14,16 @@
         <section aria-labelledby="home-news-items">
             <h2 id="home-news-items" class="ws-hide">News items</h2>
             <ul class="ws-home-grid-items">
-                {% if hr_page %}
-                    <li class="notice-wrapper" aria-hidden="true">
+                <li class="quick-links-wrapper" aria-hidden="true">
+                    {% if hr_page %}
+                    <nav aria-labelledby="hr-signpost" class="hr-signpost">
                         <h3 class="govuk-heading-m">Human Resources</h3>
                         <p class="govuk-body-s">
                             We're trialling a new <a class="govuk-link" href="{{ hr_page.get_url }}">Human Resources</a> section. Help us improve it and give your feedback.
                         </p>
-                    </li>
-                {% endif %}
-                <li class="quick-links-wrapper"
-                    aria-hidden="true"
-                    {% if hr_page %}style="order:9"{% endif %}>
+                    </nav>
+                    {% endif %}
+
                     <nav aria-labelledby="quick-link-menu" class="quick-links">
                         <h3 class="govuk-heading-m" id="quick-link-menu">Quick links</h3>
                         <ul>

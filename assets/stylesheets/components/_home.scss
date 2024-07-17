@@ -45,7 +45,7 @@
       padding: 0;
       margin: 0 0 24px 0;
 
-      .quick-links {
+      .quick-links, .hr-signpost {
         background-color: govuk-colour("light-grey");
         border-bottom: 5px solid $brand-color-red;
         padding: 12px;
@@ -55,6 +55,11 @@
           padding: 0 0 6px;
           margin: 0;
         }
+      }
+
+      .hr-signpost {
+        margin-bottom: 20px;
+        border-bottom: 5px solid $govuk-brand-colour;
       }
     }
 
@@ -169,7 +174,7 @@
       }
 
       .notice-wrapper {
-        order: 6;
+        // order: 6;
         margin-bottom: 24px;
         height: fit-content;
       }
