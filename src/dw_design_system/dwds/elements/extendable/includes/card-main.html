@@ -1,0 +1,20 @@
+
+{% block card_content_image %}
+    <img src="https://via.placeholder.com/196x127" alt="image">
+{% endblock card_content_image %}
+
+<div class="dwds-card--content">
+    {% block card_content %}
+        <div class="dwds-card--content--body">
+            {% block card_content_body %}
+                <div class="dwds-card--ribbon">Ribbon</div>
+                <h3>Title</h3>
+                <p>Content</p>
+                <span>Meta content</span>
+            {% endblock card_content_body %}
+        </div>
+    {% endblock card_content %}
+    {% block card_footer %}
+        {% include "dwds/elements/extendable/includes/card-footer.html" %}
+    {% endblock card_footer %}
+</div>

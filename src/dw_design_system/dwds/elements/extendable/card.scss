@@ -25,20 +25,24 @@
     }
 
     // The first &--image or &--content
-    &--content {
-
-        &--image {
+    &--main {
+        img {
             width: 100%;
+            height: auto;
         }
 
-        &--body {
-            padding: var(--space);
+        &--content {
+
+
+            &--body {
+                padding: var(--space);
+            }
+
         }
 
-    }
-
-    &--footer {
-        padding: 0 var(--space) var(--space) var(--space);
-        align-items: flex-end;
+        &--footer {
+            padding: 0 var(--space) var(--space) var(--space);
+            align-items: flex-end;
+        }
     }
 }
