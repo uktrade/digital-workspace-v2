@@ -1,5 +1,40 @@
-<div class="dwds-card {% block card_classes %}{% endblock %}">
-    <div class="stack {% block card_container_classes %}{% endblock %}">
-        {% block card_content %}{% endblock %}
-    </div>
+<div class="dwds-card stack">
+    {% block card_header %}
+        <div class="dwds-card--header stack">
+            {% block card_header_ribbon %}
+                <div class="dwds-card--ribbon">ribbon</div>
+            {% endblock card_header_ribbon %}
+
+            {% block card_header_subtitle %}
+                <p class="dwds-card--subtitle">subtitle</p>
+            {% endblock card_header_subtitle %}
+
+            {% block card_header_title %}
+                <h3>title</h3>
+            {% endblock card_header_title %}
+        </div>
+    {% endblock card_header %}
+
+    {% block card_content %}
+        <div class="dwds-card--content">
+            {% block card_content_image %}
+                <img class="dwds-card--image"
+                     src="https://via.placeholder.com/196x127"
+                     alt="image">
+            {% endblock card_content_image %}
+            <div class="stack">
+                {% block card_content_title %}
+                    <h3>title</h3>
+                {% endblock card_content_title %}
+
+                {% block card_content_body %}
+                    <p>content</p>
+                {% endblock card_content_body %}
+            </div>
+        </div>
+    {% endblock card_content %}
+
+    {% block card_footer %}
+        <div class="dwds-card--footer">footer</div>
+    {% endblock card_footer %}
 </div>

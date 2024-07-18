@@ -1,6 +1,19 @@
 {% extends 'dwds/elements/extendable/card.html' %}
 {% load bookmarks %}
-{% block card_content %}
+
+{% block card_header %}
+{% endblock card_header %}
+
+{% block card_content_image %}
+{% endblock card_content_image %}
+
+{% block card_content_title %}
     <h3>Your bookmarks</h3>
+{% endblock card_content_title %}
+
+{% block card_content_body %}
     {% bookmark_list user %}
-{% endblock %}
+{% endblock card_content_body %}
+
+{% block card_footer %}
+{% endblock card_footer %}

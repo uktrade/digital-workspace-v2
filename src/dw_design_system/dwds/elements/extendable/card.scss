@@ -1,34 +1,31 @@
 .dwds-card {
-    border-top: var(--border-top-width-card) solid var(--color-border);
-    align-items: baseline;
-    background-color: var(--color-background);
-    height: 100%;
 
-    & > div {
-        height: 100%;
-        border: var(--border-width) solid var(--color-border);
-        border-top: none;
-        padding: var(--space);
+    > * {
+        border: 1px solid red;
     }
-}
 
-.dwds-card--dark {
-    border-top-color: var(--color-border-dark);
-
-    & > div {
-        background-color: var(--color-background-card);
-        // hides the border while preserving the internal spacing
-        border-color: var(--color-background-card);
+    &--header {
+        background-color: blue;
+        align-items: flex-start;
     }
-}
 
-.dwds-card--blue {
-    border-top-color: var(--dbt-light-blue);
-    background-color: transparent;
+    // The first &--image or &--content
+    &--content {
+        display: flex;
+        flex-direction: row;
 
-    & > div {
-        background-color: rgba(var(--dbt-light-blue-rgb), var(--opacity-soft));
-        // hides the border while preserving the internal spacing
-        border-color: var(--dbt-light-blue);
+        > *:first-child {
+            width: 33.3333%;
+        }
+
+        > *:last-child {
+            width: 66.6667%;
+        }
+
+    }
+
+    &--footer {
+        background-color: red;
+        align-items: flex-end;
     }
 }

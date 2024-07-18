@@ -14,6 +14,11 @@ def get_components():
     # TODO: move to a JSON file
     return [
         {
+            "name": "Card",
+            "template": "dwds/elements/extendable/card.html",
+            "context": {},
+        },
+        {
             "name": "Banner Card",
             "template": "dwds/components/banner_card.html",
             "context": {
