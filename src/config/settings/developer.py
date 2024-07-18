@@ -7,7 +7,9 @@ INSTALLED_APPS += [  # noqa F405
 ]
 
 MEDIA_URL = "/media/"
-STORAGES["default"]["BACKEND"] = "django.core.files.storage.FileSystemStorage"  # noqa F405
+STORAGES["default"][
+    "BACKEND"
+] = "django.core.files.storage.FileSystemStorage"  # noqa F405
 FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
