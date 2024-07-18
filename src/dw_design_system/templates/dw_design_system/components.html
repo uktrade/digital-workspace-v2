@@ -1,0 +1,72 @@
+{% extends "dwds_content.html" %}
+
+{% block title %}
+    DW Design System components
+{% endblock title %}
+
+{% block page_title %}
+    <br />
+    <h1>DW Design System components</h1>
+{% endblock page_title %}
+
+{% block primary_content %}
+    {% for component in components %}
+        {% include "dw_design_system/partials/component.html" %}
+    {% endfor %}
+{% endblock primary_content %}
+
+{% block scripts %}
+    {% comment %} TODO: Move to a separate CSS file {% endcomment %}
+    <style type="text/css">
+        .component-wrapper {
+            button {
+                padding: 5px 10px;
+            }
+        }
+        .component-container {
+            resize: horizontal;
+            overflow: auto;
+            padding: 25px;
+            border: 1px dotted #ccc;
+            max-width: 100%;
+            width: 50%;
+        }
+
+        .component-context {
+            width: 100%;
+        }
+    </style>
+    <script>
+        function getComponentContext(hx_event) {
+            return hx_event.srcElement.parentElement.getElementsByClassName('component-context')[0].value
+        }
+        function debounce(func, wait) {
+            let timeout;
+
+            return (...args) => {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        document.querySelectorAll('.component-wrapper .component-html').forEach(function(componentHtml) {
+            componentHtml.innerText = componentHtml.parentElement.querySelector('.component-container').innerHTML;
+        });
+        document.querySelectorAll('.component-wrapper button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var container = this.parentElement.querySelector('.component-container');
+                container.style.width = this.innerText;
+            });
+        });
+        document.querySelectorAll('.component-wrapper .component-context').forEach(function(textarea) {
+            textarea.style.height = "1px";
+            textarea.style.height = textarea.scrollHeight + "px";
+        });
+
+    </script>
+{% endblock scripts %}
