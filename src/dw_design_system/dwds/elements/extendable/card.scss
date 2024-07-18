@@ -1,31 +1,44 @@
 .dwds-card {
+    --border-radius: 6px; // TODO: Change from px to a variable
+    --bottom-border-height: var(--border-radius);
+    --header-background-colour: blue; // TODO: Change to a variable
 
-    > * {
-        border: 1px solid red;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: #fff; // TODO: Change to a variable
+
+    // The bottom border
+    &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: var(--bottom-border-height);
+        background: lightgray;
     }
 
+
+
     &--header {
-        background-color: blue;
+        padding: var(--space);
         align-items: flex-start;
+        background: var(--header-background-colour);
     }
 
     // The first &--image or &--content
     &--content {
-        display: flex;
-        flex-direction: row;
 
-        > *:first-child {
-            width: 33.3333%;
+        &--image {
+            width: 100%;
         }
 
-        > *:last-child {
-            width: 66.6667%;
+        &--body {
+            padding: var(--space);
         }
 
     }
 
     &--footer {
-        background-color: red;
+        padding: 0 var(--space) var(--space) var(--space);
         align-items: flex-end;
     }
 }

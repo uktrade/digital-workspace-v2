@@ -1,40 +1,42 @@
-<div class="dwds-card stack">
+<div class="dwds-card">
     {% block card_header %}
         <div class="dwds-card--header stack">
-            {% block card_header_ribbon %}
-                <div class="dwds-card--ribbon">ribbon</div>
-            {% endblock card_header_ribbon %}
-
             {% block card_header_subtitle %}
-                <p class="dwds-card--subtitle">subtitle</p>
+                <div class="dwds-card--ribbon">Ribbon</div>
+                <p class="dwds-card--subtitle">Subtitle</p>
             {% endblock card_header_subtitle %}
 
             {% block card_header_title %}
-                <h3>title</h3>
+                <h3>Title</h3>
             {% endblock card_header_title %}
         </div>
     {% endblock card_header %}
 
-    {% block card_content %}
+    <div>
         <div class="dwds-card--content">
-            {% block card_content_image %}
-                <img class="dwds-card--image"
-                     src="https://via.placeholder.com/196x127"
-                     alt="image">
-            {% endblock card_content_image %}
-            <div class="stack">
-                {% block card_content_title %}
-                    <h3>title</h3>
-                {% endblock card_content_title %}
-
-                {% block card_content_body %}
-                    <p>content</p>
-                {% endblock card_content_body %}
-            </div>
+            {% block card_content %}
+                {% block card_content_image %}
+                    <img class="dwds-card--content--image"
+                         src="https://via.placeholder.com/196x127"
+                         alt="image">
+                {% endblock card_content_image %}
+                <div class="dwds-card--content--body">
+                    {% block card_content_body %}
+                        <div class="dwds-card--ribbon">Ribbon</div>
+                        <h3>Title</h3>
+                        <p>Content</p>
+                        <span>Meta content</span>
+                    {% endblock card_content_body %}
+                </div>
+            {% endblock card_content %}
         </div>
-    {% endblock card_content %}
 
-    {% block card_footer %}
-        <div class="dwds-card--footer">footer</div>
-    {% endblock card_footer %}
+        {% block card_footer %}
+            <div class="dwds-card--footer">
+                {% block card_footer_body %}
+                    footer
+                {% endblock card_footer_body %}
+            </div>
+        {% endblock card_footer %}
+    </div>
 </div>

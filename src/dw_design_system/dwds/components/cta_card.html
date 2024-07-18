@@ -4,15 +4,12 @@
 
 {% block card_header %}
 {% endblock card_header %}
-\
+
 {% block card_content_image %}
 {% endblock card_content_image %}
-\
-{% block card_content_title %}
-    {% include '../elements/navigational_link.html' with url=url text=title %}
-{% endblock card_content_title %}
 
 {% block card_content_body %}
+    {% include '../elements/navigational_link.html' with url=url text=title %}
     {% if description %}<p>{{ description }}</p>{% endif %}
 {% endblock card_content_body %}
 

@@ -10,11 +10,8 @@
 {% block card_content_image %}
 {% endblock card_content_image %}
 
-{% block card_content_title %}
-    <h3>{{ title }}</h3>
-{% endblock card_content_title %}
-
 {% block card_content_body %}
+    <h3>{{ title }}</h3>
     {% if description %}<p>{{ description }}</p>{% endif %}
     <ul>
         {% for item in list %}

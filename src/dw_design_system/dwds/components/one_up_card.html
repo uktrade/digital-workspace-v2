@@ -9,18 +9,14 @@
 {% endblock card_header %}
 
 {% block card_content %}
-    <div class="dwds-card--content">
-        {% block card_content_title %}
+    <div class="dwds-card--content--body">
+        {% block card_content_body %}
             <a href="{{ url }}">
                 <h2>{{ title }}</h2>
             </a>
-        {% endblock card_content_title %}
-
-        {% block card_content_body %}
             {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
         {% endblock card_content_body %}
     </div>
-
     {% block card_content_image %}
         {% if thumbnail %}
             {% image thumbnail fill-300x200 %}
@@ -28,6 +24,6 @@
     {% endblock card_content_image %}
 {% endblock card_content %}
 
-{% block card_footer %}
+{% block card_footer_body %}
     <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j F Y' }}</time>
-{% endblock card_footer %}
+{% endblock card_footer_body %}
