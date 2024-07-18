@@ -51,15 +51,26 @@ AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
 # Asset path used in parser
 NEW_ASSET_PATH = env("NEW_ASSET_PATH")
 
-# DEFAULT_FILE_STORAGE must be set to 'storages.backends.s3boto3.S3Boto3Storage'
-# or a class than inherits from it if using S3FileUploadHandler for
-# file upload handling
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
 FILE_UPLOAD_HANDLERS = (
     "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
     "django_chunk_upload_handlers.s3.S3FileUploadHandler",
 )  # Order is important
+
+# Storage
+# https://docs.djangoproject.com/en/4.2/ref/settings/#storages
+
+STORAGES = {
+    "default": {
+        # BACKEND must be set to 'storages.backends.s3boto3.S3Boto3Storage'
+        # or a class than inherits from it if using S3FileUploadHandler for
+        # file upload handling
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    # WhiteNoise
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 AWS_S3_FILE_OVERWRITE = False
 
@@ -273,8 +284,6 @@ STATICFILES_FINDERS = [
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT_DIR, "assets"),
 ]
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT_DIR, "static")
 STATIC_URL = "/static/"
