@@ -1,5 +1,5 @@
 {% extends "dwds/elements/extendable/card.html" %}
-{% load wagtailimages_tags static %}
+{% load wagtailimages_tags static humanize %}
 
 {% block card_header %}
 {% endblock card_header %}
@@ -30,9 +30,12 @@
             <span>{{ author }}</span>
             <br>
         {% endif %}
-        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j F Y' }}</time>
+        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|naturalday }}</time>
         {% if comment_count > 0 %}
-            <p>{{ comment_count }} comments</p>
+            <p>
+                <img class="comment-icon" src="{% static '/images/dwds/icons/comment_icon.svg' %}" alt="Comment bubble icon.">
+                {{ comment_count }} comment{{ comment_count|pluralize }}
+            </p>
         {% endif %}
     </p>
 {% endblock card_footer_body %}
