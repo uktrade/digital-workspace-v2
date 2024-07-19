@@ -63,9 +63,10 @@ markdown_extensions:
       linenums: null
       anchor_linenums: true
       use_pygments: true
+  - pymdownx.details
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  # - pymdownx.superfences
   - tables
 
 dev_addr: "127.0.0.1:8002"
