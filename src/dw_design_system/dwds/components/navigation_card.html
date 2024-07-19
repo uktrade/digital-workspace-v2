@@ -2,16 +2,7 @@
 
 {% block card_container_classes %}dwds-navigation-card{% endblock %}
 
-{% block card_header %}
-{% endblock card_header %}
-
-{% block card_content_image %}
-{% endblock card_content_image %}
-
-{% block card_content_body %}
+{% block card_content %}
     {% include "dwds/elements/navigational_link.html" with url=url text=title %}
     {% if summary %}<p>{{ summary }}</p>{% endif %}
-{% endblock card_content_body %}
-
-{% block card_footer %}
-{% endblock card_footer %}
+{% endblock %}

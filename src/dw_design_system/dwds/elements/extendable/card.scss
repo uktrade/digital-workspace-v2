@@ -1,74 +1,34 @@
 .dwds-card {
-    --card-white: #fff;
-    --border-radius: 6px; // TODO: Change from px to a variable
-    --bottom-border-height: var(--border-radius);
+    border-top: var(--border-top-width-card) solid var(--color-border);
+    align-items: baseline;
+    background-color: var(--color-background);
+    height: 100%;
 
-    border-radius: var(--border-radius);
-    border-bottom: var(--bottom-border-height) solid lightgray;
-    overflow: hidden;
-    background: var(--card-white);
-    height: auto;
-
-    &--ribbon {
-        --ribbon-background-blue: var(--dbt-blue);
-        --ribbon-background-red: var(--dbt-red);
-        --ribbon-padding: calc(var(--space) / 2);
-        --ribbon-text-colour: var(--card-white);
-
-        color: var(--ribbon-text-colour);
-        background: var(--ribbon-background-blue);
-        display: inline-block;
-        padding: var(--ribbon-padding);
-
-        --ribbon-left-space: calc(var(--space) + calc(var(--space) / 2));
-
-        margin-left: calc(var(--ribbon-left-space) * -1);
-        padding-left: var(--ribbon-left-space);
-
-        &--red {
-            background: var(--ribbon-background-red);
-        }
-    }
-
-    &--header {
-        --header-background-colour: var(--dbt-blue);
-        --header-text-colour: var(--card-white);
-
-        padding: var(--space);
-        align-items: flex-start;
-        background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
-        background-blend-mode: overlay;
-        color: var(--header-text-colour);
-
-        h2,
-        h3 {
-            color: var(--header-text-colour);
-        }
-    }
-
-    // The first &--image or &--content
-    &--main {
+    & > div {
         height: 100%;
+        border: var(--border-width) solid var(--color-border);
+        border-top: none;
+        padding: var(--space);
+    }
+}
 
-        img {
-            width: 100%;
-            height: auto;
-        }
+.dwds-card--dark {
+    border-top-color: var(--color-border-dark);
 
-        &--content {
+    & > div {
+        background-color: var(--color-background-card);
+        // hides the border while preserving the internal spacing
+        border-color: var(--color-background-card);
+    }
+}
 
-            &--body {
-                --body-background-colour: var(--card-white);
+.dwds-card--blue {
+    border-top-color: var(--dbt-light-blue);
+    background-color: transparent;
 
-                padding: var(--space);
-                background-color: var(--body-background-colour);
-            }
-
-        }
-
-        &--footer {
-            padding: 0 var(--space) var(--space) var(--space);
-            align-items: flex-end;
-        }
+    & > div {
+        background-color: rgba(var(--dbt-light-blue-rgb), var(--opacity-soft));
+        // hides the border while preserving the internal spacing
+        border-color: var(--dbt-light-blue);
     }
 }
