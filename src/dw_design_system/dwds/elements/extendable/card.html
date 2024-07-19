@@ -1,14 +1,11 @@
-<div class="dwds-card">
+<div class="dwds-card {% block card_container_classes %}{% endblock card_container_classes %}">
     {% block card_header %}
         <div class="dwds-card--header stack">
-            {% block card_header_subtitle %}
-                <div class="dwds-card--ribbon dwds-card--ribbon--red">Ribbon</div>
-                <p class="dwds-card--subtitle">Subtitle</p>
-            {% endblock card_header_subtitle %}
-
-            {% block card_header_title %}
-                <h3>Title</h3>
-            {% endblock card_header_title %}
+            {% block card_header_content %}
+                {% include "dwds/unsure/ribbon.html" with text="Ribbon" colour="red" %}
+                <p class="dwds-card--header--subtitle">26 June</p>
+                <h3>DBT Connect: John Smith in conversation with Jane Doe</h3>
+            {% endblock card_header_content %}
         </div>
     {% endblock card_header %}
 
@@ -22,18 +19,21 @@
                 {% block card_content %}
                     <div class="dwds-card--main--content--body">
                         {% block card_content_body %}
-                            <div class="dwds-card--ribbon">Ribbon</div>
-                            <h3>Title</h3>
-                            <p>Content</p>
-                            {% comment %} TODO: Create and style meta content {% endcomment %}
+                            {% include "dwds/unsure/ribbon.html" with text="Ribbon" %}
+                            <a href="#">
+                                <h3>A message from the Secretary of State</h3>
+                            </a>
+                            <p>Join John Smith, former SpAd for Jane Doe, at the next DBT Connect event on Wednesday 26 June, 1-2pm.</p>
+                            <a href="#">See event</a>
                         {% endblock card_content_body %}
                     </div>
                 {% endblock card_content %}
 
                 {% block card_footer %}
-                    <div class="dwds-card--main--footer">
+                    <div class="dwds-card--main--footer stack">
                         {% block card_footer_body %}
-                            {% comment %} TODO: Create comments section {% endcomment %}
+                            <span>Added today at 9am</span>
+                            <span>4 Comments</span>
                         {% endblock card_footer_body %}
                     </div>
                 {% endblock card_footer %}

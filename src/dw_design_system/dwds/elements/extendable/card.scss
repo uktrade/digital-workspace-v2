@@ -8,28 +8,6 @@
     overflow: hidden;
     background: var(--card-white);
 
-    &--ribbon {
-        --ribbon-background-blue: var(--dbt-blue);
-        --ribbon-background-red: var(--dbt-red);
-        --ribbon-padding: calc(var(--space) / 2);
-        --ribbon-text-colour: var(--card-white);
-
-        color: var(--ribbon-text-colour);
-        background: var(--ribbon-background-blue);
-        display: inline-block;
-        position: absolute;
-        padding: var(--ribbon-padding);
-
-        --ribbon-left-space: calc(var(--space) + calc(var(--space) / 2));
-
-        margin-left: calc(var(--ribbon-left-space) * -1);
-        padding-left: var(--ribbon-left-space);
-
-        &--red {
-            background: var(--ribbon-background-red);
-        }
-    }
-
     &--header {
         --header-background-colour: var(--dbt-blue);
         --header-text-colour: var(--card-white);
@@ -38,7 +16,12 @@
         align-items: flex-start;
         background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
         background-blend-mode: overlay;
+        font-weight: var(--font-weight-bold);
         color: var(--header-text-colour);
+
+        &--subtitle {
+            font-size: var(--s0);
+        }
 
         h2,
         h3 {
@@ -56,19 +39,29 @@
         }
 
         &--content {
-
             &--body {
                 --body-background-colour: var(--card-white);
 
                 padding: var(--space);
                 background-color: var(--body-background-colour);
+                font-size: var(--s0);
+                line-height: var(--font-lineheight-body);
+
+                a {
+                    color: var(--color-link);
+
+                    h3 {
+                        text-decoration: none;
+                        color: var(--color-link);
+                    }
+                }
             }
 
         }
 
         &--footer {
             padding: 0 var(--space) var(--space) var(--space);
-            align-items: flex-end;
+            color: var(--color-text-secondary);
         }
     }
 }
