@@ -1,21 +1,20 @@
 .dwds-card {
+    --card-white: #fff;
     --border-radius: 6px; // TODO: Change from px to a variable
     --bottom-border-height: var(--border-radius);
-    --ribbon-background-blue: #00285F; // TODO: Change to a variable
-    --ribbon-background-red: #CF102D; // TODO: Change to a variable
-    --ribbon-padding: calc(var(--space) / 2);
-    --ribbon-text-colour: #ffffff; // TODO: Change to a variable
-    --header-background-colour: #00285F; // TODO: Change to a variable
-    --header-text-colour: #ffffff; // TODO: Change to a variable
-    --body-background-colour: #ffffff; // TODO: Change to a variable
 
     border-radius: var(--border-radius);
     border-bottom: var(--bottom-border-height) solid lightgray;
     overflow: hidden;
-    background: #fff; // TODO: Change to a variable
+    background: var(--card-white);
     height: auto;
 
     &--ribbon {
+        --ribbon-background-blue: var(--dbt-blue);
+        --ribbon-background-red: var(--dbt-red);
+        --ribbon-padding: calc(var(--space) / 2);
+        --ribbon-text-colour: var(--card-white);
+
         color: var(--ribbon-text-colour);
         background: var(--ribbon-background-blue);
         display: inline-block;
@@ -32,6 +31,9 @@
     }
 
     &--header {
+        --header-background-colour: var(--dbt-blue);
+        --header-text-colour: var(--card-white);
+
         padding: var(--space);
         align-items: flex-start;
         background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
@@ -56,6 +58,8 @@
         &--content {
 
             &--body {
+                --body-background-colour: var(--card-white);
+
                 padding: var(--space);
                 background-color: var(--body-background-colour);
             }
