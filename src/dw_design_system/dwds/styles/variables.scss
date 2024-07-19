@@ -8,8 +8,9 @@
   // Colour
   --color-heading: var(--dbt-blue);
   --color-text: black;
+  --color-text-secondary: #505A5F;
   --color-text-highlight: #fff;
-  --color-link: var(--dbt-blue);
+  --color-link: var(--dbt-light-blue);
   --color-link-hover: #fff;
   --color-link-active: #fff;
   --color-link-background-active: #fd0; // GDS yellow
@@ -54,7 +55,8 @@
 
   // Typography
   --measure: 70ch;
-  --font-family-primary: "Roboto Flex", sans-serif;
+  // --font-family-primary: "Roboto Flex", sans-serif;
+  --font-family-primary: "Noto Sans", sans-serif;
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-bold: 600;
