@@ -12,7 +12,8 @@
     {% if thumbnail %}
         {% image thumbnail fill-320x180 %}
     {% else %}
-        <img src="{% static '/images/dwds/fallback_image_card.png' %}" alt="Colourful circles on a blue background.">
+        <img src="{% static '/images/dwds/fallback_image_card.png' %}"
+             alt="Colourful circles on a blue background.">
     {% endif %}
 {% endblock card_content_image %}
 
@@ -33,7 +34,9 @@
         <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|naturalday }}</time>
         {% if comment_count > 0 %}
             <p>
-                <img class="comment-icon" src="{% static '/images/dwds/icons/comment_icon.svg' %}" alt="Comment bubble icon.">
+                <img class="comment-icon"
+                     src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+                     alt="Comment bubble icon.">
                 {{ comment_count }} comment{{ comment_count|pluralize }}
             </p>
         {% endif %}

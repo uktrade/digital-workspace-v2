@@ -48,7 +48,7 @@ class Comment(models.Model):
         FieldPanel("news_page"),
         FieldPanel("author"),
         FieldPanel("content"),
-    ]  
+    ]
 
 
 @register_snippet
@@ -180,7 +180,7 @@ class NewsPage(PageWithTopics):
         return super().save(*args, **kwargs)
 
     def get_context(self, request, *args, **kwargs):
-        from news.utils import get_comments, get_comment_count
+        from news.utils import get_comment_count, get_comments
 
         context = super().get_context(request, *args, **kwargs)
         context["comments"] = get_comments(self)
