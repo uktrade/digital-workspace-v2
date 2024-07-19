@@ -6,6 +6,7 @@
         role="banner"
         data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container flex">
+        <!-- logo -->
         <div class="govuk-header__logo govuk-header__logo--ws gov-grid-column-one-third">
             <a href="/" class="govuk-header__link govuk-header__link--homepage">
                 <span class="govuk-header__logotype govuk-header__logotype--ws">
@@ -17,6 +18,7 @@
                 </span>
             </a>
         </div>
+        <!-- app name -->
         <div class="govuk-header__content gov-grid-column-two-thirds">
             <a href="/"
                class="govuk-header__link govuk-header__link--ws govuk-header__service-name govuk-header__service-name--ws">
@@ -27,7 +29,9 @@
                 {% endif %}
             </a>
         </div>
+        <!-- profile -->
         {% include 'includes/profile_panel.html' %}
+        <!-- mobile menu -->
         <button type="button"
                 class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
                 aria-controls="navigation"
@@ -38,9 +42,11 @@
     <div class="nav-and-profile-bar">
         <div class="govuk-width-container flex">
             {% if USER_IS_AUTHENTICATED %}
+                <!-- nav links -->
                 <nav aria-label="Top Level Navigation" class="govuk-header__navigation">
                     {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
                 </nav>
+                <!-- search -->
                 <div class="site-search">
                     {% if not search_url %}
                         {% url 'search:all' as search_url %}
@@ -51,6 +57,7 @@
         </div>
     </div>
 </header>
+<!-- site alert banner -->
 {% if FEATURE_FLAGS.new_homepage %}
 {% else %}
     {% if USER_IS_AUTHENTICATED %}
