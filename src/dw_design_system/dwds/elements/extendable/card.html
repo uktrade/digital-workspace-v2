@@ -1,14 +1,11 @@
-<div class="dwds-card">
+<div class="dwds-card {% block card_container_classes %}{% endblock card_container_classes %}">
     {% block card_header %}
         <div class="dwds-card--header stack">
-            {% block card_header_subtitle %}
+            {% block card_header_content %}
                 {% include "dwds/unsure/ribbon.html" with text="Ribbon" colour="red" %}
                 <p class="dwds-card--header--subtitle">26 June</p>
-            {% endblock card_header_subtitle %}
-
-            {% block card_header_title %}
                 <h3>DBT Connect: John Smith in conversation with Jane Doe</h3>
-            {% endblock card_header_title %}
+            {% endblock card_header_content %}
         </div>
     {% endblock card_header %}
 
