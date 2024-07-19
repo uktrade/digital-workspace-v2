@@ -2,107 +2,58 @@
 {% load render_bundle webpack_static from webpack_loader %}
 {% load site_alert %}
 
-<style>
-    .dwds-header {
-        /* FIXME: temp red */
-        border-bottom: 4px solid red;
-    }
-
-    .dwds-navbar {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-
-        input {
-            width: 100%;
-        }
-    }
-
-    .navbar-brand {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .navbar-menu {
-        display: none;
-    }
-
-    .navbar-menu.is-active {
-        display: block;
-    }
-</style>
-
-<header class="dwds-header">
-    <nav class="dwds-navbar dwds-container dwds">
-        <div class="navbar-brand">
-            <div>
-                Intranet
-            </div>
-            <div>
-                <button class="navbar-burger" data-target="header-nav">open</button>
-            </div>
+<header class="govuk-header govuk-header--ws search-v2"
+        role="banner"
+        data-module="govuk-header">
+    <div class="govuk-header__container govuk-width-container flex">
+        <div class="govuk-header__logo govuk-header__logo--ws gov-grid-column-one-third">
+            <a href="/" class="govuk-header__link govuk-header__link--homepage">
+                <span class="govuk-header__logotype govuk-header__logotype--ws">
+                    <img aria-hidden="true"
+                         src="{% webpack_static 'dbt-logo.png' %}"
+                         srcset="{% webpack_static 'dbt-logo@2x.png' %} 2x"
+                         alt="Department for Business & Trade logo" />
+                    <span class="govuk-visually-hidden">Department for Business & Trade</span>
+                </span>
+            </a>
         </div>
+        <div class="govuk-header__content gov-grid-column-two-thirds">
+            <a href="/"
+               class="govuk-header__link govuk-header__link--ws govuk-header__service-name govuk-header__service-name--ws">
+                {% if FEATURE_FLAGS.new_homepage %}
+                    DBT Intranet
+                {% else %}
+                    Digital Workspace
+                {% endif %}
+            </a>
+        </div>
+        {% include 'includes/profile_panel.html' %}
+        <button type="button"
+                class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
+                aria-controls="navigation"
+                aria-label="Show or hide Top Level Navigation"
+                hidden>Menu</button>
+    </div>
 
-        <div id="header-nav" class="navbar-menu">
-            <div class="navbar-start">
-                <ul>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                </ul>
-            </div>
-            <div class="navbar-end">
-                <div>
-                    <input type="text" placeholder="Search">
+    <div class="nav-and-profile-bar">
+        <div class="govuk-width-container flex">
+            {% if USER_IS_AUTHENTICATED %}
+                <nav aria-label="Top Level Navigation" class="govuk-header__navigation">
+                    {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+                </nav>
+                <div class="site-search">
+                    {% if not search_url %}
+                        {% url 'search:all' as search_url %}
+                    {% endif %}
+                    {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
                 </div>
-                <span>Hi {% lorem 2 w random %}</span>
-                <h3>{% lorem 2 w random %}</h3>
-                <ul>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                </ul>
-                <h3>{% lorem 2 w random %}</h3>
-                <ul>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                </ul>
-                <h3>{% lorem 2 w random %}</h3>
-                <ul>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                    <li><a href="">{% lorem 2 w random %}</a></li>
-                </ul>
-            </div>
+            {% endif %}
         </div>
-    </nav>
+    </div>
 </header>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Get all "navbar-burger" elements
-        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-
-        // Add a click event on each of them
-        $navbarBurgers.forEach( el => {
-            el.addEventListener('click', () => {
-
-                // Get the target from the "data-target" attribute
-                const target = el.dataset.target;
-                const $target = document.getElementById(target);
-
-                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-                el.classList.toggle('is-active');
-                $target.classList.toggle('is-active');
-            });
-        });
-    });
-</script>
+{% if FEATURE_FLAGS.new_homepage %}
+{% else %}
+    {% if USER_IS_AUTHENTICATED %}
+        {% site_alert %}
+    {% endif %}
+{% endif %}
