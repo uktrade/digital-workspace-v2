@@ -14,6 +14,7 @@ class EngagementCardBlock(blocks.StructBlock):
     def get_context(self, value, parent_context=None):
         from content.models import BlogPost
         from news.models import NewsPage
+        from news.utils import get_comment_count
 
         context = parent_context or {}
 
@@ -40,6 +41,7 @@ class EngagementCardBlock(blocks.StructBlock):
             date=page.published_date,
             url=page.url,
             is_highlighted=isinstance(page, NewsPage) or isinstance(page, BlogPost),
+            comment_count=get_comment_count(page)
         )
 
         return context

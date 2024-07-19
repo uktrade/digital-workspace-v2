@@ -48,7 +48,7 @@ class Comment(models.Model):
         FieldPanel("news_page"),
         FieldPanel("author"),
         FieldPanel("content"),
-    ]
+    ]  
 
 
 @register_snippet
@@ -180,17 +180,11 @@ class NewsPage(PageWithTopics):
         return super().save(*args, **kwargs)
 
     def get_context(self, request, *args, **kwargs):
+        from news.utils import get_comments, get_comment_count
+
         context = super().get_context(request, *args, **kwargs)
-
-        comments = Comment.objects.filter(
-            news_page=self,
-            parent_id=None,
-        ).order_by("-posted_date")
-
-        context["comments"] = comments
-        context["comment_count"] = Comment.objects.filter(
-            news_page=self,
-        ).count()
+        context["comments"] = get_comments(self)
+        context["comment_count"] = get_comment_count(self)
 
         categories = NewsCategory.objects.all().order_by("category")
         context["categories"] = categories

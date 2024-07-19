@@ -1,5 +1,5 @@
 {% extends "dwds/elements/extendable/card.html" %}
-{% load wagtailimages_tags %}
+{% load wagtailimages_tags static %}
 
 {% block card_header %}
 {% endblock card_header %}
@@ -10,7 +10,9 @@
 
 {% block card_content_image %}
     {% if thumbnail %}
-        {% image thumbnail fill-196x127 %}
+        {% image thumbnail fill-320x180 %}
+    {% else %}
+        <img src="{% static '/images/dwds/fallback_image_card.png' %}" alt="Colourful circles on a blue background.">
     {% endif %}
 {% endblock card_content_image %}
 
@@ -29,5 +31,8 @@
             <br>
         {% endif %}
         <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j F Y' }}</time>
+        {% if comment_count > 0 %}
+            <p>{{ comment_count }} comments</p>
+        {% endif %}
     </p>
 {% endblock card_footer_body %}
