@@ -1,21 +1,28 @@
 {% extends "dwds/elements/extendable/card.html" %}
 {% load wagtailimages_tags %}
 
-{% block card_classes %}
-    {% if is_highlighted %}dwds-card--dark{% endif %}
-{% endblock card_classes %}
+{% block card_header %}
+{% endblock card_header %}
+
 {% block card_container_classes %}
     dwds-engagement-card
 {% endblock card_container_classes %}
 
-{% block card_content %}
+{% block card_content_image %}
     {% if thumbnail %}
         {% image thumbnail fill-196x127 %}
     {% endif %}
+{% endblock card_content_image %}
+
+{% block card_content_body %}
     <a href="{{ url }}">
         <h3>{{ title }}</h3>
     </a>
+
     {% if excerpt %}<p class="dwds-engagement-card--excerpt">{{ excerpt }}</p>{% endif %}
+{% endblock card_content_body %}
+
+{% block card_footer_body %}
     <p>
         {% if author %}
             <span>{{ author }}</span>
@@ -23,5 +30,4 @@
         {% endif %}
         <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j F Y' }}</time>
     </p>
-
-{% endblock card_content %}
+{% endblock card_footer_body %}
