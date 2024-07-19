@@ -10,17 +10,10 @@
     --body-background-colour: #ffffff; // TODO: Change to a variable
 
     border-radius: var(--border-radius);
+    border-bottom: var(--bottom-border-height) solid lightgray;
     overflow: hidden;
     background: #fff; // TODO: Change to a variable
-
-    // The bottom border
-    &::after {
-        content: "";
-        display: block;
-        width: 100%;
-        height: var(--bottom-border-height);
-        background: lightgray;
-    }
+    height: auto;
 
     &--ribbon {
         color: var(--ribbon-text-colour);
@@ -53,6 +46,8 @@
 
     // The first &--image or &--content
     &--main {
+        height: 100%;
+
         img {
             width: 100%;
             height: auto;
