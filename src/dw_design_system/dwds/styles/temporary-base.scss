@@ -9,6 +9,10 @@
 }
 
 
+.dwds-body {
+    background-color: #E6EBF0;
+}
+
 html,
 body {
     max-inline-size: none;
@@ -57,19 +61,19 @@ body {
         color: var(--color-link);
     }
 
-	a:focus{
-		text-decoration: underline var(--color-link) var(--text-underline-hover);
-		background-color: var(--color-link-background-active);
-	}
+    a:focus {
+        text-decoration: underline var(--color-link) var(--text-underline-hover);
+        background-color: var(--color-link-background-active);
+    }
 
-	a:focus-visible {
-		outline: none;
-	}
+    a:focus-visible {
+        outline: none;
+    }
 }
 
 .dwds {
     .feedback-header {
-        background-color: var(--color-background);
+        background-color: transparent;
         padding-right: 0 !important;
 
         div {
