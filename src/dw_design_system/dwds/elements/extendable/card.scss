@@ -7,7 +7,6 @@
     border-bottom: var(--bottom-border-height) solid lightgray;
     overflow: hidden;
     background: var(--card-white);
-    height: auto;
 
     &--ribbon {
         --ribbon-background-blue: var(--dbt-blue);
@@ -18,6 +17,7 @@
         color: var(--ribbon-text-colour);
         background: var(--ribbon-background-blue);
         display: inline-block;
+        position: absolute;
         padding: var(--ribbon-padding);
 
         --ribbon-left-space: calc(var(--space) + calc(var(--space) / 2));
