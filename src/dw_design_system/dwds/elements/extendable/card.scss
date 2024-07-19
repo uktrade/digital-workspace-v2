@@ -17,6 +17,7 @@
         color: var(--ribbon-text-colour);
         background: var(--ribbon-background-blue);
         display: inline-block;
+        position: absolute;
         padding: var(--ribbon-padding);
 
         --ribbon-left-space: calc(var(--space) + calc(var(--space) / 2));
