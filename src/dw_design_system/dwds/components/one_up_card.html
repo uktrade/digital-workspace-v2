@@ -1,21 +1,40 @@
 {% extends "dwds/elements/extendable/card.html" %}
 {% load wagtailimages_tags %}
+
 {% block card_container_classes %}
     dwds-one-up-card
 {% endblock card_container_classes %}
-{% block card_content %}
-    <div class="switcher">
-        <div class="stack">
-            <a href="{{ url }}">
-                <h2>{{ title }}</h2>
-            </a>
-            {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
-        </div>
-        <div class="stack">
-            {% if thumbnail %}
-                {% image thumbnail fill-300x200 %}
-            {% endif %}
+
+{% block card_header %}
+{% endblock card_header %}
+
+{% block card_main %}
+    <div class="dwds-card--main">
+        {% block card_content_image %}
+        {% endblock card_content_image %}
+
+        <div class="dwds-card--main--content">
+            {% block card_content %}
+                <div class="dwds-card--main--content--body">
+                    {% block card_content_body %}
+                        <a href="{{ url }}">
+                            <h2>{{ title }}</h2>
+                        </a>
+                        {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
+                    {% endblock card_content_body %}
+                </div>
+                {% if thumbnail %}
+                    {% image thumbnail fill-300x200 %}
+                {% endif %}
+            {% endblock card_content %}
+
+            {% block card_footer %}
+                <div class="dwds-card--main--footer">
+                    {% block card_footer_body %}
+                        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j F Y' }}</time>
+                    {% endblock card_footer_body %}
+                </div>
+            {% endblock card_footer %}
         </div>
     </div>
-    <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j F Y' }}</time>
-{% endblock card_content %}
+{% endblock card_main %}
