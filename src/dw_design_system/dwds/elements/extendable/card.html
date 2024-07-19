@@ -1,9 +1,43 @@
 <div class="dwds-card">
     {% block card_header %}
-        {% include "dwds/elements/extendable/includes/card-header.html" %}
+        <div class="dwds-card--header stack">
+            {% block card_header_subtitle %}
+                <div class="dwds-card--ribbon dwds-card--ribbon--red">Ribbon</div>
+                <p class="dwds-card--subtitle">Subtitle</p>
+            {% endblock card_header_subtitle %}
+
+            {% block card_header_title %}
+                <h3>Title</h3>
+            {% endblock card_header_title %}
+        </div>
     {% endblock card_header %}
 
     {% block card_main %}
-        <div class="dwds-card--main">{% include "dwds/elements/extendable/includes/card-main.html" %}</div>
+        <div class="dwds-card--main">
+            {% block card_content_image %}
+                <img src="https://via.placeholder.com/196x127" alt="image">
+            {% endblock card_content_image %}
+
+            <div class="dwds-card--main--content">
+                {% block card_content %}
+                    <div class="dwds-card--main--content--body">
+                        {% block card_content_body %}
+                            <div class="dwds-card--ribbon">Ribbon</div>
+                            <h3>Title</h3>
+                            <p>Content</p>
+                            {% comment %} TODO: Create and style meta content {% endcomment %}
+                        {% endblock card_content_body %}
+                    </div>
+                {% endblock card_content %}
+
+                {% block card_footer %}
+                    <div class="dwds-card--main--footer">
+                        {% block card_footer_body %}
+                            {% comment %} TODO: Create comments section {% endcomment %}
+                        {% endblock card_footer_body %}
+                    </div>
+                {% endblock card_footer %}
+            </div>
+        </div>
     {% endblock card_main %}
 </div>

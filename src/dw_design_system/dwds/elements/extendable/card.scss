@@ -1,7 +1,13 @@
 .dwds-card {
     --border-radius: 6px; // TODO: Change from px to a variable
     --bottom-border-height: var(--border-radius);
-    --header-background-colour: blue; // TODO: Change to a variable
+    --ribbon-background-blue: #00285F; // TODO: Change to a variable
+    --ribbon-background-red: #CF102D; // TODO: Change to a variable
+    --ribbon-padding: calc(var(--space) / 2);
+    --ribbon-text-colour: #ffffff; // TODO: Change to a variable
+    --header-background-colour: #00285F; // TODO: Change to a variable
+    --header-text-colour: #ffffff; // TODO: Change to a variable
+    --body-background-colour: #ffffff; // TODO: Change to a variable
 
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -16,12 +22,32 @@
         background: lightgray;
     }
 
+    &--ribbon {
+        color: var(--ribbon-text-colour);
+        background: var(--ribbon-background-blue);
+        display: inline-block;
+        padding: var(--ribbon-padding);
 
+        --ribbon-left-space: calc(var(--space) + calc(var(--space) / 2));
+
+        margin-left: calc(var(--ribbon-left-space) * -1);
+        padding-left: var(--ribbon-left-space);
+
+        &--red {
+            background: var(--ribbon-background-red);
+        }
+    }
 
     &--header {
         padding: var(--space);
         align-items: flex-start;
         background: var(--header-background-colour);
+        color: var(--header-text-colour);
+
+        h2,
+        h3 {
+            color: var(--header-text-colour);
+        }
     }
 
     // The first &--image or &--content
@@ -33,9 +59,9 @@
 
         &--content {
 
-
             &--body {
                 padding: var(--space);
+                background-color: var(--body-background-colour);
             }
 
         }
