@@ -2,6 +2,7 @@ import json
 
 import requests
 from mohawk import Sender
+from pprint import pprint
 
 
 BASE_URL = "http://localhost:8000"
@@ -36,7 +37,7 @@ while True:
     )
 
     data = response.json()
-    print(json.dumps(data))
+    pprint(data)
 
     # uncomment to only run once
     # break
