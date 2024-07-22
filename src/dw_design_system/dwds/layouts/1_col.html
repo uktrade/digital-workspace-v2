@@ -1,0 +1,16 @@
+{% extends "dwds/layouts/base.html" %}
+
+{% block content %}
+    <div class="primary-content">
+        {% block pre_primary_content %}
+            {{ pre_primary_content }}
+        {% endblock pre_primary_content %}
+        {% block primary_content %}
+            {{ primary_content }}
+        {% endblock primary_content %}
+        {% block post_primary_content %}
+            {{ post_primary_content }}
+            {% include 'includes/tag_set.html' %}
+        {% endblock post_primary_content %}
+    </div>
+{% endblock content %}
