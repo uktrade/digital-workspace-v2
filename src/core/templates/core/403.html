@@ -1,10 +1,15 @@
 {% extends "1_col_content.html" %}
 
-{% block title %}Authentication error{% endblock %}
+{% block title %}
+    Authentication error
+{% endblock title %}
 
-{% block content %}
+{% block page_title %}
     <h1 class="govuk-heading-m">You are not authorised to view this content</h1>
+{% endblock page_title %}
+
+{% block page_content %}
     <p class="govuk-body">
         You can browse from the <a class="govuk-link" href="/">homepage</a> or use the search box above to find the information you need.
     </p>
-{% endblock %}
+{% endblock page_content %}
