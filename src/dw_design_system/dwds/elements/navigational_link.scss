@@ -1,4 +1,4 @@
-.dwds-navigational-link{
+.dwds-navigational-link {
     display: flex;
     justify-content: space-between;
     color: var(--color-link);
@@ -11,16 +11,12 @@
     gap: var(--space);
 }
 
-.dwds-navigational-link::after{
-    content: "\002192";
-}
-
-.dwds-navigational-link:hover{
+.dwds-navigational-link:hover {
     text-decoration-line: underline;
     text-decoration-color: var(--color-link);
 }
 
-.dwds-navigational-link:active{
+.dwds-navigational-link:active {
     text-decoration-line: underline;
     text-decoration-color: var(--color-link);
     background-color: var(--color-link-background-active);
