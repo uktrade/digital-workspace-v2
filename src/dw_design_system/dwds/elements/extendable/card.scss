@@ -8,7 +8,7 @@
     overflow: hidden;
     background: var(--card-white);
 
-    &--header {
+    .card-header {
         --header-background-colour: var(--dbt-blue);
         --header-text-colour: var(--card-white);
 
@@ -18,7 +18,7 @@
         font-weight: var(--font-weight-bold);
         color: var(--header-text-colour);
 
-        &--subtitle {
+        .card-subtitle {
             font-size: var(--s0);
         }
 
@@ -28,8 +28,7 @@
         }
     }
 
-    // The first &--image or &--content
-    &--main {
+    .card-main {
         height: 100%;
 
         img {
@@ -37,8 +36,8 @@
             height: auto;
         }
 
-        &--content {
-            &--body {
+        .card-content {
+            .card-body {
                 --body-background-colour: var(--card-white);
 
                 padding: var(--space);
@@ -58,7 +57,7 @@
 
         }
 
-        &--footer {
+        .card-footer {
             padding: 0 var(--space) var(--space) var(--space);
             color: var(--color-text-secondary);
         }
