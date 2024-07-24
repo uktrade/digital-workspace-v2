@@ -1,8 +1,6 @@
 .dwds-link-list {
-    h2 {
-        font-size: var(--s1);
-        font-weight: var(--font-weight-normal);
-        line-height: var(--font-lineheight-headings);
+    p {
+        margin: 0;
     }
 
     ul {
@@ -11,26 +9,26 @@
         padding: 0;
         max-inline-size: 100%;
         column-width: 25ch;
-    }
 
-    li {
-        text-align: start;
-        padding-top: var(--s-2);
+        li {
+            text-align: start;
+            padding-top: var(--s-2);
 
-        a {
-            color: var(--color-link);
-        }
+            a {
+                color: var(--color-link);
+            }
 
-        a:active {
-            background-color: var(--color-link-background-active);
-        }
+            a:active {
+                background-color: var(--color-link-background-active);
+            }
 
-        a:visited {
-            color: var(--color-link-visited);
-        }
+            a:visited {
+                color: var(--color-link-visited);
+            }
 
-        a:hover {
-            text-decoration-thickness: var(--text-underline-hover);
+            a:hover {
+                text-decoration-thickness: var(--text-underline-hover);
+            }
         }
     }
 }
