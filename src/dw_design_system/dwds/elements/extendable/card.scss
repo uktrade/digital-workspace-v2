@@ -1,7 +1,7 @@
 .dwds-card {
     --card-white: #fff;
-    --border-radius: 6px; // TODO: Change from px to a variable
-    --bottom-border-height: var(--border-radius);
+    --border-radius: var(--s-3);
+    --bottom-border-height: var(--s-3);
 
     border-radius: var(--border-radius);
     box-shadow: 0 var(--bottom-border-height) 0 rgba(0, 0, 0, 0.2);
