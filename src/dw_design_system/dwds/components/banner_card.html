@@ -2,7 +2,11 @@
 
 {% block card_container_classes %}
     dwds-banner-card
-    {% if alert %}banner-card-red{% endif %}
+    {% if alert %}
+        dwds-card-red
+    {% else %}
+        dwds-card-blue
+    {% endif %}
 {% endblock %}
 
 {% block card_header %}

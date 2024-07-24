@@ -1,11 +1,5 @@
 .dwds-banner-card {
-    --banner-card-background-colour: var(--dbt-blue);
-
     box-shadow: none !important;
-
-    .card-body {
-        background-color: var(--banner-card-background-colour) !important;
-    }
 
     h3 {
         color: var(--color-text-highlight);
@@ -27,13 +21,5 @@
             margin: 0;
             color: var(--color-text-highlight);
         }
-    }
-}
-
-.banner-card-red {
-    --banner-card-alert-background-colour: var(--dbt-red);
-
-    .card-body {
-        background-color: var(--banner-card-alert-background-colour) !important;
     }
 }

@@ -63,3 +63,15 @@
         }
     }
 }
+
+.dwds-card-blue {
+    .card-body {
+        background-color: var(--dbt-blue) !important;
+    }
+}
+
+.dwds-card-red {
+    .card-body {
+        background-color: var(--dbt-red) !important;
+    }
+}
