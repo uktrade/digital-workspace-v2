@@ -9,13 +9,13 @@
 {% endblock card_header %}
 
 {% block card_main %}
-    <div class="dwds-card--main">
+    <div class="card-main">
         {% block card_content_image %}
         {% endblock card_content_image %}
 
-        <div class="dwds-card--main--content">
+        <div class="card-content">
             {% block card_content %}
-                <div class="dwds-card--main--content--body">
+                <div class="card-body">
                     {% block card_content_body %}
                         <a href="{{ url }}">
                             <h2>{{ title }}</h2>
@@ -27,7 +27,7 @@
             {% endblock card_content %}
 
             {% block card_footer %}
-            <div class="dwds-card--main--footer stack">
+            <div class="card-footer stack">
                 <p>
                     <img class="comment_icon"
                     src="{% static '/images/dwds/icons/comment_icon.svg' %}"

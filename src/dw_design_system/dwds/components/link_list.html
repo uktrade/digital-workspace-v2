@@ -4,14 +4,14 @@
     dwds-link-list
 {% endblock card_container_classes %}
 
-{% block card_header %}
-{% endblock card_header %}
+{% block card_header_content %}
+    <h3>{{ title }}</h3>
+{% endblock card_header_content %}
 
 {% block card_content_image %}
 {% endblock card_content_image %}
 
 {% block card_content_body %}
-    <h3>{{ title }}</h3>
     {% if description %}<p>{{ description }}</p>{% endif %}
     <ul>
         {% for item in list %}
