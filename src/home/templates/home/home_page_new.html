@@ -29,7 +29,7 @@
         <section>
             <div class="stack">
                 {% if news_items %}
-                    {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url date=news_items.0.last_published_at %}
+                    {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url comment_count=news_items.0.comment_set.count %}
                 {% endif %}
 
                 <div class="grid grid-cards home-news-items">

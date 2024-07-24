@@ -1,8 +1,8 @@
 {% extends "dwds/elements/extendable/card.html" %}
-{% load wagtailimages_tags %}
+{% load wagtailimages_tags static humanize %}
 
 {% block card_container_classes %}
-    dwds-one-up-card
+    dwds-one-up-card switcher
 {% endblock card_container_classes %}
 
 {% block card_header %}
@@ -23,18 +23,24 @@
                         {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
                     {% endblock card_content_body %}
                 </div>
-                {% if thumbnail %}
-                    {% image thumbnail fill-300x200 %}
-                {% endif %}
+                   
             {% endblock card_content %}
 
             {% block card_footer %}
-                <div class="dwds-card--main--footer">
-                    {% block card_footer_body %}
-                        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j F Y' }}</time>
-                    {% endblock card_footer_body %}
-                </div>
+            <div class="dwds-card--main--footer stack">
+                <p>
+                    <img class="comment_icon"
+                    src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+                    alt="Comment bubble icon.">
+                    <span>{{ comment_count }} comment{{ comment_count|pluralize }}</span>
+                </p>
+            </div>       
             {% endblock card_footer %}
         </div>
+    </div>
+    <div class="dwds-card--image">
+        {% if thumbnail %}
+            {% image thumbnail fill-300x200 %}
+        {% endif %}
     </div>
 {% endblock card_main %}

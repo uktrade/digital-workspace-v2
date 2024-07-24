@@ -196,7 +196,7 @@ class NewsPage(PageWithTopics):
         context["categories"] = categories
 
         return context
-
+    
     def serve(self, request, *args, **kwargs):
         # Add comment before calling get_context, so it's included
         if "comment" in request.POST:

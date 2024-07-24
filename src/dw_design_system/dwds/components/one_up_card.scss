@@ -7,7 +7,7 @@
 
         h2{
             margin-top: 0;
-            font-size: var(--s4);
+            color: var(--dbt-light-blue);
         }
 
         &:hover, &:active {
@@ -21,12 +21,17 @@
     }
 
     p{
-        color: var(--dbt-light-blue)
+        img{
+            width: var(--s0);
+            height: var(--s0);
+        }
     }
+
+   
     
-    img {
-        height: auto;
-        width: 100%;
-        border: var(--border-width) solid var(--color-border);
+    .dwds-card--secondary{
+        img {
+            border: var(--border-width) solid var(--color-border);
+        }
     }
 }
