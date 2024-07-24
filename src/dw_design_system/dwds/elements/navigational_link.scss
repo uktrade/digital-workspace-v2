@@ -9,6 +9,17 @@
     text-decoration: none;
     align-items: baseline;
     gap: var(--space);
+
+    svg {
+        height: var(--font-lineheight-headings);
+        width: var(--s1);
+
+        align-self: flex-end;
+
+        path {
+            fill: currentColor;
+        }
+    }
 }
 
 .dwds-navigational-link:hover {
