@@ -1,15 +1,15 @@
 .dwds-banner-card {
     --banner-card-background-colour: var(--dbt-blue);
 
-    &--red {
+    .banner-card-red {
         --banner-card-background-colour: var(--dbt-red);
     }
 
     box-shadow: none !important;
 
-    .dwds-card--main {
-        &--content {
-            &--body {
+    .card-main {
+        .card-content {
+            .card-body {
                 background-color: var(--banner-card-background-colour);
             }
         }
