@@ -8,6 +8,27 @@
     overflow: hidden;
     background: var(--card-white);
 
+
+    &.dwds-card-blue {
+        .card-main {
+            .card-content {
+                .card-body {
+                    background-color: var(--dbt-blue);
+                }
+            }
+        }
+    }
+
+    &.dwds-card-red {
+        .card-main {
+            .card-content {
+                .card-body {
+                    background-color: var(--dbt-red);
+                }
+            }
+        }
+    }
+
     .card-header {
         --header-background-colour: var(--dbt-blue);
         --header-text-colour: var(--card-white);
@@ -54,24 +75,11 @@
                     }
                 }
             }
-
         }
 
         .card-footer {
             padding: 0 var(--space) var(--space) var(--space);
             color: var(--color-text-secondary);
         }
-    }
-}
-
-.dwds-card-blue {
-    .card-body {
-        background-color: var(--dbt-blue) !important;
-    }
-}
-
-.dwds-card-red {
-    .card-body {
-        background-color: var(--dbt-red) !important;
     }
 }
