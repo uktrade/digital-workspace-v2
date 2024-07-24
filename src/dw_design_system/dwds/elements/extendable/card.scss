@@ -1,12 +1,33 @@
 .dwds-card {
     --card-white: #fff;
-    --border-radius: 6px; // TODO: Change from px to a variable
-    --bottom-border-height: var(--border-radius);
+    --border-radius: var(--s-3);
+    --bottom-border-height: var(--s-3);
 
     border-radius: var(--border-radius);
     box-shadow: 0 var(--bottom-border-height) 0 rgba(0, 0, 0, 0.2);
     overflow: hidden;
     background: var(--card-white);
+
+
+    &.dwds-card-blue {
+        .card-main {
+            .card-content {
+                .card-body {
+                    --body-background-colour: var(--dbt-blue);
+                }
+            }
+        }
+    }
+
+    &.dwds-card-red {
+        .card-main {
+            .card-content {
+                .card-body {
+                    --body-background-colour: var(--dbt-red);
+                }
+            }
+        }
+    }
 
     .card-header {
         --header-background-colour: var(--dbt-blue);
@@ -54,7 +75,6 @@
                     }
                 }
             }
-
         }
 
         .card-footer {
