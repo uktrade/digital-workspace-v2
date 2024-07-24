@@ -13,7 +13,7 @@
         .card-main {
             .card-content {
                 .card-body {
-                    background-color: var(--dbt-blue);
+                    --body-background-colour: var(--dbt-blue);
                 }
             }
         }
@@ -23,7 +23,7 @@
         .card-main {
             .card-content {
                 .card-body {
-                    background-color: var(--dbt-red);
+                    --body-background-colour: var(--dbt-red);
                 }
             }
         }
