@@ -4,35 +4,35 @@
 {% block card_container_classes %}
     dwds-one-up-card switcher
 {% endblock card_container_classes %}
-               
+ 
 {% block card_header %}
 {% endblock card_header %}
 
 {% block card_main %}
     <div class="card-main">
-            <div class="card-content">
+        <div class="card-content">
             {% block card_content %}
                 <div class="card-body">
                     {% block card_content_body %}
-                    {% if ribbon_text %}
-                        {% include "dwds/unsure/ribbon.html" with text=ribbon_text colour="blue" %}
-                    {% endif %}
+                        {% if ribbon_text %}
+                            {% include "dwds/unsure/ribbon.html" with text=ribbon_text colour="blue" %}
+                        {% endif %}
                         <a href="{{ url }}">
                             <h2>{{ title }}</h2>
                         </a>
                         {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
                     {% endblock card_content_body %}
                 </div>
-                   
+ 
             {% endblock card_content %}
 
             {% block card_footer %}
                 <p>
                     <img class="comment_icon"
-                    src="{% static '/images/dwds/icons/comment_icon.svg' %}"
-                    alt="Comment bubble icon.">
+                         src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+                         alt="Comment bubble icon.">
                     <span>{{ comment_count }} comment{{ comment_count|pluralize }}</span>
-                </p>    
+                </p>
             {% endblock card_footer %}
         </div>
     </div>
