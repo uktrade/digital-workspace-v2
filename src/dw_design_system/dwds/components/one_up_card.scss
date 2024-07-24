@@ -20,18 +20,17 @@
         }
     }
 
-    p{
-        img{
-            width: var(--s0);
-            height: var(--s0);
+        p{
+            .comment_icon{
+                width: var(--s0) !important;
+                height: var(--s0) !important;
+            }
         }
-    }
-
    
-    
-    .dwds-card--secondary{
+    .dwds-card--image{
         img {
-            border: var(--border-width) solid var(--color-border);
+            width: 100%;
+            height: 100%;
         }
     }
 }

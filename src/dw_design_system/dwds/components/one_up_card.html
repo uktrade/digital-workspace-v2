@@ -27,20 +27,18 @@
             {% endblock card_content %}
 
             {% block card_footer %}
-            <div class="card-footer stack">
                 <p>
                     <img class="comment_icon"
                     src="{% static '/images/dwds/icons/comment_icon.svg' %}"
                     alt="Comment bubble icon.">
                     <span>{{ comment_count }} comment{{ comment_count|pluralize }}</span>
-                </p>
-            </div>       
+                </p>    
             {% endblock card_footer %}
         </div>
     </div>
     <div class="dwds-card--image">
         {% if thumbnail %}
-            {% image thumbnail fill-300x200 %}
+            {% image thumbnail fill-320x200 %}
         {% endif %}
     </div>
 {% endblock card_main %}
