@@ -8,18 +8,17 @@
     overflow: hidden;
     background: var(--card-white);
 
-    &--header {
+    .card-header {
         --header-background-colour: var(--dbt-blue);
         --header-text-colour: var(--card-white);
 
         padding: var(--space);
         align-items: flex-start;
         background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
-        background-blend-mode: overlay;
         font-weight: var(--font-weight-bold);
         color: var(--header-text-colour);
 
-        &--subtitle {
+        .card-subtitle {
             font-size: var(--s0);
         }
 
@@ -29,8 +28,7 @@
         }
     }
 
-    // The first &--image or &--content
-    &--main {
+    .card-main {
         height: 100%;
 
         img {
@@ -38,8 +36,8 @@
             height: auto;
         }
 
-        &--content {
-            &--body {
+        .card-content {
+            .card-body {
                 --body-background-colour: var(--card-white);
 
                 padding: var(--space);
@@ -59,7 +57,7 @@
 
         }
 
-        &--footer {
+        .card-footer {
             padding: 0 var(--space) var(--space) var(--space);
             color: var(--color-text-secondary);
         }

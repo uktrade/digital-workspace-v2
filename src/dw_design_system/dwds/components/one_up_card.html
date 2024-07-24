@@ -9,13 +9,13 @@
 {% endblock card_header %}
 
 {% block card_main %}
-    <div class="dwds-card--main">
+    <div class="card-main">
         {% block card_content_image %}
         {% endblock card_content_image %}
 
-        <div class="dwds-card--main--content">
+        <div class="card-content">
             {% block card_content %}
-                <div class="dwds-card--main--content--body">
+                <div class="card-body">
                     {% block card_content_body %}
                         <a href="{{ url }}">
                             <h2>{{ title }}</h2>
@@ -29,7 +29,7 @@
             {% endblock card_content %}
 
             {% block card_footer %}
-                <div class="dwds-card--main--footer">
+                <div class="card-footer">
                     {% block card_footer_body %}
                         <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|date:'j F Y' }}</time>
                     {% endblock card_footer_body %}

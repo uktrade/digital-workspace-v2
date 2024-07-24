@@ -13,22 +13,23 @@
     font-size: var(--ribbon-text-height);
     font-weight: var(--font-weight-bold);
 
-    &--main,
-    &--spacer {
+    .ribbon-main,
+    .ribbon-spacer {
         // max-height: var(--ribbon-height);
         padding: var(--ribbon-padding) var(--ribbon-padding-right) var(--ribbon-padding) var(--ribbon-left-space);
         margin-left: calc(var(--ribbon-left-space) * -1);
 
     }
 
-    &--main {
+    .ribbon-main {
         margin-top: calc(var(--ribbon-height) * -1);
         color: var(--ribbon-text-colour);
         background: var(--ribbon-background-blue);
         position: absolute;
 
-        &--red {
-            background: var(--ribbon-background-red);
-        }
+    }
+
+    .ribbon-red {
+        background: var(--ribbon-background-red);
     }
 }
