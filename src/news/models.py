@@ -179,13 +179,22 @@ class NewsPage(PageWithTopics):
 
         return super().save(*args, **kwargs)
 
+    def get_comment_count(self):
+        return Comment.objects.filter(
+            news_page=self,
+        ).count()
+
+    def get_comments(self):
+        return Comment.objects.filter(
+            news_page=self,
+            parent_id=None,
+        ).order_by("-posted_date")
+
     def get_context(self, request, *args, **kwargs):
-        from news.utils import get_comment_count, get_comments
 
         context = super().get_context(request, *args, **kwargs)
-        context["comments"] = get_comments(self)
-        context["comment_count"] = get_comment_count(self)
-
+        context["comments"] = self.get_comments()
+        context["comment_count"] = self.get_comment_count()
         categories = NewsCategory.objects.all().order_by("category")
         context["categories"] = categories
 

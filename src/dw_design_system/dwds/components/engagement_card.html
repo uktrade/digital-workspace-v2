@@ -31,14 +31,25 @@
             <span>{{ author }}</span>
             <br>
         {% endif %}
-        <time datetime="{{ date|date:'Y-m-d H:i' }}">{{ date|naturalday }}</time>
+        {% if date|naturalday == "today" or date|naturalday == "yesterday" %}
+            <time>
+                Added {{ date|naturalday }}
+                at {{ date|time:'H:i a' }}
+            </time>
+        {% else %}
+            <time datetime="{{ date|date:'Y-m-d H:i' }}">
+                {{ date }}
+            </time>
+        {% endif %}
+
         {% if comment_count > 0 %}
-            <p>
+            <br>
+            <span>
                 <img class="comment-icon"
                      src="{% static '/images/dwds/icons/comment_icon.svg' %}"
                      alt="Comment bubble icon.">
                 {{ comment_count }} comment{{ comment_count|pluralize }}
-            </p>
+            </span>
         {% endif %}
     </p>
 {% endblock card_footer_body %}
