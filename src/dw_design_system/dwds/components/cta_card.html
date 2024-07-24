@@ -9,7 +9,7 @@
 {% endblock card_content_image %}
 
 {% block card_content_body %}
-    {% include '../elements/navigational_link.html' with url=url text=title %}
+    {% include 'dwds/elements/navigational_link.html' with url=url text=title %}
     {% if description %}<p>{{ description }}</p>{% endif %}
 {% endblock card_content_body %}
 
