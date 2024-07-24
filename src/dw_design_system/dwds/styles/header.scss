@@ -1,5 +1,44 @@
 // FIXME: Where should these styles live in the new design system?
 
+.dwds-header-container {
+    border-bottom: 4px solid var(--dbt-red);
+}
+
 .dwds-header {
-    
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    grid-template-rows: min-content min-content;
+    grid-template-areas:
+        "logo top"
+        "logo bottom";
+    align-items: center;
+    gap: var(--s-4);
+    padding: var(--s-4) 0;
+
+    &-logo {
+        grid-area: logo;
+        margin-right: 1rem;
+    }
+
+    &-top {
+        grid-area: top;
+
+        display: flex;
+        align-items: center;
+    }
+
+    &-bottom {
+        grid-area: bottom;
+
+        display: flex;
+        align-items: center;
+    }
+
+    &-app-name {
+        flex-grow: 1;
+    }
+
+    &-nav-links {
+        flex-grow: 1;
+    }
 }
