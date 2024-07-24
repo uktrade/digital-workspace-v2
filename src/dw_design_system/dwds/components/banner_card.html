@@ -1,6 +1,13 @@
 {% extends "dwds/elements/extendable/card.html" %}
 
-{% block card_container_classes %}dwds-banner-card{% endblock %}
+{% block card_container_classes %}
+    dwds-banner-card
+    {% if alert %}
+        dwds-card-red
+    {% else %}
+        dwds-card-blue
+    {% endif %}
+{% endblock %}
 
 {% block card_header %}
 {% endblock card_header %}

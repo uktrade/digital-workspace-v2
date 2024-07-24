@@ -1,4 +1,6 @@
-.dwds-banner-card {
+.dwds-card.dwds-banner-card {
+    --bottom-border-height: 0px;
+
     h3 {
         color: var(--color-text-highlight);
         font-size: var(--s1);
