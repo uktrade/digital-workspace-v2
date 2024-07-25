@@ -10,21 +10,19 @@
                 <a href="/" class="govuk-header__link govuk-header__link--homepage">
                     <span class="govuk-header__logotype govuk-header__logotype--ws">
                         <img aria-hidden="true"
-                                src="{% webpack_static 'dbt-logo.png' %}"
-                                srcset="{% webpack_static 'dbt-logo@2x.png' %} 2x"
-                                alt="Department for Business & Trade logo" />
+                             src="{% webpack_static 'dbt-logo.png' %}"
+                             srcset="{% webpack_static 'dbt-logo@2x.png' %} 2x"
+                             alt="Department for Business & Trade logo" />
                         <span class="govuk-visually-hidden">Department for Business & Trade</span>
                     </span>
                 </a>
             </div>
-        
+
             <!-- top row -->
             <div class="dwds-header-top">
                 <!-- app name -->
                 <div class="dwds-header-app-name">
-                    <a href="/" class="">
-                        DBT Intranet
-                    </a>
+                    <a href="/" class="">DBT Intranet</a>
                 </div>
                 <!-- profile -->
                 {% include 'includes/profile_panel.html' %}
@@ -35,7 +33,7 @@
                         aria-label="Show or hide Top Level Navigation"
                         hidden>Menu</button>
             </div>
-        
+
             <!-- bottom row -->
             <div class="dwds-header-bottom">
                 {% if USER_IS_AUTHENTICATED %}

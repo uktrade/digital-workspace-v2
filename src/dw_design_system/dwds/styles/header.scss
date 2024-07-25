@@ -36,6 +36,12 @@
 
     &-app-name {
         flex-grow: 1;
+        a {
+            color: var(--dbt-light-blue-new-intranet);
+            font-size: var(--s1);
+            font-weight: var(--font-weight-bold);
+            text-decoration: none;
+        }
     }
 
     &-nav-links {
