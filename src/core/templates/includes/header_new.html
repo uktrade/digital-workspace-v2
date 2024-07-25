@@ -25,7 +25,7 @@
                     <a href="/" class="">DBT Intranet</a>
                 </div>
                 <!-- profile -->
-                {% include 'includes/profile_panel.html' %}
+                {% include 'includes/profile_panel_new.html' %}
                 <!-- mobile menu -->
                 <button type="button"
                         class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
@@ -39,7 +39,7 @@
                 {% if USER_IS_AUTHENTICATED %}
                     <!-- nav links -->
                     <nav aria-label="Top Level Navigation" class="dwds-header-nav-links">
-                        {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+                        {% main_menu max_levels=1 template="menus/main_menu_new.html" apply_active_classes=True %}
                     </nav>
                     <!-- search panel -->
                     <div class="dwds-header-search">

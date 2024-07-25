@@ -37,7 +37,7 @@
     &-app-name {
         flex-grow: 1;
         a {
-            color: var(--dbt-light-blue-new-intranet);
+            color: #144E81;
             font-size: var(--s1);
             font-weight: var(--font-weight-bold);
             text-decoration: none;
@@ -46,5 +46,22 @@
 
     &-nav-links {
         flex-grow: 1;
+    }
+
+    &-nav-ul {
+        display: flex;
+        gap: var(--s1);
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        a {
+            text-decoration: none;
+            color: #144E81;
+            font-weight: var(--font-weight-bold);
+        }
+    }
+
+    &-search {
+        height: min-content;
     }
 }
