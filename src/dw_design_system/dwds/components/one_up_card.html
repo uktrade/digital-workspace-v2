@@ -2,14 +2,14 @@
 {% load wagtailimages_tags static humanize %}
 
 {% block card_container_classes %}
-    dwds-one-up-card switcher
+    dwds-one-up-card
 {% endblock card_container_classes %}
  
 {% block card_header %}
 {% endblock card_header %}
 
 {% block card_main %}
-    <div class="card-main">
+    <div class="card-main switcher">
         <div class="card-content">
             {% block card_content %}
                 <div class="card-body">
@@ -31,14 +31,14 @@
                     <img class="comment_icon"
                          src="{% static '/images/dwds/icons/comment_icon.svg' %}"
                          alt="Comment bubble icon.">
-                    <span>{{ comment_count }} comment{{ comment_count|pluralize }}</span>
+                    <span>{{ comment_count }} Comment{{ comment_count|pluralize }}</span>
                 </p>
             {% endblock card_footer %}
         </div>
-    </div>
-    <div class="dwds-card--image">
-        {% if thumbnail %}
-            {% image thumbnail fill-320x200 %}
-        {% endif %}
+        <div class="dwds-card--image">
+            {% if thumbnail %}
+                {% image thumbnail fill-320x200 %}
+            {% endif %}
+        </div>
     </div>
 {% endblock card_main %}

@@ -1,7 +1,22 @@
+@media only screen and (max-width: 768px) {
+    .card-content{
+        order: 1;
+    }
+    .dwds-card--image{
+        order: 0;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-content{
+        order: unset;
+    }
+    .dwds-card--image{
+        order: unset;
+    }
+}
+
 .dwds-one-up-card {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    
     a {
         text-decoration: none;
 
@@ -22,15 +37,16 @@
 
         p{
             .comment_icon{
-                width: var(--s0) !important;
-                height: var(--s0) !important;
+                width: var(--s1) !important;
+                height: var(--s1) !important;
             }
         }
    
     .dwds-card--image{
         img {
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: 100% !important;
+            vertical-align: text-bottom;
         }
     }
 }
