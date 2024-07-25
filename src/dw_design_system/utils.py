@@ -22,6 +22,7 @@ def get_components():
             "name": "Banner Card",
             "template": "dwds/components/banner_card.html",
             "context": {
+                "alert": False,
                 "link": "https://www.gov.uk",
                 "text": "This is a banner card for GOV.UK",
             },
