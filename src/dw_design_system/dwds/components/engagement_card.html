@@ -31,13 +31,14 @@
             <span>{{ author }}</span>
             <br>
         {% endif %}
-        {% if date|naturalday == "today" or date|naturalday == "yesterday" %}
+
+        {% if date|naturalday in 'yesterday, today' %}
             <time>
                 Added {{ date|naturalday }}
                 at {{ date|time:'H:i a' }}
             </time>
         {% else %}
-            <time datetime="{{ date|date:'Y-m-d H:i' }}">
+            <time>
                 {{ date }}
             </time>
         {% endif %}
