@@ -1,6 +1,4 @@
 .dwds-engagement-card {
-    font-size: var(--s0);
-
     a {
         text-decoration: none;
     }
@@ -16,27 +14,19 @@
         background-color: var(--color-link-background-active);
     }
 
-    img {
-        height: auto;
-        width: 100%;
-    }
-
     h3 {
         margin: 0;
-        font-size: var(--s1);
-        font-weight: var(--font-weight-normal);
-        line-height: var(--font-lineheight-headings);
+    }
+    
+    .comment-icon {
+        vertical-align: text-bottom;
     }
 
-    & > :last-child {
-        height: 100%;
-        display: flex;
-        align-items: flex-end;
-        flex-wrap: wrap;
-    
-        span {
-            display: inline-block;
-            flex-basis: 100%;
-        }
+    .card-comment-section {
+        margin-top: var(--card-comment-section-margin-top);
+    }
+
+    p {
+        margin-bottom: 0;
     }
 }

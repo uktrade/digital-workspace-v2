@@ -40,6 +40,7 @@ class EngagementCardBlock(blocks.StructBlock):
             date=page.published_date,
             url=page.url,
             is_highlighted=isinstance(page, NewsPage) or isinstance(page, BlogPost),
+            comment_count=page.get_comment_count(),
         )
 
         return context
