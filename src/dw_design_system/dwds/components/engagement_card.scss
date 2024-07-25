@@ -18,7 +18,15 @@
         margin: 0;
     }
     
-    .comment-icon{
+    .comment-icon {
         vertical-align: text-bottom;
+    }
+
+    .card-comment-section {
+        margin-top: var(--card-comment-section-margin-top);
+    }
+
+    p {
+        margin-bottom: 0;
     }
 }
