@@ -27,19 +27,24 @@
             {% endblock card_content %}
 
             {% block card_footer %}
-                <div class="dwds-card--footer">
-                    <p>
-                        <img class="comment_icon"
-                             src="{% static '/images/dwds/icons/comment_icon.svg' %}"
-                             alt="Comment bubble icon.">
-                        <span>{{ comment_count }} Comment{{ comment_count|pluralize }}</span>
-                    </p>
-                </div>
+                {% if comment_count %}
+                    <div class="dwds-card--footer">
+                        <p>
+                            <img class="comment_icon"
+                                 src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+                                 alt="Comment bubble icon.">
+                            <span>{{ comment_count }} Comment{{ comment_count|pluralize }}</span>
+                        </p>
+                    </div>
+                {% endif %}
             {% endblock card_footer %}
         </div>
         <div class="dwds-card--image">
             {% if thumbnail %}
                 {% image thumbnail fill-320x200 %}
+            {% else %}
+                <img src="{% static '/images/dwds/fallback_image_card.png' %}"
+                     alt="Colourful circles on a blue background.">
             {% endif %}
         </div>
     </div>
