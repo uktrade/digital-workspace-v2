@@ -35,7 +35,7 @@
                 <div class="grid grid-cards home-news-items">
                     {% for news_item in news_items %}
                         {% if not forloop.first %}
-                            {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at is_highlighted=True %}
+                            {% include "dwds/components/engagement_card.html" with title=news_item.title|truncatewords:7 thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.get_comment_count excerpt=news_item.excerpt|truncatewords:10 is_highlighted=True %}
                         {% endif %}
                     {% endfor %}
                 </div>
