@@ -27,12 +27,14 @@
             {% endblock card_content %}
 
             {% block card_footer %}
-                <p>
-                    <img class="comment_icon"
-                         src="{% static '/images/dwds/icons/comment_icon.svg' %}"
-                         alt="Comment bubble icon.">
-                    <span>{{ comment_count }} Comment{{ comment_count|pluralize }}</span>
-                </p>
+                <div class="dwds-card--footer">
+                    <p>
+                        <img class="comment_icon"
+                             src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+                             alt="Comment bubble icon.">
+                        <span>{{ comment_count }} Comment{{ comment_count|pluralize }}</span>
+                    </p>
+                </div>
             {% endblock card_footer %}
         </div>
         <div class="dwds-card--image">
