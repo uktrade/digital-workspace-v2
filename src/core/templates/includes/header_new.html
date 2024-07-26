@@ -5,27 +5,19 @@
 <div class="dwds-header-container">
     <div class="dwds dwds-container">
         <header class="dwds-header" role="banner" data-module="govuk-header">
-            <!-- logo -->
-            <div class="dwds-header-logo govuk-header__logo govuk-header__logo--ws">
-                <a href="/" class="govuk-header__link govuk-header__link--homepage">
-                    <span class="govuk-header__logotype govuk-header__logotype--ws">
-                        <img aria-hidden="true"
-                             src="{% webpack_static 'dbt-logo.png' %}"
-                             srcset="{% webpack_static 'dbt-logo@2x.png' %} 2x"
-                             alt="Department for Business & Trade logo" />
-                        <span class="govuk-visually-hidden">Department for Business & Trade</span>
-                    </span>
-                </a>
-            </div>
-
-            <!-- top row -->
-            <div class="dwds-header-top">
-                <!-- app name -->
-                <div class="dwds-header-app-name">
-                    <a href="/" class="">DBT Intranet</a>
+            <div class="dwds-header-logo">
+                <!-- logo -->
+                <div class="govuk-header__logo govuk-header__logo--ws">
+                    <a href="/" class="govuk-header__link govuk-header__link--homepage">
+                        <span class="govuk-header__logotype govuk-header__logotype--ws">
+                            <img aria-hidden="true"
+                                 src="{% webpack_static 'dbt-logo.png' %}"
+                                 srcset="{% webpack_static 'dbt-logo@2x.png' %} 2x"
+                                 alt="Department for Business & Trade logo" />
+                            <span class="govuk-visually-hidden">Department for Business & Trade</span>
+                        </span>
+                    </a>
                 </div>
-                <!-- profile -->
-                {% include 'includes/profile_panel_new.html' %}
                 <!-- mobile menu -->
                 <button type="button"
                         class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
@@ -34,9 +26,20 @@
                         hidden>Menu</button>
             </div>
 
-            <!-- bottom row -->
-            <div class="dwds-header-bottom">
-                {% if USER_IS_AUTHENTICATED %}
+            <div style="display: contents;">
+                <!-- top row -->
+                <div class="dwds-header-top">
+                    <!-- app name -->
+                    <div class="dwds-header-app-name">
+                        <a href="/" class="">DBT Intranet</a>
+                    </div>
+                    <!-- profile -->
+                    {% include 'includes/profile_panel_new.html' %}
+                </div>
+                
+                <!-- bottom row -->
+                <div class="dwds-header-bottom">
+                    {% if USER_IS_AUTHENTICATED %}
                     <!-- nav links -->
                     <nav aria-label="Top Level Navigation" class="dwds-header-nav-links">
                         {% main_menu max_levels=1 template="menus/main_menu_new.html" apply_active_classes=True %}
@@ -44,11 +47,12 @@
                     <!-- search panel -->
                     <div class="dwds-header-search">
                         {% if not search_url %}
-                            {% url 'search:all' as search_url %}
+                        {% url 'search:all' as search_url %}
                         {% endif %}
                         {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
                     </div>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </header>
     </div>

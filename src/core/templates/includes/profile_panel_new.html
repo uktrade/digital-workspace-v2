@@ -1,5 +1,5 @@
 {% load render_bundle webpack_static from webpack_loader %}
-<div class="people-finder-panel">
+<div class="people-finder-panel-new">
     {% if peoplefinder_profile %}
         <a class="profile-link"
            href="{% url 'profile-view' peoplefinder_profile.slug %}">
@@ -22,5 +22,5 @@
                  style="border-radius: 50%">
         {% endif %}
     </a>
-{% endif %}
+    {% endif %}
 </div>
