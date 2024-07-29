@@ -36,12 +36,31 @@
     }
 
     @supports (width: min(250px, 100%)) {
-        .grid {
+        .grid-multiple-columns {
             grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
         }
 
         .grid-cards {
             grid-template-columns: repeat(auto-fit, minmax(min(var(--card-min-width), 100%), 1fr));
+            margin-top: var(--space);
         }
+    }
+
+    .dwds-homepage-welcome-text {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin: 0 0 var(--s0);;
+        
+        h1 {
+            margin: 0;
+        }
+        
+    }
+    .h-line { 
+        width:100%; 
+        height:1px; 
+        background: var(--color-horizontal-line-homepage);
+        margin: 0;
     }
 }

@@ -154,9 +154,17 @@ class HomePage(BasePage):
                 "-pinned_on_home",
                 "home_news_order_pages__order",
                 "-first_published_at",
-            )[:news_items_count]
+            )
         )
-        context["news_items"] = news_items
+        top_news_items = news_items[:3]
+        listed_news_items = news_items[2:news_items_count]
+        context.update(
+            news_items=news_items,
+            top_news_items=top_news_items,
+            listed_news_items=listed_news_items,
+            # morning=morning,
+            # evening=evening,
+        )
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):
