@@ -13,7 +13,7 @@
         {% image thumbnail fill-320x200 %}
     {% else %}
         <img src="{% static '/images/dwds/fallback_image_card.png' %}"
-            alt="Colourful circles on a blue background.">
+             alt="Colourful circles on a blue background.">
     {% endif %}
 {% endblock card_content_image %}
 
@@ -35,8 +35,8 @@
     {% if comment_count %}
         <span>
             <img class="comment_icon"
-                    src="{% static '/images/dwds/icons/comment_icon.svg' %}"
-                    alt="Comment bubble icon.">
+                 src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+                 alt="Comment bubble icon.">
             {{ comment_count }} Comment{{ comment_count|pluralize }}
         </span>
     {% endif %}
