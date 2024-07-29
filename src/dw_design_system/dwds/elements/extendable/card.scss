@@ -2,12 +2,15 @@
     --card-white: #fff;
     --border-radius: var(--s-3);
     --bottom-border-height: var(--s-3);
+    --body-background-colour: var(--card-white);
 
     border-radius: var(--border-radius);
     box-shadow: 0 var(--bottom-border-height) 0 rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    background: var(--card-white);
+    background-color: var(--body-background-colour);
 
+    container-name: card;
+    container-type: inline-size;
 
     &.dwds-card-blue {
         .card-main {
@@ -55,23 +58,32 @@
         > img {
             width: 100%;
             height: auto;
+            align-self: stretch;
+            object-fit: cover;
         }
 
         .card-content {
             .card-body {
-                --body-background-colour: var(--card-white);
-
                 padding: var(--space);
-                background-color: var(--body-background-colour);
                 font-size: var(--s0);
                 line-height: var(--font-lineheight-body);
 
                 a {
                     color: var(--color-link);
+                    text-decoration: none;
 
-                    h3 {
-                        text-decoration: none;
+                    h2, h3 {
+                        margin: 0;
                         color: var(--color-link);
+                    }
+
+                    &:hover, &:active, &:focus {
+                        text-decoration-line: underline;
+                        text-decoration-color: var(--color-link);
+                    }
+
+                    &:active {
+                        background-color: var(--color-link-background-active);
                     }
                 }
             }
@@ -80,6 +92,28 @@
         .card-footer {
             padding: 0 var(--space) var(--space) var(--space);
             color: var(--color-text-secondary);
+        }
+    }
+}
+
+@container card (width > 60ch) {
+    .card-with-image {
+        .card-main {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            grid-template-rows: 1fr;
+        }
+
+        &.image-right {
+            .card-content {
+                grid-column: 1;
+                grid-row: 1;
+            }
+    
+            .card-main > img {
+                grid-column: 2;
+                grid-row: 1;
+            }
         }
     }
 }
