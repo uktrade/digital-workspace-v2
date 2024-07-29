@@ -4,7 +4,6 @@
     <ul class="bookmark-list">
         {% for bookmark in bookmarks %}
             <li>
-                {% include 'dwds/elements/icon.html' with use_id='bookmark-icon' is_filled=True %}
                 <div>
                     <a href="{% pageurl bookmark.page %}">{{ bookmark.page }}</a>
                 </div>
