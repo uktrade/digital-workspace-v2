@@ -1,34 +1,119 @@
 .dwds-card {
-    border-top: var(--border-top-width-card) solid var(--color-border);
-    align-items: baseline;
-    background-color: var(--color-background);
-    height: 100%;
+    --card-white: #fff;
+    --border-radius: var(--s-3);
+    --bottom-border-height: var(--s-3);
+    --body-background-colour: var(--card-white);
 
-    & > div {
+    border-radius: var(--border-radius);
+    box-shadow: 0 var(--bottom-border-height) 0 rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    background-color: var(--body-background-colour);
+
+    container-name: card;
+    container-type: inline-size;
+
+    &.dwds-card-blue {
+        .card-main {
+            .card-content {
+                .card-body {
+                    --body-background-colour: var(--dbt-blue);
+                }
+            }
+        }
+    }
+
+    &.dwds-card-red {
+        .card-main {
+            .card-content {
+                .card-body {
+                    --body-background-colour: var(--dbt-red);
+                }
+            }
+        }
+    }
+
+    .card-header {
+        --header-background-colour: var(--dbt-blue);
+        --header-text-colour: var(--card-white);
+
+        padding: var(--s2) var(--s1) var(--s0) var(--s0);
+        align-items: flex-start;
+        background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
+        font-weight: var(--font-weight-bold);
+        color: var(--header-text-colour);
+
+        .card-subtitle {
+            font-size: var(--s0);
+        }
+
+        h2,
+        h3 {
+            color: var(--header-text-colour);
+        }
+    }
+
+    .card-main {
         height: 100%;
-        border: var(--border-width) solid var(--color-border);
-        border-top: none;
-        padding: var(--space);
+
+        > img {
+            width: 100%;
+            height: auto;
+            align-self: stretch;
+            object-fit: cover;
+        }
+
+        .card-content {
+            .card-body {
+                padding: var(--space);
+                font-size: var(--s0);
+                line-height: var(--font-lineheight-body);
+
+                a {
+                    color: var(--color-link);
+                    text-decoration: none;
+
+                    h2, h3 {
+                        margin: 0;
+                        color: var(--color-link);
+                    }
+
+                    &:hover, &:active, &:focus {
+                        text-decoration-line: underline;
+                        text-decoration-color: var(--color-link);
+                    }
+
+                    &:active {
+                        background-color: var(--color-link-background-active);
+                    }
+                }
+            }
+        }
+
+        .card-footer {
+            padding: 0 var(--space) var(--space) var(--space);
+            color: var(--color-text-secondary);
+        }
     }
 }
 
-.dwds-card--dark {
-    border-top-color: var(--color-border-dark);
+@container card (width > 60ch) {
+    .card-with-image {
+        .card-main {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            grid-template-rows: 1fr;
+        }
 
-    & > div {
-        background-color: var(--color-background-card);
-        // hides the border while preserving the internal spacing
-        border-color: var(--color-background-card);
-    }
-}
-
-.dwds-card--blue {
-    border-top-color: var(--dbt-light-blue);
-    background-color: transparent;
-
-    & > div {
-        background-color: rgba(var(--dbt-light-blue-rgb), var(--opacity-soft));
-        // hides the border while preserving the internal spacing
-        border-color: var(--dbt-light-blue);
+        &.image-right {
+            .card-content {
+                grid-column: 1;
+                grid-row: 1;
+            }
+    
+            .card-main > img {
+                grid-column: 2;
+                grid-row: 1;
+            }
+        }
     }
 }

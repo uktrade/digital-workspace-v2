@@ -1,14 +1,18 @@
 :root {
+  --page-width: 1250px;
+
   // Brand colours - for re-use in this file only
   --dbt-blue: #00285F;
+  --dbt-red: #CF102D;
   --dbt-light-blue: #0063BE;
   --dbt-light-blue-rgb: 0, 99, 190;
 
   // Colour
   --color-heading: var(--dbt-blue);
   --color-text: black;
+  --color-text-secondary: #505A5F;
   --color-text-highlight: #fff;
-  --color-link: var(--dbt-blue);
+  --color-link: var(--dbt-light-blue);
   --color-link-hover: #fff;
   --color-link-active: #fff;
   --color-link-background-active: #fd0; // GDS yellow
@@ -44,6 +48,7 @@
   --button-padding-large: var(--s-1);
   --button-padding-medium: var(--s-3);
   --button-padding-small: var(--s-5);
+  --card-comment-section-margin-top: 8px;
 
   // Borders and element widths
   --border-width: 2px;
@@ -53,7 +58,8 @@
 
   // Typography
   --measure: 70ch;
-  --font-family-primary: "Roboto Flex", sans-serif;
+  // --font-family-primary: "Roboto Flex", sans-serif;
+  --font-family-primary: "Noto Sans", sans-serif;
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-bold: 600;

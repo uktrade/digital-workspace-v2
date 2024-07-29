@@ -1,9 +1,21 @@
 {% extends "dwds/elements/extendable/card.html" %}
 
-{% block card_classes %}dwds-card--blue{% endblock %}
-{% block card_container_classes %}dwds-banner-card{% endblock %}
+{% block card_container_classes %}
+    dwds-banner-card
+    {% if alert %}
+        dwds-card-red
+    {% else %}
+        dwds-card-blue
+    {% endif %}
+{% endblock %}
 
-{% block card_content %}
+{% block card_header %}
+{% endblock card_header %}
+
+{% block card_content_image %}
+{% endblock card_content_image %}
+
+{% block card_content_body %}
     {% if link %}
         <a href="{{ link }}">
             <p role="alert">{{ text }}</p>
@@ -11,4 +23,7 @@
     {% else %}
         <p role="alert">{{ text }}</p>
     {% endif %}
-{% endblock %}
+{% endblock card_content_body %}
+
+{% block card_footer %}
+{% endblock card_footer %}

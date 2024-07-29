@@ -179,19 +179,22 @@ class NewsPage(PageWithTopics):
 
         return super().save(*args, **kwargs)
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
+    def get_comment_count(self):
+        return Comment.objects.filter(
+            news_page=self,
+        ).count()
 
-        comments = Comment.objects.filter(
+    def get_comments(self):
+        return Comment.objects.filter(
             news_page=self,
             parent_id=None,
         ).order_by("-posted_date")
 
-        context["comments"] = comments
-        context["comment_count"] = Comment.objects.filter(
-            news_page=self,
-        ).count()
+    def get_context(self, request, *args, **kwargs):
 
+        context = super().get_context(request, *args, **kwargs)
+        context["comments"] = self.get_comments()
+        context["comment_count"] = self.get_comment_count()
         categories = NewsCategory.objects.all().order_by("category")
         context["categories"] = categories
 

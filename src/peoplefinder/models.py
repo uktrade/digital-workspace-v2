@@ -215,11 +215,6 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
                 filter=Q(roles__isnull=False),
                 distinct=True,
             ),
-            formatted_buildings=StringAgg(
-                "buildings__name",
-                delimiter=", ",
-                distinct=True,
-            ),
             formatted_networks=StringAgg(
                 "networks__name",
                 delimiter=", ",
@@ -449,16 +444,14 @@ class Person(Indexed, models.Model):
         blank=True,
         help_text="For example, London",
     )
+    town_city_or_region.system_check_deprecated_details = {
+        "msg": ("Person.town_city_or_region been deprecated."),
+        "hint": "Use Person.uk_office_location",
+        "id": "peoplefinder.Person.E001",
+    }
     regional_building = models.CharField(
         "UK regional building or location",
         max_length=130,
-        null=True,
-        blank=True,
-    )
-    usual_office_days = models.CharField(
-        "What days do you usually come in to the office?",
-        help_text=("For example: I usually come in on Mondays and Wednesdays"),
-        max_length=200,
         null=True,
         blank=True,
     )
@@ -467,6 +460,13 @@ class Person(Indexed, models.Model):
         "hint": "Use Person.uk_office_location and Person.remote_working instead.",
         "id": "peoplefinder.Person.E001",
     }
+    usual_office_days = models.CharField(
+        "What days do you usually come in to the office?",
+        help_text=("For example: I usually come in on Mondays and Wednesdays"),
+        max_length=200,
+        null=True,
+        blank=True,
+    )
     international_building = models.CharField(
         "International location",
         max_length=110,
