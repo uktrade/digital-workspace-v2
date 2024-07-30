@@ -1,11 +1,10 @@
-from datetime import datetime
-
 import atoma
 import requests
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from waffle import flag_is_active
@@ -148,7 +147,6 @@ class HomePage(BasePage):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
         # News
-        news_items_count = 7 if is_new_homepage else 8
         news_items = (
             NewsPage.objects.live()
             .public()
@@ -156,26 +154,12 @@ class HomePage(BasePage):
                 "-pinned_on_home",
                 "home_news_order_pages__order",
                 "-first_published_at",
-            )
+            )[:8]
         )
-        top_news_items = news_items[:3]
-        listed_news_items = news_items[2:news_items_count]
-
-        current_time = datetime.now().hour  # TODO: Get the actual time
-        morning = False
-        evening = False
-        if current_time < 12:
-            morning = True
-        if current_time > 16:
-            evening = True
-
+        current_time = timezone.now()
         context.update(
             news_items=news_items,
-            top_news_items=top_news_items,
-            listed_news_items=listed_news_items,
-            current_time=current_time,  # TODO: Remove this from context
-            morning=morning,
-            evening=evening,
+            current_time=current_time,
         )
 
         # GOVUK news
