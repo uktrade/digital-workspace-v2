@@ -13,7 +13,7 @@ $input-size: 40px;
     position: relative;
     display: flex;
     flex: 0 $input-size;
-    margin: 7px 0;
+    margin: 0;
 
     input {
         // overly specific to prevent some overrides from outside
@@ -74,7 +74,7 @@ $input-size: 40px;
 }
 
 .site-search {
-        position: inherit;
+    position: inherit;
     right: 0;
     top: -4px;
     align-items: center;

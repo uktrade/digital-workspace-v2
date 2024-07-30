@@ -1,44 +1,138 @@
 // FIXME: Where should these styles live in the new design system?
 
 .dwds-header-container {
-    border-bottom: 4px solid var(--dbt-red);
+    // Variables
+    --header-border-bottom: 4px solid var(--dbt-red);
+
+    background-color: var(--color-background);
+    border-bottom: var(--header-border-bottom);
+}
+
+.dwds-header, .dwds-header-menu {
+    display: flex;
+    flex-direction: column;
+
+    a {
+        color: black;
+        text-decoration: none;
+    }
 }
 
 .dwds-header {
-    display: grid;
-    grid-template-columns: min-content 1fr;
-    grid-template-rows: min-content min-content;
-    grid-template-areas:
-        "logo top"
-        "logo bottom";
+
+    padding: var(--space) 0;
+}
+
+.dwds-header-logo {
+    display: flex;
     align-items: center;
-    gap: var(--s-4);
-    padding: var(--s-4) 0;
+    justify-content: space-between;
+}
 
-    &-logo {
-        grid-area: logo;
-        margin-right: 1rem;
+.dwds-header-menu-toggle {
+    all: unset;
+    cursor: pointer;
+
+    &:focus, &:active {
+        background-color: var(--color-button-background-active);
     }
 
-    &-top {
-        grid-area: top;
+    &::after {
+        content: " ⮟";
+    }
 
+    &.is-open::after {
+        content: " ⮝";
+    }
+}
+
+.dwds-header-menu {
+    display: none;
+
+    &.is-active {
+        display: flex;
+    }
+}
+
+.dwds-header-item {
+    vertical-align: middle;
+
+    padding: var(--s-3) 0;
+}
+
+.dwds-header-app-name {
+    display: none;
+    align-items: center;
+    font-size: var(--s2);
+    font-weight: bold;
+}
+
+.dwds-header-profile {
+    display: flex;
+    gap: var(--space);
+    align-items: center;
+
+    img {
+        width: 40px;
+        border-radius: 50%;
+        // display the profile image first
+        order: -1;
+    }
+}
+
+.dwds-header-nav {
+    display: flex;
+    flex-direction: column;
+
+    a {
         display: flex;
         align-items: center;
+
+        padding: var(--s-3) 0;
+
+        font-weight: bold;
     }
 
-    &-bottom {
-        grid-area: bottom;
+    a[data-active] {
+        border-bottom: var(--header-border-bottom);
+    }
+}
 
+@media screen and (min-width: 770px) {
+    // hide the menu toggle
+    .dwds-header-menu-toggle {
+        display: none;
+    }
+
+    .dwds-header {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        padding: 0;
+    }
+
+    .dwds-header-menu {
+        display: grid;
+        grid-template-columns: 1fr max-content;
+        grid-template-rows: min-content min-content;
+    }
+
+    .dwds-header-logo {
+        padding: var(--s-3);
+    }
+
+    .dwds-header-app-name {
         display: flex;
-        align-items: center;
     }
 
-    &-app-name {
-        flex-grow: 1;
+    .dwds-header-item {
+        padding: var(--s-3);
     }
 
-    &-nav-links {
-        flex-grow: 1;
+    .dwds-header-nav {
+        flex-direction: row;
+
+        a {
+            padding: var(--s-3);
+        }
     }
 }
