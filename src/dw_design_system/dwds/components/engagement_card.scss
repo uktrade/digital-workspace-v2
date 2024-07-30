@@ -1,23 +1,4 @@
-.dwds-engagement-card {
-    a {
-        text-decoration: none;
-    }
-
-    a:hover {
-        text-decoration-line: underline;
-        text-decoration-color: var(--color-link);
-    }
-
-    a:active {
-        text-decoration-line: underline;
-        text-decoration-color: var(--color-link);
-        background-color: var(--color-link-background-active);
-    }
-
-    h3 {
-        margin: 0;
-    }
-    
+.dwds-engagement-card {    
     .comment-icon {
         vertical-align: text-bottom;
     }
