@@ -84,6 +84,9 @@ $input-size: 40px;
         button {
             background-color: $govuk-link-colour;
         }
+        input {
+          border: none;
+        }
     }
 }
 
