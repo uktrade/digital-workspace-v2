@@ -21,7 +21,7 @@
     <div class="dwds-homepage-welcome-text">
         <h1>Intranet</h1>
         {% comment %} TODO: Remove the current time {% endcomment %}
-        <span>{{ current_time }}</span>
+        <h1>{{ current_time }}</h1>
         {% if morning %}
             <span>Good morning {{ peoplefinder_profile.get_first_name_display|truncatechars:25 }}</span>
         {% elif evening %}
@@ -41,7 +41,7 @@
         <section>
             <div class="stack">
                 {% if news_items %}
-                    {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url comment_count=news_items.0.comment_set.count %}
+                    {% include "dwds/components/one_up_card.html" with title=news_items.0.title|truncatewords:7 excerpt=news_items.0.excerpt|truncatewords:10 thumbnail=news_items.0.preview_image url=news_items.0.url comment_count=news_items.0.comment_set.count %}
                 {% endif %}
                 <div class="grid grid-cards home-news-items">
                     {% for news_item in top_news_items %}
