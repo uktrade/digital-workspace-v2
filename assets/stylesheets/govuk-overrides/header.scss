@@ -74,8 +74,7 @@ header {
 }
 
 .nav-and-profile-bar {
-    background-color: $brand-color-navy;
-    border-top: 5px solid $brand-color-primary;
+    border-bottom: 5px solid $brand-color-primary;
 
     .govuk-width-container {
         column-gap: 20px;
@@ -104,16 +103,17 @@ header {
     .ancestor {
         padding-top: 17px;
         padding-right: max(15px, calc(15px + env(safe-area-inset-right)));
-        padding-bottom: 18px;
+        padding-bottom: 17px;
         padding-left: max(20px, calc(20px + env(safe-area-inset-left)));
         text-decoration-thickness: 5px;
+        text-decoration-color: $brand-color-primary;
         text-underline-offset: 17px;
 
         .govuk-header__link--ws {
 
             &:link,
             &:visited {
-                color: govuk-colour("white");
+                color: govuk-colour("black");
             }
 
             &:focus {
@@ -124,7 +124,7 @@ header {
     }
 
     .govuk-header__link:hover {
-        text-decoration-color: $govuk-link-colour;
+        text-decoration-color: $brand-color-primary;
     }
 
     .govuk-header__link:focus {
@@ -148,7 +148,7 @@ header {
         &:link,
         &:hover,
         &:visited {
-            color: govuk-colour("white");
+            color: govuk-colour("black");
         }
 
         &:focus {
