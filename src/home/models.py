@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import atoma
 import requests
 from django.conf import settings
@@ -158,12 +160,22 @@ class HomePage(BasePage):
         )
         top_news_items = news_items[:3]
         listed_news_items = news_items[2:news_items_count]
+
+        current_time = datetime.now().hour  # TODO: Get the actual time
+        morning = False
+        evening = False
+        if current_time < 12:
+            morning = True
+        if current_time > 16:
+            evening = True
+
         context.update(
             news_items=news_items,
             top_news_items=top_news_items,
             listed_news_items=listed_news_items,
-            # morning=morning,
-            # evening=evening,
+            current_time=current_time,  # TODO: Remove this from context
+            morning=morning,
+            evening=evening,
         )
 
         # GOVUK news

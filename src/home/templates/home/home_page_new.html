@@ -20,7 +20,8 @@
     {% include "home/includes/home_banner.html" with hide_hr=True %}
     <div class="dwds-homepage-welcome-text">
         <h1>Intranet</h1>
-        {% comment %} TODO: Add logic for welcome message {% endcomment %}
+        {% comment %} TODO: Remove the current time {% endcomment %}
+        <span>{{ current_time }}</span>
         {% if morning %}
             <span>Good morning {{ peoplefinder_profile.get_first_name_display|truncatechars:25 }}</span>
         {% elif evening %}
