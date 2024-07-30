@@ -23,10 +23,10 @@
             {% if ribbon_text %}
                 {% include "dwds/unsure/ribbon.html" with text=ribbon_text colour="blue" %}
             {% endif %}
-            <h2><a href="{{ url }}">{{ title }}</a></h2>
-            {% if excerpt %}
-                <p>{{ excerpt }}</p>
-            {% endif %}
+            <h2>
+                <a href="{{ url }}">{{ title }}</a>
+            </h2>
+            {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
         {% endblock card_content_body %}
     </div>
 {% endblock card_content %}
