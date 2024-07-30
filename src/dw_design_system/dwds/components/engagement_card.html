@@ -18,9 +18,9 @@
 {% endblock card_content_image %}
 
 {% block card_content_body %}
-    <a href="{{ url }}">
-        <h3>{{ title }}</h3>
-    </a>
+    <h3>
+        <a href="{{ url }}">{{ title }}</a>
+    </h3>
 
     {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
 {% endblock card_content_body %}
