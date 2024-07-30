@@ -23,9 +23,9 @@
             {% if ribbon_text %}
                 {% include "dwds/unsure/ribbon.html" with text=ribbon_text colour="blue" %}
             {% endif %}
-            <a href="{{ url }}">
-                <h2>{{ title }}</h2>
-            </a>
+            <h2>
+                <a href="{{ url }}">{{ title }}</a>
+            </h2>
             {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
         {% endblock card_content_body %}
     </div>
@@ -34,7 +34,7 @@
 {% block card_footer_body %}
     {% if comment_count %}
         <span>
-            <img class="comment_icon"
+            <img class="comment-icon"
                  src="{% static '/images/dwds/icons/comment_icon.svg' %}"
                  alt="Comment bubble icon.">
             {{ comment_count }} Comment{{ comment_count|pluralize }}

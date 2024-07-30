@@ -11,3 +11,9 @@
     <h3>Your bookmarks</h3>
     {% bookmark_list user %}
 {% endblock card_content_body %}
+
+{% block card_footer %}
+    <div class="card-footer">
+        <a href="{% url 'interactions:bookmark-index' %}" class="text-small">View all bookmarks</a>
+    </div>
+{% endblock card_footer %}
