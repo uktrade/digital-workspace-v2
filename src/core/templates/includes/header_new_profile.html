@@ -1,6 +1,7 @@
 {% load webpack_static from webpack_loader %}
 {% if peoplefinder_profile %}
-    <a href="{% url 'profile-view' peoplefinder_profile.slug %}" class="dwds-header-item dwds-header-profile">
+    <a href="{% url 'profile-view' peoplefinder_profile.slug %}"
+       class="dwds-header-item dwds-header-profile">
         {% if peoplefinder_profile.profile_completion < 100 %}
             <span>Your profile is {{ peoplefinder_profile.profile_completion|floatformat:0 }}% complete</span>
         {% else %}
@@ -8,10 +9,9 @@
         {% endif %}
         {% if peoplefinder_profile.photo %}
             <img src="{{ peoplefinder_profile.photo_small.url }}"
-                alt="Profile image of {{ peoplefinder_profile.full_name }}">
+                 alt="Profile image of {{ peoplefinder_profile.full_name }}">
         {% else %}
-            <img src="{% webpack_static 'no-photo.png' %}"
-                alt="No photo">
+            <img src="{% webpack_static 'no-photo.png' %}" alt="No photo">
         {% endif %}
     </a>
 {% endif %}
