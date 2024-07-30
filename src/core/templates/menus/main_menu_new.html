@@ -1,15 +1,11 @@
-<ul id="navigation" class="dwds-header-nav-ul">
+<nav class="dwds-header-nav" aria-label="Top Level Navigation">
     {% for item in menu_items %}
-        <li class="{{ item.active_class }}">
-            {% if item.active_class %}
-                <a class="{{ item.active_class }}"
-                   data-testid="main-menu-{{ item.text|lower }}"
-                   href="{{ item.href }}">{{ item.text }}</a>
-            {% else %}
-                <a class=""
-                   data-testid="main-menu-{{ item.text|lower }}"
-                   href="{{ item.href }}">{{ item.text }}</a>
-            {% endif %}
-        </li>
+        <a
+            class="dwds-header-item"
+            data-testid="main-menu-{{ item.text|lower }}"
+            href="{{ item.href }}"
+            {% if item.active_class %}data-active="true"{% endif %}>
+            {{ item.text }}
+        </a>
     {% endfor %}
-</ul>
+</nav>

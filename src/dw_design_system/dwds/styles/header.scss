@@ -1,100 +1,138 @@
 // FIXME: Where should these styles live in the new design system?
 
 .dwds-header-container {
-    border-bottom: 4px solid var(--dbt-red);
+    // Variables
+    --header-border-bottom: 4px solid var(--dbt-red);
+
+    background-color: var(--color-background);
+    border-bottom: var(--header-border-bottom);
+}
+
+.dwds-header, .dwds-header-menu {
+    display: flex;
+    flex-direction: column;
+
+    a {
+        color: black;
+        text-decoration: none;
+    }
 }
 
 .dwds-header {
-    display: grid;
-    grid-template-columns: min-content 1fr;
-    grid-template-rows: min-content min-content;
-    grid-template-areas:
-        "logo top"
-        "logo bottom";
+
+    padding: var(--space) 0;
+}
+
+.dwds-header-logo {
+    display: flex;
     align-items: center;
-    grid-row-gap: var(--s-2);
-    grid-column-gap: var(--s2);
-    padding: var(--s-4) 0;
+    justify-content: space-between;
+}
 
-    &-logo {
-        grid-area: logo;
+.dwds-header-menu-toggle {
+    all: unset;
+    cursor: pointer;
+
+    &:focus, &:active {
+        background-color: var(--color-button-background-active);
     }
 
-    &-top {
-        grid-area: top;
-
-        display: grid;
-        grid-template-columns: 1fr max-content;
-        align-items: center;
+    &::after {
+        content: " ⮟";
     }
 
-    &-bottom {
-        grid-area: bottom;
-
-        display: grid;
-        grid-template-columns: 1fr max-content;
-        align-items: center;
-    }
-
-    &-app-name {
-        flex-grow: 1;
-        a {
-            color: #144E81;
-            font-size: var(--s1);
-            font-weight: var(--font-weight-bold);
-            text-decoration: none;
-        }
-    }
-
-    &-nav-links {
-        flex-grow: 1;
-    }
-
-    &-nav-ul {
-        display: flex;
-        gap: var(--s1);
-        padding: 0;
-        margin: 0;
-        list-style: none;
-        a {
-            text-decoration: none;
-            color: #144E81;
-            font-weight: var(--font-weight-bold);
-        }
-    }
-
-    &-search {
-        height: min-content;
+    &.is-open::after {
+        content: " ⮝";
     }
 }
 
+.dwds-header-menu {
+    display: none;
 
-@media screen and (max-width: 770px) {
-    .dwds-header {
-        grid-template-columns: 1fr;
-        grid-template-rows: min-content min-content min-content;
-        grid-template-areas:
-            "logo"
-            "top"
-            "bottom";
+    &.is-active {
+        display: flex;
+    }
+}
 
-        &-logo {
-            display: flex;
-        }
+.dwds-header-item {
+    vertical-align: middle;
 
-        &-nav-ul {
-            flex-direction: column;
-            gap: var(--s-2);
-        }
+    padding: var(--s-3) 0;
+}
 
-        &-top, &-bottom {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+.dwds-header-app-name {
+    display: none;
+    align-items: center;
+    font-size: var(--s2);
+    font-weight: bold;
+}
+
+.dwds-header-profile {
+    display: flex;
+    gap: var(--space);
+    align-items: center;
+
+    img {
+        width: 40px;
+        border-radius: 50%;
+        // display the profile image first
+        order: -1;
+    }
+}
+
+.dwds-header-nav {
+    display: flex;
+    flex-direction: column;
+
+    a {
+        display: flex;
+        align-items: center;
+
+        padding: var(--s-3) 0;
+
+        font-weight: bold;
     }
 
-    .people-finder-panel-new {
+    a[data-active] {
+        border-bottom: var(--header-border-bottom);
+    }
+}
+
+@media screen and (min-width: 770px) {
+    // hide the menu toggle
+    .dwds-header-menu-toggle {
         display: none;
+    }
+
+    .dwds-header {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        padding: 0;
+    }
+
+    .dwds-header-menu {
+        display: grid;
+        grid-template-columns: 1fr max-content;
+        grid-template-rows: min-content min-content;
+    }
+
+    .dwds-header-logo {
+        padding: var(--s-3);
+    }
+
+    .dwds-header-app-name {
+        display: flex;
+    }
+
+    .dwds-header-item {
+        padding: var(--s-3);
+    }
+
+    .dwds-header-nav {
+        flex-direction: row;
+
+        a {
+            padding: var(--s-3);
+        }
     }
 }

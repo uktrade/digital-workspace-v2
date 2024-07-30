@@ -6,7 +6,6 @@
     <div class="dwds dwds-container">
         <header class="dwds-header" role="banner" data-module="govuk-header">
             <div class="dwds-header-logo">
-                <!-- logo -->
                 <div class="govuk-header__logo govuk-header__logo--ws">
                     <a href="/" class="govuk-header__link govuk-header__link--homepage">
                         <span class="govuk-header__logotype govuk-header__logotype--ws">
@@ -18,44 +17,40 @@
                         </span>
                     </a>
                 </div>
-                <!-- mobile menu -->
+
                 <button type="button"
-                        class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
+                        id="header-menu-toggle"
+                        class="dwds-header-menu-toggle"
                         aria-controls="navigation"
-                        aria-label="Show or hide Top Level Navigation"
-                        hidden>Menu</button>
+                        aria-label="Show or hide Top Level Navigation">Menu</button>
             </div>
 
-            <div style="display: contents;">
-                <!-- top row -->
-                <div class="dwds-header-top">
-                    <!-- app name -->
-                    <div class="dwds-header-app-name">
-                        <a href="/" class="">DBT Intranet</a>
-                    </div>
-                    <!-- profile -->
-                    {% include 'includes/profile_panel_new.html' %}
-                </div>
-                
-                <!-- bottom row -->
-                <div class="dwds-header-bottom">
-                    {% if USER_IS_AUTHENTICATED %}
-                    <!-- nav links -->
-                    <nav aria-label="Top Level Navigation" class="dwds-header-nav-links">
-                        {% main_menu max_levels=1 template="menus/main_menu_new.html" apply_active_classes=True %}
-                    </nav>
-                    <!-- search panel -->
-                    <div class="dwds-header-search">
-                        {% if not search_url %}
+            <div id="header-menu" class="dwds-header-menu">
+                <a href="/" class="dwds-header-item dwds-header-app-name">DBT Intranet</a>
+
+                {% include 'includes/header_new_profile.html' %}
+
+                {% main_menu max_levels=1 template="menus/main_menu_new.html" apply_active_classes=True %}
+
+                <div class="dwds-header-item">
+                    {% if not search_url %}
                         {% url 'search:all' as search_url %}
-                        {% endif %}
-                        {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
-                    </div>
                     {% endif %}
+                    {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
                 </div>
             </div>
         </header>
     </div>
 </div>
 
-<!-- FIXME: removed site alert banner -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuButton = document.querySelector("#header-menu-toggle");
+        const menu = document.querySelector("#header-menu");
+
+        menuButton.addEventListener("click", () => {
+            menuButton.classList.toggle("is-open");
+            menu.classList.toggle("is-active");
+        });
+    });
+</script>
