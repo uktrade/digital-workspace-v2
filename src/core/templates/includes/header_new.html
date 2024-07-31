@@ -1,0 +1,56 @@
+{% load menu_tags waffle_tags %}
+{% load render_bundle webpack_static from webpack_loader %}
+{% load site_alert %}
+
+<div class="dwds-header-container">
+    <div class="dwds dwds-container">
+        <header class="dwds-header" role="banner" data-module="govuk-header">
+            <div class="dwds-header-logo">
+                <div class="govuk-header__logo govuk-header__logo--ws">
+                    <a href="/" class="govuk-header__link govuk-header__link--homepage">
+                        <span class="govuk-header__logotype govuk-header__logotype--ws">
+                            <img aria-hidden="true"
+                                 src="{% webpack_static 'dbt-logo.png' %}"
+                                 srcset="{% webpack_static 'dbt-logo@2x.png' %} 2x"
+                                 alt="Department for Business & Trade logo" />
+                            <span class="govuk-visually-hidden">Department for Business & Trade</span>
+                        </span>
+                    </a>
+                </div>
+
+                <button type="button"
+                        id="header-menu-toggle"
+                        class="dwds-header-menu-toggle"
+                        aria-controls="navigation"
+                        aria-label="Show or hide Top Level Navigation">Menu</button>
+            </div>
+
+            <div id="header-menu" class="dwds-header-menu">
+                <a href="/" class="dwds-header-item dwds-header-app-name">DBT Intranet</a>
+
+                {% include 'includes/header_new_profile.html' %}
+
+                {% main_menu max_levels=1 template="menus/main_menu_new.html" apply_active_classes=True %}
+
+                <div class="dwds-header-item">
+                    {% if not search_url %}
+                        {% url 'search:all' as search_url %}
+                    {% endif %}
+                    {% include 'search/partials/search_form.html' with placeholder="Search pages and people" search_url=search_url %}
+                </div>
+            </div>
+        </header>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuButton = document.querySelector("#header-menu-toggle");
+        const menu = document.querySelector("#header-menu");
+
+        menuButton.addEventListener("click", () => {
+            menuButton.classList.toggle("is-open");
+            menu.classList.toggle("is-active");
+        });
+    });
+</script>

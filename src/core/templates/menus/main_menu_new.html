@@ -1,0 +1,8 @@
+<nav class="dwds-header-nav" aria-label="Top Level Navigation">
+    {% for item in menu_items %}
+        <a class="dwds-header-item"
+           data-testid="main-menu-{{ item.text|lower }}"
+           href="{{ item.href }}"
+           {% if item.active_class %}data-active="true"{% endif %}>{{ item.text }}</a>
+    {% endfor %}
+</nav>
