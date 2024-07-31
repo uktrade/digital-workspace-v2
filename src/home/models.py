@@ -4,7 +4,6 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from waffle import flag_is_active
@@ -156,10 +155,8 @@ class HomePage(BasePage):
                 "-first_published_at",
             )[:8]
         )
-        current_time = timezone.now()
         context.update(
             news_items=news_items,
-            current_time=current_time,
         )
 
         # GOVUK news

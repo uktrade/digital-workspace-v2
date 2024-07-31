@@ -22,7 +22,8 @@
     TODO: Enable this when we switch to new header.
     <div class="dwds-homepage-welcome-text">
         <h1>Intranet</h1>
-        {% if current_time|date:"A" == "AM" %}
+        {% now "A" as current_time %}
+        {% if current_time == "AM" %}
             <span>Good morning {{ peoplefinder_profile.get_first_name_display }}</span>
         {% else %}
             <span>Good afteroon {{ peoplefinder_profile.get_first_name_display }}</span>
