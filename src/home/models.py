@@ -146,7 +146,6 @@ class HomePage(BasePage):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
         # News
-        news_items_count = 7 if is_new_homepage else 8
         news_items = (
             NewsPage.objects.live()
             .public()
@@ -154,9 +153,11 @@ class HomePage(BasePage):
                 "-pinned_on_home",
                 "home_news_order_pages__order",
                 "-first_published_at",
-            )[:news_items_count]
+            )[:8]
         )
-        context["news_items"] = news_items
+        context.update(
+            news_items=news_items,
+        )
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):

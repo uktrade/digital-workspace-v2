@@ -30,6 +30,7 @@
   --color-button-secondary-hover: #dbdad9;
   --color-button-border: black;
   --color-icon: var(--dbt-blue);
+  --color-horizontal-line-homepage: #7D8E96;
 
   // Size
   --ratio: 1.25;
@@ -44,7 +45,7 @@
   --s3: calc(var(--s2) * var(--ratio));
   --s4: calc(var(--s3) * var(--ratio));
   --s5: calc(var(--s4) * var(--ratio));
-  --space: var(--s0);
+  --space: var(--s1);
   --button-padding-large: var(--s-1);
   --button-padding-medium: var(--s-3);
   --button-padding-small: var(--s-5);

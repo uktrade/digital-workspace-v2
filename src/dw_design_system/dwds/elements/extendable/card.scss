@@ -1,7 +1,7 @@
 .dwds-card {
     --card-white: #fff;
     --border-radius: var(--s-3);
-    --bottom-border-height: var(--s-3);
+    --bottom-border-height: var(--s-5);
     --body-background-colour: var(--card-white);
 
     display: flex;
@@ -76,7 +76,7 @@
 
             .card-body {
                 flex-grow: 1;
-                padding: var(--space);
+                padding: var(--s0);
                 font-size: var(--s0);
                 line-height: var(--font-lineheight-body);
 
@@ -100,7 +100,7 @@
         }
 
         .card-footer {
-            padding: 0 var(--space) var(--space) var(--space);
+            padding: 0 var(--s0) var(--s0) var(--s0);
             color: var(--color-text-secondary);
         }
     }

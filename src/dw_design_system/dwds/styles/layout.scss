@@ -36,12 +36,13 @@
     }
 
     @supports (width: min(250px, 100%)) {
-        .grid {
+        .grid-multiple-columns {
             grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
         }
 
         .grid-cards {
             grid-template-columns: repeat(auto-fit, minmax(min(var(--card-min-width), 100%), 1fr));
+        
         }
     }
 }

@@ -18,6 +18,19 @@
 
 {% block pre_content %}
     {% include "home/includes/home_banner.html" with hide_hr=True %}
+    {% comment %}
+    TODO: Enable this when we switch to new header.
+    <div class="dwds-homepage-welcome-text">
+        <h1>Intranet</h1>
+        {% now "A" as current_time %}
+        {% if current_time == "AM" %}
+            <span>Good morning {{ peoplefinder_profile.get_first_name_display }}</span>
+        {% else %}
+            <span>Good afteroon {{ peoplefinder_profile.get_first_name_display }}</span>
+        {% endif %}
+    </div>
+    <div class="h-line"></div> 
+    {% endcomment %}
 {% endblock pre_content %}
 
 {% block page_title %}
@@ -30,12 +43,16 @@
                 {% if news_items %}
                     {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url comment_count=news_items.0.comment_set.count %}
                 {% endif %}
-
                 <div class="grid grid-cards home-news-items">
-                    {% for news_item in news_items %}
-                        {% if not forloop.first %}
-                            {% include "dwds/components/engagement_card.html" with title=news_item.title|truncatewords:7 thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.get_comment_count excerpt=news_item.excerpt|truncatewords:10 is_highlighted=True %}
-                        {% endif %}
+                    {% for news_item in news_items|slice:"1:3" %}
+                        {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.get_comment_count excerpt=news_item.excerpt is_highlighted=True %}
+                    {% endfor %}
+                </div>
+                <br>
+                <h2>Latest DBT news</h2>
+                <div class="grid home-news-items">
+                    {% for news_item in news_items|slice:"3:" %}
+                        {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.get_comment_count excerpt=news_item.excerpt is_highlighted=True %}
                     {% endfor %}
                 </div>
                 <span>
