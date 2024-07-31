@@ -22,7 +22,7 @@
         <a href="{{ url }}">{{ title }}</a>
     </h3>
 
-    {% if excerpt %}<p>{{ excerpt }}</p>{% endif %}
+    {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
 {% endblock card_content_body %}
 
 {% block card_footer_body %}

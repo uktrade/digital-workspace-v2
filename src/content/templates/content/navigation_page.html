@@ -11,7 +11,7 @@
 {% endblock page_title %}
 
 {% block primary_content %}
-    <div class="grid">
+    <div class="grid grid-multiple-columns">
         {% for block in page.primary_elements %}
             {% include_block block %}
         {% endfor %}
