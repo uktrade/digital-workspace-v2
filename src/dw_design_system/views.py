@@ -7,6 +7,14 @@ from dw_design_system.templatetags.dw_design_system import render_component
 from dw_design_system.utils import CustomJSONDecoder, get_components, to_json
 
 
+def styles(request: HttpRequest) -> HttpResponse:
+    return render(
+        request,
+        "dw_design_system/styles.html",
+        {},
+    )
+
+
 def components(request: HttpRequest) -> HttpResponse:
     components = []
     for component in get_components():
