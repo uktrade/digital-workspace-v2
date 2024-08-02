@@ -18,19 +18,16 @@
 
 {% block pre_content %}
     {% include "home/includes/home_banner.html" with hide_hr=True %}
-    {% comment %}
-    TODO: Enable this when we switch to new header.
-    <div class="dwds-homepage-welcome-text">
+    <div class="homepage-welcome-bar">
         <h1>Intranet</h1>
         {% now "A" as current_time %}
         {% if current_time == "AM" %}
             <span>Good morning {{ peoplefinder_profile.get_first_name_display }}</span>
         {% else %}
-            <span>Good afteroon {{ peoplefinder_profile.get_first_name_display }}</span>
+            <span>Good afternoon {{ peoplefinder_profile.get_first_name_display }}</span>
         {% endif %}
     </div>
-    <div class="h-line"></div> 
-    {% endcomment %}
+    <hr style="margin-top: var(--s1);">
 {% endblock pre_content %}
 
 {% block page_title %}

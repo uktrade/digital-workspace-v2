@@ -1,12 +1,16 @@
 .dwds-card.dwds-cta-card {
-    // TODO: Cheryl to work out the colour for the CTA card background and the new body background.
-    --cta-background-color: #E6EBF0;
+    color: var(--color-text-highlight);
 
-    .card-main {
-        .card-content {
-            .card-body {
-                --body-background-colour: var(--cta-background-color);
-            }
+    box-shadow: none;
+
+    a,
+    a:visited,
+    a:link {
+        color: var(--color-text-highlight);
+        text-decoration-color: var(--color-text-highlight);
+
+        p {
+            color: var(--color-text-highlight);
         }
     }
 }
