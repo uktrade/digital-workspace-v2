@@ -3,7 +3,14 @@
 
     box-shadow: none;
 
-    a {
+    a,
+    a:visited,
+    a:link {
         color: var(--color-text-highlight);
+        text-decoration-color: var(--color-text-highlight);
+
+        p {
+            color: var(--color-text-highlight);
+        }
     }
 }
