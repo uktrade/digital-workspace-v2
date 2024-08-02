@@ -1,8 +1,9 @@
 {% extends "2_col_content.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>
+    {% image page.preview_image fill-640x360 width="100%" style="object-fit: cover;" %}
     {% include "includes/attribution.html" with page=page is_news_page=True perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=True %}
     <div class="ws-streamfield-content">
         {% for block in page.body %}
