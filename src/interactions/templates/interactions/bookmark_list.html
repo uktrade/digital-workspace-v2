@@ -8,7 +8,7 @@
                     <a href="{% pageurl bookmark.page %}">{{ bookmark.page }}</a>
                 </div>
                 <div>
-                    <button class="dwds-button dwds-button--small dwds-button--secondary"
+                    <button class="dwds-button dwds-button--inline dwds-button--secondary"
                             hx-delete="{% url 'interactions:bookmark-remove' bookmark.pk %}"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                             hx-target="closest li"

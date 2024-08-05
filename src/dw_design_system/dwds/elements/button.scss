@@ -12,25 +12,20 @@
     }
 
     &--secondary {
-        color: var(--color-text);
+        color: var(--color-button-primary);
         background-color: var(--color-button-secondary);
+        border: solid var(--color-button-primary);
 
         &:hover {
             background-color: var(--color-button-secondary-hover);
         }
     }
 
-    &--small {
+    &--inline {
         padding: var(--button-padding-small);
         font-size: var(--s-1);
         border-bottom-width: var(--border-width-small);
      }
-    
-     &--large {
-        padding: var(--button-padding-large);
-        font-size: var(--s1);
-        font-weight: var(--font-weight-normal);
-    } 
 
     &:active {
         top: 2px;
