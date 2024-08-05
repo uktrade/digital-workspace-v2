@@ -1,4 +1,6 @@
 .ws-streamfield-content {
+  max-inline-size: 75ch;
+
   h3 {
     @extend %govuk-heading-s;
   }
