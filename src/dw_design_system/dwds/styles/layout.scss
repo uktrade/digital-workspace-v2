@@ -10,6 +10,11 @@ body[data-flag-new-homepage="False"] {
     }
 }
 
+body[data-flag-new-homepage="False"].dwds-navigation-page {
+    --page-width: 1250px;
+}
+
+
 .dwds-container {
     max-width: var(--page-width);
     margin-left: auto;
@@ -52,7 +57,7 @@ body[data-flag-new-homepage="False"] {
 
         .grid-cards {
             grid-template-columns: repeat(auto-fit, minmax(min(var(--card-min-width), 100%), 1fr));
-        
+
         }
     }
 }
