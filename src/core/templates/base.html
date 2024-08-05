@@ -70,8 +70,7 @@
         {% block libraries %}
         {% endblock libraries %}
     </head>
-    <body class="govuk-template__body {% block body_classes %}{% endblock %} "
-          data-flag-new-homepage="{{ FEATURE_FLAGS.new_homepage }}">
+    <body class="govuk-template__body {% block body_classes %}{% endblock %}">
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.GTM_CODE }}"
