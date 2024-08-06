@@ -7,15 +7,6 @@
                 <div>
                     <a href="{% pageurl bookmark.page %}">{{ bookmark.page }}</a>
                 </div>
-<<<<<<< HEAD
-                <div>
-                    <button class="dwds-button dwds-button--inline dwds-button--secondary"
-                            hx-delete="{% url 'interactions:bookmark-remove' bookmark.pk %}"
-                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                            hx-target="closest li"
-                            hx-swap="outerHTML">Remove</button>
-                </div>
-=======
                 {% if show_delete_bookmark %}
                     <div>
                         <button class="dwds-button dwds-button--warning dwds-button--small"
@@ -25,7 +16,6 @@
                                 hx-swap="outerHTML">Remove</button>
                     </div>
                 {% endif %}
->>>>>>> main
             </li>
         {% endfor %}
     </ul>
