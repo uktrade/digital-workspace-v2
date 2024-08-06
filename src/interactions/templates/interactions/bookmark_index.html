@@ -6,32 +6,13 @@
 {% block title %}{{ user.profile.full_name }}'s bookmarks{% endblock %}
 
 {% block primary_content %}
-    <style>
-        .bookmarks {
-            padding: 0;
-
-            > li {
-                display: grid;
-                grid-template-columns: 1fr max-content;
-                align-items: center;
-                gap: var(--space);
-
-                padding: var(--s0);
-                margin-bottom: var(--s0);
-
-                background-color: var(--card-bg-white);
-                border-radius: var(--card-border-radius);
-            }
-        }
-    </style>
-
     <h1>{{ user.profile.full_name }}'s bookmarks</h1>
 
     <p>Here are all the pages you have bookmarked:</p>
 
-    <ul class="bookmarks">
+    <ul class="bookmark-index-list">
         {% for bookmark in bookmarks %}
-            <li class="card-">
+            <li>
                 <div>
                     <a href="{% pageurl bookmark.page %}">{{ bookmark.page }}</a>
                 </div>
