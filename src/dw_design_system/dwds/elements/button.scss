@@ -1,25 +1,18 @@
 .dwds-button {
-    color: var(--color-button-text-primary);
+    color: var(--color-button-primary-text);
     font-weight: var(--font-weight-bold);
     //font-size: var(--font-lineheight-interface); // TODO: Check if we need to set the font-size.
     background-color: var(--color-button-primary);
     padding: var(--padding-button);    
     text-decoration: none;
-    border: var(--border-width-small) solid var(--color-button-primary);
+    border: none;
+    //border: var(--border-width-small) solid var(--color-button-primary);
     border-bottom: solid var(--border-width) var(--color-button-bottom-border);
     cursor: pointer;
 
     &:hover {
         background-color: var(--color-button-hover);
         border-bottom-color: var(--color-button-border-hover);
-    }
-    &--warning {
-        color: var(--color-button-warning-text);
-        background-color: var(--color-button-warning);
-
-        &:hover {
-            background-color: var(--color-button-warning-hover);
-        }
     }
     &:active {
         top: 2px;
@@ -28,12 +21,25 @@
         border-bottom: var(--border-width-small) solid;
         border-color: var(--color-button-border-hover);
     }
+    &--warning {
+        color: var(--color-button-warning-text);
+        background-color: var(--color-button-warning);
+        border-color: var(--color-button-warning);
+        border-bottom: solid var(--border-width) var(--color-button-warning-border);
 
+        &:hover {
+            background-color: var(--color-button-warning-hover);
+        }
+
+        &:active {
+            background-color: var(--color-button-warning-hover);
+        }
+    }
     &--secondary {
-        color: var(--color-button-text-secondary);
+        color: var(--color-button-secondary-text);
         background-color: var(--color-button-secondary);
-        border: solid var(--color-button-border-secondary);
-        border-bottom: solid var(--border-width);
+        border: solid var(--color-button-secondary-border);
+        border-bottom: solid var(--border-width) var(--color-button-secondary-border);
 
 
         &:hover {
@@ -50,21 +56,21 @@
     }
     // TODO: Added secondary-dark as temporary style, need to speak with Cheryl.
     &--secondary-dark {
-        color: var(--color-button-text-secondary-dark);
+        color: var(--color-button-secondary-dark-text);
         background-color: var(--color-button-secondary);
-        border: solid var(--color-button-border-secondary-dark);
+        border: solid var(--color-button-secondary-dark-border);
         border-bottom: solid var(--border-width);
 
         &:hover {
-            color: var(--color-button-text-secondary);
+            color: var(--color-button-secondary-text);
             background-color: var(--color-button-secondary);
-            border-color: var(--color-button-text-secondary);
+            border-color: var(--color-button-secondary-text);
         }
 
         &:active {
-            color: var(--color-button-text-secondary);
+            color: var(--color-button-secondary-text);
             background-color: var(--color-button-secondary);
-            border-color: var(--color-button-text-secondary);
+            border-color: var(--color-button-secondary-text);
         }
     }
 
@@ -80,7 +86,9 @@
     &:focus {
         color: var(--color-button-text-focus);
         background-color: var(--color-button-background-focus);
-        border-color: var(--color-button-border-focus);
+        border: solid var(--color-button-border-focus);
+        border-bottom: solid var(--border-width) ;
+        
     }
     
     &:focus-visible {
@@ -88,6 +96,6 @@
         background-color: var(--color-button-background-focus);
         outline: none;
         border-color: var(--color-button-border-focus);
-        border-bottom: var(--border-width-small) solid;
+        border: solid;
     }
 }

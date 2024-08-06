@@ -29,20 +29,20 @@
   --color-button-primary: #1D70B8;
   --color-button-secondary: white;
   --color-button-hover: #003078;
-  --color-button-text-primary: var(--color-text-highlight);
-  --color-button-text-secondary: #1D70B8;
-  --color-button-text-secondary-dark: #003078;
+  --color-button-primary-text: var(--color-text-highlight);
+  --color-button-secondary-text: #1D70B8;
+  --color-button-secondary-dark-text: #003078;
   --color-button-text-focus: #222222;
   --color-button-background-focus: #FFDD00;
   --color-button-border-focus: #222222;
   --color-button-bottom-border: #003078;
-  --color-button-border-secondary: #1D70B8;
-  --color-button-border-secondary-dark: #003078;
+  --color-button-secondary-border: #1D70B8;
+  --color-button-secondary-dark-border: #003078;
   --color-button-border-hover: #00081F;
   --color-button-warning: var(--gds-red);
-  --color-button-warning-hover: hsl(from var(--color-button-warning) h s calc(l - 20));
+  --color-button-warning-hover: hsl(from var(--color-button-warning) h s calc(l - 20)); // GDS designs for hover #4D0A00
   --color-button-warning-text: white;
-  --color-button-border: black;
+  --color-button-warning-border: #8A1200;
   --color-icon: var(--dbt-blue);
   --color-hr: #7D8E96;
 
