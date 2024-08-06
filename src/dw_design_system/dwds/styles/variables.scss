@@ -7,6 +7,9 @@
   --dbt-light-blue: #0063BE;
   --dbt-light-blue-rgb: 0, 99, 190;
 
+  // GDS colours
+  --gds-red: #d4351c;
+
   // Colour
   --color-heading: var(--dbt-blue);
   --color-text: black;
@@ -24,11 +27,18 @@
   --color-border: #D6E0E5;
   --color-border-dark: var(--dbt-blue);
   --color-border-highlight: white;
+
   --color-button-primary: var(--dbt-light-blue);
   --color-button-primary-hover: #014C92;
+  --color-button-primary-text: var(--color-text-highlight);
   --color-button-secondary: white;
   --color-button-secondary-hover: #dbdad9;
+  --color-button-secondary-text: var(--dbt-light-blue);
+  --color-button-warning: var(--gds-red);
+  --color-button-warning-hover: hsl(from var(--color-button-warning) h s calc(l - 20));
+  --color-button-warning-text: white;
   --color-button-border: black;
+
   --color-icon: var(--dbt-blue);
   --color-hr: #7D8E96;
 
@@ -49,7 +59,6 @@
   --button-padding-large: var(--s-1);
   --button-padding-medium: var(--s-3);
   --button-padding-small: var(--s-5);
-  --card-comment-section-margin-top: 8px;
 
   // Borders and element widths
   --border-width: 2px;
@@ -68,12 +77,18 @@
   --font-lineheight-headings: 1.25em;
   --font-lineheight-interface: 1em;
 
-  --card-min-width: 15rem;
-
   // Opacity
   --opacity-soft: 0.8;
 
   // Icons
   --icon-width: 1.5em;
   --icon-height: 1.5em;
+
+  // Card
+  --card-min-width: 15rem;
+  --card-comment-section-margin-top: 8px;
+  --card-border-radius: var(--s-3);
+  --card-bg-white: white;
+  --card-bg-blue: var(--dbt-blue);
+  --card-bg-red: var(--dbt-red);
 }
