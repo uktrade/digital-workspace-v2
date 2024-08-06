@@ -10,10 +10,6 @@ from content.models import BasePage, BlogIndex, BlogPost, ContentPage, Navigatio
 from core.models.tags import Tag
 from country_fact_sheet.models import CountryFactSheetHome
 from extended_search.index import DWIndexedField, class_is_indexed, get_indexed_models
-from extended_search.management.commands.create_index_fields_json import (
-    JSON_FILE,
-    get_indexed_models_and_fields_dict,
-)
 from home.models import HomePage
 from networks.models import Network, NetworksHome
 from news.models import NewsHome, NewsPage
@@ -276,6 +272,11 @@ class TestProject:
         }, "Indexed models have changed, please update this test if this was intentional."
 
     def test_indexed_models_and_fields(test):
+        from extended_search.management.commands.create_index_fields_json import (
+            JSON_FILE,
+            get_indexed_models_and_fields_dict,
+        )
+
         with open(JSON_FILE, "r") as f:
             expected_indexed_models_and_fields = json.load(f)
             assert (
@@ -285,4 +286,18 @@ class TestProject:
                 "Indexed models and fields have changed."
                 " If this was intentional, please update the JSON file by running the"
                 " `create_index_fields_json` management command."
+            )
+
+    def test_indexed_mappings(test):
+        from extended_search.management.commands.create_index_mapping_json import (
+            JSON_FILE,
+            get_indexed_mapping_dict,
+        )
+
+        with open(JSON_FILE, "r") as f:
+            expected_indexed_mapping = json.load(f)
+            assert get_indexed_mapping_dict() == expected_indexed_mapping, (
+                "Indexed mappings have changed."
+                " If this was intentional, please update the JSON file by running the"
+                " `create_index_mapping_json` management command."
             )
