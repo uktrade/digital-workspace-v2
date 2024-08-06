@@ -1,31 +1,29 @@
 .dwds-card {
-    --card-white: #fff;
-    --border-radius: var(--s-3);
-    --bottom-border-height: 5px;
-    --body-background-colour: var(--card-white);
+    --card-bottom-border-height: 5px;
+    --card-body-bg-color: var(--card-bg-white);
 
     display: flex;
     flex-direction: column;
 
-    border-radius: var(--border-radius);
-    box-shadow: 0 var(--bottom-border-height) 0 rgba(0, 0, 0, 0.2);
+    border-radius: var(--card-border-radius);
+    box-shadow: 0 var(--card-bottom-border-height) 0 rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    background-color: var(--body-background-colour);
+    background-color: var(--card-body-bg-color);
 
     container-name: card;
     container-type: inline-size;
 
     &.dwds-card-blue {
-        --body-background-colour: var(--dbt-blue);
+        --card-body-bg-color: var(--card-bg-blue);
     }
 
     &.dwds-card-red {
-        --body-background-colour: var(--dbt-red);
+        --card-body-bg-color: var(--card-bg-red);
     }
 
     .card-header {
-        --header-background-colour: var(--dbt-blue);
-        --header-text-colour: var(--card-white);
+        --header-background-colour: var(--card-bg-blue);
+        --header-text-colour: var(--card-bg-white);
 
         padding: var(--s0) var(--s1) var(--s0) var(--s0);
         align-items: flex-start;

@@ -1,5 +1,5 @@
 .dwds-button {
-    color: var(--color-text-highlight);
+    color: var(--color-button-text-primary);
     font-weight: var(--font-weight-bold);
     //font-size: var(--font-lineheight-interface); // TODO: Check if we need to set the font-size.
     background-color: var(--color-button-primary);
@@ -13,7 +13,14 @@
         background-color: var(--color-button-hover);
         border-bottom-color: var(--color-button-border-hover);
     }
+    &--warning {
+        color: var(--color-button-warning-text);
+        background-color: var(--color-button-warning);
 
+        &:hover {
+            background-color: var(--color-button-warning-hover);
+        }
+    }
     &:active {
         top: 2px;
         position: relative;

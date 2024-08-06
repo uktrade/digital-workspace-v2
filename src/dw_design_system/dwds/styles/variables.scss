@@ -7,6 +7,9 @@
   --dbt-light-blue: #0063BE;
   --dbt-light-blue-rgb: 0, 99, 190;
 
+  // GDS colours
+  --gds-red: #d4351c;
+
   // Colour
   --color-heading: var(--dbt-blue);
   --color-text: black;
@@ -26,6 +29,7 @@
   --color-button-primary: #1D70B8;
   --color-button-secondary: white;
   --color-button-hover: #003078;
+  --color-button-text-primary: var(--color-text-highlight);
   --color-button-text-secondary: #1D70B8;
   --color-button-text-secondary-dark: #003078;
   --color-button-text-focus: #222222;
@@ -35,6 +39,10 @@
   --color-button-border-secondary: #1D70B8;
   --color-button-border-secondary-dark: #003078;
   --color-button-border-hover: #00081F;
+  --color-button-warning: var(--gds-red);
+  --color-button-warning-hover: hsl(from var(--color-button-warning) h s calc(l - 20));
+  --color-button-warning-text: white;
+  --color-button-border: black;
   --color-icon: var(--dbt-blue);
   --color-hr: #7D8E96;
 
@@ -73,12 +81,18 @@
   --font-lineheight-headings: 1.25em;
   --font-lineheight-interface: 1em;
 
-  --card-min-width: 15rem;
-
   // Opacity
   --opacity-soft: 0.8;
 
   // Icons
   --icon-width: 1.5em;
   --icon-height: 1.5em;
+
+  // Card
+  --card-min-width: 15rem;
+  --card-comment-section-margin-top: 8px;
+  --card-border-radius: var(--s-3);
+  --card-bg-white: white;
+  --card-bg-blue: var(--dbt-blue);
+  --card-bg-red: var(--dbt-red);
 }
