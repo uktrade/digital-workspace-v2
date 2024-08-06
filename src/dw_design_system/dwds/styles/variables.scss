@@ -15,8 +15,7 @@
   --color-link: var(--dbt-light-blue);
   --color-link-hover: #fff;
   --color-link-active: #fff;
-  --color-link-background-active: #fd0; // GDS yellow
-  --color-button-background-active: #fd0;
+  --color-link-background-active: #FFDD00; // GDS yellow
   --color-link-visited: #551a8b;
   --color-background: white;
   --color-background-highlight: white;
@@ -25,10 +24,17 @@
   --color-border-dark: var(--dbt-blue);
   --color-border-highlight: white;
   --color-button-primary: #1D70B8;
-  --color-button-primary-hover: #014C92;
   --color-button-secondary: white;
-  --color-button-secondary-hover: #dbdad9;
-  --color-button-border: black;
+  --color-button-hover: #003078;
+  --color-button-text-secondary: #1D70B8;
+  --color-button-text-secondary-dark: #003078;
+  --color-button-text-focus: #222222;
+  --color-button-background-focus: #FFDD00;
+  --color-button-border-focus: #222222;
+  --color-button-bottom-border: #003078;
+  --color-button-border-secondary: #1D70B8;
+  --color-button-border-secondary-dark: #003078;
+  --color-button-border-hover: #00081F;
   --color-icon: var(--dbt-blue);
   --color-hr: #7D8E96;
 
@@ -46,13 +52,12 @@
   --s4: calc(var(--s3) * var(--ratio));
   --s5: calc(var(--s4) * var(--ratio));
   --space: var(--s3);
-  --button-padding-large: var(--s-1);
-  --button-padding-medium: var(--s-3);
-  --button-padding-small: var(--s-5);
+  --padding-button: var(--s-3); // TODO: Check if we want GDS padding. GDS default button padding: 11px 20px 14px
+  --padding-button-inline: var(--s-5); // TODO: Check if we want GDS padding. GDS inline button padding: 6px 15px 9px
   --card-comment-section-margin-top: 8px;
 
   // Borders and element widths
-  --border-width: 2px;
+  --border-width: 3px;
   --border-width-small: 1px;
   --border-top-width-card: var(--s-2);
   --text-underline-hover: 3px;
