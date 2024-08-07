@@ -92,14 +92,16 @@ body {
         }
     }
 
-    .homepage-welcome-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        margin-top: var(--s0);
+    // TEMPORARILY REMOVED UNTIL NEW HEADER RE-DESIGN IS FINALISED
 
-        h1 {
-            margin: 0;
-        }
-    }
+    // .homepage-welcome-bar {
+    //     display: flex;
+    //     justify-content: space-between;
+    //     align-items: flex-end;
+    //     margin-top: var(--s0);
+
+    //     h1 {
+    //         margin: 0;
+    //     }
+    // }
 }
