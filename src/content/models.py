@@ -11,6 +11,7 @@ from django.forms import widgets
 from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
+from waffle import flag_is_active
 from wagtail.admin.panels import (
     FieldPanel,
     InlinePanel,
@@ -34,6 +35,7 @@ from content.utils import (
 )
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
+from home import FEATURE_HOMEPAGE
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
@@ -480,6 +482,12 @@ class ContentPage(SearchFieldsMixin, BasePage):
         # for tagged_item in self.tagged_items.select_related("tag").all():
         #     tag_set.append(tagged_item.tag)
         context["tag_set"] = tag_set
+
+        # override page base when the new homepage is active.
+        is_new_homepage = flag_is_active(request, FEATURE_HOMEPAGE)
+        if is_new_homepage:
+            context["override_base"] = "dwds_content.html"
+            context["override_content"] = "primary_content"
 
         return context
 

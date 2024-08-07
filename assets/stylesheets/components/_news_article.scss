@@ -1,4 +1,7 @@
-
+.news_comments{
+  padding: var(--space);
+  background-color: var(--color-background-comments);
+}
 .ws-category-lead-story {
   background-color: govuk-colour("light-grey");
   padding: 20px;

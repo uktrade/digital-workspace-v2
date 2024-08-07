@@ -1,5 +1,15 @@
 // Container
 
+// TODO: Remove once everyone is using the new homepage.
+body[data-flag-new-homepage="False"] {
+    --page-width: 960px;
+
+    .dwds-container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
 .dwds-container {
     max-width: var(--page-width);
     margin-left: auto;

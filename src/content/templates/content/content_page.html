@@ -1,22 +1,46 @@
-{% extends "1_col_content.html" %}
+{% extends override_base|default:"1_col_content.html" %}
 {% load wagtailcore_tags bookmarks %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    {% block bookmark %}
-        <div class="dwds">
-            {% if FEATURE_FLAGS.new_homepage %}
-                {% bookmark_page_input user page %}
-            {% endif %}
-        </div>
-    {% endblock bookmark %}
-    {% if attribution %}
-        {% include "includes/attribution.html" with page=page %}
-    {% endif %}
-    {% for block in page.body %}
-        {% include_block block %}
-    {% endfor %}
-    {% if children %}
-        {% include "includes/child-links.html" with children=children num_cols=num_cols display=display target_blank=target_blank %}
-    {% endif %}
-{% endblock %}
+{% if FEATURE_FLAGS.new_homepage %}
+    {% block main_content_classes %}
+        content_page
+    {% endblock main_content_classes %}
+    {% block primary_content %}
+        {% block bookmark %}
+            <div class="dwds">
+                {% if FEATURE_FLAGS.new_homepage %}
+                    {% bookmark_page_input user page %}
+                {% endif %}
+            </div>
+        {% endblock bookmark %}
+        {% if attribution %}
+            {% include "includes/attribution.html" with page=page %}
+        {% endif %}
+        {% for block in page.body %}
+            {% include_block block %}
+        {% endfor %}
+        {% if children %}
+            {% include "includes/child-links.html" with children=children num_cols=num_cols display=display target_blank=target_blank %}
+        {% endif %}
+    {% endblock primary_content %}
+{% else %}
+    {% block content %}
+        <h1 class="govuk-heading-l">{{ page.title }}</h1>
+        {% block bookmark %}
+            <div class="dwds">
+                {% if FEATURE_FLAGS.new_homepage %}
+                    {% bookmark_page_input user page %}
+                {% endif %}
+            </div>
+        {% endblock bookmark %}
+        {% if attribution %}
+            {% include "includes/attribution.html" with page=page %}
+        {% endif %}
+        {% for block in page.body %}
+            {% include_block block %}
+        {% endfor %}
+        {% if children %}
+            {% include "includes/child-links.html" with children=children num_cols=num_cols display=display target_blank=target_blank %}
+        {% endif %}
+    {% endblock content %}
+{% endif %}
