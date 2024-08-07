@@ -8,7 +8,8 @@
     {% endblock pre_main %}
 
     {% block main_content %}
-        <div class="dwds" style="margin-bottom: var(--s2)">
+        <div class="dwds {% block main_content_classes %}{% endblock main_content_classes %}"
+             style="margin-bottom: var(--s2)">
             <div class="stack">
                 {% block pre_content %}
                 {% endblock pre_content %}
