@@ -52,7 +52,7 @@ body[data-flag-new-homepage="False"] {
 
         .grid-cards {
             grid-template-columns: repeat(auto-fit, minmax(min(var(--card-min-width), 100%), 1fr));
-        
+
         }
     }
 }

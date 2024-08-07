@@ -5,7 +5,6 @@
 {% endblock title %}
 
 {% block page_title %}
-    <br />
     <h1>DW Design System styles</h1>
 {% endblock page_title %}
 
@@ -14,13 +13,16 @@
 
     <h2>Buttons</h2>
 
-    <button class="dwds-button">Primary button</button>
-    <br>
-    <button class="dwds-button dwds-button--secondary">Secondary button</button>
-    <br>
-    <button class="dwds-button dwds-button--small">Primary button (small)</button>
-    <br>
-    <button class="dwds-button dwds-button--secondary dwds-button--small">Secondary button (small)</button>
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+        <button class="dwds-button">Primary button</button>
+        <button class="dwds-button dwds-button--secondary">Secondary button</button>
+        <button class="dwds-button dwds-button--warning">Warning button</button>
+    </div>
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+        <button class="dwds-button dwds-button--small">Primary button (small)</button>
+        <button class="dwds-button dwds-button--secondary dwds-button--small">Secondary button (small)</button>
+        <button class="dwds-button dwds-button--warning dwds-button--small">Warning button (small)</button>
+    </div>
 
     <h2>Headings (examples, these styles don't exist yet)</h2>
 
@@ -33,7 +35,4 @@
     <span class="dwds-heading-s">Heading S</span>
     <br>
     <span class="dwds-heading-xs">Heading XS</span>
-
-
-
 {% endblock primary_content %}

@@ -1,6 +1,8 @@
 {% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
 
+{% block body_classes %}dwds-body dwds-navigation-page{% endblock %}
+
 {% block page_title %}
     <div class="with-sidebar-right">
         <h1>{{ page.title }}</h1>
