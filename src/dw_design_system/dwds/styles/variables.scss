@@ -43,6 +43,10 @@
   --color-button-warning-hover: hsl(from var(--color-button-warning) h s calc(l - 20)); // GDS designs for hover #4D0A00
   --color-button-warning-text: white;
   --color-button-warning-border: #8A1200;
+  --color-button-transactional: #00703C;
+  --color-button-transactional-hover: #005A30;
+  --color-button-transactional-border: #00422A;
+  --color-button-transactional-text: white;
   --color-icon: var(--dbt-blue);
   --color-hr: #7D8E96;
 
@@ -60,8 +64,8 @@
   --s4: calc(var(--s3) * var(--ratio));
   --s5: calc(var(--s4) * var(--ratio));
   --space: var(--s3);
-  --padding-button: var(--s-3); // TODO: Check if we want GDS padding. GDS default button padding: 11px 20px 14px
-  --padding-button-inline: var(--s-5); // TODO: Check if we want GDS padding. GDS inline button padding: 6px 15px 9px
+  --padding-button: 11px 20px 11px; // TODO: Check if we want GDS padding. GDS default button padding: 11px 20px 14px
+  --padding-button-inline: 6px 15px 6px; // TODO: Check if we want GDS padding. GDS inline button padding: 6px 15px 9px
   --card-comment-section-margin-top: 8px;
 
   // Borders and element widths
