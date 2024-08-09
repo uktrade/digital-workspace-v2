@@ -13,6 +13,11 @@
     container-name: card;
     container-type: inline-size;
 
+    p {
+        margin-bottom: 0;
+        margin-top: var(--s-5);
+    }
+
     &.dwds-card-blue {
         --card-body-bg-color: var(--card-bg-blue);
     }
