@@ -1,4 +1,3 @@
-// WIP: dwds buttons without additional borders on each state
 .dwds-button {
     box-sizing: border-box;
     color: var(--color-button-primary-text);
@@ -66,7 +65,7 @@
             border-color: var(--color-button-hover);
         }
     }
-    // TODO: Added secondary-dark as temporary style, need to speak with Cheryl.
+
     &--secondary-dark {
         color: var(--color-button-secondary-dark-text);
         background-color: var(--color-button-secondary);
@@ -88,7 +87,6 @@
 
     &--inline {
         padding: var(--padding-button-inline);
-        // font-size: var(--s-1); // TODO: Check if we need to set the font-size.
      }
 
     &:active:before {
