@@ -198,6 +198,12 @@ class BasePage(Page, Indexed):
         else:
             return None
 
+    def get_template(self, request, *args, **kwargs):
+        if flag_is_active(request, FEATURE_HOMEPAGE):
+            self.template = self.template.replace(".html", "_new.html")
+
+        return self.template
+
     @property
     def days_since_last_published(self):
         if self.last_published_at:

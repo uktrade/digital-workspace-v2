@@ -1,5 +1,9 @@
-{% extends "2_col_content.html" %}
+{% extends "dwds_content.html" %}
 {% load wagtailcore_tags bookmarks %}
+
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
 
 {% block content %}
     <h1 class="govuk-heading-l">{{ page.title }}</h1>

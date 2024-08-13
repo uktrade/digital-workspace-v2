@@ -1,8 +1,11 @@
-{% extends "1_col_content.html" %}
+{% extends "dwds_content.html" %}
 {% load wagtailcore_tags bookmarks %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
+
+{% block primary_content %}
     {% block bookmark %}
         <div class="dwds">
             {% if FEATURE_FLAGS.new_homepage %}
@@ -19,4 +22,4 @@
     {% if children %}
         {% include "includes/child-links.html" with children=children num_cols=num_cols display=display target_blank=target_blank %}
     {% endif %}
-{% endblock %}
+{% endblock primary_content %}
