@@ -200,12 +200,6 @@ class NewsPage(PageWithTopics):
         categories = NewsCategory.objects.all().order_by("category")
         context["categories"] = categories
 
-        # override page base when the new homepage is active.
-        is_new_homepage = flag_is_active(request, FEATURE_HOMEPAGE)
-        if is_new_homepage:
-            context["override_base"] = "dwds_content.html"
-            context["override_content"] = "primary_content"
-
         return context
 
     def serve(self, request, *args, **kwargs):
@@ -222,6 +216,9 @@ class NewsPage(PageWithTopics):
 
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
+
+        if flag_is_active(request, FEATURE_HOMEPAGE):
+            self.template = self.template.replace(".html", "_new.html")
 
         response = TemplateResponse(request, self.template, context)
 
@@ -353,11 +350,5 @@ class NewsHome(RoutablePageMixin, BasePage):
         # "posts" will have child pages; you'll need to use .specific in the templates
         # in order to access child properties, such as youtube_video_id and subtitle
         context["posts"] = posts
-
-        # override page base when the new homepage is active.
-        is_new_homepage = flag_is_active(request, FEATURE_HOMEPAGE)
-        if is_new_homepage:
-            context["override_base"] = "dwds_content.html"
-            context["override_content"] = "primary_content"
 
         return context

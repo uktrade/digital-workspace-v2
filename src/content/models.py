@@ -182,6 +182,9 @@ class BasePage(Page, Indexed):
     def serve(self, request):
         response = super().serve(request)
 
+        if flag_is_active(request, FEATURE_HOMEPAGE):
+            self.template = self.template.replace(".html", "_new.html")
+
         return response
 
     def get_first_publisher(self) -> Optional[UserModel]:
