@@ -13,8 +13,12 @@
     container-name: card;
     container-type: inline-size;
 
-    p {
+    p:last-child {
         margin-bottom: 0;
+    }
+
+    p {
+        margin-bottom: var(--s-5);
         margin-top: var(--s-5);
     }
 
