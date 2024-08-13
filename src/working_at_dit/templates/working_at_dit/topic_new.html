@@ -1,8 +1,11 @@
-{% extends "2_col_content.html" %}
+{% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
+
+{% block primary_content %}
     {% include "includes/attribution.html" with page=page %}
     {% for block in page.body %}
         {% include_block block %}
@@ -32,7 +35,7 @@
 
 {% endblock %}
 
-{% block tertiary_col_content %}
+{% block secondary_content %}
 
     {% if tools %}
         <h2 class="govuk-heading-m">Tools</h2>
