@@ -19,16 +19,16 @@
     }
 }
 
-.dwds-navigational-link:hover {
-    text-decoration-line: underline;
-    text-decoration-color: var(--color-link);
-}
+// .dwds-navigational-link:hover {
+//     text-decoration-line: underline;
+//     text-decoration-color: var(--color-link);
+// }
 
-.dwds-navigational-link:active {
-    text-decoration-line: underline;
-    text-decoration-color: var(--color-link);
-    background-color: var(--color-link-background-active);
-}
+// .dwds-navigational-link:active {
+//     text-decoration-line: underline;
+//     text-decoration-color: var(--color-link);
+//     background-color: var(--color-link-background-active);
+// }
 
 .dwds-navigational-link > * {
     max-width: calc(100% - var(--space) - 2ch); // 100% - gap - width of the arrow

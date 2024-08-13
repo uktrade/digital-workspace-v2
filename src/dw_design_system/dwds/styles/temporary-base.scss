@@ -63,13 +63,14 @@ body {
         color: var(--color-link);
     }
 
-    a:focus {
-        text-decoration: underline var(--color-link) var(--text-underline-hover);
+    a:focus, a:active {
+        text-decoration: underline var(--text-underline-hover) !important;
         background-color: var(--color-link-background-active);
+        color: var(--color-text) !important;
     }
 
-    a:focus-visible {
-        outline: none;
+    a:hover {
+        text-decoration: underline var(--text-underline-hover);
     }
 
     hr {

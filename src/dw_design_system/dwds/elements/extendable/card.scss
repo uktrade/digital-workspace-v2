@@ -72,9 +72,8 @@
                     a {
                         text-decoration: none;
     
-                        &:hover, &:active, &:focus {
+                         &:hover {
                             text-decoration-line: underline;
-                            text-decoration-color: var(--color-link);
                         }
     
                         &:active {
