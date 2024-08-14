@@ -1,17 +1,17 @@
-.bookmark-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s0);
+// .bookmark-list {
+//     display: flex;
+//     flex-direction: column;
+//     gap: var(--s0);
 
-    padding-left: 0;
-    margin: 0;
+//     padding-left: 0;
+//     margin: 0;
 
-    list-style: none;
+//     list-style: none;
 
-    li > *:not(:last-child) {
-        margin-bottom: var(--s-4);
-    }
-}
+//     li > *:not(:last-child) {
+//         margin-bottom: var(--s-4);
+//     }
+// }
 
 .empty-bookmark-list {
     img {
