@@ -1,63 +1,109 @@
 .dwds-button {
+    box-sizing: border-box;
     color: var(--color-button-primary-text);
-    background-color: var(--color-button-primary); // Using primary & medium for default (GDS defaults to primary button colours).
-    padding: var(--button-padding-medium);
+    font-weight: var(--font-weight-bold);
+    background-color: var(--color-button-primary);
+    padding: var(--padding-button);    
     text-decoration: none;
     border: none;
-    border-bottom: var(--border-width) solid var(--color-button-border);
+    border-bottom: solid var(--border-width) var(--color-button-bottom-border);
     cursor: pointer;
 
     &:hover {
-        background-color: var(--color-button-primary-hover);     
+        background-color: var(--color-button-hover);
+        border-bottom-color: var(--color-button-border-hover);
+    }
+    &:active {
+        top: 2px;
+        position: relative;
+        background-color: var(--color-button-hover);
+        border-bottom: solid var(--border-width);
+    }
+    &--warning {
+        color: var(--color-button-warning-text);
+        background-color: var(--color-button-warning);
+        border-bottom: solid var(--border-width) var(--color-button-warning-border);
+
+        &:hover {
+            background-color: var(--color-button-warning-hover);
+        }
+
+        &:active {
+            background-color: var(--color-button-warning-hover);
+        }
+    }
+    &--transactional {
+        color: var(--color-button-transactional-text);
+        background-color: var(--color-button-transactional);
+        border-bottom: solid var(--border-width) var(--color-button-transactional-border);
+
+        &:hover {
+            background-color: var(--color-button-transactional-hover);
+        }
+
+        &:active {
+            background-color: var(--color-button-transactional-hover);
+        }
     }
 
     &--secondary {
         color: var(--color-button-secondary-text);
         background-color: var(--color-button-secondary);
+        border: solid var(--color-button-secondary-border);
+        border-bottom: solid var(--border-width) var(--color-button-secondary-border);
+
 
         &:hover {
-            background-color: var(--color-button-secondary-hover);
+            color: var(--color-button-hover);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-hover);
+        }
+
+        &:active {
+            color: var(--color-button-hover);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-hover);
         }
     }
 
-    &--warning {
-        color: var(--color-button-warning-text);
-        background-color: var(--color-button-warning);
+    &--secondary-dark {
+        color: var(--color-button-secondary-dark-text);
+        background-color: var(--color-button-secondary);
+        border: solid var(--color-button-secondary-dark-border);
+        border-bottom: solid var(--border-width);
 
         &:hover {
-            background-color: var(--color-button-warning-hover);
+            color: var(--color-button-secondary-text);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-secondary-text);
+        }
+
+        &:active {
+            color: var(--color-button-secondary-text);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-secondary-text);
         }
     }
 
-    &--small {
-        padding: var(--button-padding-small);
-        font-size: var(--s-1);
-        border-bottom-width: var(--border-width-small);
+    &--inline {
+        padding: var(--padding-button-inline);
      }
-    
-    &--large {
-        padding: var(--button-padding-large);
-        font-size: var(--s1);
-        font-weight: var(--font-weight-normal);
-    } 
-
-    &:active {
-        top: 2px;
-        position: relative;
-
-    }
 
     &:active:before {
         top: -4px;
     }
 
     &:focus {
-        background-color: var(--color-button-background-active);
-        color: var(--color-text); 
+        color: var(--color-button-text-focus);
+        background-color: var(--color-button-background-focus);
+        border-color: var(--color-button-border-focus);
+        
     }
     
     &:focus-visible {
-        outline: var(--color-button-background-active) 1px;
-        color: var(--color-text); 
+        color: var(--color-button-text-focus);
+        background-color: var(--color-button-background-focus);
+        border-color: var(--color-button-border-focus);
+        outline: none;
     }
 }
