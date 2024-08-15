@@ -43,6 +43,10 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--space);
+
+    &-navigation-page {
+      align-items: flex-end;
+    }
   }
 
   .with-sidebar > :first-child {
