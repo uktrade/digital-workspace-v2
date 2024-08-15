@@ -1,3 +1,8 @@
+.content_page {
+  padding: var(--space);
+  background-color: var(--color-background);
+}
+
 .ws-content-page__metadata {
   @include govuk-responsive-margin(6, "bottom");
 }

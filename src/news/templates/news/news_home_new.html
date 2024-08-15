@@ -1,8 +1,15 @@
-{% extends "base.html" %}
+{% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 
-{% block main_content %}
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
+
+{% block bookmark %}
+{% endblock bookmark %}
+
+{% block primary_content %}
     <article>
         <div class="govuk-grid-row">
             {% if category %}
