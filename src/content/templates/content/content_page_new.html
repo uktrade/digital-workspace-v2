@@ -6,13 +6,6 @@
 {% endblock main_content_classes %}
 
 {% block primary_content %}
-    {% block bookmark %}
-        <div class="dwds">
-            {% if FEATURE_FLAGS.new_homepage %}
-                {% bookmark_page_input user page %}
-            {% endif %}
-        </div>
-    {% endblock bookmark %}
     {% if attribution %}
         {% include "includes/attribution.html" with page=page %}
     {% endif %}

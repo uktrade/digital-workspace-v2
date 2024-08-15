@@ -5,21 +5,14 @@
     content_page
 {% endblock main_content_classes %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    {% block bookmark %}
-        <div class="dwds">
-            {% if FEATURE_FLAGS.new_homepage %}
-                {% bookmark_page_input user page %}
-            {% endif %}
-        </div>
-    {% endblock bookmark %}
+{% block primary_content %}
     {% include "includes/attribution.html" with page=page %}
     {% for block in page.body %}
         {% include_block block %}
     {% endfor %}
-{% endblock %}
-{% block tertiary_col_content %}
+{% endblock primary_content %}
+
+{% block secondary_content %}
     <h2 class="govuk-heading-m">Related topics</h2>
     <ul class="govuk-list">
         {% for page_topic in page_topics %}
@@ -28,4 +21,4 @@
             </li>
         {% endfor %}
     </ul>
-{% endblock %}
+{% endblock secondary_content %}
