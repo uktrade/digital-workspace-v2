@@ -179,11 +179,17 @@ class BasePage(Page, Indexed):
     def published_date(self):
         return self.last_published_at
 
+    def get_template(self, request, *args, **kwargs):
+        if flag_is_active(request, FEATURE_HOMEPAGE):
+            self.template = self.template.replace(".html", "_new.html")
+
+        return self.template
+
     def serve(self, request):
         response = super().serve(request)
 
         if flag_is_active(request, FEATURE_HOMEPAGE):
-            self.template = self.template.replace(".html", "_new.html")
+            self.template = self.get_template(request)
 
         return response
 
@@ -197,12 +203,6 @@ class BasePage(Page, Indexed):
             return first_revision_with_user.user
         else:
             return None
-
-    def get_template(self, request, *args, **kwargs):
-        if flag_is_active(request, FEATURE_HOMEPAGE):
-            self.template = self.template.replace(".html", "_new.html")
-
-        return self.template
 
     @property
     def days_since_last_published(self):
@@ -571,6 +571,9 @@ class NavigationPage(SearchFieldsMixin, BasePage):
         IndexedField("primary_elements"),
         IndexedField("secondary_elements"),
     ]
+
+    def get_template(self, request, *args, **kwargs):
+        return self.template
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
