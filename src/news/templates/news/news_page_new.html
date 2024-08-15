@@ -12,6 +12,9 @@
             {% include_block block %}
         {% endfor %}
     </div>
+{% endblock primary_content %}
+
+{% block post_primary_content %}
     <div class="news_comments">
         {% if self.allow_comments %}
             {% if comment_count > 0 %}
@@ -104,10 +107,9 @@
             </script>
         {% endif %}
     </div>
-{% endblock primary_content %}
+    {{ block.super }}
+{% endblock post_primary_content %}
+
 {% block secondary_content %}
     {% include "news/includes/news_categories.html" %}
 {% endblock secondary_content %}
-
-{% block post_content %}
-{% endblock post_content %}
