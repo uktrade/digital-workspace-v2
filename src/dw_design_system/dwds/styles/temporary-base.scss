@@ -63,9 +63,10 @@ body {
         color: var(--color-link);
     }
 
+    // Using !important to have consistent focus/active states on all links
     a:focus, a:active {
         text-decoration: underline var(--text-underline-hover) !important;
-        background-color: var(--color-link-background-active);
+        background-color: var(--color-link-background-active) !important;
         color: var(--color-text) !important;
     }
 
