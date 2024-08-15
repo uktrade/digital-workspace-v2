@@ -4,7 +4,7 @@
 {% block body_classes %}dwds-body dwds-navigation-page{% endblock %}
 
 {% block page_title %}
-    <div class="with-sidebar-right with-sidebar-right-navigation-page">
+    <div class="with-sidebar-right flex-end">
         <h1>{{ page.title }}</h1>
         <div>
             {% include "feedback.html" with form_id="hr-v1" classes="" prefix="navigation-page" custom_submit_data_function="navigationFeedbackData" %}

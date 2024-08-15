@@ -23,6 +23,10 @@
     max-inline-size: var(--measure);
   }
 
+  // Align items flex-end
+  .flex-end {
+    align-items: flex-end;
+  }
 
   // Cluster
   // https://every-layout.dev/layouts/cluster/
@@ -43,10 +47,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--space);
-
-    &-navigation-page {
-      align-items: flex-end;
-    }
   }
 
   .with-sidebar > :first-child {
