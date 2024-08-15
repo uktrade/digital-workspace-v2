@@ -7,6 +7,7 @@ from django.template.response import TemplateResponse
 from django.utils.text import slugify
 from modelcluster.fields import ParentalKey
 from simple_history.models import HistoricalRecords
+from waffle import flag_is_active
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.snippets.models import register_snippet
@@ -14,6 +15,7 @@ from wagtail.snippets.models import register_snippet
 from content.models import BasePage
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import ScoreFunction
+from home import FEATURE_HOMEPAGE
 from news.forms import CommentForm
 from working_at_dit.models import PageWithTopics
 
@@ -214,6 +216,9 @@ class NewsPage(PageWithTopics):
 
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
+
+        if flag_is_active(request, FEATURE_HOMEPAGE):
+            self.template = self.template.replace(".html", "_new.html")
 
         response = TemplateResponse(request, self.template, context)
 

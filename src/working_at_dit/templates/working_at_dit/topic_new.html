@@ -1,0 +1,59 @@
+{% extends "dwds_content.html" %}
+{% load wagtailcore_tags %}
+
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
+
+{% block primary_content %}
+    {% include "includes/attribution.html" with page=page %}
+    {% for block in page.body %}
+        {% include_block block %}
+    {% endfor %}
+    {% if how_do_is %}
+        <h2 class="govuk-heading-m">How do I?</h2>
+        <ul class="govuk-list">
+            {% for how_do_i in how_do_is %}
+                <li>
+                    <a class="govuk-link" href="{{ how_do_i.page.url }}">{{ how_do_i.page.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if policies_and_guidance %}
+        <h2 class="govuk-heading-m">Policies and Guidance</h2>
+        {% for page in policies_and_guidance %}
+            <ul class="govuk-list">
+                <li>
+                    <a class="govuk-link" href="{{ page.url }}">{{ page.title }}</a>
+                    <br />
+                    <span class="govuk-body-s ws-secondary-meta">{{ page.last_published_at }}</span>
+                </li>
+            </ul>
+        {% endfor %}
+    {% endif %}
+{% endblock primary_content %}
+
+{% block secondary_content %}
+    {% if tools %}
+        <h2 class="govuk-heading-m">Tools</h2>
+        <ul class="govuk-list">
+            {% for tool in tools %}
+                <li>
+                    <a class="govuk-link" href="{{ tool.page.url }}">{{ tool.page.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if related_news %}
+        <h2 class="govuk-heading-m">Related news</h2>
+        <ul class="govuk-list">
+            {% for page_topic in related_news %}
+                <li>
+                    <a class="govuk-link" href="{{ page_topic.page.url }}">{{ page_topic.page.title }}</a>
+                    <p class="govuk-body-s ws-secondary-meta">{{ page_topic.page.last_published_at }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock secondary_content %}
