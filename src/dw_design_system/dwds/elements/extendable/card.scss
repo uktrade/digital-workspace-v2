@@ -80,15 +80,6 @@
 
                     a {
                         text-decoration: none;
-    
-                        &:hover, &:active, &:focus {
-                            text-decoration-line: underline;
-                            text-decoration-color: var(--color-link);
-                        }
-    
-                        &:active {
-                            background-color: var(--color-link-background-active);
-                        }
                     }
                 }
             }
