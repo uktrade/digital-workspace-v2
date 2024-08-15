@@ -4,13 +4,13 @@
 {% block card_container_classes %}
     dwds-one-up-card card-with-image image-right
 {% endblock card_container_classes %}
- 
+
 {% block card_header %}
 {% endblock card_header %}
 
 {% block card_content_image %}
     {% if thumbnail %}
-        {% image thumbnail fill-320x200 %}
+        {% image thumbnail fill-480x300 %}
     {% else %}
         <img src="{% static '/images/dwds/fallback_image_card.png' %}"
              alt="Colourful circles on a blue background.">
