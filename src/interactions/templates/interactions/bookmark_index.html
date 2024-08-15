@@ -3,7 +3,9 @@
 {% load wagtailcore_tags %}
 {% load bookmarks %}
 
-{% block title %}{{ user.profile.full_name }}'s bookmarks{% endblock %}
+{% block title %}
+    {{ user.profile.full_name }}'s bookmarks
+{% endblock title %}
 
 {% block primary_content %}
     <h1>{{ user.profile.full_name }}'s bookmarks</h1>
@@ -16,7 +18,7 @@
                 <div>
                     <a href="{% pageurl bookmark.page %}">{{ bookmark.page }}</a>
                 </div>
-                <button class="dwds-button dwds-button--warning dwds-button--small"
+                <button class="dwds-button dwds-button--secondary-dark dwds-button--inline"
                         hx-delete="{% url 'interactions:bookmark-remove' bookmark.pk %}"
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                         hx-target="closest li"

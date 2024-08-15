@@ -13,6 +13,15 @@
     container-name: card;
     container-type: inline-size;
 
+    p:last-child {
+        margin-bottom: 0;
+    }
+
+    p {
+        margin-bottom: var(--s-5);
+        margin-top: var(--s-5);
+    }
+
     &.dwds-card-blue {
         --card-body-bg-color: var(--card-bg-blue);
     }
@@ -71,15 +80,6 @@
 
                     a {
                         text-decoration: none;
-    
-                        &:hover, &:active, &:focus {
-                            text-decoration-line: underline;
-                            text-decoration-color: var(--color-link);
-                        }
-    
-                        &:active {
-                            background-color: var(--color-link-background-active);
-                        }
                     }
                 }
             }
