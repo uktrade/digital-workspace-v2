@@ -1,7 +1,8 @@
-.news_comments{
+.news_comments {
   padding: var(--space);
   background-color: var(--color-background-comments);
 }
+
 .ws-category-lead-story {
   background-color: govuk-colour("light-grey");
   padding: 20px;
@@ -15,11 +16,11 @@
 
 .ws-news-items {
   h2 {
-      margin-bottom: 0;
+    margin-bottom: 0;
   }
 
   p {
-      margin-bottom: 0;
+    margin-bottom: 0;
   }
 
   list-style: none;
