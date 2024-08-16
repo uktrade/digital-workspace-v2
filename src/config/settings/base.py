@@ -93,7 +93,7 @@ def filter_transactions(event, hint):
     url_string = event["request"]["url"]
     parsed_url = urlparse(url_string)
 
-    if parsed_url.path == "/healthcheck":
+    if parsed_url.path.startswith("/pingdom"):
         return None
 
     return event
