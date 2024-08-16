@@ -63,13 +63,19 @@ body {
         color: var(--color-link);
     }
 
-    a:focus {
-        text-decoration: underline var(--color-link) var(--text-underline-hover);
-        background-color: var(--color-link-background-active);
+    // Using !important to have consistent focus/active states on all links
+    a:focus, a:active {
+        text-decoration: underline var(--text-underline-hover) !important;
+        background-color: var(--color-link-background-active) !important;
+        color: var(--color-text) !important;
     }
 
     a:focus-visible {
         outline: none;
+    }
+
+    a:hover {
+        text-decoration: underline var(--text-underline-hover);
     }
 
     hr {
@@ -90,6 +96,10 @@ body {
         div {
             color: var(--color-text) !important;
         }
+    }
+
+    .comment-posted-date {
+        color: var(--color-text);
     }
 
     // TEMPORARILY REMOVED UNTIL NEW HEADER RE-DESIGN IS FINALISED

@@ -153,7 +153,8 @@ class HomePage(BasePage):
                 "-pinned_on_home",
                 "home_news_order_pages__order",
                 "-first_published_at",
-            )[:8]
+            )
+            .annotate_with_comment_count()[:8]
         )
         context.update(
             news_items=news_items,

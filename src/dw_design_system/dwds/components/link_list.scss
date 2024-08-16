@@ -1,8 +1,4 @@
 .dwds-link-list {
-    p {
-        margin: 0;
-    }
-
     ul {
         list-style-type: none;
         margin: 0;
@@ -24,10 +20,6 @@
 
             a:visited {
                 color: var(--color-link-visited);
-            }
-
-            a:hover {
-                text-decoration-thickness: var(--text-underline-hover);
             }
         }
     }

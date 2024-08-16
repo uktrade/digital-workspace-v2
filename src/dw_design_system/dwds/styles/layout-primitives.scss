@@ -23,6 +23,10 @@
     max-inline-size: var(--measure);
   }
 
+  // Flex-end
+  .flex-end {
+    align-items: flex-end;
+  }
 
   // Cluster
   // https://every-layout.dev/layouts/cluster/

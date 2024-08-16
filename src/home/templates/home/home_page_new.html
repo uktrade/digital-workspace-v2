@@ -46,18 +46,18 @@
         <section>
             <div class="stack">
                 {% if news_items %}
-                    {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url comment_count=news_items.0.comment_set.count %}
+                    {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url comment_count=news_items.0.comment_count %}
                 {% endif %}
                 <div class="grid grid-cards home-news-items">
                     {% for news_item in news_items|slice:"1:3" %}
-                        {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.get_comment_count excerpt=news_item.excerpt is_highlighted=True %}
+                        {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.comment_count excerpt=news_item.excerpt is_highlighted=True %}
                     {% endfor %}
                 </div>
                 <br>
                 <h2>Latest DBT news</h2>
                 <div class="grid home-news-items">
                     {% for news_item in news_items|slice:"3:" %}
-                        {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.get_comment_count excerpt=news_item.excerpt is_highlighted=True %}
+                        {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.comment_count excerpt=news_item.excerpt is_highlighted=True %}
                     {% endfor %}
                 </div>
                 <span>

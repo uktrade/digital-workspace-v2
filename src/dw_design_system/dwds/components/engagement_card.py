@@ -37,8 +37,8 @@ class EngagementCardBlock(blocks.StructBlock):
         )
 
         if isinstance(page, NewsPage):
-            context.update(comment_count=page.get_comment_count())
-
+            news_page = NewsPage.objects.annotate_with_comment_count().get(pk=page.pk)
+            context.update(comment_count=news_page.comment_count)
         return context
 
     def get_searchable_heading(self, value):
