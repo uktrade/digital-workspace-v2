@@ -13,16 +13,9 @@
 
 {% block post_content %}
     {% if self.allow_comments %}
-        {% if comment_count > 0 %}
+        {% if page.comment_count > 0 %}
             <div class="news-article-comments">
-                <h2 class="govuk-heading-m">
-                    {{ comment_count }}
-                    {% if comment_count > 1 %}
-                        comments
-                    {% else %}
-                        comment
-                    {% endif %}
-                </h2>
+                <h2 class="govuk-heading-m">{{ page.comment_count }} Comment{{ page.comment_count|pluralize }}</h2>
                 {% for comment in comments %}
                     <p class="govuk-body comment-author">
                         {% if comment.author %}
