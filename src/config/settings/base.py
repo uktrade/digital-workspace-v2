@@ -1,6 +1,7 @@
 import os
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 import dj_database_url
 import environ
@@ -86,6 +87,18 @@ if env.str("DJANGO_EMAIL_BACKEND", None):
 # Sentry
 SENTRY_DSN = env.str("SENTRY_DSN", None)
 SENTRY_BROWSER_TRACES_SAMPLE_RATE = env.float("SENTRY_BROWSER_TRACES_SAMPLE_RATE", 0.0)
+
+
+def filter_transactions(event, hint):
+    url_string = event["request"]["url"]
+    parsed_url = urlparse(url_string)
+
+    if parsed_url.path == "/healthcheck":
+        return None
+
+    return event
+
+
 # Configure Sentry if a DSN is set
 if SENTRY_DSN:
     sentry_sdk.init(
@@ -96,6 +109,7 @@ if SENTRY_DSN:
         send_default_pii=True,  # Enable associating exceptions to users
         enable_tracing=env.bool("SENTRY_ENABLE_TRACING", False),
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
+        before_send_transaction=filter_transactions,
     )
 
 # Allow all hosts
