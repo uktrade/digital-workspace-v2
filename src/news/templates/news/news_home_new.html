@@ -45,9 +45,7 @@
                         {% endfor %}
                     </p>
                     {% image news_item.preview_image width-540 %}
-                    <p class="govuk-body">
-                        <a href="{% pageurl news_item %}" class="govuk-link">{{ news_item.excerpt }}</a>
-                    </p>
+                    <p class="govuk-body">{{ news_item.excerpt }}</p>
                 </li>
             {% endfor %}
         </ul>
