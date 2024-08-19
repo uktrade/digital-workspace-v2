@@ -135,6 +135,7 @@ LOCAL_APPS = [
     "peoplefinder.apps.PeoplefinderConfig",
     "countries.apps.CountriesConfig",
     "interactions.apps.InteractionsConfig",
+    "events",
 ]
 
 THIRD_PARTY_APPS = [
