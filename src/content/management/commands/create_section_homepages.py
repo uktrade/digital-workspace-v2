@@ -7,6 +7,7 @@ from wagtail.models import Page
 from about_us.models import AboutUsHome
 from content.models import BlogIndex, ContentPage
 from country_fact_sheet.models import CountryFactSheetHome
+from events.models import EventsHome
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome
@@ -61,6 +62,24 @@ class Command(BaseCommand):
             home_page.save()
 
             news_home.save_revision().publish()
+
+        try:
+            Page.objects.get(slug="events")
+        except Page.DoesNotExist:
+            events_home = EventsHome(
+                title="Events",
+                slug="events",
+                live=True,
+                first_published_at=datetime.now(),
+                show_in_menus=True,
+                depth=1,
+                legacy_path="/events/",
+            )
+
+            home_page.add_child(instance=events_home)
+            home_page.save()
+
+            events_home.save_revision().publish()
 
         try:
             Page.objects.get(slug="working-at-dbt")

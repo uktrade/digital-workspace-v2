@@ -129,13 +129,13 @@ LOCAL_APPS = [
     "about_us",
     "networks",
     "country_fact_sheet",
+    "events",
     "dw_design_system",
     "user.apps.UserConfig",
     "pingdom.apps.PingdomConfig",
     "peoplefinder.apps.PeoplefinderConfig",
     "countries.apps.CountriesConfig",
     "interactions.apps.InteractionsConfig",
-    "events",
 ]
 
 THIRD_PARTY_APPS = [

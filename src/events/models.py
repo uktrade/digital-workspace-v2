@@ -1,42 +1,71 @@
-from config.settings.base import INGESTED_MODELS_DATABASES
-from content.models import ContentPage
-from extended_search.index import IndexedField
 from django.db import models
+from wagtail.admin.panels import FieldPanel
 
-from peoplefinder.models import Grade
+from content.models import BasePage, ContentPage
+from events import types
 
 
-class EventsPage(ContentPage):
+class EventsHome(BasePage):
+    template = "events/events_home.html"
+    show_in_menus = True
+    is_creatable = False
+    subpage_types = ["events.EventPage"]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        events = EventPage.objects.live().public()
+        context["events"] = events
+
+        return context
+
+
+class EventPage(ContentPage):
     is_creatable = True
-    parent_page_types = ["events.EventsHome"]
-    template = ""
-   
-    indexed_fields = [
-        IndexedField(
-            "description",
-            tokenized=True,
-            explicit=True,
-        ),
-        IndexedField(
-            "body",
-            tokenized=True,
-            explicit=True,
-        ),
-    ]
+    parent_page_types = ["events.EventsHome", "events.EventPage"]
+    template = "events/event_page.html"
+
     event_date = models.DateTimeField()
     event_url = models.URLField(
         blank=True,
         null=True,
     )
-
-    # TODO: wip - not sure about these.
-    stuff_grades = ["All stuff", Grade.objects.in_bulk(field_name="code")]
-    audience = models.Choices(stuff_grades, default="All stuff")
-    all_locations = ["online", INGESTED_MODELS_DATABASES["uk_staff_locations"]]
-    location = models.Choices(all_locations, blank=True, null=True)
-
     submit_questions_url = models.URLField(
         blank=True,
         null=True,
     )
+    audience = models.CharField(
+        choices=types.EventAudience.choices,
+        default=types.EventAudience.ALL_STAFF,
+    )
+    location = models.ForeignKey(
+        "peoplefinder.UkStaffLocation",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    room = models.CharField(
+        blank=True,
+        null=True,
+    )
 
+    in_person_only = models.BooleanField(
+        default=False,
+        verbose_name="In person only event?",
+        help_text="Tick this box if this event is being held in person only.",
+    )
+
+    content_panels = ContentPage.content_panels + [
+        FieldPanel("event_date"),
+        FieldPanel("event_url"),
+        FieldPanel("submit_questions_url"),
+        FieldPanel("audience"),
+        FieldPanel("location"),
+        FieldPanel("room"),
+        FieldPanel("in_person_only"),
+    ]
+
+    indexed_fields = []
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        return context
