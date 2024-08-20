@@ -17,11 +17,11 @@
 {% block post_primary_content %}
     <div class="news_comments">
         {% if self.allow_comments %}
-            {% if comment_count > 0 %}
+            {% if page.comment_count > 0 %}
                 <div class="news-article-comments">
                     <h2 class="govuk-heading-m">
-                        {{ comment_count }}
-                        {% if comment_count > 1 %}
+                        {{ page.comment_count }}
+                        {% if page.comment_count > 1 %}
                             comments
                         {% else %}
                             comment
