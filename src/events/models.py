@@ -11,6 +11,9 @@ class EventsHome(BasePage):
     is_creatable = False
     subpage_types = ["events.EventPage"]
 
+    def get_template(self, request, *args, **kwargs):
+        return self.template
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         events = EventPage.objects.live().public()
@@ -64,7 +67,10 @@ class EventPage(ContentPage):
         FieldPanel("in_person_only"),
     ]
 
-    indexed_fields = []
+    # indexed_fields = []
+
+    def get_template(self, request, *args, **kwargs):
+        return self.template
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
