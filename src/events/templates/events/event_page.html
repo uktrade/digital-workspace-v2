@@ -13,9 +13,10 @@
         {% endfor %}
     </div>
     <div>
-        <p>Date: {{ page.event_date|date:'Y-m-d H:i' }}</p>
+        <p>Date: {{ page.event_date }}</p>
+        <p>Time: {{ page.start_time }} - {{ page.end_time }}</p>
         <p>
-            Event Link: <a>{{ page.event_url|default_if_none:"-" }}</a>
+            Event Link: {% if page.event_url %}<a>{{ page.event_url }}</a>{% else %}-{% endif %}
         </p>
         <p>
             Submit your questions: <a>{{ page.submit_questions_url }}</a>
