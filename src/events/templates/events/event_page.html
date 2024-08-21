@@ -4,6 +4,7 @@
 {% block main_content_classes %}
     content_page
 {% endblock main_content_classes %}
+
 {% block primary_content %}
     {% image page.preview_image fill-640x360 width="100%" style="object-fit: cover;" %}
     <div class="ws-streamfield-content">
@@ -14,13 +15,13 @@
     <div>
         <p>Date: {{ page.event_date }}</p>
         <p>
-            Event Link: <a>{{ page.event_url }}</a>
+            Event Link: <a>{{ page.event_url|default_if_none:"-" }}</a>
         </p>
         <p>
             Submit your questions: <a>{{ page.submit_questions_url }}</a>
         </p>
         <p>Audience: {{ page.get_audience_display }}</p>
-        <p>Location: {{ page.location }}</p>
+        <p>Location: {{ page.location }}, {{ page.location.city }}</p>
         <p>Room: {{ page.room }}</p>
         <p>in person?: {{ page.in_person_only|yesno }}</p>
     </div>

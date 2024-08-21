@@ -1,5 +1,5 @@
 from django.db import models
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, FieldRowPanel
 
 from content.models import BasePage, ContentPage
 from events import types
@@ -31,6 +31,8 @@ class EventPage(ContentPage):
     event_url = models.URLField(
         blank=True,
         null=True,
+        verbose_name="Online event url",
+        help_text="If the event is online, you can add a link here for others to join."
     )
     submit_questions_url = models.URLField(
         blank=True,
@@ -50,6 +52,7 @@ class EventPage(ContentPage):
         blank=True,
         null=True,
     )
+    room_capacity = models.IntegerField(blank=True, null=True,)
 
     in_person_only = models.BooleanField(
         default=False,
@@ -62,8 +65,13 @@ class EventPage(ContentPage):
         FieldPanel("event_url"),
         FieldPanel("submit_questions_url"),
         FieldPanel("audience"),
-        FieldPanel("location"),
-        FieldPanel("room"),
+        MultiFieldPanel([
+            FieldPanel("location"),
+            FieldRowPanel([
+                FieldPanel("room"),
+                FieldPanel("room_capacity"),
+            ]),     
+        ], heading="Location details"),
         FieldPanel("in_person_only"),
     ]
 
