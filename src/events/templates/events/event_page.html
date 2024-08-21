@@ -13,7 +13,7 @@
         {% endfor %}
     </div>
     <div>
-        <p>Date: {{ page.event_date }}</p>
+        <p>Date: {{ page.event_date|date:'Y-m-d H:i' }}</p>
         <p>
             Event Link: <a>{{ page.event_url|default_if_none:"-" }}</a>
         </p>
@@ -22,7 +22,7 @@
         </p>
         <p>Audience: {{ page.get_audience_display }}</p>
         <p>Location: {{ page.location }}, {{ page.location.city }}</p>
-        <p>Room: {{ page.room }}</p>
+        <p>Room: {{ page.room }}, Capacity: {{ page.room_capacity }} </p>
         <p>in person?: {{ page.in_person_only|yesno }}</p>
     </div>
 {% endblock primary_content %}

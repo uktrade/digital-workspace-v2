@@ -6,14 +6,6 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    replaces = [
-        ("events", "0001_initial"),
-        ("events", "0002_initial"),
-        ("events", "0003_eventpage_description_alter_eventpage_event_url"),
-        ("events", "0004_eventpage_room_capacity"),
-        ("events", "0005_remove_eventpage_description"),
-    ]
-
     initial = True
 
     dependencies = [

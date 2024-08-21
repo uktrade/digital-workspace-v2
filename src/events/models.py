@@ -27,7 +27,9 @@ class EventPage(ContentPage):
     parent_page_types = ["events.EventsHome", "events.EventPage"]
     template = "events/event_page.html"
 
-    event_date = models.DateTimeField()
+    event_date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
     event_url = models.URLField(
         blank=True,
         null=True,
@@ -37,6 +39,7 @@ class EventPage(ContentPage):
     submit_questions_url = models.URLField(
         blank=True,
         null=True,
+        help_text="Link to a page for others to submit their questions."
     )
     audience = models.CharField(
         choices=types.EventAudience.choices,
@@ -61,7 +64,13 @@ class EventPage(ContentPage):
     )
 
     content_panels = ContentPage.content_panels + [
-        FieldPanel("event_date"),
+        MultiFieldPanel([
+            FieldPanel("event_date"),
+            FieldRowPanel([
+                FieldPanel("start_time"),
+                FieldPanel("end_time"),
+            ]),
+        ], heading="Date/Time details"),
         FieldPanel("event_url"),
         FieldPanel("submit_questions_url"),
         FieldPanel("audience"),
