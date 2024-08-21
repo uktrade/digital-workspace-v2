@@ -1,5 +1,5 @@
 from django.db import models
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel, FieldRowPanel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
 
 from content.models import BasePage, ContentPage
 from events import types
@@ -34,12 +34,12 @@ class EventPage(ContentPage):
         blank=True,
         null=True,
         verbose_name="Online event url",
-        help_text="If the event is online, you can add a link here for others to join."
+        help_text="If the event is online, you can add a link here for others to join.",
     )
     submit_questions_url = models.URLField(
         blank=True,
         null=True,
-        help_text="Link to a page for others to submit their questions."
+        help_text="Link to a page for others to submit their questions.",
     )
     audience = models.CharField(
         choices=types.EventAudience.choices,
@@ -55,7 +55,10 @@ class EventPage(ContentPage):
         blank=True,
         null=True,
     )
-    room_capacity = models.IntegerField(blank=True, null=True,)
+    room_capacity = models.IntegerField(
+        blank=True,
+        null=True,
+    )
 
     in_person_only = models.BooleanField(
         default=False,
@@ -64,23 +67,33 @@ class EventPage(ContentPage):
     )
 
     content_panels = ContentPage.content_panels + [
-        MultiFieldPanel([
-            FieldPanel("event_date"),
-            FieldRowPanel([
-                FieldPanel("start_time"),
-                FieldPanel("end_time"),
-            ]),
-        ], heading="Date/Time details"),
+        MultiFieldPanel(
+            [
+                FieldPanel("event_date"),
+                FieldRowPanel(
+                    [
+                        FieldPanel("start_time"),
+                        FieldPanel("end_time"),
+                    ]
+                ),
+            ],
+            heading="Date/Time details",
+        ),
         FieldPanel("event_url"),
         FieldPanel("submit_questions_url"),
         FieldPanel("audience"),
-        MultiFieldPanel([
-            FieldPanel("location"),
-            FieldRowPanel([
-                FieldPanel("room"),
-                FieldPanel("room_capacity"),
-            ]),     
-        ], heading="Location details"),
+        MultiFieldPanel(
+            [
+                FieldPanel("location"),
+                FieldRowPanel(
+                    [
+                        FieldPanel("room"),
+                        FieldPanel("room_capacity"),
+                    ]
+                ),
+            ],
+            heading="Location details",
+        ),
         FieldPanel("in_person_only"),
     ]
 

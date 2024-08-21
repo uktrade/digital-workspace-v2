@@ -22,7 +22,7 @@
         </p>
         <p>Audience: {{ page.get_audience_display }}</p>
         <p>Location: {{ page.location }}, {{ page.location.city }}</p>
-        <p>Room: {{ page.room }}, Capacity: {{ page.room_capacity }} </p>
+        <p>Room: {{ page.room }}, Capacity: {{ page.room_capacity }}</p>
         <p>in person?: {{ page.in_person_only|yesno }}</p>
     </div>
 {% endblock primary_content %}
