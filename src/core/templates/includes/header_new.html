@@ -2,43 +2,53 @@
 {% load render_bundle webpack_static from webpack_loader %}
 {% load site_alert %}
 
-<header class="govuk-header govuk-header--ws search-v2"
-        data-flag-new-homepage="{{ FEATURE_FLAGS.new_homepage }}"
-        role="banner"
-        data-module="govuk-header">
-    <div class="govuk-header__container dwds-container flex">
-        <div class="govuk-header__logo govuk-header__logo--ws gov-grid-column-one-third">
-            <a href="/" class="govuk-header__link govuk-header__link--homepage">
-                <span class="govuk-header__logotype govuk-header__logotype--ws">
-                    <img aria-hidden="true"
-                         src="{% webpack_static 'dbt-logo.png' %}"
-                         srcset="{% webpack_static 'dbt-logo@2x.png' %} 2x"
-                         alt="Department for Business & Trade logo" />
-                    <span class="govuk-visually-hidden">Department for Business & Trade</span>
-                </span>
-            </a>
+{% comment %} <header class="dwds dwds-container">
+    <div style="display: flex; width:100%;">
+        <div style="width: 200px;">
+            LOGO
         </div>
-        <div class="govuk-header__content gov-grid-column-two-thirds">
-            <a href="/"
-               class="govuk-header__link govuk-header__link--ws govuk-header__service-name govuk-header__service-name--ws">
-                Intranet
-            </a>
+        <div class="with-sidebar-right" style="width:100%;">
+            <div class="stack">
+                <div>TITLE</div>
+                <div>MENU MENU MENU MENU MENU</div>
+            </div>
+            <div class="stack">
+                <div>PROFILE</div>
+                <div>Search</div>
+            </div>
         </div>
-        {% include 'includes/profile_panel_new.html' %}
-        <button type="button"
-                class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
-                aria-controls="navigation"
-                aria-label="Show or hide Top Level Navigation"
-                hidden>Menu</button>
     </div>
+</header> {% endcomment %}
 
-    <div class="nav-and-profile-bar">
-        <div class="dwds-container flex" style="justify-content: space-between;">
+<header class="dwds dwds-container header-new"
+        data-flag-new-homepage="{{ FEATURE_FLAGS.new_homepage }}"
+        role="banner">
+
+    <div class="header-new__left">
+        <a href="/" class="govuk-header__link govuk-header__link--homepage">
+            <span class="govuk-header__logotype govuk-header__logotype--ws">
+                <img aria-hidden="true"
+                     src="{% webpack_static 'dbt-logo.png' %}"
+                     srcset="{% webpack_static 'dbt-logo@2x.png' %} 2x"
+                     alt="Department for Business & Trade logo" />
+                <span class="govuk-visually-hidden">Department for Business & Trade</span>
+            </span>
+        </a>
+    </div>
+    <div class="with-sidebar-right header-new__content">
+        <div class="stack header-new__middle">
+            <a href="/">Intranet</a>
             {% if USER_IS_AUTHENTICATED %}
-                <nav aria-label="Top Level Navigation" class="govuk-header__navigation">
-                    {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+                <nav aria-label="Top Level Navigation" id="navigation">
+                    {% main_menu max_levels=1 template="menus/main_menu_new.html" apply_active_classes=True %}
                 </nav>
-                <div class="site-search">
+            {% endif %}
+        </div>
+ 
+        <div class="stack header-new__right">
+            {% include 'includes/profile_panel_new.html' %}
+            {% if USER_IS_AUTHENTICATED %}
+                <div>
                     {% if not search_url %}
                         {% url 'search:all' as search_url %}
                     {% endif %}
@@ -46,6 +56,11 @@
                 </div>
             {% endif %}
         </div>
+        <button type="button"
+                class=""
+                aria-controls="navigation"
+                aria-label="Show or hide Top Level Navigation"
+                hidden>Menu</button>
     </div>
 </header>
 {% if FEATURE_FLAGS.new_homepage %}

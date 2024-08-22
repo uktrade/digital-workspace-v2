@@ -74,19 +74,20 @@ $input-size: 40px;
 }
 
 .site-search {
-        position: inherit;
+    position: inherit;
     right: 0;
     top: -4px;
     align-items: center;
-    min-width: 260px;
+    min-width: 300px;
 
     .search-form {
-        button {
-            background-color: $govuk-link-colour;
-        }
-        input {
-          border: none;
-        }
+      button {
+          background-color: $govuk-link-colour;
+      }
+
+      input {
+        border: 2px solid govuk-colour("black");
+      }
     }
 }
 

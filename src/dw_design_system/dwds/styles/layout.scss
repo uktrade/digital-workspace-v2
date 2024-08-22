@@ -32,7 +32,7 @@
 
     .grid {
         display: grid;
-        grid-gap: var(--space);
+        gap: var(--space);
     }
 
     @supports (width: min(250px, 100%)) {

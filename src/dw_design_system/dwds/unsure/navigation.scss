@@ -1,0 +1,26 @@
+// NEW HEADER STYLING
+.header-new {
+    padding-top: var(--s0);
+    padding-bottom: var(--s0);
+    background: var(--color-background);
+    border-bottom: 4px solid var(--dbt-red);
+    display: flex;
+    width: 100%;
+    gap: var(--s4);
+
+    &__navigation {
+        // display: grid;
+        // gap: 1rem;
+        // grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+    }
+
+    .with-sidebar-right > :first-child {
+        // TODO: this needs to be calculated dynamically
+        // this is going from side-by-side content to stacked top navigation
+        min-inline-size: 400px;
+    }
+
+    &__content {
+        width: 100%;
+    }
+}

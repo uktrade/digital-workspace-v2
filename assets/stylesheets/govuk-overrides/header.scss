@@ -22,17 +22,6 @@
             }
         }
     }
-
-    .profile-image {
-        border-radius: 50%;
-    }
-
-    .site-search .search-form input {
-        border: 2px solid govuk-colour("black");;
-    }
-    .site-search .search-form {
-        margin: 4px 0 7px 0;
-    }
 }
 
 .govuk-header {
@@ -91,7 +80,6 @@
 .govuk-header__logotype--ws img {
     margin: 0;
     width: 120px;
-    height: 54px;
 }
 
 .govuk-header__content {
