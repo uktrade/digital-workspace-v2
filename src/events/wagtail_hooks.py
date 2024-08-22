@@ -4,7 +4,6 @@ from wagtail import hooks
 
 @hooks.register("insert_editor_js")
 def editor_js():
-    # TODO: Replace this with the actual JavaScript
     return mark_safe(  # noqa: S308
         """
         <script>
@@ -44,7 +43,7 @@ def editor_js():
                         online_section.style.display = "block"
                     }
                 }
-                
+
                 // Call the function to get correct state for the default event type
                 event_type_section_toggle(event_type_field.value)
 
