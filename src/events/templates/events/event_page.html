@@ -15,12 +15,18 @@
     <div>
         <p>Date: {{ page.event_date }}</p>
         <p>Time: {{ page.start_time }} - {{ page.end_time }}</p>
-        <p>
-            Event Link: {% if page.event_url %}<a>{{ page.event_url }}</a>{% else %}-{% endif %}
-        </p>
-        <p>
-            Submit your questions: <a>{{ page.submit_questions_url }}</a>
-        </p>
+        {% if page.online_event_url %}
+            <a href="{{ page.online_event_url }}"
+               class="dwds-button dwds-button--inline dwds-button--secondary">Join event</a>
+        {% endif %}
+        {% if page.offline_event_url %}
+            <a href="{{ page.offline_event_url }}"
+               class="dwds-button dwds-button--inline dwds-button--secondary">Register to join</a>
+        {% endif %}
+        {% if page.submit_questions_url %}
+            <a href="{{ page.submit_questions_url }}"
+               class="dwds-button dwds-button--inline dwds-button--secondary">Submit a question</a>
+        {% endif %}
         <p>Audience: {{ page.get_audience_display }}</p>
         <p>Location: {{ page.location }}, {{ page.location.city }}</p>
         <p>Room: {{ page.room }}, Capacity: {{ page.room_capacity }}</p>

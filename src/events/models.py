@@ -30,20 +30,29 @@ class EventPage(ContentPage):
     event_date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    event_url = models.URLField(
+    online_event_url = models.URLField(
         blank=True,
         null=True,
-        verbose_name="Online event url",
         help_text="If the event is online, you can add a link here for others to join.",
+    )
+    offline_event_url = models.URLField(
+        blank=True,
+        null=True,
+        help_text="If the event is offline, you can add a link here for registration.",
     )
     submit_questions_url = models.URLField(
         blank=True,
         null=True,
         help_text="Link to a page for others to submit their questions.",
     )
+    event_type = models.CharField(
+        choices=types.EventType.choices,
+        default=types.EventType.ONLINE,
+    )
     audience = models.CharField(
         choices=types.EventAudience.choices,
-        default=types.EventAudience.ALL_STAFF,
+        blank=True,
+        null=True,
     )
     location = models.ForeignKey(
         "peoplefinder.UkStaffLocation",
@@ -60,12 +69,6 @@ class EventPage(ContentPage):
         null=True,
     )
 
-    in_person_only = models.BooleanField(
-        default=False,
-        verbose_name="In person only event?",
-        help_text="Tick this box if this event is being held in person only.",
-    )
-
     content_panels = ContentPage.content_panels + [
         MultiFieldPanel(
             [
@@ -79,9 +82,7 @@ class EventPage(ContentPage):
             ],
             heading="Date/Time details",
         ),
-        FieldPanel("event_url"),
-        FieldPanel("submit_questions_url"),
-        FieldPanel("audience"),
+        FieldPanel("event_type"),
         MultiFieldPanel(
             [
                 FieldPanel("location"),
@@ -91,10 +92,18 @@ class EventPage(ContentPage):
                         FieldPanel("room_capacity"),
                     ]
                 ),
+                FieldPanel("offline_event_url"),
             ],
-            heading="Location details",
+            heading="In person details",
         ),
-        FieldPanel("in_person_only"),
+        MultiFieldPanel(
+            [
+                FieldPanel("online_event_url"),
+            ],
+            heading="Online details",
+        ),
+        FieldPanel("audience"),
+        FieldPanel("submit_questions_url"),
     ]
 
     # indexed_fields = []
