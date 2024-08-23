@@ -1,7 +1,11 @@
-.content_page {
+.content_page .primary-content {
   padding: var(--space);
   background-color: var(--color-background);
   border-radius: var(--border-radius);
+
+  h1 {
+    margin-top: 0;
+  }
 }
 
 .ws-content-page__metadata {

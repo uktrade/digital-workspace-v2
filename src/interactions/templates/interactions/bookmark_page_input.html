@@ -1,15 +1,30 @@
-{% if page %}
-    <button class="bookmark-page-input"
-            title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
-            data-is-htmx="{{ request.headers.hx_request }}"
-            hx-post="{{ post_url }}"
-            hx-vals='{"page_id": {{ page.id }}}'
-            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-            hx-trigger="click"
-            hx-select="button"
-            hx-target="this"
-            hx-swap="outerHTML">
-        {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
-        <span>{{ is_bookmarked|yesno:'Bookmarked,Bookmark' }}</span>
-    </button>
-{% endif %}
+{% extends "dwds/elements/extendable/card.html" %}
+
+{% block card_container_classes %}dwds-card-white{% endblock %}
+
+{% block card_header %}
+{% endblock card_header %}
+
+{% block card_content_image %}
+{% endblock card_content_image %}
+
+{% block card_content_body %}
+    {% if page %}
+        <button class="bookmark-page-input"
+                title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
+                data-is-htmx="{{ request.headers.hx_request }}"
+                hx-post="{{ post_url }}"
+                hx-vals='{"page_id": {{ page.id }}}'
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                hx-trigger="click"
+                hx-select="button"
+                hx-target="this"
+                hx-swap="outerHTML">
+            {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
+            <span>{{ is_bookmarked|yesno:'Bookmarked,Bookmark' }}</span>
+        </button>
+    {% endif %}
+{% endblock card_content_body %}
+
+{% block card_footer %}
+{% endblock card_footer %}
