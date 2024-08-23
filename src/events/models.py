@@ -28,7 +28,7 @@ class EventsHome(BasePage):
 
 class EventPage(ContentPage):
     is_creatable = True
-    parent_page_types = ["events.EventsHome", "events.EventPage"]
+    parent_page_types = ["events.EventsHome"]
     template = "events/event_page.html"
 
     event_date = models.DateField(
@@ -122,8 +122,6 @@ class EventPage(ContentPage):
         FieldPanel("event_recording_url"),
     ]
 
-    # indexed_fields = []
-
     def get_template(self, request, *args, **kwargs):
         return self.template
 
@@ -131,9 +129,10 @@ class EventPage(ContentPage):
         context = super().get_context(request, *args, **kwargs)
 
         context.update(
-            is_online=(self.event_type == "online"),
-            is_in_person=(self.event_type == "in_person"),
-            is_hybrid=(self.event_type == "hybrid"),
+            is_online=self.event_type
+            in [types.EventType.ONLINE, types.EventType.HYBRID],
+            is_in_person=self.event_type
+            in [types.EventType.IN_PERSON, types.EventType.HYBRID],
         )
 
         return context

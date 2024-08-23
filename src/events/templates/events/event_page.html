@@ -17,11 +17,11 @@
         <p>Time: {{ page.start_time }} - {{ page.end_time }}</p>
  
         {% if not page.is_past_event %}
-            {% if page.online_event_url and is_online or is_hybrid %}
+            {% if page.online_event_url and is_online %}
                 <a href="{{ page.online_event_url }}"
                    class="dwds-button dwds-button--inline dwds-button--secondary">Join event online</a>
             {% endif %}
-            {% if page.offline_event_url and is_in_person or is_hybrid %}
+            {% if page.offline_event_url and is_in_person %}
                 <a href="{{ page.offline_event_url }}"
                    class="dwds-button dwds-button--inline dwds-button--secondary">Register to join</a>
             {% endif %}

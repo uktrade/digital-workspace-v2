@@ -463,6 +463,11 @@ class ContentPage(SearchFieldsMixin, BasePage):
             boost=2.0,
         ),
         IndexedField("is_creatable", filter=True),
+        IndexedField(
+            "description",
+            tokenized=True,
+            explicit=True,
+        ),
     ]
 
     #
