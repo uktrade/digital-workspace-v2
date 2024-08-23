@@ -1,4 +1,8 @@
+from datetime import datetime as dt
+from datetime import timedelta
+
 from django.db import models
+from django.utils import timezone
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
 
 from content.models import BasePage, ContentPage
@@ -27,23 +31,34 @@ class EventPage(ContentPage):
     parent_page_types = ["events.EventsHome", "events.EventPage"]
     template = "events/event_page.html"
 
-    event_date = models.DateField()
+    event_date = models.DateField(
+        help_text="Date and time should be entered based on the time in London/England.",
+    )
     start_time = models.TimeField()
     end_time = models.TimeField()
     online_event_url = models.URLField(
         blank=True,
         null=True,
+        verbose_name="Online event link",
         help_text="If the event is online, you can add a link here for others to join.",
     )
     offline_event_url = models.URLField(
         blank=True,
         null=True,
-        help_text="If the event is offline, you can add a link here for registration.",
+        verbose_name="In person registration link",
+        help_text="If the event is in person, you can add a link here for registration.",
     )
     submit_questions_url = models.URLField(
         blank=True,
         null=True,
+        verbose_name="Submit questions link",
         help_text="Link to a page for others to submit their questions.",
+    )
+    event_recording_url = models.URLField(
+        blank=True,
+        null=True,
+        verbose_name="View event recording link",
+        help_text="Optional link to a page for others to view the recorded event.",
     )
     event_type = models.CharField(
         choices=types.EventType.choices,
@@ -104,6 +119,7 @@ class EventPage(ContentPage):
         ),
         FieldPanel("audience"),
         FieldPanel("submit_questions_url"),
+        FieldPanel("event_recording_url"),
     ]
 
     # indexed_fields = []
@@ -113,4 +129,18 @@ class EventPage(ContentPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+
+        context.update(
+            is_online=(self.event_type == "online"),
+            is_in_person=(self.event_type == "in_person"),
+            is_hybrid=(self.event_type == "hybrid"),
+        )
+
         return context
+
+    @property
+    def is_past_event(self) -> bool:
+        adjusted_datetime = timezone.make_aware(
+            dt.combine(self.event_date, self.end_time) + timedelta(hours=1)
+        )
+        return timezone.now() > adjusted_datetime
