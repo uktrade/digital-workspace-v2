@@ -53,7 +53,7 @@ class ModelSearchVector(SearchVector):
 
 class PagesSearchVector(ModelSearchVector):
     def get_queryset(self):
-        return super().get_queryset().public_or_login().live()
+        return super().get_queryset().public_or_login().live().specific()
 
     def pinned(self, query_str):
         return self.get_queryset().pinned(query_str)
