@@ -88,6 +88,13 @@ body {
     }
 }
 
+// Adds spacing to the top level content when a flag banner is not present.
+.homepage.new-home{
+    .dwds >.stack>:not(.govuk-phase-banner){
+            margin-block-start: var(--space);
+        }
+}
+
 .dwds {
     .feedback-header {
         background-color: transparent;
