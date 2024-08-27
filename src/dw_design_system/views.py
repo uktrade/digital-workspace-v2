@@ -8,10 +8,40 @@ from dw_design_system.utils import CustomJSONDecoder, get_components, to_json
 
 
 def styles(request: HttpRequest) -> HttpResponse:
+    context = {
+        "colours": [
+            "--gds-red",
+            "--dbt-red",
+            "--dbt-blue",
+            "--dbt-light-blue",
+        ],
+        "spaces": [
+            "--s5",
+            "--s4",
+            "--s3",
+            "--s2",
+            "--s1",
+            "--s0",
+            "--s-1",
+            "--s-2",
+            "--s-3",
+            "--s-4",
+            "--s-5",
+        ],
+        "text_sizes": [
+            "--text-xxxlarge",
+            "--text-xxlarge",
+            "--text-xlarge",
+            "--text-large",
+            "--text-medium",
+            "--text-small",
+        ],
+    }
+
     return render(
         request,
         "dw_design_system/styles.html",
-        {},
+        context,
     )
 
 

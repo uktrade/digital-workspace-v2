@@ -48,15 +48,15 @@ body {
     }
 
     h1 {
-        font-size: var(--s3);
+        font-size: var(--text-xxxlarge);
     }
 
     h2 {
-        font-size: var(--s2);
+        font-size: var(--text-xxlarge);
     }
 
     h3 {
-        font-size: var(--s1);
+        font-size: var(--text-xlarge);
     }
 
     a {
@@ -64,7 +64,8 @@ body {
     }
 
     // Using !important to have consistent focus/active states on all links
-    a:focus, a:active {
+    a:focus,
+    a:active {
         text-decoration: underline var(--text-underline-hover) !important;
         background-color: var(--color-link-background-active) !important;
         color: var(--color-text) !important;
