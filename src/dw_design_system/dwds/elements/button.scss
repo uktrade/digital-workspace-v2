@@ -8,6 +8,7 @@
     border: none;
     border-bottom: solid var(--border-width) var(--color-button-bottom-border);
     cursor: pointer;
+    align-self: flex-start;
 
     &:hover {
         background-color: var(--color-button-hover);

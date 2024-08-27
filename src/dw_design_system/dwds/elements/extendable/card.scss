@@ -30,6 +30,22 @@
         --card-body-bg-color: var(--card-bg-red);
     }
 
+    &.dwds-event-card {
+        --card-body-bg-color: #EEF2F6;
+        padding: var(--s0); 
+        align-self: flex-start;
+
+        p {
+            
+        }
+
+        h3,
+        h4 {
+            margin-bottom: var(--s-5);
+            margin-top: var(--s-5);
+        }
+    }
+
     .card-header {
         --header-background-colour: var(--card-bg-blue);
         --header-text-colour: var(--card-bg-white);
