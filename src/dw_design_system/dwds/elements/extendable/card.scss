@@ -57,7 +57,7 @@
         color: var(--header-text-colour);
 
         .card-subtitle {
-            font-size: var(--s0);
+            font-size: var(--text-large);
         }
 
         h2,
@@ -88,7 +88,7 @@
             .card-body {
                 flex-grow: 1;
                 padding: var(--s0);
-                font-size: var(--s0);
+                font-size: var(--text-large);
                 line-height: var(--font-lineheight-body);
 
                 h2,
