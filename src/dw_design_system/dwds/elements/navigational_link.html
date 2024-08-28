@@ -1,4 +1,7 @@
-<a href="{{ url }}" class="dwds-navigational-link">
+<a href="{{ url }}"
+   class="dwds-navigational-link {% if classes %}{{ classes }}{% endif %}"
+   target="{% if target %}{{ target }}{% endif %}"
+   style="{% if style %}{{ style }}{% endif %}">
     <span>{{ text }}</span>
     {% include "dwds/icons/arrow-right.html" %}
 </a>

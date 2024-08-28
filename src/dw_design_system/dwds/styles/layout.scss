@@ -43,5 +43,10 @@
         .grid-cards {
             grid-template-columns: repeat(auto-fit, minmax(min(var(--card-min-width), 100%), 1fr));
         }
+
+        // TODO: FIX - display wide image with information panel on large screen, 1 col grid on small screen :( 
+        .image-info-layout {
+            grid-template-columns: max-content 1fr;
+        }
     }
 }

@@ -1,0 +1,23 @@
+.dwds-card.dwds-information-panel {
+    --card-bottom-border-height: 0px;
+    --card-body-bg-color: #EEF2F6;
+    padding: var(--s0); 
+    align-self: flex-start;
+    --card-bottom-border-height: 0px;
+
+    p,
+    div,
+    a
+    {
+        margin-bottom: var(--s-5);
+        margin-top: var(--s-5);
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: var(--s-5);
+    }
+    h4 {
+        margin: 0;
+    }
+}

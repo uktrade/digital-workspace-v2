@@ -129,10 +129,9 @@ class EventPage(ContentPage):
         context = super().get_context(request, *args, **kwargs)
 
         context.update(
-            is_online=self.event_type
-            in [types.EventType.ONLINE, types.EventType.HYBRID],
-            is_in_person=self.event_type
-            in [types.EventType.IN_PERSON, types.EventType.HYBRID],
+            is_online=self.event_type == types.EventType.ONLINE,
+            is_in_person=self.event_type == types.EventType.IN_PERSON,
+            is_hybrid=self.event_type == types.EventType.HYBRID,
         )
 
         return context
