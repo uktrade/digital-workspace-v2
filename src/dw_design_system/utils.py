@@ -4,6 +4,9 @@ from json import JSONDecoder, scanner
 from django.utils import timezone
 from wagtail.images.models import Image
 
+from home.templatetags.cards import pages_to_cards
+from news.models import NewsPage
+
 
 DATETIME_STR = "datetime"
 IMAGE_STR = "Image"
@@ -47,6 +50,18 @@ def get_components():
                 "author": "John Doe",
                 "date": timezone.now(),
                 "thumbnail": thumbnail_file,
+            },
+        },
+        {
+            "name": "Card Group",
+            "template": "dwds/components/card_group.html",
+            "context": {
+                "card_group_title": "Latest DBT news",
+                "cards": pages_to_cards(
+                    NewsPage.objects.all().annotate_with_comment_count()[:3]
+                ),
+                "footer_link": "/news-and-views/",
+                "footer_link_text": "View all news",
             },
         },
         {

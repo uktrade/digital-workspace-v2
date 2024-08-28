@@ -3,6 +3,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load site_alert %}
+{% load cards %}
 
 
 {% block pre_main %}
@@ -48,21 +49,18 @@
                 {% if news_items %}
                     {% include "dwds/components/one_up_card.html" with title=news_items.0.title excerpt=news_items.0.excerpt thumbnail=news_items.0.preview_image url=news_items.0.url comment_count=news_items.0.comment_count %}
                 {% endif %}
-                <div class="grid grid-cards home-news-items">
+
+                <div class="grid grid-cards">
                     {% for news_item in news_items|slice:"1:3" %}
                         {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.comment_count excerpt=news_item.excerpt is_highlighted=True %}
                     {% endfor %}
                 </div>
-                <br>
-                <h2>Latest DBT news</h2>
-                <div class="grid home-news-items">
-                    {% for news_item in news_items|slice:"3:" %}
-                        {% include "dwds/components/engagement_card.html" with title=news_item.title thumbnail=news_item.preview_image url=news_item.url date=news_item.last_published_at comment_count=news_item.comment_count excerpt=news_item.excerpt is_highlighted=True %}
-                    {% endfor %}
-                </div>
-                <span>
-                    <a href="/news-and-views/">View all news</a>
-                </span>
+
+                {% with news_items|slice:"3:" as news_pages %}
+                    {% pages_to_cards news_pages as news_cards %}
+                    {% include "dwds/components/card_group.html" with card_group_title="Latest DBT news" cards=news_cards footer_link="/news-and-views/" footer_link_text="View all news" %}
+                {% endwith %}
+
                 {% if not hide_news %}
                     {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
                 {% endif %}
