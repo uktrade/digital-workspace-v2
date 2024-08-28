@@ -13,6 +13,7 @@ from wagtail_adminsortable.models import AdminSortable
 
 from content.models import BasePage, ContentPage
 from core.models.models import SiteAlertBanner
+from events.models import EventPage
 from home import FEATURE_HOMEPAGE
 from home.validators import validate_home_priority_pages
 from interactions import get_bookmarks
@@ -208,6 +209,10 @@ class HomePage(BasePage):
         context.update(
             news_items=news_items[:8],
         )
+
+        # Events
+        events = EventPage.objects.live().public()
+        context["events"] = events
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):
