@@ -14,7 +14,6 @@ IMAGE_STR = "Image"
 
 def get_components():
     thumbnail_file = Image.objects.first()
-    # TODO: move to a JSON file
     return [
         {
             "name": "Card",
