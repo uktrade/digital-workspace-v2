@@ -62,7 +62,7 @@
                     <h2>Events</h2>
                     <div class="grid home-news-items">
                         {% for event in events|slice:"0:4" %}
-                            {% include "dwds/components/engagement_card.html" with title=event.title thumbnail=event.preview_image url=event.url date=event.last_published_at excerpt=event.excerpt is_highlighted=True %}
+                            {% include "dwds/components/engagement_card.html" with event_date=event.event_date start_time=event.start_time end_time=event.end_time title=event.title thumbnail=event.preview_image url=event.url date=event.last_published_at excerpt=event.excerpt is_highlighted=True %}
                         {% endfor %}
                     </div>
                 {% endif %}
