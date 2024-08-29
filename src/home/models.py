@@ -180,16 +180,7 @@ class HomePage(BasePage):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
         # News
-        news_items = (
-            NewsPage.objects.live()
-            .public()
-            .order_by(
-                "-pinned_on_home",
-                "home_news_order_pages__order",
-                "-first_published_at",
-            )
-            .annotate_with_comment_count()
-        )
+        news_items = NewsPage.objects.live().public().annotate_with_comment_count()
 
         if is_new_homepage:
             priority_page_ids = self.priority_pages.all().values("page_id")
@@ -199,9 +190,18 @@ class HomePage(BasePage):
                     id__in=priority_page_ids
                 ).annotate_with_comment_count()
             ]
-            news_items = news_items.exclude(id__in=priority_page_ids)
+            news_items = news_items.exclude(id__in=priority_page_ids).order_by(
+                "-pinned_on_home",
+                "-first_published_at",
+            )
             context.update(
                 priority_pages=priority_pages,
+            )
+        else:
+            news_items = news_items.order_by(
+                "-pinned_on_home",
+                "home_news_order_pages__order",
+                "-first_published_at",
             )
 
         context.update(
