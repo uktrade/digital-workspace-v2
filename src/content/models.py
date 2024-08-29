@@ -212,7 +212,9 @@ class BasePage(Page, Indexed):
         return None
 
 
-class ContentPageQuerySet(BasePageQuerySet): ...
+class ContentPageQuerySet(BasePageQuerySet):
+    def annotate_with_comment_count(self):
+        return self.annotate(comment_count=models.Count("comments"))
 
 
 class ContentOwnerMixin(models.Model):

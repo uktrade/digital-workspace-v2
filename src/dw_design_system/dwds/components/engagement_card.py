@@ -33,7 +33,6 @@ class EngagementCardBlock(blocks.StructBlock):
             thumbnail=getattr(page, "preview_image", None),
             date=page.published_date,
             url=page.url,
-            is_highlighted=isinstance(page, NewsPage) or isinstance(page, BlogPost),
         )
 
         if isinstance(page, NewsPage):
