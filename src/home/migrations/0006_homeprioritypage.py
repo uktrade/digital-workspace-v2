@@ -13,7 +13,7 @@ def create_home_priority_pages(apps, schema_editor):
 
     home_page = HomePage.objects.first()
     hpp_count = 3
-    for hno in HomeNewsOrder.objects.all():
+    for hno in HomeNewsOrder.objects.all().order_by("order"):
         HomePriorityPage.objects.create(
             home_page=home_page, page=hno.news_page, order=hno.order
         )
