@@ -53,6 +53,11 @@
       gap: 20px;
     }
   }
+
+// Adds spacing to the top level content when a flag banner is not present.
+  .dwds >.stack>:not(.govuk-phase-banner){
+    margin-block-start: var(--space);
+  }
 }
 
 .new-home {
@@ -76,11 +81,4 @@
       margin-bottom: 10px;
     }
   }
-}
-
-// Adds spacing to the top level content when a flag banner is not present.
-.homepage.new-home{
-  .dwds >.stack>:not(.govuk-phase-banner){
-          margin-block-start: var(--space);
-      }
 }
