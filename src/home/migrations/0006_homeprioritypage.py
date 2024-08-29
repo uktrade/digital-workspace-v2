@@ -6,7 +6,6 @@ import home.validators
 import modelcluster.fields
 
 
-
 def create_home_priority_pages(apps, schema_editor):
     HomePage = apps.get_model("home", "HomePage")
     HomePriorityPage = apps.get_model("home", "HomePriorityPage")
@@ -70,5 +69,5 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             create_home_priority_pages,
             reverse_code=migrations.RunPython.noop,
-        )
+        ),
     ]

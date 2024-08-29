@@ -10,10 +10,9 @@ from simple_history.models import HistoricalRecords
 from waffle import flag_is_active
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from wagtail.models import PageManager
 from wagtail.snippets.models import register_snippet
 
-from content.models import BasePage, BasePageQuerySet
+from content.models import BasePage
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import ScoreFunction
 from home import FEATURE_HOMEPAGE

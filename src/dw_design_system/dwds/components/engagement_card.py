@@ -10,7 +10,6 @@ class EngagementCardBlock(blocks.StructBlock):
         label = "Engagement Card"
 
     def get_context(self, value, parent_context=None):
-        from content.models import BlogPost
         from news.models import NewsPage
 
         context = parent_context or {}
