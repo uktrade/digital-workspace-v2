@@ -12,7 +12,7 @@
     <h2>{{ card_group_title }}</h2>
     <div class="grid">
         {% for card in cards %}
-            {% include card.template with title=card.title thumbnail=card.thumbnail url=card.url date=card.date comment_count=card.comment_count excerpt=card.excerpt is_highlighted=card.is_highlighted hide_shadow=card.hide_shadow %}
+            {% include card.template with title=card.title thumbnail=card.thumbnail url=card.url date=card.date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow %}
             <hr>
         {% endfor %}
     </div>

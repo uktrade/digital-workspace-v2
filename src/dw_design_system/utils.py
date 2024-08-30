@@ -42,7 +42,6 @@ def get_components():
             "name": "Engagement Card",
             "template": "dwds/components/engagement_card.html",
             "context": {
-                "is_highlighted": True,
                 "url": "https://www.gov.uk",
                 "title": "This is an engagement card for GOV.UK",
                 "excerpt": "This is an excerpt for the engagement card",

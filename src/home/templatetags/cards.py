@@ -15,7 +15,6 @@ def page_to_card(page: NewsPage):
         "date": page.last_published_at,
         "comment_count": page.comment_count,
         "excerpt": page.excerpt,
-        "is_highlighted": True,
         "hide_shadow": True,
         "template": "dwds/components/engagement_card.html",
     }
