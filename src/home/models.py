@@ -11,7 +11,7 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
 
-from content.models import BasePage
+from content.models import BasePage, NavigationPage
 from core.models.models import SiteAlertBanner
 from home import FEATURE_HOMEPAGE
 from interactions import get_bookmarks
@@ -144,6 +144,12 @@ class HomePage(BasePage):
     def get_context(self, request, *args, **kwargs):
         is_new_homepage = flag_is_active(request, FEATURE_HOMEPAGE)
         context = super(HomePage, self).get_context(request, *args, **kwargs)
+
+        # HR page notice
+        try:
+            context["hr_page"] = NavigationPage.objects.get(pk=settings.HR_PAGE_PK)
+        except NavigationPage.DoesNotExist:
+            context["hr_page"] = None
 
         # News
         news_items = (
