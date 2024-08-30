@@ -357,7 +357,12 @@ class ContentPage(SearchFieldsMixin, BasePage):
         blank=True, null=True, help_text="""Legacy content, pre-conversion"""
     )
 
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(
+        blank=True, 
+        null=True,
+        max_length=70,
+        help_text="Please use this field only to add a description for an event.",
+    )
 
     preview_image = models.ForeignKey(
         "wagtailimages.Image",
