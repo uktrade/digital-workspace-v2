@@ -19,12 +19,12 @@
 {% endblock card_content_image %}
 
 {% block card_content_body %}
-    {% if event_date and start_time and end_time %}
-        <h4>{{ event_date|date:"j F Y" }}, {{ start_time|time:"gA"|lower }}-{{ end_time|time:"gA"|lower }}</h4>
-    {% endif %}
     <h3>
         <a href="{{ url }}">{{ title }}</a>
     </h3>
+    {% if post_title %}
+        <h4>{{ post_title }}</h4>
+    {% endif %}
 
     {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
 {% endblock card_content_body %}

@@ -4,7 +4,7 @@
 {% load wagtailimages_tags %}
 {% load site_alert %}
 {% load cards %}
-
+{% load event_tags %}
 
 {% block pre_main %}
     {{ block.super }}
@@ -59,11 +59,14 @@
                 {% include "dwds/components/card_group.html" with card_group_title="Latest DBT news" cards=news_cards footer_link="/news-and-views/" footer_link_text="View all news" %}
                 
                 {% if events %}
-                    <h2>Events</h2>
-                    <div class="grid home-news-items">
-                        {% for event in events|slice:"0:4" %}
-                            {% include "dwds/components/engagement_card.html" with event_date=event.event_date start_time=event.start_time end_time=event.end_time title=event.title thumbnail=event.preview_image url=event.url date=event.last_published_at excerpt=event.excerpt is_highlighted=True %}
-                        {% endfor %}
+                    <div class="events-container">
+                        <h2>Events</h2>
+                        <div class="grid event-cards-container">
+                            {% for event in events %}
+                                {% get_event_date event as event_date %}
+                                {% include "dwds/components/engagement_card.html" with post_title=event_date title=event.title thumbnail=event.preview_image url=event.url excerpt=event.excerpt is_highlighted=True date=event.last_published_at %}
+                            {% endfor %}
+                        </div>
                     </div>
                 {% endif %}
                 {% if not hide_news %}

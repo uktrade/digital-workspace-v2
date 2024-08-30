@@ -211,8 +211,7 @@ class HomePage(BasePage):
         )
 
         # Events
-        events = EventPage.objects.live().public()
-        context["events"] = events
+        context["events"] = EventPage.objects.live().public()[:6]
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):
