@@ -59,9 +59,9 @@
                 {% include "dwds/components/card_group.html" with card_group_title="Latest DBT news" cards=news_cards footer_link="/news-and-views/" footer_link_text="View all news" %}
                 
                 {% if events %}
-                    <div class="events-container">
-                        <h2>Events</h2>
-                        <div class="grid event-cards-container">
+                    <div class="stack events-container">
+                        <h2 class="events-section-title">Events</h2>
+                        <div class="grid events-cards-container">
                             {% for event in events %}
                                 {% get_event_date event as event_date %}
                                 {% include "dwds/components/engagement_card.html" with post_title=event_date title=event.title thumbnail=event.preview_image url=event.url excerpt=event.excerpt is_highlighted=True date=event.last_published_at %}

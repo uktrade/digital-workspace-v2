@@ -54,8 +54,8 @@
     }
   }
 
-// Adds spacing to the top level content when a flag banner is not present.
-  .dwds >.stack>:not(.govuk-phase-banner){
+  // Adds spacing to the top level content when a flag banner is not present.
+  .dwds > .stack > :not(.govuk-phase-banner) {
     margin-block-start: var(--space);
   }
 }
@@ -72,6 +72,20 @@
     a {
       color: var(--color-link);
     }
+  }
+
+  .events-container {
+    background: var(--dbt-blue);
+    padding: var(--s0);
+    border-radius: var(--border-radius);
+  }
+
+  .events-section-title {
+    color: var(--color-text-highlight);
+  }
+
+  .events-cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
 

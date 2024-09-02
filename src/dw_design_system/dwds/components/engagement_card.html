@@ -22,9 +22,7 @@
     <h3>
         <a href="{{ url }}">{{ title }}</a>
     </h3>
-    {% if post_title %}
-        <h4>{{ post_title }}</h4>
-    {% endif %}
+    {% if post_title %}<h4>{{ post_title }}</h4>{% endif %}
 
     {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
 {% endblock card_content_body %}
