@@ -1,5 +1,6 @@
 .dwds-card {
     --card-bottom-border-height: 5px;
+
     --card-body-bg-color: var(--card-bg-white);
 
     display: flex;
@@ -91,6 +92,10 @@
             color: var(--color-text-secondary);
         }
     }
+}
+
+.dwds-card.card-without-shadow {
+    --card-bottom-border-height: 0px;
 }
 
 @container card (width > 60ch) {
