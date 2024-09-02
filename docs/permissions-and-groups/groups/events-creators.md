@@ -1,4 +1,4 @@
-# Events Creators
+# Events creators
 
 Users in this group get the following permissions:
 
