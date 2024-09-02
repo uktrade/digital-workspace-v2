@@ -7,20 +7,30 @@ from django.db import models
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from waffle import flag_is_active
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
 
-from content.models import BasePage
+from content.models import BasePage, ContentPage
 from core.models.models import SiteAlertBanner
 from home import FEATURE_HOMEPAGE
+from home.validators import validate_home_priority_pages
 from interactions import get_bookmarks
 from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
 
+# TODO: Add event page here once merged in
+HOME_PRIORITY_PAGE_TYPES = (NewsPage,)
+
+
 @register_snippet
 class HomeNewsOrder(AdminSortable, ClusterableModel):
+    """
+    This model has been deprecated and will be removed once the `new_homepage`
+    flag is removed.
+    """
+
     order = models.IntegerField(null=True, blank=True)
     news_page = ParentalKey(
         "news.NewsPage",
@@ -50,6 +60,24 @@ class HomeNewsOrder(AdminSortable, ClusterableModel):
                 raise ValidationError(
                     "This news page is already in the list",
                 )
+
+
+class HomePriorityPage(AdminSortable):
+    home_page = ParentalKey(
+        "home.HomePage",
+        on_delete=models.CASCADE,
+        related_name="priority_pages",
+    )
+    page = models.ForeignKey(
+        "wagtailcore.Page",
+        on_delete=models.CASCADE,
+        related_name="+",
+        validators=[validate_home_priority_pages],
+    )
+
+    panels = [
+        PageChooserPanel("page", HOME_PRIORITY_PAGE_TYPES),
+    ]
 
 
 @register_snippet
@@ -131,10 +159,17 @@ class WhatsPopular(models.Model):
 class HomePage(BasePage):
     is_creatable = False
     show_in_menus = True
-
     subpage_types = []
-
     promote_panels = []
+    content_panels = [
+        InlinePanel(
+            "priority_pages",
+            label="Priority page",
+            heading="Priority pages",
+            min_num=0,
+            max_num=3,
+        ),
+    ]
 
     def get_template(self, request, *args, **kwargs):
         if flag_is_active(request, FEATURE_HOMEPAGE):
@@ -146,18 +181,32 @@ class HomePage(BasePage):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
         # News
-        news_items = (
-            NewsPage.objects.live()
-            .public()
-            .order_by(
+        news_items = NewsPage.objects.live().public().annotate_with_comment_count()
+
+        if is_new_homepage:
+            priority_page_ids = self.priority_pages.all().values("page_id")
+            priority_pages = [
+                p.specific
+                for p in ContentPage.objects.filter(
+                    id__in=priority_page_ids
+                ).annotate_with_comment_count()
+            ]
+            news_items = news_items.exclude(id__in=priority_page_ids).order_by(
+                "-pinned_on_home",
+                "-first_published_at",
+            )
+            context.update(
+                priority_pages=priority_pages,
+            )
+        else:
+            news_items = news_items.order_by(
                 "-pinned_on_home",
                 "home_news_order_pages__order",
                 "-first_published_at",
             )
-            .annotate_with_comment_count()[:8]
-        )
+
         context.update(
-            news_items=news_items,
+            news_items=news_items[:8],
         )
 
         # GOVUK news

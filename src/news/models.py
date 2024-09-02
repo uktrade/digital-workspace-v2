@@ -10,10 +10,9 @@ from simple_history.models import HistoricalRecords
 from waffle import flag_is_active
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from wagtail.models import PageManager
 from wagtail.snippets.models import register_snippet
 
-from content.models import BasePage, BasePageQuerySet
+from content.models import BasePage
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import ScoreFunction
 from home import FEATURE_HOMEPAGE
@@ -28,8 +27,8 @@ class Comment(models.Model):
     legacy_id = models.IntegerField(
         null=True,
     )
-    news_page = models.ForeignKey(
-        "news.NewsPage", on_delete=models.CASCADE, related_name="comments"
+    page = models.ForeignKey(
+        "content.ContentPage", on_delete=models.CASCADE, related_name="comments"
     )
     author = models.ForeignKey(
         UserModel, null=True, blank=True, on_delete=models.CASCADE
@@ -50,7 +49,7 @@ class Comment(models.Model):
         return self.content
 
     panels = [
-        FieldPanel("news_page"),
+        FieldPanel("page"),
         FieldPanel("author"),
         FieldPanel("content"),
     ]
@@ -113,11 +112,6 @@ class NewsPageNewsCategory(models.Model):
         unique_together = ("news_page", "news_category")
 
 
-class NewsPageQuerySet(BasePageQuerySet):
-    def annotate_with_comment_count(self):
-        return self.annotate(comment_count=models.Count("comments"))
-
-
 class NewsPage(PageWithTopics):
     is_creatable = True
     parent_page_types = ["news.NewsHome"]
@@ -142,8 +136,6 @@ class NewsPage(PageWithTopics):
         "Other pages will no longer be marked as the "
         "featured article.",
     )
-
-    objects = PageManager.from_queryset(NewsPageQuerySet)()
 
     @property
     def search_categories(self):
@@ -195,7 +187,6 @@ class NewsPage(PageWithTopics):
         return self.comments.filter(parent_id=None).order_by("-posted_date")
 
     def get_context(self, request, *args, **kwargs):
-
         context = super().get_context(request, *args, **kwargs)
         context["page"] = NewsPage.objects.annotate_with_comment_count().get(pk=self.pk)
         context["comments"] = self.get_comments()
@@ -211,7 +202,7 @@ class NewsPage(PageWithTopics):
             Comment.objects.create(
                 content=comment,
                 author=request.user,
-                news_page=self,
+                page=self,
                 parent_id=in_reply_to,
             )
 

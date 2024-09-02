@@ -2,7 +2,7 @@
     {% block card_header %}
         <div class="card-header stack">
             {% block card_header_content %}
-                {% include "dwds/unsure/ribbon.html" with text="Ribbon" colour="red" %}
+                {% include "dwds/elements/ribbon.html" with text="Ribbon" colour="red" %}
                 <p class="card-subtitle">26 June</p>
                 <h3>DBT Connect: John Smith in conversation with Jane Doe</h3>
             {% endblock card_header_content %}
@@ -19,7 +19,7 @@
                 {% block card_content %}
                     <div class="card-body">
                         {% block card_content_body %}
-                            {% include "dwds/unsure/ribbon.html" with text="Ribbon" %}
+                            {% include "dwds/elements/ribbon.html" with text="Ribbon" %}
                             <a href="#">
                                 <h3>A message from the Secretary of State</h3>
                             </a>
