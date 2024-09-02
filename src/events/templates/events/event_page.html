@@ -1,0 +1,46 @@
+{% extends "dwds_content.html" %}
+{% load wagtailcore_tags  wagtailimages_tags %}
+
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
+
+{% block primary_content %}
+    {% image page.preview_image fill-640x360 width="100%" style="object-fit: cover;" %}
+    <div class="ws-streamfield-content">
+        {% for block in page.body %}
+            {% include_block block %}
+        {% endfor %}
+    </div>
+    <div>
+        <p>Date: {{ page.event_date }}</p>
+        <p>Time: {{ page.start_time }} - {{ page.end_time }}</p>
+ 
+        {% if not page.is_past_event %}
+            {% if page.online_event_url and is_online %}
+                <a href="{{ page.online_event_url }}"
+                   class="dwds-button dwds-button--inline dwds-button--secondary">Join event online</a>
+            {% endif %}
+            {% if page.offline_event_url and is_in_person %}
+                <a href="{{ page.offline_event_url }}"
+                   class="dwds-button dwds-button--inline dwds-button--secondary">Register to join</a>
+            {% endif %}
+            {% if page.submit_questions_url %}
+                <a href="{{ page.submit_questions_url }}"
+                   class="dwds-button dwds-button--inline dwds-button--secondary">Submit a question</a>
+            {% endif %}
+        {% elif page.event_recording_url %}
+ 
+            <a href="{{ page.event_recording_url }}"
+               class="dwds-button dwds-button--inline dwds-button--secondary">View event recording</a>
+        {% endif %}
+
+        <p>Audience: {{ page.get_audience_display }}</p>
+        <p>Location: {{ page.location|default_if_none:"-" }} {{ page.location.city|default_if_none:"" }}</p>
+        <p>Room: {{ page.room|default_if_none:"-" }} Capacity: {{ page.room_capacity|default_if_none:"-" }}</p>
+    </div>
+{% endblock primary_content %}
+
+{% block secondary_content %}
+    Secondary column
+{% endblock secondary_content %}
