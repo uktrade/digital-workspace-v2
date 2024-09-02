@@ -26,6 +26,10 @@
         margin-block-start: var(--space);
     }
 
+    .streamfield-content-stack > * + * {
+        margin-block-start: var(--s0);
+    }
+
 
     // Grid
     // https://every-layout.dev/layouts/grid/

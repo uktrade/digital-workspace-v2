@@ -6,8 +6,8 @@
 {% endblock main_content_classes %}
 
 {% block primary_content %}
-    <div class="with-sidebar-right">
-        <div class="ws-streamfield-content">
+    <div class="with-content-right">
+        <div class="stack streamfield-content-stack">
             {% image page.preview_image fill-465x265 width="100%" style="object-fit: cover; border-radius: var(--border-radius);" %}
             {% for block in page.body %}
                 {% include_block block %}
@@ -18,32 +18,38 @@
                 <h2>{{ page.event_date|date:"M d Y" }}</h2>
                 <h2>{{ page.start_time|time:'g:iA'|lower }} - {{ page.end_time|time:'g:iA'|lower }}</h2>
             </div>
-            <div>
-                <p>Location</p>
-                <h4>{{ page.location|default_if_none:"-" }}</h4>
-            </div>
-            <div>
-                <p>Room</p>
-                <h4>
+            {% if is_in_person or is_hybrid %}
+                <div>
+                    <p>Location</p>
+                    <h4>{{ page.location|default_if_none:"TBC" }}</h4>
+                </div>
+                {% if page.location %}
+                    <div>
+                        <p>Room</p>
+                        <h4>
+                            {% if page.room %}
+                                {{ page.room }}
+                                {% if page.room_capacity %}with {{ page.room_capacity }} seats{% endif %}
+                            {% else %}
+                                TBC
+                            {% endif %}
+        
+                        </h4>
+                    </div>
                     {% if page.room %}
-                        {{ page.room }}
-                        {% if page.room_capacity %}with {{ page.room_capacity }} seats{% endif %}
-                    {% else %}
-                        -
+                        <div>
+                            <p>Capacity</p>
+                            <h4>
+                                {% if page.room_capacity %}
+                                    {{ page.room_capacity }} seats
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </h4>
+                        </div>
                     {% endif %}
- 
-                </h4>
-            </div>
-            <div>
-                <p>Capacity</p>
-                <h4>
-                    {% if page.room_capacity %}
-                        {{ page.room_capacity }} seats
-                    {% else %}
-                        -
-                    {% endif %}
-                </h4>
-            </div>
+                {% endif %}
+            {% endif %}
             <div>
                 <p>Audience</p>
                 <h4>{{ page.get_audience_display|default_if_none:"-" }}</h4>
@@ -58,23 +64,25 @@
             </div>
             <div class="stack">
                 {% if not page.is_past_event %}
-                    {% if page.offline_event_url and is_in_person %}
-                        {% include 'dwds/elements/navigational_link.html' with url=page.offline_event_url text="Register to join in person" classes="dwds-button dwds-button--inline dwds-button--secondary" style="font-size: var(--text-large)" target="_blank" %}
-                    {% elif page.offline_event_url and is_hybrid %}
-                        {% include 'dwds/elements/navigational_link.html' with url=page.offline_event_url text="Register to join" classes="dwds-button dwds-button--inline dwds-button--secondary" style="font-size: var(--text-large)" target="_blank" %}
+                    {% if page.offline_event_url and is_in_person or is_hybrid %}
+                        <a href="{{ page.offline_event_url }}"
+                           class="dwds-button dwds-button--inline dwds-button--secondary"
+                           target="_blank">Register to join</a>
+                    {% endif %}
+                    {% if page.online_event_url and is_online or is_hybrid %}
+                        <a href="{{ page.online_event_url }}"
+                           class="dwds-button dwds-button--inline dwds-button--secondary"
+                           target="_blank">Watch event online</a>
                     {% endif %}
                     {% if page.submit_questions_url %}
                         <a href="{{ page.submit_questions_url }}"
                            class="dwds-button dwds-button--inline dwds-button--secondary"
                            target="_blank">Submit a question</a>
                     {% endif %}
-                    {% if page.online_event_url and is_online %}
-                        {% include 'dwds/elements/navigational_link.html' with url=page.online_event_url text="Join MS Teams" classes="dwds-button dwds-button--inline dwds-button--secondary" style="font-size: var(--text-large)" target="_blank" %}
-                    {% elif page.online_event_url and is_hybrid %}
-                        {% include 'dwds/elements/navigational_link.html' with url=page.online_event_url text="Watch event online" classes="dwds-button dwds-button--inline dwds-button--secondary" style="font-size: var(--text-large)" target="_blank" %}
-                    {% endif %}
                 {% elif page.event_recording_url %}
-                    {% include 'dwds/elements/navigational_link.html' with url=page.event_recording_url text="Watch past event" classes="dwds-button dwds-button--inline dwds-button--secondary" style="font-size: var(--text-large)" target="_blank" %}
+                    <a href="{{ page.event_recording_url }}"
+                       class="dwds-button dwds-button--inline dwds-button--secondary"
+                       target="_blank">Watch past event</a>
                 {% endif %}
             </div>
         </div>
