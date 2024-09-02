@@ -13,16 +13,11 @@
             <div class="stack">
                 {% block pre_content %}
                 {% endblock pre_content %}
-                {% block page_title %}
-                    <h1>{{ page.title }}</h1>
-                {% endblock page_title %}
-                {% block bookmark %}
-                    {% if FEATURE_FLAGS.new_homepage and page %}
-                        <div class="dwds">{% bookmark_page_input user page %}</div>
-                    {% endif %}
-                {% endblock bookmark %}
                 <div class="with-sidebar-right">
                     <div class="primary-content">
+                        {% block page_title %}
+                            <h1>{{ page.title }}</h1>
+                        {% endblock page_title %}
                         {% block pre_primary_content %}
                         {% endblock pre_primary_content %}
                         {% block primary_content %}
@@ -32,6 +27,11 @@
                         {% endblock post_primary_content %}
                     </div>
                     <div class="secondary-content">
+                        {% block bookmark %}
+                            {% if FEATURE_FLAGS.new_homepage and page %}
+                                {% bookmark_page_input user page %}
+                            {% endif %}
+                        {% endblock bookmark %}
                         {% block pre_secondary_content %}
                         {% endblock pre_secondary_content %}
                         {% block secondary_content %}

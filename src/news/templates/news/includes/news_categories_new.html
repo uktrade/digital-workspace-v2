@@ -1,0 +1,10 @@
+<nav aria-labelledby="news-category-heading">
+    <h3 id="news-category-heading">All news categories</h3>
+    <ul>
+        {% for category in categories %}
+            <li>
+                <a href="/news-and-views/category/{{ category.slug }}">{{ category.category }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
