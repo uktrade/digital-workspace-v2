@@ -483,7 +483,6 @@ class ContentPage(SearchFieldsMixin, BasePage):
     subpage_types = []
 
     content_panels = BasePage.content_panels + [
-        # TODO: Discuss with team, do we want description field to be visible on all content pages?
         FieldPanel("description"),
         FieldPanel("body"),
         FieldPanel("excerpt", widget=widgets.Textarea),
