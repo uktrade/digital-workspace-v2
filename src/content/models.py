@@ -33,6 +33,7 @@ from content.utils import (
     manage_pinned,
     truncate_words_and_chars,
 )
+from content.validators import validate_description_word_count
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
 from home import FEATURE_HOMEPAGE
@@ -358,10 +359,10 @@ class ContentPage(SearchFieldsMixin, BasePage):
     )
 
     description = models.TextField(
-        blank=True, 
+        blank=True,
         null=True,
-        max_length=70,
         help_text="Please use this field only to add a description for an event.",
+        validators=[validate_description_word_count],
     )
 
     preview_image = models.ForeignKey(
