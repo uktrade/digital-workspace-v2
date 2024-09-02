@@ -129,6 +129,7 @@ LOCAL_APPS = [
     "about_us",
     "networks",
     "country_fact_sheet",
+    "events",
     "dw_design_system",
     "user.apps.UserConfig",
     "pingdom.apps.PingdomConfig",

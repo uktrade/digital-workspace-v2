@@ -1,0 +1,28 @@
+{% extends "dwds_content.html" %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
+
+{% block bookmark %}
+{% endblock bookmark %}
+
+{% block primary_content %}
+    <ul class="ws-news-items">
+        {% for event in events %}
+            <li>
+                <h2 class="govuk-heading-m">
+                    <a href="{% pageurl event %}">{{ event.title }}</a>
+                </h2>
+                <p class="govuk-body-s">{{ event.event_date }}</p>
+                {% image event.preview_image width-540 %}
+                <p class="govuk-body">{{ event.description }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock primary_content %}
+
+{% block secondary_content %}
+{% endblock secondary_content %}
