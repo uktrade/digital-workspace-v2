@@ -33,6 +33,7 @@ from content.utils import (
     manage_pinned,
     truncate_words_and_chars,
 )
+from content.validators import validate_description_word_count
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
 from home import FEATURE_HOMEPAGE
@@ -212,7 +213,9 @@ class BasePage(Page, Indexed):
         return None
 
 
-class ContentPageQuerySet(BasePageQuerySet): ...
+class ContentPageQuerySet(BasePageQuerySet):
+    def annotate_with_comment_count(self):
+        return self.annotate(comment_count=models.Count("comments"))
 
 
 class ContentOwnerMixin(models.Model):
@@ -357,7 +360,12 @@ class ContentPage(SearchFieldsMixin, BasePage):
         blank=True, null=True, help_text="""Legacy content, pre-conversion"""
     )
 
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Please use this field only to add a description for an event.",
+        validators=[validate_description_word_count],
+    )
 
     preview_image = models.ForeignKey(
         "wagtailimages.Image",
@@ -477,7 +485,6 @@ class ContentPage(SearchFieldsMixin, BasePage):
     subpage_types = []
 
     content_panels = BasePage.content_panels + [
-        # TODO: Discuss with team, do we want description field to be visible on all content pages?
         FieldPanel("description"),
         FieldPanel("body"),
         FieldPanel("excerpt", widget=widgets.Textarea),

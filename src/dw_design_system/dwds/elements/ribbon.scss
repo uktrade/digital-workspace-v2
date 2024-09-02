@@ -4,7 +4,7 @@
     --ribbon-padding: var(--s-4);
     --ribbon-padding-right: var(--s-2);
     --ribbon-left-space: calc(var(--space) + calc(var(--space) / 2));
-    --ribbon-text-colour: var(--card-white);
+    --ribbon-text-colour: var(--color-text-highlight);
     --ribbon-line-height: var(--font-lineheight-headings);
     --ribbon-height: calc(var(--ribbon-padding) + var(--ribbon-padding) + var(--ribbon-line-height));
 
@@ -14,7 +14,7 @@
 
     .ribbon-main,
     .ribbon-spacer {
-        // max-height: var(--ribbon-height);
+        min-height: var(--ribbon-height);
         padding: var(--ribbon-padding) var(--ribbon-padding-right) var(--ribbon-padding) var(--ribbon-left-space);
         margin-left: calc(var(--ribbon-left-space) * -1);
 

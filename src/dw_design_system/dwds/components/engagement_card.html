@@ -6,6 +6,7 @@
 
 {% block card_container_classes %}
     dwds-engagement-card card-with-image
+    {% if hide_shadow %}card-without-shadow{% endif %}
 {% endblock card_container_classes %}
 
 {% block card_content_image %}

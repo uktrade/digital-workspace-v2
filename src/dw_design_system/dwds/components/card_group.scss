@@ -1,0 +1,21 @@
+.dwds-card.dwds-card-group {
+    .grid {
+        grid-gap: var(--s0);
+    }
+
+    .card-footer a {
+        display: flex;
+        justify-content: space-between;
+        max-width: fit-content;
+
+        svg {
+            height: var(--font-lineheight-body);
+            width: var(--s0);
+            margin-left: var(--s0);
+
+            path {
+                fill: currentColor;
+            }
+        }
+    }
+}
