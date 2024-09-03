@@ -1,6 +1,14 @@
 {% extends "dwds/elements/extendable/card.html" %}
 
-{% block card_container_classes %}dwds-card-group{% endblock %}
+{% block card_container_classes %}
+    dwds-card-group
+    {% if grid %}
+        dwds-card-group-grid
+    {% endif %}
+    {% if blue_bg %}
+        dwds-card-blue
+    {% endif %}
+{% endblock %}
 
 {% block card_header %}
 {% endblock card_header %}
@@ -13,14 +21,16 @@
     <div class="grid">
         {% for card in cards %}
             {% include card.template with title=card.title thumbnail=card.thumbnail url=card.url date=card.date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow %}
-            <hr>
+            {% if show_hr %}<hr>{% endif %}
         {% endfor %}
     </div>
 {% endblock card_content_body %}
 
 {% block card_footer_body %}
-    <a href="{{ footer_link }}">
-        {{ footer_link_text }}
-        {% include "dwds/icons/arrow-right.html" %}
-    </a>
+    {% if footer_link and footer_link_text %}
+        <a href="{{ footer_link }}">
+            {{ footer_link_text }}
+            {% include "dwds/icons/arrow-right.html" %}
+        </a>
+    {% endif %}
 {% endblock card_footer_body %}

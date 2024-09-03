@@ -1,27 +1,38 @@
 from django import template
 
+from events.models import EventPage
+from events.utils import get_event_date, get_event_time
 from news.models import NewsPage
-
 
 register = template.Library()
 
 
 @register.simple_tag
-def page_to_card(page: NewsPage):
+def page_to_card(page: NewsPage | EventPage):
     card_dict = {
         "title": page.title,
         "thumbnail": page.preview_image,
         "url": page.url,
-        "date": page.last_published_at,
-        "comment_count": page.comment_count,
         "excerpt": page.excerpt,
         "hide_shadow": True,
         "template": "dwds/components/engagement_card.html",
     }
-    # TODO: Add event logic here
+
+    if issubclass(type(page), NewsPage):
+        card_dict.update(
+            date=page.last_published_at,
+            comment_count=page.comment_count,
+        )
+    
+    if issubclass(type(page), EventPage):
+        card_dict.update(
+            post_title_date=get_event_date(page),
+            post_title_time=get_event_time(page),
+        )
+
     return card_dict
 
 
 @register.simple_tag
-def pages_to_cards(pages: list[NewsPage]):
+def pages_to_cards(pages: list[NewsPage | EventPage]):
     return [page_to_card(page) for page in pages]

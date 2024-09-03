@@ -1,7 +1,11 @@
 .dwds-card {
     --card-bottom-border-height: 5px;
-
+    --card-body-heading-color: var(--color-link);
+    --card-body-link-color: var(--color-link);
+    --card-body-text-color: var(--color-text);
     --card-body-bg-color: var(--card-bg-white);
+
+    color: var(--card-body-text-color);
 
     display: flex;
     flex-direction: column;
@@ -14,21 +18,43 @@
     container-name: card;
     container-type: inline-size;
 
+    a,
+    a:visited,
+    a:link {
+        color: var(--card-body-link-color);
+        text-decoration-color: var(--card-body-link-color);
+        p {
+            color: var(--card-body-text-color);
+        }
+    }
+
     p:last-child {
         margin-bottom: 0;
     }
 
     p {
+        color: var(--card-body-text-color);
         margin-bottom: var(--s-5);
         margin-top: var(--s-5);
+    }
+    
+    h2,
+    h3 {
+        color: var(--card-body-heading-color);
     }
 
     &.dwds-card-blue {
         --card-body-bg-color: var(--card-bg-blue);
+        --card-body-heading-color: var(--color-text-highlight);
+        --card-body-link-color: var(--color-text-highlight);
+        --card-body-text-color: var(--color-text-highlight);
     }
 
     &.dwds-card-red {
         --card-body-bg-color: var(--card-bg-red);
+        --card-body-heading-color: var(--color-text-highlight);
+        --card-body-link-color: var(--color-text-highlight);
+        --card-body-text-color: var(--color-text-highlight);
     }
 
     .card-header {
@@ -43,6 +69,7 @@
 
         .card-subtitle {
             font-size: var(--text-large);
+            color: var(--header-text-colour);
         }
 
         h2,

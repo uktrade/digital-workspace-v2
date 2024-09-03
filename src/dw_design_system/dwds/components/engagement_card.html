@@ -33,19 +33,19 @@
 {% endblock card_content_body %}
 
 {% block card_footer_body %}
-    {% if not event %}
+    {% if date %}
         <time>
             Added {{ date|naturalday:'j F Y' }}
             {% if date|naturalday in 'yesterday, today' %}at {{ date|time:'g:iA'|lower }}{% endif %}
         </time>
+    {% endif %}
 
-        {% if comment_count > 0 %}
-            <span class="card-comment-section">
-                <img class="comment-icon"
-                     src="{% static '/images/dwds/icons/comment_icon.svg' %}"
-                     alt="Comment bubble icon.">
-                {{ comment_count }} Comment{{ comment_count|pluralize }}
-            </span>
-        {% endif %}
+    {% if comment_count > 0 %}
+        <span class="card-comment-section">
+            <img class="comment-icon"
+                    src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+                    alt="Comment bubble icon.">
+            {{ comment_count }} Comment{{ comment_count|pluralize }}
+        </span>
     {% endif %}
 {% endblock card_footer_body %}
