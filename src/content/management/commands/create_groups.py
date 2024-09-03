@@ -123,6 +123,7 @@ EVENT_CREATORS_ROOT_COLLECTION_PERMISSIONS = [
 ]
 EVENT_CREATORS_PAGE_PERMISSIONS = [
     "add_page",
+    "publish_page",
 ]
 
 EVENT_EDITORS_GROUP_NAME = "Event Editors"
@@ -138,7 +139,6 @@ EVENT_EDITORS_ROOT_COLLECTION_PERMISSIONS = [
 ]
 EVENT_EDITORS_PAGE_PERMISSIONS = EVENT_CREATORS_PAGE_PERMISSIONS + [
     "change_page",
-    "publish_page",
     "lock_page",
     "unlock_page",
 ]
