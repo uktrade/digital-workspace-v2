@@ -22,24 +22,30 @@
     <h3>
         <a href="{{ url }}">{{ title }}</a>
     </h3>
-    {% if post_title %}<h4>{{ post_title }}</h4>{% endif %}
+    {% if post_title_date and post_title_time %}
+        <div class="flex post-title-container">
+            <h4 class="post-title">{{ post_title_date }}</h4>
+            <h4 class="post-title">{{ post_title_time }}</h4>
+        </div>
+    {% endif %}
 
     {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
 {% endblock card_content_body %}
 
 {% block card_footer_body %}
+    {% if not event %}
+        <time>
+            Added {{ date|naturalday:'j F Y' }}
+            {% if date|naturalday in 'yesterday, today' %}at {{ date|time:'g:iA'|lower }}{% endif %}
+        </time>
 
-    <time>
-        Added {{ date|naturalday:'j F Y' }}
-        {% if date|naturalday in 'yesterday, today' %}at {{ date|time:'g:iA'|lower }}{% endif %}
-    </time>
-
-    {% if comment_count > 0 %}
-        <span class="card-comment-section">
-            <img class="comment-icon"
-                 src="{% static '/images/dwds/icons/comment_icon.svg' %}"
-                 alt="Comment bubble icon.">
-            {{ comment_count }} Comment{{ comment_count|pluralize }}
-        </span>
+        {% if comment_count > 0 %}
+            <span class="card-comment-section">
+                <img class="comment-icon"
+                     src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+                     alt="Comment bubble icon.">
+                {{ comment_count }} Comment{{ comment_count|pluralize }}
+            </span>
+        {% endif %}
     {% endif %}
 {% endblock card_footer_body %}

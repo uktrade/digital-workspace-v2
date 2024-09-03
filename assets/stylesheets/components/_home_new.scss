@@ -85,7 +85,16 @@
   }
 
   .events-cards-container {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(25ch, 1fr));
+  }
+
+  .post-title-container {
+    flex-direction: column;
+    gap: var(--s-4)
+  }
+
+  .post-title {
+    margin: 0;
   }
 }
 

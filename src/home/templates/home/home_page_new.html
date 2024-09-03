@@ -64,7 +64,8 @@
                         <div class="grid events-cards-container">
                             {% for event in events %}
                                 {% get_event_date event as event_date %}
-                                {% include "dwds/components/engagement_card.html" with post_title=event_date title=event.title thumbnail=event.preview_image url=event.url excerpt=event.excerpt is_highlighted=True date=event.last_published_at %}
+                                {% get_event_time event as event_time %}
+                                {% include "dwds/components/engagement_card.html" with event=event post_title_date=event_date post_title_time=event_time title=event.title thumbnail=event.preview_image url=event.url excerpt=event.excerpt is_highlighted=True date=event.last_published_at %}
                             {% endfor %}
                         </div>
                     </div>
