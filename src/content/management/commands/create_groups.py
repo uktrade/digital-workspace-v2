@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from wagtail.models import Collection, GroupCollectionPermission, GroupPagePermission
 
 from about_us.models import AboutUsHome
-from events.models import EventPage, EventsHome
+from events.models import EventsHome
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome
