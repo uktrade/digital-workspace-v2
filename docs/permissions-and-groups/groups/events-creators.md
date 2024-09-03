@@ -10,6 +10,7 @@ Users in this group get the following permissions:
 
 - Can add pages below the EventsHome page
 - Can edit their own pages below the EventsHome page
+- Can publish their own pages below the EventsHome page
 
 ## Document permissions
 
