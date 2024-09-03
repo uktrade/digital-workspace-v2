@@ -6,7 +6,7 @@
 {% endblock main_content_classes %}
 
 {% block primary_content %}
-    <div class="with-content-right">
+    <div class="with-sidebar-right">
         <div class="stack streamfield-content-stack">
             {% image page.preview_image fill-465x265 width="100%" style="object-fit: cover; border-radius: var(--border-radius);" %}
             {% for block in page.body %}
@@ -15,7 +15,7 @@
         </div>
         <div class="dwds-card dwds-information-panel">
             <div>
-                <h2>{{ page.event_date|date:"M d Y" }}</h2>
+                <h2>{{ page.event_date|date:"d F, Y" }}</h2>
                 <h2>{{ page.start_time|time:'g:iA'|lower }} - {{ page.end_time|time:'g:iA'|lower }}</h2>
             </div>
             {% if is_in_person or is_hybrid %}
@@ -30,36 +30,29 @@
                             {% if page.room %}
                                 {{ page.room }}
                                 {% if page.room_capacity %}with {{ page.room_capacity }} seats{% endif %}
-                            {% else %}
-                                TBC
                             {% endif %}
- 
                         </h4>
                     </div>
-                    {% if page.room %}
+                    {% if page.room and page.room_capacity %}
                         <div>
                             <p>Capacity</p>
-                            <h4>
-                                {% if page.room_capacity %}
-                                    {{ page.room_capacity }} seats
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </h4>
+                            <h4>{{ page.room_capacity }}</h4>
                         </div>
                     {% endif %}
                 {% endif %}
             {% endif %}
-            <div>
-                <p>Audience</p>
-                <h4>{{ page.get_audience_display|default_if_none:"-" }}</h4>
-            </div>
+            {% if page.audience %}
+                <div>
+                    <p>Audience</p>
+                    <h4>{{ page.get_audience_display|default_if_none:"-" }}</h4>
+                </div>
+            {% endif %}
             <div>
                 <p>Event type</p>
                 {% if is_online or is_in_person %}
                     <h4>{{ page.get_event_type_display }}</h4>
-                {% elif is_hybrid %}
-                    <h4>In person or online via MS Teams</h4>
+                {% else %}
+                    <h4>In person or online</h4>
                 {% endif %}
             </div>
             <div class="stack">

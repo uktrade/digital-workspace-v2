@@ -43,7 +43,7 @@
   // Sidebar
   // https://every-layout.dev/layouts/sidebar/
   .with-sidebar,
-  .with-content-right {
+  .with-sidebar-right {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space);
@@ -59,14 +59,14 @@
     min-inline-size: 50%;
   }
 
-  .with-content-right > :last-child {
+  .with-sidebar-right > :last-child {
     // @TODO temporary - this works for 2-col in the GDS fixed container
     flex-basis: 300px;
     flex-grow: 1;
   }
 
 
-  .with-content-right > :first-child {
+  .with-sidebar-right > :first-child {
     flex-basis: 0;
     flex-grow: 999;
     min-inline-size: 50%;
