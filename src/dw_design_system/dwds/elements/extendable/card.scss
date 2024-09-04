@@ -5,10 +5,8 @@
 
     display: flex;
     flex-direction: column;
-
     border-radius: var(--border-radius);
     box-shadow: 0 var(--card-bottom-border-height) 0 rgba(0, 0, 0, 0.2);
-    overflow: hidden;
     background-color: var(--card-body-bg-color);
 
     container-name: card;
@@ -40,7 +38,9 @@
         background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
         font-weight: var(--font-weight-bold);
         color: var(--header-text-colour);
-
+        border-radius: var(--border-radius) var(--border-radius) 0 0; 
+        overflow: hidden;
+        
         .card-subtitle {
             font-size: var(--text-large);
         }
@@ -56,6 +56,8 @@
 
         display: flex;
         flex-direction: column;
+        border-radius: var(--border-radius);
+        overflow: hidden;
 
         > img {
             width: 100%;
