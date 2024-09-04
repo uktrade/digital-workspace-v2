@@ -21,8 +21,10 @@ from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
 
-# TODO: Add event page here once merged in
-HOME_PRIORITY_PAGE_TYPES = (NewsPage,)
+HOME_PRIORITY_PAGE_TYPES = (
+    NewsPage,
+    EventPage,
+)
 
 
 @register_snippet
@@ -185,13 +187,19 @@ class HomePage(BasePage):
         news_items = NewsPage.objects.live().public().annotate_with_comment_count()
 
         if is_new_homepage:
-            priority_page_ids = self.priority_pages.all().values("page_id")
-            priority_pages = [
-                p.specific
-                for p in ContentPage.objects.filter(
-                    id__in=priority_page_ids
-                ).annotate_with_comment_count()
+            priority_page_ids = [
+                pp["page_id"] for pp in self.priority_pages.all().values("page_id")
             ]
+            # Load the priority pages, preserving the order.
+            priority_pages = sorted(
+                [
+                    p.specific
+                    for p in ContentPage.objects.filter(
+                        id__in=priority_page_ids
+                    ).annotate_with_comment_count()
+                ],
+                key=lambda x: priority_page_ids.index(x.id),
+            )
             news_items = news_items.exclude(id__in=priority_page_ids).order_by(
                 "-pinned_on_home",
                 "-first_published_at",

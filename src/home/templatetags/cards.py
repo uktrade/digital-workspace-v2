@@ -4,6 +4,7 @@ from events.models import EventPage
 from events.utils import get_event_date, get_event_time
 from news.models import NewsPage
 
+
 register = template.Library()
 
 
@@ -15,6 +16,9 @@ def page_to_card(page: NewsPage | EventPage):
         "url": page.url,
         "excerpt": page.excerpt,
         "hide_shadow": True,
+        "grid": False,
+        "blue_bg": False,
+        "show_hr": False,
         "template": "dwds/components/engagement_card.html",
     }
 
@@ -23,7 +27,7 @@ def page_to_card(page: NewsPage | EventPage):
             date=page.last_published_at,
             comment_count=page.comment_count,
         )
-    
+
     if issubclass(type(page), EventPage):
         card_dict.update(
             post_title_date=get_event_date(page),

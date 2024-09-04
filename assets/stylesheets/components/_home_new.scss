@@ -74,20 +74,6 @@
     }
   }
 
-  .events-container {
-    background: var(--dbt-blue);
-    padding: var(--s0);
-    border-radius: var(--border-radius);
-  }
-
-  .events-section-title {
-    color: var(--color-text-highlight);
-  }
-
-  .events-cards-container {
-    grid-template-columns: repeat(auto-fit, minmax(25ch, 1fr));
-  }
-
   .post-title-container {
     flex-direction: column;
     gap: var(--s-5)

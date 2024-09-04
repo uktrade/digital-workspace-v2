@@ -8,8 +8,8 @@ def format_time(time_obj: time) -> str:
     Build a time string that shows the needed information.
 
     Returns:
-     - If there are minitues on the hour: `10:30pm`
-     - If there are not minutes on the hour: `10pm`
+     - If there are minutes on the hour: `10:30` -> `10:30am`
+     - If there are not minutes on the hour: `10:00` -> `10am`
 
     """
     if time_obj.minute == 0:

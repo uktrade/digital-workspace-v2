@@ -22,5 +22,7 @@
 }
 
 .dwds-card.dwds-card-group.dwds-card-group-grid {
-    // TODO: Add events grid logic here
+    .grid {
+        grid-template-columns: repeat(auto-fit, minmax(25ch, 1fr));
+    }
 }
