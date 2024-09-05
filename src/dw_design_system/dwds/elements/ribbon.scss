@@ -16,7 +16,8 @@
     .ribbon-main,
     .ribbon-spacer {
         min-height: var(--ribbon-height);
-        padding: var(--ribbon-padding) var(--ribbon-padding-right) var(--ribbon-padding) var(--ribbon-left-space);        margin-left: calc(var(--space) * -1);
+        padding: var(--ribbon-padding) var(--ribbon-padding-right) var(--ribbon-padding) var(--ribbon-left-space);        
+        margin-left: calc(var(--ribbon-left-space) * -1);
 
     }
 

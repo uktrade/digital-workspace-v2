@@ -23,6 +23,10 @@
         <a href="{{ url }}">{{ title }}</a>
     </h3>
 
+    {% if ribbon_text %}
+        {% include "dwds/elements/ribbon.html" with text=ribbon_text colour="blue" %}
+    {% endif %}
+
     {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
 {% endblock card_content_body %}
 
