@@ -1,6 +1,5 @@
 from django import template
 
-from home.models import HomePage, HomePriorityPage
 from news.models import NewsPage
 
 

@@ -76,10 +76,10 @@ class HomePriorityPage(AdminSortable):
     )
 
     ribbon_text = models.CharField(
-        max_length=30, 
-        blank=True, 
+        max_length=30,
+        blank=True,
         null=True,
-        unique=True,
+        help_text="Insert a ribbon text for the news listing on the home page.",
     )
 
     panels = [
@@ -197,18 +197,16 @@ class HomePage(BasePage):
                 for pp in self.priority_pages.all().values("page_id", "ribbon_text")
             }
             priority_page_ids = list(priority_page_ribbon_text_mapping.keys())
-            
+
             # Load the priority pages, preserving the order.
             priority_pages = sorted(
                 [
                     p.specific
-                    for p in ContentPage.objects.filter(
-                        id__in=priority_page_ids
-                    ).annotate_with_comment_count().annotate(
-                        ribbon_text=models.F("priority_page__ribbon_text")
-                    )
+                    for p in ContentPage.objects.filter(id__in=priority_page_ids)
+                    .annotate_with_comment_count()
+                    .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
                 ],
-                key=lambda x: priority_page_ids.index(x.id)
+                key=lambda x: priority_page_ids.index(x.id),
             )
             news_items = news_items.exclude(id__in=priority_page_ids).order_by(
                 "-pinned_on_home",
