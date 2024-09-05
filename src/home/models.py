@@ -169,8 +169,8 @@ class HomePage(BasePage):
             "priority_pages",
             label="Priority page",
             heading="Priority pages",
-            min_num=0,
-            max_num=3,
+            min_num=4,
+            max_num=4,
         ),
     ]
 
