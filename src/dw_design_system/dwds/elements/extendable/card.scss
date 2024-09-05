@@ -1,10 +1,14 @@
 .dwds-card-wrapper {
     container-name: card;
     container-type: inline-size;
+    display: flex;
+    flex-direction: column;
 
     .dwds-card {
         --card-bottom-border-height: 5px;
         --card-body-bg-color: var(--card-bg-white);
+
+        flex-grow: 1;
 
         display: flex;
         flex-direction: column;
@@ -58,8 +62,6 @@
 
             display: flex;
             flex-direction: column;
-            // border-radius: var(--border-radius);
-            // overflow: hidden;
 
             > img {
                 width: 100%;
@@ -104,10 +106,10 @@
 }
 
 @container card (width > 60ch) {
-    .card-with-image {
+    .dwds-card.card-with-image {
         .card-main {
             display: grid;
-            grid-template-columns: 1fr 2fr;
+            grid-template-columns: 1fr 1.25fr;
             grid-template-rows: 1fr;
         }
 
