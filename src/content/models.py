@@ -636,6 +636,9 @@ class BlogIndex(BasePage):
     ]
     is_creatable = False
 
+    def get_template(self, request, *args, **kwargs):
+        return self.template
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["children"] = self.get_children().live().public().order_by("title")
@@ -646,3 +649,6 @@ class BlogPost(ContentPage):
     template = "content/blog_post.html"
     subpage_types = []
     is_creatable = True
+
+    def get_template(self, request, *args, **kwargs):
+        return self.template
