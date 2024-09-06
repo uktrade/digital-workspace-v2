@@ -1,8 +1,6 @@
 .dwds-card-wrapper {
     container-name: card;
     container-type: inline-size;
-    display: flex;
-    flex-direction: column;
 
     .dwds-card {
         --card-bottom-border-height: 5px;
