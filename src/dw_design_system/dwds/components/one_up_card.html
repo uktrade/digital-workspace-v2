@@ -24,7 +24,7 @@
                 {% include "dwds/elements/ribbon.html" with text=ribbon_text colour="blue" %}
             {% endif %}
             <h2>
-                <a href="{{ url }}">{{ title }}</a>
+                <a class="no-underline" href="{{ url }}">{{ title }}</a>
             </h2>
             {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
         {% endblock card_content_body %}

@@ -20,7 +20,7 @@
 
 {% block card_content_body %}
     <h3>
-        <a href="{{ url }}">{{ title }}</a>
+        <a class="no-underline" href="{{ url }}">{{ title }}</a>
     </h3>
 
     {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
