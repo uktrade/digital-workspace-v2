@@ -74,6 +74,7 @@ class EventPage(ContentPage):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        help_text="If you don't select a location the page will show 'Location: To be confirmed'"
     )
     room = models.CharField(
         blank=True,

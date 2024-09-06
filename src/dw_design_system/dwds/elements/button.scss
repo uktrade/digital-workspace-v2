@@ -108,3 +108,12 @@
         outline: none;
     }
 }
+
+// When we use <a> as a button we don't want to inherit 'link behaviour' on different states.
+a.dwds-button,
+a.dwds-button:hover,
+a.dwds-button:active,
+a.dwds-button:focus,
+a.dwds-button:focus-visible {
+    text-decoration: none !important;
+}

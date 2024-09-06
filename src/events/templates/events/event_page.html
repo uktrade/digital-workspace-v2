@@ -21,22 +21,20 @@
             {% if is_in_person or is_hybrid %}
                 <div>
                     <p>Location</p>
-                    <h4>{{ page.location|default_if_none:"TBC" }}</h4>
+                    <h4>{{ page.location|default_if_none:"To be confirmed" }}</h4>
                 </div>
-                {% if page.location %}
+                {% if page.location and page.room %}
                     <div>
                         <p>Room</p>
                         <h4>
-                            {% if page.room %}
-                                {{ page.room }}
-                                {% if page.room_capacity %}with {{ page.room_capacity }} seats{% endif %}
-                            {% endif %}
+                            {{ page.room }}
+                            {% if page.room_capacity %}with {{ page.room_capacity }} seats{% endif %}
                         </h4>
                     </div>
                     {% if page.room and page.room_capacity %}
                         <div>
                             <p>Capacity</p>
-                            <h4>{{ page.room_capacity }}</h4>
+                            <h4>{{ page.room_capacity }} seats</h4>
                         </div>
                     {% endif %}
                 {% endif %}
