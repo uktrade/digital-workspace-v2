@@ -1,8 +1,4 @@
 .dwds-card.dwds-promo-banner {
-    .ribbon-main.ribbon-red{
-        border-radius: var(--border-radius);
-    }
-
     .card-main{
         grid-template-columns: 2fr 1fr;
         image{
@@ -16,14 +12,6 @@
         svg{
             width: var(--s0);
         }
-    }
-
-
-    h3 {
-        color: var(--color-text-highlight);
-        font-size: var(--text-xlarge);
-        font-weight: var(--font-weight-normal);
-        line-height: var(--font-lineheight-headings);
     }
 
     p {

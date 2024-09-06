@@ -13,8 +13,8 @@
 {% endblock card_header %}
 
 {% block card_content_image %}
-    {% if image %}
-        {% image background_image fill-420x240 %}
+    {% if thumbnail %}
+        {% image thumbnail fill-420x240 %}
     {% else %}
         <img src="{% static '/images/dwds/fallback_image_card.png' %}"
              alt="Colourful circles on a blue background.">
