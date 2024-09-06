@@ -1,4 +1,8 @@
 .dwds-one-up-card {
+    .card-main {
+        grid-template-columns: 1fr 1.25fr !important;
+    }
+
     .comment-icon {
         vertical-align: text-bottom;
     }
