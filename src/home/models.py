@@ -93,6 +93,7 @@ class HomePriorityPage(Orderable):
 
     class Meta:
         unique_together = ("home_page", "page")
+        ordering = ["sort_order"]
 
 
 @register_snippet
