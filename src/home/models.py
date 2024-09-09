@@ -19,7 +19,6 @@ from interactions import get_bookmarks
 from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
-
 # TODO: Add event page here once merged in
 HOME_PRIORITY_PAGE_TYPES = (NewsPage,)
 
@@ -86,6 +85,9 @@ class HomePriorityPage(AdminSortable):
         PageChooserPanel("page", HOME_PRIORITY_PAGE_TYPES),
         FieldPanel("ribbon_text"),
     ]
+
+    class Meta:
+        unique_together = ("home_page", "page")
 
 
 @register_snippet
