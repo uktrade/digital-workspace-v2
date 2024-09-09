@@ -90,9 +90,6 @@ class HomePriorityPage(AdminSortable):
         FieldPanel("ribbon_text"),
     ]
 
-    # class Meta:
-    #     unique_together = ("home_page", "page")
-
 
 @register_snippet
 class QuickLink(models.Model):
