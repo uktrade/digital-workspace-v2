@@ -6,4 +6,14 @@
     .comment-icon {
         vertical-align: text-bottom;
     }
+
+    .post-title-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-5)
+    }
+
+    .post-title {
+        margin: 0;
+    }
 }

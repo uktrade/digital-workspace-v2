@@ -46,11 +46,11 @@
         <section>
             <div class="stack">
                 {% pages_to_cards priority_pages as pp_cards %}
-                {% include "dwds/components/one_up_card.html" with title=pp_cards.0.title thumbnail=pp_cards.0.thumbnail url=pp_cards.0.url date=pp_cards.0.date comment_count=pp_cards.0.comment_count excerpt=pp_cards.0.excerpt hide_shadow=pp_cards.0.hide_shadow ribbon_text=pp_cards.0.ribbon_text %}
-
+                {% include "dwds/components/one_up_card.html" with title=pp_cards.0.title thumbnail=pp_cards.0.thumbnail url=pp_cards.0.url date=pp_cards.0.date comment_count=pp_cards.0.comment_count excerpt=pp_cards.0.excerpt hide_shadow=pp_cards.0.hide_shadow ribbon_text=pp_cards.0.ribbon_text post_title_date=pp_cards.0.post_title_date post_title_time=pp_cards.0.post_title_time %}
+ 
                 <div class="grid grid-cards">
                     {% for card in pp_cards|slice:"1:" %}
-                        {% include card.template with title=card.title thumbnail=card.thumbnail url=card.url date=card.date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow ribbon_text=card.ribbon_text %}
+                        {% include card.template with title=card.title thumbnail=card.thumbnail url=card.url date=card.date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow ribbon_text=card.ribbon_text post_title_date=card.post_title_date post_title_time=card.post_title_time %}
                     {% endfor %}
                 </div>
 
