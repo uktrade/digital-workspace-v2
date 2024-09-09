@@ -1,7 +1,8 @@
 from wagtail_adminsortable.admin import SortableAdminMixin
 from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
+from wagtailorderable.modeladmin.mixins import OrderableMixin
 
-from home.models import HomeNewsOrder, QuickLink, WhatsPopular
+from home.models import HomeNewsOrder, HomePriorityPage, QuickLink, WhatsPopular
 
 
 class HomeNewsOrderAdmin(SortableAdminMixin, ModelAdmin):
@@ -31,6 +32,11 @@ class WhatsPopularAdmin(ModelAdmin):
     exclude_from_explorer = False
 
 
+# class HomePriorityPage(OrderableMixin, ModelAdmin):
+#     model = HomePriorityPage
+
+
 modeladmin_register(HomeNewsOrderAdmin)
 modeladmin_register(QuickLinksAdmin)
 modeladmin_register(WhatsPopularAdmin)
+# modeladmin_register(HomePriorityPage)
