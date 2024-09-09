@@ -16,8 +16,11 @@ def page_to_card(page: NewsPage):
         "comment_count": page.comment_count,
         "excerpt": page.excerpt,
         "hide_shadow": True,
+        "ribbon_text": None,
         "template": "dwds/components/engagement_card.html",
     }
+    if hasattr(page, "ribbon_text"):
+        card_dict["ribbon_text"] = page.ribbon_text
     # TODO: Add event logic here
     return card_dict
 
