@@ -205,21 +205,24 @@ class HomePage(BasePage):
             priority_page_ids = list(priority_page_ribbon_text_mapping.keys())
 
             # Load the priority pages, preserving the order.
-            priority_pages = sorted(
-                [
-                    p.specific
-                    for p in ContentPage.objects.filter(id__in=priority_page_ids)
-                    .annotate_with_comment_count()
-                    .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
-                ],
-                key=lambda x: priority_page_ids.index(x.id),
-            )
+            priority_pages = [
+                p.specific
+                for p in ContentPage.objects.filter(id__in=priority_page_ids)
+                .annotate_with_comment_count()
+                .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
+                .order_by("priority_page__order")
+            ]
+
             news_items = news_items.exclude(id__in=priority_page_ids).order_by(
                 "-pinned_on_home",
                 "-first_published_at",
             )
+
             context.update(
                 priority_pages=priority_pages,
+                events=EventPage.objects.live()
+                .public()
+                .exclude(id__in=priority_page_ids)[:6],
             )
         else:
             news_items = news_items.order_by(
@@ -231,9 +234,6 @@ class HomePage(BasePage):
         context.update(
             news_items=news_items[:8],
         )
-
-        # Events
-        context["events"] = EventPage.objects.live().public()[:6]
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):
