@@ -16,8 +16,8 @@
         <div class="dwds-card-wrapper">
             <div class="dwds-card dwds-information-panel">
                 <div>
-                    <h2>{{ page.event_date|date:"d F, Y" }}</h2>
-                    <h2>{{ page.start_time|time:'g:iA'|lower }} - {{ page.end_time|time:'g:iA'|lower }}</h2>
+                    <h2>{{ event_date }}</h2>
+                    <h2>{{ event_time }}</h2>
                 </div>
                 {% if is_in_person or is_hybrid %}
                     <div>
