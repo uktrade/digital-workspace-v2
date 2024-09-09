@@ -1,11 +1,13 @@
-.dwds-card.dwds-banner-card {
-    h3 {
-        font-size: var(--text-xlarge);
-        font-weight: var(--font-weight-normal);
-        line-height: var(--font-lineheight-headings);
-    }
+.dwds-card-wrapper {
+    .dwds-card.dwds-banner-card {
+        h3 {
+            font-size: var(--text-xlarge);
+            font-weight: var(--font-weight-normal);
+            line-height: var(--font-lineheight-headings);
+        }
 
-    p {
-        margin: 0;
+        p {
+            margin: 0;
+        }
     }
 }

@@ -4,20 +4,22 @@
 
     .dwds-card {
         --card-bottom-border-height: 5px;
+        --card-body-bg-color: var(--card-bg-white);
         --card-body-heading-color: var(--color-link);
         --card-body-link-color: var(--color-link);
         --card-body-text-color: var(--color-text);
-        --card-body-bg-color: var(--card-bg-white);
-
         color: var(--card-body-text-color);
+
+        flex-grow: 1;
 
         display: flex;
         flex-direction: column;
 
-        border-radius: var(--border-radius);
         box-shadow: 0 var(--card-bottom-border-height) 0 rgba(0, 0, 0, 0.2);
+        border-radius: var(--border-radius);
         overflow: hidden;
         background-color: var(--card-body-bg-color);
+
 
         a,
         a:visited,
@@ -38,7 +40,7 @@
             margin-bottom: var(--s-5);
             margin-top: var(--s-5);
         }
-        
+
         h2,
         h3 {
             color: var(--card-body-heading-color);
@@ -67,7 +69,9 @@
             background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
             font-weight: var(--font-weight-bold);
             color: var(--header-text-colour);
-
+            border-radius: var(--border-radius) var(--border-radius) 0 0; 
+            overflow: hidden;
+            
             .card-subtitle {
                 font-size: var(--text-large);
                 color: var(--header-text-colour);
@@ -85,90 +89,39 @@
             display: flex;
             flex-direction: column;
 
-            box-shadow: 0 var(--card-bottom-border-height) 0 rgba(0, 0, 0, 0.2);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            background-color: var(--card-body-bg-color);
-
-            p:last-child {
-                margin-bottom: 0;
+            > img {
+                width: 100%;
+                height: auto;
+                align-self: stretch;
+                object-fit: cover;
             }
 
-            p {
-                margin-bottom: var(--s-5);
-                margin-top: var(--s-5);
-            }
-
-            &.dwds-card-blue {
-                --card-body-bg-color: var(--card-bg-blue);
-            }
-
-            &.dwds-card-red {
-                --card-body-bg-color: var(--card-bg-red);
-            }
-
-            .card-header {
-                --header-background-colour: var(--card-bg-blue);
-                --header-text-colour: var(--card-bg-white);
-
-                padding: var(--s0) var(--s1) var(--s0) var(--s0);
-                align-items: flex-start;
-                background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
-                font-weight: var(--font-weight-bold);
-                color: var(--header-text-colour);
-                border-radius: var(--border-radius) var(--border-radius) 0 0; 
-                overflow: hidden;
-                
-                .card-subtitle {
-                    font-size: var(--text-large);
-                }
-
-                h2,
-                h3 {
-                    color: var(--header-text-colour);
-                }
-            }
-
-            .card-main {
+            .card-content {
                 flex-grow: 1;
 
                 display: flex;
                 flex-direction: column;
 
-                > img {
-                    width: 100%;
-                    height: auto;
-                    align-self: stretch;
-                    object-fit: cover;
-                }
-
-                .card-content {
+                .card-body {
                     flex-grow: 1;
+                    padding: var(--s0);
+                    font-size: var(--text-large);
+                    line-height: var(--font-lineheight-body);
 
-                    display: flex;
-                    flex-direction: column;
+                    h2,
+                    h3 {
+                        margin-top: 0;
 
-                    .card-body {
-                        flex-grow: 1;
-                        padding: var(--s0);
-                        font-size: var(--text-large);
-                        line-height: var(--font-lineheight-body);
-
-                        h2,
-                        h3 {
-                            margin-top: 0;
-
-                            a {
-                                text-decoration: none;
-                            }
+                        a {
+                            text-decoration: none;
                         }
                     }
                 }
+            }
 
-                .card-footer {
-                    padding: 0 var(--s0) var(--s0) var(--s0);
-                    color: var(--color-text-secondary);
-                }
+            .card-footer {
+                padding: 0 var(--s0) var(--s0) var(--s0);
+                color: var(--color-text-secondary);
             }
         }
     }
