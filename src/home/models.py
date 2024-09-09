@@ -19,6 +19,7 @@ from interactions import get_bookmarks
 from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
+
 # TODO: Add event page here once merged in
 HOME_PRIORITY_PAGE_TYPES = (NewsPage,)
 
