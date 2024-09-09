@@ -1,23 +1,13 @@
-.dwds-card.dwds-banner-card {
-    h3 {
-        color: var(--color-text-highlight);
-        font-size: var(--text-xlarge);
-        font-weight: var(--font-weight-normal);
-        line-height: var(--font-lineheight-headings);
-    }
-
-    p {
-        color: var(--color-text-highlight);
-        margin: 0;
-    }
-
-    a,
-    a:visited,
-    a:link {
-        color: var(--color-text-highlight);
+.dwds-card-wrapper {
+    .dwds-card.dwds-banner-card {
+        h3 {
+            font-size: var(--text-xlarge);
+            font-weight: var(--font-weight-normal);
+            line-height: var(--font-lineheight-headings);
+        }
 
         p {
-            color: var(--color-text-highlight);
+            margin: 0;
         }
     }
 }

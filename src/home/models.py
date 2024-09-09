@@ -13,6 +13,7 @@ from wagtail_adminsortable.models import AdminSortable
 
 from content.models import BasePage, ContentPage
 from core.models.models import SiteAlertBanner
+from events.models import EventPage
 from home import FEATURE_HOMEPAGE
 from home.validators import validate_home_priority_pages
 from interactions import get_bookmarks
@@ -20,8 +21,10 @@ from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
 
-# TODO: Add event page here once merged in
-HOME_PRIORITY_PAGE_TYPES = (NewsPage,)
+HOME_PRIORITY_PAGE_TYPES = (
+    NewsPage,
+    EventPage,
+)
 
 
 @register_snippet
@@ -71,13 +74,24 @@ class HomePriorityPage(AdminSortable):
     page = models.ForeignKey(
         "wagtailcore.Page",
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="priority_page",
         validators=[validate_home_priority_pages],
+    )
+
+    ribbon_text = models.CharField(
+        max_length=30,
+        blank=True,
+        null=True,
+        help_text="Insert a ribbon text for the news listing on the home page.",
     )
 
     panels = [
         PageChooserPanel("page", HOME_PRIORITY_PAGE_TYPES),
+        FieldPanel("ribbon_text"),
     ]
+
+    class Meta:
+        unique_together = ("home_page", "page")
 
 
 @register_snippet
@@ -166,8 +180,8 @@ class HomePage(BasePage):
             "priority_pages",
             label="Priority page",
             heading="Priority pages",
-            min_num=0,
-            max_num=3,
+            min_num=4,
+            max_num=4,
         ),
     ]
 
@@ -184,13 +198,22 @@ class HomePage(BasePage):
         news_items = NewsPage.objects.live().public().annotate_with_comment_count()
 
         if is_new_homepage:
-            priority_page_ids = self.priority_pages.all().values("page_id")
-            priority_pages = [
-                p.specific
-                for p in ContentPage.objects.filter(
-                    id__in=priority_page_ids
-                ).annotate_with_comment_count()
-            ]
+            priority_page_ribbon_text_mapping = {
+                pp["page_id"]: pp["ribbon_text"]
+                for pp in self.priority_pages.all().values("page_id", "ribbon_text")
+            }
+            priority_page_ids = list(priority_page_ribbon_text_mapping.keys())
+
+            # Load the priority pages, preserving the order.
+            priority_pages = sorted(
+                [
+                    p.specific
+                    for p in ContentPage.objects.filter(id__in=priority_page_ids)
+                    .annotate_with_comment_count()
+                    .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
+                ],
+                key=lambda x: priority_page_ids.index(x.id),
+            )
             news_items = news_items.exclude(id__in=priority_page_ids).order_by(
                 "-pinned_on_home",
                 "-first_published_at",
@@ -208,6 +231,9 @@ class HomePage(BasePage):
         context.update(
             news_items=news_items[:8],
         )
+
+        # Events
+        context["events"] = EventPage.objects.live().public()[:6]
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):
