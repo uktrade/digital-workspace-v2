@@ -7,6 +7,7 @@ from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
 
 from content.models import BasePage, ContentPage
 from events import types
+from events.utils import get_event_date, get_event_time
 
 
 class EventsHome(BasePage):
@@ -74,6 +75,7 @@ class EventPage(ContentPage):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        help_text="If you don't select a location the page will show 'Location: To be confirmed'",
     )
     room = models.CharField(
         blank=True,
@@ -129,10 +131,11 @@ class EventPage(ContentPage):
         context = super().get_context(request, *args, **kwargs)
 
         context.update(
-            is_online=self.event_type
-            in [types.EventType.ONLINE, types.EventType.HYBRID],
-            is_in_person=self.event_type
-            in [types.EventType.IN_PERSON, types.EventType.HYBRID],
+            is_online=self.event_type == types.EventType.ONLINE,
+            is_in_person=self.event_type == types.EventType.IN_PERSON,
+            is_hybrid=self.event_type == types.EventType.HYBRID,
+            event_date=get_event_date(self),
+            event_time=get_event_time(self),
         )
 
         return context

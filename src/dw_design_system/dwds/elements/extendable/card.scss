@@ -26,6 +26,7 @@
         a:link {
             color: var(--card-body-link-color);
             text-decoration-color: var(--card-body-link-color);
+
             p {
                 color: var(--card-body-text-color);
             }
@@ -69,9 +70,9 @@
             background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
             font-weight: var(--font-weight-bold);
             color: var(--header-text-colour);
-            border-radius: var(--border-radius) var(--border-radius) 0 0; 
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
             overflow: hidden;
-            
+
             .card-subtitle {
                 font-size: var(--text-large);
                 color: var(--header-text-colour);
@@ -111,10 +112,6 @@
                     h2,
                     h3 {
                         margin-top: 0;
-
-                        a {
-                            text-decoration: none;
-                        }
                     }
                 }
             }

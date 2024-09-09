@@ -63,18 +63,25 @@ body {
         color: var(--color-link);
     }
 
-    // Using !important to have consistent focus/active states on all links
+    a.no-underline {
+        text-decoration: none;
+    }
+    
+    a.no-underline:focus,
+    a.no-underline:active,
     a:focus,
     a:active {
-        text-decoration: underline var(--text-underline-hover) !important;
-        background-color: var(--color-link-background-active) !important;
-        color: var(--color-text) !important;
+        text-decoration: underline var(--text-underline-hover);
+        background-color: var(--color-link-background-active);
+        color: var(--color-text);
     }
 
+    a.no-underline:focus-visible,
     a:focus-visible {
         outline: none;
     }
 
+    a.no-underline:hover,
     a:hover {
         text-decoration: underline var(--text-underline-hover);
     }

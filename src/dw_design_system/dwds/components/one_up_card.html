@@ -24,7 +24,7 @@
                 {% include "dwds/elements/ribbon.html" with text=ribbon_text colour="blue" %}
             {% endif %}
             <h2>
-                <a href="{{ url }}">{{ title }}</a>
+                <a class="no-underline" href="{{ url }}">{{ title }}</a>
             </h2>
             {% if post_title_date and post_title_time %}
                 <div class="post-title-container">
