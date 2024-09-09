@@ -90,6 +90,9 @@ class HomePriorityPage(AdminSortable):
         FieldPanel("ribbon_text"),
     ]
 
+    class Meta:
+        unique_together = ("home_page", "page")
+
 
 @register_snippet
 class QuickLink(models.Model):
@@ -215,11 +218,11 @@ class HomePage(BasePage):
                 "-first_published_at",
             )
 
-            context["events"] = (
-                EventPage.objects.live().public().exclude(id__in=priority_page_ids)[:6]
-            )
             context.update(
                 priority_pages=priority_pages,
+                events=EventPage.objects.live()
+                .public()
+                .exclude(id__in=priority_page_ids)[:6],
             )
         else:
             news_items = news_items.order_by(
@@ -231,8 +234,6 @@ class HomePage(BasePage):
         context.update(
             news_items=news_items[:8],
         )
-
-        # Events
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):
