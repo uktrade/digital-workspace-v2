@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from wagtail.models import Collection, GroupCollectionPermission, GroupPagePermission
 
 from about_us.models import AboutUsHome
+from events.models import EventsHome
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome
@@ -22,6 +23,7 @@ TOP_LEVEL_PAGE_TYPES = [
     ToolsHome,
     TopicHome,
     WorkingAtDITHome,
+    EventsHome,
 ]
 
 
@@ -108,9 +110,104 @@ SITE_ALERT_BANNER_ADMIN_PERMISSIONS = [
     "view_sitealertbanner",
 ]
 
+EVENT_CREATORS_GROUP_NAME = "Event Creators"
+EVENT_CREATORS_ROOT_COLLECTION_PERMISSIONS = [
+    "add_media",
+    "change_media",
+    "add_image",
+    "change_image",
+    "choose_image",
+    "add_document",
+    "change_document",
+    "choose_document",
+]
+EVENT_CREATORS_PAGE_PERMISSIONS = [
+    "add_page",
+    "publish_page",
+]
+
+EVENT_EDITORS_GROUP_NAME = "Event Editors"
+EVENT_EDITORS_ROOT_COLLECTION_PERMISSIONS = [
+    "add_media",
+    "change_media",
+    "add_image",
+    "change_image",
+    "choose_image",
+    "add_document",
+    "change_document",
+    "choose_document",
+]
+EVENT_EDITORS_PAGE_PERMISSIONS = EVENT_CREATORS_PAGE_PERMISSIONS + [
+    "change_page",
+    "lock_page",
+    "unlock_page",
+]
+
 
 class Command(BaseCommand):
     help = "Create page permissions"
+
+    def grant_wagtail_admin_perm(self, group):
+        wagtail_admin_permission = Permission.objects.get(codename="access_admin")
+        group.permissions.add(wagtail_admin_permission)
+
+    def grant_group_collection_perms(self, group, permissions):
+        root_collection_permissions = Permission.objects.filter(
+            codename__in=permissions
+        )
+        for permission in root_collection_permissions:
+            GroupCollectionPermission.objects.get_or_create(
+                group=group,
+                collection=self.root_collection,
+                permission=permission,
+            )
+
+    def grant_page_perms(self, group, page_type, permissions):
+        page = page_type.objects.first()
+        for page_perm in permissions:
+            GroupPagePermission.objects.get_or_create(
+                group=group,
+                page=page,
+                permission=Permission.objects.get(
+                    codename=page_perm,
+                    content_type__app_label="wagtailcore",
+                ),
+            )
+
+    def event_permissions(self):
+        event_creators_group, _ = Group.objects.get_or_create(
+            name=EVENT_CREATORS_GROUP_NAME
+        )
+        event_editors_group, _ = Group.objects.get_or_create(
+            name=EVENT_EDITORS_GROUP_NAME
+        )
+        self.grant_wagtail_admin_perm(event_creators_group)
+        self.grant_wagtail_admin_perm(event_editors_group)
+
+        # Event creators root collection permissions
+        self.grant_group_collection_perms(
+            event_creators_group,
+            EVENT_CREATORS_ROOT_COLLECTION_PERMISSIONS,
+        )
+        # Event editors root collection permissions
+        self.grant_group_collection_perms(
+            event_editors_group,
+            EVENT_EDITORS_ROOT_COLLECTION_PERMISSIONS,
+        )
+
+        # Event creators can add child pages below the EventsHome page
+        self.grant_page_perms(
+            event_creators_group,
+            EventsHome,
+            EVENT_CREATORS_PAGE_PERMISSIONS,
+        )
+        # Event editors can add/edit/delete/view EventsHome page and all of
+        # its children
+        self.grant_page_perms(
+            event_editors_group,
+            EventsHome,
+            EVENT_EDITORS_PAGE_PERMISSIONS,
+        )
 
     def handle(self, *args, **options):
         news_moderators, _ = Group.objects.get_or_create(
@@ -129,7 +226,7 @@ class Command(BaseCommand):
         news_moderators.save()
 
         # Root collection permissions
-        root_collection = Collection.objects.get(name="Root")
+        self.root_collection = Collection.objects.get(name="Root")
 
         # Moderator root collection permissions
         root_collection_moderator_permissions = Permission.objects.filter(
@@ -138,7 +235,7 @@ class Command(BaseCommand):
         for permission in root_collection_moderator_permissions:
             GroupCollectionPermission.objects.get_or_create(
                 group=moderators,
-                collection=root_collection,
+                collection=self.root_collection,
                 permission=permission,
             )
 
@@ -149,7 +246,7 @@ class Command(BaseCommand):
         for permission in root_collection_new_moderator_permissions:
             GroupCollectionPermission.objects.get_or_create(
                 group=news_moderators,
-                collection=root_collection,
+                collection=self.root_collection,
                 permission=permission,
             )
 
@@ -218,3 +315,5 @@ class Command(BaseCommand):
                 content_type__app_label="core",
             )
         )
+
+        self.event_permissions()

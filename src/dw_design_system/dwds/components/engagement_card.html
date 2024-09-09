@@ -19,6 +19,10 @@
 {% endblock card_content_image %}
 
 {% block card_content_body %}
+    {% if ribbon_text %}
+        {% include "dwds/elements/ribbon.html" with text=ribbon_text colour="blue" %}
+    {% endif %}
+
     <h3>
         <a href="{{ url }}">{{ title }}</a>
     </h3>

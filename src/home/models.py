@@ -74,12 +74,20 @@ class HomePriorityPage(AdminSortable):
     page = models.ForeignKey(
         "wagtailcore.Page",
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="priority_page",
         validators=[validate_home_priority_pages],
+    )
+
+    ribbon_text = models.CharField(
+        max_length=30,
+        blank=True,
+        null=True,
+        help_text="Insert a ribbon text for the news listing on the home page.",
     )
 
     panels = [
         PageChooserPanel("page", HOME_PRIORITY_PAGE_TYPES),
+        FieldPanel("ribbon_text"),
     ]
 
 
@@ -187,16 +195,19 @@ class HomePage(BasePage):
         news_items = NewsPage.objects.live().public().annotate_with_comment_count()
 
         if is_new_homepage:
-            priority_page_ids = [
-                pp["page_id"] for pp in self.priority_pages.all().values("page_id")
-            ]
+            priority_page_ribbon_text_mapping = {
+                pp["page_id"]: pp["ribbon_text"]
+                for pp in self.priority_pages.all().values("page_id", "ribbon_text")
+            }
+            priority_page_ids = list(priority_page_ribbon_text_mapping.keys())
+
             # Load the priority pages, preserving the order.
             priority_pages = sorted(
                 [
                     p.specific
-                    for p in ContentPage.objects.filter(
-                        id__in=priority_page_ids
-                    ).annotate_with_comment_count()
+                    for p in ContentPage.objects.filter(id__in=priority_page_ids)
+                    .annotate_with_comment_count()
+                    .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
                 ],
                 key=lambda x: priority_page_ids.index(x.id),
             )

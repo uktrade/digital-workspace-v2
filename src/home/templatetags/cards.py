@@ -19,8 +19,12 @@ def page_to_card(page: NewsPage | EventPage):
         "grid": False,
         "blue_bg": False,
         "show_hr": False,
+        "ribbon_text": None,
         "template": "dwds/components/engagement_card.html",
     }
+
+    if hasattr(page, "ribbon_text"):
+        card_dict["ribbon_text"] = page.ribbon_text
 
     if issubclass(type(page), NewsPage):
         card_dict.update(

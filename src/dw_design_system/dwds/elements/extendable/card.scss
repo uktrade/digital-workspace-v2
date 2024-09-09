@@ -1,122 +1,175 @@
-.dwds-card {
-    --card-bottom-border-height: 5px;
-    --card-body-heading-color: var(--color-link);
-    --card-body-link-color: var(--color-link);
-    --card-body-text-color: var(--color-text);
-    --card-body-bg-color: var(--card-bg-white);
-
-    color: var(--card-body-text-color);
-
-    display: flex;
-    flex-direction: column;
-
-    border-radius: var(--border-radius);
-    box-shadow: 0 var(--card-bottom-border-height) 0 rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    background-color: var(--card-body-bg-color);
-
+.dwds-card-wrapper {
     container-name: card;
     container-type: inline-size;
 
-    a,
-    a:visited,
-    a:link {
-        color: var(--card-body-link-color);
-        text-decoration-color: var(--card-body-link-color);
-        p {
-            color: var(--card-body-text-color);
-        }
-    }
+    .dwds-card {
+        --card-bottom-border-height: 5px;
+        --card-body-heading-color: var(--color-link);
+        --card-body-link-color: var(--color-link);
+        --card-body-text-color: var(--color-text);
+        --card-body-bg-color: var(--card-bg-white);
 
-    p:last-child {
-        margin-bottom: 0;
-    }
-
-    p {
         color: var(--card-body-text-color);
-        margin-bottom: var(--s-5);
-        margin-top: var(--s-5);
-    }
-    
-    h2,
-    h3 {
-        color: var(--card-body-heading-color);
-    }
-
-    &.dwds-card-blue {
-        --card-body-bg-color: var(--card-bg-blue);
-        --card-body-heading-color: var(--color-text-highlight);
-        --card-body-link-color: var(--color-text-highlight);
-        --card-body-text-color: var(--color-text-highlight);
-    }
-
-    &.dwds-card-red {
-        --card-body-bg-color: var(--card-bg-red);
-        --card-body-heading-color: var(--color-text-highlight);
-        --card-body-link-color: var(--color-text-highlight);
-        --card-body-text-color: var(--color-text-highlight);
-    }
-
-    .card-header {
-        --header-background-colour: var(--card-bg-blue);
-        --header-text-colour: var(--card-bg-white);
-
-        padding: var(--s0) var(--s1) var(--s0) var(--s0);
-        align-items: flex-start;
-        background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
-        font-weight: var(--font-weight-bold);
-        color: var(--header-text-colour);
-
-        .card-subtitle {
-            font-size: var(--text-large);
-            color: var(--header-text-colour);
-        }
-
-        h2,
-        h3 {
-            color: var(--header-text-colour);
-        }
-    }
-
-    .card-main {
-        flex-grow: 1;
 
         display: flex;
         flex-direction: column;
 
-        > img {
-            width: 100%;
-            height: auto;
-            align-self: stretch;
-            object-fit: cover;
+        border-radius: var(--border-radius);
+        box-shadow: 0 var(--card-bottom-border-height) 0 rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        background-color: var(--card-body-bg-color);
+
+        a,
+        a:visited,
+        a:link {
+            color: var(--card-body-link-color);
+            text-decoration-color: var(--card-body-link-color);
+            p {
+                color: var(--card-body-text-color);
+            }
         }
 
-        .card-content {
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        p {
+            color: var(--card-body-text-color);
+            margin-bottom: var(--s-5);
+            margin-top: var(--s-5);
+        }
+        
+        h2,
+        h3 {
+            color: var(--card-body-heading-color);
+        }
+
+        &.dwds-card-blue {
+            --card-body-bg-color: var(--card-bg-blue);
+            --card-body-heading-color: var(--color-text-highlight);
+            --card-body-link-color: var(--color-text-highlight);
+            --card-body-text-color: var(--color-text-highlight);
+        }
+
+        &.dwds-card-red {
+            --card-body-bg-color: var(--card-bg-red);
+            --card-body-heading-color: var(--color-text-highlight);
+            --card-body-link-color: var(--color-text-highlight);
+            --card-body-text-color: var(--color-text-highlight);
+        }
+
+        .card-header {
+            --header-background-colour: var(--card-bg-blue);
+            --header-text-colour: var(--card-bg-white);
+
+            padding: var(--s0) var(--s1) var(--s0) var(--s0);
+            align-items: flex-start;
+            background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
+            font-weight: var(--font-weight-bold);
+            color: var(--header-text-colour);
+
+            .card-subtitle {
+                font-size: var(--text-large);
+                color: var(--header-text-colour);
+            }
+
+            h2,
+            h3 {
+                color: var(--header-text-colour);
+            }
+        }
+
+        .card-main {
             flex-grow: 1;
 
             display: flex;
             flex-direction: column;
 
-            .card-body {
-                flex-grow: 1;
-                padding: var(--s0);
-                font-size: var(--text-large);
-                line-height: var(--font-lineheight-body);
+            box-shadow: 0 var(--card-bottom-border-height) 0 rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: var(--card-body-bg-color);
+
+            p:last-child {
+                margin-bottom: 0;
+            }
+
+            p {
+                margin-bottom: var(--s-5);
+                margin-top: var(--s-5);
+            }
+
+            &.dwds-card-blue {
+                --card-body-bg-color: var(--card-bg-blue);
+            }
+
+            &.dwds-card-red {
+                --card-body-bg-color: var(--card-bg-red);
+            }
+
+            .card-header {
+                --header-background-colour: var(--card-bg-blue);
+                --header-text-colour: var(--card-bg-white);
+
+                padding: var(--s0) var(--s1) var(--s0) var(--s0);
+                align-items: flex-start;
+                background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg.png") center / cover no-repeat, #00285F;
+                font-weight: var(--font-weight-bold);
+                color: var(--header-text-colour);
+                border-radius: var(--border-radius) var(--border-radius) 0 0; 
+                overflow: hidden;
+                
+                .card-subtitle {
+                    font-size: var(--text-large);
+                }
 
                 h2,
                 h3 {
-                    margin-top: 0;
-
-                    a {
-                        text-decoration: none;
-                    }
+                    color: var(--header-text-colour);
                 }
             }
-        }
 
-        .card-footer {
-            padding: 0 var(--s0) var(--s0) var(--s0);
-            color: var(--color-text-secondary);
+            .card-main {
+                flex-grow: 1;
+
+                display: flex;
+                flex-direction: column;
+
+                > img {
+                    width: 100%;
+                    height: auto;
+                    align-self: stretch;
+                    object-fit: cover;
+                }
+
+                .card-content {
+                    flex-grow: 1;
+
+                    display: flex;
+                    flex-direction: column;
+
+                    .card-body {
+                        flex-grow: 1;
+                        padding: var(--s0);
+                        font-size: var(--text-large);
+                        line-height: var(--font-lineheight-body);
+
+                        h2,
+                        h3 {
+                            margin-top: 0;
+
+                            a {
+                                text-decoration: none;
+                            }
+                        }
+                    }
+                }
+
+                .card-footer {
+                    padding: 0 var(--s0) var(--s0) var(--s0);
+                    color: var(--color-text-secondary);
+                }
+            }
         }
     }
 }
@@ -126,7 +179,7 @@
 }
 
 @container card (width > 60ch) {
-    .card-with-image {
+    .dwds-card.card-with-image {
         .card-main {
             display: grid;
             grid-template-columns: 1fr 2fr;

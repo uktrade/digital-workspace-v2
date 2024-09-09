@@ -1,43 +1,45 @@
-<div class="dwds-card {% block card_container_classes %}{% endblock card_container_classes %}">
-    {% block card_header %}
-        <div class="card-header stack">
-            {% block card_header_content %}
-                {% include "dwds/elements/ribbon.html" with text="Ribbon" colour="red" %}
-                <p class="card-subtitle">26 June</p>
-                <h3>DBT Connect: John Smith in conversation with Jane Doe</h3>
-            {% endblock card_header_content %}
-        </div>
-    {% endblock card_header %}
-
-    {% block card_main %}
-        <div class="card-main">
-            {% block card_content_image %}
-                <img src="https://via.placeholder.com/196x127" alt="image">
-            {% endblock card_content_image %}
-
-            <div class="card-content">
-                {% block card_content %}
-                    <div class="card-body">
-                        {% block card_content_body %}
-                            {% include "dwds/elements/ribbon.html" with text="Ribbon" %}
-                            <a href="#">
-                                <h3>A message from the Secretary of State</h3>
-                            </a>
-                            <p>Join John Smith, former SpAd for Jane Doe, at the next DBT Connect event on Wednesday 26 June, 1-2pm.</p>
-                            <a href="#">See event</a>
-                        {% endblock card_content_body %}
-                    </div>
-                {% endblock card_content %}
-
-                {% block card_footer %}
-                    <div class="card-footer stack">
-                        {% block card_footer_body %}
-                            <span>Added today at 9am</span>
-                            <span>4 Comments</span>
-                        {% endblock card_footer_body %}
-                    </div>
-                {% endblock card_footer %}
+<div class="dwds-card-wrapper flex">
+    <div class="dwds-card {% block card_container_classes %}{% endblock card_container_classes %}">
+        {% block card_header %}
+            <div class="card-header stack">
+                {% block card_header_content %}
+                    {% include "dwds/elements/ribbon.html" with text="Ribbon" colour="red" %}
+                    <p class="card-subtitle">26 June</p>
+                    <h3>DBT Connect: John Smith in conversation with Jane Doe</h3>
+                {% endblock card_header_content %}
             </div>
-        </div>
-    {% endblock card_main %}
+        {% endblock card_header %}
+
+        {% block card_main %}
+            <div class="card-main">
+                {% block card_content_image %}
+                    <img src="https://via.placeholder.com/196x127" alt="image">
+                {% endblock card_content_image %}
+
+                <div class="card-content">
+                    {% block card_content %}
+                        <div class="card-body">
+                            {% block card_content_body %}
+                                {% include "dwds/elements/ribbon.html" with text="Ribbon" %}
+                                <a href="#">
+                                    <h3>A message from the Secretary of State</h3>
+                                </a>
+                                <p>Join John Smith, former SpAd for Jane Doe, at the next DBT Connect event on Wednesday 26 June, 1-2pm.</p>
+                                <a href="#">See event</a>
+                            {% endblock card_content_body %}
+                        </div>
+                    {% endblock card_content %}
+
+                    {% block card_footer %}
+                        <div class="card-footer stack">
+                            {% block card_footer_body %}
+                                <span>Added today at 9am</span>
+                                <span>4 Comments</span>
+                            {% endblock card_footer_body %}
+                        </div>
+                    {% endblock card_footer %}
+                </div>
+            </div>
+        {% endblock card_main %}
+    </div>
 </div>
