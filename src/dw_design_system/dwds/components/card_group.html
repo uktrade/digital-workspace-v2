@@ -1,6 +1,11 @@
 {% extends "dwds/elements/extendable/card.html" %}
 
-{% block card_container_classes %}dwds-card-group{% endblock %}
+{% block card_container_classes %}
+    dwds-card-group
+    {% if grid %}dwds-card-group-grid{% endif %}
+    {% if blue_bg %}dwds-card-blue{% endif %}
+    {% if not show_shadow %}card-without-shadow{% endif %}
+{% endblock card_container_classes %}
 
 {% block card_header %}
 {% endblock card_header %}
@@ -12,15 +17,20 @@
     <h2>{{ card_group_title }}</h2>
     <div class="grid">
         {% for card in cards %}
-            {% include card.template with title=card.title thumbnail=card.thumbnail url=card.url date=card.date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow %}
-            <hr>
+            {% include card.template with title=card.title post_title_date=card.post_title_date post_title_time=card.post_title_time thumbnail=card.thumbnail url=card.url date=card.date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow %}
+            {% if show_hr %}<hr>{% endif %}
         {% endfor %}
     </div>
 {% endblock card_content_body %}
 
-{% block card_footer_body %}
-    <a href="{{ footer_link }}">
-        {{ footer_link_text }}
-        {% include "dwds/icons/arrow-right.html" %}
-    </a>
-{% endblock card_footer_body %}
+{% if footer_link and footer_link_text %}
+    {% block card_footer_body %}
+        <a href="{{ footer_link }}">
+            {{ footer_link_text }}
+            {% include "dwds/icons/arrow-right.html" %}
+        </a>
+    {% endblock card_footer_body %}
+{% else %}
+    {% block card_footer %}
+    {% endblock card_footer %}
+{% endif %}

@@ -1,9 +1,19 @@
-.dwds-engagement-card {    
+.dwds-engagement-card {
     .comment-icon {
         vertical-align: text-bottom;
     }
 
     .card-comment-section {
         margin-top: var(--card-comment-section-margin-top);
+    }
+
+    .post-title-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-5)
+    }
+
+    .post-title {
+        margin: 0;
     }
 }

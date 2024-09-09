@@ -13,6 +13,7 @@ from wagtail_adminsortable.models import AdminSortable
 
 from content.models import BasePage, ContentPage
 from core.models.models import SiteAlertBanner
+from events.models import EventPage
 from home import FEATURE_HOMEPAGE
 from home.validators import validate_home_priority_pages
 from interactions import get_bookmarks
@@ -20,8 +21,10 @@ from news.models import NewsPage
 from working_at_dit.models import HowDoI
 
 
-# TODO: Add event page here once merged in
-HOME_PRIORITY_PAGE_TYPES = (NewsPage,)
+HOME_PRIORITY_PAGE_TYPES = (
+    NewsPage,
+    EventPage,
+)
 
 
 @register_snippet
@@ -228,6 +231,9 @@ class HomePage(BasePage):
         context.update(
             news_items=news_items[:8],
         )
+
+        # Events
+        context["events"] = EventPage.objects.live().public()[:6]
 
         # GOVUK news
         if not cache.get("homepage_govuk_news"):

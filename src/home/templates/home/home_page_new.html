@@ -5,7 +5,6 @@
 {% load site_alert %}
 {% load cards %}
 
-
 {% block pre_main %}
     {{ block.super }}
 {% endblock pre_main %}
@@ -56,7 +55,10 @@
                 </div>
 
                 {% pages_to_cards news_items as news_cards %}
-                {% include "dwds/components/card_group.html" with card_group_title="Latest DBT news" cards=news_cards footer_link="/news-and-views/" footer_link_text="View all news" %}
+                {% include "dwds/components/card_group.html" with card_group_title="Latest DBT news" cards=news_cards footer_link="/news-and-views/" footer_link_text="View all news" show_hr=True show_shadow=True %}
+
+                {% pages_to_cards events as event_cards %}
+                {% include "dwds/components/card_group.html" with card_group_title="Events" cards=event_cards grid=True blue_bg=True %}
 
                 {% if not hide_news %}
                     {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}

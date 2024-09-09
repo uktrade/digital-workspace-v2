@@ -60,6 +60,7 @@ def get_components():
                 ),
                 "footer_link": "/news-and-views/",
                 "footer_link_text": "View all news",
+                "show_hr": True,
             },
         },
         {

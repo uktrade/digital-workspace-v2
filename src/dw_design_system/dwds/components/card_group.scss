@@ -18,4 +18,11 @@
             }
         }
     }
+
+}
+
+.dwds-card.dwds-card-group.dwds-card-group-grid {
+    .grid {
+        grid-template-columns: repeat(auto-fit, minmax(25ch, 1fr));
+    }
 }
