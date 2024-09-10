@@ -224,7 +224,8 @@ class HomePage(BasePage):
                 priority_pages=priority_pages,
                 events=EventPage.objects.live()
                 .public()
-                .exclude(id__in=priority_page_ids)[:6],
+                .exclude(id__in=priority_page_ids)
+                .order_by("event_date", "start_time")[:6],
             )
         else:
             news_items = news_items.order_by(
