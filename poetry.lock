@@ -3893,6 +3893,20 @@ docs = ["Sphinx (>=6.0)", "myst_parser (>=0.18.1,<1.0)", "pyenchant (>=3.1.1,<4)
 testing = ["dj-database-url (>=2.0.0)", "pre-commit (<3.0)"]
 
 [[package]]
+name = "wagtail-orderable"
+version = "1.2.0"
+description = "Orderable support for Wagtail"
+optional = false
+python-versions = "*"
+files = [
+    {file = "wagtail-orderable-1.2.0.tar.gz", hash = "sha256:3355f91d09cd711960a03d83d2783d35b38735da6cd51fc9ab28fdbf635da050"},
+    {file = "wagtail_orderable-1.2.0-py3-none-any.whl", hash = "sha256:b1b951013630cfb6ab13b189a51cfcc78faa668f6b3bd8811359b331e2666763"},
+]
+
+[package.dependencies]
+wagtail = ">=4.1"
+
+[[package]]
 name = "wagtailmedia"
 version = "0.14.5"
 description = "A Wagtail module for audio and video files."
@@ -4169,4 +4183,4 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "4f93fe179e4a3a2f8262bc53123318080494088e04d9f84e7ec97837a57fea2a"
+content-hash = "b04e8d51860c78bd1e16d6fd5e0151bc897d5a5937c9122446bfc9a4bcc0aec3"

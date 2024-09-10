@@ -153,6 +153,7 @@ THIRD_PARTY_APPS = [
     "django_feedback_govuk",
     "generic_chooser",
     "waffle",
+    "wagtailorderable",
 ]
 
 WAGTAIL_APPS = [

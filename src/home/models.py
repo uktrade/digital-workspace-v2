@@ -10,6 +10,7 @@ from waffle import flag_is_active
 from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
+from wagtailorderable.models import Orderable
 
 from content.models import BasePage, ContentPage
 from core.models.models import SiteAlertBanner
@@ -65,7 +66,7 @@ class HomeNewsOrder(AdminSortable, ClusterableModel):
                 )
 
 
-class HomePriorityPage(AdminSortable):
+class HomePriorityPage(Orderable):
     home_page = ParentalKey(
         "home.HomePage",
         on_delete=models.CASCADE,
@@ -92,6 +93,7 @@ class HomePriorityPage(AdminSortable):
 
     class Meta:
         unique_together = ("home_page", "page")
+        ordering = ["sort_order"]
 
 
 @register_snippet
@@ -210,7 +212,7 @@ class HomePage(BasePage):
                 for p in ContentPage.objects.filter(id__in=priority_page_ids)
                 .annotate_with_comment_count()
                 .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
-                .order_by("priority_page__order")
+                .order_by("priority_page__sort_order")
             ]
 
             news_items = news_items.exclude(id__in=priority_page_ids).order_by(
