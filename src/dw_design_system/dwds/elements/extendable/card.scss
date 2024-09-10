@@ -5,7 +5,7 @@
     .dwds-card {
         --card-bottom-border-height: 5px;
         --card-body-bg-color: var(--card-bg-white);
-        --card-body-heading-color: var(--color-link);
+        --card-body-heading-color: var(--color-text);
         --card-body-link-color: var(--color-link);
         --card-body-text-color: var(--color-text);
         color: var(--card-body-text-color);
@@ -40,11 +40,6 @@
             color: var(--card-body-text-color);
             margin-bottom: var(--s-5);
             margin-top: var(--s-5);
-        }
-
-        h2,
-        h3 {
-            color: var(--card-body-heading-color);
         }
 
         &.dwds-card-blue {
@@ -111,6 +106,7 @@
 
                     h2,
                     h3 {
+                        color: var(--card-body-heading-color);
                         margin-top: 0;
                     }
                 }

@@ -1,4 +1,6 @@
 .dwds-one-up-card {
+    --card-body-heading-color: var(--color-link);
+
     .card-main {
         grid-template-columns: 1fr 1.25fr !important;
     }

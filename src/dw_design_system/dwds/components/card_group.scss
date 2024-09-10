@@ -1,4 +1,6 @@
 .dwds-card.dwds-card-group {
+    --card-body-heading-color: var(--color-text);
+
     .grid {
         grid-gap: var(--s0);
     }
@@ -18,7 +20,6 @@
             }
         }
     }
-
 }
 
 .dwds-card.dwds-card-group.dwds-card-group-grid {
