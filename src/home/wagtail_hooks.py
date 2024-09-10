@@ -31,11 +31,6 @@ class WhatsPopularAdmin(ModelAdmin):
     exclude_from_explorer = False
 
 
-# class HomePriorityPage(OrderableMixin, ModelAdmin):
-#     model = HomePriorityPage
-
-
 modeladmin_register(HomeNewsOrderAdmin)
 modeladmin_register(QuickLinksAdmin)
 modeladmin_register(WhatsPopularAdmin)
-# modeladmin_register(HomePriorityPage)
