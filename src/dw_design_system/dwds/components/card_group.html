@@ -23,14 +23,14 @@
     </div>
 {% endblock card_content_body %}
 
-{% if footer_link and footer_link_text %}
-    {% block card_footer_body %}
-        <a href="{{ footer_link }}">
-            {{ footer_link_text }}
-            {% include "dwds/icons/arrow-right.html" %}
-        </a>
-    {% endblock card_footer_body %}
-{% else %}
-    {% block card_footer %}
-    {% endblock card_footer %}
-{% endif %}
+
+{% block card_footer %}
+    {% if footer_link and footer_link_text %}
+        <div class="card-footer stack">
+            <a href="{{ footer_link }}">
+                {{ footer_link_text }}
+                {% include "dwds/icons/arrow-right.html" %}
+            </a>
+        </div>
+    {% endif %}
+{% endblock card_footer %}
