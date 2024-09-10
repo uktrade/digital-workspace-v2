@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from waffle import flag_is_active
@@ -224,6 +225,7 @@ class HomePage(BasePage):
                 priority_pages=priority_pages,
                 events=EventPage.objects.live()
                 .public()
+                .filter(event_date__gte=timezone.now())
                 .exclude(id__in=priority_page_ids)
                 .order_by("event_date", "start_time")[:6],
             )
