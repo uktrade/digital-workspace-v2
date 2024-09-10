@@ -225,7 +225,7 @@ class HomePage(BasePage):
                 priority_pages=priority_pages,
                 events=EventPage.objects.live()
                 .public()
-                .filter(event_date__gte=timezone.now())
+                .filter(event_date__gte=timezone.now().date())
                 .exclude(id__in=priority_page_ids)
                 .order_by("event_date", "start_time")[:6],
             )
