@@ -1,3 +1,6 @@
+import re
+from collections.abc import Iterator
+
 import atoma
 import requests
 from django.conf import settings
@@ -16,6 +19,7 @@ from content.models import BasePage, ContentPage
 from core.models.models import SiteAlertBanner
 from events.models import EventPage
 from home import FEATURE_HOMEPAGE
+from home.forms import HomePageForm
 from home.validators import validate_home_priority_pages
 from interactions import get_bookmarks
 from news.models import NewsPage
@@ -176,14 +180,54 @@ class HomePage(BasePage):
     is_creatable = False
     show_in_menus = True
     subpage_types = []
+    base_form_class = HomePageForm
+
+    # Fields
+    class PriorityPagesLayout(models.TextChoices):
+        __value_regex__ = re.compile(r"L[0-3]_[0-3]")
+
+        def __init__(self, *args):
+            if not self.__value_regex__.fullmatch(self.value):
+                raise ValueError(
+                    "Layout value does not match pattern"
+                    f" (value={self.value!r} pattern={self.__value_regex__.pattern!r})"
+                )
+
+        L1_0 = "L1_0", "1 card"
+        L2_0 = "L2_0", "2 cards"
+        L3_0 = "L3_0", "3 cards"
+        L1_2 = "L1_2", "1 card then 2 cards"
+        L1_3 = "L1_3", "1 card then 3 cards"
+        L2_3 = "L2_3", "2 cards then 3 cards"
+
+        def to_page_counts(self) -> list[int]:
+            """Return the layout as a list of page counts.
+
+            Examples:
+                >>> PriorityPagesLayout.L2_0.to_page_counts()
+                [2, 0]
+
+                >>> PriorityPagesLayout.L1_2.to_page_counts()
+                [1, 2]
+            """
+            return [int(x) for x in self.value.removeprefix("L").split("_")]
+
+    priority_pages_layout = models.CharField(
+        max_length=4,
+        choices=PriorityPagesLayout.choices,
+        default=PriorityPagesLayout.L1_3,
+    )
+
+    # Panels
     promote_panels = []
     content_panels = [
+        FieldPanel("priority_pages_layout"),
         InlinePanel(
             "priority_pages",
             label="Priority page",
             heading="Priority pages",
-            min_num=4,
-            max_num=4,
+            min_num=1,
+            max_num=5,
         ),
     ]
 
@@ -226,6 +270,7 @@ class HomePage(BasePage):
                 .public()
                 .exclude(id__in=priority_page_ids)
                 .order_by("event_date", "start_time")[:6],
+                pages_by_news_layout=self.pages_by_news_layout(priority_pages),
             )
         else:
             news_items = news_items.order_by(
@@ -325,3 +370,10 @@ class HomePage(BasePage):
         # context["updates"] = updates
 
         return context
+
+    def pages_by_news_layout(self, pages) -> Iterator[list[int]]:
+        # Turn pages into an iterable that gets consumed as we call `next` on it.
+        pages = iter(pages)
+
+        for n in self.PriorityPagesLayout(self.priority_pages_layout).to_page_counts():
+            yield [next(pages) for _ in range(n)]
