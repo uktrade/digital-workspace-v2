@@ -12,13 +12,8 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
 from waffle import flag_is_active
-from wagtail.admin.panels import (
-    FieldPanel,
-    InlinePanel,
-    ObjectList,
-    TabbedInterface,
-    TitleFieldPanel,
-)
+from wagtail.admin.panels import (FieldPanel, InlinePanel, ObjectList,
+                                  TabbedInterface, TitleFieldPanel)
 from wagtail.admin.widgets.slug import SlugInput
 from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, PageQuerySet
@@ -27,12 +22,8 @@ from wagtail.utils.decorators import cached_classmethod
 
 import dw_design_system.dwds.components as dwds_blocks
 from content import blocks as content_blocks
-from content.utils import (
-    get_search_content_for_block,
-    manage_excluded,
-    manage_pinned,
-    truncate_words_and_chars,
-)
+from content.utils import (get_search_content_for_block, manage_excluded,
+                           manage_pinned, truncate_words_and_chars)
 from content.validators import validate_description_word_count
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
@@ -40,7 +31,6 @@ from home import FEATURE_HOMEPAGE
 from peoplefinder.widgets import PersonChooser
 from search.utils import split_query
 from user.models import User as UserModel
-
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +48,6 @@ RICH_TEXT_FEATURES = [
 def strip_tags_with_spaces(string):
     spaced = string.replace("><", "> <")
     return strip_tags(spaced)
-
 
 @register_snippet
 class Theme(models.Model):
