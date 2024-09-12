@@ -109,12 +109,30 @@
                         color: var(--card-body-heading-color);
                         margin-top: 0;
                     }
+
+                    .post-title-container {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--s-5)
+                    }
+                
+                    .post-title {
+                        margin: 0;
+                    }
                 }
             }
 
             .card-footer {
                 padding: 0 var(--s0) var(--s0) var(--s0);
                 color: var(--color-text-secondary);
+
+                .card-comment-section {
+                    margin-top: var(--card-comment-section-margin-top);
+                }
+
+                .comment-icon {
+                    vertical-align: text-bottom;
+                }
             }
         }
     }
