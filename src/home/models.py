@@ -389,12 +389,12 @@ class HomePage(BasePage):
     class Meta:
         verbose_name = "Home page"
         permissions = [
-            ("can_change_homepage_content", "Can change homepage content"),
+            ("can_change_home_page_content", "Can change home page content"),
         ]
 
 
 class HomePagePermissionTester(PagePermissionTester):
     def can_edit(self):
-        if self.user.has_perm("can_change_homepage_content"):
+        if self.user.has_perm("can_change_home_page_content"):
             return True
         return super().can_edit()

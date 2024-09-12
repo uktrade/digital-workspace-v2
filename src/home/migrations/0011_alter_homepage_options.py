@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name="homepage",
             options={
                 "permissions": [
-                    ("can_change_homepage_content", "Can change homepage content")
+                    ("can_change_home_page_content", "Can change home page content")
                 ],
                 "verbose_name": "Home page",
             },

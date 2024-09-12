@@ -142,9 +142,6 @@ EVENT_EDITORS_PAGE_PERMISSIONS = EVENT_CREATORS_PAGE_PERMISSIONS + [
     "lock_page",
     "unlock_page",
 ]
-EVENT_EDITORS_USER_PERMISSIONS = [
-    "can_change_homepage_content",
-]
 
 HOME_EDITORS_GROUP_NAME = "Home page editors"
 HOME_EDITORS_ROOT_COLLECTION_PERMISSIONS = [
@@ -155,7 +152,7 @@ HOME_EDITORS_ROOT_COLLECTION_PERMISSIONS = [
     "choose_image",
 ]
 HOME_EDITORS_USER_PERMISSIONS = [
-    "can_change_homepage_content",
+    "can_change_home_page_content",
 ]
 
 
@@ -204,7 +201,7 @@ class Command(BaseCommand):
         # Home page editors get the user permission to change the homepage content
         home_editors_group.permissions.add(
             Permission.objects.get(
-                codename="can_change_homepage_content",
+                codename="can_change_home_page_content",
                 content_type__app_label="home",
             )
         )
