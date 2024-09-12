@@ -1,5 +1,17 @@
 {% extends "dwds/elements/extendable/card.html" %}
-{% load wagtailimages_tags static humanize %}
+{% load wagtailimages_tags static %}
+
+{% comment %}
+Context:
+    ribbon_text (str)
+    description (str)
+    link_url (str)
+    link_text (str)
+    thumbnail (str)
+
+Example:
+    {% include 'dwds/components/promo.html' with ribbon_text='One DBT' description='One DBT promotion banner.' link_url='https://example.com' link_text='Example website' thumbnail='' %}
+{% endcomment %}
 
 {% block card_container_classes %}
     dwds-promo-banner
@@ -30,5 +42,6 @@
         {% include "dwds/elements/navigational_link.html" with url=link_url text=link_text %}
     {% endif %}
 {% endblock card_content_body %}
+
 {% block card_footer %}
 {% endblock card_footer %}

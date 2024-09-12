@@ -1,6 +1,8 @@
 .dwds-card.dwds-promo-banner {
     .card-main{
-        grid-template-columns: 2fr 1fr;
+        // FIXME
+        grid-template-columns: 1fr 1fr;
+
         image{
             border-radius: 0;
         }

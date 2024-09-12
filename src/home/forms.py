@@ -6,6 +6,8 @@ class HomePageForm(WagtailAdminPageForm):
     def clean(self):
         cleaned_data = super().clean()
 
+        # Priority pages
+
         priority_page_layout = self.instance.PriorityPagesLayout(
             cleaned_data["priority_pages_layout"]
         )
@@ -26,5 +28,12 @@ class HomePageForm(WagtailAdminPageForm):
                 "Not enough priority pages selected"
                 f" ({priority_pages_count} out of {page_count_for_layout} required)"
             )
+
+        # Promotion banner
+
+        # FIXME
+        if cleaned_data["promo_enabled"]:
+            if not cleaned_data["promo_description"]:
+                raise ValidationError("FIXME")
 
         return cleaned_data

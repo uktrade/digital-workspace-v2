@@ -60,6 +60,10 @@
                     </div>
                 {% endfor %}
 
+                {% if page.promo_enabled %}
+                    {% include 'dwds/components/promo.html' with ribbon_text=page.promo_ribbon_text description=page.promo_description link_url=page.promo_link_url link_text=page.promo_link_text thumbnail=page.promo_image %}
+                {% endif %}
+
                 {% if news_items %}
                     {% pages_to_cards news_items as news_cards %}
                     {% include "dwds/components/card_group.html" with card_group_title="Latest DBT news" cards=news_cards footer_link="/news-and-views/" footer_link_text="View all news" show_hr=True show_shadow=True %}
