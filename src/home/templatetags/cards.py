@@ -28,7 +28,8 @@ def page_to_card(page: NewsPage | EventPage):
 
     if issubclass(type(page), NewsPage):
         card_dict.update(
-            date=page.last_published_at,
+            created_date=page.first_published_at,
+            updated_date=page.last_published_at,
             comment_count=page.comment_count,
         )
 

@@ -17,12 +17,11 @@
     <h2>{{ card_group_title }}</h2>
     <div class="grid">
         {% for card in cards %}
-            {% include card.template with title=card.title post_title_date=card.post_title_date post_title_time=card.post_title_time thumbnail=card.thumbnail url=card.url date=card.date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow %}
+            {% include card.template with title=card.title post_title_date=card.post_title_date post_title_time=card.post_title_time thumbnail=card.thumbnail url=card.url created_date=card.created_date updated_date=card.updated_date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow %}
             {% if show_hr %}<hr>{% endif %}
         {% endfor %}
     </div>
 {% endblock card_content_body %}
-
 
 {% block card_footer %}
     {% if footer_link and footer_link_text %}

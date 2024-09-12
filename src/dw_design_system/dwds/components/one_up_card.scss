@@ -4,18 +4,4 @@
     .card-main {
         grid-template-columns: 1fr 1.25fr !important;
     }
-
-    .comment-icon {
-        vertical-align: text-bottom;
-    }
-
-    .post-title-container {
-        display: flex;
-        flex-direction: column;
-        gap: var(--s-5)
-    }
-
-    .post-title {
-        margin: 0;
-    }
 }
