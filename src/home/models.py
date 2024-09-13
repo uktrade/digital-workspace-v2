@@ -395,6 +395,6 @@ class HomePage(BasePage):
 
 class HomePagePermissionTester(PagePermissionTester):
     def can_edit(self):
-        if self.user.has_perm("can_change_home_page_content"):
+        if "can_change_home_page" in self.permissions:
             return True
         return super().can_edit()
