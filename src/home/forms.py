@@ -31,9 +31,15 @@ class HomePageForm(WagtailAdminPageForm):
 
         # Promotion banner
 
-        # FIXME
         if cleaned_data["promo_enabled"]:
-            if not cleaned_data["promo_description"]:
-                raise ValidationError("FIXME")
+            required_promo_fields = [
+                "promo_description",
+                "promo_link_url",
+                "promo_link_text",
+                "promo_image",
+            ]
+            for field in required_promo_fields:
+                if not cleaned_data[field]:
+                    self.add_error(field, "This field is required.")
 
         return cleaned_data
