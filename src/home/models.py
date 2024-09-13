@@ -12,6 +12,7 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from waffle import flag_is_active
 from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
+from wagtail.models import PagePermissionTester
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
 from wagtailorderable.models import Orderable
@@ -379,3 +380,21 @@ class HomePage(BasePage):
 
         for n in self.PriorityPagesLayout(self.priority_pages_layout).to_page_counts():
             yield [next(pages) for _ in range(n)]
+
+    # Wagtail overrides
+
+    def permissions_for_user(self, user):
+        return HomePagePermissionTester(user, self)
+
+    class Meta:
+        verbose_name = "Home page"
+        permissions = [
+            ("can_change_home_page_content", "Can change home page content"),
+        ]
+
+
+class HomePagePermissionTester(PagePermissionTester):
+    def can_edit(self):
+        if self.user.has_perm("can_change_home_page_content"):
+            return True
+        return super().can_edit()

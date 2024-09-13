@@ -143,6 +143,18 @@ EVENT_EDITORS_PAGE_PERMISSIONS = EVENT_CREATORS_PAGE_PERMISSIONS + [
     "unlock_page",
 ]
 
+HOME_EDITORS_GROUP_NAME = "Home page editors"
+HOME_EDITORS_ROOT_COLLECTION_PERMISSIONS = [
+    "add_media",
+    "change_media",
+    "add_image",
+    "change_image",
+    "choose_image",
+]
+HOME_EDITORS_USER_PERMISSIONS = [
+    "can_change_home_page_content",
+]
+
 
 class Command(BaseCommand):
     help = "Create page permissions"
@@ -173,6 +185,26 @@ class Command(BaseCommand):
                     content_type__app_label="wagtailcore",
                 ),
             )
+
+    def home_page_permissions(self):
+        home_editors_group, _ = Group.objects.get_or_create(
+            name=HOME_EDITORS_GROUP_NAME
+        )
+        self.grant_wagtail_admin_perm(home_editors_group)
+
+        # Home page editors permissions
+        self.grant_group_collection_perms(
+            home_editors_group,
+            HOME_EDITORS_ROOT_COLLECTION_PERMISSIONS,
+        )
+
+        # Home page editors get the user permission to change the homepage content
+        home_editors_group.permissions.add(
+            Permission.objects.get(
+                codename="can_change_home_page_content",
+                content_type__app_label="home",
+            )
+        )
 
     def event_permissions(self):
         event_creators_group, _ = Group.objects.get_or_create(
@@ -316,4 +348,5 @@ class Command(BaseCommand):
             )
         )
 
+        self.home_page_permissions()
         self.event_permissions()
