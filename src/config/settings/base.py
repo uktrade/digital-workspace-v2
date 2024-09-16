@@ -729,7 +729,7 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 # Enable the caching of the generated search query DSLs
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
 
-# # Content Security Policy header settings
+# Content Security Policy header settings
 CSP_DEFAULT_SRC = "*"  # Allows all sources
 CSP_SCRIPT_SRC = "*"
 CSP_SCRIPT_SRC_ATTR = "*"
