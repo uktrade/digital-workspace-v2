@@ -5,6 +5,7 @@
         grid-gap: var(--s0);
     }
 
+    .card-group-title-wrapper a,
     .card-footer a {
         display: flex;
         justify-content: space-between;
@@ -23,6 +24,12 @@
 }
 
 .dwds-card.dwds-card-group.dwds-card-group-grid {
+    .card-group-title-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
     .grid {
         grid-template-columns: repeat(auto-fit, minmax(25ch, 1fr));
     }
