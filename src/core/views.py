@@ -1,4 +1,5 @@
 import csv
+import json
 import logging
 
 from django.conf import settings
@@ -102,6 +103,12 @@ def page_problem_found(request):
     )
 
 
+def csp_report(request):
+    if request.method == "POST":
+        report = json.loads(request.body)
+        capture_message("CSP violation", level="warning", extra={"csp_report": report})
+
+
 @require_GET
 def user_groups_report(request: HttpRequest, *args, **kwargs) -> HttpResponse:
     if not request.user.is_superuser:
@@ -176,9 +183,7 @@ class AdminInfoView(WagtailAdminTemplateMixin, View):
     template_name = "core/admin/pages/info.html"
 
     def get_page_title(self):
-        return _("Editing %(page_type)s") % {
-            "page_type": self.page_class.get_verbose_name()
-        }
+        return _("Editing %(page_type)s") % {"page_type": self.page_class.get_verbose_name()}
 
     def get_page_subtitle(self):
         return self.page.get_admin_display_title()

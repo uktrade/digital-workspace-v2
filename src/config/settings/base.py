@@ -219,6 +219,7 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "django_audit_log_middleware.AuditLogMiddleware",
     "waffle.middleware.WaffleMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -727,3 +728,7 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 
 # Enable the caching of the generated search query DSLs
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
+
+# # Content Security Policy header settings
+CSP_DEFAULT_SRC = ["*"] # Allows all sources
+CSP_REPORT_URI = '/csp-report/'

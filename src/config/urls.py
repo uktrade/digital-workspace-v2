@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls import include
 from django.urls import path
 from django.views.generic import RedirectView
+from core.views import csp_report
 from django_feedback_govuk import urls as feedback_urls
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
@@ -51,6 +52,8 @@ urlpatterns = [
     path("interactions/", include("interactions.urls")),
     # DW Design System
     path("dwds/", include(dwds_urlpatterns)),
+    # CSP report to sentry
+    path('csp-report/', csp_report, name='csv_report')
 ]
 
 # If django-silk is installed, add its URLs
