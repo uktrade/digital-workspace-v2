@@ -407,3 +407,8 @@ class HomePagePermissionTester(PagePermissionTester):
         if "can_change_home_page_content" in self.permission_codenames:
             return True
         return super().can_edit()
+
+    def can_publish(self):
+        if "can_change_home_page_content" in self.permission_codenames:
+            return True
+        return super().can_publish()
