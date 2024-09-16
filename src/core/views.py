@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 from notifications_python_client.notifications import NotificationsAPIClient
 from sentry_sdk import capture_message
@@ -103,10 +104,31 @@ def page_problem_found(request):
     )
 
 
+@csrf_exempt
 def csp_report(request):
-    if request.method == "POST":
-        report = json.loads(request.body)
-        capture_message("CSP violation", level="warning", extra={"csp_report": report})
+    try:
+        if request.method == "POST":
+            report = json.loads(request.body)
+
+            csp_report = report.get("csp-report", {})
+            document_uri = csp_report.get("document-uri", "N/A")
+            violated_directive = csp_report.get("violated-directive", "N/A")
+            blocked_uri = csp_report.get("blocked-uri", "N/A")
+            referrer = csp_report.get("referrer", "N/A")
+
+            csp_report_message = (
+                f"CSP Violation report\n"
+                f"Document URI: {document_uri}\n"
+                f"Violated directive: {violated_directive}\n"
+                f"Blocked URI: {blocked_uri}\n"
+                f"Referrer: {referrer}\n"
+            )
+
+            capture_message(csp_report_message, level="warning")
+    except json.JSONDecodeError:
+        return HttpResponse(status=400)
+
+    return HttpResponse(status=204)
 
 
 @require_GET

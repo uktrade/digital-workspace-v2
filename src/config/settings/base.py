@@ -252,9 +252,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 if is_copilot():
     DATABASES = {
-        "default": dj_database_url.config(
-            default=database_url_from_env("DATABASE_CREDENTIALS")
-        )
+        "default": dj_database_url.config(default=database_url_from_env("DATABASE_CREDENTIALS"))
     }
 else:
     DATABASE_URL = os.getenv("DATABASE_URL")
@@ -453,9 +451,7 @@ CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 
 # Redis
 if is_copilot():
-    CELERY_BROKER_URL = (
-        env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
-    )
+    CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
 else:
     CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
 
@@ -617,9 +613,7 @@ PAGE_PROBLEM_EMAIL_TEMPLATE_ID = env("PAGE_PROBLEM_EMAIL_TEMPLATE_ID")
 
 # Profile left DIT
 PROFILE_DELETION_REQUEST_EMAIL = env("PROFILE_DELETION_REQUEST_EMAIL")
-PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID = env(
-    "PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID"
-)
+PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID = env("PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID")
 
 # Profile edited
 PROFILE_EDITED_EMAIL_TEMPLATE_ID = env("PROFILE_EDITED_EMAIL_TEMPLATE_ID")
@@ -730,5 +724,14 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
 
 # # Content Security Policy header settings
-CSP_DEFAULT_SRC = ["*"] # Allows all sources
-CSP_REPORT_URI = '/csp-report/'
+CSP_DEFAULT_SRC = "*"  # Allows all sources
+CSP_SCRIPT_SRC = "*"
+CSP_SCRIPT_SRC_ATTR = "*"
+CSP_SCRIPT_SRC_ELEM = "*"
+CSP_IMG_SRC = ("*", "data:")
+CSP_MEDIA_SRC = "*"
+CSP_FRAME_SRC = "*"
+CSP_FONT_SRC = "*"
+CSP_CONNECT_SRC = "*"
+
+CSP_REPORT_URI = "/csp-report/"
