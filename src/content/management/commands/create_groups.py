@@ -4,6 +4,7 @@ from wagtail.models import Collection, GroupCollectionPermission, GroupPagePermi
 
 from about_us.models import AboutUsHome
 from events.models import EventsHome
+from home.models import HomePage
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome
@@ -199,11 +200,14 @@ class Command(BaseCommand):
         )
 
         # Home page editors get the user permission to change the homepage content
-        home_editors_group.permissions.add(
-            Permission.objects.get(
+        home_page = HomePage.objects.first()
+        GroupPagePermission.objects.get_or_create(
+            group=home_editors_group,
+            page=home_page,
+            permission=Permission.objects.get(
                 codename="can_change_home_page_content",
                 content_type__app_label="home",
-            )
+            ),
         )
 
     def event_permissions(self):

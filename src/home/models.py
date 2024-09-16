@@ -394,7 +394,16 @@ class HomePage(BasePage):
 
 
 class HomePagePermissionTester(PagePermissionTester):
+    def __init__(self, user, page):
+        super().__init__(user, page)
+        self.permission_codenames = [
+            perm.permission.codename
+            for perm in self.permission_policy.get_cached_permissions_for_user(
+                self.user
+            )
+        ]
+
     def can_edit(self):
-        if self.user.has_perm("can_change_home_page_content"):
+        if "can_change_home_page_content" in self.permission_codenames:
             return True
         return super().can_edit()
