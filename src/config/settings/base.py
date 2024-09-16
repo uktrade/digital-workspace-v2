@@ -252,7 +252,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 if is_copilot():
     DATABASES = {
-        "default": dj_database_url.config(default=database_url_from_env("DATABASE_CREDENTIALS"))
+        "default": dj_database_url.config(
+            default=database_url_from_env("DATABASE_CREDENTIALS")
+        )
     }
 else:
     DATABASE_URL = os.getenv("DATABASE_URL")
@@ -451,7 +453,9 @@ CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 
 # Redis
 if is_copilot():
-    CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
+    CELERY_BROKER_URL = (
+        env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
+    )
 else:
     CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
 
@@ -613,7 +617,9 @@ PAGE_PROBLEM_EMAIL_TEMPLATE_ID = env("PAGE_PROBLEM_EMAIL_TEMPLATE_ID")
 
 # Profile left DIT
 PROFILE_DELETION_REQUEST_EMAIL = env("PROFILE_DELETION_REQUEST_EMAIL")
-PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID = env("PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID")
+PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID = env(
+    "PROFILE_DELETION_REQUEST_EMAIL_TEMPLATE_ID"
+)
 
 # Profile edited
 PROFILE_EDITED_EMAIL_TEMPLATE_ID = env("PROFILE_EDITED_EMAIL_TEMPLATE_ID")

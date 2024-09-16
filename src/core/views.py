@@ -9,8 +9,8 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 from django.views.generic.base import View
 from notifications_python_client.notifications import NotificationsAPIClient
 from sentry_sdk import capture_message
@@ -205,7 +205,9 @@ class AdminInfoView(WagtailAdminTemplateMixin, View):
     template_name = "core/admin/pages/info.html"
 
     def get_page_title(self):
-        return _("Editing %(page_type)s") % {"page_type": self.page_class.get_verbose_name()}
+        return _("Editing %(page_type)s") % {
+            "page_type": self.page_class.get_verbose_name()
+        }
 
     def get_page_subtitle(self):
         return self.page.get_admin_display_title()
