@@ -2,6 +2,17 @@
     --card-body-heading-color: var(--color-text);
     padding: var(--s0);
 
+    .card-group-title-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+
+        h2 {
+            margin: 0;
+        }
+    }
+
     .card-group-title-wrapper a,
     .card-footer a {
         display: flex;
@@ -21,17 +32,6 @@
 }
 
 .dwds-card.dwds-card-group.dwds-card-group-grid {
-    .card-group-title-wrapper {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-
-        h2 {
-            margin: 0;
-        }
-    }
-
     .grid {
         grid-template-columns: repeat(auto-fit, minmax(25ch, 1fr));
     }
