@@ -1,6 +1,5 @@
 {% extends "dwds_content.html" %}
-{% load wagtailcore_tags %}
-{% load wagtailimages_tags %}
+{% load wagtailroutablepage_tags %}
 
 {% block main_content_classes %}
     content_page
@@ -10,18 +9,24 @@
 {% endblock bookmark %}
 
 {% block primary_content %}
-    <ul class="ws-news-items">
-        {% for event in events %}
-            <li>
-                <h2 class="govuk-heading-m">
-                    <a href="{% pageurl event %}">{{ event.title }}</a>
-                </h2>
-                <p class="govuk-body-s">{{ event.event_date }}</p>
-                {% image event.preview_image width-540 %}
-                <p class="govuk-body">{{ event.description }}</p>
-            </li>
-        {% endfor %}
-    </ul>
+    <a href="{% routablepageurl page 'month_events' previous_month.year previous_month.month %}">Previous month</a>
+    <a href="{% routablepageurl page 'month_events' next_month.year next_month.month %}">Next month</a>
+
+    <form method="GET">
+        {{ events_filters.form.as_p }}
+        <input type="submit" value="Apply" />
+    </form>
+
+    {% if not upcoming_events and not past_events %}<p>There are no events to display.</p>{% endif %}
+
+    {% if upcoming_events %}
+        <h2>Upcoming events</h2>
+        {% include "events/includes/event_listing_section.html" with events=upcoming_events %}
+    {% endif %}
+    {% if past_events %}
+        <h2>Past events</h2>
+        {% include "events/includes/event_listing_section.html" with events=past_events %}
+    {% endif %}
 {% endblock primary_content %}
 
 {% block secondary_content %}
