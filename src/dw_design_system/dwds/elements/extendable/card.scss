@@ -8,6 +8,7 @@
         --card-body-heading-color: var(--color-text);
         --card-body-link-color: var(--color-link);
         --card-body-text-color: var(--color-text);
+        --card-body-stack-space: var(--s-4);
         color: var(--card-body-text-color);
 
         flex-grow: 1;
@@ -38,8 +39,8 @@
 
         p {
             color: var(--card-body-text-color);
-            margin-bottom: var(--s-5);
-            margin-top: var(--s-5);
+            // margin-bottom: var(--s-5);
+            // margin-top: var(--s-5);
         }
 
         &.dwds-card-blue {
@@ -54,6 +55,10 @@
             --card-body-heading-color: var(--color-text-highlight);
             --card-body-link-color: var(--color-text-highlight);
             --card-body-text-color: var(--color-text-highlight);
+        }
+
+        &.dwds-card-stack-big {
+            --card-body-stack-space: var(--space)
         }
 
         .card-header {
@@ -98,6 +103,20 @@
                 display: flex;
                 flex-direction: column;
 
+                .card-body-stack {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                }
+
+                .card-body-stack > * {
+                    margin-block: 0;
+                }
+
+                .card-body-stack > * + * {
+                    margin-block-start: var(--card-body-stack-space);
+                }
+
                 .card-body {
                     flex-grow: 1;
                     padding: var(--s0);
@@ -107,7 +126,7 @@
                     h2,
                     h3 {
                         color: var(--card-body-heading-color);
-                        margin-top: 0;
+                        // margin-top: 0;
                     }
 
                     .post-title-container {
