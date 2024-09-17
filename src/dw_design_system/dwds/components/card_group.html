@@ -16,10 +16,12 @@
 {% block card_content_body %}
     <div class="card-group-title-wrapper">
         <h2>{{ card_group_title }}</h2>
-        <a href="{{ card_group_link }}">
-            {{ card_group_link_text }}
-            {% include "dwds/icons/arrow-right.html" %}
-        </a>
+        {% if card_group_link and card_group_link_text %}
+            <a href="{{ card_group_link }}">
+                {{ card_group_link_text }}
+                {% include "dwds/icons/arrow-right.html" %}
+            </a>
+        {% endif %}
     </div>
     <div class="grid">
         {% for card in cards %}
