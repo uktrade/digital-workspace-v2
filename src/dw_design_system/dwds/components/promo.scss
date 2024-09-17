@@ -1,7 +1,7 @@
 .dwds-card.dwds-promo-banner {
-    .card-main{
-        // FIXME
-        grid-template-columns: 1fr 1fr;
+    .card-main {
+        // FIXME: how do we want to lay this out?
+        grid-template-columns: 1fr 1fr !important;
 
         image{
             border-radius: 0;
@@ -27,7 +27,7 @@
         color: var(--color-text-highlight);
         font-size: var(--s0);
         text-decoration: underline;
-        font-weight: var(--font-weight-normal);
+        font-weight: var(--font-weight-bold);
 
         p {
             color: var(--color-text-highlight);

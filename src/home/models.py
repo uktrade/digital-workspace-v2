@@ -254,7 +254,7 @@ class HomePage(BasePage):
         verbose_name="Promotion banner image",
         null=True,
         blank=True,
-        on_delete=models.SET_NULL,  # FIXME
+        on_delete=models.SET_NULL,
         related_name="+",
     )
 
