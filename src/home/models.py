@@ -1,6 +1,8 @@
 import re
 from collections.abc import Iterator
 
+import requests
+import atoma
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
@@ -285,27 +287,25 @@ class HomePage(BasePage):
         )
 
         # GOVUK news
-        # if not cache.get("homepage_govuk_news"):
-        #     govuk_news_feed_url = "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=department-for-international-trade&organisations%5B%5D=department-for-business-and-trade"
+        if not cache.get("homepage_govuk_news"):
+            govuk_news_feed_url = "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=department-for-international-trade&organisations%5B%5D=department-for-business-and-trade"
 
-        #     response = requests.get(
-        #         govuk_news_feed_url,
-        #         timeout=5,
-        #     )
-        #     feed = atoma.parse_atom_bytes(response.content)
+            response = requests.get(
+                govuk_news_feed_url,
+                timeout=5,
+            )
+            feed = atoma.parse_atom_bytes(response.content)
 
-        #     cache.set(
-        #         "homepage_govuk_news",
-        #         feed.entries[:6],
-        #         3000,
-        #     )
+            cache.set(
+                "homepage_govuk_news",
+                feed.entries[:6],
+                3000,
+            )
         govuk_feed = cache.get("homepage_govuk_news")
         if is_new_homepage:
             govuk_feed = [
-                {}
-                # {"url": obj.links[0].href, "text": obj.title.value}
-                # for obj in govuk_feed
-                for obj in {}
+                {"url": obj.links[0].href, "text": obj.title.value}
+                for obj in govuk_feed
             ]
         context["govuk_feed"] = govuk_feed
         context["hide_news"] = settings.HIDE_NEWS
