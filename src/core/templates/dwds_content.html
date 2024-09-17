@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load bookmarks %}
+{% load static %}
 
 {% block body_classes %}dwds-body{% endblock %}
 
@@ -46,3 +47,7 @@
             </div>
         </div>
     {% endblock main_content %}
+
+    {% block scripts %}
+        <script src='{% static "dwds/elements/ribbon.js" %}'></script>
+    {% endblock scripts %}
