@@ -66,6 +66,8 @@ services:
       - ./:/app/
     ports:
       - "0.0.0.0:8000:8000"
+    dns:
+      - 0.0.0.0
     depends_on:
       - db
       - redis
