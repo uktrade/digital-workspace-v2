@@ -283,7 +283,7 @@ class HomePage(BasePage):
             )
 
         context.update(
-            news_items=news_items[:8],
+            news_items=news_items[:4],
         )
 
         # GOVUK news
