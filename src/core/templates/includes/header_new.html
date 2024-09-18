@@ -69,6 +69,14 @@
 
         nav {
             margin-bottom: 0;
+
+            .govuk-header__navigation-item--active--ws {
+                color: #0b0c0c;
+                text-decoration-color: var(--dbt-red);
+                text-decoration-thickness: 4px;
+                text-decoration-line: underline;
+                text-underline-offset: 0.3em;
+            }
         }
 
         .govuk-header__logo {
@@ -104,10 +112,10 @@
         .govuk-header {
             padding: 0 10px;
         }
-{% comment %}
+
         >div {
             padding: 20px var(--space);
-} {% endcomment %}
+        }
 
         .govuk-header__menu-button.govuk-js-header-toggle {
             top: 93px !important;
