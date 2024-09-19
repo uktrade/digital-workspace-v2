@@ -1,24 +1,17 @@
-{% extends 'dwds/elements/extendable/card.html' %}
 {% load bookmarks %}
 
-{% block card_header_content %}
-    <h3>Your bookmarks</h3>
-{% endblock card_header_content %}
+<div class="dwds-content-item-card">
+    <div class="dwds-link-list content-item">
+        <div class="content-header content-stack">
+            <h3>Your bookmarks</h3>
+        </div>
+        <div class="content-main">
+            <div class="content-body content-stack">{% bookmark_list user %}</div>
 
-{% block card_container_classes %}
-    dwds-link-list
-{% endblock card_container_classes %}
-
-{% block card_content_image %}
-{% endblock card_content_image %}
-
-{% block card_content_body %}
-    {% bookmark_list user %}
-{% endblock card_content_body %}
-
-{% block card_footer %}
-    <div class="card-footer">
-        <hr>
-        <a href="{% url 'interactions:bookmark-index' %}">View all bookmarks</a>
+            <div class="content-footer content-stack">
+                <hr>
+                <a href="{% url 'interactions:bookmark-index' %}">View all bookmarks</a>
+            </div>
+        </div>
     </div>
-{% endblock card_footer %}
+</div>

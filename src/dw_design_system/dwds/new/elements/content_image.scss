@@ -1,0 +1,7 @@
+.content-image {
+    // Fill the available space, but don't crop or stretch the image
+    inline-size: 100%;
+    object-fit: contain;
+    object-position: 0 0;
+    flex-basis: 300px;
+}

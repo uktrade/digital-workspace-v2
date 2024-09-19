@@ -1,0 +1,51 @@
+@forward "components/box";
+@forward "components/comment_section";
+@forward "components/content_list";
+@forward "components/link_action";
+@forward "components/link_list";
+@forward "components/link_navigate";
+@forward "components/one_up";
+@forward "components/promo";
+@forward "elements/content_header";
+@forward "elements/content_image";
+@forward "elements/content_item";
+@forward "elements/content_main";
+@forward "layouts/content_sidebar";
+@forward "layouts/content_grid";
+@forward "layouts/content_stack";
+@forward "layouts/content_switcher";
+@forward "layouts/content_item_card";
+@forward "layouts/content_custom_sidebar";
+
+
+.dwds-sr-only {
+    // Visually hidden but accessible to screen readers
+    // See: https://github.com/alphagov/govuk-frontend/blob/main/packages/govuk-frontend/src/govuk/helpers/_visually-hidden.scss
+
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+    // If margin is set to a negative value it can cause text to be announced in
+    // the wrong order in VoiceOver for OSX
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+
+    // `clip` is needed for IE11 support
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+
+    border: 0 !important;
+
+    // For long content, line feeds are not interpreted as spaces and small width
+    // causes content to wrap 1 word per line:
+    // https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe
+    white-space: nowrap !important;
+
+    // Prevent users from selecting or copying visually-hidden text. This prevents
+    // a user unintentionally copying more text than they intended and needing to
+    // manually trim it down again.
+    user-select: none;
+}

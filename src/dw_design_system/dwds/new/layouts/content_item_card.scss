@@ -1,0 +1,17 @@
+.dwds-content-item-card {
+    --content-item-card-radius: var(--border-radius);
+    --card-bottom-border-height: 5px;
+
+    display: flex;
+    box-shadow: 0 var(--card-bottom-border-height) 0 rgba(0, 0, 0, 0.2);
+    border-radius: var(--content-item-card-radius);
+    overflow: hidden;
+
+    > div {
+        flex-grow: 1;
+    }
+}
+
+.dwds-content-item-card.no-shadow {
+    --card-bottom-border-height: 0;
+}
