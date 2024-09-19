@@ -1,17 +1,20 @@
 <div class="dwds-pagination">
     {% if pages.has_previous %}
-        {% if number_navigation %}
             <a href="?page=1">
                 {% include "dwds/icons/arrow-left.html" %}
-                <span>{{ first_page_text|title }}</span>
+                <span>{{ first_page_text|default:'First'|title }}</span>
             </a>
-        {% endif %}
         <a href="?page={{ pages.previous_page_number }}">
             {% include "dwds/icons/arrow-left.html" %}
-            <span>{{ negative_text|title }}</span>
+            <span>{{  previous_text|default:'Previous'|title  }}</span>
+        </a>
+    {% elif previous_url %}
+        <a href="{{previous_url}}">
+            {% include "dwds/icons/arrow-left.html" %}
+            <span>{{  previous_text|default:'Previous'|title  }}</span>
         </a>
     {% endif %}
-    {% if number_navigation %}
+    {% if pages %}
         <ul>
             {% for i in pagination_range %}
                 {% if pages.number == i %}
@@ -31,18 +34,20 @@
                 {% endif %}
             {% endfor %}
         </ul>
-    {% elif pages.has_previous and pages.has_next %}
+    {% elif previous_url and next_url %}
         <span>|</span>
     {% endif %}
     {% if pages.has_next %}
-        <a href="?page={{ pages.next_page_number }}"> <span>{{ positive_text|title }}</span>
+        <a href="?page={{ pages.next_page_number }}"> <span>{{ next_text|default:'Next'|title }}</span>
             {% include "dwds/icons/arrow-right.html" %}
         </a>
-        {% if number_navigation %}
             <a href="?page={{ pages.paginator.num_pages }}">
-                <span>{{ last_page_text|title }}</span>
+                <span>{{ last_page_text|default:'Last'|title }}</span>
                 {% include "dwds/icons/arrow-right.html" %}
             </a>
-        {% endif %}
+    {% elif next_url %}
+        <a href="{{next_url}}"> <span>{{ next_text|default:'Next'|title }}</span>
+            {% include "dwds/icons/arrow-right.html" %}
+        </a>
     {% endif %}
 </div>
