@@ -22,7 +22,7 @@
                         <span>{{ i }}</span>
                     </li>
                 {% else %}
-                    {% if i in page.paginator.ELLIPSIS %}
+                    {% if i == page.paginator.ELLIPSIS %}
                         <li>
                             <span class="pf-pagination__page">{{ page.paginator.ELLIPSIS }}</span>
                         </li>
