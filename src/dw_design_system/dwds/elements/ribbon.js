@@ -12,6 +12,4 @@ window.addEventListener('resize', () => {
     ribbons.forEach(resizeSpacer);
 });
 
-ribbons.forEach(ribbon => {
-    resizeSpacer(ribbon);
-});
+ribbons.forEach(resizeSpacer);
