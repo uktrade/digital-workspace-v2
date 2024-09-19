@@ -1,12 +1,12 @@
 <div class="dwds-pagination">
-    {% if item_list.has_previous %}
+    {% if pages.has_previous %}
         {% if number_navigation %}
             <a href="?page=1">
                 {% include "dwds/icons/arrow-left.html" %}
                 <span>{{ first_page_text|title }}</span>
             </a>
         {% endif %}
-        <a href="?page={{ item_list.previous_page_number }}">
+        <a href="?page={{ pages.previous_page_number }}">
             {% include "dwds/icons/arrow-left.html" %}
             <span>{{ negative_text|title }}</span>
         </a>
@@ -14,7 +14,7 @@
     {% if number_navigation %}
         <ul>
             {% for i in pagination_range %}
-                {% if item_list.number == i %}
+                {% if pages.number == i %}
                     <li class="active">
                         <span>{{ i }}</span>
                     </li>
@@ -31,15 +31,15 @@
                 {% endif %}
             {% endfor %}
         </ul>
-    {% elif item_list.has_previous and item_list.has_next %}
+    {% elif pages.has_previous and pages.has_next %}
         <span>|</span>
     {% endif %}
-    {% if item_list.has_next %}
-        <a href="?page={{ item_list.next_page_number }}"> <span>{{ positive_text|title }}</span>
+    {% if pages.has_next %}
+        <a href="?page={{ pages.next_page_number }}"> <span>{{ positive_text|title }}</span>
             {% include "dwds/icons/arrow-right.html" %}
         </a>
         {% if number_navigation %}
-            <a href="?page={{ item_list.paginator.num_pages }}">
+            <a href="?page={{ pages.paginator.num_pages }}">
                 <span>{{ last_page_text|title }}</span>
                 {% include "dwds/icons/arrow-right.html" %}
             </a>
