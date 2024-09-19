@@ -730,14 +730,17 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
 
 # Content Security Policy header settings
-CSP_DEFAULT_SRC = "*"  # Allows all sources
-CSP_SCRIPT_SRC = "*"
-CSP_SCRIPT_SRC_ATTR = "*"
-CSP_SCRIPT_SRC_ELEM = "*"
-CSP_IMG_SRC = ("*", "data:")
-CSP_MEDIA_SRC = "*"
-CSP_FRAME_SRC = "*"
-CSP_FONT_SRC = "*"
-CSP_CONNECT_SRC = "*"
+# Lock down all settings, see what complains
+CSP_DEFAULT_SRC = ("'none'",)
+CSP_SCRIPT_SRC = ("'none'",)
+CSP_SCRIPT_SRC_ATTR = ("'none'",)
+CSP_SCRIPT_SRC_ELEM = ("'none'",)
+CSP_IMG_SRC = ("'none'",)
+CSP_MEDIA_SRC = ("'none'",)
+CSP_FRAME_SRC = ("'none'",)
+CSP_FONT_SRC = ("'none'",)
+CSP_CONNECT_SRC = ("'none'",)
 
+CSP_REPORT_ONLY = True
 CSP_REPORT_URI = "/csp-report/"
+# CSP_REPORT_URI = "{DOMAIN}/api/{PROJECT_ID}/security/?sentry_key={SENTRY_KEY}"
