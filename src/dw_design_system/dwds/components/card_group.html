@@ -1,6 +1,7 @@
 {% extends "dwds/elements/extendable/card.html" %}
 
 {% block card_container_classes %}
+    dwds-card-stack-big
     dwds-card-group
     {% if grid %}dwds-card-group-grid{% endif %}
     {% if blue_bg %}dwds-card-blue{% endif %}
@@ -14,7 +15,15 @@
 {% endblock card_content_image %}
 
 {% block card_content_body %}
-    <h2>{{ card_group_title }}</h2>
+    <div class="card-group-title-wrapper">
+        <h2>{{ card_group_title }}</h2>
+        {% if card_group_link and card_group_link_text %}
+            <a href="{{ card_group_link }}">
+                {{ card_group_link_text }}
+                {% include "dwds/icons/arrow-right.html" %}
+            </a>
+        {% endif %}
+    </div>
     <div class="grid">
         {% for card in cards %}
             {% include card.template with title=card.title post_title_date=card.post_title_date post_title_time=card.post_title_time thumbnail=card.thumbnail url=card.url created_date=card.created_date updated_date=card.updated_date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow %}
