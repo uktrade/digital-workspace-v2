@@ -11,7 +11,6 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from core.admin import admin_site
 from core.urls import urlpatterns as core_urlpatterns
-from core.views import csp_report
 from dw_design_system.urls import urlpatterns as dwds_urlpatterns
 from peoplefinder.urls import api_urlpatterns, people_urlpatterns, teams_urlpatterns
 
@@ -52,8 +51,6 @@ urlpatterns = [
     path("interactions/", include("interactions.urls")),
     # DW Design System
     path("dwds/", include(dwds_urlpatterns)),
-    # CSP report to sentry
-    path("csp-report/", csp_report, name="csv_report"),
 ]
 
 # If django-silk is installed, add its URLs
