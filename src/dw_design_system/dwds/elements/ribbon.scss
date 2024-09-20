@@ -13,22 +13,13 @@
     font-size: var(--text-xlarge);
     font-weight: var(--font-weight-bold);
 
-    .ribbon-main,
-    .ribbon-spacer {
+    .ribbon-main {
         min-height: var(--ribbon-height);
         padding: var(--ribbon-padding) var(--ribbon-padding-right) var(--ribbon-padding) var(--ribbon-left-space);
         margin-left: calc(var(--ribbon-left-space) * -1);
         border-radius: var(--ribbon-border-radius);
-    }
-
-    .ribbon-main {
         color: var(--ribbon-text-colour);
         background: var(--ribbon-background-blue);
-        position: absolute;
-    }
-
-    .ribbon-spacer {
-        visibility: hidden;
     }
 
     .ribbon-red {
