@@ -67,7 +67,11 @@
 
                 {% if events %}
                     {% pages_to_cards events True as event_cards %}
-                    {% include "dwds/components/card_group.html" with card_group_title="Events" card_group_link="/events/" card_group_link_text="View all events" cards=event_cards grid=True blue_bg=True %}
+                    {% if FEATURE_FLAGS.event_listing %}
+                        {% include "dwds/components/card_group.html" with card_group_title="Events" card_group_link="/events/" card_group_link_text="View all events" cards=event_cards grid=True blue_bg=True %}
+                    {% else %}
+                        {% include "dwds/components/card_group.html" with card_group_title="Events" cards=event_cards grid=True blue_bg=True %}
+                    {% endif %}
                 {% endif %}
 
                 {% if not hide_news %}
