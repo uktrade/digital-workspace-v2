@@ -742,4 +742,4 @@ CSP_CONNECT_SRC = ("'none'",)
 
 CSP_REPORT_ONLY = True
 CSP_REPORT_URI = "/csp-report/"
-# CSP_REPORT_URI = "{DOMAIN}/api/{PROJECT_ID}/security/?sentry_key={SENTRY_KEY}"
+CSP_REPORT_URI = env("CSP_REPORT_URI", " ")
