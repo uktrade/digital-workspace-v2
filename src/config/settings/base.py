@@ -730,7 +730,6 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
 
 # Content Security Policy header settings
-# Lock down all settings, see what complains
 CSP_DEFAULT_SRC = ("'none'",)
 CSP_SCRIPT_SRC = ("'none'",)
 CSP_SCRIPT_SRC_ATTR = ("'none'",)
