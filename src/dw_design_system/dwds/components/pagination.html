@@ -2,16 +2,11 @@
     {% if pages.has_previous %}
         <a href="?page=1">
             {% include "dwds/icons/arrow-left.html" %}
-            <span>{{ first_page_text|default:'First'|title }}</span>
+            <span>First</span>
         </a>
         <a href="?page={{ pages.previous_page_number }}">
             {% include "dwds/icons/arrow-left.html" %}
-            <span>{{ previous_text|default:'Previous'|title }}</span>
-        </a>
-    {% elif previous_url %}
-        <a href="{{ previous_url }}">
-            {% include "dwds/icons/arrow-left.html" %}
-            <span>{{ previous_text|default:'Previous'|title }}</span>
+            <span>Previous</span>
         </a>
     {% endif %}
     {% if pages %}
@@ -34,19 +29,13 @@
                 {% endif %}
             {% endfor %}
         </ul>
-    {% elif previous_url and next_url %}
-        <span>|</span>
     {% endif %}
     {% if pages.has_next %}
-        <a href="?page={{ pages.next_page_number }}"> <span>{{ next_text|default:'Next'|title }}</span>
+        <a href="?page={{ pages.next_page_number }}"> <span>Next</span>
             {% include "dwds/icons/arrow-right.html" %}
         </a>
         <a href="?page={{ pages.paginator.num_pages }}">
-            <span>{{ last_page_text|default:'Last'|title }}</span>
-            {% include "dwds/icons/arrow-right.html" %}
-        </a>
-    {% elif next_url %}
-        <a href="{{ next_url }}"> <span>{{ next_text|default:'Next'|title }}</span>
+            <span>Last</span>
             {% include "dwds/icons/arrow-right.html" %}
         </a>
     {% endif %}

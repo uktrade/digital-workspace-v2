@@ -1,6 +1,7 @@
 from datetime import datetime
 from json import JSONDecoder, scanner
 
+from django.core.paginator import Paginator
 from django.utils import timezone
 from wagtail.images.models import Image
 
@@ -14,6 +15,7 @@ IMAGE_STR = "Image"
 
 def get_components():
     thumbnail_file = Image.objects.first()
+    pages = Paginator(NewsPage.objects.all(), 2).page(1)
     return [
         {
             "name": "Card",
@@ -96,6 +98,21 @@ def get_components():
                 "excerpt": "This is an excerpt for the one up card",
                 "date": timezone.now(),
                 "thumbnail": thumbnail_file,
+            },
+        },
+        {
+            "name": "Pagination",
+            "template": "dwds/components/pagination.html",
+            "context": {"pages": pages, "pagination_range": range(1, 11)},
+        },
+        {
+            "name": "Link navigation",
+            "template": "dwds/components/link_navigate.html",
+            "context": {
+                "previous_url": "https://www.gov.uk",
+                "previous_text": "Previous",
+                "next_url": "https://www.gov.uk",
+                "next_text": "Next",
             },
         },
     ]

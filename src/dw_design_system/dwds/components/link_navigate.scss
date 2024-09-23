@@ -1,0 +1,22 @@
+.dwds-link-navigate{
+    display: flex;
+    text-decoration: none;
+    align-items: center;
+    gap: var(--s0);
+
+    a{
+        display: flex;
+        gap: var(--s0);
+
+
+        svg {
+            height: var(--font-lineheight-body);
+            width: var(--s1);
+            text-decoration: none;
+    
+            path {
+                fill: currentColor;
+            }
+        }
+    }
+}
