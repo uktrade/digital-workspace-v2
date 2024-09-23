@@ -1,7 +1,6 @@
 from datetime import datetime as dt
 from datetime import timedelta
 
-from django.core.validators import URLValidator
 from django.db import models
 from django.utils import timezone
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
@@ -38,31 +37,31 @@ class EventPage(ContentPage):
     )
     start_time = models.TimeField()
     end_time = models.TimeField()
-    online_event_url = models.TextField(
+    online_event_url = models.URLField(
+        max_length=2048,
         blank=True,
         null=True,
-        validators=[URLValidator()],
         verbose_name="Online event link",
         help_text="If the event is online, you can add a link here for others to join.",
     )
-    offline_event_url = models.TextField(
+    offline_event_url = models.URLField(
+        max_length=2048,
         blank=True,
         null=True,
-        validators=[URLValidator()],
         verbose_name="In person registration link",
         help_text="If the event is in person, you can add a link here for registration.",
     )
-    submit_questions_url = models.TextField(
+    submit_questions_url = models.URLField(
+        max_length=2048,
         blank=True,
         null=True,
-        validators=[URLValidator()],
         verbose_name="Submit questions link",
         help_text="Link to a page for others to submit their questions.",
     )
-    event_recording_url = models.TextField(
+    event_recording_url = models.URLField(
+        max_length=2048,
         blank=True,
         null=True,
-        validators=[URLValidator()],
         verbose_name="View event recording link",
         help_text="Optional link to a page for others to view the recorded event.",
     )
