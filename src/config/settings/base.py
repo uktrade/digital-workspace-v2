@@ -299,6 +299,10 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT_DIR, "assets"),
+    (
+        "dwds",
+        os.path.join(PROJECT_ROOT_DIR, "src", "dw_design_system", "dwds"),
+    ),
 ]
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT_DIR, "static")

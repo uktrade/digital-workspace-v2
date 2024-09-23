@@ -6,26 +6,19 @@
     --ribbon-left-space: var(--s2);
     --ribbon-text-colour: var(--color-text-highlight);
     --ribbon-line-height: var(--font-lineheight-headings);
-    --ribbon-height: calc(var(--ribbon-padding) + var(--ribbon-padding) + var(--ribbon-line-height));
     --ribbon-border-radius: var(--border-radius);
 
     display: inline-block;
     font-size: var(--text-xlarge);
     font-weight: var(--font-weight-bold);
 
-    .ribbon-main,
-    .ribbon-spacer {
-        min-height: var(--ribbon-height);
-        padding: var(--ribbon-padding) var(--ribbon-padding-right) var(--ribbon-padding) var(--ribbon-left-space);        
-        margin-left: calc(var(--ribbon-left-space) * -1);
-    }
-
     .ribbon-main {
-        margin-top: calc(var(--ribbon-height) * -1);
+        padding: var(--ribbon-padding) var(--ribbon-padding-right) var(--ribbon-padding) var(--ribbon-left-space);
+        margin-left: calc(var(--ribbon-left-space) * -1);
+        border-radius: var(--ribbon-border-radius);
         color: var(--ribbon-text-colour);
         background: var(--ribbon-background-blue);
-        position: absolute;
-        border-radius: var(--ribbon-border-radius);
+        width: fit-content;
     }
 
     .ribbon-red {
