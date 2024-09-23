@@ -745,4 +745,4 @@ CSP_FONT_SRC = ("'none'",)
 CSP_CONNECT_SRC = ("'none'",)
 
 CSP_REPORT_ONLY = True
-CSP_REPORT_URI = env("CSP_REPORT_URI", None)
+CSP_REPORT_URI = env("CSP_REPORT_URI", default=None)
