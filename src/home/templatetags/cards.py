@@ -9,13 +9,13 @@ register = template.Library()
 
 
 @register.simple_tag
-def page_to_card(page: NewsPage | EventPage):
+def page_to_card(page: NewsPage | EventPage, hide_shadow: bool = False):
     card_dict = {
         "title": page.title,
         "thumbnail": page.preview_image,
         "url": page.url,
         "excerpt": page.excerpt,
-        "hide_shadow": True,
+        "hide_shadow": hide_shadow,
         "grid": False,
         "blue_bg": False,
         "show_hr": False,
@@ -43,5 +43,5 @@ def page_to_card(page: NewsPage | EventPage):
 
 
 @register.simple_tag
-def pages_to_cards(pages: list[NewsPage | EventPage]):
-    return [page_to_card(page) for page in pages]
+def pages_to_cards(pages: list[NewsPage | EventPage], hide_shadow: bool = False):
+    return [page_to_card(page, hide_shadow=hide_shadow) for page in pages]

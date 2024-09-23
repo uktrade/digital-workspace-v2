@@ -61,13 +61,17 @@
                 {% endfor %}
 
                 {% if news_items %}
-                    {% pages_to_cards news_items as news_cards %}
+                    {% pages_to_cards news_items True as news_cards %}
                     {% include "dwds/components/card_group.html" with card_group_title="Latest DBT news" cards=news_cards footer_link="/news-and-views/" footer_link_text="View all news" show_hr=True show_shadow=True %}
                 {% endif %}
 
                 {% if events %}
-                    {% pages_to_cards events as event_cards %}
-                    {% include "dwds/components/card_group.html" with card_group_title="Events" cards=event_cards grid=True blue_bg=True %}
+                    {% pages_to_cards events True as event_cards %}
+                    {% if FEATURE_FLAGS.event_listing %}
+                        {% include "dwds/components/card_group.html" with card_group_title="Events" card_group_link="/events/" card_group_link_text="View all events" cards=event_cards grid=True blue_bg=True %}
+                    {% else %}
+                        {% include "dwds/components/card_group.html" with card_group_title="Events" cards=event_cards grid=True blue_bg=True %}
+                    {% endif %}
                 {% endif %}
 
                 {% if not hide_news %}
