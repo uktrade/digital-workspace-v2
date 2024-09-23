@@ -18,6 +18,7 @@ from wagtail_adminsortable.models import AdminSortable
 from wagtailorderable.models import Orderable
 
 from content.models import BasePage, ContentPage
+from core.models import fields
 from core.models.models import SiteAlertBanner
 from events.models import EventPage
 from home import FEATURE_HOMEPAGE
@@ -135,7 +136,7 @@ class WhatsPopular(models.Model):
         blank=True,
         null=True,
     )
-    external_url = models.URLField(
+    external_url = fields.URLField(
         blank=True,
         null=True,
     )
