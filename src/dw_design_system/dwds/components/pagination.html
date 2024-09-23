@@ -1,3 +1,5 @@
+{% load paginator %}
+
 <div class="dwds-pagination">
     {% if pages.has_previous %}
         <a href="?page=1">
@@ -11,21 +13,20 @@
     {% endif %}
     {% if pages %}
         <ul>
-            {% for i in pagination_range %}
-                {% if pages.number == i %}
+            {% for num in pages|get_elided_page_range %}
+                {% if num == pages.number %}
                     <li class="active">
-                        <span>{{ i }}</span>
+                        <a class=""
+                           href="{% get_pagination_url num %}"
+                           aria-label="Page {{ num }}"
+                           aria-current="page">{{ num }}</a>
                     </li>
+                {% elif num == pages.paginator.ELLIPSIS %}
+                    <li>&ctdot;</li>
                 {% else %}
-                    {% if i == page.paginator.ELLIPSIS %}
-                        <li>
-                            <span>{{ page.paginator.ELLIPSIS }}</span>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a href="?page={{ i }}">{{ i }}</a>
-                        </li>
-                    {% endif %}
+                    <li>
+                        <a href="{% get_pagination_url num %}" aria-label="Page {{ num }}">{{ num }}</a>
+                    </li>
                 {% endif %}
             {% endfor %}
         </ul>
