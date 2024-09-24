@@ -2,11 +2,11 @@
 
 <div class="dwds-pagination">
     {% if pages.has_previous %}
-        <a href="?page=1">
+        <a href="{% get_pagination_url 1 %}">
             {% include "dwds/icons/arrow-left.html" %}
             <span>First</span>
         </a>
-        <a href="?page={{ pages.previous_page_number }}">
+        <a href="{% get_pagination_url pages.previous_page_number %}">
             {% include "dwds/icons/arrow-left.html" %}
             <span>Previous</span>
         </a>
@@ -32,10 +32,10 @@
         </ul>
     {% endif %}
     {% if pages.has_next %}
-        <a href="?page={{ pages.next_page_number }}"> <span>Next</span>
+        <a href="{% get_pagination_url pages.next_page_number %}"> <span>Next</span>
             {% include "dwds/icons/arrow-right.html" %}
         </a>
-        <a href="?page={{ pages.paginator.num_pages }}">
+        <a href="{% get_pagination_url pages.paginator.num_pages %}">
             <span>Last</span>
             {% include "dwds/icons/arrow-right.html" %}
         </a>
