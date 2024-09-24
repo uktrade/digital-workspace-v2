@@ -80,7 +80,6 @@ class Tool(PageWithTopics):
         null=True,
         blank=True,
     )
-
     redirect_url = fields.URLField(
         null=True,
         blank=True,
