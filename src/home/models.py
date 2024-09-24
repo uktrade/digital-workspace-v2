@@ -267,6 +267,7 @@ class HomePage(BasePage):
             .exclude(id__in=priority_page_ids)
             .order_by("event_date", "start_time")[:6],
             pages_by_news_layout=self.pages_by_news_layout(priority_pages),
+            is_empty=priority_pages == [],
         )
 
         context.update(
