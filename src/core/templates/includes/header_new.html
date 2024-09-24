@@ -3,7 +3,6 @@
 {% load site_alert %}
 
 <header class="govuk-header govuk-header--ws search-v2"
-        data-flag-new-homepage="{{ FEATURE_FLAGS.new_homepage }}"
         role="banner"
         data-module="govuk-header">
     <div class="govuk-header__container dwds-container flex">
@@ -21,11 +20,7 @@
         <div class="govuk-header__content gov-grid-column-two-thirds">
             <a href="/"
                class="govuk-header__link govuk-header__link--ws govuk-header__service-name govuk-header__service-name--ws">
-                {% if FEATURE_FLAGS.new_homepage %}
-                    The Intranet
-                {% else %}
-                    Digital Workspace
-                {% endif %}
+                The Intranet
             </a>
             <button type="button"
                     class="govuk-header__menu-button govuk-header__menu-button--ws govuk-js-header-toggle"
@@ -51,12 +46,6 @@
         </div>
     </div>
 </header>
-{% if FEATURE_FLAGS.new_homepage %}
-{% else %}
-    {% if USER_IS_AUTHENTICATED %}
-        {% site_alert %}
-    {% endif %}
-{% endif %}
 
 <style type="text/css">
     {% comment %} Hacky style overrides {% endcomment %}
