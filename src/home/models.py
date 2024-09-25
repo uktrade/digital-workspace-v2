@@ -240,7 +240,7 @@ class HomePage(BasePage):
         null=True,
         blank=True,
     )
-    promo_link_url = models.URLField(
+    promo_link_url = fields.URLField(
         "Promotion banner link URL",
         null=True,
         blank=True,
