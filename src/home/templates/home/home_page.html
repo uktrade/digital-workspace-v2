@@ -17,23 +17,6 @@
 {% endblock body_classes %}
 
 {% block pre_content %}
-    {% comment %}
-
-        TEMPORARILY REMOVED UNTIL NEW HEADER RE-DESIGN IS FINALISED
-
-        <div class="homepage-welcome-bar">
-            <h1>Intranet</h1>
-            {% now "A" as current_time %}
-            {% if current_time == "AM" %}
-                <span>Good morning {{ peoplefinder_profile.get_first_name_display }}</span>
-            {% else %}
-                <span>Good afternoon {{ peoplefinder_profile.get_first_name_display }}</span>
-            {% endif %}
-        </div>
-        <hr style="margin-top: var(--s1);">
-
-    {% endcomment %}
-
 {% endblock pre_content %}
 
 {% block page_title %}

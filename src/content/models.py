@@ -178,18 +178,6 @@ class BasePage(Page, Indexed):
     def published_date(self):
         return self.last_published_at
 
-    def get_template(self, request, *args, **kwargs):
-        self.template = self.template.replace(".html", "_new.html")
-
-        return self.template
-
-    def serve(self, request):
-        response = super().serve(request)
-
-        self.template = self.get_template(request)
-
-        return response
-
     def get_first_publisher(self) -> Optional[UserModel]:
         """Return the first publisher of the page or None."""
         first_revision_with_user = (
@@ -503,10 +491,6 @@ class ContentPage(SearchFieldsMixin, BasePage):
         # for tagged_item in self.tagged_items.select_related("tag").all():
         #     tag_set.append(tagged_item.tag)
         context["tag_set"] = tag_set
-
-        # override page base when the new homepage is active.
-        context["override_base"] = "dwds_content.html"
-        context["override_content"] = "primary_content"
 
         return context
 

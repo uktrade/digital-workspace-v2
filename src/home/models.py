@@ -231,7 +231,7 @@ class HomePage(BasePage):
     ]
 
     def get_template(self, request, *args, **kwargs):
-        return "home/home_page_new.html"
+        return "home/home_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
@@ -259,18 +259,19 @@ class HomePage(BasePage):
             "-first_published_at",
         )
 
-        context.update(
-            priority_pages=priority_pages,
-            events=EventPage.objects.live()
+        events = (
+            EventPage.objects.live()
             .public()
             .filter(event_date__gte=timezone.now().date())
             .exclude(id__in=priority_page_ids)
-            .order_by("event_date", "start_time")[:6],
-            pages_by_news_layout=self.pages_by_news_layout(priority_pages),
-            is_empty=priority_pages == [],
+            .order_by("event_date", "start_time")
         )
 
         context.update(
+            priority_pages=priority_pages,
+            events=events[:6],
+            pages_by_news_layout=self.pages_by_news_layout(priority_pages),
+            is_empty=priority_pages == [],
             news_items=news_items[:5],
         )
 
@@ -304,43 +305,12 @@ class HomePage(BasePage):
         ]
         context["quick_links"] = quick_links
 
-        # Popular on Digital Workspace
-        whats_popular_items = WhatsPopular.objects.all()
-        whats_popular_items = [
-            {"url": obj.link_to.get_url(request), "text": obj.title}
-            for obj in whats_popular_items
-        ]
-        context["whats_popular_items"] = whats_popular_items
-
         # Personalised page list
         context["bookmarks"] = get_bookmarks(request.user)
-        # context["recently_viewed"] = get_recent_page_views(
-        #     request.user, limit=10, exclude_pages=[self]
-        # )
 
         context["active_site_alert"] = SiteAlertBanner.objects.filter(
             activated=True
         ).first()
-
-        # # Updates
-        # updates = []
-        # if request.user.profile.profile_completion < 99:
-        #     updates.append(
-        #         format_html(
-        #             "Please complete <a href='{}'>your profile</a>, it's currently at {}%",
-        #             reverse("profile-view", args=[request.user.profile.slug]),
-        #             request.user.profile.profile_completion,
-        #         )
-        #     )
-        # for page in get_updated_pages(request.user):
-        #     updates.append(
-        #         format_html(
-        #             "<a href='{}'>{}</a> has been updated",
-        #             page.get_url(request),
-        #             page,
-        #         )
-        #     )
-        # context["updates"] = updates
 
         return context
 
