@@ -291,19 +291,17 @@ class HomePage(BasePage):
                 3000,
             )
         govuk_feed = cache.get("homepage_govuk_news")
-        govuk_feed = [
+        context["govuk_feed"] = [
             {"url": obj.links[0].href, "text": obj.title.value} for obj in govuk_feed
         ]
-        context["govuk_feed"] = govuk_feed
         context["hide_news"] = settings.HIDE_NEWS
 
         # Quick links
         quick_links = QuickLink.objects.all().order_by("result_weighting", "title")
-        quick_links = [
+        context["quick_links"] = [
             {"url": obj.link_to.get_url(request), "text": obj.title}
             for obj in quick_links
         ]
-        context["quick_links"] = quick_links
 
         # Personalised page list
         context["bookmarks"] = get_bookmarks(request.user)
