@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from wagtail.admin.panels import FieldPanel
 
 from content.models import ContentPage
+from core.models import fields
 from extended_search.index import DWIndexedField as IndexedField
 from working_at_dit.models import PageWithTopics
 
@@ -79,11 +80,9 @@ class Tool(PageWithTopics):
         null=True,
         blank=True,
     )
-
-    redirect_url = models.CharField(
+    redirect_url = fields.URLField(
         null=True,
         blank=True,
-        max_length=2048,
     )
     long_description = models.CharField(
         null=True,
