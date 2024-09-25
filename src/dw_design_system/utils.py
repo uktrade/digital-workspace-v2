@@ -98,6 +98,17 @@ def get_components():
                 "thumbnail": thumbnail_file,
             },
         },
+        {
+            "name": "Promo Banner",
+            "template": "dwds/components/promo.html",
+            "context": {
+                "ribbon_text": "One DBT",
+                "description": "We value your ideas to help make it simpler to work at DBT, make a difference and celebrate innovation.",
+                "link_text": "Collaborate and connect",
+                "link_url": "http://localhost:8000/dwds/",
+                "background_image": thumbnail_file,
+            },
+        },
     ]
 
 

@@ -1,0 +1,34 @@
+.dwds-card.dwds-promo-banner {
+    --link-font-size: var(--s0);
+
+    .card-main {
+        grid-template-columns: 2fr 1fr !important;
+
+        image {
+            border-radius: 0;
+        }
+    }
+
+    .dwds-navigational-link {
+        justify-content: unset;
+        align-items: center;
+        gap: var(--s0);
+
+        svg {
+            height: var(--link-font-size);
+        }
+    }
+
+    a,
+    a:visited,
+    a:link {
+        color: var(--color-text-highlight);
+        font-size: var(--link-font-size);
+        text-decoration: underline;
+        font-weight: var(--font-weight-bold);
+
+        p {
+            color: var(--color-text-highlight);
+        }
+    }
+}

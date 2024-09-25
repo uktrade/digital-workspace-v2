@@ -1,0 +1,47 @@
+{% extends "dwds/elements/extendable/card.html" %}
+{% load wagtailimages_tags static %}
+
+{% comment %}
+Context:
+    ribbon_text (str)
+    description (str)
+    link_url (str)
+    link_text (str)
+    thumbnail (str)
+
+Example:
+    {% include 'dwds/components/promo.html' with ribbon_text='One DBT' description='One DBT promotion banner.' link_url='https://example.com' link_text='Example website' thumbnail='' %}
+{% endcomment %}
+
+{% block card_container_classes %}
+    dwds-promo-banner
+    card-without-shadow
+    card-with-image
+    image-right
+    dwds-card-blue
+{% endblock %}
+
+{% block card_header %}
+{% endblock card_header %}
+
+{% block card_content_image %}
+    {% if thumbnail %}
+        {% image thumbnail fill-420x240 %}
+    {% else %}
+        <img src="{% static '/images/dwds/fallback_image_card.png' %}"
+             alt="Colourful circles on a blue background.">
+    {% endif %}
+{% endblock card_content_image %}
+
+{% block card_content_body %}
+    {% if ribbon_text %}
+        {% include "dwds/elements/ribbon.html" with colour="red" text=ribbon_text %}
+    {% endif %}
+    {% if description %}<p>{{ description }}</p>{% endif %}
+    {% if link_url and link_text %}
+        {% include "dwds/elements/navigational_link.html" with url=link_url text=link_text %}
+    {% endif %}
+{% endblock card_content_body %}
+
+{% block card_footer %}
+{% endblock card_footer %}

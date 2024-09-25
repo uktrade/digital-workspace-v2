@@ -11,7 +11,12 @@ from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from waffle import flag_is_active
-from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
+from wagtail.admin.panels import (
+    FieldPanel,
+    InlinePanel,
+    MultiFieldPanel,
+    PageChooserPanel,
+)
 from wagtail.models import PagePermissionTester
 from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
@@ -221,6 +226,40 @@ class HomePage(BasePage):
         default=PriorityPagesLayout.L1_3,
     )
 
+    promo_enabled = models.BooleanField("Enable promotion banner", default=False)
+    promo_ribbon_text = models.CharField(
+        "Promotion banner ribbon text",
+        max_length=30,
+        null=True,
+        blank=True,
+        help_text="The text to be display on the ribbon. If empty, the ribbon will be hidden.",
+    )
+    promo_description = models.TextField(
+        "Promotion banner description",
+        max_length=200,
+        null=True,
+        blank=True,
+    )
+    promo_link_url = fields.URLField(
+        "Promotion banner link URL",
+        null=True,
+        blank=True,
+    )
+    promo_link_text = models.CharField(
+        "Promotion banner link text",
+        max_length=50,
+        null=True,
+        blank=True,
+    )
+    promo_image = models.ForeignKey(
+        to="wagtailimages.Image",
+        verbose_name="Promotion banner image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
     # Panels
     promote_panels = []
     content_panels = [
@@ -231,6 +270,17 @@ class HomePage(BasePage):
             heading="Priority pages",
             min_num=1,
             max_num=5,
+        ),
+        MultiFieldPanel(
+            (
+                FieldPanel("promo_enabled"),
+                FieldPanel("promo_ribbon_text"),
+                FieldPanel("promo_description"),
+                FieldPanel("promo_link_url"),
+                FieldPanel("promo_link_text"),
+                FieldPanel("promo_image"),
+            ),
+            heading="Promotion banner",
         ),
     ]
 

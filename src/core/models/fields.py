@@ -2,7 +2,7 @@ from django.db import models
 
 
 class URLField(models.URLField):
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         kwargs.setdefault("max_length", 2048)
         super().__init__(**kwargs)
 
