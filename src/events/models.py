@@ -6,6 +6,7 @@ from django.utils import timezone
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
 
 from content.models import BasePage, ContentPage
+from core.models import fields
 from events import types
 from events.utils import get_event_date, get_event_time
 
@@ -37,25 +38,25 @@ class EventPage(ContentPage):
     )
     start_time = models.TimeField()
     end_time = models.TimeField()
-    online_event_url = models.URLField(
+    online_event_url = fields.URLField(
         blank=True,
         null=True,
         verbose_name="Online event link",
         help_text="If the event is online, you can add a link here for others to join.",
     )
-    offline_event_url = models.URLField(
+    offline_event_url = fields.URLField(
         blank=True,
         null=True,
         verbose_name="In person registration link",
         help_text="If the event is in person, you can add a link here for registration.",
     )
-    submit_questions_url = models.URLField(
+    submit_questions_url = fields.URLField(
         blank=True,
         null=True,
         verbose_name="Submit questions link",
         help_text="Link to a page for others to submit their questions.",
     )
-    event_recording_url = models.URLField(
+    event_recording_url = fields.URLField(
         blank=True,
         null=True,
         verbose_name="View event recording link",
