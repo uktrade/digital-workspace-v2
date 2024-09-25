@@ -4,11 +4,10 @@ import core.models.fields
 from django.db import migrations, models
 import django.db.models.deletion
 
-
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("wagtailimages", "0026_delete_uploadedimage"),
+        ("wagtailimages", "0025_alter_image_file_alter_rendition_file"),
         ("home", "0012_alter_whatspopular_external_url"),
     ]
 
