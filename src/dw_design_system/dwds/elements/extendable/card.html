@@ -18,7 +18,8 @@
 
                 <div class="card-content">
                     {% block card_content %}
-                        <div class="card-body">
+                        {% comment %} stack should be converted into a card-specific stack {% endcomment %}
+                        <div class="card-body card-body-stack">
                             {% block card_content_body %}
                                 {% include "dwds/elements/ribbon.html" with text="Ribbon" %}
                                 <a href="#">

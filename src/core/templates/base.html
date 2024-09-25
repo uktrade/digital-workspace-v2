@@ -84,7 +84,11 @@
         <a href="#main-content"
            data-module="govuk-skip-link"
            class="govuk-skip-link">Skip to main content</a>
-        {% include "includes/header.html" %}
+        {% if FEATURE_FLAGS.new_homepage %}
+            {% include "includes/header_new.html" %}
+        {% else %}
+            {% include "includes/header.html" %}
+        {% endif %}
         {% block pre_main %}
             <div class="dwds-container">
             {% endblock pre_main %}

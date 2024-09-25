@@ -18,7 +18,7 @@
 {% endblock card_content_image %}
 
 {% block card_content %}
-    <div class="card-body">
+    <div class="card-body card-body-stack">
         {% block card_content_body %}
             {% if ribbon_text %}
                 {% include "dwds/elements/ribbon.html" with text=ribbon_text colour="blue" %}

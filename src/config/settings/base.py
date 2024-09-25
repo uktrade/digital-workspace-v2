@@ -219,6 +219,7 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "django_audit_log_middleware.AuditLogMiddleware",
     "waffle.middleware.WaffleMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -299,6 +300,10 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT_DIR, "assets"),
+    (
+        "dwds",
+        os.path.join(PROJECT_ROOT_DIR, "src", "dw_design_system", "dwds"),
+    ),
 ]
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT_DIR, "static")
@@ -727,3 +732,17 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 
 # Enable the caching of the generated search query DSLs
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
+
+# Content Security Policy header settings
+CSP_DEFAULT_SRC = ("'none'",)
+CSP_SCRIPT_SRC = ("'none'",)
+CSP_SCRIPT_SRC_ATTR = ("'none'",)
+CSP_SCRIPT_SRC_ELEM = ("'none'",)
+CSP_IMG_SRC = ("'none'",)
+CSP_MEDIA_SRC = ("'none'",)
+CSP_FRAME_SRC = ("'none'",)
+CSP_FONT_SRC = ("'none'",)
+CSP_CONNECT_SRC = ("'none'",)
+
+CSP_REPORT_ONLY = True
+CSP_REPORT_URI = env("CSP_REPORT_URI", default=None)
