@@ -1,17 +1,17 @@
 .dwds-card.dwds-promo-banner {
     .card-main {
-        // FIXME: how do we want to lay this out?
-        grid-template-columns: 1fr 1fr !important;
+        grid-template-columns: 2fr 1fr !important;
 
-        image{
+        image {
             border-radius: 0;
         }
     }
 
-    .dwds-navigational-link{
+    .dwds-navigational-link {
         justify-content: unset;
         gap: var(--s0);
-        svg{
+
+        svg {
             width: var(--s0);
         }
     }
