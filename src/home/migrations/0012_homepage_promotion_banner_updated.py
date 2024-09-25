@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("home", "0010_homepage_priority_pages_layout"),
+        ("home", "0011_alter_homepage_options"),
         ("wagtailimages", "0025_alter_image_file_alter_rendition_file"),
         ("wagtailimages", "0025_alter_image_file_alter_rendition_file"),
     ]
