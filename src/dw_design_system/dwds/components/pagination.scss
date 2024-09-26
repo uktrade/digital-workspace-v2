@@ -1,11 +1,11 @@
-.dwds-pagination{
+.dwds-pagination {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s0);
     margin: var(--s0);
 
-    a{
+    a {
         display: flex;
         gap: var(--s0);
 
@@ -14,31 +14,34 @@
             height: var(--font-lineheight-body);
             width: var(--s1);
             text-decoration: none;
-    
+
             path {
                 fill: currentColor;
             }
         }
     }
-    ul{
+
+    ul {
         display: flex;
         justify-content: space-between;
         list-style: none;
         padding: 0;
         margin: 0;
-        li{
+
+        li {
             display: flex;
             justify-content: space-between;
             padding: var(--s-1) var(--s1);
 
-            span{
+            span {
                 gap: var(--space);
             }
         }
 
-        li.active{
+        li.active {
             background-color: var(--color-link);
-            a{
+
+            a {
                 color: var(--color-text-highlight);
             }
         }
