@@ -49,6 +49,7 @@ def components(request: HttpRequest) -> HttpResponse:
     components = []
     for component in get_components():
         new_component = component.copy()
+        new_component["request"] = request
         new_component.update(
             context_json=json.dumps(
                 new_component["context"],
@@ -79,6 +80,8 @@ def get_component(request: HttpRequest) -> HttpResponse:
     context = component["context"]
     if new_context:
         context = new_context
+
+    context["request"] = request
 
     return HttpResponse(
         render_component(request, component["template"], context),
