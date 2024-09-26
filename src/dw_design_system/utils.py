@@ -1,6 +1,7 @@
 from datetime import datetime
 from json import JSONDecoder, scanner
 
+from django.core.paginator import Page, Paginator
 from django.utils import timezone
 from wagtail.images.models import Image
 
@@ -10,10 +11,13 @@ from news.models import NewsPage
 
 DATETIME_STR = "datetime"
 IMAGE_STR = "Image"
+PAGINATOR_STR = "Paginator"
+RANGE_STR = "Range"
 
 
 def get_components():
     thumbnail_file = Image.objects.first()
+    pages = Paginator(NewsPage.objects.all(), 2).page(1)
     return [
         {
             "name": "Card",
@@ -99,6 +103,21 @@ def get_components():
             },
         },
         {
+            "name": "Pagination",
+            "template": "dwds/components/pagination.html",
+            "context": {"pages": pages},
+        },
+        {
+            "name": "Link navigation",
+            "template": "dwds/components/link_navigate.html",
+            "context": {
+                "previous_url": "https://www.gov.uk",
+                "previous_text": "Previous",
+                "next_url": "https://www.gov.uk",
+                "next_text": "Next",
+            },
+        },
+        {
             "name": "Promo Banner",
             "template": "dwds/components/promo.html",
             "context": {
@@ -117,6 +136,13 @@ def to_json(val):
         return f"{DATETIME_STR} {val.isoformat()}"
     if isinstance(val, Image):
         return f"{IMAGE_STR} {val.pk}"
+    if isinstance(val, Page):
+        print("PAG Found")
+        return f"{PAGINATOR_STR}"
+    if isinstance(val, range):
+        return f"{RANGE_STR} {val.start} {val.stop}"
+
+    print(type(val))
     return val
 
 
@@ -128,6 +154,11 @@ def parse_str(val):
         return datetime.fromisoformat(val.split(" ")[1])
     if val.startswith(IMAGE_STR):
         return Image.objects.get(pk=int(val.split(" ")[1]))
+    if val.startswith(PAGINATOR_STR):
+        return Paginator(NewsPage.objects.all(), 2).page(1)
+    if val.startswith(RANGE_STR):
+        str_range = val.split(" ")
+        return range(int(str_range[1]), int(str_range[2]))
 
     return val
 
