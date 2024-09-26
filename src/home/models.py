@@ -40,8 +40,8 @@ HOME_PRIORITY_PAGE_TYPES = (
 @register_snippet
 class HomeNewsOrder(AdminSortable, ClusterableModel):
     """
-    This model has been deprecated and will be removed once the `new_homepage`
-    flag is removed.
+    This model has been deprecated and can be removed once we are happy with the
+    new Home Page approach.
     """
 
     order = models.IntegerField(null=True, blank=True)
