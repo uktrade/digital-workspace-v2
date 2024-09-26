@@ -6,6 +6,8 @@ class HomePageForm(WagtailAdminPageForm):
     def clean(self):
         cleaned_data = super().clean()
 
+        # Priority pages
+
         priority_page_layout = self.instance.PriorityPagesLayout(
             cleaned_data["priority_pages_layout"]
         )
@@ -26,5 +28,18 @@ class HomePageForm(WagtailAdminPageForm):
                 "Not enough priority pages selected"
                 f" ({priority_pages_count} out of {page_count_for_layout} required)"
             )
+
+        # Promotion banner
+
+        if cleaned_data["promo_enabled"]:
+            required_promo_fields = [
+                "promo_description",
+                "promo_link_url",
+                "promo_link_text",
+                "promo_image",
+            ]
+            for field in required_promo_fields:
+                if not cleaned_data[field]:
+                    self.add_error(field, "This field is required.")
 
         return cleaned_data
