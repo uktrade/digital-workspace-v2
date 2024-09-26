@@ -1,10 +1,13 @@
-{% extends "1_col_content.html" %}
+{% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
 
-{% block content %}
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
+
+{% block primary_content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">{{ page.title }}</h1>
             {% for block in page.body %}
                 {% include_block block %}
             {% endfor %}
@@ -22,6 +25,9 @@
             </div>
         {% endif %}
     </div>
+{% endblock primary_content %}
 
+{% block post_primary_content %}
     {% include "includes/child-links.html" with children=children num_cols=num_cols %}
-{% endblock %}
+    {{ block.super }}
+{% endblock post_primary_content %}

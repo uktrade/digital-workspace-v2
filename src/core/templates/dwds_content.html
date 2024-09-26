@@ -19,7 +19,7 @@
                     {% if page.description %}<p class="text-xlarge">{{ page.description }}</p>{% endif %}
                 {% endblock page_title %}
                 {% block bookmark %}
-                    {% if FEATURE_FLAGS.new_homepage and page %}
+                    {% if page %}
                         {% bookmark_page_input user page %}
                     {% endif %}
                 {% endblock bookmark %}

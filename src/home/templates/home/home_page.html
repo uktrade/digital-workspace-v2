@@ -1,84 +1,87 @@
-{% extends "base.html" %}
+{% extends "dwds_content.html" %}
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-{% load twitter_tags %}
+{% load site_alert %}
+{% load cards %}
 
-{% block main_content %}
-    {% include "home/includes/home_banner.html" %}
-    <article class="ws-home-wrapper">
-        <h1 class="ws-hide">Digital Workspace</h1>
-        <section aria-labelledby="home-news-items">
-            <h2 id="home-news-items" class="ws-hide">News items</h2>
-            <ul class="ws-home-grid-items">
-                <li class="quick-links-wrapper" aria-hidden="true">
-                    <nav aria-labelledby="quick-link-menu" class="quick-links">
-                        <h3 class="govuk-heading-m" id="quick-link-menu">Quick links</h3>
-                        <ul>
-                            {% for quick_link in quick_links %}
-                                <li>
-                                    <a class="govuk-link" href="{% pageurl quick_link.link_to %}">{{ quick_link.title }}</a>
-                                </li>
+{% block pre_main %}
+    {{ block.super }}
+{% endblock pre_main %}
+
+{% block bookmark %}
+{% endblock bookmark %}
+
+{% block body_classes %}
+    {{ block.super }} homepage new-home
+{% endblock body_classes %}
+
+{% block pre_content %}
+{% endblock pre_content %}
+
+{% block page_title %}
+{% endblock page_title %}
+
+{% block primary_content %}
+    <article>
+        <section>
+            <div class="stack">
+                <!-- User selected top priority page cards -->
+                {% if not is_empty %}
+                    {% for pages in pages_by_news_layout %}
+                        <div class="switcher">
+                            {% for page in pages %}
+                                {% page_to_card page as card %}
+
+                                {% if pages|length == 1 %}
+                                    {% include "dwds/components/one_up_card.html" with title=card.title thumbnail=card.thumbnail url=card.url created_date=card.created_date updated_date=card.updated_date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow ribbon_text=card.ribbon_text post_title_date=card.post_title_date post_title_time=card.post_title_time %}
+                                {% else %}
+                                    {% include card.template with title=card.title thumbnail=card.thumbnail url=card.url created_date=card.created_date updated_date=card.updated_date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow ribbon_text=card.ribbon_text post_title_date=card.post_title_date post_title_time=card.post_title_time %}
+                                {% endif %}
                             {% endfor %}
-                        </ul>
-                    </nav>
-                </li>
-                {% for news_item in news_items %}
-                    <li class="news-item news-item-{{ forloop.counter }}"
-                        data-testid="home-news-item">
-                        {% include "home/includes/news_item.html" with news_item=news_item %}
-                    </li>
-                {% endfor %}
-            </ul>
-            <a class="govuk-link" href="/news-and-views/">View all news</a>
-        </section>
-        <section>
-            {% comment %} used to be known as "What's popular?"" {% endcomment %}
-            <h2 class="govuk-heading-m">Popular on Digital Workspace</h2>
-            <ul class="ws-home-grid-items">
-                {% for whats_popular_item in whats_popular_items %}
-                    <li class="ws-whats-popular-item">
-                        {% image whats_popular_item.preview_image fill-900x585 %}
-                        <p>
-                            {% if whats_popular_item.link_to %}
-                                <a class="govuk-link" href="{% pageurl whats_popular_item.link_to %}">{{ whats_popular_item.title }}</a>
-                            {% else %}
-                                <a class="govuk-link" href="{{ whats_popular_item.external_url }}">{{ whats_popular_item.title }}</a>
-                            {% endif %}
-                        </p>
-                    </li>
-                {% endfor %}
-            </ul>
-        </section>
-
-        <section>
-            <h2 class="govuk-heading-m">How do I?</h2>
-            <ul class="how-do-i">
-                {% for how_do_i_item in how_do_i_items %}
-                    <li>
-                        <a class="govuk-link" href="{% pageurl how_do_i_item %}">{{ how_do_i_item }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-            <p class="ws-all-how-to">
-                <a class="govuk-link" href="/working-at-dbt/how-do-i/">View all "How do I?" guides</a>
-            </p>
-        </section>
-
-        {% if not hide_news %}
-            <section>
-                <h2 class="govuk-heading-m">DBT news from GOV.UK</h2>
-                <ul class="govuk-news">
-                    {% for govuk_news_item in govuk_feed %}
-                        <li>
-                            <p>
-                                <a class="govuk-link" href="{{ govuk_news_item.links.0.href }}">{{ govuk_news_item.title.value }}</a>
-                            </p>
-                            <p class="govuk-body-s">{{ govuk_news_item.updated }}</p>
-                        </li>
+                        </div>
                     {% endfor %}
-                </ul>
-            </section>
-        {% endif %}
+                {% endif %}
+
+                {% if page.promo_enabled %}
+                    {% include 'dwds/components/promo.html' with ribbon_text=page.promo_ribbon_text description=page.promo_description link_url=page.promo_link_url link_text=page.promo_link_text thumbnail=page.promo_image %}
+                {% endif %}
+
+                {% if news_items %}
+                    {% pages_to_cards news_items True as news_cards %}
+                    {% include "dwds/components/card_group.html" with card_group_title="Latest DBT news" cards=news_cards footer_link="/news-and-views/" footer_link_text="View all news" show_hr=True show_shadow=True %}
+                {% endif %}
+
+                {% if events %}
+                    {% pages_to_cards events True as event_cards %}
+                    {% if FEATURE_FLAGS.event_listing %}
+                        {% include "dwds/components/card_group.html" with card_group_title="Events" card_group_link="/events/" card_group_link_text="View all events" cards=event_cards grid=True blue_bg=True %}
+                    {% else %}
+                        {% include "dwds/components/card_group.html" with card_group_title="Events" cards=event_cards grid=True blue_bg=True %}
+                    {% endif %}
+                {% endif %}
+
+                {% if not hide_news %}
+                    {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
+                {% endif %}
+            </div>
+        </section>
     </article>
-{% endblock main_content %}
+{% endblock primary_content %}
+
+{% block secondary_content %}
+    <article>
+        <section class="stack">
+            {% if active_site_alert %}
+                {% include 'dwds/components/banner_card.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
+            {% endif %}
+            {% include 'interactions/bookmark_card.html' %}
+            {% if quick_links %}
+                {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
+            {% endif %}
+        </section>
+        {% comment %} <section>
+            {% include "dwds/components/link_list.html" with title="Popular pages" list=whats_popular_items %}
+        </section> {% endcomment %}
+    </article>
+{% endblock secondary_content %}
