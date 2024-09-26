@@ -10,7 +10,6 @@ from django.db import models
 from django.utils import timezone
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from waffle import flag_is_active
 from wagtail.admin.panels import (
     FieldPanel,
     InlinePanel,
@@ -26,12 +25,10 @@ from content.models import BasePage, ContentPage
 from core.models import fields
 from core.models.models import SiteAlertBanner
 from events.models import EventPage
-from home import FEATURE_HOMEPAGE
 from home.forms import HomePageForm
 from home.validators import validate_home_priority_pages
 from interactions import get_bookmarks
 from news.models import NewsPage
-from working_at_dit.models import HowDoI
 
 
 HOME_PRIORITY_PAGE_TYPES = (
@@ -43,8 +40,8 @@ HOME_PRIORITY_PAGE_TYPES = (
 @register_snippet
 class HomeNewsOrder(AdminSortable, ClusterableModel):
     """
-    This model has been deprecated and will be removed once the `new_homepage`
-    flag is removed.
+    This model has been deprecated and can be removed once we are happy with the
+    new Home Page approach.
     """
 
     order = models.IntegerField(null=True, blank=True)
@@ -285,55 +282,47 @@ class HomePage(BasePage):
     ]
 
     def get_template(self, request, *args, **kwargs):
-        if flag_is_active(request, FEATURE_HOMEPAGE):
-            return "home/home_page_new.html"
         return "home/home_page.html"
 
     def get_context(self, request, *args, **kwargs):
-        is_new_homepage = flag_is_active(request, FEATURE_HOMEPAGE)
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
         # News
         news_items = NewsPage.objects.live().public().annotate_with_comment_count()
 
-        if is_new_homepage:
-            priority_page_ribbon_text_mapping = {
-                pp["page_id"]: pp["ribbon_text"]
-                for pp in self.priority_pages.all().values("page_id", "ribbon_text")
-            }
-            priority_page_ids = list(priority_page_ribbon_text_mapping.keys())
+        priority_page_ribbon_text_mapping = {
+            pp["page_id"]: pp["ribbon_text"]
+            for pp in self.priority_pages.all().values("page_id", "ribbon_text")
+        }
+        priority_page_ids = list(priority_page_ribbon_text_mapping.keys())
 
-            # Load the priority pages, preserving the order.
-            priority_pages = [
-                p.specific
-                for p in ContentPage.objects.filter(id__in=priority_page_ids)
-                .annotate_with_comment_count()
-                .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
-                .order_by("priority_page__sort_order")
-            ]
+        # Load the priority pages, preserving the order.
+        priority_pages = [
+            p.specific
+            for p in ContentPage.objects.filter(id__in=priority_page_ids)
+            .annotate_with_comment_count()
+            .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
+            .order_by("priority_page__sort_order")
+        ]
 
-            news_items = news_items.exclude(id__in=priority_page_ids).order_by(
-                "-pinned_on_home",
-                "-first_published_at",
-            )
+        news_items = news_items.exclude(id__in=priority_page_ids).order_by(
+            "-pinned_on_home",
+            "-first_published_at",
+        )
 
-            context.update(
-                priority_pages=priority_pages,
-                events=EventPage.objects.live()
-                .public()
-                .filter(event_date__gte=timezone.now().date())
-                .exclude(id__in=priority_page_ids)
-                .order_by("event_date", "start_time")[:6],
-                pages_by_news_layout=self.pages_by_news_layout(priority_pages),
-            )
-        else:
-            news_items = news_items.order_by(
-                "-pinned_on_home",
-                "home_news_order_pages__order",
-                "-first_published_at",
-            )
+        events = (
+            EventPage.objects.live()
+            .public()
+            .filter(event_date__gte=timezone.now().date())
+            .exclude(id__in=priority_page_ids)
+            .order_by("event_date", "start_time")
+        )
 
         context.update(
+            priority_pages=priority_pages,
+            events=events[:6],
+            pages_by_news_layout=self.pages_by_news_layout(priority_pages),
+            is_empty=priority_pages == [],
             news_items=news_items[:5],
         )
 
@@ -353,75 +342,24 @@ class HomePage(BasePage):
                 3000,
             )
         govuk_feed = cache.get("homepage_govuk_news")
-        if is_new_homepage:
-            govuk_feed = [
-                {"url": obj.links[0].href, "text": obj.title.value}
-                for obj in govuk_feed
-            ]
-        context["govuk_feed"] = govuk_feed
+        context["govuk_feed"] = [
+            {"url": obj.links[0].href, "text": obj.title.value} for obj in govuk_feed
+        ]
         context["hide_news"] = settings.HIDE_NEWS
 
         # Quick links
         quick_links = QuickLink.objects.all().order_by("result_weighting", "title")
-        if is_new_homepage:
-            quick_links = [
-                {"url": obj.link_to.get_url(request), "text": obj.title}
-                for obj in quick_links
-            ]
-        context["quick_links"] = quick_links
-
-        # Popular on Digital Workspace
-        if not is_new_homepage:
-            whats_popular_items = WhatsPopular.objects.all()
-            context["whats_popular_items"] = whats_popular_items
-        # else:
-        #     whats_popular_items = WhatsPopular.objects.all()
-        #     whats_popular_items = [
-        #         {"url": obj.link_to.get_url(request), "text": obj.title}
-        #         for obj in whats_popular_items
-        #     ]
-        #     context["whats_popular_items"] = whats_popular_items
-
-        # How do I
-        if not is_new_homepage:
-            context["how_do_i_items"] = (
-                HowDoI.objects.filter(include_link_on_homepage=True)
-                .live()
-                .public()
-                .order_by(
-                    "title",
-                )[:10]
-            )
+        context["quick_links"] = [
+            {"url": obj.link_to.get_url(request), "text": obj.title}
+            for obj in quick_links
+        ]
 
         # Personalised page list
         context["bookmarks"] = get_bookmarks(request.user)
-        # context["recently_viewed"] = get_recent_page_views(
-        #     request.user, limit=10, exclude_pages=[self]
-        # )
 
         context["active_site_alert"] = SiteAlertBanner.objects.filter(
             activated=True
         ).first()
-
-        # # Updates
-        # updates = []
-        # if request.user.profile.profile_completion < 99:
-        #     updates.append(
-        #         format_html(
-        #             "Please complete <a href='{}'>your profile</a>, it's currently at {}%",
-        #             reverse("profile-view", args=[request.user.profile.slug]),
-        #             request.user.profile.profile_completion,
-        #         )
-        #     )
-        # for page in get_updated_pages(request.user):
-        #     updates.append(
-        #         format_html(
-        #             "<a href='{}'>{}</a> has been updated",
-        #             page.get_url(request),
-        #             page,
-        #         )
-        #     )
-        # context["updates"] = updates
 
         return context
 
