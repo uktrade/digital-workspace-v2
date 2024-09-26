@@ -23,6 +23,11 @@ from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
 from content import blocks as content_blocks
+from content.models.search import (
+    SearchExclusionPageLookUp,
+    SearchFieldsMixin,
+    SearchPinPageLookUp,
+)
 from content.utils import (
     manage_excluded,
     manage_pinned,
