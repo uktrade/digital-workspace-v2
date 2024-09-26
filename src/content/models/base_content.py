@@ -8,7 +8,6 @@ from django.db.models import Q, Subquery
 from django.forms import widgets
 from django.utils import timezone
 from django.utils.html import strip_tags
-from content.models.search import SearchExclusionPageLookUp, SearchFieldsMixin, SearchPinPageLookUp
 from simple_history.models import HistoricalRecords
 from waffle import flag_is_active
 from wagtail.admin.panels import (
@@ -25,6 +24,11 @@ from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
 from content import blocks as content_blocks
+from content.models.search import (
+    SearchExclusionPageLookUp,
+    SearchFieldsMixin,
+    SearchPinPageLookUp,
+)
 from content.utils import (
     manage_excluded,
     manage_pinned,
@@ -465,4 +469,3 @@ class ContentPage(SearchFieldsMixin, BasePage):
             manage_pinned(self, self.pinned_phrases)
 
         return super().save(*args, **kwargs)
-

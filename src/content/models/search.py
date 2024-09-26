@@ -3,16 +3,16 @@ import logging
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-
-from content.models.base_content import BasePage
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
 
 import dw_design_system.dwds.components as dwds_blocks
+from content.models.base_content import BasePage
 from content.utils import get_search_content_for_block
 from extended_search.index import DWIndexedField as IndexedField
 from search.utils import split_query
+
 
 logger = logging.getLogger(__name__)
 

@@ -2,6 +2,7 @@ import logging
 
 from content.models.base_content import BasePage, ContentPage
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,4 +29,3 @@ class BlogPost(ContentPage):
 
     def get_template(self, request, *args, **kwargs):
         return self.template
-    
