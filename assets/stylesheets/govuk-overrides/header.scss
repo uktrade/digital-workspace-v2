@@ -193,7 +193,7 @@
         &:link,
         &:hover,
         &:visited {
-            color: govuk-colour("white");
+            color: $govuk-link-visited-colour;
         }
 
         &:focus {
