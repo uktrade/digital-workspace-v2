@@ -1,9 +1,14 @@
+a.dwds-button,
 .dwds-button {
     box-sizing: border-box;
+    display: inline-block;
     color: var(--color-button-primary-text);
     font-weight: var(--font-weight-bold);
+    font-size: var(--text-medium);
+    font-family: var(--font-family-primary);
+    line-height: var(--font-lineheight-body);
     background-color: var(--color-button-primary);
-    padding: var(--padding-button);    
+    padding: var(--padding-button);
     text-decoration: none;
     border: none;
     border-bottom: solid var(--border-width) var(--color-button-bottom-border);
@@ -14,12 +19,14 @@
         background-color: var(--color-button-hover);
         border-bottom-color: var(--color-button-border-hover);
     }
+
     &:active {
         top: 2px;
         position: relative;
         background-color: var(--color-button-hover);
         border-bottom: solid var(--border-width);
     }
+
     &--warning {
         color: var(--color-button-warning-text);
         background-color: var(--color-button-warning);
@@ -33,6 +40,7 @@
             background-color: var(--color-button-warning-hover);
         }
     }
+
     &--transactional {
         color: var(--color-button-transactional-text);
         background-color: var(--color-button-transactional);
@@ -88,7 +96,7 @@
 
     &--inline {
         padding: var(--padding-button-inline);
-     }
+    }
 
     &:active:before {
         top: -4px;
@@ -98,9 +106,9 @@
         color: var(--color-button-text-focus);
         background-color: var(--color-button-background-focus);
         border-color: var(--color-button-border-focus);
-        
+
     }
-    
+
     &:focus-visible {
         color: var(--color-button-text-focus);
         background-color: var(--color-button-background-focus);

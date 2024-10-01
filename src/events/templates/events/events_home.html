@@ -1,20 +1,45 @@
 {% extends "dwds_content.html" %}
 {% load wagtailroutablepage_tags %}
 
-{% block main_content_classes %}
-    content_page
-{% endblock main_content_classes %}
-
 {% block bookmark %}
 {% endblock bookmark %}
 
-{% block primary_content %}
-    <a href="{% routablepageurl page 'month_events' previous_month.year previous_month.month %}">Previous month</a>
-    <a href="{% routablepageurl page 'month_events' next_month.year next_month.month %}">Next month</a>
+{% block page_title %}
+{% endblock page_title %}
 
-    <form method="GET">
-        {{ events_filters.form.as_p }}
-        <input type="submit" value="Apply" />
+{% block primary_content %}
+    {% routablepageurl page 'month_events' previous_month.year previous_month.month as previous_link %}
+    {% routablepageurl page 'month_events' next_month.year next_month.month as next_link %}
+    <form method="get" class="box stack">
+        <div class="switcher">
+            <div>
+                <h1>{{ page_title }}</h1>
+            </div>
+            <div>
+                <a href="{{ previous_link }}">Previous month</a>
+                <a href="{{ next_link }}">Next month</a>
+            </div>
+        </div>
+        <div class="stack">
+            <h2>Filter events by</h2>
+            <div class="switcher">
+                <div class="stack">
+                    <label for="id_location">Location</label>
+                    {{ events_filters.form.location }}
+                </div>
+                <div class="stack">
+                    <label for="id_event_type">Event type</label>
+                    {{ events_filters.form.event_type }}
+                </div>
+            </div>
+        </div>
+        <div>
+            <input class="dwds-button dwds-button--secondary dwds-button--inline"
+                   type="submit"
+                   value="Apply" />
+            <a class="dwds-button dwds-button--secondary-dark dwds-button--inline"
+               href="?">Reset</a>
+        </div>
     </form>
 
     {% if not upcoming_events and not past_events %}<p>There are no events to display.</p>{% endif %}
