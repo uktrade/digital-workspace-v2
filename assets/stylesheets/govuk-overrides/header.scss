@@ -10,8 +10,7 @@
 
         .govuk-header__link,
         .govuk-header__navigation-item,
-        .govuk-header__navigation-item--active--ws,
-        .ancestor {
+        .govuk-header__navigation-item--active--ws {
             text-decoration-color: $brand-color-primary;
 
             .govuk-header__link--ws {
@@ -145,8 +144,7 @@
 
     .govuk-header__link,
     .govuk-header__navigation-item,
-    .govuk-header__navigation-item--active--ws,
-    .ancestor {
+    .govuk-header__navigation-item--active--ws {
         padding-top: 17px;
         padding-right: max(15px, calc(15px + env(safe-area-inset-right)));
         padding-bottom: 17px;
@@ -186,23 +184,6 @@
     }
 }
 
-.govuk-header__navigation-item--active--ws,
-.ancestor {
-    a {
-
-        &:link,
-        &:hover,
-        &:visited {
-            color: $govuk-link-visited-colour;
-        }
-
-        &:focus {
-            color: govuk-colour("black");
-            background-color: $govuk-focus-colour;
-        }
-    }
-}
-
 .govuk-header__menu-button[aria-expanded=true]:hover {
     box-shadow: 0 0 govuk-colour("white"),
         0 4px $govuk-link-colour;
@@ -238,15 +219,13 @@
         }
 
         .govuk-header__navigation-item,
-        li.govuk-header__navigation-item--active--ws,
-        li.ancestor {
+        li.govuk-header__navigation-item--active--ws {
             padding: 0;
             border: none;
         }
 
         .govuk-header__link,
-        a.govuk-header__navigation-item--active--ws,
-        a.ancestor {
+        a.govuk-header__navigation-item--active--ws {
             display: inline-block;
             width: 100%;
             padding-top: 17px;
@@ -256,8 +235,7 @@
 
         .govuk-header__link:hover,
         .govuk-header__link:active,
-        a.govuk-header__navigation-item--active--ws,
-        a.ancestor {
+        a.govuk-header__navigation-item--active--ws {
             background-color: $govuk-link-colour;
             color: govuk-colour("white");
             text-decoration: none;
@@ -285,8 +263,7 @@
     .nav-and-profile-bar {
 
         .govuk-header__link,
-        a.govuk-header__navigation-item--active--ws,
-        a.ancestor {
+        a.govuk-header__navigation-item--active--ws {
             padding-right: max(30px, calc(30px + env(safe-area-inset-right)));
             padding-left: max(30px, calc(30px + env(safe-area-inset-left)));
         }
@@ -307,30 +284,26 @@
 
         .govuk-header__link,
         .govuk-header__navigation-item,
-        .govuk-header__navigation-item--active--ws,
-        .ancestor {
+        .govuk-header__navigation-item--active--ws {
             margin: 0;
 
         }
 
         .govuk-header__link:first-child,
         .govuk-header__navigation-item:first-child,
-        .govuk-header__navigation-item--active--ws:first-child,
-        .ancestor:first-child {
+        .govuk-header__navigation-item--active--ws:first-child {
             padding-left: 0;
 
         }
 
         .govuk-header__link,
-        a.govuk-header__navigation-item--active--ws,
-        a.ancestor {
+        a.govuk-header__navigation-item--active--ws {
             padding: 0;
         }
 
         .govuk-header__link,
         .govuk-header__navigation-item,
-        .govuk-header__navigation-item--active--ws,
-        .ancestor {
+        .govuk-header__navigation-item--active--ws {
             padding-right: 0;
             padding-left: 0;
 
