@@ -8,16 +8,36 @@
 @forward "styles/temporary-base"; // Remove this once we switch to the above base.scss
 
 // New
-@forward "new/stylesheet";
+@forward "utils";
 
 // Components
+@forward "components/box";
+@forward "components/comment_section";
+@forward "components/content_list";
+@forward "components/link_action";
+@forward "components/link_list";
+@forward "components/link_navigate";
+@forward "components/one_up";
 @forward "components/pagination";
+@forward "components/promo";
 
 // Elements
 @forward "elements/button";
+@forward "elements/content_header";
+@forward "elements/content_image";
+@forward "elements/content_item";
+@forward "elements/content_main";
 @forward "elements/icon";
 @forward "elements/navigational_link";
 @forward "elements/ribbon";
+
+// Layouts
+@forward "layouts/content_sidebar";
+@forward "layouts/content_grid";
+@forward "layouts/content_stack";
+@forward "layouts/content_switcher";
+@forward "layouts/content_item_card";
+@forward "layouts/content_custom_sidebar";
 
 // App specific stylesheets
 @forward "../../interactions/static/interactions/interactions.scss";

@@ -13,7 +13,7 @@ class CTACardBlock(blocks.StructBlock):
     url = blocks.URLBlock(required=False)
 
     class Meta:
-        template = "dwds/new/components/cta_card.html"
+        template = "dwds/components/cta_card.html"
         icon = "info-circle"
         label = "CTA Card"
 
@@ -67,7 +67,7 @@ class NavigationCardBlock(blocks.StructBlock):
     class Meta:
         label = "Navigation Card"
         icon = "link"
-        template = "dwds/new/components/cta_card.html"
+        template = "dwds/components/cta_card.html"
 
     def get_context(self, value, parent_context=None):
         context = parent_context or {}

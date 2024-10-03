@@ -2,7 +2,7 @@
 
 <div class="dwds-engagement content-item content-custom-sidebar-wrapper">
     <div class="content-custom-sidebar">
-        {% include "dwds/new/elements/content_image.html" with content_image=thumbnail %}
+        {% include "dwds/elements/content_image.html" with content_image=thumbnail %}
 
         <div class="content-main content">
             <div class="content-body content-stack">
@@ -35,7 +35,7 @@
                 {% endif %}
 
                 {% if comment_count > 0 %}
-                    {% include "dwds/new/components/comment_section.html" %}
+                    {% include "dwds/components/comment_section.html" %}
                 {% endif %}
             </div>
         </div>

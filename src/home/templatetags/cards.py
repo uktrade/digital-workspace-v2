@@ -66,7 +66,7 @@ class RenderableComponent:
 @register.simple_tag
 def page_to_engagement(page: NewsPage | EventPage) -> SafeString:
     return RenderableComponent(
-        "dwds/new/components/engagement.html",
+        "dwds/components/engagement.html",
         page_to_display_context(page),
     )
 
@@ -79,6 +79,6 @@ def pages_to_engagement(pages: list[NewsPage | EventPage]) -> list[RenderableCom
 @register.simple_tag
 def page_to_one_up(page: NewsPage | EventPage) -> SafeString:
     return RenderableComponent(
-        "dwds/new/components/one_up.html",
+        "dwds/components/one_up.html",
         page_to_display_context(page),
     )
