@@ -12,7 +12,9 @@
     gap: var(--s0);
 
     background-color: var(--content-main-bg-color);
+    color: var(--content-main-text-color);
 
+    h1,
     h2,
     h3 {
         color: var(--content-main-heading-color);
