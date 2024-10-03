@@ -2,6 +2,7 @@ from datetime import datetime
 from json import JSONDecoder, scanner
 
 from django.core.paginator import Page, Paginator
+from django.http import HttpRequest
 from django.utils import timezone
 from wagtail.images.models import Image
 
@@ -14,7 +15,7 @@ PAGINATOR_STR = "Paginator"
 RANGE_STR = "Range"
 
 
-def get_dwds_templates(template_type):
+def get_dwds_templates(template_type, request: HttpRequest):
     thumbnail_file = Image.objects.last()
     pages = Paginator(NewsPage.objects.all(), 2).page(1)
 
@@ -152,7 +153,7 @@ def get_dwds_templates(template_type):
             {
                 "name": "Pagination",
                 "template": "dwds/components/pagination.html",
-                "context": {"pages": pages},
+                "context": {"pages": pages, "request": request},
             },
         ],
         "layouts": [],
@@ -176,9 +177,6 @@ def to_json(val):
 
 
 def parse_str(val):
-    if " " not in val:
-        return val
-
     if val.startswith(DATETIME_STR):
         return datetime.fromisoformat(val.split(" ")[1])
     if val.startswith(IMAGE_STR):

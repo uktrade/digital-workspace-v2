@@ -12,8 +12,8 @@ urlpatterns = [
         lambda request: HttpResponseRedirect(reverse("dwds-components")),
     ),
     path(
-        "get/",
-        views.get_dwds_template("components"),
+        "get/<str:template_type>/",
+        views.get_dwds_template,
         name="dwds-template-get",
     ),
     path(
