@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from core.utils import format_time
-from datetime import datetime as dt
 
 
 if TYPE_CHECKING:

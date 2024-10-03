@@ -5,11 +5,14 @@ from django.db import migrations, models
 from datetime import datetime as dt
 import django.utils.timezone
 
+
 def copy_events(apps, schema_editor):
     EventPage = apps.get_model("events", "EventPage")
 
     for event_page in EventPage.objects.all():
-        event_page.event_start = dt.combine(event_page.event_date, event_page.start_time)
+        event_page.event_start = dt.combine(
+            event_page.event_date, event_page.start_time
+        )
         event_page.event_end = dt.combine(event_page.event_date, event_page.end_time)
         event_page.save()
 
@@ -20,7 +23,7 @@ def reverse_copy_events(apps, schema_editor):
     for event_page in EventPage.objects.all():
         event_page.event_date = event_page.event_start.date()
         event_page.start_time = event_page.event_start.time()
-        event_page.end_time = event_page.event_end.time() 
+        event_page.end_time = event_page.event_end.time()
         event_page.save()
 
 
@@ -76,10 +79,7 @@ class Migration(migrations.Migration):
                 null=True,
             ),
         ),
-        migrations.RunPython(
-            copy_events,
-            reverse_code=reverse_copy_events
-        ),
+        migrations.RunPython(copy_events, reverse_code=reverse_copy_events),
         migrations.RemoveField(
             model_name="eventpage",
             name="event_date",

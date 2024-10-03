@@ -1,4 +1,3 @@
-from datetime import datetime as dt
 from datetime import timedelta
 
 from django.db import models
@@ -8,7 +7,12 @@ from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
 from content.models import BasePage, ContentPage
 from core.models import fields
 from events import types
-from events.utils import get_event_start_date, get_event_end_date, get_event_start_time, get_event_end_time
+from events.utils import (
+    get_event_end_date,
+    get_event_end_time,
+    get_event_start_date,
+    get_event_start_time,
+)
 
 
 class EventsHome(BasePage):
@@ -145,7 +149,5 @@ class EventPage(ContentPage):
 
     @property
     def is_past_event(self) -> bool:
-        adjusted_datetime = timezone.make_aware(
-            self.event_end + timedelta(hours=1) # Check if/why we need +timedelta maybe
-        )
+        adjusted_datetime = timezone.make_aware(self.event_end + timedelta(hours=1))
         return timezone.now() > adjusted_datetime

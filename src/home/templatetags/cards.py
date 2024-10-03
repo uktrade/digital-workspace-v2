@@ -1,7 +1,12 @@
 from django import template
 
 from events.models import EventPage
-from events.utils import get_event_start_date, get_event_start_time
+from events.utils import (
+    get_event_end_date,
+    get_event_end_time,
+    get_event_start_date,
+    get_event_start_time,
+)
 from news.models import NewsPage
 
 
@@ -34,9 +39,21 @@ def page_to_card(page: NewsPage | EventPage, hide_shadow: bool = False):
         )
 
     if issubclass(type(page), EventPage):
+
+        if get_event_start_date(page) == get_event_end_date(page):
+            event_post_title_date = get_event_start_date(page)
+            event_post_title_time = get_event_start_time(page)
+        else:
+            event_post_title_date = (
+                f"{get_event_start_date(page)} {get_event_start_time(page)} -"
+            )
+            event_post_title_time = (
+                f"{get_event_end_date(page)} {get_event_end_time(page)}"
+            )
+
         card_dict.update(
-            post_title_date=get_event_start_date(page),
-            post_title_time=get_event_start_time(page),
+            post_title_date=event_post_title_date,
+            post_title_time=event_post_title_time,
         )
 
     return card_dict
