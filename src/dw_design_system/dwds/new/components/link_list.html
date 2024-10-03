@@ -1,0 +1,18 @@
+<div class="dwds-link-list content-item">
+    <div class="content-header content-stack">
+        <h3>{{ title }}</h3>
+    </div>
+
+    <div class="content-main">
+        <div class="content-body content-stack">
+            {% if description %}<p>{{ description }}</p>{% endif %}
+            <ul>
+                {% for item in list %}
+                    <li>
+                        <a href="{{ item.url }}">{{ item.text }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

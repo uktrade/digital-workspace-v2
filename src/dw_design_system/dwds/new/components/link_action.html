@@ -1,0 +1,10 @@
+<a class="dwds-link-action {% if left %}left{% endif %} {% if right %}right{% endif %}"
+   href="{{ link_url }}">
+    {% if left %}
+        {% include "dwds/icons/arrow-left.html" %}
+    {% endif %}
+    <div>{{ link_text }}</div>
+    {% if right %}
+        {% include "dwds/icons/arrow-right.html" %}
+    {% endif %}
+</a>

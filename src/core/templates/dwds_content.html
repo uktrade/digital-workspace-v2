@@ -11,7 +11,7 @@
     {% block main_content %}
         <div class="dwds {% block main_content_classes %}{% endblock main_content_classes %}"
              style="margin-bottom: var(--s2)">
-            <div class="stack">
+            <div class="content-stack large">
                 {% block pre_content %}
                 {% endblock pre_content %}
                 {% block page_title %}
@@ -24,10 +24,10 @@
                 {% endblock page_title %}
                 {% block bookmark %}
                     {% if page %}
-                        {% bookmark_page_input user page %}
+                        <div>{% bookmark_page_input user page %}</div>
                     {% endif %}
                 {% endblock bookmark %}
-                <div class="with-sidebar-right">
+                <div class="content-sidebar-right">
                     <div class="primary-content">
                         {% block pre_primary_content %}
                         {% endblock pre_primary_content %}
@@ -51,3 +51,9 @@
             </div>
         </div>
     {% endblock main_content %}
+
+
+    {% block scripts %}
+        {{ block.super }}
+        <script src='{% static "dwds/elements/ribbon.js" %}'></script>
+    {% endblock scripts %}

@@ -4,7 +4,7 @@
 {% block body_classes %}dwds-body dwds-navigation-page{% endblock %}
 
 {% block page_title %}
-    <div class="with-sidebar-right flex-end">
+    <div class="content-sidebar-right flex-end">
         <h1>{{ page.title }}</h1>
         <div>
             {% include "feedback.html" with form_id="hr-v1" classes="" prefix="navigation-page" custom_submit_data_function="navigationFeedbackData" %}
@@ -13,7 +13,7 @@
 {% endblock page_title %}
 
 {% block primary_content %}
-    <div class="grid grid-multiple-columns">
+    <div class="content-grid grid-cards">
         {% for block in page.primary_elements %}
             {% include_block block %}
         {% endfor %}
@@ -21,7 +21,7 @@
 {% endblock primary_content %}
 
 {% block secondary_content %}
-    <div class="stack">
+    <div class="content-stack">
         {% for block in page.secondary_elements %}
             {% include_block block %}
         {% endfor %}
