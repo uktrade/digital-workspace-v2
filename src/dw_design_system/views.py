@@ -110,27 +110,27 @@ def layouts(request: HttpRequest) -> HttpResponse:
     layouts = [
         {
             "name": "Content stack",
-            "template": "dwds/new/layouts/content_stack.html",
+            "template": "dwds/layouts/content_stack.html",
             "content_items": range(3),
         },
         {
             "name": "Content sidebar",
-            "template": "dwds/new/layouts/content_sidebar.html",
+            "template": "dwds/layouts/content_sidebar.html",
             "content_items": range(2),
         },
         {
             "name": "Content grid",
-            "template": "dwds/new/layouts/content_grid.html",
+            "template": "dwds/layouts/content_grid.html",
             "content_items": range(6),
         },
         {
             "name": "Content switcher",
-            "template": "dwds/new/layouts/content_switcher.html",
+            "template": "dwds/layouts/content_switcher.html",
             "content_items": range(3),
         },
         {
             "name": "Content custom sidebar",
-            "template": "dwds/new/layouts/content_custom_sidebar.html",
+            "template": "dwds/layouts/content_custom_sidebar.html",
         },
     ]
 

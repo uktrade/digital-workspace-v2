@@ -19,5 +19,13 @@
 @forward "elements/navigational_link";
 @forward "elements/ribbon";
 
+// Layouts
+@forward "layouts/content_sidebar";
+@forward "layouts/content_grid";
+@forward "layouts/content_stack";
+@forward "layouts/content_switcher";
+@forward "layouts/content_item_card";
+@forward "layouts/content_custom_sidebar";
+
 // App specific stylesheets
 @forward "../../interactions/static/interactions/interactions.scss";
