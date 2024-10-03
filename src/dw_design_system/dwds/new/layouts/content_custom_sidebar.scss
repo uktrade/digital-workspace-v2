@@ -33,6 +33,12 @@
         > .content-image {
             width: 30ch;
         }
+
+        > .content-main {
+            > .content-footer {
+                margin-top: unset;
+            }
+        }
     }
 
     .content-custom-sidebar.large {
