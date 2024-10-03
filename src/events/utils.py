@@ -8,11 +8,11 @@ if TYPE_CHECKING:
 
 
 def get_event_start_date(event: "EventPage") -> str:
-    return f"{event.event_start.strftime("%-d %B %Y")}"
+    return event.event_start.strftime("%-d %B %Y")
 
 
 def get_event_end_date(event: "EventPage") -> str:
-    return f"{event.event_end.strftime("%-d %B %Y")}"
+    return event.event_end.strftime("%-d %B %Y")
 
 
 def get_event_start_time(event: "EventPage") -> str:
