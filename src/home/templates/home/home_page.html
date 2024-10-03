@@ -47,22 +47,22 @@
 
                 {% if page.promo_enabled %}
                     <div class="dwds-content-item-card">
-                        {% include 'dwds/new/components/promo.html' with ribbon_text=page.promo_ribbon_text description=page.promo_description link_url=page.promo_link_url link_text=page.promo_link_text thumbnail=page.promo_image %}
+                        {% include 'dwds/components/promo.html' with ribbon_text=page.promo_ribbon_text description=page.promo_description link_url=page.promo_link_url link_text=page.promo_link_text thumbnail=page.promo_image %}
                     </div>
                 {% endif %}
 
                 {% if news_items %}
                     <div class="dwds-content-item-card no-shadow cams-custom-class">
-                        {% include "dwds/new/components/content_list.html" with title="Latest DBT news" content_items=news_items link_url="/news-and-views/" link_text="View all news" %}
+                        {% include "dwds/components/content_list.html" with title="Latest DBT news" content_items=news_items link_url="/news-and-views/" link_text="View all news" %}
                     </div>
                 {% endif %}
 
                 {% if events %}
                     <div class="dwds-content-item-card no-shadow">
                         {% if FEATURE_FLAGS.event_listing %}
-                            {% include "dwds/new/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events link_url="/events/" link_text="View all events" %}
+                            {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events link_url="/events/" link_text="View all events" %}
                         {% else %}
-                            {% include "dwds/new/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events %}
+                            {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events %}
                         {% endif %}
                     </div>
                 {% endif %}
@@ -70,7 +70,7 @@
                 {% if not hide_news %}
                     <div class="dwds-content-item-card">
                         <div class="content-item">
-                            {% include "dwds/new/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
+                            {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
                         </div>
                     </div>
                 {% endif %}
@@ -83,12 +83,12 @@
     <article>
         <section class="content-stack">
             {% if active_site_alert %}
-                {% include 'dwds/new/components/banner.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
+                {% include 'dwds/components/banner.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
             {% endif %}
             {% include 'interactions/bookmark_card.html' %}
             {% if quick_links %}
                 <div class="dwds-content-item-card">
-                    {% include "dwds/new/components/link_list.html" with title="Quick links" list=quick_links %}
+                    {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
                 </div>
             {% endif %}
         </section>

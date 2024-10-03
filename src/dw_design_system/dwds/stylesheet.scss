@@ -11,10 +11,22 @@
 @forward "new/stylesheet";
 
 // Components
+@forward "components/box";
+@forward "components/comment_section";
+@forward "components/content_list";
+@forward "components/link_action";
+@forward "components/link_list";
+@forward "components/link_navigate";
+@forward "components/one_up";
 @forward "components/pagination";
+@forward "components/promo";
 
 // Elements
 @forward "elements/button";
+@forward "elements/content_header";
+@forward "elements/content_image";
+@forward "elements/content_item";
+@forward "elements/content_main";
 @forward "elements/icon";
 @forward "elements/navigational_link";
 @forward "elements/ribbon";

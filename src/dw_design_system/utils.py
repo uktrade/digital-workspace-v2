@@ -23,24 +23,24 @@ def get_dwds_templates(template_type, request: HttpRequest):
         "content": [
             {
                 "name": "Content Header",
-                "template": "dwds/new/elements/content_header.html",
+                "template": "dwds/elements/content_header.html",
                 "context": {},
             },
             {
                 "name": "Content Image",
-                "template": "dwds/new/elements/content_image.html",
+                "template": "dwds/elements/content_image.html",
                 "context": {
                     "content_image": thumbnail_file,
                 },
             },
             {
                 "name": "Content Main",
-                "template": "dwds/new/elements/content_main.html",
+                "template": "dwds/elements/content_main.html",
                 "context": {},
             },
             {
                 "name": "Content Item",
-                "template": "dwds/new/elements/content_item.html",
+                "template": "dwds/elements/content_item.html",
                 "context": {},
             },
             {
@@ -52,7 +52,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
         "components": [
             {
                 "name": "Action Link",
-                "template": "dwds/new/components/link_action.html",
+                "template": "dwds/components/link_action.html",
                 "context": {
                     "link_text": "Action Link",
                     "link_url": "https://www.gov.uk",
@@ -62,7 +62,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
             },
             {
                 "name": "Link navigate",
-                "template": "dwds/new/components/link_navigate.html",
+                "template": "dwds/components/link_navigate.html",
                 "context": {
                     "previous_url": "https://www.gov.uk",
                     "previous_text": "Previous",
@@ -72,7 +72,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
             },
             {
                 "name": "Banner",
-                "template": "dwds/new/components/banner.html",
+                "template": "dwds/components/banner.html",
                 "context": {
                     "alert": False,
                     "link": "https://www.gov.uk",
@@ -85,7 +85,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
             },
             {
                 "name": "CTA",
-                "template": "dwds/new/components/cta.html",
+                "template": "dwds/components/cta.html",
                 "context": {
                     "highlight": True,
                     "url": "https://www.gov.uk",
@@ -95,7 +95,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
             },
             {
                 "name": "Link list",
-                "template": "dwds/new/components/link_list.html",
+                "template": "dwds/components/link_list.html",
                 "context": {
                     "title": "Link List",
                     "description": "A list of links",
@@ -110,7 +110,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
             },
             {
                 "name": "Engagement",
-                "template": "dwds/new/components/engagement.html",
+                "template": "dwds/components/engagement.html",
                 "context": {
                     "url": "https://www.gov.uk",
                     "title": "This is engaging content for GOV.UK with a really long title to show what a long title looks like",
@@ -125,7 +125,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
             },
             {
                 "name": "One Up",
-                "template": "dwds/new/components/one_up.html",
+                "template": "dwds/components/one_up.html",
                 "context": {
                     "url": "https://www.gov.uk",
                     "title": "One Up",
@@ -139,7 +139,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
             },
             {
                 "name": "Promo Banner",
-                "template": "dwds/new/components/promo.html",
+                "template": "dwds/components/promo.html",
                 "context": {
                     "ribbon_text": "One DBT",
                     "description": "We value your ideas to help make it simpler to work at DBT, make a difference and celebrate innovation.",

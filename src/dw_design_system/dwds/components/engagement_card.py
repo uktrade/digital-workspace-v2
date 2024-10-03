@@ -5,7 +5,7 @@ class EngagementCardBlock(blocks.StructBlock):
     page = blocks.PageChooserBlock(page_type="content.ContentPage")
 
     class Meta:
-        template = "dwds/new/components/engagement_card.html"
+        template = "dwds/components/engagement_card.html"
         icon = "doc-empty"
         label = "Engagement Card"
 
