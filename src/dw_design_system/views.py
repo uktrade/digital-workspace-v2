@@ -52,17 +52,19 @@ def styles(request: HttpRequest) -> HttpResponse:
 def dwds_templates(template_type):
     def templates(request: HttpRequest) -> HttpResponse:
         templates = []
-        for template in get_dwds_templates(template_type):
-            new_template = template.copy()
-            new_template["request"] = request
-            new_template.update(
-                context_json=json.dumps(
-                    new_template["context"],
-                    indent=4,
-                    default=to_json,
-                )
+        for template in get_dwds_templates(template_type, request):
+            new_template_context = template["context"].copy()
+
+            if "request" in new_template_context:
+                del new_template_context["request"]
+
+            context_json = json.dumps(
+                new_template_context,
+                indent=4,
+                default=to_json,
             )
-            templates.append(new_template)
+            template.update(context_json=context_json)
+            templates.append(template)
 
         return render(
             request,
@@ -76,34 +78,32 @@ def dwds_templates(template_type):
     return templates
 
 
-def get_dwds_template(template_type):
-    def get_template(request: HttpRequest) -> HttpResponse:
-        template_str = request.POST.get("template")
-        new_context_str = request.POST.get("context")
-        new_context = json.loads(new_context_str, cls=CustomJSONDecoder)
-        template = next(
-            (
-                t
-                for t in get_dwds_templates(template_type)
-                if t["template"] == template_str
-            ),
-            None,
-        )
+def get_dwds_template(request: HttpRequest, template_type) -> HttpResponse:
+    template_str = request.POST.get("template")
+    new_context_str = request.POST.get("context")
+    new_context = json.loads(new_context_str, cls=CustomJSONDecoder)
+    template = next(
+        (
+            t
+            for t in get_dwds_templates(template_type, request)
+            if t["template"] == template_str
+        ),
+        None,
+    )
 
-        if not template:
-            return HttpResponse(status=404)
+    if not template:
+        return HttpResponse(status=404)
 
-        context = template["context"]
-        if new_context:
-            context = new_context
+    context = template["context"]
+    if new_context:
+        context = new_context
 
-        context["request"] = request
+    context["request"] = request
+    context["template_type"] = template_type
 
-        return HttpResponse(
-            render_component(request, template["template"], context),
-        )
-
-    return get_template
+    return HttpResponse(
+        render_component(request, template["template"], context),
+    )
 
 
 def layouts(request: HttpRequest) -> HttpResponse:
