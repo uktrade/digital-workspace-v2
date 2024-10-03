@@ -27,15 +27,16 @@ body {
     font-weight: var(--font-weight-normal);
     color: var(--color-text);
 
-    div,
-    header,
-    nav,
-    main,
-    img,
-    footer,
-    hr,
     article,
-    figure {
+    div,
+    figure,
+    footer,
+    form,
+    header,
+    hr,
+    img,
+    main,
+    nav {
         max-inline-size: none;
     }
 
