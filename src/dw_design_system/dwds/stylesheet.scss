@@ -8,7 +8,7 @@
 @forward "styles/temporary-base"; // Remove this once we switch to the above base.scss
 
 // New
-@forward "new/stylesheet";
+@forward "utils";
 
 // Components
 @forward "components/box";

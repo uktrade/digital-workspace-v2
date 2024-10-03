@@ -148,8 +148,6 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "background_image": thumbnail_file,
                 },
             },
-        ],
-        "components_old": [
             {
                 "name": "Pagination",
                 "template": "dwds/components/pagination.html",
