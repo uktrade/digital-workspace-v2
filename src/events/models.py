@@ -8,7 +8,7 @@ from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
 from content.models import BasePage, ContentPage
 from core.models import fields
 from events import types
-from events.utils import get_event_date, get_event_time
+from events.utils import get_event_start_date, get_event_end_date, get_event_start_time, get_event_end_time
 
 
 class EventsHome(BasePage):
@@ -33,11 +33,12 @@ class EventPage(ContentPage):
     parent_page_types = ["events.EventsHome"]
     template = "events/event_page.html"
 
-    event_date = models.DateField(
-        help_text="Date and time should be entered based on the time in London/England.",
+    event_start = models.DateTimeField(
+        help_text="Start date/time of the event.",
     )
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    event_end = models.DateTimeField(
+        help_text="End date/time of the event.",
+    )
     online_event_url = fields.URLField(
         blank=True,
         null=True,
@@ -90,11 +91,10 @@ class EventPage(ContentPage):
     content_panels = ContentPage.content_panels + [
         MultiFieldPanel(
             [
-                FieldPanel("event_date"),
                 FieldRowPanel(
                     [
-                        FieldPanel("start_time"),
-                        FieldPanel("end_time"),
+                        FieldPanel("event_start"),
+                        FieldPanel("event_end"),
                     ]
                 ),
             ],
@@ -135,8 +135,10 @@ class EventPage(ContentPage):
             is_online=self.event_type == types.EventType.ONLINE,
             is_in_person=self.event_type == types.EventType.IN_PERSON,
             is_hybrid=self.event_type == types.EventType.HYBRID,
-            event_date=get_event_date(self),
-            event_time=get_event_time(self),
+            event_start_date=get_event_start_date(self),
+            event_start_time=get_event_start_time(self),
+            event_end_date=get_event_end_date(self),
+            event_end_time=get_event_end_time(self),
         )
 
         return context
@@ -144,6 +146,6 @@ class EventPage(ContentPage):
     @property
     def is_past_event(self) -> bool:
         adjusted_datetime = timezone.make_aware(
-            dt.combine(self.event_date, self.end_time) + timedelta(hours=1)
+            self.event_end + timedelta(hours=1) # Check if/why we need +timedelta maybe
         )
         return timezone.now() > adjusted_datetime
