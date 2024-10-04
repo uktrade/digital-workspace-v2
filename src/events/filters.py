@@ -17,7 +17,9 @@ class EventsFilters(django_filters.FilterSet):
     event_type = django_filters.ChoiceFilter(
         method="event_format_filter",
         choices=EVENT_TYPE_CHOICES,
-        widget=forms.widgets.RadioSelect,
+        widget=forms.widgets.RadioSelect(
+            attrs={"class": "dwds-radios content-switcher"}
+        ),
         empty_label=None,
     )
 
@@ -28,6 +30,7 @@ class EventsFilters(django_filters.FilterSet):
         ],
         lookup_expr="exact",
         widget=forms.widgets.Select,
+        empty_label="All locations",
     )
 
     def event_format_filter(self, queryset, name, value):

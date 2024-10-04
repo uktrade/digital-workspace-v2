@@ -1,0 +1,31 @@
+.dwds-radios {
+    --radio-radius: 44px;
+
+    label {
+        display: flex;
+        align-items: center;
+
+        :before {
+            content: "";
+            box-sizing: border-box;
+            display: inline-block;
+            width: var(--radio-radius);
+            height: var(--radio-radius);
+            border: 6px solid black;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0)
+        }
+    }
+
+    input[type="radio"] {
+        margin: 0;
+        height: var(--radio-radius);
+        width: var(--radio-radius);
+    }
+}
+
+.dwds-radios.content-switcher {
+    > div {
+        max-width: fit-content;
+    }
+}

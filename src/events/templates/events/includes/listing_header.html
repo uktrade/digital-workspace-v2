@@ -2,24 +2,26 @@
     <div class="content-item">
         <div class="content-main highlight">
             <div class="content-body content-stack large">
-                <form method="get" class="stack">
-                    <div class="switcher">
+                <form method="get" class="content-stack">
+                    <div class="content-switcher">
                         <h1 style="margin:0;">{{ page_title }}</h1>
-                        <div>
+                        <div style="display: flex;
+                                    justify-content: flex-end;
+                                    max-width: fit-content">
                             {% include "dwds/components/link_navigate.html" with previous_url=previous_link previous_text="Previous month" next_url=next_link next_text="Next month" %}
                         </div>
                     </div>
                     <hr>
-                    <div class="stack">
+                    <div class="content-stack">
                         <h2>Filter events by</h2>
-                        <div class="switcher">
-                            <div class="stack">
+                        <div class="content-switcher">
+                            <div class="content-stack">
                                 <label for="id_location">Location</label>
                                 {{ events_filters.form.location }}
                             </div>
-                            <div class="stack">
+                            <div class="content-stack">
                                 <label for="id_event_type">Event type</label>
-                                {{ events_filters.form.event_type }}
+                                <div class="dwds-radio-group">{{ events_filters.form.event_type }}</div>
                             </div>
                         </div>
                     </div>
