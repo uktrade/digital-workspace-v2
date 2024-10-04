@@ -5,10 +5,17 @@
     gap: var(--s0);
 
     .dwds-link-action {
+
         > div {
             margin-left: 0;
             margin-right: 0;
         }
+    }
+
+    > span {
+        width: 2px;
+        height: var(--font-lineheight-body);
+        background: var(--color-border);
     }
 
     a {
