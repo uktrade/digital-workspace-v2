@@ -10,114 +10,117 @@
 {% endblock page_title %}
 
 {% block primary_content %}
-    <h1>Styles</h1>
 
-    <h2>Spacing</h2>
+    <div class="content-stack">
+        <h1>Styles</h1>
 
-    <div style="display: grid; grid-template-columns: 1fr 3fr">
-        {% for s in spaces %}
-            <span>{{ s }}</span>
-            <div style="width: 100%;
-                        border: 1px solid black;
-                        height: var({{ s }});
-                        margin: 5px 0px"></div>
+        <h2>Spacing</h2>
+
+        <div style="display: grid; grid-template-columns: 1fr 3fr">
+            {% for s in spaces %}
+                <span>{{ s }}</span>
+                <div style="width: 100%;
+                            border: 1px solid black;
+                            height: var({{ s }});
+                            margin: 5px 0px"></div>
+            {% endfor %}
+        </div>
+
+        <h2>Typography</h2>
+
+        {% for ts in text_sizes %}
+            <span style="font-size: var({{ ts }});">{{ ts }}</span>
+            <br>
         {% endfor %}
-    </div>
 
-    <h2>Typography</h2>
+        <h1>Heading 1</h1>
+        <h2>Heading 2</h2>
+        <h3>Heading 3</h3>
+        <h4>Heading 4</h4>
+        <h5>Heading 5</h5>
+        <h6>Heading 6</h6>
 
-    {% for ts in text_sizes %}
-        <span style="font-size: var({{ ts }});">{{ ts }}</span>
-        <br>
-    {% endfor %}
-
-    <h1>Heading 1</h1>
-    <h2>Heading 2</h2>
-    <h3>Heading 3</h3>
-    <h4>Heading 4</h4>
-    <h5>Heading 5</h5>
-    <h6>Heading 6</h6>
-
-    <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce condimentum feugiat odio, eu interdum odio commodo a. Ut sollicitudin, nisi non tempor bibendum, justo eros tincidunt urna, at rhoncus dui ante sed urna. Aenean sed nisi vitae dui sagittis iaculis vitae quis nulla. Vivamus malesuada, massa id semper mollis, dolor tellus vehicula mi, ut posuere lacus justo vel velit. Nulla at consectetur ipsum. Nam dui massa, dignissim non vulputate nec, rutrum mollis magna. Duis nec facilisis massa.
-    </p>
-    <p>
-        <b>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce condimentum feugiat odio, eu interdum odio commodo a. Ut sollicitudin, nisi non tempor bibendum, justo eros tincidunt urna, at rhoncus dui ante sed urna. Aenean sed nisi vitae dui sagittis iaculis vitae quis nulla. Vivamus malesuada, massa id semper mollis, dolor tellus vehicula mi, ut posuere lacus justo vel velit. Nulla at consectetur ipsum. Nam dui massa, dignissim non vulputate nec, rutrum mollis magna. Duis nec facilisis massa.
+        </p>
+        <p>
+            <b>
+                Lorem ipsum dolor sit amet
+            </b>
+        </p>
+        <p>
+            <i>
+                Lorem ipsum dolor sit amet
+            </i>
+        </p>
+        <p>
+            <q>
+                Lorem ipsum dolor sit amet
+            </q>
+        </p>
+        <blockquote>
             Lorem ipsum dolor sit amet
-        </b>
-    </p>
-    <p>
-        <i>
-            Lorem ipsum dolor sit amet
-        </i>
-    </p>
-    <p>
-        <q>
-            Lorem ipsum dolor sit amet
-        </q>
-    </p>
-    <blockquote>
-        Lorem ipsum dolor sit amet
-    </blockquote>
+        </blockquote>
 
-    <a href="#">Lorem ipsum dolor sit amet</a>
+        <a href="#">Lorem ipsum dolor sit amet</a>
 
-    <ul>
-        <li>Item 1</li>
-        <li>Item 2</li>
-        <li>Item 3</li>
-    </ul>
+        <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </ul>
 
-    <ol>
-        <li>Item 1</li>
-        <li>Item 2</li>
-        <li>Item 3</li>
-    </ol>
+        <ol>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </ol>
 
-    <hr>
+        <hr>
 
-    <h2>Colors</h2>
+        <h2>Colors</h2>
 
-    {% for colour in colours %}
-        <span>{{ colour }}</span>
-        <div style="width: 100%;
-                    height: 50px;
-                    margin: 5px 0px;
-                    background-color: var({{ colour }})"></div>
-    {% endfor %}
+        {% for colour in colours %}
+            <span>{{ colour }}</span>
+            <div style="width: 100%;
+                        height: 50px;
+                        margin: 5px 0px;
+                        background-color: var({{ colour }})"></div>
+        {% endfor %}
 
-    <h2>Buttons</h2>
+        <h2>Buttons</h2>
 
-    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-        <button class="dwds-button">Primary button</button>
-        <button class="dwds-button dwds-button--secondary">Secondary button</button>
-        <button class="dwds-button dwds-button--secondary-dark">Secondary-dark button</button>
-        <button class="dwds-button dwds-button--warning">Warning button</button>
-        <button class="dwds-button dwds-button--transactional">Transactional button</button>
-    </div>
-    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-        <button class="dwds-button dwds-button--inline">PB (inline)</button>
-        <button class="dwds-button dwds-button--secondary dwds-button--inline">SB (inline)</button>
-        <button class="dwds-button dwds-button--secondary-dark dwds-button--inline">SDB (inline)</button>
-        <button class="dwds-button dwds-button--warning dwds-button--inline">WB (inline)</button>
-        <button class="dwds-button dwds-button--transactional dwds-button--inline">TB (inline)</button>
-    </div>
+        <div class="dwds-button-group">
+            <button class="dwds-button">Primary button</button>
+            <button class="dwds-button dwds-button--secondary">Secondary button</button>
+            <button class="dwds-button dwds-button--secondary-dark">Secondary-dark button</button>
+            <button class="dwds-button dwds-button--warning">Warning button</button>
+            <button class="dwds-button dwds-button--transactional">Transactional button</button>
+        </div>
+        <div class="dwds-button-group">
+            <button class="dwds-button dwds-button--inline">PB (inline)</button>
+            <button class="dwds-button dwds-button--secondary dwds-button--inline">SB (inline)</button>
+            <button class="dwds-button dwds-button--secondary-dark dwds-button--inline">SDB (inline)</button>
+            <button class="dwds-button dwds-button--warning dwds-button--inline">WB (inline)</button>
+            <button class="dwds-button dwds-button--transactional dwds-button--inline">TB (inline)</button>
+        </div>
 
-    <h2>Links as buttons</h2>
+        <h2>Links as buttons</h2>
 
-    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-        <a class="dwds-button">Primary button</a>
-        <a class="dwds-button dwds-button--secondary">Secondary button</a>
-        <a class="dwds-button dwds-button--secondary-dark">Secondary-dark button</a>
-        <a class="dwds-button dwds-button--warning">Warning button</a>
-        <a class="dwds-button dwds-button--transactional">Transactional button</a>
-    </div>
-    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-        <a class="dwds-button dwds-button--inline">PB (inline)</a>
-        <a class="dwds-button dwds-button--secondary dwds-button--inline">SB (inline)</a>
-        <a class="dwds-button dwds-button--secondary-dark dwds-button--inline">SDB (inline)</a>
-        <a class="dwds-button dwds-button--warning dwds-button--inline">WB (inline)</a>
-        <a class="dwds-button dwds-button--transactional dwds-button--inline">TB (inline)</a>
+        <div class="dwds-button-group">
+            <a class="dwds-button">Primary button</a>
+            <a class="dwds-button dwds-button--secondary">Secondary button</a>
+            <a class="dwds-button dwds-button--secondary-dark">Secondary-dark button</a>
+            <a class="dwds-button dwds-button--warning">Warning button</a>
+            <a class="dwds-button dwds-button--transactional">Transactional button</a>
+        </div>
+        <div class="dwds-button-group">
+            <a class="dwds-button dwds-button--inline">PB (inline)</a>
+            <a class="dwds-button dwds-button--secondary dwds-button--inline">SB (inline)</a>
+            <a class="dwds-button dwds-button--secondary-dark dwds-button--inline">SDB (inline)</a>
+            <a class="dwds-button dwds-button--warning dwds-button--inline">WB (inline)</a>
+            <a class="dwds-button dwds-button--transactional dwds-button--inline">TB (inline)</a>
+        </div>
     </div>
 
 {% endblock primary_content %}
