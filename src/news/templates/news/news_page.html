@@ -16,8 +16,8 @@
 {% endblock primary_content %}
 
 {% block post_primary_content %}
-    <div class="news_comments">
-        {% if self.allow_comments %}
+    {% if self.allow_comments %}
+        <div class="news_comments">
             {% if page.comment_count > 0 %}
                 <div class="news-article-comments">
                     <h2 class="govuk-heading-m">
@@ -106,8 +106,8 @@
                     return false;
                 }
             </script>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
     {{ block.super }}
 {% endblock post_primary_content %}
 
