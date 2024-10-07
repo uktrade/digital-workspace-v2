@@ -11,7 +11,8 @@ select {
     padding: 5px;
     border: 2px solid #0b0c0c;
     color: #0b0c0c;
-    background-color: #fff
+    background-color: #fff;
+    border-radius: var(--border-radius);
 }
 
 @media print {
