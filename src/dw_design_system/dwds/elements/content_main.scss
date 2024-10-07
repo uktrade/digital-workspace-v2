@@ -31,6 +31,11 @@
         text-decoration-color: var(--content-main-link-color);
     }
 
+    a:focus {
+        color: var(--color-text);
+        text-decoration-color: var(--color-text);
+    }
+
     .content-body.content-body-space-padding {
         padding: var(--space);
     }
