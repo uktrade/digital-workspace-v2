@@ -125,3 +125,11 @@ a.dwds-button:focus,
 a.dwds-button:focus-visible {
     text-decoration: none;
 }
+
+.dwds-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--s0);
+}
