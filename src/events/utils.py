@@ -7,17 +7,17 @@ if TYPE_CHECKING:
     from events.models import EventPage
 
 
-def get_event_start_date(event: "EventPage") -> str:
-    return event.event_start.strftime("%-d %B %Y")
+def get_event_datetime_display_string(event: "EventPage") -> str:
+    event_start_date = event.event_start.strftime("%-d %B %Y")
+    event_end_date = event.event_end.strftime("%-d %B %Y")
+    event_start_time = format_time(event.event_start.time())
+    event_end_time = format_time(event.event_end.time())
 
+    if event_start_date == event_end_date:
+        event_post_title = (
+            f"{event_start_date} <br>{event_start_time} - {event_end_time}"
+        )
+    else:
+        event_post_title = f"{event_start_date} {event_start_time} - <br>{event_end_date} {event_end_time}"
 
-def get_event_end_date(event: "EventPage") -> str:
-    return event.event_end.strftime("%-d %B %Y")
-
-
-def get_event_start_time(event: "EventPage") -> str:
-    return format_time(event.event_start.time())
-
-
-def get_event_end_time(event: "EventPage") -> str:
-    return format_time(event.event_end.time())
+    return event_post_title

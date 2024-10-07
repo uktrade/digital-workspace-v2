@@ -16,13 +16,7 @@
         <div class="dwds-card-wrapper">
             <div class="dwds-card dwds-information-panel">
                 <div>
-                    {% if event_start_date == event_end_date %}
-                        <h3>{{ event_start_date }}</h3>
-                        <h3>{{ event_start_time }} - {{ event_end_time }}</h3>
-                    {% else %}
-                        <h3>{{ event_start_date }} {{ event_start_time }} -</h3>
-                        <h3>{{ event_end_date }} {{ event_end_time }}</h3>
-                    {% endif %}
+                    <h3>{{ event_title|safe }}</h3>
                 </div>
                 {% if is_in_person or is_hybrid %}
                     <div>

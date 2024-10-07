@@ -7,12 +7,7 @@ from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
 from content.models import BasePage, ContentPage
 from core.models import fields
 from events import types
-from events.utils import (
-    get_event_end_date,
-    get_event_end_time,
-    get_event_start_date,
-    get_event_start_time,
-)
+from events.utils import get_event_datetime_display_string
 
 
 class EventsHome(BasePage):
@@ -139,10 +134,7 @@ class EventPage(ContentPage):
             is_online=self.event_type == types.EventType.ONLINE,
             is_in_person=self.event_type == types.EventType.IN_PERSON,
             is_hybrid=self.event_type == types.EventType.HYBRID,
-            event_start_date=get_event_start_date(self),
-            event_start_time=get_event_start_time(self),
-            event_end_date=get_event_end_date(self),
-            event_end_time=get_event_end_time(self),
+            event_title=get_event_datetime_display_string(self),
         )
 
         return context
