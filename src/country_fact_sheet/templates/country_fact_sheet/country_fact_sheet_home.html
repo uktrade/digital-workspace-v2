@@ -1,8 +1,12 @@
-{% extends "1_col_content.html" %}
+{% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
+
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
+
+{% block primary_content %}
     {% include "includes/attribution.html" with page=page %}
     {% for block in page.body %}
         {% include_block block %}
@@ -29,4 +33,4 @@
             <p>There are no factsheets in this collection.</p>
         {% endfor %}
     {% endif %}
-{% endblock %}
+{% endblock primary_content %}
