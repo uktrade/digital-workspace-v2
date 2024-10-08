@@ -12,10 +12,9 @@
                 <h3>
                     <a class="no-underline" href="{{ url }}">{{ title }}</a>
                 </h3>
-                {% if post_title_date and post_title_time %}
+                {% if post_title %}
                     <div class="post-title-container">
-                        <h4 class="post-title">{{ post_title_date }}</h4>
-                        <h4 class="post-title">{{ post_title_time }}</h4>
+                        <h4 class="post-title">{{ post_title }}</h4>
                     </div>
                 {% endif %}
                 {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
