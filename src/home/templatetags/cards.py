@@ -3,7 +3,9 @@ from django.template.loader import render_to_string
 from django.utils.safestring import SafeString
 
 from events.models import EventPage
-from events.utils import get_event_date, get_event_time
+from events.utils import (
+    get_event_datetime_display_string,
+)
 from news.models import NewsPage
 
 
@@ -30,10 +32,7 @@ def page_to_display_context(page: NewsPage | EventPage):
         )
 
     if issubclass(type(page), EventPage):
-        context.update(
-            post_title_date=get_event_date(page),
-            post_title_time=get_event_time(page),
-        )
+        context.update(post_title=get_event_datetime_display_string(page))
 
     return context
 
