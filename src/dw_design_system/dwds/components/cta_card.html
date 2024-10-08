@@ -1,17 +1,1 @@
-{% extends "dwds/elements/extendable/card.html" %}
-
-{% block card_container_classes %}dwds-cta-card card-without-shadow dwds-card-blue{% endblock %}
-
-{% block card_header %}
-{% endblock card_header %}
-
-{% block card_content_image %}
-{% endblock card_content_image %}
-
-{% block card_content_body %}
-    {% include 'dwds/elements/navigational_link.html' with url=url text=title %}
-    {% if description %}<p>{{ description }}</p>{% endif %}
-{% endblock card_content_body %}
-
-{% block card_footer %}
-{% endblock card_footer %}
+<div class="content-item">{% include "dwds/components/cta.html" %}</div>

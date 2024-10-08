@@ -1,0 +1,17 @@
+.dwds-one-up {
+    --one-up-min-inline-size: 30ch;
+
+
+    > .content-custom-sidebar {
+        > .content-main {
+            min-inline-size: var(--one-up-min-inline-size);
+        }
+    }
+
+    .content-image {
+        background-color: white;
+
+        object-position: center;
+        height: 100%;
+    }
+}

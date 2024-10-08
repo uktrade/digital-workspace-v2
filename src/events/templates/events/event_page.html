@@ -6,76 +6,84 @@
 {% endblock main_content_classes %}
 
 {% block primary_content %}
-    <div class="with-sidebar-right">
-        <div class="stack streamfield-content-stack">
-            {% image page.preview_image fill-465x265 width=None height=None style="border-radius: var(--border-radius);" %}
-            {% for block in page.body %}
-                {% include_block block %}
-            {% endfor %}
+    <div class="content-sidebar-right">
+        <div>
+            <div class="content-stack streamfield-content-stack">
+                {% image page.preview_image fill-465x265 width=None height=None style="border-radius: var(--border-radius);" %}
+                {% for block in page.body %}
+                    {% include_block block %}
+                {% endfor %}
+            </div>
         </div>
-        <div class="dwds-card-wrapper">
-            <div class="dwds-card dwds-information-panel">
-                <div>
-                    <h3>{{ event_date }}</h3>
-                    <h3>{{ event_time }}</h3>
-                </div>
-                {% if is_in_person or is_hybrid %}
-                    <div>
-                        <p>Location</p>
-                        <h4>{{ page.location|default_if_none:"To be confirmed" }}</h4>
-                    </div>
-                    {% if page.location and page.room %}
-                        <div>
-                            <p>Room</p>
-                            <h4>
-                                {{ page.room }}
-                                {% if page.room_capacity %}with {{ page.room_capacity }} seats{% endif %}
-                            </h4>
+        <div>
+            <div class="dwds-content-item-card no-shadow">
+                <div class="content-item">
+                    <div class="content-main info">
+                        <div class="content-body content-stack">
+                            <dl>
+                                <dt class="dwds-sr-only">When</dt>
+                                <dd class="text-xlarge">
+                                    {{ event_date }}
+                                    <br>
+                                    {{ event_time }}
+                                </dd>
+                                {% if is_in_person or is_hybrid %}
+                                    <dt>Location</dt>
+                                    <dd>
+                                        {{ page.location|default_if_none:"To be confirmed" }}
+                                    </dd>
+                                    {% if page.location and page.room %}
+                                        <dt>Room</dt>
+                                        <dd>
+                                            {{ page.room }}
+                                            {% if page.room_capacity %}with {{ page.room_capacity }} seats{% endif %}
+                                        </dd>
+                                        {% if page.room and page.room_capacity %}
+                                            <dt>Capacity</dt>
+                                            <dd>
+                                                {{ page.room_capacity }} seats
+                                            </dd>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                {% if page.audience %}
+                                    <dt>Audience</dt>
+                                    <dd>
+                                        {{ page.get_audience_display|default_if_none:"-" }}
+                                    </dd>
+                                {% endif %}
+                                <dt>Event type</dt>
+                                <dd>
+                                    {% if is_online or is_in_person %}
+                                        {{ page.get_event_type_display }}
+                                    {% else %}
+                                        In person or online
+                                    {% endif %}
+                                </dd>
+                            </dl>
+                            {% if not page.is_past_event %}
+                                {% if page.offline_event_url and is_in_person or is_hybrid %}
+                                    <a href="{{ page.offline_event_url }}"
+                                       class="dwds-button dwds-button--inline dwds-button--secondary"
+                                       target="_blank">Register to join</a>
+                                {% endif %}
+                                {% if page.online_event_url and is_online or is_hybrid %}
+                                    <a href="{{ page.online_event_url }}"
+                                       class="dwds-button dwds-button--inline dwds-button--secondary"
+                                       target="_blank">Watch event online</a>
+                                {% endif %}
+                                {% if page.submit_questions_url %}
+                                    <a href="{{ page.submit_questions_url }}"
+                                       class="dwds-button dwds-button--inline dwds-button--secondary"
+                                       target="_blank">Submit a question</a>
+                                {% endif %}
+                            {% elif page.event_recording_url %}
+                                <a href="{{ page.event_recording_url }}"
+                                   class="dwds-button dwds-button--inline dwds-button--secondary"
+                                   target="_blank">Watch past event</a>
+                            {% endif %}
                         </div>
-                        {% if page.room and page.room_capacity %}
-                            <div>
-                                <p>Capacity</p>
-                                <h4>{{ page.room_capacity }} seats</h4>
-                            </div>
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-                {% if page.audience %}
-                    <div>
-                        <p>Audience</p>
-                        <h4>{{ page.get_audience_display|default_if_none:"-" }}</h4>
                     </div>
-                {% endif %}
-                <div>
-                    <p>Event type</p>
-                    {% if is_online or is_in_person %}
-                        <h4>{{ page.get_event_type_display }}</h4>
-                    {% else %}
-                        <h4>In person or online</h4>
-                    {% endif %}
-                </div>
-                <div class="stack">
-                    {% if not page.is_past_event %}
-                        {% if page.offline_event_url and is_in_person or is_hybrid %}
-                            <a href="{{ page.offline_event_url }}"
-                               class="dwds-button dwds-button--inline dwds-button--secondary"
-                               target="_blank">Register to join</a>
-                        {% endif %}
-                        {% if page.online_event_url and is_online or is_hybrid %}
-                            <a href="{{ page.online_event_url }}"
-                               class="dwds-button dwds-button--inline dwds-button--secondary"
-                               target="_blank">Watch event online</a>
-                        {% endif %}
-                        {% if page.submit_questions_url %}
-                            <a href="{{ page.submit_questions_url }}"
-                               class="dwds-button dwds-button--inline dwds-button--secondary"
-                               target="_blank">Submit a question</a>
-                        {% endif %}
-                    {% elif page.event_recording_url %}
-                        <a href="{{ page.event_recording_url }}"
-                           class="dwds-button dwds-button--inline dwds-button--secondary"
-                           target="_blank">Watch past event</a>
-                    {% endif %}
                 </div>
             </div>
         </div>
