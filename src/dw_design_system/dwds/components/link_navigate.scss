@@ -3,10 +3,16 @@
     align-items: center;
     gap: var(--s0);
 
+    .dwds-link-action {
+        > div {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+
     a {
         display: flex;
         gap: var(--s0);
-
 
         svg {
             height: var(--font-lineheight-body);

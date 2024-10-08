@@ -6,7 +6,7 @@
 {% endblock main_content_classes %}
 {% block primary_content %}
 
-    <div class="stack streamfield-content-stack">
+    <div class="content-stack streamfield-content-stack">
         {% image page.preview_image fill-640x360 width=None height=None style="border-radius: var(--border-radius);" %}
         {% include "includes/attribution.html" with page=page is_news_page=True perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=True %}
         {% for block in page.body %}
@@ -16,8 +16,8 @@
 {% endblock primary_content %}
 
 {% block post_primary_content %}
-    <div class="news_comments">
-        {% if self.allow_comments %}
+    {% if self.allow_comments %}
+        <div class="news_comments">
             {% if page.comment_count > 0 %}
                 <div class="news-article-comments">
                     <h2 class="govuk-heading-m">
@@ -106,8 +106,8 @@
                     return false;
                 }
             </script>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
     {{ block.super }}
 {% endblock post_primary_content %}
 
