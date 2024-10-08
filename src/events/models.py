@@ -134,7 +134,7 @@ class EventPage(ContentPage):
             is_online=self.event_type == types.EventType.ONLINE,
             is_in_person=self.event_type == types.EventType.IN_PERSON,
             is_hybrid=self.event_type == types.EventType.HYBRID,
-            event_title=get_event_datetime_display_string(self),
+            event_date_range=get_event_datetime_display_string(self),
         )
 
         return context
