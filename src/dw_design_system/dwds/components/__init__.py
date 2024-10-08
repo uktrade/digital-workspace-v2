@@ -1,7 +1,6 @@
-from .cta_card import CTACardBlock
+from .cta_card import CTACardBlock, NavigationCardBlock
 from .engagement_card import EngagementCardBlock
 from .link_list import CustomPageLinkListBlock, TaggedPageListBlock
-from .navigation_card import NavigationCardBlock
 
 
 __all__ = [
