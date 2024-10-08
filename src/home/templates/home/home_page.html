@@ -25,44 +25,54 @@
 {% block primary_content %}
     <article>
         <section>
-            <div class="stack">
+            <div class="content-stack large">
                 <!-- User selected top priority page cards -->
                 {% if not is_empty %}
                     {% for pages in pages_by_news_layout %}
-                        <div class="switcher">
-                            {% for page in pages %}
-                                {% page_to_card page as card %}
-
-                                {% if pages|length == 1 %}
-                                    {% include "dwds/components/one_up_card.html" with title=card.title thumbnail=card.thumbnail url=card.url created_date=card.created_date updated_date=card.updated_date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow ribbon_text=card.ribbon_text post_title_date=card.post_title_date post_title_time=card.post_title_time %}
-                                {% else %}
-                                    {% include card.template with title=card.title thumbnail=card.thumbnail url=card.url created_date=card.created_date updated_date=card.updated_date comment_count=card.comment_count excerpt=card.excerpt hide_shadow=card.hide_shadow ribbon_text=card.ribbon_text post_title_date=card.post_title_date post_title_time=card.post_title_time %}
-                                {% endif %}
-                            {% endfor %}
-                        </div>
+                        {% if pages %}
+                            <div class="content-switcher max-3">
+                                {% for page in pages %}
+                                    <div class="dwds-content-item-card">
+                                        {% if pages|length == 1 %}
+                                            {% page_to_one_up page %}
+                                        {% else %}
+                                            {% page_to_engagement page %}
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
 
                 {% if page.promo_enabled %}
-                    {% include 'dwds/components/promo.html' with ribbon_text=page.promo_ribbon_text description=page.promo_description link_url=page.promo_link_url link_text=page.promo_link_text thumbnail=page.promo_image %}
+                    <div class="dwds-content-item-card">
+                        {% include 'dwds/components/promo.html' with ribbon_text=page.promo_ribbon_text description=page.promo_description link_url=page.promo_link_url link_text=page.promo_link_text thumbnail=page.promo_image %}
+                    </div>
                 {% endif %}
 
                 {% if news_items %}
-                    {% pages_to_cards news_items True as news_cards %}
-                    {% include "dwds/components/card_group.html" with card_group_title="Latest DBT news" cards=news_cards footer_link="/news-and-views/" footer_link_text="View all news" show_hr=True show_shadow=True %}
+                    <div class="dwds-content-item-card no-shadow cams-custom-class">
+                        {% include "dwds/components/content_list.html" with title="Latest DBT news" content_items=news_items link_url="/news-and-views/" link_text="View all news" %}
+                    </div>
                 {% endif %}
 
                 {% if events %}
-                    {% pages_to_cards events True as event_cards %}
-                    {% if FEATURE_FLAGS.event_listing %}
-                        {% include "dwds/components/card_group.html" with card_group_title="Events" card_group_link="/events/" card_group_link_text="View all events" cards=event_cards grid=True blue_bg=True %}
-                    {% else %}
-                        {% include "dwds/components/card_group.html" with card_group_title="Events" cards=event_cards grid=True blue_bg=True %}
-                    {% endif %}
+                    <div class="dwds-content-item-card no-shadow">
+                        {% if FEATURE_FLAGS.event_listing %}
+                            {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events link_url="/events/" link_text="View all events" %}
+                        {% else %}
+                            {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events %}
+                        {% endif %}
+                    </div>
                 {% endif %}
 
                 {% if not hide_news %}
-                    {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
+                    <div class="dwds-content-item-card">
+                        <div class="content-item">
+                            {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
+                        </div>
+                    </div>
                 {% endif %}
             </div>
         </section>
@@ -71,17 +81,16 @@
 
 {% block secondary_content %}
     <article>
-        <section class="stack">
+        <section class="content-stack">
             {% if active_site_alert %}
-                {% include 'dwds/components/banner_card.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
+                {% include 'dwds/components/banner.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
             {% endif %}
             {% include 'interactions/bookmark_card.html' %}
             {% if quick_links %}
-                {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
+                <div class="dwds-content-item-card">
+                    {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
+                </div>
             {% endif %}
         </section>
-        {% comment %} <section>
-            {% include "dwds/components/link_list.html" with title="Popular pages" list=whats_popular_items %}
-        </section> {% endcomment %}
     </article>
 {% endblock secondary_content %}
