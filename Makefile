@@ -51,7 +51,7 @@ down: # Stop the app's docker containers
 down-all: # Stop all docker containers (inc. testrunner, opensearch dash)
 	docker compose --profile playwright --profile opensearch --profile celery-beat down
 
-refresh-wagtail: # Refresh the wagtail container
+refresh-web: # Refresh the web container
 	make build
 	docker compose stop wagtail
 	docker compose up -d wagtail
