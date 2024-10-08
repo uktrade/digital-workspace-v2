@@ -2,7 +2,11 @@
     <div class="content-item">
         <div class="content-main highlight">
             <div class="content-body center">
-                {% include "dwds/components/link_navigate.html" with previous_url=previous_link previous_text="Previous month" next_url=next_link next_text="Next month" %}
+                <div class="content-switcher">
+                    {% include "dwds/components/link_action.html" with link_url=previous_link link_text="Previous month" left=True %}
+                    {% if middle_text %}{{ middle_text }}{% endif %}
+                    {% include "dwds/components/link_action.html" with link_url=next_link link_text="Next month" right=True %}
+                </div>
             </div>
         </div>
     </div>
