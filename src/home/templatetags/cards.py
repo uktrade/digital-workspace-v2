@@ -38,19 +38,6 @@ def page_to_display_context(page: NewsPage | EventPage):
     return context
 
 
-@register.simple_tag
-def page_to_card(page: NewsPage | EventPage, hide_shadow: bool = False):
-    return {
-        **page_to_display_context(page),
-        "template": "dwds/components/engagement_card.html",
-    }
-
-
-@register.simple_tag
-def pages_to_cards(pages: list[NewsPage | EventPage], hide_shadow: bool = False):
-    return [page_to_card(page, hide_shadow=hide_shadow) for page in pages]
-
-
 class RenderableComponent:
     def __init__(self, template_name: str, context: dict):
         self.template_name = template_name
