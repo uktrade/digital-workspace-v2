@@ -31,9 +31,11 @@ body {
     header,
     nav,
     main,
+    img,
     footer,
     hr,
-    article {
+    article,
+    figure {
         max-inline-size: none;
     }
 
@@ -67,7 +69,7 @@ body {
     a.no-underline {
         text-decoration: none;
     }
-    
+
     a.no-underline:focus,
     a.no-underline:active,
     a:focus,
@@ -94,6 +96,21 @@ body {
         border-right: 0;
         border-left: 0;
         color: var(--color-hr);
+    }
+
+    dl {
+        dt {
+            margin-top: var(--s-1);
+
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+
+        dd {
+            margin-left: 0;
+            font-weight: var(--font-weight-bold);
+        }
     }
 }
 

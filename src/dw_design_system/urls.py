@@ -1,10 +1,34 @@
-from django.urls import path
+from django.http import HttpResponseRedirect
+from django.urls import path, reverse
 
 from dw_design_system import views
 
 
 urlpatterns = [
     path("styles/", views.styles, name="dwds-styles"),
-    path("", views.components, name="dwds-components"),
-    path("get/", views.get_component, name="dwds-component-get"),
+    path("layouts/", views.layouts, name="dwds-layouts"),
+    path(
+        "",
+        lambda request: HttpResponseRedirect(reverse("dwds-components")),
+    ),
+    path(
+        "get/<str:template_type>/",
+        views.get_dwds_template,
+        name="dwds-template-get",
+    ),
+    path(
+        "content/",
+        views.dwds_templates("content"),
+        name="dwds-content",
+    ),
+    path(
+        "components/",
+        views.dwds_templates("components"),
+        name="dwds-components-new",
+    ),
+    path(
+        "components/content/",
+        views.dwds_templates("components_content"),
+        name="dwds-components-content",
+    ),
 ]

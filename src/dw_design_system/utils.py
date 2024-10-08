@@ -2,10 +2,10 @@ from datetime import datetime
 from json import JSONDecoder, scanner
 
 from django.core.paginator import Page, Paginator
+from django.http import HttpRequest
 from django.utils import timezone
 from wagtail.images.models import Image
 
-from home.templatetags.cards import pages_to_cards
 from news.models import NewsPage
 
 
@@ -15,120 +15,148 @@ PAGINATOR_STR = "Paginator"
 RANGE_STR = "Range"
 
 
-def get_components():
-    thumbnail_file = Image.objects.first()
+def get_dwds_templates(template_type, request: HttpRequest):
+    thumbnail_file = Image.objects.last()
     pages = Paginator(NewsPage.objects.all(), 2).page(1)
-    return [
-        {
-            "name": "Card",
-            "template": "dwds/elements/extendable/card.html",
-            "context": {},
-        },
-        {
-            "name": "Banner Card",
-            "template": "dwds/components/banner_card.html",
-            "context": {
-                "alert": False,
-                "link": "https://www.gov.uk",
-                "text": "This is a banner card for GOV.UK",
+
+    dwds_templates = {
+        "content": [
+            {
+                "name": "Content Header",
+                "template": "dwds/elements/content_header.html",
+                "context": {},
             },
-        },
-        {
-            "name": "CTA Card",
-            "template": "dwds/components/cta_card.html",
-            "context": {
-                "link": "https://www.gov.uk",
-                "title": "This is a CTA card for GOV.UK",
-                "description": "This is a description for the CTA card",
+            {
+                "name": "Content Image",
+                "template": "dwds/elements/content_image.html",
+                "context": {
+                    "content_image": thumbnail_file,
+                },
             },
-        },
-        {
-            "name": "Engagement Card",
-            "template": "dwds/components/engagement_card.html",
-            "context": {
-                "url": "https://www.gov.uk",
-                "title": "This is an engagement card for GOV.UK",
-                "excerpt": "This is an excerpt for the engagement card",
-                "author": "John Doe",
-                "date": timezone.now(),
-                "thumbnail": thumbnail_file,
+            {
+                "name": "Content Main",
+                "template": "dwds/elements/content_main.html",
+                "context": {},
             },
-        },
-        {
-            "name": "Card Group",
-            "template": "dwds/components/card_group.html",
-            "context": {
-                "card_group_title": "Latest DBT news",
-                "cards": pages_to_cards(
-                    NewsPage.objects.all().annotate_with_comment_count()[:3]
-                ),
-                "footer_link": "/news-and-views/",
-                "footer_link_text": "View all news",
-                "show_hr": True,
+            {
+                "name": "Content Item",
+                "template": "dwds/elements/content_item.html",
+                "context": {},
             },
-        },
-        {
-            "name": "Link List",
-            "template": "dwds/components/link_list.html",
-            "context": {
-                "title": "Link List",
-                "description": "A list of links",
-                "list": [
-                    {
-                        "link": "https://www.gov.uk",
-                        "text": f"Link {i + 1} for GOV.UK",
-                    }
-                    for i in range(10)
-                ],
+            {
+                "name": "Content Item Card",
+                "template": "dwds/layouts/content_item_card.html",
+                "context": {},
             },
-        },
-        {
-            "name": "Navigation Card",
-            "template": "dwds/components/navigation_card.html",
-            "context": {
-                "url": "https://www.gov.uk",
-                "title": "Navigation Card",
-                "summary": "This is a summary for the navigation card",
+        ],
+        "components": [
+            {
+                "name": "Action Link",
+                "template": "dwds/components/link_action.html",
+                "context": {
+                    "link_text": "Action Link",
+                    "link_url": "https://www.gov.uk",
+                    "left": True,
+                    "right": True,
+                },
             },
-        },
-        {
-            "name": "One Up Card",
-            "template": "dwds/components/one_up_card.html",
-            "context": {
-                "url": "https://www.gov.uk",
-                "title": "One Up Card",
-                "excerpt": "This is an excerpt for the one up card",
-                "date": timezone.now(),
-                "thumbnail": thumbnail_file,
+            {
+                "name": "Link navigate",
+                "template": "dwds/components/link_navigate.html",
+                "context": {
+                    "previous_url": "https://www.gov.uk",
+                    "previous_text": "Previous",
+                    "next_url": "https://www.gov.uk",
+                    "next_text": "Next",
+                },
             },
-        },
-        {
-            "name": "Pagination",
-            "template": "dwds/components/pagination.html",
-            "context": {"pages": pages},
-        },
-        {
-            "name": "Link navigation",
-            "template": "dwds/components/link_navigate.html",
-            "context": {
-                "previous_url": "https://www.gov.uk",
-                "previous_text": "Previous",
-                "next_url": "https://www.gov.uk",
-                "next_text": "Next",
+            {
+                "name": "Banner",
+                "template": "dwds/components/banner.html",
+                "context": {
+                    "alert": False,
+                    "link": "https://www.gov.uk",
+                    "text": (
+                        "This is a banner for GOV.UK, it can be really long or"
+                        " really short. In this example we have a long banner to"
+                        " show how it looks with a lot of text."
+                    ),
+                },
             },
-        },
-        {
-            "name": "Promo Banner",
-            "template": "dwds/components/promo.html",
-            "context": {
-                "ribbon_text": "One DBT",
-                "description": "We value your ideas to help make it simpler to work at DBT, make a difference and celebrate innovation.",
-                "link_text": "Collaborate and connect",
-                "link_url": "http://localhost:8000/dwds/",
-                "background_image": thumbnail_file,
+            {
+                "name": "CTA",
+                "template": "dwds/components/cta.html",
+                "context": {
+                    "highlight": True,
+                    "url": "https://www.gov.uk",
+                    "title": "This is a CTA for GOV.UK",
+                    "description": "This is a description for the CTA",
+                },
             },
-        },
-    ]
+            {
+                "name": "Link list",
+                "template": "dwds/components/link_list.html",
+                "context": {
+                    "title": "Link List",
+                    "description": "A list of links",
+                    "list": [
+                        {
+                            "link": "https://www.gov.uk",
+                            "text": f"Link {i + 1} for GOV.UK",
+                        }
+                        for i in range(10)
+                    ],
+                },
+            },
+            {
+                "name": "Engagement",
+                "template": "dwds/components/engagement.html",
+                "context": {
+                    "url": "https://www.gov.uk",
+                    "title": "This is engaging content for GOV.UK with a really long title to show what a long title looks like",
+                    "excerpt": "This is an excerpt for the engaging content. This excerpt is longer than it should be for test data.",
+                    "author": "John Doe",
+                    "date": timezone.now(),
+                    "thumbnail": thumbnail_file,
+                    "comment_count": 10,
+                    "created_date": timezone.now(),
+                    "updated_date": timezone.now(),
+                },
+            },
+            {
+                "name": "One Up",
+                "template": "dwds/components/one_up.html",
+                "context": {
+                    "url": "https://www.gov.uk",
+                    "title": "One Up",
+                    "excerpt": "This is an excerpt for the one up content",
+                    "date": timezone.now(),
+                    "thumbnail": thumbnail_file,
+                    "comment_count": 10,
+                    "created_date": timezone.now(),
+                    "updated_date": timezone.now(),
+                },
+            },
+            {
+                "name": "Promo Banner",
+                "template": "dwds/components/promo.html",
+                "context": {
+                    "ribbon_text": "One DBT",
+                    "description": "We value your ideas to help make it simpler to work at DBT, make a difference and celebrate innovation.",
+                    "link_text": "Collaborate and connect",
+                    "link_url": "http://localhost:8000/dwds/",
+                    "background_image": thumbnail_file,
+                },
+            },
+            {
+                "name": "Pagination",
+                "template": "dwds/components/pagination.html",
+                "context": {"pages": pages, "request": request},
+            },
+        ],
+        "layouts": [],
+    }
+    return dwds_templates[template_type]
 
 
 def to_json(val):
@@ -147,9 +175,6 @@ def to_json(val):
 
 
 def parse_str(val):
-    if " " not in val:
-        return val
-
     if val.startswith(DATETIME_STR):
         return datetime.fromisoformat(val.split(" ")[1])
     if val.startswith(IMAGE_STR):

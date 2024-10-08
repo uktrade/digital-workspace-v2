@@ -40,58 +40,6 @@
   }
 
 
-  // Sidebar
-  // https://every-layout.dev/layouts/sidebar/
-  .with-sidebar,
-  .with-sidebar-right {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space);
-  }
-
-  .with-sidebar > :first-child {
-    flex-grow: 1;
-  }
-
-  .with-sidebar > :last-child {
-    flex-basis: 0;
-    flex-grow: 999;
-    min-inline-size: 50%;
-  }
-
-  .with-sidebar-right > :last-child {
-    // @TODO temporary - this works for 2-col in the GDS fixed container
-    flex-basis: 300px;
-    flex-grow: 1;
-  }
-
-
-  .with-sidebar-right > :first-child {
-    flex-basis: 0;
-    flex-grow: 999;
-    min-inline-size: 50%;
-  }
-
-  // Switcher
-  // https://every-layout.dev/layouts/switcher/
-
-  .switcher {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space);
-  }
-
-  .switcher > * {
-    flex-grow: 1;
-    flex-basis: calc((30rem - 100%) * 999);
-  }
-
-  .switcher > :nth-last-child(n+ 5),
-  .switcher > :nth-last-child(n+ 5) ~ * {
-    flex-basis: 100%;
-  }
-
-
   // Cover
   // https://every-layout.dev/layouts/cover/
 
