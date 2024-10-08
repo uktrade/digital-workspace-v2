@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 from datetime import timedelta
 
+from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.http import Http404
 from django.shortcuts import redirect
@@ -55,10 +56,10 @@ class EventsHome(RoutablePageMixin, BasePage):
 
         month_start = filter_date.replace(day=1)
 
-        next_month_int = month_start.month + 1 if month_start.month < 12 else 1
-        prev_month_int = month_start.month - 1 if month_start.month > 1 else 12
+        previous_month = month_start - relativedelta(months=1)
+        next_month = month_start + relativedelta(months=1)
 
-        month_end = month_start.replace(month=next_month_int)
+        month_end = month_start.replace(month=next_month.month)
 
         events = (
             EventPage.objects.live()
@@ -90,8 +91,8 @@ class EventsHome(RoutablePageMixin, BasePage):
                 event_date__lt=timezone.now().date(),
             ),
             current_month=month_start,
-            next_month=month_start.replace(month=next_month_int),
-            previous_month=month_start.replace(month=prev_month_int),
+            next_month=next_month,
+            previous_month=previous_month,
         )
         return context
 
