@@ -64,10 +64,10 @@ class EventsHome(RoutablePageMixin, BasePage):
             EventPage.objects.live()
             .public()
             .filter(
-                event_date__gte=month_start,
-                event_date__lt=month_end,
+                event_start__gte=month_start,
+                event_start__lt=month_end,
             )
-            .order_by("event_date")
+            .order_by("event_start")
         )
 
         current_month_start = timezone.now().date().replace(day=1)
@@ -84,10 +84,10 @@ class EventsHome(RoutablePageMixin, BasePage):
             events_filters=events_filters,
             page_title=f"{page_title_prefix} {month_start.strftime('%B %Y')}",
             upcoming_events=events.filter(
-                event_date__gte=timezone.now().date(),
+                event_start__gte=timezone.now().date(),
             ),
             past_events=events.filter(
-                event_date__lt=timezone.now().date(),
+                event_start__lt=timezone.now().date(),
             ),
             current_month=month_start,
             next_month=next_month,
