@@ -65,6 +65,11 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+    # Dev tools
+    urlpatterns += [
+        path("dev-tools/", include("dev_tools.urls", namespace="dev_tools"))
+    ]
+
 urlpatterns += [
     # Wagtail
     path("", include(wagtail_urls)),
