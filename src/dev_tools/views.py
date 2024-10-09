@@ -55,7 +55,9 @@ def change_user_view(request):
         logout(request)
         messages.success(request, "Logged out")
 
-    return redirect(next_url)
+    if is_valid_redirect_url(next_url):
+        return redirect(next_url)
+    redirect(settings.LOGIN_REDIRECT_URL)
 
 
 def is_valid_redirect_url(url: str) -> bool:
