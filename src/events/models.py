@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
 from django.db import models
@@ -38,7 +38,7 @@ class EventsHome(RoutablePageMixin, BasePage):
         if month < 1 or month > 12:
             raise Http404
 
-        filter_date = dt(int(year), int(month), 1)
+        filter_date = datetime(int(year), int(month), 1)
 
         return TemplateResponse(
             request,
