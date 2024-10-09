@@ -59,11 +59,7 @@
 
                 {% if events %}
                     <div class="dwds-content-item-card no-shadow">
-                        {% if FEATURE_FLAGS.event_listing %}
-                            {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events link_url="/events/" link_text="View all events" %}
-                        {% else %}
-                            {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events %}
-                        {% endif %}
+                        {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events link_url="/events/" link_text="View all events" %}
                     </div>
                 {% endif %}
 
