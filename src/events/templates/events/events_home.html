@@ -16,7 +16,7 @@
                 <h2 class="govuk-heading-m">
                     <a href="{% pageurl event %}">{{ event.title }}</a>
                 </h2>
-                <p class="govuk-body-s">{{ event.event_date }}</p>
+                <p class="govuk-body-s">{{ event.event_start|date:"d M Y" }}</p>
                 {% image event.preview_image width-540 %}
                 <p class="govuk-body">{{ event.description }}</p>
             </li>

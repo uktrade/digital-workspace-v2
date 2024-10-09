@@ -3,7 +3,9 @@ from django.template.loader import render_to_string
 from django.utils.safestring import SafeString
 
 from events.models import EventPage
-from events.utils import get_event_date, get_event_time
+from events.utils import (
+    get_event_datetime_display_string,
+)
 from news.models import NewsPage
 
 
@@ -30,25 +32,9 @@ def page_to_display_context(page: NewsPage | EventPage):
         )
 
     if issubclass(type(page), EventPage):
-        context.update(
-            post_title_date=get_event_date(page),
-            post_title_time=get_event_time(page),
-        )
+        context.update(post_title=get_event_datetime_display_string(page))
 
     return context
-
-
-@register.simple_tag
-def page_to_card(page: NewsPage | EventPage, hide_shadow: bool = False):
-    return {
-        **page_to_display_context(page),
-        "template": "dwds/components/engagement_card.html",
-    }
-
-
-@register.simple_tag
-def pages_to_cards(pages: list[NewsPage | EventPage], hide_shadow: bool = False):
-    return [page_to_card(page, hide_shadow=hide_shadow) for page in pages]
 
 
 class RenderableComponent:
