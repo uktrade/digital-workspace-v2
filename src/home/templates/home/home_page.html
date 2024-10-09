@@ -79,7 +79,9 @@
     <article>
         <section class="content-stack">
             {% if active_site_alert %}
-                {% include 'dwds/components/banner.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
+                <div class="dwds-content-item-card no-shadow">
+                    {% include 'dwds/components/banner.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
+                </div>
             {% endif %}
             {% include 'interactions/bookmark_card.html' %}
             {% if quick_links %}
