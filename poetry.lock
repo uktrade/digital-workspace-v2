@@ -937,13 +937,13 @@ typing-extensions = ">=3.10.0.0"
 
 [[package]]
 name = "django"
-version = "4.2.15"
+version = "4.2.16"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Django-4.2.15-py3-none-any.whl", hash = "sha256:61ee4a130efb8c451ef3467c67ca99fdce400fedd768634efc86a68c18d80d30"},
-    {file = "Django-4.2.15.tar.gz", hash = "sha256:c77f926b81129493961e19c0e02188f8d07c112a1162df69bfab178ae447f94a"},
+    {file = "Django-4.2.16-py3-none-any.whl", hash = "sha256:1ddc333a16fc139fd253035a1606bb24261951bbc3a6ca256717fa06cc41a898"},
+    {file = "Django-4.2.16.tar.gz", hash = "sha256:6f1616c2786c408ce86ab7e10f792b8f15742f7b7b7460243929cb371e7f1dad"},
 ]
 
 [package.dependencies]
@@ -3773,13 +3773,13 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 
 [[package]]
 name = "wagtail"
-version = "6.2.1"
+version = "6.2.2"
 description = "A Django content management system."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "wagtail-6.2.1-py3-none-any.whl", hash = "sha256:31d073ea8acdc973ef45c5719977a1bb122ad0fc3f01348f37e922128200b42a"},
-    {file = "wagtail-6.2.1.tar.gz", hash = "sha256:0f136ef23b157997a44fa46543a320a31437350951cf13add8ea8b69cc5e8385"},
+    {file = "wagtail-6.2.2-py3-none-any.whl", hash = "sha256:d0382603aef5d7e4a46529aa125857774a317c2870c9b6836767932969829429"},
+    {file = "wagtail-6.2.2.tar.gz", hash = "sha256:506ac2b59dae85069ae754b45bc13b91cbd86e92d4f5d663658773b0ed7a16b9"},
 ]
 
 [package.dependencies]
@@ -4181,4 +4181,4 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "6063d1ea677ceea8ac5418cf47f0ae61095b298b11ddd1492184f2666115105a"
+content-hash = "28a728f4f4c1c7e5b4e3e2ab10d634ab8ba7bd9a08a8884f9f22bf4e0b3772b4"

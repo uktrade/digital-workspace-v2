@@ -313,9 +313,9 @@ class HomePage(BasePage):
         events = (
             EventPage.objects.live()
             .public()
-            .filter(event_date__gte=timezone.now().date())
+            .filter(event_end__gte=timezone.now())
             .exclude(id__in=priority_page_ids)
-            .order_by("event_date", "start_time")
+            .order_by("event_start")
         )
 
         context.update(
