@@ -1,0 +1,15 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+
+<ul>
+    {% for event in events %}
+        <li>
+            <h2>
+                <a href="{% pageurl event %}">{{ event.title }}</a>
+            </h2>
+            <p>{{ event.event_date }}</p>
+            {% image event.preview_image width-540 %}
+            <p>{{ event.description }}</p>
+        </li>
+    {% endfor %}
+</ul>

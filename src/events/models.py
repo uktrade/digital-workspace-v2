@@ -1,8 +1,13 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
+from dateutil.relativedelta import relativedelta
 from django.db import models
+from django.http import Http404
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
 from django.utils import timezone
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 from content.models import BasePage, ContentPage
 from core.models import fields
@@ -10,7 +15,7 @@ from events import types
 from events.utils import get_event_datetime_display_string
 
 
-class EventsHome(BasePage):
+class EventsHome(RoutablePageMixin, BasePage):
     template = "events/events_home.html"
     show_in_menus = True
     is_creatable = False
@@ -19,11 +24,74 @@ class EventsHome(BasePage):
     def get_template(self, request, *args, **kwargs):
         return self.template
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        events = EventPage.objects.live().public()
-        context["events"] = events
+    @route(r"^(?P<year>\d{4})/$", name="month_year")
+    def year_events(self, request, year):
+        return redirect(
+            self.full_url + self.reverse_subpage("month_events", args=(year, 1))
+        )
 
+    @route(r"^(?P<year>\d{4})/(?P<month>\d{1,2})/$", name="month_events")
+    def month_events(self, request, year, month):
+        year = int(year)
+        month = int(month)
+
+        if month < 1 or month > 12:
+            raise Http404
+
+        filter_date = datetime(int(year), int(month), 1)
+
+        return TemplateResponse(
+            request,
+            self.get_template(request),
+            self.get_context(request, filter_date=filter_date),
+        )
+
+    def get_context(self, request, *args, **kwargs):
+        from events.filters import EventsFilters
+
+        context = super().get_context(request, *args, **kwargs)
+
+        filter_date = kwargs.get("filter_date", timezone.now()).date()
+
+        month_start = filter_date.replace(day=1)
+
+        previous_month = month_start - relativedelta(months=1)
+        next_month = month_start + relativedelta(months=1)
+
+        month_end = month_start.replace(month=next_month.month)
+
+        events = (
+            EventPage.objects.live()
+            .public()
+            .filter(
+                event_date__gte=month_start,
+                event_date__lt=month_end,
+            )
+            .order_by("event_date")
+        )
+
+        current_month_start = timezone.now().date().replace(day=1)
+
+        page_title_prefix = "What's on in"
+        if filter_date < current_month_start:
+            page_title_prefix = "What happened in"
+
+        # Filtering events
+        events_filters = EventsFilters(request.GET, queryset=events)
+        events = events_filters.qs
+
+        context.update(
+            events_filters=events_filters,
+            page_title=f"{page_title_prefix} {month_start.strftime('%B %Y')}",
+            upcoming_events=events.filter(
+                event_date__gte=timezone.now().date(),
+            ),
+            past_events=events.filter(
+                event_date__lt=timezone.now().date(),
+            ),
+            next_month=next_month,
+            previous_month=previous_month,
+        )
         return context
 
 

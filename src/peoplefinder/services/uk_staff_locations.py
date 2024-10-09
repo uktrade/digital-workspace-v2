@@ -73,3 +73,9 @@ class UkStaffLocationService:
             "updated": updated,
             "deleted": deleted,
         }
+
+    def get_uk_staff_location_cities(self) -> list[str]:
+        return [
+            c["city"]
+            for c in UkStaffLocation.objects.values("city").distinct().order_by("city")
+        ]
