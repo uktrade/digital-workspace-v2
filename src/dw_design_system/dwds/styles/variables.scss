@@ -9,8 +9,10 @@
 
   // GDS colours
   --gds-red: #d4351c;
+  --gds-yellow: #ffdd00;
 
   // Colour
+  --colour-focus: var(--gds-yellow);
   --color-heading: black;
   --color-text: black;
   --color-text-secondary: #505A5F;
@@ -18,7 +20,7 @@
   --color-link: var(--dbt-light-blue);
   --color-link-hover: #fff;
   --color-link-active: #fff;
-  --color-link-background-active: #FFDD00; // GDS yellow
+  --color-link-background-active: var(--gds-yellow);
   --color-link-visited: #551a8b;
   --color-background: white;
   --color-background-highlight: white;
@@ -38,7 +40,7 @@
   --color-button-secondary-dark-text: #003078;
   --color-button-secondary-dark-border: #003078;
   --color-button-text-focus: #222222;
-  --color-button-background-focus: #FFDD00;
+  --color-button-background-focus: var(--colour-focus);
   --color-button-border-focus: #222222;
   --color-button-warning: var(--gds-red);
   --color-button-warning-hover: hsl(from var(--color-button-warning) h s calc(l - 20)); // GDS designs for hover #4D0A00

@@ -1,5 +1,6 @@
 .dwds-link-navigate {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--s0);
 
@@ -8,6 +9,12 @@
             margin-left: 0;
             margin-right: 0;
         }
+    }
+
+    > span {
+        width: 2px;
+        height: var(--font-lineheight-body);
+        background: var(--color-border);
     }
 
     a {
