@@ -23,6 +23,8 @@ make setup
 make webpack
 ```
 
+If you're on a local (non-production!) environment you may want to ensure that `DEV_TOOLS_ENABLED` is set to `True` to avoid integrating with the SSO service. This is a workaround to allow developers to impersonate different users and should be used with caution.
+
 You can now access:
 
 - Digital Workspace on http://localhost:8000
