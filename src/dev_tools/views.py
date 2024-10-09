@@ -56,3 +56,9 @@ def change_user_view(request):
         messages.success(request, "Logged out")
 
     return redirect(next_url)
+
+
+def is_valid_redirect_url(url: str) -> bool:
+    if url[0] != "/" and "trade.gov.uk" not in url:
+        return False
+    return True
