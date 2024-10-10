@@ -210,5 +210,5 @@ class EventPage(ContentPage):
 
     @property
     def is_past_event(self) -> bool:
-        adjusted_datetime = timezone.make_aware(self.event_end + timedelta(hours=1))
+        adjusted_datetime = self.event_end + timedelta(hours=1)
         return timezone.now() > adjusted_datetime
