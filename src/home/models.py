@@ -14,7 +14,6 @@ from wagtail.admin.panels import (
     FieldPanel,
     InlinePanel,
     MultiFieldPanel,
-    PageChooserPanel,
 )
 from wagtail.models import PagePermissionTester
 from wagtail.snippets.models import register_snippet
@@ -24,6 +23,7 @@ from wagtailorderable.models import Orderable
 from content.models import BasePage, ContentPage
 from core.models import fields
 from core.models.models import SiteAlertBanner
+from core.panels import PageSelectorPanel
 from events.models import EventPage
 from home.forms import HomePageForm
 from home.validators import validate_home_priority_pages
@@ -96,7 +96,7 @@ class HomePriorityPage(Orderable):
     )
 
     panels = [
-        PageChooserPanel("page", HOME_PRIORITY_PAGE_TYPES),
+        PageSelectorPanel("page", HOME_PRIORITY_PAGE_TYPES),
         FieldPanel("ribbon_text"),
     ]
 
@@ -313,9 +313,9 @@ class HomePage(BasePage):
         events = (
             EventPage.objects.live()
             .public()
-            .filter(event_date__gte=timezone.now().date())
+            .filter(event_end__gte=timezone.now())
             .exclude(id__in=priority_page_ids)
-            .order_by("event_date", "start_time")
+            .order_by("event_start")
         )
 
         context.update(

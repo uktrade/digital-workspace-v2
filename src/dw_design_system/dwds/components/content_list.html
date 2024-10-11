@@ -1,0 +1,28 @@
+{% load cards %}
+
+<div class="dwds-content-list {% if as_card_grid %}as-card-grid{% endif %} content-item">
+    <div class="content-main {% if highlight %}highlight{% endif %}">
+        <div class="content-body content-body-space-padding content-stack large">
+            <div class="content-switcher">
+                <h2 style="margin: 0;">{{ title }}</h2>
+                {% if as_card_grid and link_url and link_text %}
+                    {% include "dwds/components/link_action.html" with link_url=link_url link_text=link_text right=True %}
+                {% endif %}
+            </div>
+            {% if as_card_grid %}
+                <div class="content-grid grid-cards-auto-fill">
+                    {% for content_item in content_items %}
+                        <div class="dwds-content-item-card">{% page_to_engagement content_item %}</div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% for content_item in content_items %}
+                    {% page_to_engagement content_item %}
+                {% endfor %}
+            {% endif %}
+            {% if not as_card_grid and link_url and link_text %}
+                {% include "dwds/components/link_action.html" with link_url=link_url link_text=link_text right=True %}
+            {% endif %}
+        </div>
+    </div>
+</div>

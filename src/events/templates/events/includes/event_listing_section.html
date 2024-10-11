@@ -1,0 +1,9 @@
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load cards %}
+
+<div class="content-grid grid-cards-auto-fill">
+    {% for event in events %}
+        <div class="dwds-content-item-card">{% page_to_engagement event %}</div>
+    {% endfor %}
+</div>

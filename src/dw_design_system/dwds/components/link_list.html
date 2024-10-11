@@ -1,26 +1,18 @@
-{% extends "dwds/elements/extendable/card.html" %}
+<div class="dwds-link-list content-item">
+    <div class="content-header content-stack">
+        <h3>{{ title }}</h3>
+    </div>
 
-{% block card_container_classes %}
-    dwds-link-list
-{% endblock card_container_classes %}
-
-{% block card_header_content %}
-    <h3>{{ title }}</h3>
-{% endblock card_header_content %}
-
-{% block card_content_image %}
-{% endblock card_content_image %}
-
-{% block card_content_body %}
-    {% if description %}<p>{{ description }}</p>{% endif %}
-    <ul>
-        {% for item in list %}
-            <li>
-                <a href="{{ item.url }}">{{ item.text }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-{% endblock card_content_body %}
-
-{% block card_footer %}
-{% endblock card_footer %}
+    <div class="content-main">
+        <div class="content-body content-stack">
+            {% if description %}<p>{{ description }}</p>{% endif %}
+            <ul>
+                {% for item in list %}
+                    <li>
+                        <a href="{{ item.url }}">{{ item.text }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

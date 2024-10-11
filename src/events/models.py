@@ -1,17 +1,21 @@
-from datetime import datetime as dt
-from datetime import timedelta
+from datetime import datetime, timedelta
 
+from dateutil.relativedelta import relativedelta
 from django.db import models
+from django.http import Http404
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
 from django.utils import timezone
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
+from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 from content.models import BasePage, ContentPage
 from core.models import fields
 from events import types
-from events.utils import get_event_date, get_event_time
+from events.utils import get_event_datetime_display_string
 
 
-class EventsHome(BasePage):
+class EventsHome(RoutablePageMixin, BasePage):
     template = "events/events_home.html"
     show_in_menus = True
     is_creatable = False
@@ -20,11 +24,75 @@ class EventsHome(BasePage):
     def get_template(self, request, *args, **kwargs):
         return self.template
 
-    def get_context(self, request, *args, **kwargs):
-        context = super().get_context(request, *args, **kwargs)
-        events = EventPage.objects.live().public()
-        context["events"] = events
+    @route(r"^(?P<year>\d{4})/$", name="month_year")
+    def year_events(self, request, year):
+        return redirect(
+            self.full_url + self.reverse_subpage("month_events", args=(year, 1))
+        )
 
+    @route(r"^(?P<year>\d{4})/(?P<month>\d{1,2})/$", name="month_events")
+    def month_events(self, request, year, month):
+        year = int(year)
+        month = int(month)
+
+        if month < 1 or month > 12:
+            raise Http404
+
+        filter_date = datetime(int(year), int(month), 1)
+
+        return TemplateResponse(
+            request,
+            self.get_template(request),
+            self.get_context(request, filter_date=filter_date),
+        )
+
+    def get_context(self, request, *args, **kwargs):
+        from events.filters import EventsFilters
+
+        context = super().get_context(request, *args, **kwargs)
+
+        filter_date = kwargs.get("filter_date", timezone.now()).date()
+
+        month_start = filter_date.replace(day=1)
+
+        previous_month = month_start - relativedelta(months=1)
+        next_month = month_start + relativedelta(months=1)
+
+        month_end = month_start.replace(month=next_month.month)
+
+        events = (
+            EventPage.objects.live()
+            .public()
+            .filter(
+                event_start__gte=month_start,
+                event_start__lt=month_end,
+            )
+            .order_by("event_start")
+        )
+
+        current_month_start = timezone.now().date().replace(day=1)
+
+        page_title_prefix = "What's on in"
+        if filter_date < current_month_start:
+            page_title_prefix = "What happened in"
+
+        # Filtering events
+        events_filters = EventsFilters(request.GET, queryset=events)
+        events = events_filters.qs
+
+        context.update(
+            events_filters=events_filters,
+            page_title=f"{page_title_prefix} {month_start.strftime('%B %Y')}",
+            upcoming_events=events.filter(
+                event_start__gte=timezone.now().date(),
+            ),
+            past_events=events.filter(
+                event_start__lt=timezone.now().date(),
+            ),
+            current_month=month_start,
+            next_month=next_month,
+            previous_month=previous_month,
+        )
         return context
 
 
@@ -33,11 +101,12 @@ class EventPage(ContentPage):
     parent_page_types = ["events.EventsHome"]
     template = "events/event_page.html"
 
-    event_date = models.DateField(
-        help_text="Date and time should be entered based on the time in London/England.",
+    event_start = models.DateTimeField(
+        help_text="Start date/time of the event.",
     )
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    event_end = models.DateTimeField(
+        help_text="End date/time of the event.",
+    )
     online_event_url = fields.URLField(
         blank=True,
         null=True,
@@ -90,11 +159,10 @@ class EventPage(ContentPage):
     content_panels = ContentPage.content_panels + [
         MultiFieldPanel(
             [
-                FieldPanel("event_date"),
                 FieldRowPanel(
                     [
-                        FieldPanel("start_time"),
-                        FieldPanel("end_time"),
+                        FieldPanel("event_start"),
+                        FieldPanel("event_end"),
                     ]
                 ),
             ],
@@ -135,15 +203,12 @@ class EventPage(ContentPage):
             is_online=self.event_type == types.EventType.ONLINE,
             is_in_person=self.event_type == types.EventType.IN_PERSON,
             is_hybrid=self.event_type == types.EventType.HYBRID,
-            event_date=get_event_date(self),
-            event_time=get_event_time(self),
+            event_date_range=get_event_datetime_display_string(self),
         )
 
         return context
 
     @property
     def is_past_event(self) -> bool:
-        adjusted_datetime = timezone.make_aware(
-            dt.combine(self.event_date, self.end_time) + timedelta(hours=1)
-        )
+        adjusted_datetime = self.event_end + timedelta(hours=1)
         return timezone.now() > adjusted_datetime

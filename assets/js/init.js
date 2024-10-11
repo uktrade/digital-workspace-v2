@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/browser";
-import { BrowserTracing } from "@sentry/tracing";
 
 /**
  * Return config from meta html elements.
@@ -24,7 +23,7 @@ function sentryInit() {
     dsn,
     release: config("release"),
     environment: config("environment"),
-    integrations: [new BrowserTracing()],
+    integrations: [Sentry.browserTracingIntegration()],
     tracesSampleRate: Number(config("sentry:browser-traces-sample-rate")),
   });
 }

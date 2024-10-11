@@ -55,12 +55,13 @@
   }
 
   // Adds spacing to the top level content when a flag banner is not present.
-  .dwds > .stack > :not(.govuk-phase-banner) {
+  .dwds > .content-stack > :not(.govuk-phase-banner) {
     margin-block-start: var(--space);
   }
 }
 
 .new-home {
+
   article,
   section {
     display: inline;
