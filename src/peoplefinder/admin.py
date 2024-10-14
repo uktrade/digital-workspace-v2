@@ -4,12 +4,13 @@ from core.admin import admin_site
 from peoplefinder.forms.admin import TeamModelForm
 from peoplefinder.models import LegacyAuditLog, NewNetwork, Person, Team, TeamMember
 from peoplefinder.services.team import TeamService
+from user.models import User
 
 
 class PersonModelAdmin(admin.ModelAdmin):
     """Admin page for the Person model."""
 
-    list_display = ["full_name", "email"]
+    list_display = ["full_name", "email", "is_active"]
     list_filter = ["is_active"]
     search_fields = [
         "first_name",
@@ -21,6 +22,9 @@ class PersonModelAdmin(admin.ModelAdmin):
     @admin.action(description="Mark selected people as active")
     def make_active(self, request, queryset):
         queryset.filter(is_active=False).update(is_active=True, became_inactive=None)
+        User.objects.filter(profile__pk__in=queryset.values("pk")).update(
+            is_active=True
+        )
 
 
 class LegacyAuditLogModelAdmin(admin.ModelAdmin):
