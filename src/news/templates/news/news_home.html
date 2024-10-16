@@ -23,7 +23,7 @@
                     </div>
 
                     {% for news_item in posts %}
-                        {% page_to_engagement news_item %}
+                        {% page_to_engagement news_item hide_updated=True %}
                     {% endfor %}
 
                     {% if posts.paginator.num_pages > 1 %}

@@ -12,7 +12,7 @@ from news.models import NewsPage
 register = template.Library()
 
 
-def page_to_display_context(page: NewsPage | EventPage):
+def page_to_display_context(page: NewsPage | EventPage, hide_updated: bool = False):
     context = {
         "title": page.title,
         "thumbnail": page.preview_image,
@@ -27,9 +27,12 @@ def page_to_display_context(page: NewsPage | EventPage):
     if issubclass(type(page), NewsPage):
         context.update(
             created_date=page.first_published_at,
-            updated_date=page.last_published_at,
             comment_count=page.comment_count,
         )
+        if not hide_updated:
+            context.update(
+                updated_date=page.last_published_at,
+            )
 
     if issubclass(type(page), EventPage):
         context.update(post_title=get_event_datetime_display_string(page))
@@ -50,10 +53,12 @@ class RenderableComponent:
 
 
 @register.simple_tag
-def page_to_engagement(page: NewsPage | EventPage) -> SafeString:
+def page_to_engagement(
+    page: NewsPage | EventPage, hide_updated: bool = False
+) -> SafeString:
     return RenderableComponent(
         "dwds/components/engagement.html",
-        page_to_display_context(page),
+        page_to_display_context(page, hide_updated=hide_updated),
     )
 
 
