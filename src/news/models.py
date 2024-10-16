@@ -252,8 +252,6 @@ class NewsHome(RoutablePageMixin, BasePage):
 
         # Add comment counts
         news_items = news_items.annotate_with_comment_count().order_by(
-            "-pinned_on_home",
-            "home_news_order_pages__order",
             "-first_published_at",
         )
 
