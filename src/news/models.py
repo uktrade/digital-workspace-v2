@@ -127,14 +127,6 @@ class NewsPage(PageWithTopics):
         default=True,
     )
 
-    featured_on_news_home = models.BooleanField(
-        default=False,
-        help_text="If checked, this will cause the page to "
-        "be the featured article on the news homepage. "
-        "Other pages will no longer be marked as the "
-        "featured article.",
-    )
-
     @property
     def search_categories(self):
         return " ".join(
@@ -166,20 +158,6 @@ class NewsPage(PageWithTopics):
         FieldPanel("perm_sec_as_author"),
         FieldPanel("pinned_on_home"),
     ]
-
-    promote_panels = [
-        FieldPanel("featured_on_news_home"),
-    ] + PageWithTopics.promote_panels
-
-    def save(self, *args, **kwargs):
-        # If set as featured article, set all other
-        # articles to be not being
-        if self.featured_on_news_home:
-            NewsPage.objects.exclude(
-                slug=self.slug,
-            ).update(featured_on_news_home=False)
-
-        return super().save(*args, **kwargs)
 
     def get_comments(self):
         return self.comments.filter(parent_id=None).order_by("-posted_date")
@@ -223,13 +201,6 @@ class NewsHome(RoutablePageMixin, BasePage):
         request.is_preview = getattr(request, "is_preview", False)
         context = self.get_context(request)
 
-        featured_page = NewsPage.objects.filter(
-            featured_on_news_home=True,
-        ).first()
-
-        if featured_page:
-            context["featured_page"] = featured_page
-
         response = TemplateResponse(
             request,
             self.get_template(request),
@@ -259,24 +230,19 @@ class NewsHome(RoutablePageMixin, BasePage):
         categories = NewsCategory.objects.all().order_by("category")
         context["categories"] = categories
 
+        news_items = NewsPage.objects.live().public()
+
         # Check for category
         if "category" in kwargs:
             category = NewsCategory.objects.filter(
                 slug=kwargs["category"],
             ).first()
-            news_items = (
-                NewsPage.objects.filter(
-                    news_categories__news_category_id__in=[
-                        category.pk,
-                    ],
-                )
-                .live()
-                .public()
-                .order_by(
-                    "-pinned_on_home",
-                    "home_news_order_pages__order",
-                    "-first_published_at",
-                )
+            context["category"] = category
+
+            news_items = news_items.filter(
+                news_categories__news_category_id__in=[
+                    category.pk,
+                ],
             )
 
             if category.lead_story:
@@ -284,27 +250,10 @@ class NewsHome(RoutablePageMixin, BasePage):
                     pk=category.lead_story.pk,
                 )
 
-            context["category"] = category
-        else:
-            # Get all posts
-            news_items = (
-                NewsPage.objects.live()
-                .public()
-                .order_by(
-                    "-pinned_on_home",
-                    "home_news_order_pages__order",
-                    "-first_published_at",
-                )
-            )
-
-            featured_page = NewsPage.objects.filter(
-                featured_on_news_home=True,
-            ).first()
-
-            if featured_page:
-                news_items = news_items.exclude(
-                    pk=featured_page.pk,
-                )
+        # Add comment counts
+        news_items = news_items.annotate_with_comment_count().order_by(
+            "-first_published_at",
+        )
 
         # Paginate all posts by 2 per page
         paginator = Paginator(news_items, 9)
@@ -319,23 +268,6 @@ class NewsHome(RoutablePageMixin, BasePage):
             # Then return the last page
             posts = paginator.page(paginator.num_pages)
 
-        start = 1
-        total_shown = 10
-
-        if paginator.num_pages < total_shown:
-            total_shown = paginator.num_pages
-
-        if page > 9:
-            start = page - 7
-            total_shown = 10
-
-            if (page + 2) > paginator.num_pages:
-                start = paginator.num_pages - 9
-
-        context["pagination_range"] = range(start, (start + total_shown))
-
-        # "posts" will have child pages; you'll need to use .specific in the templates
-        # in order to access child properties, such as youtube_video_id and subtitle
         context["posts"] = posts
 
         return context
