@@ -7,8 +7,8 @@ from peoplefinder.services.uk_staff_locations import UkStaffLocationService
 
 EVENT_TYPE_ALL_VALUE = ""
 EVENT_TYPE_CHOICES = [
-    (EVENT_TYPE_ALL_VALUE, "All types"),
-    (types.EventType.IN_PERSON, "In person"),
+    (EVENT_TYPE_ALL_VALUE, "All"),
+    (types.EventType.IN_PERSON, "In-person"),
     (types.EventType.ONLINE, "Online"),
 ]
 
@@ -29,7 +29,7 @@ class EventsFilters(django_filters.FilterSet):
             (c, c) for c in UkStaffLocationService().get_uk_staff_location_cities()
         ],
         lookup_expr="exact",
-        widget=forms.widgets.Select,
+        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
         empty_label="All locations",
     )
 
