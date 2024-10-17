@@ -1,6 +1,6 @@
 import logging
 
-from content.models.base_content import BasePage, ContentPage
+from .base_content import BasePage, ContentPage
 
 
 logger = logging.getLogger(__name__)

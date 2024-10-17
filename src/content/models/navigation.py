@@ -2,8 +2,8 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
 
 import dw_design_system.dwds.components as dwds_blocks
-from content.models.base_content import BasePage
-from content.models.search import SearchFieldsMixin
+from content.models import BasePage
+from .search import SearchFieldsMixin
 from extended_search.index import DWIndexedField as IndexedField
 
 
