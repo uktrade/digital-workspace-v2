@@ -119,6 +119,24 @@ body {
             font-weight: var(--font-weight-bold);
         }
     }
+
+    table {
+        text-align: left;
+        border-collapse: collapse;
+        width: 100%;
+
+        caption {
+            text-align: inherit;
+            font-weight: var(--font-weight-bold);
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid var(--color-text);
+            padding: var(--s-3);
+        }
+
+    }
 }
 
 .dwds {
