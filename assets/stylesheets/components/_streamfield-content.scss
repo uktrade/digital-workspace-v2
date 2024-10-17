@@ -1,8 +1,7 @@
 .ws-streamfield-content__caption {
-  padding: govuk-spacing(3);
-
-  @include govuk-font($size: 16);
-  background-color: govuk-colour("light-grey");
+  padding: var(--space);
+  font-size: var(--text-medium);
+  background-color: var(--gds-light-grey);
 }
 
 .ws-streamfield-content__media {
