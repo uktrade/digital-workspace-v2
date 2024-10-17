@@ -10,11 +10,12 @@
   // GDS colours
   --gds-red: #d4351c;
   --gds-yellow: #ffdd00;
+  --gds-light-grey: rgb(243, 242, 241);
 
   // Colour
   --colour-focus: var(--gds-yellow);
-  --color-heading: black;
-  --color-text: black;
+  --color-heading: rgb(33, 36, 39);
+  --color-text: rgb(33, 36, 39);
   --color-text-secondary: #505A5F;
   --color-text-highlight: #fff;
   --color-link: var(--dbt-light-blue);
@@ -71,12 +72,11 @@
   --padding-button-inline: 6px 15px 5px;
 
   // Text size
-  --text-small: var(--s-2);
-  --text-medium: var(--s-1);
-  --text-large: var(--s0);
-  --text-xlarge: var(--s1);
-  --text-xxlarge: var(--s2);
-  --text-xxxlarge: var(--s3);
+  --text-small: var(--s0);
+  --text-medium: var(--s1);
+  --text-large: var(--s2);
+  --text-xlarge: var(--s3);
+  --text-xxlarge: var(--s4);
 
   // Borders and element widths
   --border-width: 3px;
