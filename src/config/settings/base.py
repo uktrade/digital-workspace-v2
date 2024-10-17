@@ -131,6 +131,7 @@ LOCAL_APPS = [
     "country_fact_sheet",
     "events",
     "dw_design_system",
+    "dev_tools",
     "user.apps.UserConfig",
     "pingdom.apps.PingdomConfig",
     "peoplefinder.apps.PeoplefinderConfig",

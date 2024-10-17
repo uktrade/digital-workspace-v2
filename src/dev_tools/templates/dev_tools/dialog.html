@@ -1,0 +1,19 @@
+<dialog id="dev-tools-dialog">
+    <form action="{% url 'dev_tools:change-user' %}?next={{ request.get_full_path }}"
+          method="post"
+          novalidate>
+        {% csrf_token %}
+        {{ change_user_form }}
+        <button type="submit">Change user</button>
+    </form>
+
+    <form method="dialog">
+        <button>Close</button>
+    </form>
+</dialog>
+
+<script>
+function openDevToolsDialog() {
+    document.querySelector("#dev-tools-dialog").showModal();
+}
+</script>
