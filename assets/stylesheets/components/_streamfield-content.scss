@@ -1,3 +1,14 @@
+.ws-streamfield-content__image {
+  margin-left: 0;
+  margin-right: 0;
+
+  img {
+    max-inline-size: 100%;
+    width: 100%;
+    height: auto;
+  }
+}
+
 .ws-streamfield-content__caption {
   padding: var(--space);
   font-size: var(--text-medium);

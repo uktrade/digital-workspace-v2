@@ -7,22 +7,3 @@
     padding-left: var(--space);
     padding-right: var(--space);
 }
-
-.dwds {
-    .streamfield-content-stack {
-        > * + * {
-            margin-block-start: var(--s0);
-        }
-
-        .ws-streamfield-content__image {
-            margin-left: 0;
-            margin-right: 0;
-
-            img {
-                max-inline-size: 100%;
-                width: 100%;
-                height: auto;
-            }
-        }
-    }
-}
