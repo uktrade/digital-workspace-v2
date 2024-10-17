@@ -27,6 +27,11 @@
             .content-main {
                 --content-main-padding: var(--s0);
             }
+
+            .content-image {
+                height: auto;
+                border-radius: unset;
+            }
         }
     }
 }
