@@ -22,7 +22,7 @@ body {
 
 .dwds {
     font-family: var(--font-family-primary);
-    font-size: var(--font-size-m);
+    font-size: var(--text-small);
     line-height: var(--font-lineheight-body);
     font-weight: var(--font-weight-normal);
     color: var(--color-text);
@@ -52,15 +52,21 @@ body {
     }
 
     h1 {
-        font-size: var(--text-xxxlarge);
+        font-size: var(--text-xlarge);
     }
 
     h2 {
-        font-size: var(--text-xxlarge);
+        font-size: var(--text-large);
     }
 
     h3 {
-        font-size: var(--text-xlarge);
+        font-size: var(--text-medium);
+    }
+
+    h4,
+    h5,
+    h6 {
+        font-size: var(--text-small);
     }
 
     a {
