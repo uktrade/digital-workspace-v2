@@ -1,3 +1,13 @@
+.ws-streamfield-content {
+  > p:first-child {
+    margin-top: 0;
+  }
+
+  > p:last-child {
+    margin-bottom: 0;
+  }
+}
+
 .ws-streamfield-content__image {
   margin-left: 0;
   margin-right: 0;
