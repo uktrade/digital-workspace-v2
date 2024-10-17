@@ -6,13 +6,12 @@
     max-inline-size: 100%;
     width: 100%;
     height: auto;
+    border-radius: var(--border-radius);
   }
 }
 
 .ws-streamfield-content__caption {
-  padding: var(--space);
-  font-size: var(--text-medium);
-  background-color: var(--gds-light-grey);
+  font-size: var(--text-small);
 }
 
 .ws-streamfield-content__media {
