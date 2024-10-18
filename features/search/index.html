@@ -1,0 +1,1945 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for the Digital Workspace Service">
+      
+      
+      
+        <link rel="canonical" href="https://github.com/uktrade/digital-workspace-v2/features/search/">
+      
+      
+        <link rel="prev" href="../peoplefinder/">
+      
+      
+        <link rel="next" href="../../permissions-and-groups/">
+      
+      
+      <link rel="icon" href="../../assets/dit-favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.4">
+    
+    
+      
+        <title>Search - Digital Workspace docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bd3936ea.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#search" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Digital Workspace docs" class="md-header__button md-logo" aria-label="Digital Workspace docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Digital Workspace docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Search
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/uktrade/digital-workspace-v2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    uktrade/digital-workspace-v2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../waf/" class="md-tabs__link">
+        
+  
+    
+  
+  CloudFront WAF
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/" class="md-tabs__link">
+          
+  
+    
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  Features
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../permissions-and-groups/" class="md-tabs__link">
+          
+  
+    
+  
+  Permissions and groups
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Digital Workspace docs" class="md-nav__button md-logo" aria-label="Digital Workspace docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Digital Workspace docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/uktrade/digital-workspace-v2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    uktrade/digital-workspace-v2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../waf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CloudFront WAF
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../contributing/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/pull-requests/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pull requests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/releasing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Releasing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Features
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Features
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../peoplefinder/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    People Finder
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Search
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-search-works" class="md-nav__link">
+    How search works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#indexing" class="md-nav__link">
+    Indexing
+  </a>
+  
+    <nav class="md-nav" aria-label="Indexing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#title-headings-excerpt-and-content" class="md-nav__link">
+    Title, headings, excerpt and content
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explicit-fields" class="md-nav__link">
+    Explicit fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stemming" class="md-nav__link">
+    Stemming
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retrieval" class="md-nav__link">
+    Retrieval
+  </a>
+  
+    <nav class="md-nav" aria-label="Retrieval">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-or-multiple-term-and-or-and-phrase-matching" class="md-nav__link">
+    Single or multiple term; AND, OR and Phrase matching
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fuzzy-matching" class="md-nav__link">
+    Fuzzy matching
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filtering" class="md-nav__link">
+    Filtering
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-search-terms" class="md-nav__link">
+    Advanced search terms
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-boosting-is-applied" class="md-nav__link">
+    How boosting is applied
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#document-types" class="md-nav__link">
+    Document types
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../permissions-and-groups/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Permissions and groups
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Permissions and groups
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Custom permissions
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            Custom permissions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/custom-permissions/extended_search/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    extended_search
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/custom-permissions/peoplefinder/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    peoplefinder
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Groups
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Groups
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/country-factsheet-editor/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Country factsheet editor
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/editors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Editors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/events-creators/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Events creators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/events-moderators/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Events moderators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/home-editors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home page editors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/moderators/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Moderators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/news-moderators/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    News moderators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/peoplefinder-beta-testers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Peoplefinder beta testers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/person-admin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Person admin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/site-alert-banner-admin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Site Alert Banner Admin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/team-admin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Team Admin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3_12" id="__nav_5_3_12_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Proposed
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_3_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3_12">
+            <span class="md-nav__icon md-icon"></span>
+            Proposed
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/proposed/feedback-viewer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Feedback viewer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/proposed/navigation-page-admin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Navigation page admin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/proposed/navigation-page-editor/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Navigation page editor
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/proposed/post-page-admin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Post page admin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/proposed/post-page-editor/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Post page editor
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/proposed/search-admin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search admin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/proposed/search-setting-admin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Search setting admin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/proposed/tag-admin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tag admin
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permissions-and-groups/groups/proposed/tag-user/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tag user
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-search-works" class="md-nav__link">
+    How search works
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#indexing" class="md-nav__link">
+    Indexing
+  </a>
+  
+    <nav class="md-nav" aria-label="Indexing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#title-headings-excerpt-and-content" class="md-nav__link">
+    Title, headings, excerpt and content
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explicit-fields" class="md-nav__link">
+    Explicit fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stemming" class="md-nav__link">
+    Stemming
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retrieval" class="md-nav__link">
+    Retrieval
+  </a>
+  
+    <nav class="md-nav" aria-label="Retrieval">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-or-multiple-term-and-or-and-phrase-matching" class="md-nav__link">
+    Single or multiple term; AND, OR and Phrase matching
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fuzzy-matching" class="md-nav__link">
+    Fuzzy matching
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filtering" class="md-nav__link">
+    Filtering
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-search-terms" class="md-nav__link">
+    Advanced search terms
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-boosting-is-applied" class="md-nav__link">
+    How boosting is applied
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#document-types" class="md-nav__link">
+    Document types
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="search">Search</h1>
+<h2 id="how-search-works">How search works</h2>
+<p>Search is handled by <a href="https://opensearch.org/">OpenSearch</a>, an <a href="https://www.elastic.co/">ElasticSearch</a> clone that runs as a service on AWS. Indexing and querying is managed by an extension to <a href="https://docs.wagtail.org/en/stable/topics/search/index.html">Wagtail's in-built search</a> functionality.</p>
+<p>This document outlines how that process is customised; the original process is based on the setup used by <a href="https://github.blog/2023-03-09-how-github-docs-new-search-works/">Github Doc's search</a>.</p>
+<p>This approach balances comprehensiveness (resurn all results) with a nuanced ability to tweak values for searches, so that the most relevant results should be first, and if not it's relatively easy to iteratively improve them.</p>
+<p>If you are simply looking for the boost calculations, head straight for the end of this document.</p>
+<h2 id="indexing">Indexing</h2>
+<p>The first step is to control our search indexing in detail. Each searchable object type is listed below, along with the ORM fields that object contains that merit indexing; that is to say any data on that object that users may at any point use to search, refine or filter in order to find the result they are looking for.</p>
+<h3 id="title-headings-excerpt-and-content">Title, headings, excerpt and content</h3>
+<p>Each content editable text field on every page and content type (as far as possible) will be combined into only 4 fields (actually 8, see the next section); <code>title</code>, <code>headings</code>, <code>excerpt</code> and <code>content</code>. This is to minimise storage and retrieval times for OpenSearch, while separating the content into chunks that may be boosted independently.</p>
+<p>Matches on document titles should be more relevant than matches on heading, which are more relevant than matches on the excerpt, which in turn are more relevant than matches within the body content. At the same time matches anywhere within the content should be equally ranked, and (for simplicity) we treat matches in any heading as equally valid.</p>
+<p>As an example, a page containing headings "How to sign up" and "Quick start" would be indexed as a document with the <code>headings</code> field contents being "How to sign up Quick start".</p>
+<p>Note that fields containing metadata for filtering etc will also be present on the search documents.</p>
+<h3 id="explicit-fields">Explicit fields</h3>
+<p>Each text field on each of the models above will be indexed twice; first as a raw, unprocessed field with an <code>_explicit</code> suffix, and also as a stemmed and procesed field using the standard field name (this "tokenized" approach is the Wagtail default). Non-text fields will be indexed unprocessed with no suffix.</p>
+<p>As an example, a <code>Page</code> model with a <code>title</code> field would be indexed as a <code>Page</code> document in OpenSearch, containing both <code>title</code> and <code>title_explicit</code> fields. The <code>title</code> field will support misspellings and stemmings (see below) while the <code>title_explicit</code> field exists in order to be able to prioritise results containing exact matches.</p>
+<h3 id="stemming">Stemming</h3>
+<p>Stemming maps different forms of the same word to a common "stem" - for example, the English stemmer maps <em>connection</em>, <em>connections</em>, <em>connective</em>, <em>connected</em>, and <em>connecting</em> to <em>connect</em>. So a search for <em>connected</em> would also find documents which only have the other forms.</p>
+<p>We use the standard <a href="https://snowballstem.org/">Snowball stemmer</a> (English version) as recommended by ElasticSearch, OpenSearch and Wagtail, as well as the Github Docs team. It supports English language synonyms as well as stemming different forms of the same word, and it tries to avoid stemming similar words with different meanings as the same stem (even when they're based on the same root word).</p>
+<h2 id="retrieval">Retrieval</h2>
+<p>As we ask OpenSearch to return results (documents) relating to the user's query, we will apply a series of "boost" values to various different configurations of the results. OpenSearch uses these boost values to give each result a score, which is how the results get ranked (note that the score itself doen't matter; what matters is the relative scores of different results).</p>
+<p>Rather than send a single query to OpenSearch, we send a set of similar queries which allows us to ask for various types of match, all ranked according to their likelihood to be what the user is looking for.</p>
+<p>An example is that we may ask for both and exact match and a fuzzy match for the same term in the same query, with the exact match having a higher score. Each search result will only be included once but this approach maximises the chances of:
+ - returning results that match explicit (possibly advanced, complex) queries
+ - returning relevant results to broader, less explicit queries</p>
+<p>In reality each query submitted by the user will result in at least 7 individual search operations, often 19, and perhaps more depending on filtering etc. These will be managed within a single query to OpenSearch, and turnaround times should not suffer as a result.</p>
+<p>Note that this means we have very large DSL strctures representing our search queries to OpenSearch.</p>
+<h3 id="single-or-multiple-term-and-or-and-phrase-matching">Single or multiple term; AND, OR and Phrase matching</h3>
+<p>Searching for a single word or term is relatively simple; we want to search against each field and prioritise the fields with more importance, and where we have to use less processing (thereby giving priority to results that are exactly as typed by the user, rather than e.g. word variants).</p>
+<p>When searching for terms containing multiple word we want to do all the above, but we also want to combine the words so that by default we search using <em>both</em> AND and OR strategies. Results for the AND search will be boosted higher than results for the OR search.</p>
+<p>Effectively a search for "paper aeroplane" should return any document containing either word; at the same time it should rank results containing both "paper" and "aeroplane" higher than results with only the word "paper" or the word "aeroplane".</p>
+<p>In addition, we also want to use "phrase" searching, where the set of words must all appear together in the same order; this is boosted above AND and OR matches as most relevant, and of course even more so if it's matched against unprocessed (explicit) fields.</p>
+<h3 id="fuzzy-matching">Fuzzy matching</h3>
+<p>To take account of misspellings, we'll include <a href="https://docs.wagtail.org/en/stable/topics/search/searching.html#fuzzy-matching">fuzzy matching</a> of terms so that "similar" words will be returned even when they don't exactly match any word or stem.</p>
+<p>Fuzzy matching will only be applied to Page titles and key fields on other records, like Person names.</p>
+<p>In order that these results are always below any non-fuzzy matches, the boost values for these results will be fractional; when multiplied they will relatively lower the relevancy score of the results returned by this search.</p>
+<h3 id="filtering">Filtering</h3>
+<p>Non-text fields like dates etc will be indexed to support the results being filtered by these values.</p>
+<h3 id="advanced-search-terms">Advanced search terms</h3>
+<p>This multi-dimensional approach to search, with a complex set of queries representing various different ways to retrieve each given search term, avoids the need for "advanced search" queries being exposed to the user. As such, users will not benefit from trying to use keyword like "AND" or boolean symbols like "-" in their search queries.</p>
+<h3 id="how-boosting-is-applied">How boosting is applied</h3>
+<p>As per the latest approach implemented by OpenSearch, no boosting is applied at index time - all boost values are calculated at retrieval time and applied in depth to each query.</p>
+<p>TO calculate a query's boost value, the specific boost components for the field type, the analysis type, and the query type (i.e. phrase vs AND vs OR vs fuzzy) are multiplied together. In some cases extra values may be multiplied in to account for e.g. prioritising an exact match of a Tools page over other types.</p>
+<p>This calculated value is then applied to a specific query, and this query is merged with the others in the matrix we're applying to create an overall DSL that's sent to OpenSearch. The bossts are applied to the subqueries, resulting in a set of results for which the scores have all been calculated according to the various vboosts applied.</p>
+<h2 id="document-types">Document types</h2>
+<p>OpenSearch treats each potential result as a "document" - it doesn't distinguish between pages, people, tools, news pages, etc. It's therefore important in our combined search that our boost values work together as a whole, with the boosts appropriately scaled.</p>
+<h1 id="boost-values">Boost values</h1>
+<p>The following are the various base boost values we use in the search setup. When a search request is constructed, these values are multiplied together as appropriate for each specific type of query we send to OpenSearch.</p>
+<p>Please note the intention is that these can be modified in a dedicated part of the admin system; these values are therefore only defaults, and based on the GitHub blog post referenced above.</p>
+<table>
+<thead>
+<tr>
+<th>Boost variable</th>
+<th>Score</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BOOST_TITLE</td>
+<td>4.0</td>
+<td>Any match on a title field</td>
+</tr>
+<tr>
+<td>BOOST_HEADINGS</td>
+<td>3.0</td>
+<td>Any match on a non-title heading field</td>
+</tr>
+<tr>
+<td>BOOST_CONTENT</td>
+<td>1.0</td>
+<td>Any match wihin the content of the document</td>
+</tr>
+<tr>
+<td>BOOST_PHRASE</td>
+<td>10.0</td>
+<td>Exact match on an entire search phrase</td>
+</tr>
+<tr>
+<td>BOOST_AND</td>
+<td>2.5</td>
+<td>AND matches represent stronger links between terms than OR matches, they get this boost</td>
+</tr>
+<tr>
+<td>BOOST_FUZZY</td>
+<td>0.025</td>
+<td>Fuzzy handles basic misspellings gracefully but these results should be low in the list</td>
+</tr>
+<tr>
+<td>BOOST_EXPLICIT</td>
+<td>3.5</td>
+<td>No stemming or synonyms used; matches are on unprocessed text</td>
+</tr>
+<tr>
+<td>BOOST_TOKENIZED</td>
+<td>1.0</td>
+<td>Default; stemming and synonyms used for broader matching</td>
+</tr>
+</tbody>
+</table>
+<h2 id="boost-combinations">Boost combinations</h2>
+<p>These are basic combinations for a generic page type, to illustrate the process.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Match Type</th>
+<th>Boosts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title_explicit</code></td>
+<td>Exact Phrase</td>
+<td>BOOST_EXPLICIT * BOOST_PHRASE * BOOST_TITLE</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>Exact Phrase</td>
+<td>BOOST_PHRASE * BOOST_TITLE</td>
+</tr>
+<tr>
+<td><code>title_explicit</code></td>
+<td>AND</td>
+<td>BOOST_EXPLICIT * BOOST_AND * BOOST_TITLE</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>AND</td>
+<td>BOOST_AND * BOOST_TITLE</td>
+</tr>
+<tr>
+<td><code>title_explicit</code></td>
+<td>OR</td>
+<td>BOOST_EXPLICIT * BOOST_TITLE</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>OR</td>
+<td>BOOST_TITLE</td>
+</tr>
+<tr>
+<td><code>headings_explicit</code></td>
+<td>Exact Phrase</td>
+<td>BOOST_EXPLICIT * BOOST_PHRASE * BOOST_HEADINGS</td>
+</tr>
+<tr>
+<td><code>headings</code></td>
+<td>Exact Phrase</td>
+<td>BOOST_PHRASE * BOOST_HEADINGS</td>
+</tr>
+<tr>
+<td><code>headings_explicit</code></td>
+<td>AND</td>
+<td>BOOST_EXPLICIT * BOOST_AND * BOOST_HEADINGS</td>
+</tr>
+<tr>
+<td><code>headings</code></td>
+<td>AND</td>
+<td>BOOST_AND * BOOST_HEADINGS</td>
+</tr>
+<tr>
+<td><code>headings_explicit</code></td>
+<td>OR</td>
+<td>BOOST_EXPLICIT * BOOST_HEADINGS</td>
+</tr>
+<tr>
+<td><code>headings</code></td>
+<td>OR</td>
+<td>BOOST_HEADINGS</td>
+</tr>
+<tr>
+<td><code>content_explicit</code></td>
+<td>Exact Phrase</td>
+<td>BOOST_EXPLICIT * BOOST_PHRASE * BOOST_CONTENT</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>Exact Phrase</td>
+<td>BOOST_PHRASE * BOOST_CONTENT</td>
+</tr>
+<tr>
+<td><code>content_explicit</code></td>
+<td>AND</td>
+<td>BOOST_EXPLICIT * BOOST_AND * BOOST_CONTENT</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>AND</td>
+<td>BOOST_AND * BOOST_CONTENT</td>
+</tr>
+<tr>
+<td><code>content_explicit</code></td>
+<td>OR</td>
+<td>BOOST_EXPLICIT * BOOST_CONTENT</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>OR</td>
+<td>BOOST_CONTENT</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>OR / Fuzzy</td>
+<td>BOOST_FUZZY</td>
+</tr>
+</tbody>
+</table>
+<h1 id="notes">Notes</h1>
+<p>The rest of this document is notes for implementation and not documentation</p>
+<h2 id="specific-content-types">Specific content types</h2>
+<p>~~These content-specific boosts are applied to results in their own types and multiplied with any other boosts already applied.~~</p>
+<p>Indexed fields are laid out below ~~along with a mapping to the relevbatn search field~~</p>
+<ul>
+<li>ContentPage (N.B. all pages will inherit from / implement these fields)</li>
+<li>title</li>
+<li>body (mapped to "content" and "headings" in search index)</li>
+<li>live filter</li>
+<li>slug filter (??)</li>
+<li>first_published_at filter</li>
+<li>last_published_at filter</li>
+<li>PageTopic</li>
+<li>topic</li>
+<li>PageWithTopics (most pages inherit from here)</li>
+<li>topics</li>
+<li>Network page</li>
+<li>NewsCategory</li>
+<li>category title</li>
+<li>NewsPage</li>
+<li>news_categories</li>
+<li>Document (i.e. PDFs etc) ??</li>
+<li>Person</li>
+<li>full_name</li>
+<li>email</li>
+<li>contact_email</li>
+<li>profile_completness (for ordering)</li>
+<li>has_photo (for ordering)</li>
+<li>roles (job_titles)</li>
+<li>team related field</li>
+<li>town_city_or_region</li>
+<li>regional_building</li>
+<li>international_building</li>
+<li>~~location_in_building~~</li>
+<li>key_skills</li>
+<li>other_key_skills</li>
+<li>fluent_languages</li>
+<li>intermediate_languages</li>
+<li>learning_interests</li>
+<li>other_learning_interests</li>
+<li>networks</li>
+<li>professions</li>
+<li>additional_roles</li>
+<li>other_additional_roles</li>
+<li>buildings</li>
+<li>is_active filter</li>
+<li>country filter</li>
+<li>grade filter</li>
+<li>do_not_work_for_ditc filter ???</li>
+<li>Team</li>
+<li>name</li>
+<li>abbreviation (can we do this with/without spaces to catch e.g. "UK DSE" vs "UKDSE")</li>
+<li>people ?</li>
+<li>description</li>
+<li>leaders ??</li>
+<li>job_titles ?</li>
+<li>Topic ???</li>
+<li>Tool (will this be a page?)</li>
+</ul>
+<h3 id="news">News</h3>
+<ul>
+<li>BOOST_RECENCY</li>
+</ul>
+<h3 id="tools">Tools</h3>
+<ul>
+<li>BOOST_EXACT</li>
+</ul>
+<h3 id="teams">Teams</h3>
+<h3 id="people">People</h3>
+<h1 id="resolved-questions">Resolved Questions</h1>
+<ul>
+<li>Teams - do we want to index e.g. all the job titles within the team? (Y)</li>
+<li>Teams - do we want to index members' names so searhcing a person also returns their team? (N)</li>
+<li>Can we do anything to help find "teams' main pages" as per a piece of feedback? Not a real thing - it was private (but maybe change private to hidden)</li>
+<li>index people against role and team membership</li>
+<li>Index excerpts with their own boost variable</li>
+<li>We add alt tags (actually figcaptions) to content</li>
+<li>people search maybe actually works ok at the moment</li>
+</ul>
+<h1 id="open-questions">Open questions</h1>
+<ul>
+<li>People indexing probably deserves dedicated treatment re fields, boosting, fuzzy matching etc</li>
+<li>What are all the different categories from an indexing point of view (e.g. is "working at DBT" content distinct from general content in any significant way?)</li>
+<li>Do we index excerpts any differently to content? Slightly higher boosted?</li>
+<li>some sort of self-serve debug (why doesnt something turn up)</li>
+<li>people - boosts on having profile pic and profile completeness</li>
+<li>do we need UI to show the matching field - so when you search people against team name you can see why they match</li>
+<li>News needs to prioritise recency - does all content?</li>
+</ul>
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/uktrade/digital-workspace-v2/" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "header.autohide", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.94c44541.min.js"></script>
+      
+        <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      
+        <script src="../../js/tablesort.js"></script>
+      
+    
+  </body>
+</html>
