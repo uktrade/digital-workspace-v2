@@ -62,6 +62,15 @@ body {
         font-size: var(--text-xlarge);
     }
 
+    h4 {
+        font-size: var(--text-large);
+    }
+
+    h5,
+    h6 {
+        font-size: var(--text-medium);
+    }
+
     a {
         color: var(--color-link);
     }
