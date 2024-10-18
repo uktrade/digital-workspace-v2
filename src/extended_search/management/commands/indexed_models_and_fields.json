@@ -699,7 +699,7 @@
         "<SearchField: search_title_explicit>",
         "<SearchField: title>"
     ],
-    "<class 'events.models.EventsHome'>": [
+    "<class 'content.models.EventsHome'>": [
         "<AutocompleteField: title>",
         "<FilterField: content_type>",
         "<FilterField: depth>",
@@ -717,7 +717,7 @@
         "<FilterField: translation_key>",
         "<SearchField: title>"
     ],
-    "<class 'events.models.EventPage'>": [
+    "<class 'content.models.EventPage'>": [
         "<AutocompleteField: title>",
         "<FilterField: content_type>",
         "<FilterField: depth>",
