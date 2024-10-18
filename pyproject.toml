@@ -69,6 +69,7 @@ opentelemetry-sdk-extension-aws = "^2.0.1"
 wagtail-orderable = "^1.2.0"
 django-filter = "^24.3"
 django-csp = "^3.8"
+icalendar = "^6.0.1"
 
 [tool.poetry.group.dev.dependencies]
 # Linters
