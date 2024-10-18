@@ -65,7 +65,7 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-    if "DEV_TOOLS_ENABLED" in settings and settings.DEV_TOOLS_ENABLED:
+    if hasattr(settings, "DEV_TOOLS_ENABLED") and settings.DEV_TOOLS_ENABLED:
         # Dev tools purposefully only active with DEBUG=True clause
         urlpatterns += [
             path("dev-tools/", include("dev_tools.urls", namespace="dev_tools"))
