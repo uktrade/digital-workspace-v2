@@ -25,10 +25,10 @@
                                 <dd class="text-xlarge">
                                     {{ event_date_range }}
                                 </dd>
-                                {% if is_in_person or is_hybrid %}
+                                {% if page.location %}
                                     <dt>Location</dt>
                                     <dd>
-                                        {{ page.location|default_if_none:"To be confirmed" }}
+                                        {{ page.location }}
                                     </dd>
                                     {% if page.location and page.room %}
                                         <dt>Room</dt>
