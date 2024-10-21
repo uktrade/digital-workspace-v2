@@ -56,3 +56,13 @@ select:focus::-ms-value {
 .select--error:focus {
     border-color: #0b0c0c
 }
+
+.dwds-select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("/assets/images/dwds/icons/dropdown_chevron.svg");
+    background-repeat: no-repeat;
+    background-position: calc(100% - var(--s-2));
+    padding-left: var(--s-2);
+}
