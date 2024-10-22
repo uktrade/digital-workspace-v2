@@ -2,42 +2,42 @@
   --page-width: 1250px;
 
   // Brand colours - for re-use in this file only
-  --dbt-red: #CF102D;
-  --dbt-blue: #00285F;
-  --dbt-light-blue: #0063BE;
+  --dbt-red: #cf102d;
+  --dbt-blue: #00285f;
+  --dbt-light-blue: #0063be;
   --dbt-light-blue-rgb: 0, 99, 190;
 
   // GDS colours
   --gds-red: #d4351c;
   --gds-yellow: #ffdd00;
-  --gds-light-grey: rgb(243, 242, 241);
+  --gds-light-grey: #f3f2f1;
 
   // Colour
   --colour-focus: var(--gds-yellow);
-  --color-heading: rgb(33, 36, 39);
-  --color-text: rgb(33, 36, 39);
-  --color-text-secondary: #505A5F;
-  --color-text-highlight: #fff;
+  --color-heading: #212427;
+  --color-text: #212427;
+  --color-text-secondary: #505a5f;
+  --color-text-highlight: #ffffff;
   --color-link: var(--dbt-light-blue);
-  --color-link-hover: #fff;
-  --color-link-active: #fff;
+  --color-link-hover: #ffffff;
+  --color-link-active: #ffffff;
   --color-link-background-active: var(--gds-yellow);
   --color-link-visited: #551a8b;
-  --color-background: white;
-  --color-background-highlight: white;
+  --color-background: #ffffff;
+  --color-background-highlight: #ffffff;
   --color-background-card: #dde5ed;
-  --color-background-comments: #F3F2F1;
-  --color-border: #D6E0E5;
+  --color-background-comments: #f3f2f1;
+  --color-border: #d6e0e5;
   --color-border-dark: var(--dbt-blue);
-  --color-border-highlight: white;
-  --color-button-primary: #1D70B8;
+  --color-border-highlight: #ffffff;
+  --color-button-primary: #1d70b8;
   --color-button-primary-text: var(--color-text-highlight);
   --color-button-bottom-border: #003078;
   --color-button-hover: #003078;
-  --color-button-border-hover: #00081F;
-  --color-button-secondary: white;
-  --color-button-secondary-text: #1D70B8;
-  --color-button-secondary-border: #1D70B8;
+  --color-button-border-hover: #00081f;
+  --color-button-secondary: #ffffff;
+  --color-button-secondary-text: #1d70b8;
+  --color-button-secondary-border: #1d70b8;
   --color-button-secondary-dark-text: #003078;
   --color-button-secondary-dark-border: #003078;
   --color-button-text-focus: #222222;
@@ -45,14 +45,14 @@
   --color-button-border-focus: #222222;
   --color-button-warning: var(--gds-red);
   --color-button-warning-hover: hsl(from var(--color-button-warning) h s calc(l - 20)); // GDS designs for hover #4D0A00
-  --color-button-warning-text: white;
-  --color-button-warning-border: #8A1200;
-  --color-button-transactional: #00703C;
-  --color-button-transactional-hover: #005A30;
-  --color-button-transactional-border: #00422A;
-  --color-button-transactional-text: white;
+  --color-button-warning-text: #ffffff;
+  --color-button-warning-border: #8a1200;
+  --color-button-transactional: #00703c;
+  --color-button-transactional-hover: #005a30;
+  --color-button-transactional-border: #00422a;
+  --color-button-transactional-text: #ffffff;
   --color-icon: var(--dbt-blue);
-  --color-hr: #7D8E96;
+  --color-hr: #7d8e96;
   --color-selected-radio: var(--color-button-text-focus);
 
   // Size
@@ -107,7 +107,7 @@
 
   // Card
   --card-min-width: 15rem;
-  --card-bg-white: white;
+  --card-bg-white: #ffffff;
   --card-bg-blue: var(--dbt-blue);
   --card-bg-red: var(--dbt-red);
 }
