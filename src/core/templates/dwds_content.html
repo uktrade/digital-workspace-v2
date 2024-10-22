@@ -16,7 +16,7 @@
                 {% endblock pre_content %}
                 {% block page_title %}
                     <h1>{% firstof page_title page.title %}</h1>
-                    {% if page.description %}<p class="text-xlarge">{{ page.description }}</p>{% endif %}
+                    {% if page.description %}<p class="text-medium">{{ page.description }}</p>{% endif %}
                 {% endblock page_title %}
                 {% block bookmark %}
                     {% if page %}
