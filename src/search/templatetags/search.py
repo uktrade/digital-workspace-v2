@@ -138,7 +138,7 @@ def get_count(context, category, query):
     if not hasattr(request, "extended_search_count_cache"):
         request.extended_search_count_cache = {}
 
-    cached_count = request.search_count_cache.get(category, None)
+    cached_count = request.extended_search_count_cache.get(category, None)
     if cached_count is not None:
         return cached_count
 
