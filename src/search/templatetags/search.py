@@ -2,7 +2,6 @@ from typing import Literal, Tuple
 
 from django import template
 from django.conf import settings
-from django.core.cache import cache
 from django.core.paginator import Paginator
 
 from search import search as search_vectors
