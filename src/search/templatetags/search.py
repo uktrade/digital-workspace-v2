@@ -136,8 +136,8 @@ def get_count(context, category, query):
     request = context["request"]
 
     cache_key = f"{category}_{query}"
-    cache_value = cache.get(cache_key)
-    if cache_value:
+    cache_value = cache.get(cache_key, None)
+    if cache_value is not None:
         return cache_value
 
     search_vector = SEARCH_VECTORS[category](request)
