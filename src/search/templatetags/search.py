@@ -135,20 +135,17 @@ def autocomplete(request, query):
 def get_count(context, category, query):
     request = context["request"]
 
-    cache_key = f"{category}_{query}"
-    cache_value = cache.get(cache_key, None)
-    if cache_value is not None:
-        return cache_value
+    if not hasattr(request, "extended_search_count_cache"):
+        request.extended_search_count_cache = {}
+
+    cached_count = request.search_count_cache.get(category, None)
+    if cached_count is not None:
+        return cached_count
 
     search_vector = SEARCH_VECTORS[category](request)
     hits = search_vector.search(query).count()
 
-    # Cache the result for 5s as it is only useful for this request.
-
-    # DEV NOTE (remove before merge):
-    # There's the possibility that someone makes the same query in the same
-    # time, but if so, the count is likely the same so it's not a big issue.
-    cache.set(cache_key, hits, 5)
+    request.extended_search_count_cache[category] = hits
     return hits
 
 
