@@ -2,6 +2,7 @@ from typing import Literal, Tuple
 
 from django import template
 from django.conf import settings
+from django.core.cache import cache
 from django.core.paginator import Paginator
 
 from search import search as search_vectors
@@ -53,7 +54,7 @@ def search_category(
 
     search_vector = SEARCH_VECTORS[category](request)
     search_results = search_vector.search(query)
-    search_results_count = search_results.count()
+    search_results_count = get_count(context, category, query)
 
     if limit:
         search_results = search_results[: int(limit)]
@@ -131,21 +132,36 @@ def autocomplete(request, query):
     return search_results
 
 
-@register.simple_tag(takes_context=True)
-# @silk_profile(name="Search.TemplateTag.count")
-def search_count(context, *, category):
+def get_count(context, category, query):
     request = context["request"]
-    query = context["search_query"]
+
+    cache_key = f"{category}_{query}"
+    cache_value = cache.get(cache_key)
+    if cache_value:
+        return cache_value
 
     search_vector = SEARCH_VECTORS[category](request)
     hits = search_vector.search(query).count()
 
+    # Cache the result for 5s as it is only useful for this request.
+
+    # DEV NOTE (remove before merge):
+    # There's the possibility that someone makes the same query in the same
+    # time, but if so, the count is likely the same so it's not a big issue.
+    cache.set(cache_key, hits, 5)
+    return hits
+
+
+@register.simple_tag(takes_context=True)
+# @silk_profile(name="Search.TemplateTag.count")
+def search_count(context, *, category):
+    query = context["search_query"]
+    hits = get_count(context, category, query)
+
     # combined total for not just pages but people and teams
     if category == "all_pages":
-        search_vector = SEARCH_VECTORS["people"](request)
-        hits += search_vector.search(query).count()
-        search_vector = SEARCH_VECTORS["teams"](request)
-        hits += search_vector.search(query).count()
+        hits += get_count(context, "people", query)
+        hits += get_count(context, "teams", query)
 
     return hits
 
