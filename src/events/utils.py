@@ -6,7 +6,7 @@ from core.utils import format_time
 
 
 if TYPE_CHECKING:
-    from content.models import EventPage
+    from events.models import EventPage
 
 
 def get_event_datetime_display_string(event: "EventPage") -> str:

@@ -7,7 +7,7 @@ from .base_content import (
     Theme,
 )
 from .blog import BlogIndex, BlogPost
-from .events import EventPage, EventsHome
+# from .events import EventPage, EventsHome
 from .navigation import NavigationPage
 from .search import (
     SearchExclusionPageLookUp,
@@ -30,8 +30,8 @@ __all__ = [
     "BlogIndex",
     "BlogPost",
     # events
-    "EventPage",
-    "EventsHome",
+    # "EventPage",
+    # "EventsHome",
     # navigation
     "NavigationPage",
     # search

@@ -7,7 +7,7 @@ from wagtail.models import Page
 from about_us.models import AboutUsHome
 from content.models import BlogIndex, ContentPage
 from country_fact_sheet.models import CountryFactSheetHome
-from content.models import EventsHome
+from events.models import EventsHome
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome

@@ -2,7 +2,7 @@ from django import template
 from django.template.loader import render_to_string
 from django.utils.safestring import SafeString
 
-from content.models import EventPage
+from events.models import EventPage
 from events.utils import (
     get_event_datetime_display_string,
 )

@@ -20,10 +20,11 @@ from wagtail.snippets.models import register_snippet
 from wagtail_adminsortable.models import AdminSortable
 from wagtailorderable.models import Orderable
 
-from content.models import BasePage, ContentPage, EventPage
+from content.models import BasePage, ContentPage
 from core.models import fields
 from core.models.models import SiteAlertBanner
 from core.panels import PageSelectorPanel
+from events.models import EventPage
 from home.forms import HomePageForm
 from home.validators import validate_home_priority_pages
 from interactions import get_bookmarks
