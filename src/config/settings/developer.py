@@ -1,4 +1,15 @@
+import environ
+import os
+
 from .base import *  # noqa
+
+
+# Read environment variables using `django-environ`, use `.env` if it exists
+env = environ.Env()
+env_file = os.path.join(PROJECT_ROOT_DIR, ".env")
+if os.path.exists(env_file):
+    env.read_env(env_file)
+env.read_env()
 
 DEBUG = True
 
@@ -38,7 +49,7 @@ except ModuleNotFoundError:
     ...
 
 
-DEV_TOOLS_ENABLED = True
+DEV_TOOLS_ENABLED = env.bool("DEV_TOOLS_ENABLED", True)
 
 if DEV_TOOLS_ENABLED:
     # remove Django Staff SSO Client for local login

@@ -1,9 +1,12 @@
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from django.utils.http import urlencode
 from icalendar import Calendar, Event, vCalAddress, vText
 
 from .models import EventPage
@@ -68,21 +71,37 @@ def get_user_token(user):
 
 
 def ical_links(request):
-    return render(request, "events/calendar_links.html", {"token": get_user_token(request.user)})
+    token = get_user_token(request.user)
+    feed_url = request.build_absolute_uri(reverse("ical_feed"))
+    full_uri = f"{feed_url}?tk={token}&u={request.user.profile.slug}"
+    full_uri_encoded = f"{feed_url}%3Ftk={token}%26u={request.user.profile.slug}"
+    return render(
+        request,
+        "events/calendar_links.html",
+        {
+            "token": token,
+            "raw_uri": full_uri,
+            "encoded_uri": full_uri_encoded,
+        },
+    )
 
 
 # This end point needs to be covered by a unique auth mechanism to allow calendar
 # clients to update their feeds without SSO; it uses a token and ought to be
 # behind the VPN protection as well
 def ical_feed(request):
-    user := request.user
-    if user.is_anonymous():
-        uuid = request.GET.get("u", None)
-        user = User.objects.get(uuid=uuid)
-
+    user = request.user
     token = request.GET.get("tk", None)
-    if user is None or token != get_user_token(request.user):
-        return HttpResponse('Unauthorized', status=401)
+    if user.is_anonymous:
+        uuid = request.GET.get("u", None)
+        # some of our calendar link hacks double-parse the URL and can lose
+        # GEt vars after '&' so this is to get around that
+        if uuid is None and "." in token:
+            token, uuid = token.split(".")
+        user = get_user_model().objects.get(profile__slug=uuid)
+
+    if user is None or token != get_user_token(user):
+        return HttpResponse("Unauthorized", status=401)
 
     cal = Calendar()
     cal.add("prodid", "-//intranet-all-events//dbt.gov.uk//")

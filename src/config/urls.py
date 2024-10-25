@@ -53,8 +53,8 @@ urlpatterns = [
     # DW Design System
     path("dwds/", include(dwds_urlpatterns)),
     # iCal feed for testing
-    path("ical/", ical_links),
-    path("ical/all/", ical_feed),
+    path("ical/", ical_links, name="ical_links"),
+    path("ical/all/", ical_feed, name="ical_feed"),
 ]
 
 # If django-silk is installed, add its URLs
