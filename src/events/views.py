@@ -1,7 +1,9 @@
 from datetime import timedelta
 
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from icalendar import Calendar, Event, vCalAddress, vText
 
 from .models import EventPage
@@ -55,7 +57,33 @@ def to_ical(event: EventPage) -> Event:
     return ical_event
 
 
+def get_user_token(user):
+    if existing_token := user.profile.ical_token:
+        return existing_token
+
+    token = get_random_string(length=80)
+    user.profile.ical_token = token
+    user.profile.save()
+    return token
+
+
+def ical_links(request):
+    return render(request, "events/calendar_links.html", {"token": get_user_token(request.user)})
+
+
+# This end point needs to be covered by a unique auth mechanism to allow calendar
+# clients to update their feeds without SSO; it uses a token and ought to be
+# behind the VPN protection as well
 def ical_feed(request):
+    user := request.user
+    if user.is_anonymous():
+        uuid = request.GET.get("u", None)
+        user = User.objects.get(uuid=uuid)
+
+    token = request.GET.get("tk", None)
+    if user is None or token != get_user_token(request.user):
+        return HttpResponse('Unauthorized', status=401)
+
     cal = Calendar()
     cal.add("prodid", "-//intranet-all-events//dbt.gov.uk//")
     cal.add("version", "2.0")

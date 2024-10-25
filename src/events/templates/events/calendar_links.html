@@ -1,0 +1,4 @@
+<h1>PoC Calendar links</h1>
+<ul>
+    <li><a href="{{ request.build_absolute_uri(reverse('ical_feed')) }}?tk={{ token }}&u={{ request.user.profile.uuid }}">Raw iCal URL (all events + dummy)</a></li>
+</ul>

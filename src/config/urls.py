@@ -12,7 +12,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from core.admin import admin_site
 from core.urls import urlpatterns as core_urlpatterns
 from dw_design_system.urls import urlpatterns as dwds_urlpatterns
-from events.views import ical_feed
+from events.views import ical_feed, ical_links
 from peoplefinder.urls import api_urlpatterns, people_urlpatterns, teams_urlpatterns
 
 
@@ -53,6 +53,7 @@ urlpatterns = [
     # DW Design System
     path("dwds/", include(dwds_urlpatterns)),
     # iCal feed for testing
+    path("ical/", ical_links),
     path("ical/all/", ical_feed),
 ]
 
