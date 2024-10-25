@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
 from django.views.generic.base import View
 from notifications_python_client.notifications import NotificationsAPIClient
-from sentry_sdk import capture_message
+from sentry_sdk import capture_exception
 from wagtail.admin.views.generic.base import WagtailAdminTemplateMixin
 from wagtail.models import Page
 from wagtail.search.backends import get_search_backend
@@ -30,7 +30,6 @@ def deactivated(request):
 
 
 def view_404(request, exception):
-    capture_message("404 error - page not found!", level="error")
     return TemplateResponse(
         request,
         "core/404.html",
@@ -40,7 +39,6 @@ def view_404(request, exception):
 
 
 def view_500(request):
-    capture_message("500 error!", level="error")
     return TemplateResponse(
         request,
         "core/500.html",
@@ -50,7 +48,7 @@ def view_500(request):
 
 
 def view_403(request, exception):
-    capture_message("403 error!", level="error")
+    capture_exception(exception)
     return TemplateResponse(
         request,
         "core/403.html",
@@ -60,12 +58,12 @@ def view_403(request, exception):
 
 
 def view_400(request, exception):
-    capture_message("400 error!", level="error")
+    capture_exception(exception)
     return TemplateResponse(
         request,
         "core/400.html",
         {"page_problem_form": PageProblemFoundForm()},
-        status=403,
+        status=400,
     )
 
 
