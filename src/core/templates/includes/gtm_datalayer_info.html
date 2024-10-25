@@ -1,4 +1,4 @@
-<script>
+<script nonce="{{request.csp_nonce}}">
 initial_page_data = {
     {% for k, v in FEATURE_FLAGS.items %}"feature_flag_{{ forloop.counter }}": "{{ k }}: {{ v|lower }}",
     {% endfor %}

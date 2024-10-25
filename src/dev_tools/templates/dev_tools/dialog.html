@@ -12,7 +12,7 @@
     </form>
 </dialog>
 
-<script>
+<script nonce="{{request.csp_nonce}}">
 function openDevToolsDialog() {
     document.querySelector("#dev-tools-dialog").showModal();
 }

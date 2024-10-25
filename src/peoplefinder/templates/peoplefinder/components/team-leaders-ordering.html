@@ -1,6 +1,6 @@
 {{ team_leaders_order_component|json_script:'team-leaders-order-component' }}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
     document.addEventListener('alpine:init', () => {
         Alpine.data('team_leaders_order_component', () => ({
             // Data

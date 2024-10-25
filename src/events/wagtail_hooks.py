@@ -6,7 +6,7 @@ from wagtail import hooks
 def editor_js():
     return mark_safe(  # noqa: S308
         """
-        <script>
+        <script nonce="{{request.csp_nonce}}">
             window.addEventListener('DOMContentLoaded', (event) => {
                 // Get the event type drop down
                 var event_type_field = document.getElementById("id_event_type")

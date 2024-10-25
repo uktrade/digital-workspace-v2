@@ -94,7 +94,7 @@
                     </p>
                 </div>
             </form>
-            <script>
+            <script nonce="{{request.csp_nonce}}">
                 function setCommentId(commentForm, commentId) {
                     commentForm.elements["in_reply_to"].value = commentId;
                 }

@@ -18,7 +18,7 @@
     {% endif %}
 </div>
 
-<script>
+<script nonce="{{request.csp_nonce}}">
     function searchFeedbackData(formData) {
         const searchData = JSON.parse(formData.get("search_data") || {});
         const hits = {};

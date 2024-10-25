@@ -36,7 +36,7 @@
             width: 100%;
         }
     </style>
-    <script>
+    <script nonce="{{request.csp_nonce}}">
         function getComponentContext(hx_event) {
             return hx_event.srcElement.parentElement.getElementsByClassName('component-context')[0].value
         }

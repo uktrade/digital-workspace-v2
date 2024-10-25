@@ -29,7 +29,7 @@
 {% endblock secondary_content %}
 
 {% block scripts %}
-    <script>
+    <script nonce="{{request.csp_nonce}}">
     function navigationFeedbackData(formData) {
         formData.set('page_url','{{page.url}}');
     }

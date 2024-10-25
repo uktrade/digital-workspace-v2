@@ -735,11 +735,11 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
 
 # Content Security Policy header settings
-CSP_DEFAULT_SRC = ("'none'",)
+CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'none'",)
 CSP_SCRIPT_SRC_ATTR = ("'none'",)
-CSP_SCRIPT_SRC_ELEM = ("'none'",)
-CSP_IMG_SRC = ("'none'",)
+CSP_SCRIPT_SRC_ELEM = ("'self'",)
+CSP_IMG_SRC = ("'self'",)
 CSP_MEDIA_SRC = ("'none'",)
 CSP_FRAME_SRC = ("'none'",)
 CSP_FONT_SRC = ("'none'",)
@@ -747,3 +747,9 @@ CSP_CONNECT_SRC = ("'none'",)
 
 CSP_REPORT_ONLY = True
 CSP_REPORT_URI = env("CSP_REPORT_URI", default=None)
+CSP_STYLE_SRC_ELEM = ("'self'", "https://fonts.googleapis.com")
+CSP_INCLUDE_NONCE_IN = [
+    "style-src",
+    'style-src-elem',
+    "script-src-elem",
+]

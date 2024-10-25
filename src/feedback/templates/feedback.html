@@ -38,7 +38,7 @@ Feedback component
         {% feedback_submit form_id=form_id initial=initial %}
     {% endif %}
 
-    <script>
+    <script nonce="{{request.csp_nonce}}">
         const dialog = document.querySelector("#{{ prefix }}-feedback-dialog");
         const form = dialog.querySelector("form");
         const header = document.querySelector("#{{ prefix }}-feedback .feedback-header");
