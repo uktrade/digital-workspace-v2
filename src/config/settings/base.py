@@ -742,14 +742,14 @@ CSP_SCRIPT_SRC_ELEM = ("'self'",)
 CSP_IMG_SRC = ("'self'",)
 CSP_MEDIA_SRC = ("'none'",)
 CSP_FRAME_SRC = ("'none'",)
-CSP_FONT_SRC = ("'none'",)
+CSP_FONT_SRC = ("'self'", "http://www.w3.org/", "https://fonts.gstatic.com",)
 CSP_CONNECT_SRC = ("'none'",)
 
 CSP_REPORT_ONLY = True
-CSP_REPORT_URI = env("CSP_REPORT_URI", default=None)
-CSP_STYLE_SRC_ELEM = ("'self'", "https://fonts.googleapis.com")
+CSP_REPORT_URI = env("CSP_REPORT_URI", default=None,)
+CSP_STYLE_SRC_ELEM = ("'self'", "https://fonts.googleapis.com",)
 CSP_INCLUDE_NONCE_IN = [
-    "style-src",
+    'style-src',
     'style-src-elem',
-    "script-src-elem",
+    'script-src-elem',
 ]
