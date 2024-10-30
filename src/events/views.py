@@ -93,10 +93,6 @@ def ical_feed(request):
     token = request.GET.get("tk", None)
     if user.is_anonymous:
         uuid = request.GET.get("u", None)
-        # some of our calendar link hacks double-parse the URL and can lose
-        # GEt vars after '&' so this is to get around that
-        if uuid is None and "." in token:
-            token, uuid = token.split(".")
         user = get_user_model().objects.get(profile__slug=uuid)
 
     if user is None or token != get_user_token(user):
