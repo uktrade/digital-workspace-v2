@@ -593,6 +593,7 @@ DLFA_INCLUDE_RAW_LOG = True
 
 # Remove SSO protection from health check and Hawk authed URLs
 AUTHBROKER_ANONYMOUS_PATHS = (
+    "/ical/all/",
     "/pingdom/ping.xml",
     "/peoplefinder/api/activity-stream/",
     "/peoplefinder/api/person-api/",
