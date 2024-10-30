@@ -7,6 +7,7 @@ initial_page_data = {
     "page_type": "{{ self.content_type.name|default_if_none:"NA" }}",
     "page_topics": "{% for topic in self.topics.all %}{{ topic.topic.title }} {% endfor %}",
     "page_tags": "{% for tag in self.tag_set %}{{ tag.name }} {% endfor %}",
+    "page_content_owner": "{{ self.content_owner.slug|default_if_none:"NA" }}",
 
     "user_profile_slug": "{{ request.user.profile.slug }}",
     {% for role in request.user.profile.roles.all %}
