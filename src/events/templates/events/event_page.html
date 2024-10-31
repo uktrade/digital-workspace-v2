@@ -8,7 +8,7 @@
 {% block primary_content %}
     <div class="content-sidebar-right">
         <div>
-            <div class="content-stack streamfield-content-stack">
+            <div class="content-stack">
                 {% image page.preview_image fill-465x265 width=None height=None style="border-radius: var(--border-radius);" %}
                 {% for block in page.body %}
                     {% include_block block %}
@@ -25,10 +25,10 @@
                                 <dd class="text-xlarge">
                                     {{ event_date_range }}
                                 </dd>
-                                {% if is_in_person or is_hybrid %}
+                                {% if page.location %}
                                     <dt>Location</dt>
                                     <dd>
-                                        {{ page.location|default_if_none:"To be confirmed" }}
+                                        {{ page.location }}
                                     </dd>
                                     {% if page.location and page.room %}
                                         <dt>Room</dt>

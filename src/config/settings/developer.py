@@ -1,5 +1,6 @@
 from .base import *  # noqa
 
+
 DEBUG = True
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True

@@ -33,7 +33,6 @@ def styles(request: HttpRequest) -> HttpResponse:
             "--s-5",
         ],
         "text_sizes": [
-            "--text-xxxlarge",
             "--text-xxlarge",
             "--text-xlarge",
             "--text-large",

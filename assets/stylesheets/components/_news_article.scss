@@ -1,7 +1,9 @@
 .news_comments {
+  margin-top: var(--space);
   padding: var(--space);
   background-color: var(--color-background-comments);
   border-radius: var(--border-radius);
+  word-wrap: break-word;
 }
 
 .ws-category-lead-story {
