@@ -98,6 +98,23 @@ a.dwds-button,
         padding: var(--padding-button-inline);
     }
 
+    &--navigation-active,
+    &--navigation-inactive {
+        border-radius: var(--s2);
+    }
+
+    &--navigation-active {
+        background-color: var(--color-button-navigation-background-active);
+
+        &:hover {
+            border-color: var(--color-button-navigation-background-active);
+        }
+
+        &:active {
+            top: 0;
+        }
+    }
+
     &:active:before {
         top: -4px;
     }
