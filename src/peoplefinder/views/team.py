@@ -8,7 +8,7 @@ from django.db.models import Avg, Q, QuerySet
 from django.http import HttpRequest, HttpResponseNotFound
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.views.generic.detail import DetailView
@@ -48,8 +48,8 @@ class TeamDetailView(DetailView, PeoplefinderView):
             if self.available_sub_views:
                 sub_view = self.available_sub_views[0]
 
-            # Redirect to this view with /?sub_view={sub_view}
-            return redirect(f"{self.request.path}?sub_view={sub_view}")
+            team_detail_path = reverse("team-view", args=[self.object.slug])
+            return redirect(f"{team_detail_path}?sub_view={sub_view}")
         return response
 
     @cached_property
