@@ -541,6 +541,12 @@ class Person(Indexed, models.Model):
     )
     login_count = models.IntegerField(default=0)
     profile_completion = models.IntegerField(default=0)
+    ical_token = models.CharField(
+        verbose_name="Individual token for iCal feeds",
+        blank=True,
+        null=True,
+        max_length=80,
+    )
 
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
