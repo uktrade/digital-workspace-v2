@@ -11,30 +11,37 @@
 
 {% block primary_content %}
     <div class="content-stack large">
-        <div class="content_page">
-            <h1>{{ page_title }}</h1>
-            {% if team.abbreviation %}<p class="text-medium">{{ team.abbreviation }}</p>{% endif %}
-
-            <div class="govuk-body" data-testid="description">{{ team.description|markdown }}</div>
-            <div>
-                {% if perms.peoplefinder.change_team %}
-                    <a class="govuk-button govuk-button--secondary"
-                       href="{% url 'team-edit' team.slug %}"
-                       data-testid="edit-team">Edit team</a>
-                {% endif %}
-                {% if perms.peoplefinder.add_team %}
-                    <a class="govuk-button govuk-button--secondary"
-                       href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
-                {% endif %}
+        <div class="dwds-content-item-card no-shadow">
+            <div class="dwds-content-list content-item">
+                <div class="content-main">
+                    <div class="content-body content-body-space-padding content-stack">
+                        <h1>{{ page_title }}</h1>
+                        {% if team.abbreviation %}<p class="text-small">{{ team.abbreviation }}</p>{% endif %}
+                        <div class="text-small" data-testid="description">{{ team.description|markdown }}</div>
+                        <div>
+                            {% if perms.peoplefinder.change_team %}
+                                <a class="dwds-button dwds-button--secondary dwds-button--inline"
+                                   href="{% url 'team-edit' team.slug %}"
+                                   data-testid="edit-team">Edit team</a>
+                            {% endif %}
+                            {% if perms.peoplefinder.add_team %}
+                                <a class="dwds-button dwds-button--secondary dwds-button--inline"
+                                   href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
+                            {% endif %}
+                        </div>
+                        {% if perms.peoplefinder.delete_team %}
+                            {% if can_team_be_deleted %}
+                                <a class="dwds-button dwds-button--warning dwds-button--inline"
+                                   href="{% url 'team-delete' team.slug %}">Delete team</a>
+                            {% else %}
+                                <div class="text-small">
+                                    {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            {% if perms.peoplefinder.delete_team %}
-                {% if can_team_be_deleted %}
-                    <a class="govuk-button govuk-button--warning"
-                       href="{% url 'team-delete' team.slug %}">Delete team</a>
-                {% else %}
-                    {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
-                {% endif %}
-            {% endif %}
         </div>
 
         <h2>Team leader{{ team.leader_count|pluralize }}</h2>
@@ -53,13 +60,10 @@
         </div>
 
         {% if sub_teams %}
-            <h2 class="govuk-heading-m">Teams within {{ team.short_name }}</h2>
-            <a class="govuk-link inline-block"
-               href="{% url 'team-people' team.slug %}">View all people</a>
-            <a class="govuk-link inline-block"
-               href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
-            <a class="govuk-link inline-block"
-               href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
+            <h2>Teams within {{ team.short_name }}</h2>
+            <a href="{% url 'team-people' team.slug %}">View all people</a>
+            <a href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
+            <a href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
             <div class="content-grid grid-cards-auto-fill">
                 {% for team in sub_teams %}
                     <div class="dwds-content-item-card">
@@ -75,7 +79,7 @@
             </div>
         {% endif %}
         {% if members %}
-            <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
+            <h2>People in {{ team.short_name }}</h2>
             <div class="content-grid grid-cards-auto-fill">
                 {% for member in members %}
                     <div class="dwds-content-item-card">
