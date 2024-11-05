@@ -38,9 +38,17 @@
         </div>
 
         <h2>Team leader{{ team.leader_count|pluralize }}</h2>
-        <div>
+        <div class="content-grid grid-cards-auto-fill">
             {% for member in team.leaders %}
-                {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                <div class="dwds-content-item-card">
+                    <div class="dwds-content-list content-item">
+                        <div class="content-main">
+                            <div class="content-body content-body-space-padding content-stack large">
+                                {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
         </div>
 
@@ -52,17 +60,35 @@
                href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
             <a class="govuk-link inline-block"
                href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
-            {% for team in sub_teams %}
-                <li>{% include 'peoplefinder/components/team-card.html' with team=team %}</li>
-            {% endfor %}
+            <div class="content-grid grid-cards-auto-fill">
+                {% for team in sub_teams %}
+                    <div class="dwds-content-item-card">
+                        <div class="dwds-content-list content-item">
+                            <div class="content-main">
+                                <div class="content-body content-body-space-padding content-stack large">
+                                    {% include 'peoplefinder/components/team-card.html' with team=team %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
         {% if members %}
             <h2 class="govuk-heading-m">People in {{ team.short_name }}</h2>
-            <ul class="pf-team-member-cards">
+            <div class="content-grid grid-cards-auto-fill">
                 {% for member in members %}
-                    <li>{% include 'peoplefinder/components/team-member-card.html' with member=member %}</li>
+                    <div class="dwds-content-item-card">
+                        <div class="dwds-content-list content-item">
+                            <div class="content-main">
+                                <div class="content-body content-body-space-padding content-stack large">
+                                    {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% endif %}
 
         {% if perms.peoplefinder.change_team and perms.peoplefinder.view_auditlog %}
