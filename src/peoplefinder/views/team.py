@@ -1,4 +1,3 @@
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import SuspiciousOperation
 from django.db import models, transaction
