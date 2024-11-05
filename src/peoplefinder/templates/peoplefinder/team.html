@@ -47,10 +47,17 @@
             </div>
         </div>
 
-        {% if team.leader_count %}
-            <h2>Team leader{{ team.leader_count|pluralize }}</h2>
+        <div class="dwds-button-group">
+            {% for sub_view in sub_views %}
+                <a class="dwds-button dwds-button--inline {% if sub_view.value != current_sub_view %}dwds-button--secondary{% endif %}"
+                   href="{% url 'team-view' team.slug %}?sub_view={{ sub_view.value }}">{{ sub_view.label }}</a>
+            {% endfor %}
+        </div>
+
+        {% if leaders %}
+            <h2>Team leader{{ leaders|length|pluralize }}</h2>
             <div class="content-grid grid-cards-auto-fill">
-                {% for member in team.leaders %}
+                {% for member in leaders %}
                     <div class="dwds-content-item-card">
                         <div class="dwds-content-list content-item">
                             <div class="content-main">
@@ -64,11 +71,8 @@
             </div>
         {% endif %}
 
-        {% if sub_teams %}
+        {% if current_sub_view.value == "sub-teams" and sub_teams %}
             <h2>Teams within {{ team.short_name }}</h2>
-            <a href="{% url 'team-people' team.slug %}">View all people</a>
-            <a href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
-            <a href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
             <div class="content-grid grid-cards-auto-fill">
                 {% for team in sub_teams %}
                     <div class="dwds-content-item-card">
@@ -83,7 +87,8 @@
                 {% endfor %}
             </div>
         {% endif %}
-        {% if members %}
+
+        {% if current_sub_view.value == "people" and members %}
             <h2>People in {{ team.short_name }}</h2>
             <div class="content-grid grid-cards-auto-fill">
                 {% for member in members %}

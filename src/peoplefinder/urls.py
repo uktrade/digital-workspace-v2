@@ -33,8 +33,6 @@ from peoplefinder.views.team import (
     TeamDeleteView,
     TeamDetailView,
     TeamEditView,
-    TeamPeopleOutsideSubteamsView,
-    TeamPeopleView,
     TeamTreeView,
 )
 
@@ -150,12 +148,6 @@ teams_urlpatterns = [
     path("<slug>/edit", TeamEditView.as_view(), name="team-edit"),
     path("<slug>/delete", TeamDeleteView.as_view(), name="team-delete"),
     path("<slug>/tree", TeamTreeView.as_view(), name="team-tree"),
-    path("<slug>/people", TeamPeopleView.as_view(), name="team-people"),
-    path(
-        "<slug>/people-outside-subteams",
-        TeamPeopleOutsideSubteamsView.as_view(),
-        name="team-people-outside-subteams",
-    ),
     path(
         "<slug>/add-new-subteam",
         TeamAddNewSubteamView.as_view(),
