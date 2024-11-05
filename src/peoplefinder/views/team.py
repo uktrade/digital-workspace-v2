@@ -77,10 +77,10 @@ class TeamDetailView(DetailView, PeoplefinderView):
     @cached_property
     def available_sub_views(self) -> list["TeamDetailView.SubView"]:
         available_sub_views = []
-        if self.members:
-            available_sub_views.append(self.SubView.PEOPLE)
         if self.sub_teams:
             available_sub_views.append(self.SubView.SUB_TEAMS)
+        if self.members:
+            available_sub_views.append(self.SubView.PEOPLE)
         return available_sub_views
 
     def get_context_data(self, **kwargs: dict) -> dict:

@@ -47,12 +47,14 @@
             </div>
         </div>
 
-        <div class="dwds-button-group">
-            {% for sub_view in sub_views %}
-                <a class="dwds-button dwds-button--inline {% if sub_view.value != current_sub_view %}dwds-button--secondary{% endif %}"
-                   href="{% url 'team-view' team.slug %}?sub_view={{ sub_view.value }}">{{ sub_view.label }}</a>
-            {% endfor %}
-        </div>
+        {% if sub_views|length > 1 %}
+            <div class="dwds-button-group">
+                {% for sub_view in sub_views %}
+                    <a class="dwds-button dwds-button--inline {% if sub_view.value != current_sub_view %}dwds-button--secondary{% endif %}"
+                       href="{% url 'team-view' team.slug %}?sub_view={{ sub_view.value }}">{{ sub_view.label }}</a>
+                {% endfor %}
+            </div>
+        {% endif %}
 
         {% if leaders %}
             <h2>Team leader{{ leaders|length|pluralize }}</h2>
