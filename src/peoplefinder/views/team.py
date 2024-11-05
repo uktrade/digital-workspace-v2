@@ -26,12 +26,18 @@ class TeamDetailView(DetailView, PeoplefinderView):
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
-
-        team = context["team"]
         team_service = TeamService()
 
-        context["parent_teams"] = team_service.get_all_parent_teams(team)
-        context["sub_teams"] = team_service.get_immediate_child_teams(team)
+        team = context["team"]
+        parent_teams = team_service.get_all_parent_teams(team)
+        sub_teams = team_service.get_immediate_child_teams(team)
+
+        context.update(
+            page_title=team.name,
+            team_breadcrumbs=True,
+            parent_teams=parent_teams,
+            sub_teams=sub_teams,
+        )
 
         if self.request.user.has_perm("peoplefinder.delete_team"):
             (
@@ -40,7 +46,7 @@ class TeamDetailView(DetailView, PeoplefinderView):
             ) = team_service.can_team_be_deleted(team)
 
         # Must be a leaf team.
-        if not context["sub_teams"]:
+        if not sub_teams:
             context["members"] = (
                 team.members.all()
                 .active()
@@ -54,7 +60,7 @@ class TeamDetailView(DetailView, PeoplefinderView):
 
             # Warning: Multiple requests per sub-team. This might need optimising in the
             # future.
-            for sub_team in context["sub_teams"]:
+            for sub_team in sub_teams:
                 sub_team.avg_profile_completion = Person.active.filter(
                     teams__in=[
                         sub_team,

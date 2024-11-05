@@ -1,7 +1,12 @@
-{% extends 'peoplefinder/page.html' %}
+{% extends 'dwds_content.html' %}
 
 {% load markdown %}
 
+{% block main_content_classes %}
+    content_page
+{% endblock main_content_classes %}
+
+{% comment %}
 {% block title %}{{ team.name }}{% endblock %}
 
 {% block location %}{{ team.name }}{% endblock %}
@@ -31,19 +36,15 @@
             <div class="govuk-body" data-testid="description">{{ team.description|markdown }}</div>
             <div>
                 {% if perms.peoplefinder.change_team %}
-                    <a class="govuk-button govuk-button--secondary"
-                       href="{% url 'team-edit' team.slug %}"
-                       data-testid="edit-team">Edit team</a>
+                    <a class="govuk-button govuk-button--secondary" href="{% url 'team-edit' team.slug %}" data-testid="edit-team">Edit team</a>
                 {% endif %}
                 {% if perms.peoplefinder.add_team %}
-                    <a class="govuk-button govuk-button--secondary"
-                       href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
+                    <a class="govuk-button govuk-button--secondary" href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
                 {% endif %}
             </div>
             {% if perms.peoplefinder.delete_team %}
                 {% if can_team_be_deleted %}
-                    <a class="govuk-button govuk-button--warning"
-                       href="{% url 'team-delete' team.slug %}">Delete team</a>
+                    <a class="govuk-button govuk-button--warning" href="{% url 'team-delete' team.slug %}">Delete team</a>
                 {% else %}
                     {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
                 {% endif %}
@@ -61,12 +62,9 @@
                         <h2 class="govuk-heading-m">Teams within {{ team.short_name }}</h2>
                     </div>
                     <div class="govuk-grid-column-one-half text-right separated">
-                        <a class="govuk-link inline-block"
-                           href="{% url 'team-people' team.slug %}">View all people</a>
-                        <a class="govuk-link inline-block"
-                           href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
-                        <a class="govuk-link inline-block"
-                           href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
+                        <a class="govuk-link inline-block" href="{% url 'team-people' team.slug %}">View all people</a>
+                        <a class="govuk-link inline-block" href="{% url 'team-tree' team.slug %}">View all sub-teams</a>
+                        <a class="govuk-link inline-block" href="{% url 'team-people-outside-subteams' team.slug %}">View {{ people_outside_subteams_count }} people not assigned to a team</a>
                     </div>
                 </div>
                 <ul class="pf-team-cards">
@@ -95,4 +93,4 @@
             </div>
         </details>
     {% endif %}
-{% endblock %}
+{% endblock %} {% endcomment %}
