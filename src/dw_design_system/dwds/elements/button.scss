@@ -98,12 +98,12 @@ a.dwds-button,
         padding: var(--padding-button-inline);
     }
 
-    &--navigation-active,
-    &--navigation-inactive {
+    &--navigation {
         border-radius: var(--s2);
+        padding: var(--padding-button-inline);
     }
 
-    &--navigation-active {
+    &--navigation.active {
         background-color: var(--color-button-navigation-background-active);
 
         &:hover {
