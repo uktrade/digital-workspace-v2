@@ -1,11 +1,9 @@
-from enum import Enum
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import SuspiciousOperation
-from django.core.paginator import Paginator
 from django.db import models, transaction
-from django.db.models import Avg, Q, QuerySet
-from django.http import HttpRequest, HttpResponseNotFound
+from django.db.models import Avg, QuerySet
+from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
