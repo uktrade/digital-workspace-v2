@@ -99,12 +99,30 @@ a.dwds-button,
     }
 
     &--navigation {
-        border-radius: var(--s2);
         padding: var(--padding-button-inline);
+        color: var(--color-button-secondary-dark-text);
+        background-color: var(--color-button-secondary);
+        border: solid var(--color-button-secondary-dark-border);
+        border-bottom: solid var(--border-width);
+        border-radius: var(--s2);
+
+        &:hover {
+            color: var(--color-button-secondary-text);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-secondary-text);
+        }
+
+        &:active {
+            color: var(--color-button-secondary-text);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-secondary-text);
+        }
     }
 
     &--navigation.active {
+        color: var(--color-button-primary-text);
         background-color: var(--color-button-navigation-background-active);
+        border-color: var(--color-button-navigation-background-active);
 
         &:hover {
             border-color: var(--color-button-navigation-background-active);
@@ -123,7 +141,6 @@ a.dwds-button,
         color: var(--color-button-text-focus);
         background-color: var(--color-button-background-focus);
         border-color: var(--color-button-border-focus);
-
     }
 
     &:focus-visible {

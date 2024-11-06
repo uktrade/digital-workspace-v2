@@ -78,9 +78,19 @@
 
         <hr>
 
-        <h2>Colors</h2>
+        <h2>Colours</h2>
 
-        {% for colour in colours %}
+        <h3>GDS Colours</h3>
+        {% for colour in gds_colours %}
+            <span>{{ colour }}</span>
+            <div style="width: 100%;
+                        height: 50px;
+                        margin: 5px 0px;
+                        background-color: var({{ colour }})"></div>
+        {% endfor %}
+
+        <h3>DBT Colours</h3>
+        {% for colour in dbt_colours %}
             <span>{{ colour }}</span>
             <div style="width: 100%;
                         height: 50px;
@@ -108,25 +118,35 @@
         <h2>Links as buttons</h2>
 
         <div class="dwds-button-group">
-            <a class="dwds-button">Primary button</a>
-            <a class="dwds-button dwds-button--secondary">Secondary button</a>
-            <a class="dwds-button dwds-button--secondary-dark">Secondary-dark button</a>
-            <a class="dwds-button dwds-button--warning">Warning button</a>
-            <a class="dwds-button dwds-button--transactional">Transactional button</a>
+            <a class="dwds-button" href="#">Primary button</a>
+            <a class="dwds-button dwds-button--secondary" href="#">Secondary button</a>
+            <a class="dwds-button dwds-button--secondary-dark" href="#">Secondary-dark button</a>
+            <a class="dwds-button dwds-button--warning" href="#">Warning button</a>
+            <a class="dwds-button dwds-button--transactional" href="#">Transactional button</a>
         </div>
         <div class="dwds-button-group">
-            <a class="dwds-button dwds-button--inline">PB (inline)</a>
-            <a class="dwds-button dwds-button--secondary dwds-button--inline">SB (inline)</a>
-            <a class="dwds-button dwds-button--secondary-dark dwds-button--inline">SDB (inline)</a>
-            <a class="dwds-button dwds-button--warning dwds-button--inline">WB (inline)</a>
-            <a class="dwds-button dwds-button--transactional dwds-button--inline">TB (inline)</a>
+            <a class="dwds-button dwds-button--inline" href="#">PB (inline)</a>
+            <a class="dwds-button dwds-button--secondary dwds-button--inline"
+               href="#">SB (inline)</a>
+            <a class="dwds-button dwds-button--secondary-dark dwds-button--inline"
+               href="#">SDB (inline)</a>
+            <a class="dwds-button dwds-button--warning dwds-button--inline" href="#">WB (inline)</a>
+            <a class="dwds-button dwds-button--transactional dwds-button--inline"
+               href="#">TB (inline)</a>
         </div>
 
         <h2>Navigation buttons</h2>
 
         <div class="dwds-button-group">
-            <a class="dwds-button dwds-button--navigation active">Active navigation button</a>
-            <a class="dwds-button dwds-button--secondary-dark dwds-button--navigation">Inactive navigation button</a>
+            <button class="dwds-button dwds-button--navigation active">Active navigation button</button>
+            <button class="dwds-button dwds-button--navigation">Inactive navigation button</button>
+        </div>
+
+        <h2>Links as Navigation buttons</h2>
+
+        <div class="dwds-button-group">
+            <a class="dwds-button dwds-button--navigation active" href="#">Active navigation link</a>
+            <a class="dwds-button dwds-button--navigation" href="#">Inactive navigation link</a>
         </div>
 
         <h2>Table</h2>
