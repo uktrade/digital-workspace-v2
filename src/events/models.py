@@ -199,10 +199,18 @@ class EventPage(ContentPage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
+        is_online = self.event_type in {
+            types.EventType.ONLINE,
+            types.EventType.HYBRID,
+        }
+        is_in_person = self.event_type in {
+            types.EventType.IN_PERSON,
+            types.EventType.HYBRID,
+        }
+
         context.update(
-            is_online=self.event_type == types.EventType.ONLINE,
-            is_in_person=self.event_type == types.EventType.IN_PERSON,
-            is_hybrid=self.event_type == types.EventType.HYBRID,
+            is_online=is_online,
+            is_in_person=is_in_person,
             event_date_range=get_event_datetime_display_string(self),
         )
 
