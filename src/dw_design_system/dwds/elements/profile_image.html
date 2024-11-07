@@ -1,0 +1,13 @@
+{% load profile %}
+{% load wagtailimages_tags static %}
+{% load webpack_static from webpack_loader %}
+
+{% if profile_image %}
+    {% image profile_image fill-135x135 class="profile-image" %}
+{% else %}
+    <img class="profile-image"
+         src="{% webpack_static 'no-photo-large.png' %}"
+         alt="No profile image silhouette "
+         width="135"
+         height="135">
+{% endif %} 

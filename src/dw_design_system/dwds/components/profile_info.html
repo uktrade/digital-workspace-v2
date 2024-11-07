@@ -1,0 +1,17 @@
+{% load wagtailimages_tags static humanize %}
+
+<div class="content-main">
+    <div class="profile-info-wrapper">
+        <div class="profile-info">
+            <div class="profile-front">
+                <div class="profile-image">
+                    {% include "dwds/elements/profile_image.html" with profile_image=profile_image %}
+                </div>
+                <h3 class="profile-name">
+                    <a class="no-underline" href="{{ url }}">{{ name }}</a>
+                </h3>
+                {% if title %}<p>{{ title|truncatewords:20 }}</p>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>

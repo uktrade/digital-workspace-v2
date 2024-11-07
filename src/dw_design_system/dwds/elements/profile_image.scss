@@ -1,0 +1,8 @@
+.profile-image {
+    // Fill the available space, and round the corners
+    inline-size: 100%;
+    object-fit: contain;
+    object-position: 0 0;
+    flex-basis: 300px;
+    border-radius: 50%;
+}
