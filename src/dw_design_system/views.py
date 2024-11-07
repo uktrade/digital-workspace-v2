@@ -13,11 +13,25 @@ from dw_design_system.utils import (
 
 def styles(request: HttpRequest) -> HttpResponse:
     context = {
-        "colours": [
+        "gds_colours": [
             "--gds-red",
+            "--gds-yellow",
+            "--gds-blue",
+            "--gds-dark-blue",
+            "--gds-green",
+            "--gds-dark-green",
+            "--gds-light-grey",
+            "--gds-mid-grey",
+            "--gds-dark-grey",
+            "--gds-black",
+            "--gds-purple",
+        ],
+        "dbt_colours": [
             "--dbt-red",
             "--dbt-blue",
             "--dbt-light-blue",
+            "--dbt-white",
+            "--dbt-miuk-light-grey",
         ],
         "spaces": [
             "--s5",
