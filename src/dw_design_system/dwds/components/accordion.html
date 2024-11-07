@@ -1,27 +1,32 @@
 {% load static %}
-<div>
+<div class="dwds-accordion">
     <div>
-        <div class="dwds-accodian-show-all-text" style="border-bottom: 1px solid #b1b4b6; line-height: 1.3157894737; font-size: 1.1875rem; color: #1d70b8; font-weight: 400;">
-            <span id="all" onClick="taggleAllSections({{ items | length }})">
-                    Hide all sections
-            </span>
+        <div class="dwds-accordion-show-all-text"
+             style="border-bottom: 1px solid #b1b4b6;
+                    line-height: 1.3157894737;
+                    font-size: 1.1875rem;
+                    color: #1d70b8;
+                    font-weight: 400">
+            <span id="all">Hide all sections</span>
         </div>
         <div style="color:#0b0c0c;">
             {% for item in items %}
-                <div style="font-family: arial, sans-serif;">
-                    <h2 onClick="taggleById({{forloop.counter}})">
-                      <span id="accordion-header- {{ forloop.counter }}">
-                          {{ item.heading }}
-                      </span>
-                    </h2>
-                </div>
-                <div id="{{forloop.counter}}" style="border-bottom: 1px solid #b1b4b6; -webkit-font-smoothing: antialiased; font-family: arial, sans-serif; font-weight:400; margin-top:0;">
-                    <p> {{ item.content }} </p>
+                <div class="dwds-accordion">
+                    <div class="dwds-accordion-header" style="font-family: arial, sans-serif;">
+                        <h2>
+                            <span id="accordion-header- {{ forloop.counter }}">{{ item.heading }}</span>
+                        </h2>
+                    </div>
+                    <div class="dwds-accordion-content"
+                         style="border-bottom: 1px solid #b1b4b6;
+                                -webkit-font-smoothing: antialiased;
+                                font-family: arial, sans-serif;
+                                font-weight:400;
+                                margin-top:0">
+                        <p>{{ item.content }}</p>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     </div>
-
-    <script src='{% static "dwds/components/accordion.js" %}'></script>
-
 </div>
