@@ -61,7 +61,7 @@ services:
     image: digital_workspace/wagtail:latest
     command: python manage.py runserver 0.0.0.0:8000
     # mimics production
-    # command: waitress-serve --port=8000 config.wsgi:application
+    # command: granian --interface wsgi config.wsgi:application --workers 2 --host 0.0.0.0 --port=8000
     volumes:
       - ./:/app/
     ports:
