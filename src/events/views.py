@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from icalendar import Calendar, Event, vCalAddress, vText
+from icalendar import Calendar, Event, vText # vCalAddress
 
 from .models import EventPage
 
