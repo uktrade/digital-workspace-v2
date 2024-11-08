@@ -58,7 +58,7 @@ refresh-web: # Refresh the web container
 
 run-prod: # Bring up the docker containers in a "like prod" setup
 	docker compose stop wagtail
-	$(wagtail-run) --service-ports web granian --interface wsgi config.wsgi:application --workers 1 --host 0.0.0.0 --port 8000
+	$(wagtail-run) --service-ports web granian --interface wsgi config.wsgi:application --workers 2 --host 0.0.0.0 --port 8000
 
 #
 # Linting
