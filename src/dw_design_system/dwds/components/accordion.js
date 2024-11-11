@@ -1,8 +1,8 @@
-function toggleById(elem) {
-    if (elem.style.display === "none") {
-        elem.style.display = "block";
+function toggleSpecificSection(element) {
+    if (element.style.display === "none") {
+        element.style.display = "block";
     } else {
-        elem.style.display = "none";
+        element.style.display = "none";
     }
 }
 
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const accordionHeader = accordion.getElementsByClassName("dwds-accordion-header")[0];
             const accordionContent = accordion.getElementsByClassName("dwds-accordion-content")[0];
             accordionHeader.addEventListener("click", function (e) {
-                toggleById(accordionContent);
+                toggleSpecificSection(accordionContent);
             });
         });
 
