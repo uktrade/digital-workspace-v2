@@ -9,7 +9,12 @@
             <a class="no-underline" href="{{ url }}">{{ name }}</a>
         </h3>
         {% if title %}<p>{{ title|truncatewords:20 }}</p>{% endif %}
-        {% if location %}<p>{{ location }}</p>{% endif %}
+        {% if location %}
+            <p>
+                {% include "dwds/icons/marker.html" %}
+                {{ location }}
+            </p>
+        {% endif %}
     </div>
     {% if show_icons %}
         <div class="content-footer">
