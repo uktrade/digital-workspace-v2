@@ -1,61 +1,8 @@
-.profile-info-wrapper {
-    container-name: profile_info;
-    container-type: inline-size;
-}
-
-
-.profile-info {
-    width: Fixed (206.25px)px;
-    height: Fixed (250px)px;
-    left: 0.25px;
-    padding: 20px 12px 20px 12px;
-    gap: 20px;
-    border-radius: 6px 0px 0px 0px;
-    border: 0px 0px 4px 0px;
-    opacity: 0px;
+.dwds-profile-info {
     text-align: center;
 
-    display: flex;
-    flex-direction: column;
-
-    gap: var(--sidebar-gap);
-
-    height: 100%;
-
-    > .profile-image {
-        width: 135px;
-        height: 135px;
-        border-radius: 50%;
-    }
-
-    > .profile-main {
-        flex-grow: 999;
-    }
-}
-
-@container profile_info (width > 600px) {
-    .profile-info {
-        flex-direction: row;
-        > .profile-front {
-            > .profile-image {
-                width: 135px;
-                height: 135px;
-                border-radius: 50%;
-            }
-            > .profile-name {
-                margin-top: unset;
-                text-align: center;
-            }
-            > .profile-title {
-                margin-top: unset;
-                text-align: center;
-            }
-        }
-    }
-
-    .profile-info.large {
-        > .profile-image {
-            flex-basis: 100%;
-        }
+    h3,
+    p {
+        margin: 0;
     }
 }

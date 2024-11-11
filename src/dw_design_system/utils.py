@@ -153,11 +153,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/pagination.html",
                 "context": {"pages": pages, "request": request},
             },
-                        {
+            {
                 "name": "Profile Info",
                 "template": "dwds/components/profile_info.html",
                 "context": {
-                    "name": "John Doe", 
+                    "name": "John Doe",
                     "title": "Permanent Secretary",
                     "url": "https://www.gov.uk",
                     "profile_image": thumbnail_file,

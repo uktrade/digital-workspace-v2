@@ -1,8 +1,6 @@
-.profile-image {
-    // Fill the available space, and round the corners
-    inline-size: 100%;
-    object-fit: contain;
-    object-position: 0 0;
-    flex-basis: 300px;
+.dwds-profile-image {
     border-radius: 50%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    inline-size: 75%;
 }
