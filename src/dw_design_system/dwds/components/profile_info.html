@@ -13,8 +13,14 @@
     </div>
     {% if show_icons %}
         <div class="content-footer">
-            {% if email_address %}<a href="mailto:{{ email_address }}">{{ email_address }}</a>{% endif %}
-            {% if phone_number %}<a href="tel:{{ phone_number }}">{{ phone_number }}</a>{% endif %}
+            {% spaceless %}
+                {% if email_address %}
+                    <a href="mailto:{{ email_address }}">{% include "dwds/icons/email.html" %}</a>
+                {% endif %}
+                {% if phone_number %}
+                    <a href="tel:{{ phone_number }}">{% include "dwds/icons/phone.html" %}</a>
+                {% endif %}
+            {% endspaceless %}
         </div>
     {% endif %}
 </div>
