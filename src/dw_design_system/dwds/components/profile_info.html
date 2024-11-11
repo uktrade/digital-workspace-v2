@@ -1,11 +1,20 @@
 {% load wagtailimages_tags static humanize %}
 
 <div class="dwds-profile-info content-main content-stack center">
-    <div>{% include "dwds/elements/profile_image.html" with profile_image=profile_image %}</div>
+    {% if show_profile_image %}
+        <div>{% include "dwds/elements/profile_image.html" with profile_image=profile_image %}</div>
+    {% endif %}
     <div class="content-stack">
         <h3>
             <a class="no-underline" href="{{ url }}">{{ name }}</a>
         </h3>
         {% if title %}<p>{{ title|truncatewords:20 }}</p>{% endif %}
+        {% if location %}<p>{{ location }}</p>{% endif %}
     </div>
+    {% if show_icons %}
+        <div class="content-footer">
+            {% if email_address %}<a href="mailto:{{ email_address }}">{{ email_address }}</a>{% endif %}
+            {% if phone_number %}<a href="tel:{{ phone_number }}">{{ phone_number }}</a>{% endif %}
+        </div>
+    {% endif %}
 </div>
