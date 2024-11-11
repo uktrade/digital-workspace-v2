@@ -20,10 +20,10 @@
         <div class="content-footer">
             {% spaceless %}
                 {% if email_address %}
-                    <a href="mailto:{{ email_address }}">{% include "dwds/icons/email.html" %}</a>
+                    <a class="with-icon" href="mailto:{{ email_address }}">{% include "dwds/icons/email.html" %}</a>
                 {% endif %}
                 {% if phone_number %}
-                    <a href="tel:{{ phone_number }}">{% include "dwds/icons/phone.html" %}</a>
+                    <a class="with-icon" href="tel:{{ phone_number }}">{% include "dwds/icons/phone.html" %}</a>
                 {% endif %}
             {% endspaceless %}
         </div>
