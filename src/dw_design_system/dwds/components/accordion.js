@@ -1,4 +1,4 @@
-function taggleById(elem) {
+function toggleById(elem) {
     if (elem.style.display === "none") {
         elem.style.display = "block";
     } else {
@@ -6,7 +6,7 @@ function taggleById(elem) {
     }
 }
 
-function taggleAllSections(elements) {
+function toggleAllSections(elements) {
     alert(document.getElementById("accordion-header-1").innerText);
     if (document.getElementById("all").innerText === "Hide all sections") {
         for (let i = 1; i <= elements; i++) {
@@ -29,11 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
         accordionsInGroup.forEach(function (accordion) {
             const accordionHeader = accordion.getElementsByClassName("dwds-accordion-header")[0];
             const accordionContent = accordion.getElementsByClassName("dwds-accordion-content")[0];
-            console.log(accordionHeader);
-            console.log(accordionContent);
-            // For each accordion add a click handler to toggle the accordion content visibility
-            // Click handler calls `taggleById` passing in the accordionContent element
-            // See: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#the_value_of_this_within_the_handler
+            accordionHeader.addEventListener("click", function (e) {
+                toggleById(accordionContent);
+            });
+
         });
 
         // Add a click handler to the accordion header that toggles the visibility of all of the accordion contents
