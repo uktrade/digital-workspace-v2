@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Add a click handler to the accordion header that toggles the visibility of all of the accordion contents
         // Click handler calls `taggleAllSections` passing in each accordion element
-        const accordionsToggleAll = accordion.getElementsByClassName("dwds-accordion-show-all-text")[0];
-        console.log(accordionsInGroup);
+        //const accordionsToggleAll = accordion.getElementsByClassName("dwds-accordion-show-all-text")[0];
+        //console.log(accordionsInGroup);
     });
 });
