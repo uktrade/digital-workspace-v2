@@ -8,12 +8,12 @@ function toggleById(elem) {
 
 function toggleAllSections(element){
     const contentElements = document.getElementsByClassName("dwds-accordion-content");
-    var displayStyle = "block"
+    var displayStyle = "block";
     if (element.innerText === "Hide all sections") {
         displayStyle = "none";
         element.innerText = "Show all sections";
     } else {
-        element.innerText = "Hide all sections"
+        element.innerText = "Hide all sections";
     }
     for (let i = 0; i < contentElements.length; i++) {
         contentElements[i].style.display = displayStyle;
