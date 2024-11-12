@@ -1,0 +1,31 @@
+{% load wagtailimages_tags static humanize %}
+
+<div class="dwds-profile-info content-main content-stack center">
+    {% if show_profile_image %}
+        <div>{% include "dwds/elements/profile_image.html" with profile_image=profile_image %}</div>
+    {% endif %}
+    <div class="content-stack">
+        <h3>
+            <a class="no-underline" href="{{ url }}">{{ name }}</a>
+        </h3>
+        {% if title %}<p>{{ title|truncatewords:20 }}</p>{% endif %}
+    </div>
+    {% if location %}
+        <div class="location with-icon">
+            {% include "dwds/icons/marker.html" %}
+            {{ location }}
+        </div>
+    {% endif %}
+    {% if show_icons %}
+        <div class="content-footer">
+            {% spaceless %}
+                {% if email_address %}
+                    <a class="with-icon" href="mailto:{{ email_address }}">{% include "dwds/icons/email.html" %}</a>
+                {% endif %}
+                {% if phone_number %}
+                    <a class="with-icon" href="tel:{{ phone_number }}">{% include "dwds/icons/phone.html" %}</a>
+                {% endif %}
+            {% endspaceless %}
+        </div>
+    {% endif %}
+</div>
