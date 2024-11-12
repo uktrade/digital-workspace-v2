@@ -2,4 +2,3 @@
 
 {% url 'profile-view' member.person.slug as profile_url %}
 {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=member.person.photo.url name=member.person.full_name title=member.job_title profile_url=profile_url %}
-{% comment %} {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=member.person.photo.url name=member.person.full_name title=member.job_title profile_url=profile_url location="London" show_icons=True email_address="cameron.lamb@digital.trade.gov.uk" phone_number="0123456789" %} {% endcomment %}
