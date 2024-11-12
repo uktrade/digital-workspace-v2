@@ -61,13 +61,7 @@
             <div class="content-grid grid-cards-auto-fill">
                 {% for member in leaders %}
                     <div class="dwds-content-item-card">
-                        <div class="dwds-content-list content-item">
-                            <div class="content-main">
-                                <div class="content-body content-body-space-padding content-stack large">
-                                    {% include 'peoplefinder/components/team-member-card.html' with member=member %}
-                                </div>
-                            </div>
-                        </div>
+                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
                     </div>
                 {% endfor %}
             </div>
@@ -95,13 +89,16 @@
             <div class="content-grid grid-cards-auto-fill">
                 {% for member in members %}
                     <div class="dwds-content-item-card">
-                        <div class="dwds-content-list content-item">
-                            <div class="content-main">
-                                <div class="content-body content-body-space-padding content-stack large">
-                                    {% include 'peoplefinder/components/team-member-card.html' with member=member %}
-                                </div>
-                            </div>
-                        </div>
+                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                    </div>
+                    <div class="dwds-content-item-card">
+                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                    </div>
+                    <div class="dwds-content-item-card">
+                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                    </div>
+                    <div class="dwds-content-item-card">
+                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
                     </div>
                 {% endfor %}
             </div>

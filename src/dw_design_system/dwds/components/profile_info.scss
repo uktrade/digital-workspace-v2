@@ -1,6 +1,10 @@
 .dwds-profile-info {
     text-align: center;
 
+    > .content-stack {
+        margin-block-start: 0;
+    }
+
     h3,
     p {
         margin: 0;
