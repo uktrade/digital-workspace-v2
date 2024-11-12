@@ -140,20 +140,22 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
 
-        team = context["team"]
+        team = self.object
         team_service = TeamService()
 
-        context["parent_team"] = team_service.get_immediate_parent_team(team)
-        context["is_root_team"] = team_service.get_root_team() == team
-
-        members = [
-            {"pk": member.pk, "name": member.person.full_name}
-            for member in team.leaders
-        ]
-        context["team_leaders_order_component"] = {
-            "ordering": team.leaders_ordering,
-            "members": members,
-        }
+        context.update(
+            page_title=f"Edit {team.name}",
+            team_breadcrumbs=True,
+            parent_team=team_service.get_immediate_parent_team(team),
+            is_root_team=team_service.get_root_team() == team,
+            team_leaders_order_component={
+                "ordering": team.leaders_ordering,
+                "members": [
+                    {"pk": member.pk, "name": member.person.full_name}
+                    for member in team.leaders
+                ],
+            },
+        )
 
         return context
 
