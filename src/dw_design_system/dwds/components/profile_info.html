@@ -2,7 +2,9 @@
 
 <div class="dwds-profile-info content-main content-stack center">
     {% if show_profile_image %}
-        <div>{% include "dwds/elements/profile_image.html" with profile_image_url=profile_image_url name=name %}</div>
+        <div>
+            {% include "dwds/elements/profile_image.html" with profile_image_url=profile_image_url name=name profile_url=profile_url %}
+        </div>
     {% endif %}
     <div class="content-stack">
         <h3>

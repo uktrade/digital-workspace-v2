@@ -71,15 +71,7 @@
             <h2>Teams within {{ team.short_name }}</h2>
             <div class="content-grid grid-cards-auto-fill">
                 {% for team in sub_teams %}
-                    <div class="dwds-content-item-card">
-                        <div class="dwds-content-list content-item">
-                            <div class="content-main">
-                                <div class="content-body content-body-space-padding content-stack large">
-                                    {% include 'peoplefinder/components/team-card.html' with team=team %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="dwds-content-item-card">{% include 'peoplefinder/components/team-card-new.html' with team=team %}</div>
                 {% endfor %}
             </div>
         {% endif %}
@@ -88,15 +80,6 @@
             <h2>People in {{ team.short_name }}</h2>
             <div class="content-grid grid-cards-auto-fill">
                 {% for member in members %}
-                    <div class="dwds-content-item-card">
-                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
-                    </div>
-                    <div class="dwds-content-item-card">
-                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
-                    </div>
-                    <div class="dwds-content-item-card">
-                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
-                    </div>
                     <div class="dwds-content-item-card">
                         {% include 'peoplefinder/components/team-member-card.html' with member=member %}
                     </div>
