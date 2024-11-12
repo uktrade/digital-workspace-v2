@@ -1,4 +1,4 @@
-{% extends 'dwds_content.html' %}
+{% extends "dwds_content.html" %}
 
 {% block libraries %}
     {{ block.super }}
@@ -9,24 +9,21 @@
     {{ page_title }}
 {% endblock title %}
 
-{% block main_content_classes %}
-{% endblock main_content_classes %}
+{% comment %} {% block primary_content_classes %}
+{% endblock primary_content_classes %} {% endcomment %}
 
-{% block page_title %}
-{% endblock page_title %}
+{% comment %} {% block page_title %}
+{% endblock page_title %} {% endcomment %}
 
 {% block primary_content %}
-    <div class="content_page content-stack">
-        <h1>{{ page_title }}</h1>
-        <form method="post">
-            {% csrf_token %}
-            {% include 'peoplefinder/components/team-form.html' %}
-            {% include 'peoplefinder/components/team-leaders-ordering.html' %}
-            <div>
-                <button class="govuk-button" type="submit" data-testid="save-team">Save team</button>
-                <a class="govuk-button govuk-button--secondary"
-                   href="{% url 'team-view' team.slug %}">Cancel</a>
-            </div>
-        </form>
-    </div>
+    <form method="post">
+        {% csrf_token %}
+        {% include 'peoplefinder/components/team-form.html' %}
+        {% include 'peoplefinder/components/team-leaders-ordering.html' %}
+        <div>
+            <button class="govuk-button" type="submit" data-testid="save-team">Save team</button>
+            <a class="govuk-button govuk-button--secondary"
+               href="{% url 'team-view' team.slug %}">Cancel</a>
+        </div>
+    </form>
 {% endblock primary_content %}

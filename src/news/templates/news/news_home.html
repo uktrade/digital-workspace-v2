@@ -3,36 +3,23 @@
 {% load wagtailimages_tags %}
 {% load cards %}
 
-{% block main_content_classes %}
-{% endblock main_content_classes %}
-
+{% comment %} {% block primary_content_classes %}
+{% endblock primary_content_classes %} {% endcomment %}
+{% comment %}
 {% block page_title %}
-{% endblock page_title %}
+{% endblock page_title %} {% endcomment %}
 
 {% block bookmark %}
 {% endblock bookmark %}
 
 {% block primary_content %}
-    <article class="dwds-content-item-card">
-        <div class="dwds-content-list content-item">
-            <div class="content-main">
-                <div class="content-body content-body-space-padding content-stack large">
-                    <div class="content-switcher">
-                        <h1 style="margin: 0;">{% firstof page_title page.title %}</h1>
-                        {% if page.description %}<p class="text-xlarge">{{ page.description }}</p>{% endif %}
-                    </div>
+    {% for news_item in posts %}
+        {% page_to_engagement news_item hide_updated=True %}
+    {% endfor %}
 
-                    {% for news_item in posts %}
-                        {% page_to_engagement news_item hide_updated=True %}
-                    {% endfor %}
-
-                    {% if posts.paginator.num_pages > 1 %}
-                        {% include "dwds/components/pagination.html" with pages=posts %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </article>
+    {% if posts.paginator.num_pages > 1 %}
+        {% include "dwds/components/pagination.html" with pages=posts %}
+    {% endif %}
 {% endblock primary_content %}
 
 {% block secondary_content %}

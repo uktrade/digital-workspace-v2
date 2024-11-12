@@ -1,11 +1,7 @@
 {% extends "dwds_content.html" %}
-{% load wagtailcore_tags  wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
-{% block main_content_classes %}
-    content_page
-{% endblock main_content_classes %}
 {% block primary_content %}
-
     <div class="content-stack">
         {% image page.preview_image fill-640x360 width=None height=None style="border-radius: var(--border-radius);" %}
         {% include "includes/attribution.html" with page=page is_news_page=True perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=True %}
@@ -112,5 +108,5 @@
 {% endblock post_primary_content %}
 
 {% block secondary_content %}
-    {% include "news/includes/news_categories.html" %}
+    {% comment %} {% include "news/includes/news_categories.html" %} {% endcomment %}
 {% endblock secondary_content %}
