@@ -128,9 +128,6 @@ def split_query(query: str) -> list[str]:
     Returns:
         A list of keywords and phrases from the query.
     """
-    if query.startswith('"') and query.endswith('"'):
-        query = query[1:-1]
-
     if not query:
         return []
 
@@ -139,8 +136,13 @@ def split_query(query: str) -> list[str]:
     parts = []
 
     for match in re.finditer(RE_KEYWORDS_AND_PHRASES, query):
+        groups = [g for g in match.groups() if g]
+        if not groups:
+            # no groups matched, continue
+            continue
+
         # grab the first group as only one should match
-        group = [g for g in match.groups() if g][0]
+        group = groups[0]
         # unescape the escaped quotes
         group = re.sub(r"\\(\"|\')", lambda match: match.group(1), group)
 
