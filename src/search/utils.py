@@ -128,6 +128,9 @@ def split_query(query: str) -> list[str]:
     Returns:
         A list of keywords and phrases from the query.
     """
+    if query.startswith('"') and query.endswith('"'):
+        query = query[1:-1]
+
     if not query:
         return []
 
