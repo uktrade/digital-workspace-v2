@@ -1,5 +1,5 @@
 from django.conf import settings
-from wagtail.search.query import SearchQuery
+from wagtail.search.query import Phrase, SearchQuery
 
 from content.models import BasePage
 from extended_search.query_builder import CustomQueryBuilder
@@ -43,10 +43,11 @@ class ModelSearchVector(SearchVector):
     def get_queryset(self):
         return self.model.objects.all()
 
-    def build_query(self, query_str, *args, **kwargs) -> SearchQuery | str:
+    def build_query(self, query_str, *args, **kwargs):
         if query_str.startswith('"') and query_str.endswith('"'):
-            # If wrapped in quotes, we want to search for an exact match.
-            return query_str
+            if new_query_str := query_str[1:-1]:
+                # If wrapped in quotes, we want to search for an exact match.
+                return Phrase(new_query_str)
         return CustomQueryBuilder.get_search_query(self.model, query_str)
 
     def search(self, query_str, *args, **kwargs):
