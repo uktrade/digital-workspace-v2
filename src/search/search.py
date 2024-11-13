@@ -1,4 +1,5 @@
 from django.conf import settings
+from wagtail.search.query import SearchQuery
 
 from content.models import BasePage
 from extended_search.query_builder import CustomQueryBuilder
@@ -42,7 +43,12 @@ class ModelSearchVector(SearchVector):
     def get_queryset(self):
         return self.model.objects.all()
 
-    def build_query(self, query_str, *args, **kwargs):
+    def build_query(self, query_str, *args, **kwargs) -> SearchQuery | None:
+        if query_str.startswith('"') and query_str.endswith('"'):
+            # If the query is wrapped in quotes, we want to search for an exact
+            # match, this is Wagtail's default behaviour if a SearchQuery is not
+            # provided.
+            return None
         return CustomQueryBuilder.get_search_query(self.model, query_str)
 
     def search(self, query_str, *args, **kwargs):
