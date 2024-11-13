@@ -44,9 +44,9 @@ class ModelSearchVector(SearchVector):
         return self.model.objects.all()
 
     def build_query(self, query_str, *args, **kwargs):
-        if query_str.startswith('EXACT_SEARCH '):
+        if query_str.startswith("EXACT_SEARCH "):
             if new_query_str := query_str[13:]:
-                # If wrapped in quotes, we want to search for an exact match.
+                # A query beginning with `EXACT_SEARCH ` we search for an exact match.
                 return Phrase(new_query_str)
         return CustomQueryBuilder.get_search_query(self.model, query_str)
 
