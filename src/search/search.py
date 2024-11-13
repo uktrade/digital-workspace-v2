@@ -1,5 +1,5 @@
 from django.conf import settings
-from wagtail.search.query import Phrase, SearchQuery
+from wagtail.search.query import Phrase
 
 from content.models import BasePage
 from extended_search.query_builder import CustomQueryBuilder
