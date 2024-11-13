@@ -43,12 +43,10 @@ class ModelSearchVector(SearchVector):
     def get_queryset(self):
         return self.model.objects.all()
 
-    def build_query(self, query_str, *args, **kwargs) -> SearchQuery | None:
+    def build_query(self, query_str, *args, **kwargs) -> SearchQuery | str:
         if query_str.startswith('"') and query_str.endswith('"'):
-            # If the query is wrapped in quotes, we want to search for an exact
-            # match, this is Wagtail's default behaviour if a SearchQuery is not
-            # provided.
-            return None
+            # If wrapped in quotes, we want to search for an exact match.
+            return query_str
         return CustomQueryBuilder.get_search_query(self.model, query_str)
 
     def search(self, query_str, *args, **kwargs):
