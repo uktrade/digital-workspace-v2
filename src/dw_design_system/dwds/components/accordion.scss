@@ -1,0 +1,157 @@
+.dwds-accordion-section-button {
+    width: 100%;
+    padding: 10px 0 0;
+    border: 0;
+    border-top: 1px solid #b1b4b6;
+    border-bottom: 10px solid transparent;
+    color: #0b0c0c;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    -webkit-appearance: none;
+
+    font-size: 1.5rem;
+    line-height: 1.25;
+
+    font-family: arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0;
+}
+
+.dwds-accordion-section-heading {
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.dwds-accordion-section-heading-text {
+    display: block;
+    margin-bottom: 13px;
+ }
+
+ .dwds-accordion-section-chevron, .dwds-accordion-show-all-chevron {
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: .0625rem solid;
+    border-radius: 50%;
+    vertical-align: middle;
+
+    &::after {
+        content: "";
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        bottom: .3125rem;
+        left: .375rem;
+        width: .375rem;
+        height: .375rem;
+        transform: rotate(-45deg);
+        border-top: .125rem solid;
+        border-right: .125rem solid;
+    }
+}
+
+ .dwds-accordion-section-toggle {
+    font-size: 1rem;
+    line-height: 1.25;
+    font-weight: 400;
+    color: #1d70b8;
+    display: block;
+    margin-bottom: 13px;
+ }
+
+.dwds-accordion-section-content {
+     display: none;
+     padding: 15px 15px 30px 15px;
+}
+
+.dwds-accordion-show-all-text{
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.dwds-accordion-show-all {
+    font-family: GDS Transport, arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.25;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 9px;
+    padding: 5px 2px 5px 0;
+    border-width: 0;
+    color: #1d70b8;
+    background: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.dwds-accordion-template {
+    background-color: #f3f2f1;
+    text-size-adjust: 100%;
+}
+
+.dwds-accordion-nav-chevron-down, .dwds-accordion-show-all-chevron-down{
+     transform: rotate(180deg);
+}
+
+.dwds-accordions {
+    border-bottom: 1px solid #b1b4b6;
+    margin-bottom: 20px;
+}
+
+.dwds-accordion-section-header:hover {
+    background-color: #eaeaea;
+    .dwds-accordion-section-chevron {
+         color: #0b0c0c;
+        background: #0b0c0c;
+        &::after {
+            color: white;
+        }
+    }
+    .dwds-accordion-section-toggle-text {
+        color: #0b0c0c;
+    }
+}
+
+.dwds-accordion-show-all:hover {
+    width: 100%;
+    text-align: left;
+    background-color: #eaeaea;
+    .dwds-accordion-show-all-chevron{
+         color: #0b0c0c;
+        background: #0b0c0c;
+        &::after {
+            color: white;
+        }
+    }
+    .dwds-accordion-show-all-text {
+        color: #0b0c0c;
+    }
+}
+
+.dwds-accordion-show-all:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    text-decoration: none;
+    box-decoration-break: clone;
+}
+
+.dwds-accordion-section-button:focus {
+    .dwds-accordion-section-heading-text-focus, .dwds-accordion-section-toggle-focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    text-decoration: none;
+    box-decoration-break: clone;
+    }
+}
