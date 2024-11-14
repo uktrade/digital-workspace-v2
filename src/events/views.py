@@ -45,9 +45,7 @@ def to_ical(event: EventPage) -> Event:
     ical_event.add("dtend", event.event_end)
     ical_event.add("dtstamp", event.last_published_at)
 
-    ical_event.add(
-        "description", f"See event listing: {event.url}"
-    )
+    ical_event.add("description", f"See event listing: {event.url}")
     # Anonymised for reduced risk during testing
     # if event.location:
     #     ical_event["location"] = event.location.name
