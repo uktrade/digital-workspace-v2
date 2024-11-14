@@ -1,5 +1,6 @@
 from datetime import time
 
+from django.core.cache import cache
 from waffle import flag_is_active
 
 from core.models import FeatureFlag
@@ -24,3 +25,17 @@ def format_time(time_obj: time) -> str:
     if time_obj.minute == 0:
         return time_obj.strftime("%-I%p").lstrip("0").lower()
     return time_obj.strftime("%-I:%M%p").lstrip("0").lower()
+
+
+def cache_lock(cache_key: str, cache_time: int = 60 * 60 * 3):
+    # A decorator that prevents a function from running if the cache key is currently set.
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            if not cache.add(cache_key, "locked", 60 * 60 * 3):
+                return
+            func(*args, **kwargs)
+            cache.delete(cache_key)
+
+        return wrapper
+
+    return decorator
