@@ -31,7 +31,7 @@ def ingest_uk_staff_locations(self):
 def update_search_index(self):
     cache_key = "update_search_index"
     # 3 hours
-    cache_time = 60 * 60 *3
+    cache_time = 60 * 60 * 3
 
     if cache.get(cache_key):
         return
