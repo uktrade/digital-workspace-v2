@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.core.management import call_command
 
 from config.celery import celery_app
@@ -28,11 +29,22 @@ def ingest_uk_staff_locations(self):
 
 @celery_app.task(bind=True)
 def update_search_index(self):
+    cache_key = "update_search_index"
+    # 3 hours
+    cache_time = 60 * 60
+
+    if cache.get(cache_key):
+        return
+    cache.set(cache_key, True, cache_time)
+
     # Run update_index --schema-only
     call_command("update_index", schema_only=True)
 
     # Run update_index
     call_command("update_index")
+
+    # Clear the cache
+    cache.delete(cache_key)
 
 
 @celery_app.task(bind=True)
