@@ -33,7 +33,7 @@ def cache_lock(cache_key: str, cache_time: int = 60 * 60 * 3):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if not cache.add(cache_key, "locked", 60 * 60 * 3):
+            if not cache.add(cache_key, "locked", cache_time):
                 return
             func(*args, **kwargs)
             cache.delete(cache_key)
