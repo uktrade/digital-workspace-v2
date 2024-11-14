@@ -1,27 +1,32 @@
 {% load static %}
-<div class="dwds-accordions">
-    <div class="dwds-accordion-show-all-text"
-         style="border-bottom: 1px solid #b1b4b6;
-                line-height: 1.3157894737;
-                font-size: 1.1875rem;
-                color: #1d70b8;
-                font-weight: 400">
-        <span>Hide all sections</span>
+<div class="dwds-accordions dwds-accordion-template">
+    <div class="dwds-accordion-controls">
+        <button class="dwds-accordion-show-all">
+            <span class="dwds-accordion-show-all-chevron"></span>
+            <span class="dwds-accordion-show-all-text">Show all sections</span>
+        </button>
     </div>
 
     {% for item in items %}
-        <div class="dwds-accordion" style="color:#0b0c0c;">
-            <div class="dwds-accordion-header" style="font-family: arial, sans-serif;">
-                <h2>
-                    <span>{{ item.heading }}</span>
+        <div class="dwds-accordion-section">
+            <div class="dwds-accordion-section-header">
+                <h2 class="dwds-accordion-section-heading">
+                    <button class="dwds-accordion-section-button">
+
+                        <span class="dwds-accordion-section-heading-text">
+                            <span class="dwds-accordion-section-heading-text-focus">{{ item.heading }}</span>
+                        </span>
+                        <span class="dwds-accordion-section-toggle">
+                            <span class="dwds-accordion-section-toggle-focus">
+                                <span class="dwds-accordion-section-chevron"></span>
+                                <span class="dwds-accordion-section-toggle-text">Show</span>
+                            </span>
+                        </span>
+                    </button>
                 </h2>
             </div>
-            <div class="dwds-accordion-content"
-                 style="border-bottom: 1px solid #b1b4b6;
-                        -webkit-font-smoothing: antialiased;
-                        font-family: arial, sans-serif;
-                        font-weight:400;
-                        margin-top:0">
+
+            <div class="dwds-accordion-section-content">
                 <p>{{ item.content }}</p>
             </div>
 
