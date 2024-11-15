@@ -1,4 +1,4 @@
-version: 2
+version: 3
 jobs:
   build-and-test:
     machine:
@@ -62,11 +62,40 @@ jobs:
             wget -O codecov.sh https://codecov.io/bash
             bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
 
+  a11y-test:
+    machine:
+      image: ubuntu-2204:2023.04.2
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+          name: Copy env file
+          command: cp .env.ci .env
+      - run:
+          name: build containers
+          command: make build         
+      - run:
+          name: build frontend
+          command: |
+            nvm install 20
+            npm ci
+            npm run build
+      - run:
+          name: run the application
+          command: make up
+      - run:
+          name: run pa11y
+          command: npm exec pa11y-ci --sitemap http://localhost:8000/sitemap.xml
+      - run:
+          name: stop the application
+          command: make down
+
 workflows:
-  version: 2
+  version: 3
   build_and_test:
     jobs:
       - build-and-test
+      - a11y-test
       - e2e-tests:
           filters:
             branches:
