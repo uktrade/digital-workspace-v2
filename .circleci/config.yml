@@ -81,11 +81,10 @@ jobs:
             npm ci
             npm run build
       - run:
-          name: run the application
-          command: make up
-      - run:
           name: run pa11y
-          command: npm exec pa11y-ci --sitemap http://localhost:8000/sitemap.xml
+          command: |
+            make up
+            npm exec pa11y-ci --sitemap http://localhost:8000/sitemap.xml
       - run:
           name: stop the application
           command: make down
