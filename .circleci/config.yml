@@ -1,4 +1,4 @@
-version: 3
+version: 2
 jobs:
   build-and-test:
     machine:
@@ -91,7 +91,7 @@ jobs:
           command: make down
 
 workflows:
-  version: 3
+  version: 2
   build_and_test:
     jobs:
       - build-and-test
