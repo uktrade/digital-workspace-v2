@@ -168,6 +168,30 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "phone_number": "0123456789",
                 },
             },
+            {
+                "name": "Accordion",
+                "template": "dwds/components/accordion.html",
+                "context": {
+                    "items": [
+                        {
+                            "heading": "Writing well for the web",
+                            "content": "This is the content for Writing well for the web.",
+                        },
+                        {
+                            "heading": "Writing well for specialists",
+                            "content": "This is the content for Writing well for specialists.",
+                        },
+                        {
+                            "heading": "Know your audience",
+                            "content": "This is the content for Know your audience.",
+                        },
+                        {
+                            "heading": "How people read",
+                            "content": "This is the content for How people read.",
+                        },
+                    ]
+                },
+            },
         ],
         "layouts": [],
     }

@@ -1,0 +1,36 @@
+{% load static %}
+<div class="dwds-accordions dwds-accordion-template">
+    <div class="dwds-accordion-controls">
+        <button class="dwds-accordion-show-all">
+            <span class="dwds-accordion-show-all-chevron"></span>
+            <span class="dwds-accordion-show-all-text">Show all sections</span>
+        </button>
+    </div>
+
+    {% for item in items %}
+        <div class="dwds-accordion-section">
+            <div class="dwds-accordion-section-header">
+                <h2 class="dwds-accordion-section-heading">
+                    <button class="dwds-accordion-section-button">
+
+                        <span class="dwds-accordion-section-heading-text">
+                            <span class="dwds-accordion-section-heading-text-focus">{{ item.heading }}</span>
+                        </span>
+                        <span class="dwds-accordion-section-toggle">
+                            <span class="dwds-accordion-section-toggle-focus">
+                                <span class="dwds-accordion-section-chevron"></span>
+                                <span class="dwds-accordion-section-toggle-text">Show</span>
+                            </span>
+                        </span>
+                    </button>
+                </h2>
+            </div>
+
+            <div class="dwds-accordion-section-content">
+                <p>{{ item.content }}</p>
+            </div>
+
+        </div>
+    {% endfor %}
+
+</div>
