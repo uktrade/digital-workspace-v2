@@ -10,8 +10,8 @@ a.dwds-button,
     background-color: var(--color-button-primary);
     padding: var(--padding-button);
     text-decoration: none;
-    border: solid var(--dwds-border-width) var(--color-button-primary);
-    border-bottom: solid var(--dwds-border-width-bottom) var(--color-button-bottom-border);
+    border: solid var(--button-border-width) var(--color-button-primary);
+    border-bottom: solid var(--button-border-width-bottom) var(--color-button-bottom-border);
     cursor: pointer;
     align-self: flex-start;
 
@@ -30,8 +30,8 @@ a.dwds-button,
     &--warning {
         color: var(--color-button-warning-text);
         background-color: var(--color-button-warning);
-        border: var(--dwds-border-width) solid var(--color-button-warning);
-        border-bottom: solid var(--dwds-border-width-bottom) var(--color-button-warning-border);
+        border: var(--button-border-width) solid var(--color-button-warning);
+        border-bottom: solid var(--button-border-width-bottom) var(--color-button-warning-border);
 
         &:hover {
             background-color: var(--color-button-warning-hover);
@@ -45,8 +45,8 @@ a.dwds-button,
     &--transactional {
         color: var(--color-button-transactional-text);
         background-color: var(--color-button-transactional);
-        border: var(--dwds-border-width) solid var(--color-button-transactional);
-        border-bottom: solid var(--dwds-border-width-bottom) var(--color-button-transactional-border);
+        border: var(--button-border-width) solid var(--color-button-transactional);
+        border-bottom: solid var(--button-border-width-bottom) var(--color-button-transactional-border);
 
         &:hover {
             background-color: var(--color-button-transactional-hover);
@@ -60,8 +60,8 @@ a.dwds-button,
     &--secondary {
         color: var(--color-button-secondary-text);
         background-color: var(--color-button-secondary);
-        border: var(--dwds-border-width) solid var(--color-button-secondary-border);
-        border-bottom: var(--dwds-border-width-bottom) solid var(--color-button-secondary-border);
+        border: var(--button-border-width) solid var(--color-button-secondary-border);
+        border-bottom: var(--button-border-width-bottom) solid var(--color-button-secondary-border);
 
         &:hover {
             color: var(--color-button-hover);
@@ -79,8 +79,8 @@ a.dwds-button,
     &--secondary-dark {
         color: var(--color-button-secondary-dark-text);
         background-color: var(--color-button-secondary);
-        border: var(--dwds-border-width) solid var(--color-button-secondary-dark-border);
-        border-bottom: var(--dwds-border-width-bottom) solid var(--color-button-secondary-dark-border);
+        border: var(--button-border-width) solid var(--color-button-secondary-dark-border);
+        border-bottom: var(--button-border-width-bottom) solid var(--color-button-secondary-dark-border);
 
         &:hover {
             color: var(--color-button-secondary-text);
@@ -103,8 +103,8 @@ a.dwds-button,
         padding: var(--padding-button-inline);
         color: var(--color-button-secondary-dark-text);
         background-color: var(--color-button-secondary);
-        border: var(--dwds-border-width) solid var(--color-button-secondary-dark-border);
-        border-bottom: solid var(--dwds-border-width-bottom);
+        border: var(--button-border-width) solid var(--color-button-secondary-dark-border);
+        border-bottom: solid var(--button-border-width-bottom);
         border-radius: var(--s2);
 
         &:hover {
