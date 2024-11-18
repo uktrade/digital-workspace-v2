@@ -134,7 +134,7 @@ class EventPage(ContentPage):
     event_type = models.CharField(
         choices=types.EventType.choices,
         default=types.EventType.ONLINE,
-    )
+    ) 
     audience = models.CharField(
         choices=types.EventAudience.choices,
         blank=True,
