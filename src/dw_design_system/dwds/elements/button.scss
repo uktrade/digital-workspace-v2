@@ -103,7 +103,10 @@ a.dwds-button,
         color: var(--color-button-secondary-dark-text);
         background-color: var(--color-button-secondary);
         border: solid var(--color-button-secondary-dark-border);
-        border-bottom: solid var(--border-width);
+        border-top: solid var(--border-width-top-navigation);
+        border-bottom: solid var(--border-width-bottom-navigation);
+        border-left: solid var(--border-width-left-navigation);
+        border-right: solid var(--border-width-right-navigation);
         border-radius: var(--s2);
 
         &:hover {
