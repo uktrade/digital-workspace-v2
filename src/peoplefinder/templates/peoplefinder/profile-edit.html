@@ -21,7 +21,6 @@
 
                         {% include "peoplefinder/components/profile/edit/profile-completion.html" with profile=profile missing_profile_completion_fields=missing_profile_completion_fields %}
 
-
                         {% error_summary form %}
                         {% if teams_formset %}
                             {% for teams_formset_form in teams_formset %}
