@@ -40,21 +40,22 @@ def to_ical(event: EventPage) -> Event:
 
     ical_event["uid"] = event.pk
     ical_event.add("summary", event.title)
+    ical_event.add("summary", "Anonymous event title")
     ical_event.add("dtstart", event.event_start)
     ical_event.add("dtend", event.event_end)
     ical_event.add("dtstamp", event.last_published_at)
 
-    ical_event.add(
-        "description", f"<a href='{event.url}'>For details see event listing</a>"
-    )
-    if event.location:
-        ical_event["location"] = event.location.name
+    ical_event.add("description", f"See event listing: {event.url}")
+    # Anonymised for reduced risk during testing
+    # if event.location:
+    #     ical_event["location"] = event.location.name
     ical_event.add("priority", 5)
 
-    author = event.get_first_publisher()
-    organiser = vCalAddress(f"MAILTO:{author.profile.preferred_email}")
-    organiser.params["cn"] = vText(author.profile.full_name)
-    ical_event["organizer"] = organiser
+    # Anonymised for reduced risk during testing
+    # author = event.get_first_publisher()
+    # organiser = vCalAddress(f"MAILTO:{author.profile.preferred_email}")
+    # organiser.params["cn"] = vText(author.profile.full_name)
+    # ical_event["organizer"] = organiser
 
     return ical_event
 
