@@ -1,0 +1,9 @@
+<nav class="dwds-menu-vertical">
+    <ul class="content-stack no-gap">
+        {% for item in items %}
+            <li {% if item.active %}class="active"{% endif %}>
+                <a href="{{ item.url }}">{{ item.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
