@@ -52,7 +52,7 @@
   --color-button-secondary-dark-text: var(--gds-dark-blue);
   --color-button-secondary-dark-border: var(--gds-dark-blue);
   --color-button-text-focus: var(--gds-black);
-  --color-button-background-focus: var(--colour-focus);
+  --color-button-background-focus: var(--color-focus);
   --color-button-border-focus: var(--gds-black);
   --color-button-warning: var(--gds-red);
   --color-button-warning-hover: hsl(from var(--color-button-warning) h s calc(l - 20)); // GDS designs for hover #4D0A00
@@ -93,8 +93,8 @@
 
   // Borders and element widths
   --border-width: 3px;
-  --border-width-small: 1px;
-  --border-top-width-card: var(--s-2);
+  --button-border-width: 2px;
+  --button-border-width-bottom: 4px;
   --text-underline-hover: 3px;
 
   // Typography
