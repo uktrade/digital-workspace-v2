@@ -67,7 +67,9 @@
   --color-hr: var(--gds-mid-grey);
   --color-selected-radio: var(--color-button-text-focus);
   --color-menu-active-border: var(--dbt-light-blue);
-
+  --color-background-accordion: var(--gds-light-grey);
+  --color-button-text-accordion: var(--gds-black);
+  --color-accordion-hover: #eaeaea;
 
   // Size
   --ratio: 1.25;
@@ -97,7 +99,10 @@
   --border-width: 3px;
   --button-border-width: 2px;
   --button-border-width-bottom: 4px;
+  --border-width-small: 1px;
+  --border-no-width: 0px;
   --text-underline-hover: 3px;
+  --width-max-percentage: 100%
 
   // Typography
   --measure: 70ch;

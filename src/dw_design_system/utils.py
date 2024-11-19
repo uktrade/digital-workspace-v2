@@ -200,20 +200,24 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": {
                     "items": [
                         {
-                            "heading": "Writing well for the web",
-                            "content": "This is the content for Writing well for the web.",
+                            "heading": "Understanding agile project management",
+                            "summary": "Introductions, methods, core features.",
+                            "content": "This is the content for agile project management.",
                         },
                         {
-                            "heading": "Writing well for specialists",
-                            "content": "This is the content for Writing well for specialists.",
+                            "heading": "Working with agile methods",
+                            "summary": "Workspaces, tools and techniques, user stories, planning.",
+                            "content": "This is the content for agile methods.",
                         },
                         {
-                            "heading": "Know your audience",
-                            "content": "This is the content for Know your audience.",
+                            "heading": "Governing agile services",
+                            "summary": "Principles, measuring progress, spending money.",
+                            "content": "This is the content for agile services.",
                         },
                         {
-                            "heading": "How people read",
-                            "content": "This is the content for How people read.",
+                            "heading": "Phases of an agile project",
+                            "summary": "Discovery, alpha, beta, live and retirement.",
+                            "content": "This is the content for agile project.",
                         },
                     ]
                 },

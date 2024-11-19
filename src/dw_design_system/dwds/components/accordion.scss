@@ -1,42 +1,72 @@
-.dwds-accordion-section-button {
-    width: 100%;
-    padding: 10px 0 0;
-    border: 0;
-    border-top: 1px solid #b1b4b6;
-    border-bottom: 10px solid transparent;
-    color: #0b0c0c;
-    background: none;
-    text-align: left;
-    cursor: pointer;
-    -webkit-appearance: none;
-
-    font-size: 1.5rem;
-    line-height: 1.25;
-
-    font-family: arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    font-weight: 700;
-    display: block;
-    margin-bottom: 0;
+.dwds-accordions {
+    background-color: var(--color-background-accordion);
+    text-size-adjust: var(--width-max-percentage);
+    border-bottom: var(--border-width-small) solid var(--color-border);
 }
 
-.dwds-accordion-section-heading {
-    padding: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-}
+.dwds-accordion-section-header {
 
-.dwds-accordion-section-heading-text {
-    display: block;
-    margin-bottom: 13px;
- }
+    h2 {
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    button {
+        width: var(--width-max-percentage);
+        padding: var(--s-2) 0 0;
+        border: 0;
+        border-top: var(--border-width-small) solid var(--color-border);
+        border-bottom: var(--s-2) solid transparent;
+        color: var(--color-button-text-accordion);
+        background: none;
+        text-align: left;
+        cursor: pointer;
+        -webkit-appearance: none;
+
+        font-size: var(--s2);
+        line-height: var(--ratio);
+
+        -webkit-font-smoothing: antialiased;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 0;
+
+        &:focus {
+            .dwds-accordion-section-heading-text-focus,
+            .dwds-accordion-section-summary-text-focus,
+            .dwds-accordion-section-toggle-focus {
+                outline: var(--s-5) solid transparent;
+                color: var(--color-button-text-focus);
+                background-color: var(--color-focus);
+                box-shadow: var(--border-no-width) var(--s-5);
+                text-decoration: none;
+                box-decoration-break: clone;
+            }
+        }
+    }
+
+    &:hover {
+        background-color: var(--color-accordion-hover);
+        .dwds-accordion-section-chevron {
+            color: var(--color-text);
+            background: var(--color-text);
+            &::after {
+                color: var(--color-background-highlight);
+            }
+        }
+        .dwds-accordion-section-toggle-text {
+            color: var(--color-text);
+        }
+    }
+}
 
  .dwds-accordion-section-chevron, .dwds-accordion-show-all-chevron {
     box-sizing: border-box;
     display: inline-block;
     position: relative;
-    width: 1.25rem;
-    height: 1.25rem;
+    width: var(--s1);
+    height: var(--s1);
     border: .0625rem solid;
     border-radius: 50%;
     vertical-align: middle;
@@ -57,98 +87,71 @@
 }
 
  .dwds-accordion-section-toggle {
-    font-size: 1rem;
-    line-height: 1.25;
+    font-size: var(--s0);
+    line-height: var(--ratio);
     font-weight: 400;
-    color: #1d70b8;
+    color: var(--color-button-primary);
     display: block;
-    margin-bottom: 13px;
+    margin-bottom: var(--s-1);
  }
 
-.dwds-accordion-section-content {
-     display: none;
-     padding: 15px 15px 30px 15px;
-}
-
 .dwds-accordion-show-all-text{
-    margin-left: 5px;
+    margin-left: var(--s-5);
     vertical-align: middle;
 }
 
-.dwds-accordion-show-all {
-    font-family: GDS Transport, arial, sans-serif;
+.dwds-accordion-show-all-button {
     -webkit-font-smoothing: antialiased;
     font-weight: 400;
-    font-size: 1rem;
-    line-height: 1.25;
+    font-size: var(--s0);
+    line-height: var(--ratio);
     position: relative;
     z-index: 1;
-    margin-bottom: 9px;
-    padding: 5px 2px 5px 0;
+    margin-bottom: var(--s-2);
+    padding: var(--s-5) var(--s-8) var(--s-5) 0;
     border-width: 0;
-    color: #1d70b8;
+    color: var(--color-button-primary);
     background: none;
     cursor: pointer;
     -webkit-appearance: none;
-}
 
-.dwds-accordion-template {
-    background-color: #f3f2f1;
-    text-size-adjust: 100%;
+    &:hover {
+        background-color: var(--color-accordion-hover);
+        .dwds-accordion-show-all-chevron{
+            color: var(--color-text);
+            background: var(--color-text);
+            &::after {
+                color: var(--color-background-highlight);
+            }
+        }
+        .dwds-accordion-show-all-text {
+            color: var(--color-text);
+        }
+    }
+
+    &:focus {
+        outline: var(--s-5) solid transparent;
+        color: var(--color-button-text-focus);
+        background-color: var(--color-focus);
+        box-shadow: var(--border-no-width) var(--s-5);
+        text-decoration: none;
+        box-decoration-break: clone;
+    }
 }
 
 .dwds-accordion-nav-chevron-down, .dwds-accordion-show-all-chevron-down{
      transform: rotate(180deg);
 }
 
-.dwds-accordions {
-    border-bottom: 1px solid #b1b4b6;
-    margin-bottom: 20px;
-}
+.dwds-accordion-section-heading-text-focus {
+    display: block;
+    margin-bottom: var(--s-2);
+ }
 
-@mixin accordion-chevron-hover-change {
-    color: #0b0c0c;
-    background: #0b0c0c;
-    &::after {
-        color: white;
-    }
-}
-
-.dwds-accordion-section-header:hover {
-    background-color: #eaeaea;
-    .dwds-accordion-section-chevron {
-         @include accordion-chevron-hover-change;
-    }
-    .dwds-accordion-section-toggle-text {
-        color: #0b0c0c;
-    }
-}
-
-.dwds-accordion-show-all:hover {
-    background-color: #eaeaea;
-    .dwds-accordion-show-all-chevron{
-         @include accordion-chevron-hover-change;
-    }
-    .dwds-accordion-show-all-text {
-        color: #0b0c0c;
-    }
-}
-
-@mixin accordion-button-focus-attributes {
-    outline: 3px solid transparent;
-    color: #0b0c0c;
-    background-color: #fd0;
-    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
-    text-decoration: none;
-    box-decoration-break: clone;
-}
-
-.dwds-accordion-show-all:focus {
-    @include accordion-button-focus-attributes;
-}
-
-.dwds-accordion-section-button:focus {
-    .dwds-accordion-section-heading-text-focus, .dwds-accordion-section-toggle-focus {
-        @include accordion-button-focus-attributes;
-    }
-}
+ .dwds-accordion-section-summary-text-focus {
+     display: block;
+     margin-bottom: var(--s-1);
+     font-size: 1.1875rem;
+     color: var(--color-text);
+     font-weight:100;
+ }
