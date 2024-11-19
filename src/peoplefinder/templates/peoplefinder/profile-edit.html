@@ -7,9 +7,8 @@
     {{ page_title }}
 {% endblock title %}
 
-{% block location %}
-    <a class="govuk-link" href="{% url 'profile-view' profile.slug %}">{{ profile.full_name }}</a>
-{% endblock location %}
+{% block page_title %}
+{% endblock page_title %}
 
 {% block primary_content %}
     <div class="content-stack large">
@@ -17,6 +16,7 @@
             <div class="content-item">
                 <div class="content-main">
                     <div class="content-body content-body-space-padding content-stack">
+                        <h1>{{ page_title }}</h1>
                         <a href="{% url 'profile-view' profile.slug %}" class="govuk-back-link">Back to profile</a>
 
                         {% include "peoplefinder/components/profile/edit/profile-completion.html" with profile=profile missing_profile_completion_fields=missing_profile_completion_fields %}
