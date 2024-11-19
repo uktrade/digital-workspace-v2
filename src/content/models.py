@@ -347,7 +347,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
     description = models.TextField(
         blank=True,
         null=True,
-        help_text="Please use this field only to add a description for an event.",
+        help_text="Describe your event in 30 words.",
         validators=[validate_description_word_count],
     )
 
