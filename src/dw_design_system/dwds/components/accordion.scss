@@ -1,6 +1,5 @@
 .dwds-accordions {
     background-color: var(--color-background-accordion);
-    text-size-adjust: var(--width-max-percentage);
     border-bottom: var(--border-width-small) solid var(--color-border);
 }
 
@@ -25,7 +24,6 @@
         -webkit-appearance: none;
 
         font-size: var(--s2);
-        line-height: var(--ratio);
 
         -webkit-font-smoothing: antialiased;
         font-weight: 700;
@@ -108,7 +106,7 @@
     position: relative;
     z-index: 1;
     margin-bottom: var(--s-2);
-    padding: var(--s-5) var(--s-8) var(--s-5) 0;
+    padding: var(--s-5) var(--s-5) var(--s-5) 0;
     border-width: 0;
     color: var(--color-button-primary);
     background: none;
