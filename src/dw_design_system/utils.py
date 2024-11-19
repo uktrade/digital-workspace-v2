@@ -149,6 +149,14 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Message",
+                "template": "dwds/components/message.html",
+                "context": {
+                    "title": "Message title",
+                    "body": "This is the message body with some content in it.",
+                },
+            },
+            {
                 "name": "Pagination",
                 "template": "dwds/components/pagination.html",
                 "context": {"pages": pages, "request": request},
