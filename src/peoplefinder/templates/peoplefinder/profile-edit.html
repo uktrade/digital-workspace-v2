@@ -1,4 +1,4 @@
-{% extends 'peoplefinder/page.html' %}
+{% extends 'dwds_content.html' %}
 
 {% load static crispy_forms_tags crispy_forms_gds %}
 {% load webpack_static from webpack_loader %}
@@ -11,89 +11,98 @@
     <a class="govuk-link" href="{% url 'profile-view' profile.slug %}">{{ profile.full_name }}</a>
 {% endblock location %}
 
-{% block content %}
-    <a href="{% url 'profile-view' profile.slug %}" class="govuk-back-link">Back to profile</a>
+{% block primary_content %}
+    <div class="content-stack large">
+        <div class="dwds-content-item-card no-shadow">
+            <div class="content-item">
+                <div class="content-main">
+                    <div class="content-body content-body-space-padding content-stack">
+                        <a href="{% url 'profile-view' profile.slug %}" class="govuk-back-link">Back to profile</a>
 
-    {% include "peoplefinder/components/profile/edit/profile-completion.html" with profile=profile missing_profile_completion_fields=missing_profile_completion_fields %}
+                        {% include "peoplefinder/components/profile/edit/profile-completion.html" with profile=profile missing_profile_completion_fields=missing_profile_completion_fields %}
 
 
-    {% error_summary form %}
-    {% if teams_formset %}
-        {% for teams_formset_form in teams_formset %}
-            {% error_summary teams_formset_form %}
-        {% endfor %}
-    {% endif %}
+                        {% error_summary form %}
+                        {% if teams_formset %}
+                            {% for teams_formset_form in teams_formset %}
+                                {% error_summary teams_formset_form %}
+                            {% endfor %}
+                        {% endif %}
 
-    <div class="govuk-grid-row">
+                        <div class="govuk-grid-row">
 
-        <div class="govuk-grid-column-one-third">
+                            <div class="govuk-grid-column-one-third">
 
-            <nav class="moj-side-navigation govuk-!-padding-top-0"
-                 aria-label="Side navigation">
-                <ul class="moj-side-navigation__list">
-                    {% for edit_section in edit_sections %}
-                        <li class="moj-side-navigation__item {% if current_edit_section == edit_section %}moj-side-navigation__item--active{% endif %}">
-                            <a href="{% url 'profile-edit-section' profile_slug=profile_slug edit_section=edit_section.value %}"
-                               aria-current="location">{{ edit_section.label }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </nav>
+                                <nav class="moj-side-navigation govuk-!-padding-top-0"
+                                     aria-label="Side navigation">
+                                    <ul class="moj-side-navigation__list">
+                                        {% for edit_section in edit_sections %}
+                                            <li class="moj-side-navigation__item {% if current_edit_section == edit_section %}moj-side-navigation__item--active{% endif %}">
+                                                <a href="{% url 'profile-edit-section' profile_slug=profile_slug edit_section=edit_section.value %}"
+                                                   aria-current="location">{{ edit_section.label }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </nav>
 
-        </div>
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">{{ page_title }}</h1>
-            <form id="edit-profile"
-                  class="ws-profile-edit-form"
-                  action="#"
-                  method="post"
-                  enctype="multipart/form-data"
-                  novalidate>
-                {% crispy form %}
-                {% if teams_formset %}
-                    <script src="{% static 'peoplefinder/team-select.js' %}"></script>
-                    <script src="{% static 'peoplefinder/formset.js' %}"></script>
-                    <h2 class="govuk-heading-m" id="team-and-role-heading">Team and role</h2>
-                    <div data-formset="{{ teams_formset.prefix }}">
-                        {% crispy teams_formset teams_formset_helper %}
-                        <button class="govuk-button govuk-button--secondary"
-                                data-formset-add="{{ teams_formset_blank_form_url }}"
-                                data-testid="add-role">Add a role</button>
+                            </div>
+                            <div class="govuk-grid-column-two-thirds">
+                                <h1 class="govuk-heading-l">{{ page_title }}</h1>
+                                <form id="edit-profile"
+                                      class="ws-profile-edit-form"
+                                      action="#"
+                                      method="post"
+                                      enctype="multipart/form-data"
+                                      novalidate>
+                                    {% crispy form %}
+                                    {% if teams_formset %}
+                                        <script src="{% static 'peoplefinder/team-select.js' %}"></script>
+                                        <script src="{% static 'peoplefinder/formset.js' %}"></script>
+                                        <h2 class="govuk-heading-m" id="team-and-role-heading">Team and role</h2>
+                                        <div data-formset="{{ teams_formset.prefix }}">
+                                            {% crispy teams_formset teams_formset_helper %}
+                                            <button class="govuk-button govuk-button--secondary"
+                                                    data-formset-add="{{ teams_formset_blank_form_url }}"
+                                                    data-testid="add-role">Add a role</button>
+                                        </div>
+                                    {% endif %}
+                                    <button class="govuk-button" type="submit" data-testid="save-profile">Save section</button>
+                                </form>
+                                {% if current_edit_section == "account_settings" %}
+                                    <h3 class="govuk-heading-m">Tell us you are leaving</h3>
+                                    <p class="govuk-body-s pf-secondary-colour">
+                                        {% if settings.LEAVING_SERVICE_URL %}
+                                            If you are leaving the department you need to use the <a class="govuk-link" href="{{ settings.LEAVING_SERVICE_URL }}">Leaving DBT service</a>.
+                                        {% else %}
+                                            If you are leaving the department you need to use the Leaving DBT service.
+                                        {% endif %}
+                                    </p>
+                                {% else %}
+                                    <p class="govuk-body-s pf-secondary-colour">
+                                        All the information on your profile will be visible to DBT staff and contractors on
+                                        Digital Workspace and other internal DBT tools. Occasionally, we may collate this
+                                        data for departmental insights.
+                                    </p>
+                                    <p class="govuk-body-s pf-secondary-colour">
+                                        This is a voluntary collection of your information, by submitting this form you are agreeing to the terms and conditions regarding the collection and processing of your data and are providing consent for this information to be collected and processed.
+                                        This follows our
+                                        <a class="govuk-link"
+                                           href="https://workspace.trade.gov.uk/working-at-dbt/policies-and-guidance/policies/digital-workspace-privacy-policy/">privacy policy</a>.
+                                    </p>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                        {% if perms.peoplefinder.delete_person %}
+                            <fieldset class="govuk-!-padding-3">
+                                <h2 class="govuk-heading-m">SSO user</h2>
+                                {% include 'peoplefinder/components/update-user-form.html' with profile=profile form=update_user_form %}
+                            </fieldset>
+                        {% endif %}
                     </div>
-                {% endif %}
-                <button class="govuk-button" type="submit" data-testid="save-profile">Save section</button>
-            </form>
-            {% if current_edit_section == "account_settings" %}
-                <h3 class="govuk-heading-m">Tell us you are leaving</h3>
-                <p class="govuk-body-s pf-secondary-colour">
-                    {% if settings.LEAVING_SERVICE_URL %}
-                        If you are leaving the department you need to use the <a class="govuk-link" href="{{ settings.LEAVING_SERVICE_URL }}">Leaving DBT service</a>.
-                    {% else %}
-                        If you are leaving the department you need to use the Leaving DBT service.
-                    {% endif %}
-                </p>
-            {% else %}
-                <p class="govuk-body-s pf-secondary-colour">
-                    All the information on your profile will be visible to DBT staff and contractors on
-                    Digital Workspace and other internal DBT tools. Occasionally, we may collate this
-                    data for departmental insights.
-                </p>
-                <p class="govuk-body-s pf-secondary-colour">
-                    This is a voluntary collection of your information, by submitting this form you are agreeing to the terms and conditions regarding the collection and processing of your data and are providing consent for this information to be collected and processed.
-                    This follows our
-                    <a class="govuk-link"
-                       href="https://workspace.trade.gov.uk/working-at-dbt/policies-and-guidance/policies/digital-workspace-privacy-policy/">privacy policy</a>.
-                </p>
-            {% endif %}
+                </div>
+            </div>
         </div>
-
     </div>
-
-    {% if perms.peoplefinder.delete_person %}
-        <fieldset class="govuk-!-padding-3">
-            <h2 class="govuk-heading-m">SSO user</h2>
-            {% include 'peoplefinder/components/update-user-form.html' with profile=profile form=update_user_form %}
-        </fieldset>
-    {% endif %}
-
-{% endblock content %}
+{% endblock primary_content %}
