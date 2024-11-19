@@ -29,17 +29,7 @@
 
                             <div class="govuk-grid-column-one-third">
 
-                                <nav class="moj-side-navigation govuk-!-padding-top-0"
-                                     aria-label="Side navigation">
-                                    <ul class="moj-side-navigation__list">
-                                        {% for edit_section in edit_sections %}
-                                            <li class="moj-side-navigation__item {% if current_edit_section == edit_section %}moj-side-navigation__item--active{% endif %}">
-                                                <a href="{% url 'profile-edit-section' profile_slug=profile_slug edit_section=edit_section.value %}"
-                                                   aria-current="location">{{ edit_section.label }}</a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </nav>
+                                {% include "dwds/components/menu_vertical.html" with items=edit_menu_items %}
 
                             </div>
                             <div class="govuk-grid-column-two-thirds">
@@ -87,7 +77,6 @@
                                     </p>
                                 {% endif %}
                             </div>
-
                         </div>
 
                         {% if perms.peoplefinder.delete_person %}

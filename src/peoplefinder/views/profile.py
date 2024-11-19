@@ -291,6 +291,25 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
                 + self.teams_formset.prefix,
             )
 
+        edit_menu_items = [
+            {
+                "title": section.label,
+                "url": reverse(
+                    "profile-edit-section",
+                    kwargs={
+                        "profile_slug": profile.slug,
+                        "edit_section": section.value,
+                    },
+                ),
+                "active": section == self.edit_section,
+            }
+            for section in EditSections
+        ]
+
+        context.update(
+            edit_menu_items=edit_menu_items,
+        )
+
         return context
 
     def get_teams_formset(self, request: HttpRequest) -> TeamsProfileEditFormset:
