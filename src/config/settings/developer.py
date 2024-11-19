@@ -39,7 +39,7 @@ except ModuleNotFoundError:
     ...
 
 
-DEV_TOOLS_ENABLED = env.bool("DEV_TOOLS_ENABLED", True)
+DEV_TOOLS_ENABLED = env.bool("DEV_TOOLS_ENABLED", True)  # noqa F405
 
 if DEV_TOOLS_ENABLED:
     # remove Django Staff SSO Client for local login
