@@ -1,4 +1,4 @@
-<nav class="dwds-menu-vertical">
+<nav class="dwds-menu-vertical {% if thin %}thin{% endif %}">
     <ul class="content-stack no-gap">
         {% for item in items %}
             <li {% if item.active %}class="active"{% endif %}>
