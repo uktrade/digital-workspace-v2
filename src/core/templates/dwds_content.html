@@ -16,12 +16,14 @@
 
                 <div class="content-sidebar-right">
                     <div class="primary-content {% block primary_content_classes %}dwds-content-page content-stack large{% endblock primary_content_classes %}">
-                        <div class="page-title content-stack small">
-                            {% block page_title %}
-                                <h1>{% firstof page_title page.title %}</h1>
-                                {% if page.description %}<p class="text-medium">{{ page.description }}</p>{% endif %}
-                            {% endblock page_title %}
-                        </div>
+                        {% block page_title_wrapper %}
+                            <div class="page-title content-stack small">
+                                {% block page_title %}
+                                    <h1>{% firstof page_title page.title %}</h1>
+                                    {% if page.description %}<p class="text-medium">{{ page.description }}</p>{% endif %}
+                                {% endblock page_title %}
+                            </div>
+                        {% endblock page_title_wrapper %}
                         {% block bookmark %}
                             {% if page %}
                                 <div>{% bookmark_page_input user page %}</div>
