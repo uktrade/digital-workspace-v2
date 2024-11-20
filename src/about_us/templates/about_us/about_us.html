@@ -1,30 +1,21 @@
-{% extends "dwds_content.html" %}
+{% extends "content/content_page.html" %}
 {% load wagtailcore_tags %}
 
-{% block main_content_classes %}
-    content_page
-{% endblock main_content_classes %}
-
 {% block primary_content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% for block in page.body %}
-                {% include_block block %}
-            {% endfor %}
+    {{ block.super }}
+
+    {% if page_topics.count > 0 %}
+        <div class="govuk-grid-column-one-third ws-related-topics">
+            <h2 class="govuk-heading-m">Related topics</h2>
+            <ul class="govuk-list">
+                {% for page_topic in page_topics %}
+                    <li>
+                        <a class="govuk-link" href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
-        {% if page_topics.count > 0 %}
-            <div class="govuk-grid-column-one-third ws-related-topics">
-                <h2 class="govuk-heading-m">Related topics</h2>
-                <ul class="govuk-list">
-                    {% for page_topic in page_topics %}
-                        <li>
-                            <a class="govuk-link" href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-    </div>
+    {% endif %}
 {% endblock primary_content %}
 
 {% block post_primary_content %}

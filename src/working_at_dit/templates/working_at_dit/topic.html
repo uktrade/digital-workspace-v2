@@ -1,15 +1,9 @@
-{% extends "dwds_content.html" %}
+{% extends "content/content_page.html" %}
 {% load wagtailcore_tags %}
 
-{% block main_content_classes %}
-    content_page
-{% endblock main_content_classes %}
-
 {% block primary_content %}
-    {% include "includes/attribution.html" with page=page %}
-    {% for block in page.body %}
-        {% include_block block %}
-    {% endfor %}
+    {{ block.super }}
+
     {% if how_do_is %}
         <h2 class="govuk-heading-m">How do I?</h2>
         <ul class="govuk-list">

@@ -1,4 +1,4 @@
-{% extends 'dwds_content.html' %}
+{% extends "dwds_content.html" %}
 
 {% load markdown %}
 
@@ -9,14 +9,20 @@
 {% block page_title %}
 {% endblock page_title %}
 
+{% block primary_content_classes %}
+{% endblock primary_content_classes %}
+
 {% block primary_content %}
     <div class="content-stack large">
         <div class="dwds-content-item-card no-shadow">
             <div class="dwds-content-list content-item">
                 <div class="content-main">
                     <div class="content-body content-body-space-padding content-stack">
-                        <h1>{{ page_title }}</h1>
-                        {% if team.abbreviation %}<p class="text-small">{{ team.abbreviation }}</p>{% endif %}
+                        <h1>
+                            {{ page_title }}
+                            {% if team.abbreviation %}({{ team.abbreviation }}){% endif %}
+                        </h1>
+
                         <div class="text-small" data-testid="description">{{ team.description|markdown }}</div>
                         <div class="dwds-button-group">
                             {% if perms.peoplefinder.change_team %}
