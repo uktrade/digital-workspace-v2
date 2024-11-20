@@ -121,6 +121,7 @@ setup: # Run the first use commands to set up the project for development
 	make create-section-homepages
 	make wagtail-groups
 	make pf-groups
+	make pf-test-teams
 	make ingest-uk-staff-locations
 	make superuser
 	make index
