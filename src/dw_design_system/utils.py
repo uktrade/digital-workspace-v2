@@ -161,9 +161,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "name": "John Doe",
                     "title": "Permanent Secretary",
                     "profile_url": "https://www.gov.uk",
-                    "profile_image_url": thumbnail_file.file.url
-                    if thumbnail_file and thumbnail_file.file
-                    else None,
+                    "profile_image_url": (
+                        thumbnail_file.file.url
+                        if thumbnail_file and thumbnail_file.file
+                        else None
+                    ),
                     "location": "London",
                     "show_icons": True,
                     "email_address": "someone@example.com",
