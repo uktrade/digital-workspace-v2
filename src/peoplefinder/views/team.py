@@ -142,10 +142,12 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
 
         team = self.object
         team_service = TeamService()
+        page_title = f"Edit {team.name}"
 
         context.update(
-            page_title=f"Edit {team.name}",
+            page_title=page_title,
             team_breadcrumbs=True,
+            extra_breadcrumbs=[(None, page_title)],
             parent_team=team_service.get_immediate_parent_team(team),
             is_root_team=team_service.get_root_team() == team,
             team_leaders_order_component={
@@ -215,9 +217,15 @@ class TeamAddNewSubteamView(PermissionRequiredMixin, CreateView, PeoplefinderVie
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
+        page_title = "Add new sub-team"
 
-        context["parent_team"] = self.parent_team
-        context["is_root_team"] = False
+        context.update(
+            page_title=page_title,
+            team_breadcrumbs=True,
+            extra_breadcrumbs=[(None, page_title)],
+            team=self.parent_team,
+            is_root_team=False,
+        )
 
         return context
 

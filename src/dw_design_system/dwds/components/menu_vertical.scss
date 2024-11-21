@@ -1,0 +1,38 @@
+.dwds-menu-vertical {
+    --menu-vertical-item-vertical-spacing: var(--s0);
+    --menu-vertical-item-horizontal-spacing: var(--s0);
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: inline-block;
+        background-color: var(--color-menu-background);
+
+        li {
+            display: inline-block;
+            width: 100%;
+            border-left: var(--s-5) solid transparent;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+
+            &:hover {
+                border-left-color: var(--color-menu-hover-border);
+            }
+
+            &.active {
+                border-left-color: var(--color-menu-active-border);
+                background-color: var(--color-menu-active-background);
+            }
+
+            a {
+                display: inline-block;
+                padding: var(--menu-vertical-item-vertical-spacing) var(--menu-vertical-item-horizontal-spacing);
+                width: 100%;
+            }
+        }
+    }
+}
+
+.dwds-menu-vertical.thin {
+    --menu-vertical-item-vertical-spacing: var(--s-3);
+}

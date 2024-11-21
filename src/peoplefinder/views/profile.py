@@ -251,6 +251,9 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
 
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
+        team = None
+        if roles:
+            team = roles[0].team
 
         update_user_form = ProfileUpdateUserForm(
             initial={"username": profile.user and profile.user.username},
@@ -266,11 +269,14 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             page_title = EditSections.ACCOUNT_SETTINGS.label
 
         context.update(
+            profile_breadcrumbs=True,
+            extra_breadcrumbs=[(None, "Edit profile")],
             page_title=page_title,
             current_edit_section=self.edit_section,
             edit_sections=edit_sections,
             profile_slug=profile.slug,
             roles=roles,
+            team=team,
             update_user_form=update_user_form,
         )
 
@@ -285,6 +291,25 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
                 + "?prefix="
                 + self.teams_formset.prefix,
             )
+
+        edit_menu_items = [
+            {
+                "title": section.label,
+                "url": reverse(
+                    "profile-edit-section",
+                    kwargs={
+                        "profile_slug": profile.slug,
+                        "edit_section": section.value,
+                    },
+                ),
+                "active": section == self.edit_section,
+            }
+            for section in edit_sections
+        ]
+
+        context.update(
+            edit_menu_items=edit_menu_items,
+        )
 
         return context
 

@@ -149,6 +149,28 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Message",
+                "template": "dwds/components/message.html",
+                "context": {
+                    "title": "Message title",
+                    "body": "This is the message body with some content in it.",
+                },
+            },
+            {
+                "name": "Menu (vertical)",
+                "template": "dwds/components/menu_vertical.html",
+                "context": {
+                    "items": [
+                        {
+                            "active": True if i == 0 else False,
+                            "title": f"Menu item {i + 1}",
+                            "url": "https://www.gov.uk",
+                        }
+                        for i in range(10)
+                    ],
+                },
+            },
+            {
                 "name": "Pagination",
                 "template": "dwds/components/pagination.html",
                 "context": {"pages": pages, "request": request},

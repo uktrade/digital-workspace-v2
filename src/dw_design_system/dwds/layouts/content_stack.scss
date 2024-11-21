@@ -6,6 +6,10 @@
     justify-content: flex-start;
 }
 
+.content-stack.no-gap {
+    --content-stack-gap: 0;
+}
+
 .content-stack.small {
     --content-stack-gap: var(--s-3);
 }
