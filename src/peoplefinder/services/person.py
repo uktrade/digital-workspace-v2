@@ -123,56 +123,54 @@ class PersonService:
             "form_id": "team-and-role-heading",
         },
     }
+
     # Map of profile sections to edit sections and fields.
     PROFILE_SECTION_MAPPING: Dict[Any, ProfileSectionMapping] = {
-        ProfileSections.CONTACT: {
-            "edit_section": EditSections.CONTACT,
+        ProfileSections.TEAM_AND_ROLE: {
             "fields": [
-                ("contact_email", "Email"),
-                ("primary_phone_number", "Phone number"),
-                ("secondary_phone_number", "Alternative phone number"),
-            ],
-            "empty_text": "Add your work email address and phone number to your profile.",
-        },
-        ProfileSections.ROLE: {
-            "edit_section": EditSections.TEAMS,
-            "fields": [
-                ("get_manager_display", "My manager"),
                 ("get_grade_display", "Grade"),
+                ("get_manager_display", "Manager"),
                 ("get_roles_display", "My role(s)"),
             ],
             "empty_text": "Add your grade, team, and role to your profile.",
         },
-        ProfileSections.LOCATION: {
-            "edit_section": EditSections.LOCATION,
+        ProfileSections.WAYS_OF_WORKING: {
             "fields": [
                 ("get_remote_working_display", "Where I work"),
                 ("get_office_location_display", "Office location"),
-                ("usual_office_days", "Days I'm in the office"),
-                ("get_workdays_display", "Days I work"),
+                ("usual_office_days", "Days in the office"),
+                ("location_in_building", "Location in building"),
+                ("international_building", "International location"),
+                ("get_workdays_display", "Working days"),
             ],
             "empty_text": "Add your office location and working pattern to your profile.",
         },
-        ProfileSections.ABOUT: {
-            "edit_section": EditSections.SKILLS,
+        ProfileSections.SKILLS: {
             "fields": [
-                ("get_key_skills_display", "My skills"),
-                ("fluent_languages", "Fluent languages"),
-                ("intermediate_languages", "Non-fluent languages"),
+                ("get_key_skills_display", "Skills"),
+                ("fluent_languages", "Languages"),
                 (
                     "get_learning_interests_display",
-                    "My learning and development interests",
+                    "Learning and development interests",
                 ),
-                ("get_networks_display", "My networks"),
-                ("get_professions_display", "My professions"),
+                ("get_networks_display", "Networks"),
+                ("get_professions_display", "Professions"),
                 (
                     "get_additional_roles_display",
-                    "My further roles and responsibilities",
+                    "Additional roles or responsibilities",
                 ),
-                ("previous_experience", "My previous experience"),
+                ("previous_experience", "Previous experience"),
             ],
             "empty_text": "Add skills, interests, and networks to your profile.",
         },
+        # ProfileSections.CONTACT: {
+        #     "fields": [
+        #         ("contact_email", "Email"),
+        #         ("primary_phone_number", "Phone number"),
+        #         ("secondary_phone_number", "Alternative phone number"),
+        #     ],
+        #     "empty_text": "Add your work email address and phone number to your profile.",
+        # },
     }
 
     def create_user_profile(self, user: User) -> Person:

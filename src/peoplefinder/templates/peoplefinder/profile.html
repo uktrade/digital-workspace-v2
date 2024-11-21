@@ -1,4 +1,4 @@
-{% extends 'peoplefinder/page.html' %}
+{% extends 'dwds_content.html' %}
 
 {% load humanize profile %}
 {% load webpack_static from webpack_loader %}
@@ -7,14 +7,9 @@
     {{ profile.full_name }}
 {% endblock title %}
 
-{% block location %}
-    {{ profile.full_name }}
-{% endblock location %}
+{% block primary_content %}
 
-{% block content %}
-    {% include "peoplefinder/components/profile/edit/profile-completion.html" with profile=profile missing_profile_completion_fields=missing_profile_completion_fields %}
-
-    <div class="govuk-grid-row govuk-!-margin-bottom-6">
+    {% comment %} <div class="govuk-grid-row govuk-!-margin-bottom-6">
         <div class="govuk-grid-column-one-third">
             {% if profile.photo %}
                 <div {% profile_photo_attrs profile %}>
@@ -135,119 +130,162 @@
                 {% endif %}
             {% endif %}
         </div>
-    </div>
+    </div> {% endcomment %}
 
-    {% for profile_section in profile_sections %}
-        {% if is_users_profile or profile_section.values %}
-            <div class="govuk-summary-card">
-                <div class="govuk-summary-card__title-wrapper">
-                    <h2 class="govuk-summary-card__title govuk-!-font-size-24">{{ profile_section.title }}</h2>
-                    <ul class="govuk-summary-card__actions">
-                        <li class="govuk-summary-card__action">
-                            <a class="govuk-link" href="{{ profile_section.url }}">
-                                Edit<span class="govuk-visually-hidden">{{ profile_section.title }}</span>
-                            </a>
-                        </li>
-                    </ul>
+    <div class="content-stack large">
+        <div>
+            {% if is_users_profile or current_tab.values %}
+                {% for profile_section_dict in profile_section_dicts %}
+                    <a class="dwds-button dwds-button--navigation"
+                        href="{{ profile_section_dict.url }}">{{ profile_section_dict.title }}</a>
+                {% endfor %}
+
+                <p>
+                    <strong>current_tab</strong> {{ current_tab }}
+                </p>
+                <p>
+                    <strong>current_tab.values</strong> {{ current_tab.values }}
+                </p>
+                <p>
+                    <strong>profile_section_dicts</strong> {{ profile_section_dicts }}
+                </p>
+
+                <div>
+                    <h2>{{ current_tab.title }}</h2>
+                    {% if current_tab.values %}
+                    <dl>
+                        {% for value in current_tab.values %}
+                        <dt>{{ value.1 }}</dt>
+                        <dd>{{ value.2 }}</dd>
+                        {% endfor %}
+                    </dl>
+                    {% endif %}
                 </div>
-                <div class="govuk-summary-card__content">
-                    <dl class="govuk-summary-list">
-                        {% for profile_value in profile_section.values %}
+            {% endif %}
+            {% comment %} {% for profile_section in profile_sections %}
+            {% if is_users_profile or profile_section.values %}
+                <div class="govuk-summary-card">
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h2 class="govuk-summary-card__title govuk-!-font-size-24">{{ profile_section.title }}</h2>
+                        <ul class="govuk-summary-card__actions">
+                            <li class="govuk-summary-card__action">
+                                <a class="govuk-link" href="{{ profile_section.url }}">
+                                    Edit<span class="govuk-visually-hidden">{{ profile_section.title }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="govuk-summary-card__content">
+                        <dl class="govuk-summary-list">
+                            {% for profile_value in profile_section.values %}
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">{{ profile_value.1 }}</dt>
                                 <dd class="govuk-summary-list__value" data-testid="{{ profile_value.0 }}">
                                     {{ profile_value.2 }}
                                 </dd>
                             </div>
-                        {% empty %}
+                            {% empty %}
                             {{ profile_section.empty_text }}
-                        {% endfor %}
-                    </dl>
+                            {% endfor %}
+                        </dl>
+                    </div>
                 </div>
-            </div>
-        {% endif %}
-    {% endfor %}
+                {% endif %}
+                {% endfor %} {% endcomment %}
+                
+            {% if perms.peoplefinder.view_auditlog %}
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">Internal user details</span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Staff SSO user ID</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ profile.user.username }}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Legacy staff SSO user ID</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ profile.user.legacy_sso_user_id }}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Internal user ID</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ profile.user_id }}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Groups</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {% include 'peoplefinder/components/bullet-list.html' with list=profile.user.groups.all %}
+                                </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">User permissions</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {% include 'peoplefinder/components/bullet-list.html' with list=profile.user.user_permissions.all %}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Is staff</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ profile.user.is_staff }}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Is superuser</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ profile.user.is_superuser }}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Profile created at</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ profile.created_at }}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Profile updated at</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ profile.updated_at }}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Profile edited or confirmed at</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ profile.edited_or_confirmed_at }}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </details>
+            {% endif %}
+            
+            {% if request.user == profile.user or perms.peoplefinder.view_auditlog %}
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">Audit log</span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        {% include 'peoplefinder/components/audit-log.html' with audit_log=profile_audit_log.reverse excluded_keys=profile_audit_log_excluded_keys %}
+                    </div>
+                </details>
+            {% endif %}
+        </div>
+    </div>
+{% endblock primary_content %}
 
-    {% if perms.peoplefinder.view_auditlog %}
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">Internal user details</span>
-            </summary>
-            <div class="govuk-details__text">
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Staff SSO user ID</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.user.username }}
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Legacy staff SSO user ID</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.user.legacy_sso_user_id }}
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Internal user ID</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.user_id }}
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Groups</dt>
-                        <dd class="govuk-summary-list__value">
-                            {% include 'peoplefinder/components/bullet-list.html' with list=profile.user.groups.all %}
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">User permissions</dt>
-                        <dd class="govuk-summary-list__value">
-                            {% include 'peoplefinder/components/bullet-list.html' with list=profile.user.user_permissions.all %}
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Is staff</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.user.is_staff }}
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Is superuser</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.user.is_superuser }}
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Profile created at</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.created_at }}
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Profile updated at</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.updated_at }}
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Profile edited or confirmed at</dt>
-                        <dd class="govuk-summary-list__value">
-                            {{ profile.edited_or_confirmed_at }}
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </details>
-    {% endif %}
+<script>
+    const navigationLinks = document.querySelectorAll('.dwds-button--navigation');
 
-    {% if request.user == profile.user or perms.peoplefinder.view_auditlog %}
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">Audit log</span>
-            </summary>
-            <div class="govuk-details__text">
-                {% include 'peoplefinder/components/audit-log.html' with audit_log=profile_audit_log.reverse excluded_keys=profile_audit_log_excluded_keys %}
-            </div>
-        </details>
-    {% endif %}
-{% endblock content %}
+    navigationLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            navigationLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>

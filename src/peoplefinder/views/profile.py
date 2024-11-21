@@ -139,33 +139,39 @@ class ProfileDetailView(ProfileView, DetailView):
                 "edited_or_confirmed_at",
             ]
 
-        profile_sections = []
+        # ProfileSections("skills") -> ProfileSections.SKILLS: ProfileSections()
+        # current_profile_section.value -> skills
+        # current_profile_section.label -> Skills
+        profile_section_dicts = []
         for profile_section in ProfileSections:
-            profile_sections.append(
+            profile_url = reverse("profile-view", kwargs={"profile_slug": profile.slug})
+            profile_section_dicts.append(
                 {
+                    "profile_section": profile_section,
                     "title": profile_section.label,
-                    "url": reverse(
-                        "profile-edit-section",
-                        kwargs={
-                            "profile_slug": profile.slug,
-                            "edit_section": (
-                                PersonService().get_profile_section_mapping(
-                                    profile_section
-                                )["edit_section"]
-                            ),
-                        },
-                    ),
-                    "values": PersonService().get_profile_section_values(
-                        profile,
-                        profile_section,
-                    ),
-                    "empty_text": PersonService().get_profile_section_empty_text(
-                        profile_section
-                    ),
+                    "url": f"{profile_url}?profile_section={profile_section.value}",
                 }
             )
+
+        current_profile_section = ProfileSections(
+            self.request.GET.get("profile_section", ProfileSections.TEAM_AND_ROLE)
+        )
+
+        current_tab = {
+            "value": current_profile_section.value,
+            "title": current_profile_section.label,
+            "values": PersonService().get_profile_section_values(
+                profile,
+                current_profile_section,
+            ),
+            "empty_text": PersonService().get_profile_section_empty_text(
+                current_profile_section,
+            ),
+        }
+
         context.update(
-            profile_sections=profile_sections,
+            current_tab=current_tab,
+            profile_section_dicts=profile_section_dicts,
         )
 
         return context
