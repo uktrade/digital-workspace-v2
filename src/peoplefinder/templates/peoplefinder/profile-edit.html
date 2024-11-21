@@ -72,8 +72,8 @@
     </div>
 
     {% if perms.peoplefinder.delete_person %}
-        <fieldset class="govuk-!-padding-3">
-            <h2 class="govuk-heading-m">SSO user</h2>
+        <fieldset>
+            <h2>SSO user</h2>
             {% include 'peoplefinder/components/update-user-form.html' with profile=profile form=update_user_form %}
         </fieldset>
     {% endif %}
