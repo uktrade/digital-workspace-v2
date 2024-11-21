@@ -304,7 +304,7 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
                 ),
                 "active": section == self.edit_section,
             }
-            for section in EditSections
+            for section in edit_sections
         ]
 
         context.update(
