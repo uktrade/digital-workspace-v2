@@ -50,22 +50,21 @@
                 <h3>Tell us you are leaving</h3>
                 <p class="pf-secondary-colour">
                     {% if settings.LEAVING_SERVICE_URL %}
-                        If you are leaving the department you need to use the <a class="govuk-link" href="{{ settings.LEAVING_SERVICE_URL }}">Leaving DBT service</a>.
+                        If you are leaving the department you need to use the <a href="{{ settings.LEAVING_SERVICE_URL }}">Leaving DBT service</a>.
                     {% else %}
                         If you are leaving the department you need to use the Leaving DBT service.
                     {% endif %}
                 </p>
             {% else %}
-                <p class="govuk-body-s pf-secondary-colour">
+                <p class="pf-secondary-colour">
                     All the information on your profile will be visible to DBT staff and contractors on
                     Digital Workspace and other internal DBT tools. Occasionally, we may collate this
                     data for departmental insights.
                 </p>
-                <p class="govuk-body-s pf-secondary-colour">
+                <p class="pf-secondary-colour">
                     This is a voluntary collection of your information, by submitting this form you are agreeing to the terms and conditions regarding the collection and processing of your data and are providing consent for this information to be collected and processed.
                     This follows our
-                    <a class="govuk-link"
-                       href="https://workspace.trade.gov.uk/working-at-dbt/policies-and-guidance/policies/digital-workspace-privacy-policy/">privacy policy</a>.
+                    <a href="https://workspace.trade.gov.uk/working-at-dbt/policies-and-guidance/policies/digital-workspace-privacy-policy/">privacy policy</a>.
                 </p>
             {% endif %}
         </div>
