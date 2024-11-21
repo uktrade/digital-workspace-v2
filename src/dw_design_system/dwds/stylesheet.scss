@@ -21,9 +21,12 @@
 @forward "components/link_action";
 @forward "components/link_list";
 @forward "components/link_navigate";
+@forward "components/message";
+@forward "components/menu_vertical";
 @forward "components/one_up";
 @forward "components/pagination";
 @forward "components/promo";
+@forward "components/profile_info";
 
 // Elements
 @forward "elements/button";
@@ -31,6 +34,7 @@
 @forward "elements/content_image";
 @forward "elements/content_item";
 @forward "elements/content_main";
+@forward "elements/profile_image";
 @forward "elements/icon";
 @forward "elements/inset";
 @forward "elements/navigational_link";

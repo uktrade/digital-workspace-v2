@@ -53,7 +53,7 @@ def search_category(
 
     search_vector = SEARCH_VECTORS[category](request)
     search_results = search_vector.search(query)
-    search_results_count = search_results.count()
+    search_results_count = get_count(context, category, query)
 
     if limit:
         search_results = search_results[: int(limit)]
@@ -131,21 +131,33 @@ def autocomplete(request, query):
     return search_results
 
 
-@register.simple_tag(takes_context=True)
-# @silk_profile(name="Search.TemplateTag.count")
-def search_count(context, *, category):
+def get_count(context, category, query):
     request = context["request"]
-    query = context["search_query"]
+
+    if not hasattr(request, "extended_search_count_cache"):
+        request.extended_search_count_cache = {}
+
+    cached_count = request.extended_search_count_cache.get(category, None)
+    if cached_count is not None:
+        return cached_count
 
     search_vector = SEARCH_VECTORS[category](request)
     hits = search_vector.search(query).count()
 
+    request.extended_search_count_cache[category] = hits
+    return hits
+
+
+@register.simple_tag(takes_context=True)
+# @silk_profile(name="Search.TemplateTag.count")
+def search_count(context, *, category):
+    query = context["search_query"]
+    hits = get_count(context, category, query)
+
     # combined total for not just pages but people and teams
     if category == "all_pages":
-        search_vector = SEARCH_VECTORS["people"](request)
-        hits += search_vector.search(query).count()
-        search_vector = SEARCH_VECTORS["teams"](request)
-        hits += search_vector.search(query).count()
+        hits += get_count(context, "people", query)
+        hits += get_count(context, "teams", query)
 
     return hits
 

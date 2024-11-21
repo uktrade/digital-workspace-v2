@@ -1,0 +1,34 @@
+.dwds-profile-info {
+    text-align: center;
+
+    > .content-stack {
+        margin-block-start: 0;
+    }
+
+    h3 {
+        margin: 0;
+    }
+
+    p {
+        margin-top: var(--s-5);
+    }
+
+    .location.with-icon {
+        margin: 0 auto;
+        align-items: center;
+
+        .icon {
+            font-size: var(--s3);
+            margin-inline-end: var(--s-5);
+        }
+    }
+
+    .content-footer .with-icon {
+        padding: var(--s-5);
+
+        .icon {
+            font-size: var(--s4);
+            margin-inline-end: unset;
+        }
+    }
+}

@@ -1066,6 +1066,10 @@ class Team(Indexed, models.Model):
         return self.abbreviation or self.name
 
     @property
+    def leader_count(self) -> int:
+        return self.members.active().filter(head_of_team=True).count()
+
+    @property
     def leaders(self):
         order_by = []
 

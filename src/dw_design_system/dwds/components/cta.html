@@ -2,5 +2,6 @@
     <div class="content-body content-stack">
         {% include 'dwds/elements/navigational_link.html' with url=url text=title %}
         {% if description %}<p>{{ description }}</p>{% endif %}
+        {{ extra_content }}
     </div>
 </div>

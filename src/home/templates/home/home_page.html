@@ -1,4 +1,5 @@
 {% extends "dwds_content.html" %}
+
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
@@ -19,8 +20,11 @@
 {% block pre_content %}
 {% endblock pre_content %}
 
-{% block page_title %}
-{% endblock page_title %}
+{% block page_title_wrapper %}
+{% endblock page_title_wrapper %}
+
+{% block primary_content_classes %}
+{% endblock primary_content_classes %}
 
 {% block primary_content %}
     <article>
@@ -52,7 +56,7 @@
                 {% endif %}
 
                 {% if news_items %}
-                    <div class="dwds-content-item-card no-shadow cams-custom-class">
+                    <div class="dwds-content-item-card no-shadow">
                         {% include "dwds/components/content_list.html" with title="More DBT news" content_items=news_items link_url="/news-and-views/" link_text="View all news" %}
                     </div>
                 {% endif %}

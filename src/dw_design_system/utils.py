@@ -149,9 +149,50 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Message",
+                "template": "dwds/components/message.html",
+                "context": {
+                    "title": "Message title",
+                    "body": "This is the message body with some content in it.",
+                },
+            },
+            {
+                "name": "Menu (vertical)",
+                "template": "dwds/components/menu_vertical.html",
+                "context": {
+                    "items": [
+                        {
+                            "active": True if i == 0 else False,
+                            "title": f"Menu item {i + 1}",
+                            "url": "https://www.gov.uk",
+                        }
+                        for i in range(10)
+                    ],
+                },
+            },
+            {
                 "name": "Pagination",
                 "template": "dwds/components/pagination.html",
                 "context": {"pages": pages, "request": request},
+            },
+            {
+                "name": "Profile Info",
+                "template": "dwds/components/profile_info.html",
+                "context": {
+                    "show_profile_image": True,
+                    "name": "John Doe",
+                    "title": "Permanent Secretary",
+                    "profile_url": "https://www.gov.uk",
+                    "profile_image_url": (
+                        thumbnail_file.file.url
+                        if thumbnail_file and thumbnail_file.file
+                        else None
+                    ),
+                    "location": "London",
+                    "show_icons": True,
+                    "email_address": "someone@example.com",
+                    "phone_number": "0123456789",
+                },
             },
         ],
         "layouts": [],
