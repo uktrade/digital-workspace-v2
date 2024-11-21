@@ -84,10 +84,14 @@ class EventsHome(RoutablePageMixin, BasePage):
             events_filters=events_filters,
             page_title=f"{page_title_prefix} {month_start.strftime('%B %Y')}",
             upcoming_events=events.filter(
-                event_start__gte=timezone.now().date(),
+                event_start__gte=timezone.now(),
+            ),
+            ongoing_events=events.filter(
+                event_start__lte=timezone.now(),
+                event_end__gt=timezone.now(),
             ),
             past_events=events.filter(
-                event_start__lt=timezone.now().date(),
+                event_end__lt=timezone.now(),
             ),
             current_month=month_start,
             next_month=next_month,
