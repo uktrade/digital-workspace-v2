@@ -25,16 +25,15 @@
         color: var(--content-main-text-color);
     }
 
-    a,
-    a:visited,
-    a:link {
-        color: var(--content-main-link-color);
-        text-decoration-color: var(--content-main-link-color);
-    }
-
-    a:focus {
-        color: var(--color-text);
-        text-decoration-color: var(--color-text);
+    a:not(.dwds-button) {
+        &:visited, &:link {
+            color: var(--content-main-link-color);
+            text-decoration-color: var(--content-main-link-color);
+        }
+        &:focus {
+            color: var(--color-text);
+            text-decoration-color: var(--color-text);
+        }
     }
 
     .content-body.content-body-space-padding {

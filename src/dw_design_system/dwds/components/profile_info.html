@@ -4,7 +4,7 @@
     <div class="content-main content-stack center">
         {% if show_profile_image %}
             <div>
-                {% include "dwds/elements/profile_image.html" with profile_image_url=profile_image_url name=name profile_url=profile_url %}
+                {% include "dwds/elements/profile_image.html" with small=True profile_image_url=profile_image_url name=name profile_url=profile_url %}
             </div>
         {% endif %}
         <div class="content-stack">
@@ -14,7 +14,7 @@
             {% if title %}<p>{{ title|truncatewords:20 }}</p>{% endif %}
         </div>
         {% if location %}
-            <div class="location with-icon">
+            <div class="with-icon small center align-center min-gap">
                 {% include "dwds/icons/marker.html" %}
                 {{ location }}
             </div>

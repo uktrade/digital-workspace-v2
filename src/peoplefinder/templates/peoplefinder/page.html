@@ -2,9 +2,13 @@
 
 {% load render_bundle from webpack_loader %}
 
-{% block body_classes %}dwds-body{% endblock body_classes %}
+{% block body_classes %}
+    dwds-body
+{% endblock body_classes %}
 
-{% block title %}{{ title }}{% endblock title %}
+{% block title %}
+    {{ title }}
+{% endblock title %}
 
 {% block stylesheets %}
     {% render_bundle 'peoplefinder' 'css' %}
@@ -22,14 +26,16 @@
                 </li>
             {% endfor %}
             <li class="govuk-breadcrumbs__list-item">
-                {% block location %}{% endblock location %}
+                {% block location %}
+                {% endblock location %}
             </li>
         </ol>
     </div>
 
     {% include 'peoplefinder/components/messages.html' %}
 
-    {% block content %}{% endblock content %}
+    {% block content %}
+    {% endblock content %}
 {% endblock main_content %}
 
 {% block scripts %}

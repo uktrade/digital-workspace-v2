@@ -6,6 +6,10 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--sidebar-gap);
+
+    &.small {
+        --sidebar-size: 150px;
+    }
 }
 
 .content-sidebar {
