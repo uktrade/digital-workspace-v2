@@ -3,6 +3,7 @@ from working_at_dit.models import PageWithTopics
 
 class AboutUs(PageWithTopics):
     is_creatable = True
+    template = "working_at_dit/content_with_related_topics.html"
 
     parent_page_types = ["about_us.AboutUsHome", "about_us.AboutUs"]
     subpage_types = ["about_us.AboutUs"]

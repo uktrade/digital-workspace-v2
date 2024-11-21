@@ -3,7 +3,7 @@
 
 {% block secondary_content %}
     <h2>Related topics</h2>
-    <ul>
+    <ul class="clean">
         {% for page_topic in page_topics %}
             <li>
                 <a href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a>
