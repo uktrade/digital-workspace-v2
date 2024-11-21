@@ -33,6 +33,7 @@ def breadcrumbs(context) -> list[tuple[str, str]]:
     """Shows a breadcrumb list based on a page's ancestors"""
     request = context["request"]
     breadcrumbs = []
+    extra_breadcrumbs = context.get("extra_breadcrumbs", [])
 
     self = context.get("self")
     # Don't display breadcrumbs if the page isn't nested deeply enough (e.g. homepage)
@@ -41,7 +42,7 @@ def breadcrumbs(context) -> list[tuple[str, str]]:
         breadcrumbs = [
             (ancestor.get_url(request), ancestor.title) for ancestor in ancestors
         ]
-        return {"breadcrumbs": breadcrumbs}
+        return {"breadcrumbs": breadcrumbs + extra_breadcrumbs}
 
     has_team_breadcrumbs = context.get("team_breadcrumbs", False)
     has_profile_breadcrumbs = context.get("profile_breadcrumbs", False)
@@ -50,7 +51,9 @@ def breadcrumbs(context) -> list[tuple[str, str]]:
     if has_team_breadcrumbs or has_profile_breadcrumbs:
         if has_team_breadcrumbs:
             team: Team = context["team"]
-            return {"breadcrumbs": build_team_breadcrumbs(request, team)}
+            return {
+                "breadcrumbs": build_team_breadcrumbs(request, team) + extra_breadcrumbs
+            }
 
         # Build profile breadcrumbs
         if has_profile_breadcrumbs:
@@ -65,4 +68,4 @@ def breadcrumbs(context) -> list[tuple[str, str]]:
                 (reverse("profile-view", args=[profile.slug]), profile.full_name)
             )
 
-    return {"breadcrumbs": breadcrumbs}
+    return {"breadcrumbs": breadcrumbs + extra_breadcrumbs}
