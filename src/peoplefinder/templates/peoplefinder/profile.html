@@ -42,7 +42,7 @@
                                     </div>
                                     {% if profile.is_active %}
                                         <a class="dwds-button dwds-button--inline dwds-button--secondary"
-                                            href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
+                                           href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
                                     {% endif %}
                                 </div>
                                 <div class="content-side-by-side">
@@ -95,7 +95,7 @@
                                         Confirm my details are still correct
                                     </button>
                                 {% endif %}
-    
+ 
                                 {% if show_activate_profile %}
                                     <button class="dwds-button dwds-button--transactional"
                                             hx-post="{% url 'profile-activate' profile.slug %}"

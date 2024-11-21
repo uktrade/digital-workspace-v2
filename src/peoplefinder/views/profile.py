@@ -4,13 +4,16 @@ from typing import Any, Dict
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import (PermissionRequiredMixin,
-                                        UserPassesTestMixin)
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from django.forms.models import BaseModelForm
-from django.http import (HttpRequest, HttpResponse, HttpResponseForbidden,
-                         HttpResponseRedirect)
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    HttpResponseForbidden,
+    HttpResponseRedirect,
+)
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
@@ -20,21 +23,21 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
 from django_hawk.middleware import HawkResponseMiddleware
-from django_hawk.utils import (DjangoHawkAuthenticationFailed,
-                               authenticate_request)
+from django_hawk.utils import DjangoHawkAuthenticationFailed, authenticate_request
 from webpack_loader.utils import get_static
 
 from peoplefinder.forms.crispy_helper import RoleFormsetFormHelper
-from peoplefinder.forms.profile import (ProfileLeavingDbtForm,
-                                        ProfileUpdateUserForm)
-from peoplefinder.forms.profile_edit import (AccountSettingsForm,
-                                             AdminProfileEditForm,
-                                             ContactProfileEditForm,
-                                             LocationProfileEditForm,
-                                             PersonalProfileEditForm,
-                                             SkillsProfileEditForm,
-                                             TeamsProfileEditForm,
-                                             TeamsProfileEditFormset)
+from peoplefinder.forms.profile import ProfileLeavingDbtForm, ProfileUpdateUserForm
+from peoplefinder.forms.profile_edit import (
+    AccountSettingsForm,
+    AdminProfileEditForm,
+    ContactProfileEditForm,
+    LocationProfileEditForm,
+    PersonalProfileEditForm,
+    SkillsProfileEditForm,
+    TeamsProfileEditForm,
+    TeamsProfileEditFormset,
+)
 from peoplefinder.forms.role import RoleFormsetForm
 from peoplefinder.models import Person
 from peoplefinder.services.audit_log import AuditLogService
@@ -44,6 +47,7 @@ from peoplefinder.services.team import TeamService
 from peoplefinder.types import EditSections, ProfileSections
 
 from .base import HtmxFormView, PeoplefinderView
+
 
 User = get_user_model()
 
@@ -173,10 +177,13 @@ class ProfileDetailView(ProfileView, DetailView):
             current_tab=current_tab,
             profile_section_dicts=profile_section_dicts,
             show_confirm_my_details=(
-                profile.is_active and profile.is_stale and self.request.user == profile.user
+                profile.is_active
+                and profile.is_stale
+                and self.request.user == profile.user
             ),
             show_activate_profile=(
-                not profile.is_active and self.request.user.has_perm("peoplefinder.delete_person")
+                not profile.is_active
+                and self.request.user.has_perm("peoplefinder.delete_person")
             ),
         )
 
