@@ -270,6 +270,7 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
 
         context.update(
             profile_breadcrumbs=True,
+            extra_breadcrumbs=[(None, "Edit profile")],
             page_title=page_title,
             current_edit_section=self.edit_section,
             edit_sections=edit_sections,
