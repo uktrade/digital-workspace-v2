@@ -67,14 +67,14 @@
                                                 <a href="mailto:{{ profile.email }}" data-testid="preferred-email">{{ profile.email }}</a>
                                             </div>
                                         {% endif %}
- 
+
                                         {% if profile.primary_phone_number %}
                                             <div class="with-icon small min-gap align-center">
                                                 {% include "dwds/icons/phone.html" %}
                                                 <a href="tel:{{ profile.primary_phone_number }}">{{ profile.primary_phone_number }}</a>
                                             </div>
                                         {% endif %}
- 
+
                                         {% if profile.uk_office_location.city %}
                                             <div class="with-icon small min-gap align-center">
                                                 {% include "dwds/icons/marker.html" %}
@@ -95,7 +95,7 @@
                                         Confirm my details are still correct
                                     </button>
                                 {% endif %}
- 
+
                                 {% if show_activate_profile %}
                                     <button class="dwds-button dwds-button--transactional"
                                             hx-post="{% url 'profile-activate' profile.slug %}"
@@ -116,7 +116,7 @@
                                 <input type="submit" id="delete-profile" value="Delete profile" />
                             </form>
                         {% endif %}
- 
+
                         <div class="content-stack no-gap">
                             {% if profile.is_stale %}
                                 <p>This profile was last edited {{ profile.edited_or_confirmed_at|naturaltime }}.</p>
