@@ -1,43 +1,48 @@
 function showSection(accordion) {
-    const content = accordion.getElementsByClassName("dwds-accordion-section-content")[0];
-    const text = accordion.getElementsByClassName("dwds-accordion-section-toggle-text")[0];
-    const sectionChevron = accordion.getElementsByClassName("dwds-accordion-section-chevron")[0];
+    const [content, text, sectionChevron] = getCommonElements(accordion);
     content.style.display = "block";
     text.innerText = "Hide";
-    sectionChevron.classList.remove("dwds-accordion-nav-chevron-down");
+    sectionChevron.classList.add("section-chevron-up");
 }
 
 function hideSection(accordion) {
-    const content = accordion.getElementsByClassName("dwds-accordion-section-content")[0];
-    const text = accordion.getElementsByClassName("dwds-accordion-section-toggle-text")[0];
-    const sectionChevron = accordion.getElementsByClassName("dwds-accordion-section-chevron")[0];
+    const [content, text, sectionChevron] = getCommonElements(accordion);
     content.style.display = "none";
     text.innerText = "Show";
-    sectionChevron.classList.add("dwds-accordion-nav-chevron-down");
+    sectionChevron.classList.remove("section-chevron-up");
 }
 
-function toggleSpecificSection(element) {
-    const accordionContent = element.getElementsByClassName("dwds-accordion-section-content")[0];
-    if (accordionContent.style.display === "none") {
-        showSection(element);
+function getCommonElements(accordion) {
+    const content = accordion.getElementsByClassName("section-content")[0];
+    const text = accordion.getElementsByClassName("section-text")[0];
+    const sectionChevron = accordion.getElementsByClassName("section-chevron")[0];
+    return [content, text, sectionChevron];
+}
+
+function toggleSpecificSection(accordion) {
+    const sectionContent = accordion.getElementsByClassName("section-content")[0];
+    if (sectionContent.style.display === "none") {
+        showSection(accordion);
     } else {
-        hideSection(element);
+        hideSection(accordion);
     }
 }
 
-function toggleAll(element, allChevron, accordionsInGroup) {
+function toggleAll(accordions, accordionsInGroup) {
+    const element = accordions.getElementsByClassName("show-all-text")[0];
+    const allChevron = accordions.querySelector(".show-all-chevron");
     if (element.innerText === "Hide all sections") {
         accordionsInGroup.forEach(function (accordion) {
             hideSection(accordion);
         });
         element.innerText = "Show all sections";
-        allChevron.classList.add("dwds-accordion-show-all-chevron-down");
+        allChevron.classList.remove("show-all-chevron-up");
     } else {
-        element.innerText = "Hide all sections";
         accordionsInGroup.forEach(function (accordion) {
             showSection(accordion);
         });
-        allChevron.classList.remove("dwds-accordion-show-all-chevron-down");
+        element.innerText = "Hide all sections";
+        allChevron.classList.add("show-all-chevron-up");
     }
 }
 
@@ -45,24 +50,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('.dwds-accordions').forEach(function (accordions) {
 
+        const allHeader = accordions.getElementsByClassName("show-all-header")[0];
+        allHeader.addEventListener("click", function (e) {
+            toggleAll(accordions, accordionsInGroup);
+        });
+
         const accordionsInGroup = accordions.querySelectorAll('.dwds-accordion-section');
         accordionsInGroup.forEach(function (accordion) {
-            const accordionHeader = accordion.getElementsByClassName("dwds-accordion-section-header")[0];
+            const accordionHeader = accordion.getElementsByClassName("section-header")[0];
             accordionHeader.addEventListener("click", function (e) {
                 toggleSpecificSection(accordion);
             });
-
-            const accordionContent = accordion.getElementsByClassName("dwds-accordion-section-content")[0];
-            accordionContent.style.display = "none";
-            const toggleChevron = accordion.querySelector(".dwds-accordion-section-chevron");
-            toggleChevron.classList.add("dwds-accordion-nav-chevron-down");
         });
 
-        const accordionToggleAll = accordions.getElementsByClassName("dwds-accordion-show-all-text")[0];
-        const allChevron = accordions.querySelector(".dwds-accordion-show-all-chevron");
-        allChevron.classList.add("dwds-accordion-show-all-chevron-down");
-        accordionToggleAll.addEventListener("click", function (e) {
-            toggleAll(accordionToggleAll, allChevron, accordionsInGroup);
-        });
     });
 });

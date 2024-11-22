@@ -1,39 +1,31 @@
 .dwds-accordions {
     background-color: var(--color-background-accordion);
-    border-bottom: var(--border-width-small) solid var(--color-border);
+    border-bottom: var(--border-width) solid var(--color-border);
 }
 
-.dwds-accordion-section-header {
+.section-header {
 
     h2 {
         padding: 0;
         margin-top: 0;
         margin-bottom: 0;
+        border-top: var(--border-width) solid var(--color-border);
+        border-bottom: var(--border-width) solid transparent;
     }
 
     button {
-        width: var(--width-max-percentage);
-        padding: var(--s-2) 0 0;
         border: 0;
-        border-top: var(--border-width-small) solid var(--color-border);
-        border-bottom: var(--s-2) solid transparent;
         color: var(--color-button-text-accordion);
         background: none;
         text-align: left;
         cursor: pointer;
-        -webkit-appearance: none;
-
         font-size: var(--s2);
-
-        -webkit-font-smoothing: antialiased;
         font-weight: 700;
-        display: block;
-        margin-bottom: 0;
 
         &:focus {
-            .dwds-accordion-section-heading-text-focus,
-            .dwds-accordion-section-summary-text-focus,
-            .dwds-accordion-section-toggle-focus {
+            .text-large,
+            .text-small,
+            .section-toggle-focus {
                 outline: var(--s-5) solid transparent;
                 color: var(--color-button-text-focus);
                 background-color: var(--color-focus);
@@ -46,20 +38,20 @@
 
     &:hover {
         background-color: var(--color-accordion-hover);
-        .dwds-accordion-section-chevron {
+        .section-chevron {
             color: var(--color-text);
             background: var(--color-text);
             &::after {
                 color: var(--color-background-highlight);
             }
         }
-        .dwds-accordion-section-toggle-text {
+        .section-text {
             color: var(--color-text);
         }
     }
 }
 
- .dwds-accordion-section-chevron, .dwds-accordion-show-all-chevron {
+.section-chevron, .show-all-chevron {
     box-sizing: border-box;
     display: inline-block;
     position: relative;
@@ -74,82 +66,66 @@
         box-sizing: border-box;
         display: block;
         position: absolute;
-        bottom: .3125rem;
+        top: .3125rem;
         left: .375rem;
         width: .375rem;
         height: .375rem;
-        transform: rotate(-45deg);
+        transform: rotate(135deg);
         border-top: .125rem solid;
         border-right: .125rem solid;
     }
 }
 
- .dwds-accordion-section-toggle {
+.section-toggle {
     font-size: var(--s0);
-    line-height: var(--ratio);
     font-weight: 400;
     color: var(--color-button-primary);
-    display: block;
     margin-bottom: var(--s-1);
- }
+}
 
-.dwds-accordion-show-all-text{
+.show-all-text{
     margin-left: var(--s-5);
     vertical-align: middle;
 }
 
-.dwds-accordion-show-all-button {
-    -webkit-font-smoothing: antialiased;
-    font-weight: 400;
-    font-size: var(--s0);
-    line-height: var(--ratio);
-    position: relative;
-    z-index: 1;
-    margin-bottom: var(--s-2);
-    padding: var(--s-5) var(--s-5) var(--s-5) 0;
-    border-width: 0;
-    color: var(--color-button-primary);
-    background: none;
-    cursor: pointer;
-    -webkit-appearance: none;
+.show-all-header {
+    button {
+        font-weight: 400;
+        font-size: var(--s0);
+        border-width: 0;
+        color: var(--color-button-primary);
+        background: none;
+        cursor: pointer;
 
-    &:hover {
-        background-color: var(--color-accordion-hover);
-        .dwds-accordion-show-all-chevron{
-            color: var(--color-text);
-            background: var(--color-text);
-            &::after {
-                color: var(--color-background-highlight);
+        &:hover {
+            background-color: var(--color-accordion-hover);
+            .show-all-chevron{
+                color: var(--color-text);
+                background: var(--color-text);
+                &::after {
+                    color: var(--color-background-highlight);
+                }
+            }
+            .show-all-text {
+                color: var(--color-text);
             }
         }
-        .dwds-accordion-show-all-text {
-            color: var(--color-text);
+
+        &:focus {
+            outline: var(--s-5) solid transparent;
+            color: var(--color-button-text-focus);
+            background-color: var(--color-focus);
+            box-shadow: var(--border-no-width) var(--s-5);
+            text-decoration: none;
+            box-decoration-break: clone;
         }
     }
-
-    &:focus {
-        outline: var(--s-5) solid transparent;
-        color: var(--color-button-text-focus);
-        background-color: var(--color-focus);
-        box-shadow: var(--border-no-width) var(--s-5);
-        text-decoration: none;
-        box-decoration-break: clone;
-    }
 }
 
-.dwds-accordion-nav-chevron-down, .dwds-accordion-show-all-chevron-down{
+.section-content {
+    display: none;
+}
+
+.section-chevron-up, .show-all-chevron-up{
      transform: rotate(180deg);
 }
-
-.dwds-accordion-section-heading-text-focus {
-    display: block;
-    margin-bottom: var(--s-2);
- }
-
- .dwds-accordion-section-summary-text-focus {
-     display: block;
-     margin-bottom: var(--s-1);
-     font-size: 1.1875rem;
-     color: var(--color-text);
-     font-weight:100;
- }
