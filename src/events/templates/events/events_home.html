@@ -17,7 +17,9 @@
     <div class="content-stack large">
         {% include "events/includes/listing_header.html" %}
 
-        {% if not upcoming_events and not past_events and not ongoing_events %}<p>There are no events to display.</p>{% endif %}
+        {% if not upcoming_events and not past_events and not ongoing_events %}
+            <p>There are no events to display.</p>
+        {% endif %}
 
         {% if upcoming_events %}
             <h2>Upcoming events</h2>
