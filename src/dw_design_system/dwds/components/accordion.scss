@@ -4,7 +4,7 @@
 }
 
 .section-header {
-    border-top: var(--border-bottom-width) solid var(--color-border);
+    border-top: var(--border-top-width) solid var(--color-border);
     border-bottom: var(--border-bottom-width) solid transparent;
     button {
         border: 0;
@@ -12,7 +12,9 @@
         background: none;
         text-align: left;
         cursor: pointer;
-        &:focus {
+    }
+
+    &:focus {
             .text-large,
             .text-small,
             .section-toggle {
@@ -23,7 +25,6 @@
                 text-decoration: none;
                 box-decoration-break: clone;
             }
-        }
     }
 
     &:hover {
