@@ -28,24 +28,18 @@
                                 {% endif %}
                             </div>
                             <div class="content-stack">
-                                <div class="content-side-by-side">
-                                    <div class="content-stack">
-                                        <div class="content-stack no-gap">
-                                            <div class="content-cluster small">
-                                                <h1 class="text-large" data-testid="full-name">{{ profile.full_name }}</h1>
-                                                {% if profile.pronouns %}({{ profile.pronouns }}){% endif %}
-                                            </div>
-                                            <div>
-                                                {% if profile.name_pronunciation %}(Pronounced {{ profile.name_pronunciation }}){% endif %}
-                                            </div>
+                                <div class="content-stack">
+                                    <div class="content-stack no-gap">
+                                        <div class="content-cluster small">
+                                            <h1 class="text-large" data-testid="full-name">{{ profile.full_name }}</h1>
+                                            {% if profile.pronouns %}({{ profile.pronouns }}){% endif %}
+                                        </div>
+                                        <div>
+                                            {% if profile.name_pronunciation %}(Pronounced {{ profile.name_pronunciation }}){% endif %}
                                         </div>
                                     </div>
-                                    {% if profile.is_active %}
-                                        <a class="dwds-button dwds-button--inline dwds-button--secondary"
-                                           href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
-                                    {% endif %}
                                 </div>
-                                <div class="content-side-by-side">
+                                <div class="content-switcher max-2 small">
                                     <div class="content-stack">
                                         {% for role in roles %}
                                             <div class="with-icon small min-gap align-center">
@@ -132,6 +126,10 @@
                                 <p>This profile is inactive since {{ profile.became_inactive|naturaltime }}.</p>
                             {% endif %}
                         </div>
+                        {% if profile.is_active %}
+                            <a class="dwds-button dwds-button--inline dwds-button--secondary"
+                               href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
