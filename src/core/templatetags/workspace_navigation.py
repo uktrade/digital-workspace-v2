@@ -57,7 +57,7 @@ def breadcrumbs(context) -> list[tuple[str, str]]:
 
         # Build profile breadcrumbs
         if has_profile_breadcrumbs:
-            team: Team | None = context["team"]
+            team: Team | None = context.get("team", None)
             if team:
                 breadcrumbs = build_team_breadcrumbs(request, team)
             else:
