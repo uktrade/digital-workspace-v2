@@ -20,8 +20,8 @@ function getCommonElements(accordion) {
 }
 
 function toggleSpecificSection(accordion) {
-    const sectionContent = accordion.getElementsByClassName("section-content")[0];
-    if (sectionContent.style.display === "none") {
+    const sectionText = accordion.getElementsByClassName("section-text")[0];
+    if (sectionText.innerText === "Show") {
         showSection(accordion);
     } else {
         hideSection(accordion);
@@ -29,19 +29,19 @@ function toggleSpecificSection(accordion) {
 }
 
 function toggleAll(accordions, accordionsInGroup) {
-    const element = accordions.getElementsByClassName("show-all-text")[0];
+    const allText = accordions.getElementsByClassName("show-all-text")[0];
     const allChevron = accordions.querySelector(".show-all-chevron");
-    if (element.innerText === "Hide all sections") {
+    if (allText.innerText === "Hide all sections") {
         accordionsInGroup.forEach(function (accordion) {
             hideSection(accordion);
         });
-        element.innerText = "Show all sections";
+        allText.innerText = "Show all sections";
         allChevron.classList.remove("show-all-chevron-up");
     } else {
         accordionsInGroup.forEach(function (accordion) {
             showSection(accordion);
         });
-        element.innerText = "Hide all sections";
+        allText.innerText = "Hide all sections";
         allChevron.classList.add("show-all-chevron-up");
     }
 }

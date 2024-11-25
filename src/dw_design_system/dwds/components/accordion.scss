@@ -4,28 +4,18 @@
 }
 
 .section-header {
-
-    h2 {
-        padding: 0;
-        margin-top: 0;
-        margin-bottom: 0;
-        border-top: var(--border-width) solid var(--color-border);
-        border-bottom: var(--border-width) solid transparent;
-    }
-
+    border-top: var(--border-width) solid var(--color-border);
+    border-bottom: var(--border-width) solid transparent;
     button {
         border: 0;
         color: var(--color-button-text-accordion);
         background: none;
         text-align: left;
         cursor: pointer;
-        font-size: var(--s2);
-        font-weight: 700;
-
         &:focus {
             .text-large,
             .text-small,
-            .section-toggle-focus {
+            .section-toggle {
                 outline: var(--s-5) solid transparent;
                 color: var(--color-button-text-focus);
                 background-color: var(--color-focus);

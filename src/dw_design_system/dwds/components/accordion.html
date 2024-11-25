@@ -10,18 +10,14 @@
     {% for item in items %}
         <div class="dwds-accordion-section">
             <div class="section-header">
-                <h2>
-                    <button>
-                        <span class="text-large">{{ item.heading }}</span>
-                        <p class="text-small">{{ item.summary }}</p>
-                        <span class="section-toggle">
-                            <span class="section-toggle-focus">
-                                <span class="section-chevron"></span>
-                                <span class="section-text">Show</span>
-                            </span>
-                        </span>
-                    </button>
-                </h2>
+                <button>
+                    <span class="text-large">{{ item.heading }}</span>
+                    <p class="text-small">{{ item.summary }}</p>
+                    <span class="section-toggle">
+                        <span class="section-chevron"></span>
+                        <span class="section-text">Show</span>
+                    </span>
+                </button>
             </div>
 
             <div class="section-content">
