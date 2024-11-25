@@ -118,10 +118,6 @@
                         {% endif %}
 
                         <div class="content-stack no-gap">
-                            {% if profile.is_stale %}
-                                <p>This profile was last edited {{ profile.edited_or_confirmed_at|naturaltime }}.</p>
-                            {% endif %}
-
                             {% if profile.is_active %}
                                 {% if request.user == profile.user %}
                                     <p>
