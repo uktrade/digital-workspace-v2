@@ -50,8 +50,9 @@ class EventsHome(RoutablePageMixin, BasePage):
         from events.filters import EventsFilters
 
         context = super().get_context(request, *args, **kwargs)
+        now = timezone.now()
 
-        filter_date = kwargs.get("filter_date", timezone.now()).date()
+        filter_date = kwargs.get("filter_date", now).date()
 
         month_start = filter_date.replace(day=1)
 
@@ -70,7 +71,7 @@ class EventsHome(RoutablePageMixin, BasePage):
             .order_by("event_start")
         )
 
-        current_month_start = timezone.now().date().replace(day=1)
+        current_month_start = now.date().replace(day=1)
 
         page_title_prefix = "What's on in"
         if filter_date < current_month_start:
@@ -84,14 +85,14 @@ class EventsHome(RoutablePageMixin, BasePage):
             events_filters=events_filters,
             page_title=f"{page_title_prefix} {month_start.strftime('%B %Y')}",
             upcoming_events=events.filter(
-                event_start__gte=timezone.now(),
+                event_start__gte=now,
             ),
             ongoing_events=events.filter(
-                event_start__lte=timezone.now(),
-                event_end__gt=timezone.now(),
+                event_start__lte=now,
+                event_end__gt=now,
             ),
             past_events=events.filter(
-                event_end__lt=timezone.now(),
+                event_end__lt=now,
             ),
             current_month=month_start,
             next_month=next_month,
