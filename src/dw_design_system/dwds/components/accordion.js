@@ -50,17 +50,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('.dwds-accordions').forEach(function (accordions) {
 
-        const allHeader = accordions.getElementsByClassName("show-all-header")[0];
-        allHeader.addEventListener("click", function (e) {
-            toggleAll(accordions, accordionsInGroup);
-        });
-
         const accordionsInGroup = accordions.querySelectorAll('.dwds-accordion-section');
         accordionsInGroup.forEach(function (accordion) {
             const accordionHeader = accordion.getElementsByClassName("section-header")[0];
             accordionHeader.addEventListener("click", function (e) {
                 toggleSpecificSection(accordion);
             });
+        });
+
+        const allHeader = accordions.getElementsByClassName("show-all-header")[0];
+        allHeader.addEventListener("click", function (e) {
+            toggleAll(accordions, accordionsInGroup);
         });
 
     });
