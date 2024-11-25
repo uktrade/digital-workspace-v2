@@ -32,6 +32,7 @@
 @forward "elements/button";
 @forward "elements/content_header";
 @forward "elements/content_image";
+@forward "elements/content_icon";
 @forward "elements/content_item";
 @forward "elements/content_main";
 @forward "elements/profile_image";
@@ -47,6 +48,7 @@
 @forward "layouts/content_switcher";
 @forward "layouts/content_item_card";
 @forward "layouts/content_custom_sidebar";
+@forward "layouts/content_cluster";
 
 // App specific stylesheets
 @forward "../../interactions/static/interactions/interactions.scss";

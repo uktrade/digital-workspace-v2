@@ -2,10 +2,15 @@
 .content-sidebar-right {
     --sidebar-gap: var(--space);
     --sidebar-size: 300px;
+    --sidebar-min-size: 40%;
 
     display: flex;
     flex-wrap: wrap;
     gap: var(--sidebar-gap);
+
+    &.small {
+        --sidebar-size: 150px;
+    }
 }
 
 .content-sidebar {
@@ -17,7 +22,7 @@
     > :last-child {
         flex-grow: 999;
         flex-basis: 0;
-        min-inline-size: 40%;
+        min-inline-size: var(--sidebar-min-size);
     }
 }
 
@@ -25,7 +30,7 @@
     > :first-child {
         flex-grow: 999;
         flex-basis: 0;
-        min-inline-size: 40%;
+        min-inline-size: var(--sidebar-min-size);
     }
 
     > :last-child {

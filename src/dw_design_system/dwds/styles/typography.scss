@@ -28,9 +28,9 @@
 }
 
 .text-medium {
-  font-size: var(--text-medium);
+  font-size: var(--text-medium) !important;
 }
 
 .text-large {
-  font-size: var(--text-large);
+  font-size: var(--text-large) !important;
 }
