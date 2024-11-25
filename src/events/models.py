@@ -92,7 +92,7 @@ class EventsHome(RoutablePageMixin, BasePage):
                 event_end__gt=now,
             ),
             past_events=events.filter(
-                event_end__lt=now,
+                event_end__lte=now,
             ),
             current_month=month_start,
             next_month=next_month,
