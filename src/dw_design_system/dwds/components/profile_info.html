@@ -14,8 +14,8 @@
             {% if title %}<p>{{ title|truncatewords:20 }}</p>{% endif %}
         </div>
         {% if location %}
-            <div class="with-icon small center align-center min-gap">
-                {% include "dwds/icons/marker.html" %}
+            <div class="content-with-icon center align-center min-gap">
+                {% include "dwds/icons/marker.html" with extra_classes="small" %}
                 {{ location }}
             </div>
         {% endif %}
@@ -23,10 +23,10 @@
             <div class="content-footer">
                 {% spaceless %}
                     {% if email_address %}
-                        <a class="with-icon" href="mailto:{{ email_address }}">{% include "dwds/icons/email.html" %}</a>
+                        <a class="content-with-icon" href="mailto:{{ email_address }}">{% include "dwds/icons/email.html" %}</a>
                     {% endif %}
                     {% if phone_number %}
-                        <a class="with-icon" href="tel:{{ phone_number }}">{% include "dwds/icons/phone.html" %}</a>
+                        <a class="content-with-icon" href="tel:{{ phone_number }}">{% include "dwds/icons/phone.html" %}</a>
                     {% endif %}
                 {% endspaceless %}
             </div>

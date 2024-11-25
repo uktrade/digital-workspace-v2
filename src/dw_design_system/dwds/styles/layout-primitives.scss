@@ -151,44 +151,6 @@
   }
 
 
-  // Icon
-  // https://every-layout.dev/layouts/icon/
-
-  .icon {
-    width: 0.75em;
-    width: 1cap;
-    height: 0.75em;
-    height: 1cap;
-  }
-
-  .with-icon {
-    display: inline-flex;
-    align-items: baseline;
-
-    &.small {  
-      .icon {
-          font-size: var(--s3);
-      }
-    }
-
-    &.center {
-      margin: 0 auto;
-    }
-    
-    &.align-center {
-      align-items: center;
-    }
-
-    &.min-gap {
-      .icon{
-        margin-inline-end: var(--s-5);
-      }
-    }
-  }
-
-  .with-icon .icon {
-    margin-inline-end: var(--space);
-  }
 
 
   // Container

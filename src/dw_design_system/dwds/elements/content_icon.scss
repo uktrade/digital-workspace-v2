@@ -1,0 +1,26 @@
+.content-icon {
+    height: 0.75em;
+    height: 1cap;
+    width: 0.75em;
+    width: 1cap;
+    flex: none;
+
+    &.small {
+        font-size: var(--s3);
+    }
+}
+
+.content-with-icon {
+    display: inline-flex;
+    align-items: baseline;
+
+    &.min-gap {
+        > .content-icon {
+            margin-inline-end: var(--s-5);
+        }
+    }
+}
+
+.content-with-icon > .content-icon {
+    margin-inline-end: var(--space, 0.5em);
+}

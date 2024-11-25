@@ -42,35 +42,35 @@
                                 <div class="content-switcher max-2 small">
                                     <div class="content-stack">
                                         {% for role in roles %}
-                                            <div class="with-icon small min-gap align-center">
-                                                {% include "dwds/icons/briefcase.html" %}
+                                            <div class="content-with-icon">
+                                                {% include "dwds/icons/briefcase.html" with extra_classes="small" %}
                                                 {% include "peoplefinder/components/profile-role.html" with role=role %}
                                             </div>
                                         {% endfor %}
                                     </div>
                                     <div class="content-stack">
                                         {% if profile.contact_email %}
-                                            <div class="with-icon small min-gap align-center">
-                                                {% include "dwds/icons/email.html" %}
+                                            <div class="content-with-icon min-gap">
+                                                {% include "dwds/icons/email.html" with extra_classes="small" %}
                                                 <a href="mailto:{{ profile.contact_email }}"
                                                    data-testid="preferred-email">{{ profile.contact_email }}</a>
                                             </div>
                                         {% else %}
-                                            <div class="with-icon small min-gap align-center">
-                                                {% include "dwds/icons/email.html" %}
+                                            <div class="content-with-icon min-gap">
+                                                {% include "dwds/icons/email.html" with extra_classes="small" %}
                                                 <a href="mailto:{{ profile.email }}" data-testid="preferred-email">{{ profile.email }}</a>
                                             </div>
                                         {% endif %}
 
                                         {% if profile.primary_phone_number %}
-                                            <div class="with-icon small min-gap align-center">
-                                                {% include "dwds/icons/phone.html" %}
+                                            <div class="content-with-icon min-gap">
+                                                {% include "dwds/icons/phone.html" with extra_classes="small" %}
                                                 <a href="tel:{{ profile.primary_phone_number }}">{{ profile.primary_phone_number }}</a>
                                             </div>
                                         {% endif %}
 
                                         {% if profile.uk_office_location.city %}
-                                            <div class="with-icon small min-gap align-center">
+                                            <div class="content-with-icon min-gap">
                                                 {% include "dwds/icons/marker.html" %}
                                                 {{ profile.uk_office_location.city }}
                                             </div>
