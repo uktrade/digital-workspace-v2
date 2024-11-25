@@ -12,9 +12,7 @@
         background: none;
         text-align: left;
         cursor: pointer;
-    }
-
-    &:focus {
+        &:focus {
             .text-large,
             .text-small,
             .section-toggle {
@@ -25,6 +23,7 @@
                 text-decoration: none;
                 box-decoration-break: clone;
             }
+        }
     }
 
     &:hover {
