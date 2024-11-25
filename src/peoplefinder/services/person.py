@@ -163,14 +163,6 @@ class PersonService:
             ],
             "empty_text": "Add skills, interests, and networks to your profile.",
         },
-        # ProfileSections.CONTACT: {
-        #     "fields": [
-        #         ("contact_email", "Email"),
-        #         ("primary_phone_number", "Phone number"),
-        #         ("secondary_phone_number", "Alternative phone number"),
-        #     ],
-        #     "empty_text": "Add your work email address and phone number to your profile.",
-        # },
     }
 
     def create_user_profile(self, user: User) -> Person:
