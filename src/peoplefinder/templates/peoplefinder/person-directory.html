@@ -17,7 +17,7 @@
     <div class="content-stack large">
         {% include "peoplefinder/includes/listing_header.html" %}
 
-        <h2>Showing results for "{{ search_query }}"</h2>
+        {% if search_query %}<h2>Showing results for "{{ search_query }}"</h2>{% endif %}
 
         {% if paginator.count == 1 %}
             <p>{{ paginator.count }} person</p>
@@ -41,6 +41,9 @@
             </div>
         {% else %}
             <p>No one was found, please try a different search term.</p>
+        {% endif %}
+        {% if is_paginated %}
+            {% include "dwds/components/pagination.html" with pages=page_obj %}
         {% endif %}
     </div>
 {% endblock primary_content %}
