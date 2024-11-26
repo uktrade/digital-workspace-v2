@@ -41,9 +41,9 @@
     }
 
     .dwds-accordion-section {
+        border-bottom: var(--border-bottom-width) solid var(--color-border);
 
         .section-header {
-            border-bottom: var(--border-bottom-width) solid var(--color-border);
 
             button {
                 border: 0;
