@@ -24,7 +24,7 @@ a.dwds-button,
         top: 2px;
         position: relative;
         background-color: var(--color-button-hover);
-        border-bottom: solid var(--border-width);
+        border-bottom: solid var(--button-border-width-bottom);
     }
 
     &--warning {
@@ -107,7 +107,8 @@ a.dwds-button,
         border-bottom: var(--button-border-width-bottom) solid var(--color-button-secondary-dark-border);
         border-radius: var(--s2);
 
-        &:active, &:hover {
+        &:active,
+        &:hover {
             color: var(--color-button-secondary-text);
             background-color: var(--color-button-secondary);
             border-color: var(--color-button-secondary-text);
