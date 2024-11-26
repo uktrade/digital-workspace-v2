@@ -1,5 +1,5 @@
 .dwds-menu-vertical {
-    --menu-vertical-item-vertical-spacing: var(--s0);
+    --menu-vertical-item-vertical-spacing: var(--s-2);
     --menu-vertical-item-horizontal-spacing: var(--s0);
 
     ul {
@@ -13,10 +13,13 @@
             width: 100%;
             border-left: var(--s-5) solid transparent;
 
+            &.active {
+                font-weight: var(--font-weight-bold);
+            }
+
             &:hover,
             &.active {
                 border-left-color: var(--color-menu-active-border);
-                font-weight: var(--font-weight-bold);
             }
 
             > * {
@@ -26,8 +29,4 @@
             }
         }
     }
-}
-
-.dwds-menu-vertical.thin {
-    --menu-vertical-item-vertical-spacing: var(--s-2);
 }
