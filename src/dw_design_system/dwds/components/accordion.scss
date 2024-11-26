@@ -1,8 +1,7 @@
 .dwds-accordions {
-    background-color: var(--color-background-accordion);
+    background-color: var(--color-background);
 
     .show-all-header {
-        background-color: var(--color-background);
         border-bottom: var(--border-bottom-width) solid var(--color-border);
 
         button {
@@ -44,7 +43,6 @@
     .dwds-accordion-section {
 
         .section-header {
-            background-color: var(--color-background);
             border-bottom: var(--border-bottom-width) solid var(--color-border);
 
             button {
@@ -100,7 +98,6 @@
             display: none;
             padding-top: var(--s0);
             padding-bottom: var(--s5);
-            background-color: var(--color-background);
         }
 
     }
