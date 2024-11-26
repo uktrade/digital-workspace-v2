@@ -3,69 +3,12 @@
 
     .show-all-header {
         border-bottom: var(--border-bottom-width) solid var(--color-border);
-
-        button {
-            font-weight: 400;
-            font-size: var(--s0);
-            border-width: 0;
-            color: var(--color-button-primary);
-            background: none;
-            cursor: pointer;
-
-            &:hover {
-                background-color: var(--color-accordion-hover);
-
-                .show-all-chevron {
-                    color: var(--color-text);
-                    background: var(--color-text);
-
-                    &::after {
-                        color: var(--color-background-highlight);
-                    }
-                }
-
-                .show-all-text {
-                    color: var(--color-text);
-                }
-            }
-
-            &:focus {
-                outline: var(--s-5) solid transparent;
-                color: var(--color-button-text-focus);
-                background-color: var(--color-focus);
-                box-shadow: var(--border-no-width) var(--s-5);
-                text-decoration: none;
-                box-decoration-break: clone;
-            }
-        }
     }
 
     .dwds-accordion-section {
         border-bottom: var(--border-bottom-width) solid var(--color-border);
 
         .section-header {
-
-            button {
-                border: 0;
-                color: var(--color-button-text-accordion);
-                background: none;
-                text-align: left;
-                cursor: pointer;
-
-                &:focus {
-
-                    .text-large,
-                    .text-small,
-                    .section-toggle {
-                        outline: var(--s-5) solid transparent;
-                        color: var(--color-button-text-focus);
-                        background-color: var(--color-focus);
-                        box-shadow: var(--border-no-width) var(--s-5);
-                        text-decoration: none;
-                        box-decoration-break: clone;
-                    }
-                }
-            }
 
             &:hover {
                 background-color: var(--color-accordion-hover);
@@ -84,8 +27,6 @@
                 }
             }
         }
-
-
 
         .section-toggle {
             font-size: var(--s0);
