@@ -5,17 +5,16 @@
                 <form method="get" class="content-stack large">
                     <div class="content-stack large">
                         <h1>{{ page_title }}</h1>
+                        {% if team %}<input name="team" type="hidden" value="{{ team.pk }}" />{% endif %}
                         <input name="query"
                                placeholder="Search people"
                                type="search"
                                value="{{ search_query|default:'' }}">
                     </div>
-                    <hr>
                     <div class="dwds-button-group">
                         <input class="dwds-button dwds-button--secondary dwds-button--inline"
                                type="submit"
-                               value="Apply filters" />
-                        <a href="?">Reset filters</a>
+                               value="Search" />
                     </div>
                 </form>
             </div>
