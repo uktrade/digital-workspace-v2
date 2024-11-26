@@ -21,24 +21,19 @@
                         color: var(--color-background-highlight);
                     }
                 }
-
-                .section-text {
-                    color: var(--color-text);
-                }
             }
         }
 
         .section-toggle {
-            font-size: var(--s0);
-            font-weight: 400;
+            font-size: var(--text-small);
+            font-weight: var(--font-weight-normal);
             color: var(--color-button-primary);
             margin-bottom: var(--s-1);
         }
 
         .section-content {
             display: none;
-            padding-top: var(--s0);
-            padding-bottom: var(--s5);
+            padding-bottom: var(--s1);
         }
 
     }
