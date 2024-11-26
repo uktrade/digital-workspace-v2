@@ -102,7 +102,8 @@
                         {% endif %}
 
                         {% if profile.is_active and perms.peoplefinder.delete_person and request.user != profile.user %}
-                            <form action="{% url 'profile-delete' profile.slug %}"
+                            <form class="dwds-button dwds-button--warning"
+                                  action="{% url 'profile-delete' profile.slug %}"
                                   style="display: contents"
                                   method="post"
                                   onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
