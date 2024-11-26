@@ -194,6 +194,34 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "phone_number": "0123456789",
                 },
             },
+            {
+                "name": "Accordion",
+                "template": "dwds/components/accordion.html",
+                "context": {
+                    "items": [
+                        {
+                            "heading": "Understanding agile project management",
+                            "summary": "Introductions, methods, core features.",
+                            "content": "This is the content for agile project management.",
+                        },
+                        {
+                            "heading": "Working with agile methods",
+                            "summary": "Workspaces, tools and techniques, user stories, planning.",
+                            "content": "This is the content for agile methods.",
+                        },
+                        {
+                            "heading": "Governing agile services",
+                            "summary": "Principles, measuring progress, spending money.",
+                            "content": "This is the content for agile services.",
+                        },
+                        {
+                            "heading": "Phases of an agile project",
+                            "summary": "Discovery, alpha, beta, live and retirement.",
+                            "content": "This is the content for agile project.",
+                        },
+                    ]
+                },
+            },
         ],
         "layouts": [],
     }
