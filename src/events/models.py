@@ -80,11 +80,6 @@ class EventsHome(RoutablePageMixin, BasePage):
             page_title_prefix = "What happened in"
 
         # Filtering events
-        print("CAM WAS HERE")
-        print(events)
-        print(month_start)
-        print(month_end)
-        print(request.GET)
         events_filters = EventsFilters(request.GET, queryset=events)
         events = events_filters.qs
 
