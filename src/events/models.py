@@ -60,6 +60,8 @@ class EventsHome(RoutablePageMixin, BasePage):
         next_month = month_start + relativedelta(months=1)
 
         month_end = month_start.replace(month=next_month.month)
+        if next_month.month == 1:
+            month_end = month_end.replace(year=month_end.year + 1)
 
         events = (
             EventPage.objects.live()
@@ -78,6 +80,11 @@ class EventsHome(RoutablePageMixin, BasePage):
             page_title_prefix = "What happened in"
 
         # Filtering events
+        print("CAM WAS HERE")
+        print(events)
+        print(month_start)
+        print(month_end)
+        print(request.GET)
         events_filters = EventsFilters(request.GET, queryset=events)
         events = events_filters.qs
 
