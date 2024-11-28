@@ -71,7 +71,7 @@
 
                                         {% if profile.uk_office_location.city %}
                                             <div class="content-with-icon min-gap">
-                                                {% include "dwds/icons/marker.html" %}
+                                                {% include "dwds/icons/marker.html" with extra_classes="small" %}
                                                 {{ profile.uk_office_location.city }}
                                             </div>
                                         {% endif %}
