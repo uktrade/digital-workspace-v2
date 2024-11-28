@@ -11,7 +11,7 @@
              width="278"
              height="278">
     {% else %}
-        <img class="dwds-profile-image"
+        <img class="dwds-profile-image {% if small %}small{% endif %}"
              src="{% webpack_static 'no-photo-large.png' %}"
              alt="No profile image silhouette "
              width="278"
