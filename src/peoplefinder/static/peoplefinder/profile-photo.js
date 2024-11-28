@@ -65,7 +65,7 @@ class ProfilePhoto extends HTMLElement {
 
     this.innerHTML = `
       <h3 class="govuk-heading-s" id="photo-heading">${photoHeadingText}</h3>
-      <div style="max-width: 300px;">
+      <div class="cropper-wrapper" style="max-width: 300px;">
         <img
             src="${this.photoUrl || this.noPhotoUrl}"
             id="profile-photo"
