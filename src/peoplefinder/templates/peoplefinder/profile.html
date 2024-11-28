@@ -71,7 +71,7 @@
 
                                         {% if profile.uk_office_location.city %}
                                             <div class="content-with-icon min-gap">
-                                                {% include "dwds/icons/marker.html" %}
+                                                {% include "dwds/icons/marker.html" with extra_classes="small" %}
                                                 {{ profile.uk_office_location.city }}
                                             </div>
                                         {% endif %}
@@ -107,7 +107,10 @@
                                   method="post"
                                   onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
                                 {% csrf_token %}
-                                <input type="submit" id="delete-profile" value="Delete profile" />
+                                <input class="dwds-button dwds-button--warning"
+                                       type="submit"
+                                       id="delete-profile"
+                                       value="Delete profile" />
                             </form>
                         {% endif %}
 

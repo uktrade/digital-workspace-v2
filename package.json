@@ -5,7 +5,7 @@
     "dependencies": {
         "@ministryofjustice/frontend": "^1.8.0",
         "@sentry/browser": "^7.119.1",
-        "cropperjs": "^1.5.13",
+        "cropperjs": "^1.6.2",
         "css-loader": "^5.2.7",
         "govuk-frontend": "^4.5.0",
         "htmx.org": "^1.9.8",
