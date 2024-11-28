@@ -1,6 +1,6 @@
 {% extends 'dwds_content.html' %}
 
-{% load humanize profile %}
+{% load humanize profile email_word_wrap %}
 {% load webpack_static from webpack_loader %}
 
 {% block title %}
@@ -58,7 +58,7 @@
                                         {% else %}
                                             <div class="content-with-icon min-gap">
                                                 {% include "dwds/icons/email.html" with extra_classes="small" %}
-                                                <a href="mailto:{{ profile.email }}" data-testid="preferred-email">{{ profile.email }}</a>
+                                                <a href="mailto:{{ profile.email }}" data-testid="preferred-email">{{ profile.email|email_word_wrap|safe }}</a>
                                             </div>
                                         {% endif %}
 
