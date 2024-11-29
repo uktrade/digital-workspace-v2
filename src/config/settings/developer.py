@@ -30,7 +30,8 @@ if DDT_ENABLED:
         "127.0.0.1",
     ]
 
-try:
+SILK_ENABLED = env.bool("SILK_ENABLED", False)  # noqa F405
+if SILK_ENABLED:
     # Add django-silk for profiling
     import silk  # noqa F401
 
@@ -47,8 +48,6 @@ try:
         "profiler_results",
     )
     SILKY_META = True
-except ModuleNotFoundError:
-    ...
 
 
 DEV_TOOLS_ENABLED = env.bool("DEV_TOOLS_ENABLED", True)  # noqa F405
