@@ -6,7 +6,7 @@ Project documentation is available [here](https://uktrade.github.io/digital-work
 
 # Setup DebugPy
 
-Add environment variable in your .evn file
+Add environment variable in your .env file
 
     ENABLE_DEBUGPY=True
 
@@ -14,3 +14,25 @@ Enable port for debugpy in docker compose file
 
     ports:
       - "5678:5678"
+
+Create launch.json file inside .vscode directory
+
+    {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Python: Remote Attach (DebugPy)",
+                "type": "python",
+                "request": "attach",
+                "port": 5678,
+                "host": "localhost",
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/app/"
+                    }
+                ],
+                "justMyCode": true
+            },
+        ]
+    }
