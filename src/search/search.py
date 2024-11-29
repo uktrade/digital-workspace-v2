@@ -1,4 +1,5 @@
 from django.conf import settings
+from wagtail.models import PageQuerySet
 from wagtail.search.query import Phrase
 
 from content.models import BasePage
@@ -10,8 +11,9 @@ from working_at_dit.models import PoliciesAndGuidanceHome
 
 
 class SearchVector:
-    def __init__(self, request):
+    def __init__(self, request, queryset: PageQuerySet | None = None):
         self.request = request
+        self.queryset = queryset
 
     def _wagtail_search(self, queryset, query_str, *args, **kwargs):
         """
@@ -23,7 +25,7 @@ class SearchVector:
         return queryset.autocomplete(query_str, *args, **kwargs)
 
     def get_queryset(self):
-        raise NotImplementedError
+        return self.queryset
 
     def search(self, query_str, *args, **kwargs):
         queryset = self.get_queryset()
@@ -41,6 +43,13 @@ class ModelSearchVector(SearchVector):
     model = None
 
     def get_queryset(self):
+        queryset = super().get_queryset()
+        if queryset:
+            if queryset.model == self.model:
+                return queryset
+            raise TypeError(
+                f"self.queryset is for the wrong model, should be {self.model}"
+            )
         return self.model.objects.all()
 
     def build_query(self, query_str, *args, **kwargs):

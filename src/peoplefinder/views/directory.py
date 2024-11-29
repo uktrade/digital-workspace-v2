@@ -24,19 +24,11 @@ class PeopleDirectory(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self) -> QuerySet[Any]:
-        if self.query:
-            people_results = PeopleSearchVector(self.request).search(
-                query_str=self.query
-            )
-            person_ids = [p.id for p in people_results]
-            queryset = Person.objects.filter(id__in=person_ids)
-        else:
-            queryset = super().get_queryset()
-            if not self.request.user.has_perm(
-                "peoplefinder.can_view_inactive_profiles"
-            ):
-                days = settings.SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS
-                queryset = queryset.active_or_inactive_within(days=days)
+        queryset = super().get_queryset().select_related("uk_office_location")
+
+        if not self.request.user.has_perm("peoplefinder.can_view_inactive_profiles"):
+            days = settings.SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS
+            queryset = queryset.active_or_inactive_within(days=days)
 
         queryset = queryset.distinct()
         if self.team:
@@ -49,7 +41,12 @@ class PeopleDirectory(ListView):
             person=OuterRef("pk")
         ).values("job_title")
         queryset = queryset.annotate(job_title=Subquery(get_job_title_subquery[:1]))
-        return queryset.select_related("uk_office_location")
+
+        if self.query:
+            return PeopleSearchVector(self.request, queryset=queryset).search(
+                query_str=self.query
+            )
+        return queryset
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
