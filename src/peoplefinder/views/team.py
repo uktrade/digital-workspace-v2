@@ -67,6 +67,10 @@ class TeamDetailView(DetailView, PeoplefinderView):
             self.object.members.all()
             .active()
             .exclude(id__in=[leader.id for leader in self.leaders])
+            .select_related(
+                "person",
+                "person__uk_office_location",
+            )
             .order_by("person__first_name", "person__last_name")
             .distinct("person", "person__first_name", "person__last_name")
         )
