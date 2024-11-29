@@ -28,8 +28,6 @@ if DDT_ENABLED:
     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")  # noqa F405
     INTERNAL_IPS = [
         "127.0.0.1",
-        "0.0.0.0",
-        "localhost",
     ]
 
 try:
