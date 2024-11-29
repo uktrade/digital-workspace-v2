@@ -7,7 +7,7 @@ register = template.Library()
 
 
 @register.filter
-def email_word_wrap(email: str) -> str:
+def email_word_break(email: str) -> str:
     if not isinstance(email, str):
         return email
 
