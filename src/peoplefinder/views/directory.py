@@ -42,8 +42,6 @@ class PeopleDirectory(ListView):
                 roles__team__pk__in=[self.team.pk]
                 + [tt.child.pk for tt in self.team.parents.all()]
             )
-            print(self.team.parents.all())
-            print(self.team.children.all())
 
         return queryset
 
