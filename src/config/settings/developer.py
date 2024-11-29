@@ -18,6 +18,18 @@ FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 ]
 
+# Enable Django Debug Toolbar
+DDT_ENABLED = env.bool("DDT_ENABLED", False)  # noqa F405
+if DDT_ENABLED:
+    INSTALLED_APPS += [
+        "debug_toolbar",
+    ]
+    # Add the middleware to the top of the list.
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")  # noqa F405
+    INTERNAL_IPS = [
+        "127.0.0.1",
+    ]
+
 try:
     # Add django-silk for profiling
     import silk  # noqa F401
