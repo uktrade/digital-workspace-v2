@@ -146,8 +146,7 @@ class TeamService:
             QuerySet: A query of teams.
         """
         return (
-            Team.objects.filter(parents__child=child)
-            .exclude(parents__parent=child)
+            Team.objects.filter(parents__child=child).exclude(parents__parent=child)
             # TODO: Not sure if we should order here or at the call sites.
             .order_by("-parents__depth")
         )

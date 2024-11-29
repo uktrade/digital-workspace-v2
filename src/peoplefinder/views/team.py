@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import SuspiciousOperation
 from django.db import models, transaction
-from django.db.models import Avg, F, Field, OuterRef, Q, QuerySet, Subquery
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import redirect
@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from peoplefinder.forms.team import TeamForm
-from peoplefinder.models import Person, Team, TeamMember
+from peoplefinder.models import Team, TeamMember
 from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.team import TeamService
 
