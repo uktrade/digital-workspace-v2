@@ -1,10 +1,11 @@
 from typing import Any
 
 from django.conf import settings
+from django.db.models import OuterRef, Subquery
 from django.db.models.query import QuerySet
 from django.views.generic import ListView
 
-from peoplefinder.models import Person, Team
+from peoplefinder.models import Person, Team, TeamMember
 from search.search import PeopleSearchVector
 
 
@@ -37,13 +38,18 @@ class PeopleDirectory(ListView):
                 days = settings.SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS
                 queryset = queryset.active_or_inactive_within(days=days)
 
+        queryset = queryset.distinct()
         if self.team:
             queryset = queryset.filter(
                 roles__team__pk__in=[self.team.pk]
                 + [tt.child.pk for tt in self.team.parents.all()]
             )
 
-        return queryset
+        get_job_title_subquery = TeamMember.objects.filter(
+            person=OuterRef("pk")
+        ).values("job_title")
+        queryset = queryset.annotate(job_title=Subquery(get_job_title_subquery[:1]))
+        return queryset.select_related("uk_office_location")
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
