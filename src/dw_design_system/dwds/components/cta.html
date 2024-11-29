@@ -4,4 +4,9 @@
         {% if description %}<p>{{ description }}</p>{% endif %}
         {{ extra_content }}
     </div>
+    {% if footer_text %}
+        <div class="content-footer content-stack">
+            <p>{{ footer_text }}</p>
+        </div>
+    {% endif %}
 </div>
