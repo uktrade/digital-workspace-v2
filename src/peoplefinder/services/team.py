@@ -332,12 +332,18 @@ class TeamService:
             return cached_value
 
         # Get all people from all teams
-        members = self.get_team_members(team).select_related("person")
-        if not members:
+        people = Person.objects.filter(
+            id__in=Subquery(self.get_team_members(team).values("person_id"))
+        )
+        completed_profiles = people.filter(profile_completion__gte=100)
+
+        total_members = len(people)
+        total_completed_profiles = len(completed_profiles)
+
+        if total_members == 0:
             return None
 
-        completed_profiles = members.filter(person__profile_completion__gte=100)
-        completed_profile_percent = len(completed_profiles) / len(members)
+        completed_profile_percent = total_completed_profiles / total_members
 
         # Cache the result for an hour.
         timeout = 60 * 60
