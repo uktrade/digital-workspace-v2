@@ -80,6 +80,12 @@ urlpatterns += [
     path("", include(wagtail_urls)),
 ]
 
+if settings.DEBUG and getattr(settings, "DDT_ENABLED", False):
+    # Django Debug Toolbar purposefully only active with DEBUG=True
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
+    urlpatterns += debug_toolbar_urls()
+
 # Removed until we find a fix for Wagtail's redirect behaviour
 handler404 = "core.views.view_404"
 handler500 = "core.views.view_500"
