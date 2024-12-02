@@ -10,11 +10,6 @@ Add environment variable in your .env file
 
     ENABLE_DEBUGPY=True
 
-Enable port for debugpy in docker compose file
-
-    ports:
-      - "5678:5678"
-
 Create launch.json file inside .vscode directory
 
     {
