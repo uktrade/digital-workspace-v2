@@ -94,6 +94,7 @@ pytest-freezer = "^0.4.8"
 playwright = "^1.36"
 django-silk = "^5.0.4"
 snakeviz = "^2.2.0"
+debugpy = "*"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-awesome-pages-plugin = "^2.8.0"
