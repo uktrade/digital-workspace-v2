@@ -8,7 +8,7 @@ register = template.Library()
 
 @register.filter
 def email_word_break(email: str) -> str:
-    if not isinstance(email, str):
+    if not email or not isinstance(email, str):
         return email
 
     email = escape(email)
