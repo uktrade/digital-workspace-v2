@@ -20,8 +20,8 @@ class FieldPanel(FieldPanel):
 
 
 class InlinePanel(InlinePanel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.min_num is None or self.min_num == 0:
-            if not self.heading.endswith(" (optional)"):
+    class BoundPanel(InlinePanel.BoundPanel):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            if self.panel.min_num is None or self.panel.min_num == 0:
                 self.heading += " (optional)"
