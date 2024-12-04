@@ -12,8 +12,6 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
 from wagtail.admin.panels import (
-    FieldPanel,
-    InlinePanel,
     ObjectList,
     TabbedInterface,
     TitleFieldPanel,
@@ -33,6 +31,7 @@ from content.utils import (
     truncate_words_and_chars,
 )
 from content.validators import validate_description_word_count
+from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
 from peoplefinder.widgets import PersonChooser

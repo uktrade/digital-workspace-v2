@@ -2,10 +2,11 @@ import logging
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.panels import MultiFieldPanel
 from wagtail.documents.models import Document
 
 from content.models import ContentPage
+from core.panels import FieldPanel
 
 
 UserModel = get_user_model()
