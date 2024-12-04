@@ -5,7 +5,7 @@
                 <form method="get" class="content-stack large">
                     <div class="content-stack large">
                         <h1>{{ page_title }}</h1>
-                        {% if team %}<input name="team" type="hidden" value="{{ team.pk }}" />{% endif %}
+                        <input name="team" type="hidden" value="{{ team.pk }}" />
                         <input name="query"
                                placeholder="Search people"
                                type="search"
@@ -15,6 +15,9 @@
                         <input class="dwds-button dwds-button--secondary dwds-button--inline"
                                type="submit"
                                value="Search" />
+                        {% if not is_root_team and team %}
+                            <a href="{% url 'people-directory' %}?team={{ root_team.pk }}">Search whole department</a>
+                        {% endif %}
                     </div>
                 </form>
             </div>

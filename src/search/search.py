@@ -44,7 +44,7 @@ class ModelSearchVector(SearchVector):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if queryset:
+        if queryset is not None:
             if queryset.model == self.model:
                 return queryset
             raise TypeError(

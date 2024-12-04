@@ -6,6 +6,7 @@ from django.db.models.query import QuerySet
 from django.views.generic import ListView
 
 from peoplefinder.models import Person, Team, TeamMember
+from peoplefinder.services.team import TeamService
 from search.search import PeopleSearchVector
 
 
@@ -52,16 +53,22 @@ class PeopleDirectory(ListView):
         context = super().get_context_data(**kwargs)
         page_title = "Find people"
 
+        team_service = TeamService()
+
         if self.team:
             page_title = f"Find people in {self.team}"
 
+        root_team = team_service.get_root_team()
+
         context.update(
             page_title=page_title,
-            team=self.team,
+            team=self.team or root_team,
             team_breadcrumbs=True,
             extra_breadcrumbs=[
                 (None, "People directory"),
             ],
             search_query=self.request.GET.get("query", ""),
+            root_team=root_team,
+            is_root_team=self.team == root_team,
         )
         return context

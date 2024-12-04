@@ -19,6 +19,7 @@
 
 {% block primary_content %}
     <div class="content-stack large">
+        {% include "peoplefinder/includes/team_buttons.html" with team=team people_active=True %}
         {% include "peoplefinder/includes/listing_header.html" %}
 
         {% if search_query %}<h2>Showing results for "{{ search_query }}"</h2>{% endif %}
