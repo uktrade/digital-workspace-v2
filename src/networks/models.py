@@ -1,9 +1,9 @@
 from django import forms
 from wagtail.admin.forms import WagtailAdminPageForm
-from wagtail.admin.panels import FieldPanel
 
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
+from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
 
 
