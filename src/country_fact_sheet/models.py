@@ -8,6 +8,7 @@ from wagtail.documents.models import Document
 from content.models import ContentPage
 from core.panels import FieldPanel
 
+
 UserModel = get_user_model()
 
 

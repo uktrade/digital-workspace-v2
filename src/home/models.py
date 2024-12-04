@@ -21,7 +21,7 @@ from wagtailorderable.models import Orderable
 from content.models import BasePage, ContentPage
 from core.models import fields
 from core.models.models import SiteAlertBanner
-from core.panels import PageSelectorPanel, FieldPanel, InlinePanel
+from core.panels import FieldPanel, InlinePanel, PageSelectorPanel
 from events.models import EventPage
 from home.forms import HomePageForm
 from home.validators import validate_home_priority_pages

@@ -10,12 +10,14 @@ class PageSelectorPanel(PageChooserPanel):
             if self.instance and self.instance.pk:
                 self.bound_field.field.widget = ReadOnlyPageInput()
 
+
 class FieldPanel(FieldPanel):
     class BoundPanel(FieldPanel.BoundPanel):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             if not self.bound_field.field.required:
                 self.heading += " (optional)"
+
 
 class InlinePanel(InlinePanel):
     def __init__(self, *args, **kwargs):

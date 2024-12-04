@@ -3,9 +3,8 @@ from wagtail.admin.forms import WagtailAdminPageForm
 
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
-from extended_search.index import DWIndexedField as IndexedField
-
 from core.panels import FieldPanel
+from extended_search.index import DWIndexedField as IndexedField
 
 
 class NetworksHome(ContentPage):
