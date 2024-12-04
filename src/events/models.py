@@ -6,10 +6,11 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldRowPanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 from content.models import BasePage, ContentPage
+from core.panels import FieldPanel
 from core.models import fields
 from events import types
 from events.utils import get_event_datetime_display_string
