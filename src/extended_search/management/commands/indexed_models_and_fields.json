@@ -758,6 +758,7 @@
         "<FilterField: networks>",
         "<FilterField: professions>",
         "<FilterField: profile_completion_scorefunction>",
+        "<FilterField: team_id>",
         "<RelatedFields additional_roles fields=['<SearchField: name>', '<SearchField: name_explicit>']>",
         "<RelatedFields key_skills fields=['<SearchField: name>', '<SearchField: name_explicit>']>",
         "<RelatedFields learning_interests fields=['<SearchField: name>']>",
