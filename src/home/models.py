@@ -286,7 +286,12 @@ class HomePage(BasePage):
         context = super(HomePage, self).get_context(request, *args, **kwargs)
 
         # News
-        news_items = NewsPage.objects.live().public().annotate_with_comment_count()
+        news_items = (
+            NewsPage.objects.select_related("preview_image")
+            .live()
+            .public()
+            .annotate_with_comment_count()
+        )
 
         priority_page_ribbon_text_mapping = {
             pp["page_id"]: pp["ribbon_text"]
@@ -297,7 +302,8 @@ class HomePage(BasePage):
         # Load the priority pages, preserving the order.
         priority_pages = [
             p.specific
-            for p in ContentPage.objects.filter(id__in=priority_page_ids)
+            for p in ContentPage.objects.select_related("preview_image")
+            .filter(id__in=priority_page_ids)
             .annotate_with_comment_count()
             .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
             .order_by("priority_page__sort_order")
@@ -309,7 +315,8 @@ class HomePage(BasePage):
         )
 
         events = (
-            EventPage.objects.live()
+            EventPage.objects.select_related("preview_image")
+            .live()
             .public()
             .filter(event_end__gte=timezone.now())
             .exclude(id__in=priority_page_ids)
