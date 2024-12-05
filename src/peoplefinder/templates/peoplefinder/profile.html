@@ -1,6 +1,6 @@
 {% extends 'dwds_content.html' %}
 
-{% load humanize profile email_word_break %}
+{% load humanize profile %}
 {% load webpack_static from webpack_loader %}
 
 {% block title %}
@@ -52,13 +52,11 @@
                                         {% if profile.contact_email %}
                                             <div class="content-with-icon min-gap">
                                                 {% include "dwds/icons/email.html" with extra_classes="small" %}
-                                                <a href="mailto:{{ profile.contact_email }}"
-                                                   data-testid="preferred-email">{{ profile.contact_email|email_word_break }}</a>
-                                            </div>
+                                                <a class="dwds-email-wrap" href="mailto:{{ profile.contact_email }}" data-testid="preferred-email">{{ profile.contact_email }}</a>                                            </div>
                                         {% else %}
                                             <div class="content-with-icon min-gap">
                                                 {% include "dwds/icons/email.html" with extra_classes="small" %}
-                                                <a href="mailto:{{ profile.email }}" data-testid="preferred-email">{{ profile.email|email_word_break }}</a>
+                                                <a class="dwds-email-wrap" href="mailto:{{ profile.email }}" data-testid="preferred-email">{{ profile.email }}</a>
                                             </div>
                                         {% endif %}
 
