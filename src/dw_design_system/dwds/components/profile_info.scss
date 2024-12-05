@@ -13,20 +13,10 @@
         margin-top: var(--s-5);
     }
 
-    .location.with-icon {
-        margin: 0 auto;
-        align-items: center;
-
-        .icon {
-            font-size: var(--s3);
-            margin-inline-end: var(--s-5);
-        }
-    }
-
     .content-footer .with-icon {
         padding: var(--s-5);
 
-        .icon {
+        .content-icon {
             font-size: var(--s4);
             margin-inline-end: unset;
         }

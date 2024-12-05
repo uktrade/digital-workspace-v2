@@ -1,19 +1,13 @@
 {% if profile.profile_completion < 100 %}
-    <div class="govuk-error-summary" data-module="govuk-error-summary">
-        <div class="govuk-error-summary__title govuk-warning-text govuk-!-margin-0">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <div class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">Warning</span>
-                <h2 class="govuk-heading-m">Your profile is {{ profile.profile_completion }}% complete</h2>
-            </div>
-        </div>
-        <div class="govuk-error-summary__body">
+    <div class="dwds-message content-stack">
+        <h2>Your profile is {{ profile.profile_completion }}% complete</h2>
+        <p>
             Complete the following fields to reach 100%:
             <span class="missing-profile-completion-fields">
                 {% for field_url, field_label in missing_profile_completion_fields %}
                     <a class="govuk-link" href="{{ field_url }}">{{ field_label }}</a><span class="comma">,</span>
                 {% endfor %}
             </span>
-        </div>
+        </p>
     </div>
 {% endif %}

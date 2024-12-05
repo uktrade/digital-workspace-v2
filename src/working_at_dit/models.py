@@ -3,9 +3,9 @@ from itertools import groupby
 from django.db import models
 from django.db.models import Q
 from modelcluster.fields import ParentalKey
-from wagtail.admin.panels import FieldPanel, InlinePanel
 
 from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
+from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 
 
@@ -34,6 +34,8 @@ class Topic(ContentOwnerMixin, ContentPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+
+        context["attribution"] = True
 
         context["related_news"] = PageTopic.objects.filter(
             topic=self, page__content_type__app_label="news"
@@ -164,6 +166,11 @@ class HowDoI(ContentOwnerMixin, PageWithTopics):
 
     indexed_fields = ContentOwnerMixin.indexed_fields
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["attribution"] = True
+        return context
+
 
 class HowDoIHome(ContentPage):
     template = "content/content_page.html"
@@ -187,6 +194,11 @@ class Guidance(ContentOwnerMixin, PageWithTopics):
 
     indexed_fields = ContentOwnerMixin.indexed_fields
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["attribution"] = True
+        return context
+
 
 class Policy(ContentOwnerMixin, PageWithTopics):
     template = "working_at_dit/content_with_related_topics.html"
@@ -195,6 +207,11 @@ class Policy(ContentOwnerMixin, PageWithTopics):
     subpage_types = ["working_at_dit.Policy"]
 
     indexed_fields = ContentOwnerMixin.indexed_fields
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["attribution"] = True
+        return context
 
 
 class PoliciesHome(BasePage):

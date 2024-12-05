@@ -2,5 +2,10 @@
     border-radius: 50%;
     height: auto;
     aspect-ratio: 1 / 1;
-    inline-size: 80%;
+    inline-size: 100%;
+    
+    &.small {
+        inline-size: 80%;
+
+    }
 }

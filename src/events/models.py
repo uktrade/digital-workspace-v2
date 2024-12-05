@@ -6,11 +6,12 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldRowPanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 from content.models import BasePage, ContentPage
 from core.models import fields
+from core.panels import FieldPanel
 from events import types
 from events.utils import get_event_datetime_display_string
 
@@ -50,8 +51,9 @@ class EventsHome(RoutablePageMixin, BasePage):
         from events.filters import EventsFilters
 
         context = super().get_context(request, *args, **kwargs)
+        now = timezone.now()
 
-        filter_date = kwargs.get("filter_date", timezone.now()).date()
+        filter_date = kwargs.get("filter_date", now).date()
 
         month_start = filter_date.replace(day=1)
 
@@ -59,6 +61,8 @@ class EventsHome(RoutablePageMixin, BasePage):
         next_month = month_start + relativedelta(months=1)
 
         month_end = month_start.replace(month=next_month.month)
+        if next_month.month == 1:
+            month_end = month_end.replace(year=month_end.year + 1)
 
         events = (
             EventPage.objects.live()
@@ -70,7 +74,7 @@ class EventsHome(RoutablePageMixin, BasePage):
             .order_by("event_start")
         )
 
-        current_month_start = timezone.now().date().replace(day=1)
+        current_month_start = now.date().replace(day=1)
 
         page_title_prefix = "What's on in"
         if filter_date < current_month_start:
@@ -84,10 +88,14 @@ class EventsHome(RoutablePageMixin, BasePage):
             events_filters=events_filters,
             page_title=f"{page_title_prefix} {month_start.strftime('%B %Y')}",
             upcoming_events=events.filter(
-                event_start__gte=timezone.now().date(),
+                event_start__gt=now,
+            ),
+            ongoing_events=events.filter(
+                event_start__lte=now,
+                event_end__gt=now,
             ),
             past_events=events.filter(
-                event_start__lt=timezone.now().date(),
+                event_end__lte=now,
             ),
             current_month=month_start,
             next_month=next_month,

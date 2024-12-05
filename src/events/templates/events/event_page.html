@@ -1,9 +1,5 @@
 {% extends "dwds_content.html" %}
-{% load wagtailcore_tags  wagtailimages_tags %}
-
-{% block main_content_classes %}
-    content_page
-{% endblock main_content_classes %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 {% block primary_content %}
     <div class="content-sidebar-right">
@@ -20,7 +16,7 @@
                 <div class="content-item">
                     <div class="content-main info">
                         <div class="content-body content-stack">
-                            <dl>
+                            <dl class="invert">
                                 <dt class="dwds-sr-only">When</dt>
                                 <dd class="text-xlarge">
                                     {{ event_date_range }}

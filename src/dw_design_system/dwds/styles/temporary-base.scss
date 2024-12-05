@@ -105,9 +105,15 @@ body {
         color: var(--color-hr);
     }
 
+    ul.clean {
+        list-style-type: none;
+        padding: 0;
+    }
+
     dl {
         dt {
             margin-top: var(--s-1);
+            font-weight: var(--font-weight-bold);
 
             &:first-child {
                 margin-top: 0;
@@ -116,6 +122,15 @@ body {
 
         dd {
             margin-left: 0;
+        }
+    }
+
+    dl.invert {
+        dt {
+            font-weight: var(--font-weight-normal);
+        }
+
+        dd {
             font-weight: var(--font-weight-bold);
         }
     }

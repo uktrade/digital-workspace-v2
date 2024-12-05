@@ -65,7 +65,7 @@ class ProfilePhoto extends HTMLElement {
 
     this.innerHTML = `
       <h3 class="govuk-heading-s" id="photo-heading">${photoHeadingText}</h3>
-      <div style="max-width: 300px;">
+      <div class="cropper-wrapper" style="max-width: 300px;">
         <img
             src="${this.photoUrl || this.noPhotoUrl}"
             id="profile-photo"
@@ -89,7 +89,7 @@ class ProfilePhoto extends HTMLElement {
           id="photo"
         >
         <br>
-        <button type="button" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" id="clear-image" style="display: none;">Clear image</button>
+        <button type="button" class="dwds-button dwds-button--secondary" id="clear-image" style="display: none;">Clear image</button>
         <div class="govuk-checkboxes govuk-checkboxes--small" id="remove-photo-wrapper" style="display: none;">
           <div class="govuk-checkboxes__item">
             <input class="govuk-checkboxes__input" id="remove-photo" name="${

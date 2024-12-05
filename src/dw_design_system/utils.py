@@ -149,6 +149,28 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Message",
+                "template": "dwds/components/message.html",
+                "context": {
+                    "title": "Message title",
+                    "body": "This is the message body with some content in it.",
+                },
+            },
+            {
+                "name": "Menu (vertical)",
+                "template": "dwds/components/menu_vertical.html",
+                "context": {
+                    "items": [
+                        {
+                            "active": True if i == 0 else False,
+                            "title": f"Menu item {i + 1}",
+                            "url": "https://www.gov.uk",
+                        }
+                        for i in range(10)
+                    ],
+                },
+            },
+            {
                 "name": "Pagination",
                 "template": "dwds/components/pagination.html",
                 "context": {"pages": pages, "request": request},
@@ -170,6 +192,34 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "show_icons": True,
                     "email_address": "someone@example.com",
                     "phone_number": "0123456789",
+                },
+            },
+            {
+                "name": "Accordion",
+                "template": "dwds/components/accordion.html",
+                "context": {
+                    "items": [
+                        {
+                            "heading": "Understanding agile project management",
+                            "summary": "Introductions, methods, core features.",
+                            "content": "This is the content for agile project management.",
+                        },
+                        {
+                            "heading": "Working with agile methods",
+                            "summary": "Workspaces, tools and techniques, user stories, planning.",
+                            "content": "This is the content for agile methods.",
+                        },
+                        {
+                            "heading": "Governing agile services",
+                            "summary": "Principles, measuring progress, spending money.",
+                            "content": "This is the content for agile services.",
+                        },
+                        {
+                            "heading": "Phases of an agile project",
+                            "summary": "Discovery, alpha, beta, live and retirement.",
+                            "content": "This is the content for agile project.",
+                        },
+                    ]
                 },
             },
         ],

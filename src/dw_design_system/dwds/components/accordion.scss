@@ -1,0 +1,77 @@
+.dwds-accordions {
+    background-color: var(--color-background);
+
+    .show-all-header {
+        border-bottom: var(--border-bottom-width) solid var(--color-border);
+        color: var(--color-button-primary);
+    }
+
+    .dwds-accordion-section {
+        border-bottom: var(--border-bottom-width) solid var(--color-border);
+
+        .section-header {
+
+            &:hover {
+                background-color: var(--color-accordion-hover);
+
+                .section-chevron {
+                    color: var(--color-text);
+                    background: var(--color-text);
+
+                    &::after {
+                        color: var(--color-background-highlight);
+                    }
+                }
+            }
+        }
+
+        .section-toggle {
+            font-size: var(--text-small);
+            font-weight: var(--font-weight-normal);
+            color: var(--color-button-primary);
+            margin-bottom: var(--s-1);
+        }
+
+        .section-content {
+            display: none;
+            padding-bottom: var(--s1);
+        }
+
+    }
+
+    .section-chevron,
+    .show-all-chevron {
+        box-sizing: border-box;
+        display: inline-block;
+        position: relative;
+        width: var(--s1);
+        height: var(--s1);
+        border: .0625rem solid;
+        border-radius: 50%;
+        vertical-align: middle;
+
+        &::after {
+            content: "";
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            top: .3125rem;
+            left: .375rem;
+            width: .375rem;
+            height: .375rem;
+            transform: rotate(135deg);
+            border-top: .125rem solid;
+            border-right: .125rem solid;
+        }
+    }
+
+    .section-chevron-up,
+    .show-all-chevron-up {
+        transform: rotate(180deg);
+    }
+
+    .show-all-text {
+        margin-left: var(--s-5);
+        vertical-align: middle;
+    }
+}
