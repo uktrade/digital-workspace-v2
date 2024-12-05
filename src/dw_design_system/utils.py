@@ -46,7 +46,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
             {
                 "name": "Content Item Card",
                 "template": "dwds/layouts/content_item_card.html",
-                "context": {"flippable":False},
+                "context": {"flippable": False},
             },
         ],
         "components": [
