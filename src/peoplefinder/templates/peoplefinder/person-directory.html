@@ -12,45 +12,49 @@
 {% endblock title %}
 
 {% block page_title_wrapper %}
+    {% include "peoplefinder/includes/team_buttons.html" with team=team people_active=True %}
+    {{ block.super }}
 {% endblock page_title_wrapper %}
 
 {% block primary_content_classes %}
+    content-stack large
 {% endblock primary_content_classes %}
 
 {% block primary_content %}
-    <div class="content-stack large">
-        {% include "peoplefinder/includes/team_buttons.html" with team=team people_active=True %}
-        {% include "peoplefinder/includes/listing_header.html" %}
+    {% if not is_root_team and team %}
+        <a href="{% url 'people-directory' %}?team={{ root_team.pk }}">View whole department</a>
+    {% endif %}
 
-        {% if search_query %}<h2>Showing results for "{{ search_query }}"</h2>{% endif %}
+    {% if paginator.count == 1 %}
+        <p>{{ paginator.count }} person</p>
+    {% elif paginator.count %}
+        <p>{{ paginator.count }} people</p>
+    {% endif %}
 
-        {% if paginator.count == 1 %}
-            <p>{{ paginator.count }} person</p>
-        {% elif paginator.count %}
-            <p>{{ paginator.count }} people</p>
-        {% endif %}
+    {% if is_paginated %}
+        {% include "dwds/components/pagination.html" with pages=page_obj %}
+    {% endif %}
 
-        {% if object_list %}
-            <div class="content-grid grid-cards-auto-fill">
-                {% for person in object_list %}
-                    <div class="dwds-content-item-card">
-                        {% url 'profile-view' person.slug as profile_url %}
-                        {% if person.photo %}
-                            {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=person.photo.url name=person.full_name title=person.job_title location=person.uk_office_location.city profile_url=profile_url %}
-                        {% else %}
-                            {% include "dwds/components/profile_info.html" with show_profile_image=True name=person.full_name title=person.job_title location=person.uk_office_location.city profile_url=profile_url %}
-                        {% endif %}
-                    </div>
-                {% endfor %}
+    {% if object_list %}
+        <div class="content-grid grid-cards-auto-fill">
+            {% for person in object_list %}
+                <div class="dwds-content-item-card">
+                    {% url 'profile-view' person.slug as profile_url %}
+                    {% if person.photo %}
+                        {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=person.photo.url name=person.full_name title=person.job_title location=person.uk_office_location.city profile_url=profile_url %}
+                    {% else %}
+                        {% include "dwds/components/profile_info.html" with show_profile_image=True name=person.full_name title=person.job_title location=person.uk_office_location.city profile_url=profile_url %}
+                    {% endif %}
+                </div>
+            {% endfor %}
 
-            </div>
-        {% else %}
-            <p>No one was found, please try a different search term.</p>
-        {% endif %}
-        {% if is_paginated %}
-            {% include "dwds/components/pagination.html" with pages=page_obj %}
-        {% endif %}
-    </div>
+        </div>
+    {% else %}
+        <p>There's no team members to show.</p>
+    {% endif %}
+    {% if is_paginated %}
+        {% include "dwds/components/pagination.html" with pages=page_obj %}
+    {% endif %}
 {% endblock primary_content %}
 
 {% block secondary_content %}

@@ -7,7 +7,6 @@ from django.views.generic import ListView
 
 from peoplefinder.models import Person, Team, TeamMember
 from peoplefinder.services.team import TeamService
-from search.search import PeopleSearchVector
 
 
 class PeopleDirectory(ListView):
@@ -16,8 +15,6 @@ class PeopleDirectory(ListView):
     paginate_by = 30
 
     def dispatch(self, request, *args, **kwargs):
-        self.query = self.request.GET.get("query", "")
-
         self.team = None
         if team_pk := self.request.GET.get("team", ""):
             self.team = Team.objects.get(pk=team_pk)
@@ -43,21 +40,16 @@ class PeopleDirectory(ListView):
         ).values("job_title")
         queryset = queryset.annotate(job_title=Subquery(get_job_title_subquery[:1]))
 
-        if self.query:
-            return PeopleSearchVector(self.request, queryset=queryset).search(
-                query_str=self.query
-            )
-        return queryset
+        return queryset.order_by("first_name", "last_name")
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        page_title = "Find people"
-
-        team_service = TeamService()
+        page_title = "All people"
 
         if self.team:
-            page_title = f"Find people in {self.team}"
+            page_title = f"People in {self.team}"
 
+        team_service = TeamService()
         root_team = team_service.get_root_team()
 
         context.update(
