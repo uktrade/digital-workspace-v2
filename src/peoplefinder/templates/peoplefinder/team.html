@@ -14,6 +14,9 @@
 
 {% block primary_content %}
     <div class="content-stack large">
+        {% if sub_teams %}
+            {% include "peoplefinder/includes/team_buttons.html" with team=team teams_active=teams_active %}
+        {% endif %}
         <div class="dwds-content-item-card no-shadow">
             <div class="dwds-content-list content-item">
                 <div class="content-main">
@@ -53,14 +56,6 @@
             </div>
         </div>
 
-        {% if sub_views|length > 1 %}
-            <div class="dwds-button-group">
-                {% for sub_view in sub_views %}
-                    <a class="dwds-button dwds-button--navigation {% if sub_view.value == current_sub_view %}active{% endif %}"
-                       href="{% url 'team-view' team.slug %}?sub_view={{ sub_view.value }}">{{ sub_view.label }}</a>
-                {% endfor %}
-            </div>
-        {% endif %}
 
         {% if leaders %}
             <h2>Team leader{{ leaders|length|pluralize }}</h2>

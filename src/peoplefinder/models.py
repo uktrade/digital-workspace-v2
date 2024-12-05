@@ -725,6 +725,7 @@ class Person(Indexed, models.Model):
             filter=True,
         ),
         IndexedField("do_not_work_for_dit", filter=True),
+        IndexedField("team_id", filter=True),
     ]
 
     search_fields = []
@@ -752,6 +753,15 @@ class Person(Indexed, models.Model):
 
         if self.other_additional_roles:
             yield self.other_additional_roles
+
+    def team_id(self) -> list[int]:
+        team_ids = []
+
+        for role in self.roles.all():
+            team_ids.append(role.team_id)
+            team_ids += [tt.child.pk for tt in role.team.parents.all()]
+
+        return team_ids
 
     @property
     def is_stale(self):
@@ -1078,7 +1088,15 @@ class Team(Indexed, models.Model):
 
         order_by += ["person__last_name", "person__first_name"]
 
-        yield from self.members.active().filter(head_of_team=True).order_by(*order_by)
+        yield from (
+            self.members.active()
+            .select_related(
+                "person",
+                "person__uk_office_location",
+            )
+            .filter(head_of_team=True)
+            .order_by(*order_by)
+        )
 
     @property
     def roles_in_team(self) -> list[str]:
