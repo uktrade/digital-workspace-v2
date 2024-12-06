@@ -12,8 +12,7 @@ def initialize_debugpy():
             "debugpy is not installed, please install it with: pip install debugpy\n"
         )
         return
-    except Exception:
-        return
+
 
     if not os.getenv("RUN_MAIN"):
         debugpy.listen(("0.0.0.0", 5678))
