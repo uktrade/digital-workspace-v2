@@ -54,6 +54,7 @@ services:
       - opensearch
 
   wagtail:
+    env_file: ".env"
     build:
       context: .
       cache_from:

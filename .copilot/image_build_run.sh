@@ -2,6 +2,7 @@
 
 # Exit early if something goes wrong
 set -e
+export DJANGO_SETTINGS_MODULE=config.settings.build
 
 echo "Running post build script"
 
@@ -11,7 +12,7 @@ mv ".env.ci" ".env"
 cd src
 
 echo "Running collectstatic"
-python manage.py collectstatic --settings=config.settings.build --noinput
+python manage.py collectstatic --noinput
 
 echo "Renaming .env to .env.ci"
 cd ../
