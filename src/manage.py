@@ -6,9 +6,11 @@ import sys
 def initialize_debugpy():
     import debugpy
 
-    if not os.getenv("RUN_MAIN"):
+    try:
         debugpy.listen(("0.0.0.0", 5678))
         sys.stdout.write("debugpy listening on port 5678...\n")
+    except Exception as exc:
+        sys.stderr.write(f"Failed to initialize debugpy: {exc}\n")
 
 
 def main():
