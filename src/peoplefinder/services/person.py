@@ -12,7 +12,7 @@ from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags
+from django.utils.html import strip_tags, escape
 from django.utils.safestring import mark_safe
 from notifications_python_client.notifications import NotificationsAPIClient
 
@@ -548,6 +548,8 @@ class PersonService:
             field_value = getattr(person, field_name)
 
             if isinstance(field_value, str):
+                # escaping field_value before using mark_safe -> https://docs.djangoproject.com/en/dev/releases/4.2.17/#django-4-2-17-release-notes
+                field_value = escape(field_value)
                 # Replace newlines with "<br>".
                 field_value = mark_safe(  # noqa: S308
                     strip_tags(field_value).replace("\n", "<br>")
