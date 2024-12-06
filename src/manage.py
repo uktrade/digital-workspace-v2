@@ -14,9 +14,9 @@ def initialize_debugpy():
     except Exception:
         return
 
-    # if not os.getenv("RUN_MAIN"):
-    #     debugpy.listen(("0.0.0.0", 5678))
-    #     sys.stdout.write("debugpy listening on port 5678...\n")
+    if not os.getenv("RUN_MAIN"):
+        debugpy.listen(("0.0.0.0", 5678))
+        sys.stdout.write("debugpy listening on port 5678...\n")
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.prod")
