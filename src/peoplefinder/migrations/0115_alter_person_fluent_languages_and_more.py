@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
             name="preferred_first_name",
             field=models.CharField(
                 blank=True,
-                help_text="This name appears on your profile. Colleagues can search for you using either of your first names",
+                help_text="This name appears on your profile. Colleagues can search for you using either of your first names",  # /PS-IGNORE
                 max_length=200,
                 null=True,
             ),
