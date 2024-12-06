@@ -4,13 +4,7 @@ import sys
 
 
 def initialize_debugpy():
-    try:
-        import debugpy
-    except ImportError:
-        sys.stdout.write(
-            "debugpy is not installed, please install it with: pip install debugpy\n"
-        )
-        return
+    import debugpy
 
     if not os.getenv("RUN_MAIN"):
         debugpy.listen(("0.0.0.0", 5678))
