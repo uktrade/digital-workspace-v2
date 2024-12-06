@@ -143,9 +143,6 @@ class ProfileDetailView(ProfileView, DetailView):
                 "edited_or_confirmed_at",
             ]
 
-        # ProfileSections("skills") -> ProfileSections.SKILLS: ProfileSections()
-        # current_profile_section.value -> skills
-        # current_profile_section.label -> Skills
         profile_section_dicts = []
         for profile_section in ProfileSections:
             profile_url = reverse("profile-view", kwargs={"profile_slug": profile.slug})

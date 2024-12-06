@@ -52,13 +52,16 @@
                                         {% if profile.contact_email %}
                                             <div class="content-with-icon min-gap">
                                                 {% include "dwds/icons/email.html" with extra_classes="small" %}
-                                                <a href="mailto:{{ profile.contact_email }}"
+                                                <a class="dwds-email-wrap"
+                                                   href="mailto:{{ profile.contact_email }}"
                                                    data-testid="preferred-email">{{ profile.contact_email }}</a>
                                             </div>
                                         {% else %}
                                             <div class="content-with-icon min-gap">
                                                 {% include "dwds/icons/email.html" with extra_classes="small" %}
-                                                <a href="mailto:{{ profile.email }}" data-testid="preferred-email">{{ profile.email }}</a>
+                                                <a class="dwds-email-wrap"
+                                                   href="mailto:{{ profile.email }}"
+                                                   data-testid="preferred-email">{{ profile.email }}</a>
                                             </div>
                                         {% endif %}
 
