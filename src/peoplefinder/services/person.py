@@ -12,7 +12,7 @@ from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags, escape
+from django.utils.html import escape, strip_tags
 from django.utils.safestring import mark_safe
 from notifications_python_client.notifications import NotificationsAPIClient
 
