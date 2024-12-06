@@ -2,6 +2,7 @@
 import os
 import sys
 
+
 def initialize_debugpy():
     try:
         import debugpy
@@ -15,6 +16,7 @@ def initialize_debugpy():
         debugpy.listen(("0.0.0.0", 5678))
         sys.stdout.write("debugpy listening on port 5678...\n")
 
+
 def main():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.prod")
 
@@ -27,6 +29,7 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
+
 
 if __name__ == "__main__":
     ENABLE_DEBUGPY = os.getenv("ENABLE_DEBUGPY")
