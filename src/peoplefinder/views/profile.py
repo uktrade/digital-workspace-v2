@@ -566,6 +566,9 @@ class ProfileActivateAction(
         self.person.is_active = True
         self.person.became_inactive = None
         self.person.save()
+        if self.person.user:
+            self.person.user.is_active = True
+            self.person.user.save()
 
 
 class ProfileUpdateUserView(UserPassesTestMixin, SuccessMessageMixin, HtmxFormView):
