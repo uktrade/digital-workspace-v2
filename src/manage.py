@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import os
 import sys
-
+import environ
+env = environ.Env()
 
 def initialize_debugpy():
     try:
@@ -21,9 +22,7 @@ def initialize_debugpy():
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.prod")
 
-    from django.conf import settings
-
-    if settings.DEBUG and settings.ENABLE_DEBUGPY:
+    if env.bool("ENABLE_DEBUGPY", False):
         initialize_debugpy()
 
     from django.core.management import execute_from_command_line
