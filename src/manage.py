@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import os
 import sys
-import environ
-env = environ.Env()
 
 def initialize_debugpy():
     try:
@@ -13,17 +11,28 @@ def initialize_debugpy():
         )
         return
 
-
     if not os.getenv("RUN_MAIN"):
         debugpy.listen(("0.0.0.0", 5678))
         sys.stdout.write("debugpy listening on port 5678...\n")
 
-if __name__ == "__main__":
+def main():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.prod")
 
-    if env.bool("ENABLE_DEBUGPY", False):
-        initialize_debugpy()
-
-    from django.core.management import execute_from_command_line
-
+    try:
+        from django.core.management import execute_from_command_line
+    except ImportError:
+        try:
+            import django
+        except ImportError:
+            raise ImportError(
+                "Couldn't import Django. Are you sure it's installed and "
+                "available on your PYTHONPATH environment variable? Did you "
+                "forget to activate a virtual environment?"
+            )
     execute_from_command_line(sys.argv)
+
+if __name__ == "__main__":
+    ENABLE_DEBUGPY = os.getenv("ENABLE_DEBUGPY").lower() == "true"
+    if ENABLE_DEBUGPY:
+        initialize_debugpy()
+    main()
