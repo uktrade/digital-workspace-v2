@@ -26,7 +26,7 @@ from peoplefinder.services.audit_log import (
     AuditLogService,
     ObjectRepr,
 )
-from peoplefinder.tasks import notify_user_about_profile_changes, person_update_notifier
+from peoplefinder.tasks import notify_user_about_profile_changes
 from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
 
@@ -295,9 +295,6 @@ class PersonService:
             person.save()
 
             self.trigger_profile_change_notification(request, person)
-
-        # Notify external services
-        person_update_notifier.delay(person.id)
 
     def profile_deletion_initiated(
         self, request: Optional[HttpRequest], person: Person, initiated_by: User
