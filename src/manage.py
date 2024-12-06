@@ -32,7 +32,7 @@ def main():
     execute_from_command_line(sys.argv)
 
 if __name__ == "__main__":
-    ENABLE_DEBUGPY = os.getenv("ENABLE_DEBUGPY").lower() == "true"
-    if ENABLE_DEBUGPY:
+    ENABLE_DEBUGPY = os.getenv("ENABLE_DEBUGPY")
+    if ENABLE_DEBUGPY and ENABLE_DEBUGPY.lower() == "true":
         initialize_debugpy()
     main()
