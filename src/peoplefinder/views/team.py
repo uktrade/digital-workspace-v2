@@ -61,8 +61,11 @@ class TeamDetailView(DetailView, PeoplefinderView):
         for sub_team in team_service.get_immediate_child_teams(self.object):
             profile_completion = team_service.profile_completion(sub_team)
             if profile_completion:
+                profile_completion_percentage = round(
+                    float(profile_completion * 100), 2
+                )
                 sub_team.profile_completion = (
-                    f"{profile_completion:.1%} of profiles complete"
+                    f"{profile_completion_percentage:g}% of profiles complete"
                 )
             sub_teams.append(sub_team)
 
@@ -108,8 +111,9 @@ class TeamDetailView(DetailView, PeoplefinderView):
         team_service = TeamService()
 
         if profile_completion := team_service.profile_completion(self.object):
+            profile_completion_percentage = round(float(profile_completion * 100), 2)
             context["profile_completion"] = (
-                f"{profile_completion:.1%} of profiles complete"
+                f"{profile_completion_percentage:g}% of profiles complete"
             )
 
         if self.request.user.has_perm("peoplefinder.delete_team"):
