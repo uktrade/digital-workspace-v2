@@ -26,7 +26,8 @@
                             {% if team.abbreviation %}({{ team.abbreviation }}){% endif %}
                         </h1>
 
-                        <div class="text-small" data-testid="description">{{ team.description|markdown }}</div>
+                        {% if profile_completion %}<p class="text-small">{{ profile_completion }}</p>{% endif %}
+                        <div data-testid="description">{{ team.description|markdown }}</div>
                         <div class="dwds-button-group">
                             {% if perms.peoplefinder.change_team %}
                                 <a class="dwds-button dwds-button--secondary dwds-button--inline"
@@ -72,7 +73,9 @@
             <h2>Teams within {{ team.short_name }}</h2>
             <div class="content-grid grid-cards-auto-fill">
                 {% for team in sub_teams %}
-                    <div class="dwds-content-item-card">{% include 'peoplefinder/components/team-card-new.html' with team=team %}</div>
+                    <div class="dwds-content-item-card">
+                        {% include 'peoplefinder/components/team-card-new.html' with team=team profile_completion=team.profile_completion %}
+                    </div>
                 {% endfor %}
             </div>
         {% endif %}
