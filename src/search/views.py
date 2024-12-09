@@ -1,3 +1,4 @@
+import csv
 import logging
 
 import sentry_sdk
@@ -13,6 +14,7 @@ from content.models import ContentPage
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import settings_singleton
 from peoplefinder.models import Person, Team
+from search.search import AllPagesSearchVector
 from search.templatetags import search as search_template_tag
 from search.utils import get_query_info_for_model
 
@@ -22,6 +24,10 @@ logger = logging.getLogger(__name__)
 
 def can_view_explore():
     return user_passes_test(lambda u: u.has_perm("extended_search.view_explore"))
+
+
+def can_export_search():
+    return user_passes_test(lambda u: u.has_perm("extended_search.export_search"))
 
 
 @require_http_methods(["GET"])
@@ -132,3 +138,27 @@ def explore(request: HttpRequest) -> HttpResponse:
     }
 
     return TemplateResponse(request, "search/explore.html", context=context)
+
+
+@can_export_search()
+def export_search(request: HttpRequest) -> HttpResponse:
+    """
+    Administrative view for exporting search results as csv
+    """
+    query = request.GET.get("query", "")
+    search_results = AllPagesSearchVector(request).search(query)
+    filename = "search_export.csv"
+
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+    header = ["Title", "Link"]
+    writer = csv.writer(response)
+    writer.writerow(header)
+    for result in search_results:
+        row = [result.title, result.get_full_url()]
+        writer.writerow(row)
+
+    return response

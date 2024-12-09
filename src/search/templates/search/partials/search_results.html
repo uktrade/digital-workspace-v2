@@ -18,6 +18,10 @@
     {% endif %}
 </div>
 
+{% if perms.extended_search.export_search %}
+    <a href="{% url 'search:export_search' %}?query={{ search_query }}">Export to CSV</a>
+{% endif %}
+
 <script>
     function searchFeedbackData(formData) {
         const searchData = JSON.parse(formData.get("search_data") || {});
