@@ -23,8 +23,26 @@ a.dwds-button,
     &:active {
         top: 2px;
         position: relative;
-        background-color: var(--color-button-hover);
-        border-bottom: solid var(--border-width);
+        border-bottom: solid var(--button-border-width-bottom);
+        background-color: var(--color-button-primary);
+    }
+
+    &--clear {
+        // Unset the default button styling
+        border: none;
+        background: none;
+        // Reset styling
+        padding-left: unset;
+        padding-right: unset;
+        color: unset;
+        background-color: unset;
+        font-weight: unset;
+        text-align: left;
+
+        &:hover {
+            background-color: unset;
+            border-bottom-color: unset;
+        }
     }
 
     &--warning {
@@ -107,7 +125,8 @@ a.dwds-button,
         border-bottom: var(--button-border-width-bottom) solid var(--color-button-secondary-dark-border);
         border-radius: var(--s2);
 
-        &:active, &:hover {
+        &:active,
+        &:hover {
             color: var(--color-button-secondary-text);
             background-color: var(--color-button-secondary);
             border-color: var(--color-button-secondary-text);

@@ -6,11 +6,12 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldRowPanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 from content.models import BasePage, ContentPage
 from core.models import fields
+from core.panels import FieldPanel
 from events import types
 from events.utils import get_event_datetime_display_string
 
@@ -60,6 +61,8 @@ class EventsHome(RoutablePageMixin, BasePage):
         next_month = month_start + relativedelta(months=1)
 
         month_end = month_start.replace(month=next_month.month)
+        if next_month.month == 1:
+            month_end = month_end.replace(year=month_end.year + 1)
 
         events = (
             EventPage.objects.live()

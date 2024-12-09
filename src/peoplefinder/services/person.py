@@ -26,6 +26,7 @@ from peoplefinder.services.audit_log import (
     AuditLogService,
     ObjectRepr,
 )
+from peoplefinder.services.team import TeamService
 from peoplefinder.tasks import notify_user_about_profile_changes, person_update_notifier
 from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
@@ -298,6 +299,9 @@ class PersonService:
 
         # Notify external services
         person_update_notifier.delay(person.id)
+
+        for team_id in person.roles.all().values_list("team__pk", flat=True).distinct():
+            TeamService().clear_profile_completion_cache(team_id)
 
     def profile_deletion_initiated(
         self, request: Optional[HttpRequest], person: Person, initiated_by: User

@@ -1,0 +1,30 @@
+{% load static %}
+<div class="dwds-accordions content-stack">
+    <div class="show-all-header">
+        <button class="dwds-button dwds-button--clear">
+            <span class="show-all-chevron"></span>
+            <span class="show-all-text">Show all sections</span>
+        </button>
+    </div>
+
+    {% for item in items %}
+        <div class="dwds-accordion-section content-stack">
+            <div class="section-header">
+                <button class="dwds-button dwds-button--clear">
+                    <span class="text-large">{{ item.heading }}</span>
+                    <p class="text-small">{{ item.summary }}</p>
+                    <span class="section-toggle">
+                        <span class="section-chevron"></span>
+                        <span class="section-text">Show</span>
+                    </span>
+                </button>
+            </div>
+
+            <div class="section-content content-stack">
+                <p>{{ item.content }}</p>
+            </div>
+
+        </div>
+    {% endfor %}
+
+</div>
