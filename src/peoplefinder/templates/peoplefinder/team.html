@@ -22,9 +22,8 @@
                             {{ page_title }}
                             {% if team.abbreviation %}({{ team.abbreviation }}){% endif %}
                         </h1>
-
-                        {% if profile_completion %}<p class="text-small">{{ profile_completion }}</p>{% endif %}
                         <div data-testid="description">{{ team.description|markdown }}</div>
+                        {% if profile_completion %}<p class="text-small">{{ profile_completion }}</p>{% endif %}
                         <div class="dwds-button-group">
                             {% if perms.peoplefinder.change_team %}
                                 <a class="dwds-button dwds-button--secondary dwds-button--inline"
