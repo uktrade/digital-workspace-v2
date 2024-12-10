@@ -1,5 +1,6 @@
 {% extends "dwds_content.html" %}
 {% load wagtailcore_tags bookmarks %}
+{% load feedback %}
 
 {% block primary_content %}
     {% if attribution %}
@@ -20,3 +21,7 @@
     {% endif %}
     {{ block.super }}
 {% endblock post_primary_content %}
+
+{% block secondary_content %}
+    {% feedback_sidebar %}
+{% endblock secondary_content %}

@@ -5,6 +5,7 @@
 {% load wagtailimages_tags %}
 {% load site_alert %}
 {% load cards %}
+{% load feedback %}
 
 {% block pre_main %}
     {{ block.super }}
@@ -93,6 +94,7 @@
                     {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
                 </div>
             {% endif %}
+            {% feedback_sidebar %}
         </section>
     </article>
 {% endblock secondary_content %}

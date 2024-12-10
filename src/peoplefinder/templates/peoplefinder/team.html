@@ -1,6 +1,7 @@
 {% extends "dwds_content.html" %}
 
 {% load markdown %}
+{% load feedback %}
 
 {% block title %}
     {{ page_title }}
@@ -107,3 +108,7 @@
         {% endif %}
     </div>
 {% endblock primary_content %}
+
+{% block secondary_content %}
+    {% feedback_sidebar %}
+{% endblock secondary_content %}
