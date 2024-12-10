@@ -84,6 +84,14 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "FeedBack",
+                "template": "dwds/components/feedback.html",
+                "context": {
+                    "title": "Give feedback",
+                    "description": "Did you find what you were looking for?",
+                },
+            },
+            {
                 "name": "CTA",
                 "template": "dwds/components/cta.html",
                 "context": {
