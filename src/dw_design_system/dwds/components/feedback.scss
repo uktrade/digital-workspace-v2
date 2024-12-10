@@ -1,0 +1,20 @@
+.feedback-btn {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--color-background);
+      border: none;
+      padding: var(--s-1) var(--s0);
+      cursor: pointer;
+      text-align: left;
+
+      .feedback-title {
+              font-size: var(--s1);
+              margin: var(--s-5);
+              color: var(--color-link);
+      }
+
+      .feedback-subtitle {
+          font-size: var(--s0);
+          margin: var(--s-5);
+      }
+}

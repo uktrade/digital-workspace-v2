@@ -107,3 +107,9 @@
         {% endif %}
     </div>
 {% endblock primary_content %}
+
+{% block secondary_content %}
+    <section class="feedback-section">
+        {% include "dwds/components/feedback.html" with title="Give feedback" description="Did you find what you were looking for?" %}
+    </section>
+{% endblock secondary_content %}

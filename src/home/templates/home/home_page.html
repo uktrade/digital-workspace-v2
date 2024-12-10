@@ -93,6 +93,9 @@
                     {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
                 </div>
             {% endif %}
+            <div class="feedback-card">
+                {% include 'dwds/components/feedback.html' with title="Give feedback" description="Did you find what you were looking for?" %}
+            </div>
         </section>
     </article>
 {% endblock secondary_content %}
