@@ -1,5 +1,6 @@
 {% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
+{% load feedback %}
 
 {% block bookmark %}
 {% endblock bookmark %}
@@ -38,7 +39,5 @@
 {% endblock %}
 
 {% block secondary_content %}
-    <section class="feedback-section">
-        {% include "dwds/components/feedback.html" with title="Give feedback" description="Did you find what you were looking for?" %}
-    </section>
+    {% feedback_sidebar %}
 {% endblock secondary_content %}
