@@ -2,6 +2,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load cards %}
+{% load feedback %}
 
 {% block bookmark %}
 {% endblock bookmark %}
@@ -18,7 +19,5 @@
 
 {% block secondary_content %}
     {% comment %} {% include "news/includes/news_categories.html" %} {% endcomment %}
-    <section class="feedback-section">
-        {% include "dwds/components/feedback.html" with title="Give feedback" description="Did you find what you were looking for?" %}
-    </section>
+    {% feedback_sidebar %}
 {% endblock secondary_content %}

@@ -1,6 +1,7 @@
 {% extends "dwds_content.html" %}
 
 {% load markdown %}
+{% load feedback %}
 
 {% block title %}
     {{ page_title }}
@@ -109,7 +110,5 @@
 {% endblock primary_content %}
 
 {% block secondary_content %}
-    <section class="feedback-section">
-        {% include "dwds/components/feedback.html" with title="Give feedback" description="Did you find what you were looking for?" %}
-    </section>
+    {% feedback_sidebar %}
 {% endblock secondary_content %}
