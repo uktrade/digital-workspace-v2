@@ -10,7 +10,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from content.models import ContentPage
+from content.models import BasePage, ContentPage
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import settings_singleton
 from peoplefinder.models import Person, Team
@@ -64,7 +64,7 @@ def autocomplete(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["GET"])
-def search(request: HttpRequest, category: str = None) -> HttpResponse:
+def search(request: HttpRequest, category: str | None = None) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
     tab_override = request.GET.get("tab_override", False)
@@ -141,24 +141,118 @@ def explore(request: HttpRequest) -> HttpResponse:
 
 
 @can_export_search()
-def export_search(request: HttpRequest) -> HttpResponse:
+def export_search(request: HttpRequest, category: str) -> HttpResponse:
     """
     Administrative view for exporting search results as csv
     """
     query = request.GET.get("query", "")
-    search_results = AllPagesSearchVector(request).search(query)
-    filename = "search_export.csv"
+    if category == "all": category = "all_pages"
+    search_vector = search_template_tag.SEARCH_VECTORS[category](request)
+    search_results = search_vector.search(query)
+    search_model = search_vector.model
 
-    response = HttpResponse(
-        content_type="text/csv",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
-    )
+    def build_search_export_csv_response(category, search_model, search_results) -> HttpResponse:
+        header = build_export_search_csv_header(search_model)
 
-    header = ["Title", "Link"]
-    writer = csv.writer(response)
-    writer.writerow(header)
-    for result in search_results:
-        row = [result.title, result.get_full_url()]
-        writer.writerow(row)
+        if issubclass(search_model, BasePage):
+            return build_page_export_csv_response(category, header, search_results)
 
-    return response
+        if issubclass(search_model, Person):
+            return build_people_export_csv_response(category, header, search_results)
+
+        if issubclass(search_model, Team):
+            return build_teams_export_csv_response(category, header, search_results)
+
+    def build_export_search_csv_header(search_model) -> list[str]:
+        if issubclass(search_model, BasePage):
+            return [
+                "Title",
+                "URL",
+                "Edit-URL",
+                "Content-Owner-Name",
+                "Content-Owner-Email",
+                "Content-Author-Name",
+                "Content-Author-Email",
+                "First-Published",
+                "Last-Updated",
+                "Page-Type",
+            ]
+
+        if issubclass(search_model, Person):
+            return [
+                "Name",
+                "Email",
+                "Phone",
+                "Profile-URL",
+                "Roles(Job Title|Team Name)"
+            ]
+
+        if issubclass(search_model, Team):
+            return [
+                "Title",
+                "URL",
+                "Edit-URL",
+            ]
+        
+
+    def build_search_export_response_header(category: str) -> HttpResponse:
+        filename = f"search_export_{category}.csv"
+        response = HttpResponse(
+            content_type="text/csv",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+        return response
+
+
+    def build_page_export_csv_response(category, header, search_results) -> HttpResponse:
+        response = build_search_export_response_header(category)
+        writer = csv.writer(response)
+        writer.writerow(header)
+        for result in search_results:
+            row = [
+                result.title,
+                result.get_full_url(),
+                "Edit-URL",
+                result.content_owner.full_name if result.content_owner else "",#tbc
+                "Content-Owner-Email",
+                "Content-Author-Name",
+                "Content-Author-Email",
+                "First-Published",
+                "Last-Updated",
+                category,
+                ]
+            writer.writerow(row)
+        return response
+
+
+    def build_people_export_csv_response(category, header, search_results) -> HttpResponse:
+        response = build_search_export_response_header(category)
+        writer = csv.writer(response)
+        writer.writerow(header)
+
+        for result in search_results:
+            row = [
+                f"{result.first_name} {result.last_name}",
+                result.email,
+                result.primary_phone_number,
+                result.get_absolute_url(),#tbc
+                "Roles(Job Title|Team Name)",
+                ]
+            writer.writerow(row)
+        return response
+
+    def build_teams_export_csv_response(category, header, search_results) -> HttpResponse:
+        response = build_search_export_response_header(category)
+        writer = csv.writer(response)
+        writer.writerow(header)
+
+        for result in search_results:
+            row = [
+                result.name,
+                result.get_absolute_url(),#tbc
+                result.get_edit_url(),#tbc
+                ]
+            writer.writerow(row)
+        return response
+    
+    return build_search_export_csv_response(category, search_model, search_results)

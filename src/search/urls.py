@@ -20,8 +20,8 @@ urlpatterns = [
         ),
     ),
     path("explore/", explore, name="explore"),
-    path("export_search/", export_search, name="export_search"),
     path("autocomplete/", autocomplete, name="autocomplete"),
     path("<str:category>/", search, name="category"),
+    path("<str:category>/export_search/", export_search, name="export_search"),
     path("", search, name="home"),
 ]
