@@ -40,7 +40,7 @@ class NavLinkBase(Orderable):
         PageChooserPanel("page"),
     ]
 
-    class Meta:
+    class Meta(Orderable.Meta):
         abstract = True
 
 
