@@ -144,28 +144,27 @@
             <div class="dwds-content-list content-item">
                 <div class="content-main">
                     <div class="content-body content-body-space-padding content-stack">
-                        {% if is_users_profile or current_tab.values %}
-                            <div class="dwds-button-group">
-                                {% for profile_section_dict in profile_section_dicts %}
-                                    <a class="dwds-button dwds-button--navigation {% if current_tab.value == profile_section_dict.profile_section.value %}active{% endif %}"
-                                       href="{{ profile_section_dict.url }}">{{ profile_section_dict.title }}</a>
-                                {% endfor %}
-                            </div>
-
-                            <div class="content-stack">
-                                <h2>{{ current_tab.title }}</h2>
-                                {% if current_tab.values %}
-                                    <dl>
-                                        {% for value in current_tab.values %}
-                                            <dt>{{ value.1 }}</dt>
-                                            <dd>
-                                                {{ value.2 }}
-                                            </dd>
-                                        {% endfor %}
-                                    </dl>
-                                {% endif %}
-                            </div>
-                        {% endif %}
+                        <div class="dwds-button-group">
+                            {% for profile_section_dict in profile_section_dicts %}
+                                <a class="dwds-button dwds-button--navigation {% if current_tab.value == profile_section_dict.profile_section.value %}active{% endif %}"
+                                   href="{{ profile_section_dict.url }}">{{ profile_section_dict.title }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="content-stack">
+                            <h2>{{ current_tab.title }}</h2>
+                            {% if current_tab.values %}
+                                <dl>
+                                    {% for value in current_tab.values %}
+                                        <dt>{{ value.1 }}</dt>
+                                        <dd>
+                                            {{ value.2 }}
+                                        </dd>
+                                    {% endfor %}
+                                </dl>
+                            {% else %}
+                                <p>{{ profile.first_name }} doesn't have any '{{ current_tab.title }}' data.</p>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
