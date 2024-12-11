@@ -162,7 +162,7 @@
                                     {% endfor %}
                                 </dl>
                             {% else %}
-                                <p>{{ profile.first_name }} doesn't have any '{{ current_tab.title }}' data.</p>
+                                <p>{{ profile.first_name }} hasn't listed any {{ current_tab.title|lower }}.</p>
                             {% endif %}
                         </div>
                     </div>
