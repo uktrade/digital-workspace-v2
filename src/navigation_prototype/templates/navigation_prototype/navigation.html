@@ -6,7 +6,9 @@
             {% if l.child_links.exists %}
                 <ul>
                     {% for cl in l.child_links.all %}
-                        <li><a href="{{ cl.get_url }}">{{ cl.label }}</a></li>
+                        <li>
+                            <a href="{{ cl.get_url }}">{{ cl.label }}</a>
+                        </li>
                     {% endfor %}
                 </ul>
             {% endif %}

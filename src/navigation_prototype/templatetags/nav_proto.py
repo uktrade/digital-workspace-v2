@@ -2,6 +2,7 @@ from django import template
 
 from navigation_prototype.models import Nav
 
+
 register = template.Library()
 
 

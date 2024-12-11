@@ -14,6 +14,7 @@ class Nav(ClusterableModel):
         InlinePanel("links", label="Links", min_num=1),
     ]
 
+
 class NavLinkBase(Orderable):
     label = models.CharField(max_length=255)
     url = models.URLField(null=True, blank=True)
@@ -54,7 +55,8 @@ class PrimaryNavLink(ClusterableModel, NavLinkBase):
         InlinePanel("child_links", label="Sub links"),
     ]
 
-class SecondaryNavLink(NavLinkBase):    
+
+class SecondaryNavLink(NavLinkBase):
     parent_link = ParentalKey(
         "PrimaryNavLink",
         on_delete=models.PROTECT,
