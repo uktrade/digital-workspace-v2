@@ -1,6 +1,6 @@
 {% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
-{% load feedback %}
+{% load template_renderer %}
 
 {% block bookmark %}
 {% endblock bookmark %}
@@ -39,5 +39,8 @@
 {% endblock %}
 
 {% block secondary_content %}
-    {% feedback_sidebar %}
+    {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
+    {% for template in secondary_page_templates %}
+        {% include template.template_name with title=template.title description=template.description %}
+    {% endfor %}
 {% endblock secondary_content %}

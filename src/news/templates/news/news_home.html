@@ -2,7 +2,7 @@
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% load cards %}
-{% load feedback %}
+{% load template_renderer %}
 
 {% block bookmark %}
 {% endblock bookmark %}
@@ -19,5 +19,8 @@
 
 {% block secondary_content %}
     {% comment %} {% include "news/includes/news_categories.html" %} {% endcomment %}
-    {% feedback_sidebar %}
+    {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
+    {% for template in secondary_page_templates %}
+        {% include template.template_name with title=template.title description=template.description %}
+    {% endfor %}
 {% endblock secondary_content %}

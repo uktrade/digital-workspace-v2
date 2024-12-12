@@ -1,7 +1,7 @@
 {% extends "dwds_content.html" %}
 
 {% load markdown %}
-{% load feedback %}
+{% load template_renderer %}
 
 {% block title %}
     {{ page_title }}
@@ -110,5 +110,8 @@
 {% endblock primary_content %}
 
 {% block secondary_content %}
-    {% feedback_sidebar %}
+    {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
+    {% for template in secondary_page_templates %}
+        {% include template.template_name with title=template.title description=template.description %}
+    {% endfor %}
 {% endblock secondary_content %}

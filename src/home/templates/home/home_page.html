@@ -5,7 +5,7 @@
 {% load wagtailimages_tags %}
 {% load site_alert %}
 {% load cards %}
-{% load feedback %}
+{% load template_renderer %}
 
 {% block pre_main %}
     {{ block.super }}
@@ -94,7 +94,10 @@
                     {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
                 </div>
             {% endif %}
-            {% feedback_sidebar %}
+            {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
+            {% for template in secondary_page_templates %}
+                {% include template.template_name with title=template.title description=template.description %}
+            {% endfor %}
         </section>
     </article>
 {% endblock secondary_content %}
