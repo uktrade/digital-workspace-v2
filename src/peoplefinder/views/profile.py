@@ -117,7 +117,6 @@ class ProfileDetailView(ProfileView, DetailView):
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
 
-        context["is_users_profile"] = bool(self.request.user == profile.user)
         context["roles"] = roles
         context["title"] = profile.full_name
 
