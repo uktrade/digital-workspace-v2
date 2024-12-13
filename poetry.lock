@@ -1219,17 +1219,17 @@ files = [
 
 [[package]]
 name = "django-log-formatter-asim"
-version = "0.0.4"
+version = "0.0.6"
 description = "Formats Django logs in ASIM format."
 optional = false
-python-versions = ">=3.9,<4"
+python-versions = "<4,>=3.9"
 files = [
-    {file = "django_log_formatter_asim-0.0.4-py3-none-any.whl", hash = "sha256:7e4c00b4367d0143b34d341ebea6da4bc3057d2055ba29f25666ff85cf939fd3"},
-    {file = "django_log_formatter_asim-0.0.4.tar.gz", hash = "sha256:37c46a02a1e01b6837b10b399a0ea4eab4a9c4a8f1801c9fde43ee4d1045afe4"},
+    {file = "django_log_formatter_asim-0.0.6-py3-none-any.whl", hash = "sha256:00923cb95b599082d94895af1333d1bb8fce05a3d742dd571d32b7e0e480ead3"},
+    {file = "django_log_formatter_asim-0.0.6.tar.gz", hash = "sha256:ba35df7a8c5f5bad2e006b55dea8e339ef82f7476a93e6cae4d2bbea12938c2b"},
 ]
 
 [package.dependencies]
-django = ">=3,<5"
+django = {version = ">=3,<6", markers = "python_version >= \"3.10\" and python_version < \"4\""}
 pre-commit = ">=3.5.0,<4.0.0"
 
 [[package]]
@@ -4371,4 +4371,4 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "112c9a9b17f1f372058f7bb371ee81d0a64056031201462a9e37762ad7bf566c"
+content-hash = "0d13624e8e56727b190ed14d1eeb1514508f1440a19e7631c5a02021ea4dc2c0"
