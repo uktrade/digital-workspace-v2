@@ -11,11 +11,9 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from config import settings
 from content.models import BasePage, ContentPage
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import settings_singleton
-from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from search.templatetags import search as search_template_tag
 from search.utils import (
