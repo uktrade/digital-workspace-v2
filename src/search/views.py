@@ -191,7 +191,7 @@ def export_search(request: HttpRequest, category: str) -> HttpResponse:
         },
     }
     export_mapping = None
-    for k, v in SEARCH_EXPORT_MAPPINGS:
+    for k, v in SEARCH_EXPORT_MAPPINGS.items():
         if issubclass(search_model, k):
             export_mapping = v
 
