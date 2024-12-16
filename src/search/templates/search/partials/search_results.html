@@ -19,7 +19,7 @@
 </div>
 
 {% if perms.extended_search.export_search %}
-    <a href="{% url 'search:export_search' search_category %}?query={{ search_query }}">Export to CSV</a>
+    <a class="govuk-link" href="{% url 'search:export_search' search_category %}?query={{ search_query }}">Download search results</a>
 {% endif %}
 
 <script>

@@ -278,8 +278,13 @@ def get_content_author(page) -> dict:
             content_author["name"] = page.get_first_publisher().get_full_name()
             content_author["email"] = page.get_first_publisher().email
     else:
-        content_author["name"] = page.get_latest_revision().user.get_full_name()
-        content_author["email"] = page.get_latest_revision().user.email
+        latest_revision_user = page.get_latest_revision().user
+        if latest_revision_user:
+            content_author["name"] = latest_revision_user.get_full_name()
+            content_author["email"] = latest_revision_user.email
+        else:
+            content_author["name"] = ""
+            content_author["email"] = ""
     return content_author
 
 
