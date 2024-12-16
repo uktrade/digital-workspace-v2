@@ -8,9 +8,9 @@ register = template.Library()
 
 @register.inclusion_tag("navigation_prototype/navigation.html")
 def nav_proto():
-    try:
-        nav = Nav.objects.first()
-    except Nav.DoesNotExist:
+    nav = Nav.objects.first()
+
+    if not nav:
         return {}
 
     return {
