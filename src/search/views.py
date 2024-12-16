@@ -4,6 +4,7 @@ import logging
 import sentry_sdk
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.db import models
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -17,7 +18,12 @@ from extended_search.settings import settings_singleton
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
 from search.templatetags import search as search_template_tag
-from search.utils import get_query_info_for_model
+from search.utils import (
+    get_page_export_row,
+    get_person_export_row,
+    get_query_info_for_model,
+    get_team_export_row,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -153,29 +159,9 @@ def export_search(request: HttpRequest, category: str) -> HttpResponse:
     search_results = search_vector.search(query)
     search_model = search_vector.model
 
-    def build_search_export_csv_response(
-        request: HttpRequest, category, search_model, search_results
-    ) -> HttpResponse:
-        header = build_export_search_csv_header(search_model)
-
-        if issubclass(search_model, BasePage):
-            return build_page_export_csv_response(
-                request, category, header, search_results
-            )
-
-        if issubclass(search_model, Person):
-            return build_people_export_csv_response(
-                request, category, header, search_results
-            )
-
-        if issubclass(search_model, Team):
-            return build_teams_export_csv_response(
-                request, category, header, search_results
-            )
-
-    def build_export_search_csv_header(search_model) -> list[str]:
-        if issubclass(search_model, BasePage):
-            return [
+    SEARCH_EXPORT_MAPPINGS: dict[models.Model, dict] = {
+        BasePage: {
+            "header": [
                 "Title",
                 "URL",
                 "Edit-URL",
@@ -186,130 +172,46 @@ def export_search(request: HttpRequest, category: str) -> HttpResponse:
                 "First-Published",
                 "Last-Updated",
                 "Page-Type",
-            ]
-
-        if issubclass(search_model, Person):
-            return [
+            ],
+            "item_to_row_function": get_page_export_row,
+        },
+        Person: {
+            "header": [
                 "Name",
                 "Email",
                 "Phone",
                 "Profile-URL",
                 "Roles{'Job-Title':'Team-Name'}",
-            ]
+            ],
+            "item_to_row_function": get_person_export_row,
+        },
+        Team: {
+            "header": ["Title", "URL", "Edit-URL"],
+            "item_to_row_function": get_team_export_row,
+        },
+    }
+    export_mapping = None
+    for k, v in SEARCH_EXPORT_MAPPINGS:
+        if issubclass(search_model, k):
+            export_mapping = v
 
-        if issubclass(search_model, Team):
-            return [
-                "Title",
-                "URL",
-                "Edit-URL",
-            ]
-
-    def build_search_export_response_header(category: str) -> HttpResponse:
-        filename = f"search_export_{category}.csv"
-        response = HttpResponse(
-            content_type="text/csv",
-            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    if not export_mapping:
+        raise TypeError(
+            f"'{search_model}' is not a model that is configured for export"
         )
-        return response
 
-    def build_page_export_csv_response(
-        request, category, header, search_results
-    ) -> HttpResponse:
-        response = build_search_export_response_header(category)
-        base_url = get_base_url(request)
-
-        writer = csv.writer(response)
-        writer.writerow(header)
-
-        for result in search_results:
-            content_owner = get_content_owner(result)
-            content_author = get_content_author(result)
-            row = [
-                result.title,
-                result.get_full_url(),
-                get_edit_page_url(base_url, result),
-                content_owner["name"],
-                content_owner["email"],
-                content_author["name"],
-                content_author["email"],
-                result.first_published_at,
-                result.last_published_at,
-                type(result).__name__,
-            ]
-            writer.writerow(row)
-        return response
-
-    def get_base_url(request: HttpRequest) -> str:
-        return f"{request.scheme}://{request.get_host()}"
-
-    def get_edit_page_url(base_url, page) -> str:
-        return f"{base_url}{reverse('wagtailadmin_pages:edit', args=[page.id])}"
-
-    def get_content_owner(page) -> dict:
-        content_owner = {}
-        if hasattr(page, "content_owner"):
-            content_owner["name"] = page.content_owner.full_name
-            content_owner["email"] = page.content_owner.email
-        else:
-            content_owner["name"] = ""
-            content_owner["email"] = ""
-        return content_owner
-
-    def get_content_author(page) -> dict:
-        content_author = {}
-        perm_sec_as_author = (
-            page.perm_sec_as_author if hasattr(page, "perm_sec_as_author") else False
-        )
-        if perm_sec_as_author:
-            content_author["name"] = settings.PERM_SEC_NAME
-            content_author["email"] = ""
-        elif issubclass(page.__class__, NewsPage):
-            if hasattr(page, "get_first_publisher"):
-                content_author["name"] = page.get_first_publisher().get_full_name()
-                content_author["email"] = page.get_first_publisher().email
-        else:
-            content_author["name"] = page.get_latest_revision().user.get_full_name()
-            content_author["email"] = page.get_latest_revision().user.email
-        return content_author
-
-    def build_people_export_csv_response(
-        request, category, header, search_results
-    ) -> HttpResponse:
-        response = build_search_export_response_header(category)
-        base_url = get_base_url(request)
-
-        writer = csv.writer(response)
-        writer.writerow(header)
-
-        for result in search_results:
-            row = [
-                f"{result.first_name} {result.last_name}",
-                result.email,
-                result.primary_phone_number,
-                f"{base_url}{result.get_absolute_url()}",
-                {role.job_title: role.team.name for role in result.roles.all()},
-            ]
-            writer.writerow(row)
-        return response
-
-    def build_teams_export_csv_response(
-        request, category, header, search_results
-    ) -> HttpResponse:
-        response = build_search_export_response_header(category)
-        base_url = get_base_url(request)
-
-        writer = csv.writer(response)
-        writer.writerow(header)
-
-        for result in search_results:
-            row = [
-                result.name,
-                f"{base_url}{result.get_absolute_url()}",
-                f"{base_url}{result.get_absolute_url()}edit",
-            ]
-            writer.writerow(row)
-        return response
-
-    return build_search_export_csv_response(
-        request, category, search_model, search_results
+    filename = f"search_export_{category}.csv"
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+    base_url = f"{request.scheme}://{request.get_host()}"
+
+    writer = csv.writer(response)
+    writer.writerow(export_mapping["header"])
+
+    for result in search_results:
+        row = export_mapping["item_to_row_function"](result, base_url)
+        writer.writerow(row)
+
+    return response
