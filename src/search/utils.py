@@ -1,18 +1,21 @@
 import re
 import unicodedata
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from django.conf import settings
 from django.urls import reverse
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
 
-from content.models import BasePage
 from extended_search import settings as search_settings
 from extended_search.index import Indexed
 from extended_search.query import Nested, OnlyFields
 from extended_search.query_builder import CustomQueryBuilder
 from news.models import NewsPage
-from peoplefinder.models import Person, Team
+
+
+if TYPE_CHECKING:
+    from content.models import BasePage
+    from peoplefinder.models import Person, Team
 
 
 def sanitize_search_query(query: Optional[str] = None) -> str:
@@ -280,7 +283,7 @@ def get_content_author(page) -> dict:
     return content_author
 
 
-def get_page_export_row(page_result: BasePage, base_url: str) -> list[str]:
+def get_page_export_row(page_result: "BasePage", base_url: str) -> list[str]:
     content_owner = get_content_owner(page_result)
     content_author = get_content_author(page_result)
     return [
@@ -297,7 +300,7 @@ def get_page_export_row(page_result: BasePage, base_url: str) -> list[str]:
     ]
 
 
-def get_person_export_row(person_result: Person, base_url: str) -> list[str]:
+def get_person_export_row(person_result: "Person", base_url: str) -> list[str]:
     return [
         f"{person_result.first_name} {person_result.last_name}",
         person_result.email,
@@ -307,7 +310,7 @@ def get_person_export_row(person_result: Person, base_url: str) -> list[str]:
     ]
 
 
-def get_team_export_row(team_result: Team, base_url: str) -> list[str]:
+def get_team_export_row(team_result: "Team", base_url: str) -> list[str]:
     return [
         team_result.name,
         f"{base_url}{team_result.get_absolute_url()}",

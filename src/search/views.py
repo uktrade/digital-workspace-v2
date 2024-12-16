@@ -16,12 +16,6 @@ from extended_search.models import Setting as SearchSetting
 from extended_search.settings import settings_singleton
 from peoplefinder.models import Person, Team
 from search.templatetags import search as search_template_tag
-from search.utils import (
-    get_page_export_row,
-    get_person_export_row,
-    get_query_info_for_model,
-    get_team_export_row,
-)
 
 
 logger = logging.getLogger(__name__)
@@ -108,6 +102,8 @@ def explore(request: HttpRequest) -> HttpResponse:
     """
     Administrative view for exploring search options, boosts, etc
     """
+    from search.utils import get_query_info_for_model
+
     if request.method == "POST":
         if not request.user.has_perm("extended_search.change_setting"):
             messages.error(request, "You are not authorised to edit settings")
@@ -150,6 +146,12 @@ def export_search(request: HttpRequest, category: str) -> HttpResponse:
     """
     Administrative view for exporting search results as csv
     """
+    from search.utils import (
+        get_page_export_row,
+        get_person_export_row,
+        get_team_export_row,
+    )
+
     query = request.GET.get("query", "")
     if category == "all":
         category = "all_pages"
