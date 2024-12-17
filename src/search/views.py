@@ -194,6 +194,7 @@ def export_search(request: HttpRequest, category: str) -> HttpResponse:
     for k, v in SEARCH_EXPORT_MAPPINGS.items():
         if issubclass(search_model, k):
             export_mapping = v
+            break
 
     if not export_mapping:
         raise TypeError(
@@ -205,13 +206,12 @@ def export_search(request: HttpRequest, category: str) -> HttpResponse:
         content_type="text/csv",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
-    base_url = f"{request.scheme}://{request.get_host()}"
 
     writer = csv.writer(response)
     writer.writerow(export_mapping["header"])
 
     for result in search_results:
-        row = export_mapping["item_to_row_function"](result, base_url)
+        row = export_mapping["item_to_row_function"](result, request)
         writer.writerow(row)
 
     return response

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Optional
 from django.conf import settings
 from django.urls import reverse
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
+from django.http import HttpRequest, HttpResponse
 
 from extended_search import settings as search_settings
 from extended_search.index import Indexed
@@ -250,51 +251,49 @@ def has_only_bad_results(query, category, pinned_results, search_results):
 #
 
 
-def get_edit_page_url(base_url, page) -> str:
-    return f"{base_url}{reverse('wagtailadmin_pages:edit', args=[page.id])}"
-
-
 def get_content_owner(page) -> dict:
-    content_owner = {}
-    if hasattr(page, "content_owner"):
-        content_owner["name"] = page.content_owner.full_name
-        content_owner["email"] = page.content_owner.email
-    else:
-        content_owner["name"] = ""
-        content_owner["email"] = ""
+    content_owner = {
+        "name": "",
+        "email": "",
+    }
+    if page_content_owner := getattr(page, "content_owner", None):
+        content_owner["name"] = page_content_owner.full_name
+        content_owner["email"] = page_content_owner.email
     return content_owner
 
 
 def get_content_author(page) -> dict:
-    content_author = {}
+    content_author = {
+        "name": "",
+        "email": "",
+    }
     perm_sec_as_author = (
         page.perm_sec_as_author if hasattr(page, "perm_sec_as_author") else False
     )
     if perm_sec_as_author:
         content_author["name"] = settings.PERM_SEC_NAME
-        content_author["email"] = ""
-    elif issubclass(page.__class__, NewsPage):
-        if hasattr(page, "get_first_publisher"):
-            content_author["name"] = page.get_first_publisher().get_full_name()
-            content_author["email"] = page.get_first_publisher().email
-    else:
-        latest_revision_user = page.get_latest_revision().user
-        if latest_revision_user:
-            content_author["name"] = latest_revision_user.get_full_name()
-            content_author["email"] = latest_revision_user.email
-        else:
-            content_author["name"] = ""
-            content_author["email"] = ""
+        return content_author
+    
+    if issubclass(page.__class__, NewsPage) and hasattr(page, "get_first_publisher"):
+        first_publisher = page.get_first_publisher()
+        content_author["name"] = first_publisher.get_full_name()
+        content_author["email"] = first_publisher.email
+        return content_author
+    
+    latest_revision_user = page.get_latest_revision().user
+    if latest_revision_user:
+        content_author["name"] = latest_revision_user.get_full_name()
+        content_author["email"] = latest_revision_user.email
     return content_author
 
 
-def get_page_export_row(page_result: "BasePage", base_url: str) -> list[str]:
+def get_page_export_row(page_result: "BasePage", request: HttpRequest) -> list[str]:
     content_owner = get_content_owner(page_result)
     content_author = get_content_author(page_result)
     return [
         page_result.title,
-        page_result.get_full_url(),
-        get_edit_page_url(base_url, page_result),
+        request.build_absolute_uri(page_result.get_url()),
+        request.build_absolute_uri(reverse('wagtailadmin_pages:edit', args=[page_result.id])),
         content_owner["name"],
         content_owner["email"],
         content_author["name"],
@@ -305,19 +304,19 @@ def get_page_export_row(page_result: "BasePage", base_url: str) -> list[str]:
     ]
 
 
-def get_person_export_row(person_result: "Person", base_url: str) -> list[str]:
+def get_person_export_row(person_result: "Person", request: HttpRequest) -> list[str]:
     return [
         f"{person_result.first_name} {person_result.last_name}",
         person_result.email,
         person_result.primary_phone_number,
-        f"{base_url}{person_result.get_absolute_url()}",
+        request.build_absolute_uri(person_result.get_absolute_url()),
         {role.job_title: role.team.name for role in person_result.roles.all()},
     ]
 
 
-def get_team_export_row(team_result: "Team", base_url: str) -> list[str]:
+def get_team_export_row(team_result: "Team", request: HttpRequest) -> list[str]:
     return [
         team_result.name,
-        f"{base_url}{team_result.get_absolute_url()}",
-        f"{base_url}{team_result.get_absolute_url()}edit",
+        request.build_absolute_uri(team_result.get_absolute_url()),
+        request.build_absolute_uri(reverse('team-edit', args=[team_result.slug])),
     ]
