@@ -303,7 +303,8 @@ def get_page_export_row(page_result: "BasePage", request: HttpRequest) -> list[s
 
 def get_person_export_row(person_result: "Person", request: HttpRequest) -> list[str]:
     return [
-        f"{person_result.first_name} {person_result.last_name}",
+        person_result.first_name,
+        person_result.last_name,
         person_result.email,
         person_result.primary_phone_number,
         request.build_absolute_uri(person_result.get_absolute_url()),
