@@ -252,14 +252,11 @@ def has_only_bad_results(query, category, pinned_results, search_results):
 
 
 def get_content_owner(page) -> dict:
-    content_owner = {
-        "name": "",
-        "email": "",
+    page_content_owner = getattr(page, "content_owner", None)
+    return {
+        "name": page_content_owner.full_name if page_content_owner else "",
+        "email": page_content_owner.email if page_content_owner else "",
     }
-    if page_content_owner := getattr(page, "content_owner", None):
-        content_owner["name"] = page_content_owner.full_name
-        content_owner["email"] = page_content_owner.email
-    return content_owner
 
 
 def get_content_author(page) -> dict:

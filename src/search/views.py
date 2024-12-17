@@ -154,8 +154,10 @@ def export_search(request: HttpRequest, category: str) -> HttpResponse:
 
     query = request.GET.get("query", "")
     if category == "all":
-        category = "all_pages"
-    search_vector = search_template_tag.SEARCH_VECTORS[category](request)
+        search_vector = search_template_tag.SEARCH_VECTORS["all_pages"](request)
+    else:
+        search_vector = search_template_tag.SEARCH_VECTORS[category](request)
+
     search_results = search_vector.search(query)
     search_model = search_vector.model
 
