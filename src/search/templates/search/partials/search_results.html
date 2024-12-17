@@ -18,6 +18,11 @@
     {% endif %}
 </div>
 
+{% if perms.extended_search.export_search %}
+    <a class="govuk-link"
+       href="{% url 'search:export_search' search_category %}?query={{ search_query }}">Download search results</a>
+{% endif %}
+
 <script>
     function searchFeedbackData(formData) {
         const searchData = JSON.parse(formData.get("search_data") || {});
