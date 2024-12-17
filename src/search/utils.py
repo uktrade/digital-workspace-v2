@@ -3,15 +3,18 @@ import unicodedata
 from typing import TYPE_CHECKING, Optional
 
 from django.conf import settings
+from django.db import models
+from django.http import HttpRequest
 from django.urls import reverse
 from wagtail.search.query import Fuzzy, Or, Phrase, PlainText
-from django.http import HttpRequest, HttpResponse
 
+from content.models import BasePage
 from extended_search import settings as search_settings
 from extended_search.index import Indexed
 from extended_search.query import Nested, OnlyFields
 from extended_search.query_builder import CustomQueryBuilder
 from news.models import NewsPage
+from peoplefinder.models import Person, Team
 
 
 if TYPE_CHECKING:
@@ -270,13 +273,13 @@ def get_content_author(page) -> dict:
     if perm_sec_as_author:
         content_author["name"] = settings.PERM_SEC_NAME
         return content_author
-    
+
     if issubclass(page.__class__, NewsPage) and hasattr(page, "get_first_publisher"):
         first_publisher = page.get_first_publisher()
         content_author["name"] = first_publisher.get_full_name()
         content_author["email"] = first_publisher.email
         return content_author
-    
+
     latest_revision_user = page.get_latest_revision().user
     if latest_revision_user:
         content_author["name"] = latest_revision_user.get_full_name()
@@ -290,7 +293,9 @@ def get_page_export_row(page_result: "BasePage", request: HttpRequest) -> list[s
     return [
         page_result.title,
         request.build_absolute_uri(page_result.get_url()),
-        request.build_absolute_uri(reverse('wagtailadmin_pages:edit', args=[page_result.id])),
+        request.build_absolute_uri(
+            reverse("wagtailadmin_pages:edit", args=[page_result.id])
+        ),
         content_owner["name"],
         content_owner["email"],
         content_author["name"],
@@ -316,5 +321,39 @@ def get_team_export_row(team_result: "Team", request: HttpRequest) -> list[str]:
     return [
         team_result.name,
         request.build_absolute_uri(team_result.get_absolute_url()),
-        request.build_absolute_uri(reverse('team-edit', args=[team_result.slug])),
+        request.build_absolute_uri(reverse("team-edit", args=[team_result.slug])),
     ]
+
+
+SEARCH_EXPORT_MAPPINGS: dict[models.Model, dict] = {
+    BasePage: {
+        "header": [
+            "Title",
+            "URL",
+            "Edit URL",
+            "Content Owner Name",
+            "Content Owner Email",
+            "Content Author Name",
+            "Content Author Email",
+            "First Published",
+            "Last Updated",
+            "Page Type",
+        ],
+        "item_to_row_function": get_page_export_row,
+    },
+    Person: {
+        "header": [
+            "First Name",
+            "Last Name",
+            "Email",
+            "Phone",
+            "Profile URL",
+            "Roles {'Job Title': 'Team Name'}",
+        ],
+        "item_to_row_function": get_person_export_row,
+    },
+    Team: {
+        "header": ["Title", "URL", "Edit URL"],
+        "item_to_row_function": get_team_export_row,
+    },
+}

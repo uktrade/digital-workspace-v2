@@ -4,14 +4,13 @@ import logging
 import sentry_sdk
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
-from django.db import models
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from content.models import BasePage, ContentPage
+from content.models import ContentPage
 from extended_search.models import Setting as SearchSetting
 from extended_search.settings import settings_singleton
 from peoplefinder.models import Person, Team
@@ -146,11 +145,7 @@ def export_search(request: HttpRequest, category: str) -> HttpResponse:
     """
     Administrative view for exporting search results as csv
     """
-    from search.utils import (
-        get_page_export_row,
-        get_person_export_row,
-        get_team_export_row,
-    )
+    from search.utils import SEARCH_EXPORT_MAPPINGS
 
     query = request.GET.get("query", "")
     if category == "all":
@@ -161,38 +156,6 @@ def export_search(request: HttpRequest, category: str) -> HttpResponse:
     search_results = search_vector.search(query)
     search_model = search_vector.model
 
-    SEARCH_EXPORT_MAPPINGS: dict[models.Model, dict] = {
-        BasePage: {
-            "header": [
-                "Title",
-                "URL",
-                "Edit URL",
-                "Content Owner Name",
-                "Content Owner Email",
-                "Content Author Name",
-                "Content Author Email",
-                "First Published",
-                "Last Updated",
-                "Page Type",
-            ],
-            "item_to_row_function": get_page_export_row,
-        },
-        Person: {
-            "header": [
-                "First Name",
-                "Last Name",
-                "Email",
-                "Phone",
-                "Profile URL",
-                "Roles {'Job Title': 'Team Name'}",
-            ],
-            "item_to_row_function": get_person_export_row,
-        },
-        Team: {
-            "header": ["Title", "URL", "Edit URL"],
-            "item_to_row_function": get_team_export_row,
-        },
-    }
     export_mapping = None
     for k, v in SEARCH_EXPORT_MAPPINGS.items():
         if issubclass(search_model, k):
