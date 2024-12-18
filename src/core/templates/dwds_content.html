@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load bookmarks %}
 {% load static %}
+{% load template_renderer %}
 
 {% block body_classes %}dwds-body{% endblock %}
 
@@ -41,6 +42,10 @@
                         {% block pre_secondary_content %}
                         {% endblock pre_secondary_content %}
                         {% block secondary_content %}
+                            {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
+                            {% for template in secondary_page_templates %}
+                                {% include template.template_name with title=template.title description=template.description %}
+                            {% endfor %}
                         {% endblock secondary_content %}
                         {% block post_secondary_content %}
                         {% endblock post_secondary_content %}

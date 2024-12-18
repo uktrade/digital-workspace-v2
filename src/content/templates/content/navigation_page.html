@@ -1,5 +1,6 @@
 {% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
+{% load template_renderer %}
 
 {% block primary_content_classes %}
     content-stack large
@@ -30,6 +31,10 @@
             <div class="dwds-content-item-card no-shadow">{% include_block block %}</div>
         {% endfor %}
     </div>
+    {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
+    {% for template in secondary_page_templates %}
+        {% include template.template_name with title=template.title description=template.description %}
+    {% endfor %}
 {% endblock secondary_content %}
 
 {% block scripts %}

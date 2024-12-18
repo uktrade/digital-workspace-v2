@@ -1,6 +1,5 @@
 {% extends "dwds_content.html" %}
 {% load wagtailcore_tags bookmarks %}
-{% load template_renderer %}
 
 {% block primary_content %}
     {% if attribution %}
@@ -21,10 +20,3 @@
     {% endif %}
     {{ block.super }}
 {% endblock post_primary_content %}
-
-{% block secondary_content %}
-    {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
-    {% for template in secondary_page_templates %}
-        {% include template.template_name with title=template.title description=template.description %}
-    {% endfor %}
-{% endblock secondary_content %}
