@@ -1,5 +1,6 @@
 {% extends "dwds_content.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
+{% load template_renderer %}
 
 {% block primary_content %}
     <div class="content-stack">
@@ -109,4 +110,8 @@
 
 {% block secondary_content %}
     {% include "news/includes/news_categories.html" %}
+    {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
+    {% for template in secondary_page_templates %}
+        {% include template.template_name with title=template.title description=template.description %}
+    {% endfor %}
 {% endblock secondary_content %}
