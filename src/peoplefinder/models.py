@@ -840,7 +840,7 @@ class Person(Indexed, models.Model):
     def get_office_location_display(self) -> str:
         if self.international_building:
             return self.international_building
-        
+
         location_parts = []
 
         if self.location_in_building:
