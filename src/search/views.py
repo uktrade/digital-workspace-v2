@@ -1,3 +1,4 @@
+import csv
 import logging
 
 import sentry_sdk
@@ -14,7 +15,6 @@ from extended_search.models import Setting as SearchSetting
 from extended_search.settings import settings_singleton
 from peoplefinder.models import Person, Team
 from search.templatetags import search as search_template_tag
-from search.utils import get_query_info_for_model
 
 
 logger = logging.getLogger(__name__)
@@ -22,6 +22,10 @@ logger = logging.getLogger(__name__)
 
 def can_view_explore():
     return user_passes_test(lambda u: u.has_perm("extended_search.view_explore"))
+
+
+def can_export_search():
+    return user_passes_test(lambda u: u.has_perm("extended_search.export_search"))
 
 
 @require_http_methods(["GET"])
@@ -58,7 +62,7 @@ def autocomplete(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(["GET"])
-def search(request: HttpRequest, category: str = None) -> HttpResponse:
+def search(request: HttpRequest, category: str | None = None) -> HttpResponse:
     query = request.GET.get("query", "")
     page = request.GET.get("page", "1")
     tab_override = request.GET.get("tab_override", False)
@@ -97,6 +101,8 @@ def explore(request: HttpRequest) -> HttpResponse:
     """
     Administrative view for exploring search options, boosts, etc
     """
+    from search.utils import get_query_info_for_model
+
     if request.method == "POST":
         if not request.user.has_perm("extended_search.change_setting"):
             messages.error(request, "You are not authorised to edit settings")
@@ -132,3 +138,46 @@ def explore(request: HttpRequest) -> HttpResponse:
     }
 
     return TemplateResponse(request, "search/explore.html", context=context)
+
+
+@can_export_search()
+def export_search(request: HttpRequest, category: str) -> HttpResponse:
+    """
+    Administrative view for exporting search results as csv
+    """
+    from search.utils import SEARCH_EXPORT_MAPPINGS
+
+    query = request.GET.get("query", "")
+    if category == "all":
+        search_vector = search_template_tag.SEARCH_VECTORS["all_pages"](request)
+    else:
+        search_vector = search_template_tag.SEARCH_VECTORS[category](request)
+
+    search_results = search_vector.search(query)
+    search_model = search_vector.model
+
+    export_mapping = None
+    for k, v in SEARCH_EXPORT_MAPPINGS.items():
+        if issubclass(search_model, k):
+            export_mapping = v
+            break
+
+    if not export_mapping:
+        raise TypeError(
+            f"'{search_model}' is not a model that is configured for export"
+        )
+
+    filename = f"search_export_{category}.csv"
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+    writer = csv.writer(response)
+    writer.writerow(export_mapping["header"])
+
+    for result in search_results:
+        row = export_mapping["item_to_row_function"](result, request)
+        writer.writerow(row)
+
+    return response
