@@ -13,7 +13,7 @@ from django.db.models.functions import Concat
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
@@ -182,6 +182,7 @@ class UkStaffLocation(IngestedModel):
     name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     organisation = models.CharField(max_length=255)
+    building_name = models.CharField(max_length=255, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -840,9 +841,20 @@ class Person(Indexed, models.Model):
         if self.international_building:
             return self.international_building
         if self.uk_office_location:
-            location_display = self.uk_office_location.name
+            location_display = (
+                self.uk_office_location.building_name
+                + "<br>"
+                + self.uk_office_location.city
+            )
             if self.location_in_building:
-                location_display += "<br>" + strip_tags(self.location_in_building)
+                location_display = (
+                    strip_tags(self.location_in_building)
+                    + "<br>"
+                    + self.uk_office_location.building_name
+                    + "<br>"
+                    + self.uk_office_location.city
+                )
+            escape(location_display)
             return mark_safe(location_display)  # noqa: S308
         return None
 
