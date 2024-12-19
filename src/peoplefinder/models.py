@@ -837,26 +837,20 @@ class Person(Indexed, models.Model):
         # "Monday, Tuesday, Wednesday, ..."
         return ", ".join(map(str, workdays))
 
-    def get_office_location_display(self) -> Optional[str]:
+    def get_office_location_display(self) -> str:
         if self.international_building:
             return self.international_building
+        
+        location_parts = []
+
+        if self.location_in_building:
+            location_parts.append(escape(strip_tags(self.location_in_building)))
+
         if self.uk_office_location:
-            location_display = (
-                self.uk_office_location.building_name
-                + "<br>"
-                + self.uk_office_location.city
-            )
-            if self.location_in_building:
-                location_display = (
-                    strip_tags(self.location_in_building)
-                    + "<br>"
-                    + self.uk_office_location.building_name
-                    + "<br>"
-                    + self.uk_office_location.city
-                )
-            escape(location_display)
-            return mark_safe(location_display)  # noqa: S308
-        return None
+            location_parts.append(self.uk_office_location.building_name)
+            location_parts.append(self.uk_office_location.city)
+
+        return mark_safe("<br>".join(location_parts))  # noqa: S308
 
     def get_manager_display(self) -> Optional[str]:
         if self.manager:
