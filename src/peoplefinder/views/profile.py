@@ -117,7 +117,6 @@ class ProfileDetailView(ProfileView, DetailView):
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
 
-        context["is_users_profile"] = bool(self.request.user == profile.user)
         context["roles"] = roles
         context["title"] = profile.full_name
 
@@ -143,9 +142,6 @@ class ProfileDetailView(ProfileView, DetailView):
                 "edited_or_confirmed_at",
             ]
 
-        # ProfileSections("skills") -> ProfileSections.SKILLS: ProfileSections()
-        # current_profile_section.value -> skills
-        # current_profile_section.label -> Skills
         profile_section_dicts = []
         for profile_section in ProfileSections:
             profile_url = reverse("profile-view", kwargs={"profile_slug": profile.slug})

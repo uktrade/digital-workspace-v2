@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import SuspiciousOperation
 from django.db import models, transaction
-from django.db.models import Avg, QuerySet
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import redirect
@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from peoplefinder.forms.team import TeamForm
-from peoplefinder.models import Person, Team, TeamMember
+from peoplefinder.models import Team, TeamMember
 from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.team import TeamService
 
@@ -54,8 +54,22 @@ class TeamDetailView(DetailView, PeoplefinderView):
         return TeamService().get_all_parent_teams(self.object)
 
     @cached_property
-    def sub_teams(self) -> QuerySet[Team]:
-        return TeamService().get_immediate_child_teams(self.object)
+    def sub_teams(self) -> list[Team]:
+        sub_teams = []
+
+        team_service = TeamService()
+        for sub_team in team_service.get_immediate_child_teams(self.object):
+            profile_completion = team_service.profile_completion(sub_team)
+            if profile_completion:
+                profile_completion_percentage = round(
+                    float(profile_completion * 100), 2
+                )
+                sub_team.profile_completion = (
+                    f"{profile_completion_percentage:g}% of profiles complete"
+                )
+            sub_teams.append(sub_team)
+
+        return sub_teams
 
     @cached_property
     def leaders(self) -> list[TeamMember]:
@@ -96,22 +110,17 @@ class TeamDetailView(DetailView, PeoplefinderView):
 
         team_service = TeamService()
 
+        if profile_completion := team_service.profile_completion(self.object):
+            profile_completion_percentage = round(float(profile_completion * 100), 2)
+            context["profile_completion"] = (
+                f"{profile_completion_percentage:g}% of profiles complete"
+            )
+
         if self.request.user.has_perm("peoplefinder.delete_team"):
             (
                 context["can_team_be_deleted"],
                 context["reasons_team_cannot_be_deleted"],
             ) = team_service.can_team_be_deleted(self.object)
-
-        if self.sub_teams:
-            # Warning: Multiple requests per sub-team. This might need optimising in the
-            # future.
-            for sub_team in self.sub_teams:
-                sub_team.avg_profile_completion = Person.active.filter(
-                    teams__in=[
-                        sub_team,
-                        *team_service.get_all_child_teams(sub_team),
-                    ]
-                ).aggregate(Avg("profile_completion"))["profile_completion__avg"]
 
         if self.request.user.has_perms(
             ["peoplefinder.change_team", "peoplefinder.view_auditlog"]
