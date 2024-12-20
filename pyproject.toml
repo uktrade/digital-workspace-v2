@@ -10,7 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 # Django
-django = "^4.2"
+django = "^5.0"
 django-environ = "^0.10.0"
 django-settings-export = "^1.2.1"
 # TODO: Set django-simple-history to the next release after 3.4.0 (when released)
@@ -22,7 +22,7 @@ crispy-forms-gds = "^0.2.6"
 # DIT Django
 django-audit-log-middleware = "^0.0.4"
 django-hawk-drf = "^1.1.0"
-django-chunk-upload-handlers = "^0.0.14"
+django-chunk-upload-handlers = "^0.0.15"
 django-feedback-govuk = "^0.2.10"
 django_log_formatter_ecs = "^0.0.5"
 django-staff-sso-client = "^4.2"
@@ -50,7 +50,6 @@ redis = "^4.5.4"
 atoma = "^0.0.17"
 bleach = "^6.0.0"
 elastic-apm = "^6.15.1"
-requests = "^2.32.0"
 boto3 = "^1.26.115"
 pyjwt = { extras = ["crypto"], version = "^2.6.0" }
 wagtail-generic-chooser = "^0.6"
