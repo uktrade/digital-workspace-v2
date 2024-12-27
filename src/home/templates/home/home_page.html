@@ -5,7 +5,7 @@
 {% load wagtailimages_tags %}
 {% load site_alert %}
 {% load cards %}
-{% load template_renderer %}
+{% load sidebar %}
 
 {% block pre_main %}
     {{ block.super }}
@@ -88,16 +88,12 @@
                     {% include 'dwds/components/banner.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
                 </div>
             {% endif %}
-            {% include 'interactions/bookmark_card.html' %}
             {% if quick_links %}
                 <div class="dwds-content-item-card">
                     {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
                 </div>
             {% endif %}
-            {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
-            {% for template in secondary_page_templates %}
-                {% include template.template_name with title=template.title description=template.description %}
-            {% endfor %}
         </section>
     </article>
+    {{ block.super }}
 {% endblock secondary_content %}

@@ -1,6 +1,6 @@
 {% extends "content/content_page.html" %}
 {% load wagtailcore_tags %}
-{% load template_renderer %}
+{% load sidebar %}
 
 {% block secondary_content %}
     {% if page_topics %}
@@ -21,8 +21,5 @@
             </div>
         </div>
     {% endif %}
-    {% render_dynamic_templates page_type="secondary_page" as secondary_page_templates %}
-    {% for template in secondary_page_templates %}
-        {% include template.template_name with title=template.title description=template.description %}
-    {% endfor %}
+    {{ block.super }}
 {% endblock secondary_content %}
