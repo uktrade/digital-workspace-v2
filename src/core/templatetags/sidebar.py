@@ -2,7 +2,8 @@ from django import template
 from django.template.loader import render_to_string
 from django.utils.safestring import SafeString
 
-from home.models import HomePage
+from core.models.models import SiteAlertBanner
+from home.models import HomePage, QuickLink
 
 
 register = template.Library()
@@ -21,7 +22,7 @@ class SidebarPart:
     def get_part_context(self):
         return {}
 
-    def render(self, *args, **kwargs) -> SafeString:
+    def render(self) -> SafeString:
         return render_to_string(self.template_name, self.get_part_context())
 
     __str__ = render
@@ -35,6 +36,23 @@ class SidebarSection:
     def __init__(self, title: str, parts: list[SidebarPart]):
         self.title = title
         self.parts = parts
+
+
+class SiteAlert(SidebarPart):
+    template_name = "tags/sidebar/site_alert.html"
+
+    def is_visible(self, *args, **kwargs):
+        page = self.context.get("self")
+        if isinstance(page, HomePage):
+            return True
+        return False
+
+    def get_part_context(self):
+        current_alert = SiteAlertBanner.objects.filter(activated=True).first()
+        return {
+            "banner_text": current_alert.banner_text,
+            "banner_link": current_alert.banner_link,
+        }
 
 
 class GiveFeedback(SidebarPart):
@@ -71,9 +89,35 @@ class YourBookmarks(SidebarPart):
         }
 
 
+class QuickLinks(SidebarPart):
+    template_name = "tags/sidebar/quick_links.html"
+
+    def is_visible(self, *args, **kwargs):
+        page = self.context.get("self")
+        if isinstance(page, HomePage):
+            return True
+        return False
+
+    def get_part_context(self):
+        request = self.context["request"]
+        return {
+            "quick_links": [
+                {
+                    "url": obj.link_to.get_url(request),
+                    "text": obj.title,
+                }
+                for obj in QuickLink.objects.all().order_by("result_weighting", "title")
+            ],
+        }
+
+
 @register.inclusion_tag("tags/sidebar.html", takes_context=True)
 def sidebar(context):
     sections: list[SidebarSection] = [
+        SidebarSection(
+            title="Alerts",
+            parts=[SiteAlert(context=context)],
+        ),
         SidebarSection(
             title="Primary page actions",
             parts=[],
@@ -81,8 +125,9 @@ def sidebar(context):
         SidebarSection(
             title="Secondary page actions",
             parts=[
-                GiveFeedback(context=context),
                 YourBookmarks(context=context),
+                QuickLinks(context=context),
+                GiveFeedback(context=context),
             ],
         ),
     ]

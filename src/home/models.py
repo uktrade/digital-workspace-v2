@@ -20,7 +20,6 @@ from wagtailorderable.models import Orderable
 
 from content.models import BasePage, ContentPage
 from core.models import fields
-from core.models.models import SiteAlertBanner
 from core.panels import FieldPanel, InlinePanel, PageSelectorPanel
 from events.models import EventPage
 from home.forms import HomePageForm
@@ -351,20 +350,6 @@ class HomePage(BasePage):
             {"url": obj.links[0].href, "text": obj.title.value} for obj in govuk_feed
         ]
         context["hide_news"] = settings.HIDE_NEWS
-
-        # Quick links
-        quick_links = QuickLink.objects.all().order_by("result_weighting", "title")
-        context["quick_links"] = [
-            {"url": obj.link_to.get_url(request), "text": obj.title}
-            for obj in quick_links
-        ]
-
-        # Personalised page list
-        context["bookmarks"] = get_bookmarks(request.user)
-
-        context["active_site_alert"] = SiteAlertBanner.objects.filter(
-            activated=True
-        ).first()
 
         return context
 
