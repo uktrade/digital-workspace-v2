@@ -156,6 +156,11 @@ HOME_EDITORS_USER_PERMISSIONS = [
     "can_change_home_page_content",
 ]
 
+SEARCH_EXPORTERS_GROUP_NAME = "Search Exporters"
+SEARCH_EXPORTERS_PERMISSIONS = [
+    "export_search",
+]
+
 
 class Command(BaseCommand):
     help = "Create page permissions"
@@ -243,6 +248,18 @@ class Command(BaseCommand):
             event_editors_group,
             EventsHome,
             EVENT_EDITORS_PAGE_PERMISSIONS,
+        )
+
+    def search_exporters_permissions(self):
+        search_exporters_group, _ = Group.objects.get_or_create(
+            name=SEARCH_EXPORTERS_GROUP_NAME
+        )
+
+        search_exporters_group.permissions.set(
+            Permission.objects.filter(
+                codename__in=SEARCH_EXPORTERS_PERMISSIONS,
+                content_type__app_label="extended_search",
+            )
         )
 
     def handle(self, *args, **options):
@@ -354,3 +371,4 @@ class Command(BaseCommand):
 
         self.home_page_permissions()
         self.event_permissions()
+        self.search_exporters_permissions()

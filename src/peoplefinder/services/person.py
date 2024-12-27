@@ -140,7 +140,6 @@ class PersonService:
                 ("get_remote_working_display", "Where I work"),
                 ("get_office_location_display", "Office location"),
                 ("usual_office_days", "Days in the office"),
-                ("location_in_building", "Location in building"),
                 ("international_building", "International location"),
                 ("get_workdays_display", "Working days"),
             ],
