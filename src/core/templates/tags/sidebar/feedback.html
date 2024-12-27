@@ -1,0 +1,12 @@
+<div class="dwds-content-item-card">
+    <script type="text/javascript">
+        function giveFeedback() {
+            event.preventDefault();
+            const feedbackElement = document.querySelector('.feedback-section details');
+            const feedbackInput = feedbackElement.querySelector('#id_trying_to');
+            feedbackElement.open = true;
+            feedbackInput.focus();
+        }
+    </script>
+    {% include "dwds/components/cta_button.html" with button_func="giveFeedback()" title=title url=team_url description=description icon="dwds/icons/feedback.html" %}
+</div>

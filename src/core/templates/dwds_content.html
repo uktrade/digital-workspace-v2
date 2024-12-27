@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load bookmarks %}
 {% load static %}
+{% load sidebar %}
 
 {% block body_classes %}dwds-body{% endblock %}
 
@@ -41,6 +42,7 @@
                         {% block pre_secondary_content %}
                         {% endblock pre_secondary_content %}
                         {% block secondary_content %}
+                            {% sidebar %}
                         {% endblock secondary_content %}
                         {% block post_secondary_content %}
                         {% endblock post_secondary_content %}
