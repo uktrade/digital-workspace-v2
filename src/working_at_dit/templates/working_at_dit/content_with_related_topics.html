@@ -3,23 +3,25 @@
 {% load sidebar %}
 
 {% block secondary_content %}
-    {% if page_topics %}
-        <div class="dwds-content-item-card no-shadow">
-            <div class="content-item">
-                <div class="content-main">
-                    <div class="content-body content-stack">
-                        <h2>Related topics</h2>
-                        <ul class="clean">
-                            {% for page_topic in page_topics %}
-                                <li>
-                                    <a href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
+    <div class="content-stack">
+        {% if page_topics %}
+            <div class="dwds-content-item-card no-shadow">
+                <div class="content-item">
+                    <div class="content-main">
+                        <div class="content-body content-stack">
+                            <h2>Related topics</h2>
+                            <ul class="clean">
+                                {% for page_topic in page_topics %}
+                                    <li>
+                                        <a href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    {% endif %}
-    {{ block.super }}
+        {% endif %}
+        {{ block.super }}
+    </div>
 {% endblock secondary_content %}

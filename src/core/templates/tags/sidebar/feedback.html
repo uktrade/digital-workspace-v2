@@ -1,11 +1,12 @@
 <div class="dwds-content-item-card">
-    <div class="dwds-sidebar-feedback">
-        <button>
-            <div>{% include "dwds/icons/feedback.html" %}</div>
-            <div>
-                <p class="feedback-title">{{ title }}</p>
-                <p class="feedback-subtitle">{{ description }}</p>
-            </div>
-        </button>
-    </div>
+    <script type="text/javascript">
+        function giveFeedback() {
+            event.preventDefault();
+            const feedbackElement = document.querySelector('.feedback-section details');
+            const feedbackInput = feedbackElement.querySelector('#id_trying_to');
+            feedbackElement.open = true;
+            feedbackInput.focus();
+        }
+    </script>
+    {% include "dwds/components/cta_button.html" with button_func="giveFeedback()" title=title url=team_url description=description icon="dwds/icons/feedback.html" %}
 </div>

@@ -30,8 +30,8 @@
         {% for block in page.secondary_elements %}
             <div class="dwds-content-item-card no-shadow">{% include_block block %}</div>
         {% endfor %}
+        {{ block.super }}
     </div>
-    {{ block.super }}
 {% endblock secondary_content %}
 
 {% block scripts %}

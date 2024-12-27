@@ -1,12 +1,18 @@
-<div class="content-main {% if highlight %}highlight{% endif %}">
-    <div class="content-body content-stack">
-        {% include 'dwds/elements/navigational_link.html' with url=url text=title %}
-        {% if description %}<p>{{ description }}</p>{% endif %}
-        {{ extra_content }}
-    </div>
-    {% if footer_text %}
-        <div class="content-footer content-stack">
-            <p>{{ footer_text }}</p>
+<div class="dwds-cta">
+    <div class="content-main {% if highlight %}highlight{% endif %}">
+        <div class="content-body content-stack">
+            {% if url %}
+                {% include 'dwds/elements/navigational_link.html' with url=url text=title %}
+            {% else %}
+                <h3>{{ title }}</h3>
+            {% endif %}
+            {% if description %}<p>{{ description }}</p>{% endif %}
+            {{ extra_content }}
         </div>
-    {% endif %}
+        {% if footer_text %}
+            <div class="content-footer content-stack">
+                <p>{{ footer_text }}</p>
+            </div>
+        {% endif %}
+    </div>
 </div>
