@@ -24,11 +24,6 @@ urlpatterns = [
     path(
         "components/",
         views.dwds_templates("components"),
-        name="dwds-components-new",
-    ),
-    path(
-        "components/content/",
-        views.dwds_templates("components_content"),
-        name="dwds-components-content",
+        name="dwds-components",
     ),
 ]

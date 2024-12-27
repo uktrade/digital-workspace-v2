@@ -13,6 +13,7 @@ from dw_design_system.utils import (
 
 def styles(request: HttpRequest) -> HttpResponse:
     context = {
+        "page_title": "DW Design System styles",
         "gds_colours": [
             "--gds-red",
             "--gds-yellow",
@@ -83,6 +84,7 @@ def dwds_templates(template_type):
             request,
             "dw_design_system/dwds_components.html",
             {
+                "page_title": f"DW Design System { template_type }",
                 "template_type": template_type,
                 "templates": templates,
             },
@@ -113,6 +115,7 @@ def get_dwds_template(request: HttpRequest, template_type) -> HttpResponse:
 
     context["request"] = request
     context["template_type"] = template_type
+    context["page_title"] = f"DW Design System { template_type }"
 
     return HttpResponse(
         render_component(request, template["template"], context),
@@ -150,5 +153,8 @@ def layouts(request: HttpRequest) -> HttpResponse:
     return render(
         request,
         "dw_design_system/layouts.html",
-        {"layouts": layouts},
+        {
+            "page_title": "DW Design System layouts",
+            "layouts": layouts,
+        },
     )

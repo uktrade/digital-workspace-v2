@@ -87,10 +87,22 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "CTA",
                 "template": "dwds/components/cta.html",
                 "context": {
-                    "highlight": True,
+                    "highlight": False,
                     "url": "https://www.gov.uk",
                     "title": "This is a CTA for GOV.UK",
                     "description": "This is a description for the CTA",
+                    "footer_text": "This is some footer text",
+                },
+            },
+            {
+                "name": "CTA Button",
+                "template": "dwds/components/cta_button.html",
+                "context": {
+                    "icon": "dwds/icons/feedback.html",
+                    "url": "https://www.gov.uk",
+                    "title": "This is a CTA for GOV.UK",
+                    "description": "This is a description for the CTA",
+                    "footer_text": "This is some footer text",
                 },
             },
             {

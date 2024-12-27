@@ -1,0 +1,5 @@
+{% if banner_text %}
+    <div class="dwds-content-item-card no-shadow">
+        {% include 'dwds/components/banner.html' with text=banner_text link=banner_link %}
+    </div>
+{% endif %}
