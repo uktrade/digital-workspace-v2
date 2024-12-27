@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const fbButton = document.querySelector('.dwds-sidebar-feedback button');
-    const fbElement = document.querySelector('.feedback-section details');
-    fbButton.addEventListener('click', function (event) {
+    const feedbackButton = document.querySelector('.dwds-sidebar-feedback button');
+    const feedbackElement = document.querySelector('.feedback-section details');
+    const feedbackInput = feedbackElement.querySelector('#id_trying_to');
+    feedbackButton.addEventListener('click', function (event) {
         event.preventDefault();
-        fbElement.querySelector('*').focus();
+        feedbackElement.open = true;
+        feedbackInput.focus();
     });
 });
