@@ -24,7 +24,6 @@ from core.panels import FieldPanel, InlinePanel, PageSelectorPanel
 from events.models import EventPage
 from home.forms import HomePageForm
 from home.validators import validate_home_priority_pages
-from interactions import get_bookmarks
 from news.models import NewsPage
 
 

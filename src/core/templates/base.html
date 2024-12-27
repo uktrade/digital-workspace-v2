@@ -100,9 +100,7 @@
                 {% block main_content %}
                 {% endblock main_content %}
                 {% block page_problem %}
-                    <section class="feedback-section">
-                        {% include "includes/problem_found.html" %}
-                    </section>
+                    <div class="feedback-section">{% include "includes/problem_found.html" %}</div>
                 {% endblock page_problem %}
             </main>
             {% block post_main %}
