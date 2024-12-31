@@ -16,10 +16,16 @@ class SidebarPart:
     def __init__(self, context):
         self.context = context
 
-    def is_visible(self, context) -> bool:
+    def is_visible(self) -> bool:
+        """
+        Decide if this part should be visible on the current page.
+        """
         return True
 
     def get_part_context(self):
+        """
+        Build the context to pass into the template.
+        """
         return {}
 
     def render(self) -> SafeString:
@@ -64,7 +70,7 @@ class GiveFeedback(SidebarPart):
     title = "Give feedback"
     description = "Did you find what you were looking for?"
 
-    def is_visible(self, *args, **kwargs):
+    def is_visible(self):
         page = self.context.get("self")
         if isinstance(page, HomePage):
             return False
@@ -80,7 +86,7 @@ class GiveFeedback(SidebarPart):
 class YourBookmarks(SidebarPart):
     template_name = "interactions/bookmark_card.html"
 
-    def is_visible(self, *args, **kwargs):
+    def is_visible(self):
         page = self.context.get("self")
         if isinstance(page, HomePage):
             return True
@@ -95,7 +101,7 @@ class YourBookmarks(SidebarPart):
 class QuickLinks(SidebarPart):
     template_name = "tags/sidebar/quick_links.html"
 
-    def is_visible(self, *args, **kwargs):
+    def is_visible(self):
         page = self.context.get("self")
         if isinstance(page, HomePage):
             return True
