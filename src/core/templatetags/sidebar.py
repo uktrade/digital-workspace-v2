@@ -49,10 +49,12 @@ class SiteAlert(SidebarPart):
 
     def get_part_context(self):
         current_alert = SiteAlertBanner.objects.filter(activated=True).first()
-        return {
-            "banner_text": current_alert.banner_text,
-            "banner_link": current_alert.banner_link,
-        }
+        if current_alert:
+            return {
+                "banner_text": current_alert.banner_text,
+                "banner_link": current_alert.banner_link,
+            }
+        return None
 
 
 class GiveFeedback(SidebarPart):
