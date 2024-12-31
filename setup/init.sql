@@ -5,7 +5,7 @@ CREATE TABLE dit.uk_staff_locations (
     location_code varchar(255) PRIMARY KEY,
     location_name varchar(255),
     city varchar(255),
-    organisation varchar(255)
+    organisation varchar(255),
     building_name varchar(255)
 );
 
