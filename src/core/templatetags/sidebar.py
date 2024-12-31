@@ -17,9 +17,15 @@ class SidebarPart:
         self.context = context
 
     def is_visible(self) -> bool:
+        """
+        Decide if this part should be visible on the current page.
+        """
         return True
 
     def get_part_context(self):
+        """
+        Build the context to pass into the template.
+        """
         return {}
 
     def render(self) -> SafeString:
