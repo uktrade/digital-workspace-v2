@@ -41,17 +41,20 @@ class SidebarSection:
 class SiteAlert(SidebarPart):
     template_name = "tags/sidebar/site_alert.html"
 
+    def __init__(self, context):
+        super().__init__(context)
+        self.current_alert = SiteAlertBanner.objects.filter(activated=True).first()
+
     def is_visible(self, *args, **kwargs):
         page = self.context.get("self")
-        if isinstance(page, HomePage):
+        if isinstance(page, HomePage) and self.current_alert:
             return True
         return False
 
     def get_part_context(self):
-        current_alert = SiteAlertBanner.objects.filter(activated=True).first()
         return {
-            "banner_text": current_alert.banner_text,
-            "banner_link": current_alert.banner_link,
+            "banner_text": self.current_alert.banner_text,
+            "banner_link": self.current_alert.banner_link,
         }
 
 
