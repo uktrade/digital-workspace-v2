@@ -6,6 +6,7 @@ CREATE TABLE dit.uk_staff_locations (
     location_name varchar(255),
     city varchar(255),
     organisation varchar(255)
+    building_name varchar(255)
 );
 
 INSERT INTO dit.uk_staff_locations (location_code, location_name, city, organisation, building_name)
