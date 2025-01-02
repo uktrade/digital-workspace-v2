@@ -2,7 +2,7 @@ from django import template
 from django.urls import reverse
 from wagtail.models import Page
 
-from interactions import get_bookmarks, is_page_bookmarked
+from interactions.services import bookmarks as bookmarks_service
 
 
 register = template.Library()
@@ -16,7 +16,7 @@ def bookmark_page_input(user, page):
     if not isinstance(page, Page):
         return {}
 
-    is_bookmarked = is_page_bookmarked(user, page)
+    is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
 
     return {
         "post_url": reverse("interactions:bookmark"),
@@ -28,7 +28,7 @@ def bookmark_page_input(user, page):
 
 @register.inclusion_tag("interactions/bookmark_list.html")
 def bookmark_list(user, limit: int | None = None):
-    bookmarks = get_bookmarks(user)
+    bookmarks = bookmarks_service.get_bookmarks(user)
 
     if limit:
         bookmarks = bookmarks[:limit]
