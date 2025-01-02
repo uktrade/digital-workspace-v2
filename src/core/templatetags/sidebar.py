@@ -97,6 +97,7 @@ class YourBookmarks(SidebarPart):
             "user": self.context.get("user"),
         }
 
+
 class Bookmarks(SidebarPart):
     template_name = "interactions/bookmark_wrapper.html"
 
@@ -112,6 +113,7 @@ class Bookmarks(SidebarPart):
             "page": self.context.get("self"),
             "csrf_token": self.context["csrf_token"],
         }
+
 
 class QuickLinks(SidebarPart):
     template_name = "tags/sidebar/quick_links.html"
