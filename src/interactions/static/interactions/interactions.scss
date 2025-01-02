@@ -12,11 +12,25 @@
 .bookmark-page-input {
     all: unset;
 
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: var(--s-4);
-
+    gap: var(--s-2);
     color: var(--dbt-blue);
+
+    padding: var(--s-2) var(--s0);
+    border-radius: var(--border-radius);
+    font-size: var(--s1);
+    font-weight: bold;
+    background-color: var(--color-background);
+    text-align: left;
+    margin-top: var(--s-2);
+    width: 100%;
+    box-sizing: border-box;
+
+    > span {
+        font-size: var(--s0);
+        color: var(--color-link);
+    }
 
     /* i.e. it's a response from the server and not from the initial template load */
     &[data-is-htmx="true"] .icon {

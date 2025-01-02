@@ -97,6 +97,21 @@ class YourBookmarks(SidebarPart):
             "user": self.context.get("user"),
         }
 
+class Bookmarks(SidebarPart):
+    template_name = "interactions/bookmark_wrapper.html"
+
+    def is_visible(self):
+        page = self.context.get("self")
+        if isinstance(page, HomePage):
+            return False
+        return True
+
+    def get_part_context(self):
+        return {
+            "user": self.context.get("user"),
+            "page": self.context.get("self"),
+            "csrf_token": self.context["csrf_token"],
+        }
 
 class QuickLinks(SidebarPart):
     template_name = "tags/sidebar/quick_links.html"
@@ -129,7 +144,9 @@ def sidebar(context):
         ),
         SidebarSection(
             title="Primary page actions",
-            parts=[],
+            parts=[
+                Bookmarks(context=context),
+            ],
         ),
         SidebarSection(
             title="Secondary page actions",
