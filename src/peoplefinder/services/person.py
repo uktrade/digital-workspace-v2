@@ -330,6 +330,9 @@ class PersonService:
         person.is_active = False
         person.became_inactive = timezone.now()
         person.save()
+        if person.user:
+            person.user.is_active = False
+            person.user.save()
 
         AuditLogService().log(AuditLog.Action.DELETE, deleted_by, person)
 
