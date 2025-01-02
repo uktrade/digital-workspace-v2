@@ -3,9 +3,6 @@
 {% load wagtailimages_tags %}
 {% load cards %}
 
-{% block bookmark %}
-{% endblock bookmark %}
-
 {% block primary_content %}
     {% for news_item in posts %}
         {% page_to_engagement news_item hide_updated=True %}
