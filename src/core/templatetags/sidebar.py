@@ -15,9 +15,6 @@ class SidebarPart:
     template_name: str
     context: dict
 
-    def __init__(self, context):
-        self.context = context
-
     def is_visible(self) -> bool:
         """
         Decide if this part should be visible on the current page.
@@ -40,17 +37,51 @@ class SidebarPart:
 class SidebarSection:
     title: str
     parts: list[SidebarPart] = []
+    context: dict
+    template_name: str = "tags/sidebar/sections/base.html"
 
-    def __init__(self, title: str, parts: list[SidebarPart]):
+    def __init__(
+        self,
+        title: str,
+        parts: list[SidebarPart],
+        context: dict,
+        template_name: str | None = None,
+    ):
         self.title = title
         self.parts = parts
+        self.context = context
+
+        for part in self.parts:
+            part.context = context
+
+        if template_name:
+            self.template_name = template_name
+
+    def is_visible(self) -> bool:
+        """
+        Decide if this section should be visible on the current page.
+        """
+        return any(part.is_visible() for part in self.parts)
+
+    def get_section_context(self):
+        """
+        Build the context to pass into the template.
+        """
+        return {
+            "parts": [part for part in self.parts if part.is_visible()],
+        }
+
+    def render(self) -> SafeString:
+        return render_to_string(self.template_name, self.get_section_context())
+
+    __str__ = render
+    __html__ = render
 
 
 class SiteAlert(SidebarPart):
-    template_name = "tags/sidebar/site_alert.html"
+    template_name = "tags/sidebar/parts/site_alert.html"
 
-    def __init__(self, context):
-        super().__init__(context)
+    def __init__(self):
         self.current_alert = SiteAlertBanner.objects.filter(activated=True).first()
 
     def is_visible(self, *args, **kwargs):
@@ -67,7 +98,7 @@ class SiteAlert(SidebarPart):
 
 
 class GiveFeedback(SidebarPart):
-    template_name = "tags/sidebar/feedback.html"
+    template_name = "tags/sidebar/parts/feedback.html"
 
     title = "Give feedback"
     description = "Did you find what you were looking for?"
@@ -101,7 +132,7 @@ class YourBookmarks(SidebarPart):
 
 
 class Bookmarks(SidebarPart):
-    template_name = "interactions/bookmark_page_input.html"
+    template_name = "tags/sidebar/parts/bookmark.html"
 
     def is_visible(self):
         page = self.context.get("self")
@@ -124,7 +155,7 @@ class Bookmarks(SidebarPart):
 
 
 class QuickLinks(SidebarPart):
-    template_name = "tags/sidebar/quick_links.html"
+    template_name = "tags/sidebar/parts/quick_links.html"
 
     def is_visible(self):
         page = self.context.get("self")
@@ -150,21 +181,25 @@ def sidebar(context):
     sections: list[SidebarSection] = [
         SidebarSection(
             title="Alerts",
-            parts=[SiteAlert(context=context)],
+            parts=[SiteAlert()],
+            context=context,
         ),
         SidebarSection(
             title="Primary page actions",
             parts=[
-                Bookmarks(context=context),
+                Bookmarks(),
             ],
+            context=context,
+            template_name="tags/sidebar/sections/primary_page_actions.html",
         ),
         SidebarSection(
             title="Secondary page actions",
             parts=[
-                YourBookmarks(context=context),
-                QuickLinks(context=context),
-                GiveFeedback(context=context),
+                YourBookmarks(),
+                QuickLinks(),
+                GiveFeedback(),
             ],
+            context=context,
         ),
     ]
-    return {"sections": sections}
+    return {"sections": [section for section in sections if section.is_visible()]}
