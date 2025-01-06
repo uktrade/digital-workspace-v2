@@ -1,7 +1,3 @@
 <div class="content-stack">
-    {% for section in sections %}
-        {% for part in section.parts %}
-            {% if part.is_visible %}{{ part }}{% endif %}
-        {% endfor %}
-    {% endfor %}
+    {% for section in sections %}{{ section }}{% endfor %}
 </div>
