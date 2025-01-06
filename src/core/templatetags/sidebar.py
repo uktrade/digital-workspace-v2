@@ -2,6 +2,7 @@ from django import template
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.safestring import SafeString
+from waffle import flag_is_active
 
 from core.models.models import SiteAlertBanner
 from home.models import HomePage, QuickLink
@@ -135,6 +136,9 @@ class Bookmarks(SidebarPart):
     template_name = "tags/sidebar/parts/bookmark.html"
 
     def is_visible(self):
+        request = self.context["request"]
+        if not flag_is_active(request, "new_sidebar"):
+            return False
         page = self.context.get("self")
         if isinstance(page, HomePage):
             return False

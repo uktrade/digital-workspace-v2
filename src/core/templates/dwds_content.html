@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% load sidebar %}
+{% comment %} TODO: Remove `bookmarks` once `new_sidebar` flag is removed {% endcomment %}
+{% load bookmarks %}
 
 {% block body_classes %}dwds-body{% endblock %}
 
@@ -24,6 +26,10 @@
                                 {% endblock page_title %}
                             </div>
                         {% endblock page_title_wrapper %}
+                        {% comment %} TODO: Remove `bookmark_page_input` once `new_sidebar` flag is removed {% endcomment %}
+                        {% if not FEATURE_FLAGS.new_sidebar and page %}
+                            <div>{% bookmark_page_input user page request %}</div>
+                        {% endif %}
                         {% block pre_primary_content %}
                         {% endblock pre_primary_content %}
                         {% block primary_content %}
