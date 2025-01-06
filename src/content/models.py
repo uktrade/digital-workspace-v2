@@ -35,7 +35,6 @@ from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
 from peoplefinder.widgets import PersonChooser
-from search.utils import split_query
 from user.models import User as UserModel
 
 
@@ -527,8 +526,9 @@ class SearchKeywordOrPhrase(models.Model):
 
 class SearchKeywordOrPhraseQuerySet(models.QuerySet):
     def filter_by_query(self, query):
-        query_parts = split_query(query)
+        from search.utils import split_query
 
+        query_parts = split_query(query)
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 

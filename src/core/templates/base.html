@@ -12,7 +12,9 @@
             {% block title %}
                 {% if self.seo_title %}
                     {{ self.seo_title }}
-                {% else %}
+                {% elif page_title %}
+                    {{ page_title }}
+                {% elif self %}
                     {{ self.title }}
                 {% endif %}
             {% endblock title %}
@@ -100,7 +102,7 @@
                 {% block main_content %}
                 {% endblock main_content %}
                 {% block page_problem %}
-                    {% include "includes/problem_found.html" %}
+                    <div class="feedback-section">{% include "includes/problem_found.html" %}</div>
                 {% endblock page_problem %}
             </main>
             {% block post_main %}

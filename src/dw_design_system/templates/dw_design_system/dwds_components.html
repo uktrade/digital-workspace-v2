@@ -1,18 +1,11 @@
 {% extends "dwds_content.html" %}
 
-{% block title %}
-    DW Design System {{ template_type }}
-{% endblock title %}
-
-{% block page_title %}
-    <br />
-    <h1>DW Design System {{ template_type }}</h1>
-{% endblock page_title %}
-
 {% block primary_content %}
-    {% for template in templates %}
-        {% include "dw_design_system/partials/component.html" with component=template new=template.new %}
-    {% endfor %}
+    <div class="content-stack">
+        {% for template in templates %}
+            {% include "dw_design_system/partials/component.html" with component=template new=template.new %}
+        {% endfor %}
+    </div>
 {% endblock primary_content %}
 
 {% block scripts %}
