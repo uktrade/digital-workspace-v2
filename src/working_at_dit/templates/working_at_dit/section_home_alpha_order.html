@@ -1,9 +1,6 @@
 {% extends "dwds_content.html" %}
 {% load wagtailcore_tags %}
 
-{% block bookmark %}
-{% endblock bookmark %}
-
 {% block primary_content %}
     {% for block in page.body %}
         {% include_block block %}

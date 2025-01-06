@@ -1,9 +1,14 @@
+from typing import Type
+
 from django import template
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.safestring import SafeString
+from waffle import flag_is_active
 
 from core.models.models import SiteAlertBanner
 from home.models import HomePage, QuickLink
+from interactions.services import bookmarks as bookmarks_service
 
 
 register = template.Library()
@@ -13,7 +18,7 @@ class SidebarPart:
     template_name: str
     context: dict
 
-    def __init__(self, context):
+    def __init__(self, context: dict):
         self.context = context
 
     def is_visible(self) -> bool:
@@ -38,16 +43,48 @@ class SidebarPart:
 class SidebarSection:
     title: str
     parts: list[SidebarPart] = []
+    context: dict
+    template_name: str = "tags/sidebar/sections/base.html"
 
-    def __init__(self, title: str, parts: list[SidebarPart]):
+    def __init__(
+        self,
+        title: str,
+        parts: list[Type[SidebarPart]],
+        context: dict,
+        template_name: str | None = None,
+    ):
         self.title = title
-        self.parts = parts
+        self.parts = [part(context=context) for part in parts]
+        self.context = context
+
+        if template_name:
+            self.template_name = template_name
+
+    def is_visible(self) -> bool:
+        """
+        Decide if this section should be visible on the current page.
+        """
+        return any(part.is_visible() for part in self.parts)
+
+    def get_section_context(self):
+        """
+        Build the context to pass into the template.
+        """
+        return {
+            "parts": [part for part in self.parts if part.is_visible()],
+        }
+
+    def render(self) -> SafeString:
+        return render_to_string(self.template_name, self.get_section_context())
+
+    __str__ = render
+    __html__ = render
 
 
 class SiteAlert(SidebarPart):
-    template_name = "tags/sidebar/site_alert.html"
+    template_name = "tags/sidebar/parts/site_alert.html"
 
-    def __init__(self, context):
+    def __init__(self, context: dict):
         super().__init__(context)
         self.current_alert = SiteAlertBanner.objects.filter(activated=True).first()
 
@@ -65,7 +102,7 @@ class SiteAlert(SidebarPart):
 
 
 class GiveFeedback(SidebarPart):
-    template_name = "tags/sidebar/feedback.html"
+    template_name = "tags/sidebar/parts/feedback.html"
 
     title = "Give feedback"
     description = "Did you find what you were looking for?"
@@ -101,8 +138,34 @@ class YourBookmarks(SidebarPart):
         }
 
 
+class Bookmark(SidebarPart):
+    template_name = "tags/sidebar/parts/bookmark.html"
+
+    def is_visible(self):
+        request = self.context["request"]
+        if not flag_is_active(request, "new_sidebar"):
+            return False
+        page = self.context.get("self")
+        if isinstance(page, HomePage):
+            return False
+        return True
+
+    def get_part_context(self):
+        user = self.context.get("user")
+        page = self.context.get("self")
+        is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
+        post_url = reverse("interactions:bookmark")
+        return {
+            "post_url": post_url,
+            "user": user,
+            "page": page,
+            "is_bookmarked": is_bookmarked,
+            "csrf_token": self.context["csrf_token"],
+        }
+
+
 class QuickLinks(SidebarPart):
-    template_name = "tags/sidebar/quick_links.html"
+    template_name = "tags/sidebar/parts/quick_links.html"
 
     def is_visible(self):
         page = self.context.get("self")
@@ -128,19 +191,25 @@ def sidebar(context):
     sections: list[SidebarSection] = [
         SidebarSection(
             title="Alerts",
-            parts=[SiteAlert(context=context)],
+            parts=[SiteAlert],
+            context=context,
         ),
         SidebarSection(
             title="Primary page actions",
-            parts=[],
+            parts=[
+                Bookmark,
+            ],
+            context=context,
+            template_name="tags/sidebar/sections/primary_page_actions.html",
         ),
         SidebarSection(
             title="Secondary page actions",
             parts=[
-                YourBookmarks(context=context),
-                QuickLinks(context=context),
-                GiveFeedback(context=context),
+                YourBookmarks,
+                QuickLinks,
+                GiveFeedback,
             ],
+            context=context,
         ),
     ]
-    return {"sections": sections}
+    return {"sections": [section for section in sections if section.is_visible()]}
