@@ -135,7 +135,7 @@ class YourBookmarks(SidebarPart):
         }
 
 
-class Bookmarks(SidebarPart):
+class Bookmark(SidebarPart):
     template_name = "tags/sidebar/parts/bookmark.html"
 
     def is_visible(self):
@@ -194,7 +194,7 @@ def sidebar(context):
         SidebarSection(
             title="Primary page actions",
             parts=[
-                Bookmarks,
+                Bookmark,
             ],
             context=context,
             template_name="tags/sidebar/sections/primary_page_actions.html",
