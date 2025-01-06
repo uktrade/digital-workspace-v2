@@ -11,7 +11,7 @@ from core.panels import FieldPanel, InlinePanel
 @register_snippet
 class Nav(ClusterableModel):
     panels = [
-        InlinePanel("links", label="Links", min_num=1),
+        InlinePanel("links", label="Links"),
     ]
 
 
@@ -44,7 +44,7 @@ class NavLinkBase(Orderable):
         abstract = True
 
 
-class PrimaryNavLink(ClusterableModel, NavLinkBase):
+class PrimaryNavLink(NavLinkBase, ClusterableModel):
     navigation = ParentalKey(
         "Nav",
         on_delete=models.PROTECT,
