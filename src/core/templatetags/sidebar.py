@@ -108,6 +108,9 @@ class GiveFeedback(SidebarPart):
     description = "Did you find what you were looking for?"
 
     def is_visible(self):
+        request = self.context["request"]
+        if not flag_is_active(request, "new_sidebar"):
+            return False
         page = self.context.get("self")
         if isinstance(page, HomePage):
             return False
