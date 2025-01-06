@@ -1,9 +1,11 @@
 from django import template
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.safestring import SafeString
 
 from core.models.models import SiteAlertBanner
 from home.models import HomePage, QuickLink
+from interactions.services import bookmarks as bookmarks_service
 
 
 register = template.Library()
@@ -99,7 +101,7 @@ class YourBookmarks(SidebarPart):
 
 
 class Bookmarks(SidebarPart):
-    template_name = "interactions/bookmark_wrapper.html"
+    template_name = "interactions/bookmark_page_input.html"
 
     def is_visible(self):
         page = self.context.get("self")
@@ -108,9 +110,15 @@ class Bookmarks(SidebarPart):
         return True
 
     def get_part_context(self):
+        user = self.context.get("user")
+        page = self.context.get("self")
+        is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
+        post_url = reverse("interactions:bookmark")
         return {
-            "user": self.context.get("user"),
-            "page": self.context.get("self"),
+            "post_url": post_url,
+            "user": user,
+            "page": page,
+            "is_bookmarked": is_bookmarked,
             "csrf_token": self.context["csrf_token"],
         }
 
