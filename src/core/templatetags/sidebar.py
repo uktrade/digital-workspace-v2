@@ -1,3 +1,5 @@
+from typing import Type
+
 from django import template
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -15,6 +17,9 @@ register = template.Library()
 class SidebarPart:
     template_name: str
     context: dict
+
+    def __init__(self, context: dict):
+        self.context = context
 
     def is_visible(self) -> bool:
         """
@@ -44,16 +49,13 @@ class SidebarSection:
     def __init__(
         self,
         title: str,
-        parts: list[SidebarPart],
+        parts: list[Type[SidebarPart]],
         context: dict,
         template_name: str | None = None,
     ):
         self.title = title
-        self.parts = parts
+        self.parts = [part(context=context) for part in parts]
         self.context = context
-
-        for part in self.parts:
-            part.context = context
 
         if template_name:
             self.template_name = template_name
@@ -82,7 +84,8 @@ class SidebarSection:
 class SiteAlert(SidebarPart):
     template_name = "tags/sidebar/parts/site_alert.html"
 
-    def __init__(self):
+    def __init__(self, context: dict):
+        super().__init__(context)
         self.current_alert = SiteAlertBanner.objects.filter(activated=True).first()
 
     def is_visible(self, *args, **kwargs):
@@ -185,13 +188,13 @@ def sidebar(context):
     sections: list[SidebarSection] = [
         SidebarSection(
             title="Alerts",
-            parts=[SiteAlert()],
+            parts=[SiteAlert],
             context=context,
         ),
         SidebarSection(
             title="Primary page actions",
             parts=[
-                Bookmarks(),
+                Bookmarks,
             ],
             context=context,
             template_name="tags/sidebar/sections/primary_page_actions.html",
@@ -199,9 +202,9 @@ def sidebar(context):
         SidebarSection(
             title="Secondary page actions",
             parts=[
-                YourBookmarks(),
-                QuickLinks(),
-                GiveFeedback(),
+                YourBookmarks,
+                QuickLinks,
+                GiveFeedback,
             ],
             context=context,
         ),
