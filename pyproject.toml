@@ -10,7 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 # Django
-django = "^5.0"
+django = "^5.1"
 django-environ = "^0.10.0"
 django-settings-export = "^1.2.1"
 # TODO: Set django-simple-history to the next release after 3.4.0 (when released)
