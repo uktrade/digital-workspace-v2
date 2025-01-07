@@ -3,6 +3,7 @@ from django.urls import reverse
 from waffle import flag_is_active
 from wagtail.models import Page
 
+from events.models import EventsHome
 from home.models import HomePage
 from interactions.services import bookmarks as bookmarks_service
 
@@ -22,7 +23,7 @@ def bookmark_page_input(user, page, request):
     if not isinstance(page, Page):
         return {}
 
-    if isinstance(page, HomePage):
+    if isinstance(page, (HomePage, EventsHome)):
         return {}
 
     is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
