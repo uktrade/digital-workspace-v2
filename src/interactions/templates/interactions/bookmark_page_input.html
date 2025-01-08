@@ -9,7 +9,7 @@
             hx-select="button"
             hx-target="this"
             hx-swap="outerHTML">
-        {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
-        <span>{{ is_bookmarked|yesno:'Bookmarked,Bookmark' }}</span>
+        {% include 'dwds/elements/bookmark-icon.html' %}
+        <span class="dwds-sr-only">{{ is_bookmarked|yesno:'Bookmarked,Bookmark this page' }}</span>
     </button>
 {% endif %}
