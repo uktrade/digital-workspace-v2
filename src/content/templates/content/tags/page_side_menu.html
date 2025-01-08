@@ -1,0 +1,22 @@
+<div class="fixed-sidebar">{% include "dwds/components/menu_vertical.html" %}</div>
+
+<style>
+    .fixed-sidebar {
+        position: fixed;
+        top: 0;
+        left: -200px;
+        width: 250px;
+        background-color: white;
+        border-top: var(--s-5) solid black;
+        border-right: var(--s-5) solid black;
+        border-bottom: var(--s-5) solid black;
+        padding: 20px;
+        overflow-y: auto;
+        z-index: 1000;
+        transition: transform 0.3s;
+
+        &:hover {
+            transform: translateX(200px);
+        }
+    }
+</style>

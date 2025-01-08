@@ -1,5 +1,14 @@
 <nav class="dwds-menu-vertical">
     <ul class="content-stack no-gap">
+        {% if current_page %}
+            <li class="active">
+                <span>{{ current_page.title }}</span>
+                {% if enable_current_page_menu %}
+                    <ol id="page-toc">
+                    </ol>
+                {% endif %}
+            </li>
+        {% endif %}
         {% for item in items %}
             <li {% if item.active %}class="active"{% endif %}>
                 {% if not item.active %}
@@ -11,3 +20,30 @@
         {% endfor %}
     </ul>
 </nav>
+
+{% if enable_current_page_menu %}
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            let main_page_content = document.querySelector('main .primary-content');
+            let table_of_contents = document.querySelector('#page-toc');
+            let headings_selector = 'h2, h3, h4';
+            let headings_elements = main_page_content.querySelectorAll(headings_selector);
+            headings_elements.forEach(function(heading_element) {
+                let heading_text = heading_element.textContent;
+                let heading_id = heading_element.id;
+
+                if (!heading_id) {
+                    return;
+                }
+
+                let heading_link = document.createElement('a');
+                heading_link.href = '#' + heading_id;
+                heading_link.textContent = heading_text;
+
+                let heading_item = document.createElement("li");
+                heading_item.appendChild(heading_link);
+                table_of_contents.appendChild(heading_item);
+            });
+        });
+    </script>
+{% endif %}
