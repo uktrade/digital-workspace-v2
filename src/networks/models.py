@@ -1,5 +1,6 @@
 from django import forms
 from wagtail.admin.forms import WagtailAdminPageForm
+from wagtail.models import Page
 
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
@@ -132,3 +133,26 @@ class Network(ContentOwnerMixin, ContentPage):
     @property
     def peoplefinder_network(self):
         return getattr(self, "newnetwork", None)
+
+
+class NetworkContentPage(ContentOwnerMixin, ContentPage):
+    is_creatable = True
+
+    parent_page_types = [
+        "networks.NetworksHome",
+        "networks.Network",
+    ]
+
+    template = "content/content_page.html"
+    subpage_types = ["networks.Network"]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        context["children"] = (
+            Page.objects.live().public().child_of(self).order_by("title")
+        )
+        context["attribution"] = True
+        context["num_cols"] = 3
+
+        return context
