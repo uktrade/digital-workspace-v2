@@ -11,7 +11,7 @@ from extended_search.index import DWIndexedField as IndexedField
 class NetworksHome(ContentPage):
     is_creatable = False
 
-    subpage_types = ["networks.Network"]
+    subpage_types = ["networks.Network", "networks.NetworkContentPage"]
 
     template = "content/content_page.html"
 
@@ -103,7 +103,7 @@ class Network(ContentOwnerMixin, ContentPage):
     ]
 
     template = "content/content_page.html"
-    subpage_types = ["networks.Network"]
+    subpage_types = ["networks.Network", "networks.NetworkContentPage"]
 
     content_panels = ContentPage.content_panels + [
         FieldPanel("is_peoplefinder_network"),
@@ -144,7 +144,7 @@ class NetworkContentPage(ContentOwnerMixin, ContentPage):
     ]
 
     template = "content/content_page.html"
-    subpage_types = ["networks.Network"]
+    subpage_types = ["networks.Network", "networks.NetworkContentPage"]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
