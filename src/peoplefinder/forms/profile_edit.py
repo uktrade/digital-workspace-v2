@@ -302,8 +302,14 @@ class LocationProfileEditForm(forms.ModelForm):
         self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
-        remote_working_choices = self.fields["remote_working"].choices
-        self.fields["remote_working"].choices = remote_working_choices[1:]
+        remote_working_choices = list(self.fields["remote_working"].choices)
+        blank_choice = (
+            remote_working_choices[0] if remote_working_choices[0][0] == "" else None
+        )
+        non_blank_choices = (
+            remote_working_choices[1:] if blank_choice else remote_working_choices
+        )
+        self.fields["remote_working"].choices = non_blank_choices
 
         usual_office_days_label = self.fields["usual_office_days"].label + " (optional)"
         self.fields["usual_office_days"].label = ""
