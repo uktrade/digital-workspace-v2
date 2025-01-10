@@ -4,8 +4,6 @@ from typing import Type
 from django.contrib.contenttypes.models import ContentType
 from django.db import connections, models, transaction
 
-from networks.models import Network, NetworkContentPage, NetworksHome
-
 
 # TODO: Remove as part of INTR-517
 def find_first_common_ancestor(
@@ -35,6 +33,19 @@ def get_next_model_from_mro(
         if not cls._meta.abstract:
             return cls
     raise ValueError("No concrete class found")
+
+
+# TODO: Remove as part of INTR-517
+def build_values(values: list) -> list[str]:
+    output_values = []
+
+    for v in values:
+        if isinstance(v, bool):
+            output_values.append(str(v))
+        else:
+            output_values.append(f"'{str(v)}'")
+
+    return output_values
 
 
 # TODO: Remove as part of INTR-517
@@ -76,9 +87,12 @@ def convert(
     to_model_mro = to_model_mro[::-1]
 
     # Update the `content_type` value
-    common_ancestor_instance = common_ancestor.objects.get(pk=model_instance.pk)
-    common_ancestor_instance.content_type = ContentType.objects.get_for_model(to_model)
-    common_ancestor_instance.save(update_fields=["content_type_id"])
+    if hasattr(common_ancestor, "content_type"):
+        common_ancestor_instance = common_ancestor.objects.get(pk=model_instance.pk)
+        common_ancestor_instance.content_type = ContentType.objects.get_for_model(
+            to_model
+        )
+        common_ancestor_instance.save(update_fields=["content_type_id"])
 
     previous_mro_class = common_ancestor
     for cls in to_model_mro:
@@ -117,12 +131,12 @@ def convert(
         with db_connection.cursor() as cursor:
             table_name = cls._meta.db_table
             fields = ",".join(new_cls_kwargs.keys())
-            values = ",".join([f"'{str(v)}'" for v in new_cls_kwargs.values()])
+            values = ",".join([v for v in build_values(new_cls_kwargs.values())])
             cursor.execute(
                 f"""
                 INSERT INTO {table_name} ({fields})
                 VALUES ({values});
-                """  # noqa: S608S608
+                """  # noqa: S608
             )
 
         previous_mro_class = cls
