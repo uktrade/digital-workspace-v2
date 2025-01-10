@@ -4,6 +4,8 @@ from typing import Type
 from django.contrib.contenttypes.models import ContentType
 from django.db import connections, models, transaction
 
+from networks.models import Network, NetworkContentPage, NetworksHome
+
 
 # TODO: Remove as part of INTR-517
 def find_first_common_ancestor(
