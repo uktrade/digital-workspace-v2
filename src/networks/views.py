@@ -12,6 +12,7 @@ from networks.utils import (
 )
 
 
+# TODO: Remove as part of INTR-517
 class AreYouSureView(FormView):
     template_name = "networks/admin/are_you_sure.html"
     form_class = Form
@@ -38,6 +39,7 @@ class AreYouSureView(FormView):
         return context
 
 
+# TODO: Remove as part of INTR-517
 class ConvertNetworkToNetworkContentPageView(AreYouSureView):
     operation = "Convert to Network Content Page"
 
@@ -47,6 +49,7 @@ class ConvertNetworkToNetworkContentPageView(AreYouSureView):
         return super().form_valid(form)
 
 
+# TODO: Remove as part of INTR-517
 class ConvertNetworkToNetworksHomeView(AreYouSureView):
     operation = "Convert to Networks Home"
 
@@ -56,6 +59,7 @@ class ConvertNetworkToNetworksHomeView(AreYouSureView):
         return super().form_valid(form)
 
 
+# TODO: Remove as part of INTR-517
 class ConvertNetworkContentPageToNetworkPageView(AreYouSureView):
     operation = "Convert to Network Page"
     irreversible = True

@@ -7,6 +7,7 @@ from django.db import connections, models, transaction
 from networks.models import Network, NetworkContentPage, NetworksHome
 
 
+# TODO: Remove as part of INTR-517
 def find_first_common_ancestor(
     from_model: Type[models.Model],
     to_model: Type[models.Model],
@@ -24,6 +25,7 @@ def find_first_common_ancestor(
     raise ValueError("No common ancestor found")
 
 
+# TODO: Remove as part of INTR-517
 def get_next_model_from_mro(
     model: Type[models.Model],
 ) -> Type[models.Model]:
@@ -35,6 +37,7 @@ def get_next_model_from_mro(
     raise ValueError("No concrete class found")
 
 
+# TODO: Remove as part of INTR-517
 @transaction.atomic
 def convert(
     model_instance: models.Model,
@@ -128,6 +131,7 @@ def convert(
             break
 
 
+# TODO: Remove as part of INTR-517
 def convert_network_to_content_page(page: Network):
     """
     Convert a network page to a content page.
@@ -144,6 +148,7 @@ def convert_network_to_content_page(page: Network):
     )
 
 
+# TODO: Remove as part of INTR-517
 def convert_network_content_page_to_network(page: NetworkContentPage):
     """
     Convert a network page to a content page.
@@ -160,6 +165,7 @@ def convert_network_content_page_to_network(page: NetworkContentPage):
     )
 
 
+# TODO: Remove as part of INTR-517
 def convert_network_to_networks_home(page: Network):
     """
     Convert a network page to a networks home page.
