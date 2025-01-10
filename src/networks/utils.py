@@ -62,7 +62,7 @@ def convert(
                 f"""
                 DELETE FROM {cls._meta.db_table}
                 WHERE {ptr_field_name}={f"'{model_instance.pk}'"};
-                """,
+                """,  # noqa: S608
             )
 
     # Create all of the tables down to the target model
@@ -119,7 +119,7 @@ def convert(
                 f"""
                 INSERT INTO {table_name} ({fields})
                 VALUES ({values});
-                """
+                """  # noqa: S608S608
             )
 
         previous_mro_class = cls
