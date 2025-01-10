@@ -13,7 +13,7 @@ from networks.utils import (
 
 
 # TODO: Remove as part of INTR-517
-class AreYouSureView(FormView):
+class ConvertPageView(FormView):
     template_name = "networks/admin/are_you_sure.html"
     form_class = Form
 
@@ -21,6 +21,8 @@ class AreYouSureView(FormView):
     operation: str = ""
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return redirect("wagtailadmin_home")
         pk = kwargs.get("pk")
         self.page = Page.objects.get(pk=pk)
         self.parent_pk = self.page.get_parent().pk
