@@ -3,15 +3,11 @@
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-{% load site_alert %}
 {% load cards %}
 
 {% block pre_main %}
     {{ block.super }}
 {% endblock pre_main %}
-
-{% block bookmark %}
-{% endblock bookmark %}
 
 {% block body_classes %}
     {{ block.super }} homepage new-home
@@ -78,21 +74,3 @@
         </section>
     </article>
 {% endblock primary_content %}
-
-{% block secondary_content %}
-    <article>
-        <section class="content-stack">
-            {% if active_site_alert %}
-                <div class="dwds-content-item-card no-shadow">
-                    {% include 'dwds/components/banner.html' with text=active_site_alert.banner_text link=active_site_alert.banner_link %}
-                </div>
-            {% endif %}
-            {% include 'interactions/bookmark_card.html' %}
-            {% if quick_links %}
-                <div class="dwds-content-item-card">
-                    {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
-                </div>
-            {% endif %}
-        </section>
-    </article>
-{% endblock secondary_content %}

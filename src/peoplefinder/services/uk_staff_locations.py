@@ -33,7 +33,7 @@ class UkStaffLocationService:
         with connections["uk_staff_locations"].cursor() as cursor:
             cursor.execute(
                 """
-                SELECT location_code, location_name, city, organisation, building_or_office_name,
+                SELECT location_code, location_name, city, organisation, building_name
                 FROM dit.uk_staff_locations
                 """
             )

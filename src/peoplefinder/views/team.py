@@ -81,6 +81,10 @@ class TeamDetailView(DetailView, PeoplefinderView):
             self.object.members.all()
             .active()
             .exclude(id__in=[leader.id for leader in self.leaders])
+            .select_related(
+                "person",
+                "person__uk_office_location",
+            )
             .order_by("person__first_name", "person__last_name")
             .distinct("person", "person__first_name", "person__last_name")
         )
@@ -104,6 +108,7 @@ class TeamDetailView(DetailView, PeoplefinderView):
             sub_teams=self.sub_teams,
             current_sub_view=self.sub_view,
             sub_views=self.available_sub_views,
+            teams_active=self.sub_view == self.SubView.SUB_TEAMS,
             leaders=self.leaders,
             members=self.members,
         )
@@ -203,8 +208,14 @@ class TeamTreeView(DetailView, PeoplefinderView):
 
         team = context["team"]
         team_service = TeamService()
+        page_title = f"All sub-teams ({ team.short_name })"
 
-        context["parent_teams"] = team_service.get_all_parent_teams(team)
+        context.update(
+            parent_teams=team_service.get_all_parent_teams(team),
+            team_breadcrumbs=True,
+            extra_breadcrumbs=[(None, page_title)],
+            page_title=page_title,
+        )
 
         return context
 

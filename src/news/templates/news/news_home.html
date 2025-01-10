@@ -3,9 +3,6 @@
 {% load wagtailimages_tags %}
 {% load cards %}
 
-{% block bookmark %}
-{% endblock bookmark %}
-
 {% block primary_content %}
     {% for news_item in posts %}
         {% page_to_engagement news_item hide_updated=True %}
@@ -18,4 +15,5 @@
 
 {% block secondary_content %}
     {% comment %} {% include "news/includes/news_categories.html" %} {% endcomment %}
+    {{ block.super }}
 {% endblock secondary_content %}
