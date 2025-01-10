@@ -16,7 +16,7 @@ from extended_search.management.commands.create_index_fields_json import (
     get_indexed_models_and_fields_dict,
 )
 from home.models import HomePage
-from networks.models import Network, NetworksHome
+from networks.models import Network, NetworkContentPage, NetworksHome
 from news.models import NewsHome, NewsPage
 from peoplefinder.models import Person, Team
 from testapp.models import (
@@ -232,51 +232,55 @@ class TestModuleFunctions:
 
 class TestProject:
     def test_indexed_models(self):
-        assert set(get_indexed_models()) == {
-            IndexedModel,
-            ChildModel,
-            StandardIndexedModel,
-            InheritedStandardIndexedModel,
-            InheritedStandardIndexedModelWithChanges,
-            StandardIndexedModelWithScoreFunction,
-            StandardIndexedModelWithScoreFunctionOriginFifty,
-            InheritedStandardIndexedModelWithChangesWithScoreFunction,
-            HomePage,
-            BasePage,
-            ContentPage,
-            NavigationPage,
-            EventsHome,
-            EventPage,
-            NewsPage,
-            NewsHome,
-            WorkingAtDITHome,
-            Topic,
-            TopicHome,
-            PageWithTopics,
-            HowDoI,
-            HowDoIHome,
-            Guidance,
-            Policy,
-            PoliciesHome,
-            GuidanceHome,
-            PoliciesAndGuidanceHome,
-            Tool,
-            ToolsHome,
-            AboutUs,
-            AboutUsHome,
-            NetworksHome,
-            Network,
-            CountryFactSheetHome,
-            BlogIndex,
-            BlogPost,
-            Tag,
-            Person,
-            Team,
-            Document,
-            Image,
-            Page,
-            Media,
-        }, "Indexed models have changed, please update this test if this was intentional."
+        assert (
+            set(get_indexed_models())
+            == {
+                IndexedModel,
+                ChildModel,
+                StandardIndexedModel,
+                InheritedStandardIndexedModel,
+                InheritedStandardIndexedModelWithChanges,
+                StandardIndexedModelWithScoreFunction,
+                StandardIndexedModelWithScoreFunctionOriginFifty,
+                InheritedStandardIndexedModelWithChangesWithScoreFunction,
+                HomePage,
+                BasePage,
+                ContentPage,
+                NavigationPage,
+                EventsHome,
+                EventPage,
+                NewsPage,
+                NewsHome,
+                WorkingAtDITHome,
+                Topic,
+                TopicHome,
+                PageWithTopics,
+                HowDoI,
+                HowDoIHome,
+                Guidance,
+                Policy,
+                PoliciesHome,
+                GuidanceHome,
+                PoliciesAndGuidanceHome,
+                Tool,
+                ToolsHome,
+                AboutUs,
+                AboutUsHome,
+                NetworksHome,
+                Network,
+                NetworkContentPage,
+                CountryFactSheetHome,
+                BlogIndex,
+                BlogPost,
+                Tag,
+                Person,
+                Team,
+                Document,
+                Image,
+                Page,
+                Media,
+            }
+        ), "Indexed models have changed, please update this test if this was intentional."
 
     def test_indexed_models_and_fields(test):
         with open(JSON_FILE, "r") as f:
