@@ -42,7 +42,7 @@ class ConvertPageView(FormView):
 
 
 # TODO: Remove as part of INTR-517
-class ConvertNetworkToNetworkContentPageView(AreYouSureView):
+class ConvertNetworkToNetworkContentPageView(ConvertPageView):
     operation = "Convert to Network Content Page"
 
     def form_valid(self, form):
@@ -52,7 +52,7 @@ class ConvertNetworkToNetworkContentPageView(AreYouSureView):
 
 
 # TODO: Remove as part of INTR-517
-class ConvertNetworkToNetworksHomeView(AreYouSureView):
+class ConvertNetworkToNetworksHomeView(ConvertPageView):
     operation = "Convert to Networks Home"
 
     def form_valid(self, form):
@@ -62,7 +62,7 @@ class ConvertNetworkToNetworksHomeView(AreYouSureView):
 
 
 # TODO: Remove as part of INTR-517
-class ConvertNetworkContentPageToNetworkPageView(AreYouSureView):
+class ConvertNetworkContentPageToNetworkPageView(ConvertPageView):
     operation = "Convert to Network Page"
     irreversible = True
 
