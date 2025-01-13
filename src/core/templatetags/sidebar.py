@@ -155,12 +155,14 @@ class Bookmark(SidebarPart):
         page = self.context.get("self")
         is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
         post_url = reverse("interactions:bookmark")
+        is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
         return {
             "post_url": post_url,
             "user": user,
             "page": page,
             "is_bookmarked": is_bookmarked,
             "csrf_token": self.context["csrf_token"],
+            "is_new_sidebar_enabled": is_new_sidebar_enabled,
         }
 
 
