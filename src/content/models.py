@@ -504,7 +504,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
             [str(b.value) for b in self.body if b.block_type == "text_section"]
         )
         self.excerpt = truncate_words_and_chars(
-            html.unescape(strip_tags_with_spaces(content)), 40, 700
+            text=html.unescape(strip_tags_with_spaces(content)),
         )
 
     def save(self, *args, **kwargs):
