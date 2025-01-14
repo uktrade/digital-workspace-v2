@@ -9,10 +9,8 @@ from extended_search.index import DWIndexedField as IndexedField
 
 class NetworksHome(ContentPage):
     is_creatable = False
-
+    template = "networks/networks_home.html"
     subpage_types = ["networks.Network"]
-
-    template = "content/content_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

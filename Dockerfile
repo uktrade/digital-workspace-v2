@@ -11,7 +11,7 @@ RUN pip install poetry
 
 COPY poetry.lock pyproject.toml /app/
 
-RUN poetry install --with dev
+RUN poetry install --no-root --with dev
 
 COPY . /app/
 
