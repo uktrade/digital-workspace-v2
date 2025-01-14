@@ -11,6 +11,8 @@ RUN pip install poetry
 
 COPY poetry.lock pyproject.toml /app/
 
+COPY README.md /app/README.md
+
 RUN poetry install --with dev
 
 COPY . /app/
