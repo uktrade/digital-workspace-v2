@@ -5,8 +5,7 @@ description = ""
 authors = ["Live Services <live.services@digital.trade.gov.uk>"]
 license = "MIT"
 readme = "README.md"
-package-mode = false
-# - Paketo buildpack breaks since it's at v1.7.1
+# package-mode = false - Paketo buildpack breaks since it's at v1.7.1
 
 [tool.poetry.dependencies]
 python = "^3.12"
