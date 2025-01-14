@@ -10,7 +10,7 @@
             hx-target="this"
             hx-swap="outerHTML">
         {% if is_new_sidebar_enabled %}
-            {% include 'dwds/elements/bookmark-icon.html' %}
+            {% include 'dwds/icons/bookmark.html' %}
         {% else %}
             {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
         {% endif %}
