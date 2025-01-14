@@ -13,6 +13,9 @@ class NetworksHome(ContentPage):
     template = "networks/networks_home.html"
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
 
+    def get_template(self, request, *args, **kwargs):
+        return self.template
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
