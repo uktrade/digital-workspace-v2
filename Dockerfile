@@ -10,11 +10,8 @@ RUN pip install --upgrade pip
 RUN pip install poetry
 
 COPY poetry.lock pyproject.toml /app/
-
-COPY README.md /app/README.md
+COPY . /app/
 
 RUN poetry install --with dev
-
-COPY . /app/
 
 WORKDIR /app/src
