@@ -9,7 +9,19 @@
             hx-select="button"
             hx-target="this"
             hx-swap="outerHTML">
-        {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
-        <span>{{ is_bookmarked|yesno:'Bookmarked,Bookmark' }}</span>
+        {% if is_new_sidebar_enabled %}
+            {% include 'dwds/elements/bookmark-icon.html' %}
+        {% else %}
+            {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
+        {% endif %}
+        <span class="{{ is_new_sidebar_enabled|yesno:'dwds-sr-only,' }}">
+            {% if is_bookmarked %}
+                Bookmarked
+            {% elif is_new_sidebar_enabled %}
+                Bookmark this page
+            {% else %}
+                Bookmark
+            {% endif %}
+        </span>
     </button>
 {% endif %}
