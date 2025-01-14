@@ -125,15 +125,40 @@ def manage_excluded(obj, excluded_phrases_string):
     remove_orphan_keyword_and_phrases()
 
 
-def truncate_words_and_chars(text, words, chars, truncate=None, include_elipsis=False):
+def truncate_on_newline(text):
+    newline_replace_chars = ["\n"]
+
+    # Find the last newline character.
+    newline_index = {}
+    for newline_char in newline_replace_chars:
+        newline_index[newline_char] = text.find(newline_char)
+
+    last_newline_index = max(newline_index.values())
+
+    if last_newline_index < 0:
+        return text
+
+    # Set everything before the last newline character (excluding the
+    # character itself)
+    return text[:last_newline_index]
+
+
+def truncate_words_and_chars(
+    text,
+    words=40,
+    chars=700,
+    truncate=None,
+    html=False,
+):
     """
     Truncates the given text to the _minimum_ value of both words and chars,
     at a word ending
     """
-    chars_result = Truncator(text).chars(chars, "")
-    words_result = Truncator(chars_result).words(words, truncate)
-    if include_elipsis and words_result != text:
-        return words_result + "…"
+    chars_result = Truncator(text).chars(num=chars, truncate="", html=html)
+    newline_result = truncate_on_newline(chars_result)
+    words_result = Truncator(newline_result).words(
+        num=words, truncate=truncate, html=html
+    )
     return words_result
 
 
