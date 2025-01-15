@@ -47,10 +47,12 @@
 
 // Icons
 @forward "icons/bookmark";
+@forward "icons/comment";
 
 // Layouts
 @forward "layouts/content_sidebar";
 @forward "layouts/content_grid";
+@forward "layouts/content_spaced";
 @forward "layouts/content_stack";
 @forward "layouts/content_switcher";
 @forward "layouts/content_item_card";
