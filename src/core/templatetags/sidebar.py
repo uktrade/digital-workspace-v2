@@ -182,12 +182,10 @@ class Comment(SidebarPart):
         return bool(isinstance(page, NewsPage) and page.allow_comments)
 
     def get_part_context(self):
-        user = self.context.get("user")
         page = self.context.get("self")
         allow_comments = page.allow_comments
         is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
         return {
-            "user": user,
             "page": page,
             "allow_comments": allow_comments,
             "is_new_sidebar_enabled": is_new_sidebar_enabled,
