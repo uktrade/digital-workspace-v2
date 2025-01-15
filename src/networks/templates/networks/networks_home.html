@@ -1,4 +1,5 @@
 {% extends "dwds_content.html" %}
+{% load cards %}
 
 {% block title %}
     {{ page_title }}
@@ -11,24 +12,7 @@
 {% endblock primary_content_classes %}
 
 {% block primary_content %}
-    <h1>Networks</h1>
-    <p>
-        Discover and connect with DBT's vibrant communities. Our networks are designed to bring staff together across roles and locations, fostering connections, collaboration and shared learning. Whether you are interested in professional development, diversity and inclusion or health and wellbeing, our networks offer a range of groups that support personal and career growth.
-    </p>
-
-    <h2>Staff networks</h2>
-    <p>
-        DBT's staff networks help you meet new people, try something new, continue to build on a skill, or indulge an interest.
-    </p>
-
-    <h2>Diversity and inclusion networks</h2>
-    <p>
-        DBT's diversity and inclusion (D&I) networks offer peer support, raise awareness of the needs of staff, influence departmental policy, and coordinate issues that cut across the diversity agenda.
-    </p>
-    <p>
-        The <a href="mailto:Inclusion@businessandtrade.gov.uk">Employee Experience and Engagement Team</a> works towards the strategic objectives set out in the <a href="https://workspace.trade.gov.uk/working-at-dbt/policies-and-guidance/guidance/embracing-fairness-for-all-diversity-and-inclusion-framework/">Diversity and Inclusion Framework 2024-2028</a>, and works in close partnership with DBT's D&I Networks.
-    </p>
-    <p>
-        For more information on DBT's D&I network partnership agreement and structure, visit <a href="https://workspace.trade.gov.uk/di-networks/di-networks-ways-of-working/">D&I Networks Ways of Working</a>.
-    </p>
+    {% if children %}
+        {% include "networks/includes/network_listing_section.html" with networks=children %}
+    {% endif %}
 {% endblock primary_content %}

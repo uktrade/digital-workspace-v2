@@ -6,6 +6,7 @@ from events.models import EventPage
 from events.utils import (
     get_event_datetime_display_string,
 )
+from networks.models import NetworksHome
 from news.models import NewsPage
 
 
@@ -54,7 +55,7 @@ class RenderableComponent:
 
 @register.simple_tag
 def page_to_engagement(
-    page: NewsPage | EventPage, hide_updated: bool = False
+    page: NewsPage | EventPage | NetworksHome, hide_updated: bool = False
 ) -> SafeString:
     return RenderableComponent(
         "dwds/components/engagement.html",
