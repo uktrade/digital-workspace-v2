@@ -8,10 +8,12 @@ from interactions.services.reactions import (
 )
 from news.models import NewsPage
 
+ALL_REACTION_TYPES = ReactionType.values
+
 
 @pytest.fixture
 def user():
-    return get_user_model().objects.create(username="another_user")
+    return get_user_model().objects.create(username="test_user")
 
 
 @pytest.fixture
@@ -40,29 +42,40 @@ def about_page():
 
 
 @pytest.mark.django_db
-def test_manage_reaction_create(user, news_page):
-    manage_reaction(user, news_page, ReactionType.LIKE)
-    reaction = Reaction.objects.get(user=user, page=news_page)
-    assert reaction.type == ReactionType.LIKE
+@pytest.mark.parametrize("reaction_type", ALL_REACTION_TYPES)
+def test_manage_reaction_create(user, news_page, reaction_type):
+    manage_reaction(user, news_page, reaction_type)
+    assert_reaction_type(user, news_page, reaction_type)
 
 
 @pytest.mark.django_db
-def test_manage_reaction_update(user, news_page):
-    Reaction.objects.create(user=user, page=news_page, type=ReactionType.LIKE)
-    manage_reaction(user, news_page, ReactionType.DISLIKE)
-    reaction = Reaction.objects.get(user=user, page=news_page)
-    assert reaction.type == ReactionType.DISLIKE
+@pytest.mark.parametrize("reaction_type", ALL_REACTION_TYPES)
+def test_manage_reaction_update(user, news_page, reaction_type):
+    create_reaction(user, news_page, ReactionType.LIKE)
+    manage_reaction(user, news_page, reaction_type)
+    assert_reaction_type(user, news_page, reaction_type)
+
+
+def assert_reaction_type(user, page, expected_type):
+    reaction = Reaction.objects.get(user=user, page=page)
+    assert reaction.type == expected_type
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("reaction_type", ALL_REACTION_TYPES)
 # Test for user deselects reaction
-def test_manage_reaction_delete(user, news_page):
-    Reaction.objects.create(user=user, page=news_page, type=ReactionType.LIKE)
+def test_manage_reaction_delete(user, news_page, reaction_type):
+    create_reaction(user, news_page, reaction_type)
     manage_reaction(user, news_page, None)
     assert not Reaction.objects.filter(user=user, page=news_page).exists()
 
 
+def create_reaction(user, page, reaction_type):
+    return Reaction.objects.create(user=user, page=page, type=reaction_type)
+
+
 @pytest.mark.django_db
-def test_manage_reaction_invalid_page(user, about_page):
+@pytest.mark.parametrize("reaction_type", ALL_REACTION_TYPES)
+def test_manage_reaction_invalid_page(user, about_page, reaction_type):
     with pytest.raises(ValueError):
-        manage_reaction(user, about_page, ReactionType.LIKE)
+        manage_reaction(user, about_page, reaction_type)
