@@ -17,7 +17,7 @@ Create launch.json file inside .vscode directory
         "configurations": [
             {
                 "name": "Python: Remote Attach (DebugPy)",
-                "type": "python",
+                "type": "debugpy",
                 "request": "attach",
                 "port": 5678,
                 "host": "localhost",
