@@ -10,7 +10,7 @@ class Command(RunserverCommand):
                 import debugpy
 
                 try:
-                    debugpy.listen(("0.0.0.0", 5678))
+                    debugpy.listen(("0.0.0.0", 5678))  # noqa: S104
                     self.stdout.write("debugpy: listening on port 5678...\n")
                 except Exception as err:
                     self.stderr.write(f"debugpy: failed to initialize {err}\n")
