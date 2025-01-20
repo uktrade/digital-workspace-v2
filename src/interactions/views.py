@@ -1,12 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+from waffle import flag_is_active
 from wagtail.models import Page
 
 from interactions.services import bookmarks as bookmarks_service
-
-from .templatetags.bookmarks import bookmark_page_input
 
 
 @require_http_methods(["POST"])
@@ -19,10 +19,20 @@ def bookmark(request, *args, **kwargs):
 
         bookmarks_service.toggle_bookmark(user, page)
 
+        is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
+
+        context = {
+            "post_url": reverse("interactions:bookmark"),
+            "user": user,
+            "page": page,
+            "is_bookmarked": is_bookmarked,
+            "is_new_sidebar_enabled": flag_is_active(request, "new_sidebar"),
+        }
+
         return TemplateResponse(
             request,
             "interactions/bookmark_page_input.html",
-            bookmark_page_input(user, page),
+            context,
         )
 
 

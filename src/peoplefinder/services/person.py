@@ -12,7 +12,7 @@ from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 from django.utils.safestring import mark_safe
 from notifications_python_client.notifications import NotificationsAPIClient
 
@@ -551,6 +551,8 @@ class PersonService:
             field_value = getattr(person, field_name)
 
             if isinstance(field_value, str):
+                # escaping field_value before using mark_safe -> https://docs.djangoproject.com/en/dev/releases/4.2.17/#django-4-2-17-release-notes
+                field_value = escape(field_value)
                 # Replace newlines with "<br>".
                 field_value = mark_safe(  # noqa: S308
                     strip_tags(field_value).replace("\n", "<br>")
@@ -596,7 +598,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 57, (
+    assert len(Person._meta.get_fields()) == 58, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )

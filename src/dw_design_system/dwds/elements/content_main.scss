@@ -26,10 +26,15 @@
     }
 
     a:not(.dwds-button) {
-        &:visited, &:link {
+        color: var(--content-main-link-color);
+        text-decoration-color: var(--content-main-link-color);
+
+        &:visited,
+        &:link {
             color: var(--content-main-link-color);
             text-decoration-color: var(--content-main-link-color);
         }
+
         &:focus {
             color: var(--color-text);
             text-decoration-color: var(--color-text);

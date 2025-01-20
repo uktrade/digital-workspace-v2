@@ -11,6 +11,7 @@
 @forward "utils";
 
 // Form items
+@forward "form-items/input";
 @forward "form-items/radio";
 @forward "form-items/select";
 
@@ -43,6 +44,9 @@
 @forward "elements/inset";
 @forward "elements/navigational_link";
 @forward "elements/ribbon";
+
+// Icons
+@forward "icons/bookmark";
 
 // Layouts
 @forward "layouts/content_sidebar";

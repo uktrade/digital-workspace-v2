@@ -22,7 +22,6 @@ def build_team_breadcrumbs(request, team: Team) -> list[tuple[str, str]]:
         (reverse("team-view", args=[parent_team.slug]), parent_team.short_name)
         for parent_team in parent_teams
     ]
-
     breadcrumbs += [(reverse("team-view", args=[team.slug]), team.short_name)]
 
     return breadcrumbs
@@ -43,17 +42,18 @@ def breadcrumbs(context) -> list[tuple[str, str]]:
             (ancestor.get_url(request), ancestor.title) for ancestor in ancestors
         ]
         return {"breadcrumbs": breadcrumbs + extra_breadcrumbs}
-
     has_team_breadcrumbs = context.get("team_breadcrumbs", False)
     has_profile_breadcrumbs = context.get("profile_breadcrumbs", False)
 
     # Build team breadcrumbs
     if has_team_breadcrumbs or has_profile_breadcrumbs:
         if has_team_breadcrumbs:
-            team: Team = context["team"]
-            return {
-                "breadcrumbs": build_team_breadcrumbs(request, team) + extra_breadcrumbs
-            }
+            team: Team | None = context.get("team", None)
+            if team:
+                breadcrumbs = build_team_breadcrumbs(request, team)
+            else:
+                breadcrumbs = build_home_breadcrumbs(request)
+            return {"breadcrumbs": breadcrumbs + extra_breadcrumbs}
 
         # Build profile breadcrumbs
         if has_profile_breadcrumbs:
@@ -67,5 +67,6 @@ def breadcrumbs(context) -> list[tuple[str, str]]:
             breadcrumbs.append(
                 (reverse("profile-view", args=[profile.slug]), profile.full_name)
             )
+            return {"breadcrumbs": breadcrumbs + extra_breadcrumbs}
 
     return {"breadcrumbs": breadcrumbs + extra_breadcrumbs}

@@ -1084,7 +1084,15 @@ class Team(Indexed, models.Model):
 
         order_by += ["person__last_name", "person__first_name"]
 
-        yield from self.members.active().filter(head_of_team=True).order_by(*order_by)
+        yield from (
+            self.members.active()
+            .select_related(
+                "person",
+                "person__uk_office_location",
+            )
+            .filter(head_of_team=True)
+            .order_by(*order_by)
+        )
 
     @property
     def roles_in_team(self) -> list[str]:

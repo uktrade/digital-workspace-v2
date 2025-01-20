@@ -14,6 +14,7 @@
             width: var(--radio-diameter);
             position: relative;
             appearance: none;
+            border: none;
         }
 
         input[type="radio"]::before {
