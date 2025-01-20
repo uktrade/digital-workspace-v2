@@ -1,0 +1,11 @@
+.bookmark-icon.bookmarked {
+
+    .background {
+        fill: var(--color-background-blue);
+    }
+
+    .path {
+        fill: var(--color-icon);
+        stroke: var(--color-icon);
+    }
+}

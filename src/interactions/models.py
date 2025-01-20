@@ -33,3 +33,20 @@ class Bookmark(UserPage):
 
 class RecentPageView(UserPage):
     count = models.PositiveIntegerField(default=1)
+
+
+class ReactionType(models.TextChoices):
+    CELEBRATE = "celebrate", "Celebrate"
+    LIKE = "like", "Like"
+    LOVE = "love", "Love"
+    DISLIKE = "dislike", "Dislike"
+    UNHAPPY = "unhappy", "Unhappy"
+
+
+class Reaction(UserPage):
+    type = models.CharField(
+        max_length=10,
+        choices=ReactionType.choices,
+        verbose_name="Reaction Type",
+        help_text="Select the type of reaction (e.g., Like or Dislike).",
+    )
