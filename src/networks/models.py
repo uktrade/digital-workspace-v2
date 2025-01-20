@@ -7,6 +7,7 @@ import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
 from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
+from networks.panels import NetworkTypesFlaggedFieldPanel
 
 
 class NetworksHome(ContentPage):
@@ -126,8 +127,7 @@ class Network(ContentOwnerMixin, ContentPage):
     )
 
     content_panels = ContentPage.content_panels + [
-        # TODO: Uncomment when network_type is ready INTR-514
-        # FieldPanel("network_type"),
+        NetworkTypesFlaggedFieldPanel("network_type"),
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]
