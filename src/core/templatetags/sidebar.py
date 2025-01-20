@@ -9,6 +9,8 @@ from wagtail.models import Page
 
 from core.models.models import SiteAlertBanner
 from home.models import HomePage, QuickLink
+from events.models import EventsHome
+from networks.models import NetworksHome
 from interactions.services import bookmarks as bookmarks_service
 
 
@@ -149,7 +151,7 @@ class Bookmark(SidebarPart):
             return False
 
         page = self.context.get("self")
-        if isinstance(page, HomePage):
+        if isinstance(page, HomePage, EventsHome, NetworksHome):
             return False
 
         return isinstance(page, Page)

@@ -5,6 +5,7 @@ from wagtail.models import Page
 
 from events.models import EventsHome
 from home.models import HomePage
+from networks.models import NetworksHome
 from interactions.services import bookmarks as bookmarks_service
 
 
@@ -23,7 +24,7 @@ def bookmark_page_input(user, page, request):
     if not isinstance(page, Page):
         return {}
 
-    if isinstance(page, (HomePage, EventsHome)):
+    if isinstance(page, (HomePage, EventsHome, NetworksHome)):
         return {}
 
     is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)

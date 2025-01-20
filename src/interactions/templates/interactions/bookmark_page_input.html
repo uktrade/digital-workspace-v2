@@ -1,5 +1,6 @@
 {% if page %}
-    <button class="bookmark-page-input"
+    <div>
+        <button class="bookmark-page-input"
             title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
             data-is-htmx="{{ request.headers.hx_request }}"
             hx-post="{{ post_url }}"
@@ -9,19 +10,20 @@
             hx-select="button"
             hx-target="this"
             hx-swap="outerHTML">
-        {% if is_new_sidebar_enabled %}
+            {% if is_new_sidebar_enabled %}
             {% include 'dwds/icons/bookmark.html' %}
-        {% else %}
-            {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
-        {% endif %}
-        <span class="{{ is_new_sidebar_enabled|yesno:'dwds-sr-only,' }}">
-            {% if is_bookmarked %}
-                Bookmarked
-            {% elif is_new_sidebar_enabled %}
-                Bookmark this page
             {% else %}
-                Bookmark
+            {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
             {% endif %}
-        </span>
-    </button>
+            <span class="{{ is_new_sidebar_enabled|yesno:'dwds-sr-only,' }}">
+                {% if is_bookmarked %}
+                Bookmarked
+                {% elif is_new_sidebar_enabled %}
+                Bookmark this page
+                {% else %}
+                Bookmark
+                {% endif %}
+            </span>
+        </button>
+    </div>
 {% endif %}

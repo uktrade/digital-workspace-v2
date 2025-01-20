@@ -1,4 +1,5 @@
 from django import forms
+from django.core.paginator import Paginator, EmptyPage
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.models import Page
 
@@ -19,9 +20,17 @@ class NetworksHome(ContentPage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        context["children"] = (
-            Network.objects.live().public().child_of(self).order_by("title")
-        )
+
+        networks = Network.objects.live().public().child_of(self).order_by("title")
+        paginator = Paginator(networks, 15)
+        page = int(request.GET.get("page", 1))
+
+        try:
+            networks = paginator.page(page)
+        except EmptyPage:
+            networks = paginator.page(paginator.num_pages)
+
+        context["networks"] = networks
         context["attribution"] = False
         context["num_cols"] = 3
 
