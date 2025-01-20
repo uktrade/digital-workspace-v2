@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.safestring import SafeString
 from waffle import flag_is_active
+from wagtail.models import Page
 
 from core.models.models import SiteAlertBanner
 from home.models import HomePage, QuickLink
@@ -143,24 +144,29 @@ class Bookmark(SidebarPart):
 
     def is_visible(self):
         request = self.context["request"]
+
         if not flag_is_active(request, "new_sidebar"):
             return False
+
         page = self.context.get("self")
         if isinstance(page, HomePage):
             return False
-        return True
+
+        return isinstance(page, Page)
 
     def get_part_context(self):
         user = self.context.get("user")
         page = self.context.get("self")
         is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
         post_url = reverse("interactions:bookmark")
+        is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
         return {
             "post_url": post_url,
             "user": user,
             "page": page,
             "is_bookmarked": is_bookmarked,
             "csrf_token": self.context["csrf_token"],
+            "is_new_sidebar_enabled": is_new_sidebar_enabled,
         }
 
 
