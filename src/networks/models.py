@@ -126,7 +126,8 @@ class Network(ContentOwnerMixin, ContentPage):
     )
 
     content_panels = ContentPage.content_panels + [
-        FieldPanel("network_type"),
+        # TODO: Uncomment when network_type is ready INTR-514
+        # FieldPanel("network_type"),
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]
