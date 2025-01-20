@@ -22,3 +22,9 @@ def react_to_page(user: User, page: Page, reaction_type: str | None):
     )
 
     return reaction
+
+
+def get_reaction_count(page: Page):
+    if not isinstance(page, NewsPage):
+        return None
+    return Reaction.objects.filter(page=page).count()
