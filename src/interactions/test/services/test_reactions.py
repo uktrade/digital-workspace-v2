@@ -20,12 +20,8 @@ def user():
 def news_page():
     return NewsPage.objects.create(
         title="News",
-        slug="news-and-views",
         depth=1,
         path="page2",
-        search_title="Page Title",
-        description="Description",
-        search_headings="Heading 2",
     )
 
 
@@ -33,11 +29,8 @@ def news_page():
 def about_page():
     return AboutUs.objects.create(
         title="About Us",
-        slug="about-us",
         depth=4,
         path="page1",
-        search_title="Page Title",
-        description="Description",
     )
 
 
