@@ -13,6 +13,16 @@ def user():
 
 
 @pytest.fixture
+def user2():
+    return get_user_model().objects.create(username="test_user2")
+
+
+@pytest.fixture
+def user3():
+    return get_user_model().objects.create(username="test_user3")
+
+
+@pytest.fixture
 def news_page():
     return NewsPage.objects.create(
         title="News",
