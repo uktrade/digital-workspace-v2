@@ -98,5 +98,5 @@ def assert_counts(counts):
 
 
 @pytest.mark.django_db
-def test_get_reaction_counts_invalid_page(user, user2, about_page):
+def test_get_reaction_counts_invalid_page(about_page):
     assert get_reaction_counts(about_page) == {}
