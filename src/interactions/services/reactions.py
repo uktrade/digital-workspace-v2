@@ -5,15 +5,20 @@ from news.models import NewsPage
 from user.models import User
 
 
-def manage_reaction(user: User, page: Page, reaction_type: str):
+def react_to_page(user: User, page: Page, reaction_type: str | None):
 
     if not isinstance(page, NewsPage):
         raise ValueError("The page must be a NewsPage.")
 
-    if not reaction_type or reaction_type not in ReactionType.values:
+    if reaction_type is None:
         Reaction.objects.filter(user=user, page=page).delete()
         return None
 
-    return Reaction.objects.update_or_create(
+    if reaction_type not in ReactionType.values:
+        raise ValueError(f"{reaction_type} is not a valid reaction type.")
+
+    reaction, created = Reaction.objects.update_or_create(
         user=user, page=page, defaults={"type": reaction_type}
     )
+
+    return reaction
