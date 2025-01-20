@@ -1,5 +1,5 @@
 from django import forms
-from django.core.paginator import Paginator, EmptyPage
+from django.core.paginator import EmptyPage, Paginator
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.models import Page
 
@@ -19,7 +19,6 @@ class NetworksHome(ContentPage):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
 
         networks = Network.objects.live().public().child_of(self).order_by("title")
         paginator = Paginator(networks, 15)

@@ -6,9 +6,7 @@
 {% endblock primary_content_classes %}
 
 {% block primary_content %}
-    <div class="content-stack">
-        {{ page.body }}
-    </div>
+    <div class="content-stack">{{ page.body }}</div>
     {% include "networks/includes/network_listing_section.html" with networks=networks %}
     {% if networks.paginator.num_pages > 1 %}
         {% include "dwds/components/pagination.html" with pages=networks %}

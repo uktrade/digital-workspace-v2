@@ -5,8 +5,8 @@ from wagtail.models import Page
 
 from events.models import EventsHome
 from home.models import HomePage
-from networks.models import NetworksHome
 from interactions.services import bookmarks as bookmarks_service
+from networks.models import NetworksHome
 
 
 register = template.Library()

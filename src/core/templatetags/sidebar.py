@@ -8,10 +8,10 @@ from waffle import flag_is_active
 from wagtail.models import Page
 
 from core.models.models import SiteAlertBanner
-from home.models import HomePage, QuickLink
 from events.models import EventsHome
-from networks.models import NetworksHome
+from home.models import HomePage, QuickLink
 from interactions.services import bookmarks as bookmarks_service
+from networks.models import NetworksHome
 
 
 register = template.Library()
