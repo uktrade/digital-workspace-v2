@@ -176,9 +176,10 @@ class Comment(SidebarPart):
 
     def is_visible(self):
         request = self.context["request"]
-        page = self.context.get("self")
         if not flag_is_active(request, "new_sidebar"):
             return False
+
+        page = self.context.get("self")
         return bool(isinstance(page, NewsPage) and page.allow_comments)
 
     def get_part_context(self):
