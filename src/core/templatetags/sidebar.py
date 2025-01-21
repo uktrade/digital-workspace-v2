@@ -151,7 +151,7 @@ class Bookmark(SidebarPart):
             return False
 
         page = self.context.get("self")
-        if isinstance(page, HomePage, EventsHome, NetworksHome):
+        if isinstance(page, (HomePage, EventsHome, NetworksHome)):
             return False
 
         return isinstance(page, Page)

@@ -1,5 +1,5 @@
 {% extends "dwds_content.html" %}
-{% load cards %}
+{% load wagtailcore_tags wagtailimages_tags cards %}
 
 {% block primary_content_classes %}
     content-stack large
@@ -7,8 +7,12 @@
 
 {% block primary_content %}
     <div class="content-stack">{{ page.body }}</div>
-    {% include "networks/includes/network_listing_section.html" with networks=networks %}
     {% if networks.paginator.num_pages > 1 %}
         {% include "dwds/components/pagination.html" with pages=networks %}
     {% endif %}
+    <div class="content-grid grid-cards-auto-fill">
+        {% for network in networks %}
+            <div class="dwds-content-item-card">{% page_to_engagement network %}</div>
+        {% endfor %}
+    </div>
 {% endblock primary_content %}
