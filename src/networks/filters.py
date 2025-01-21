@@ -1,6 +1,8 @@
 import django_filters
 from django import forms
+
 from networks.models import Network
+
 
 class NetworksFilters(django_filters.FilterSet):
     network_type = django_filters.ChoiceFilter(
