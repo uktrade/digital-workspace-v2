@@ -7,6 +7,7 @@ from django.utils.safestring import SafeString
 from waffle import flag_is_active
 from wagtail.models import Page
 
+from core import flags
 from core.models.models import SiteAlertBanner
 from events.models import EventsHome
 from home.models import HomePage, QuickLink
@@ -112,7 +113,7 @@ class GiveFeedback(SidebarPart):
 
     def is_visible(self):
         request = self.context["request"]
-        if not flag_is_active(request, "new_sidebar"):
+        if not flag_is_active(request, flags.NEW_SIDEBAR):
             return False
         page = self.context.get("self")
         if isinstance(page, HomePage):
@@ -147,7 +148,7 @@ class Bookmark(SidebarPart):
     def is_visible(self):
         request = self.context["request"]
 
-        if not flag_is_active(request, "new_sidebar"):
+        if not flag_is_active(request, flags.NEW_SIDEBAR):
             return False
 
         page = self.context.get("self")
@@ -161,7 +162,10 @@ class Bookmark(SidebarPart):
         page = self.context.get("self")
         is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
         post_url = reverse("interactions:bookmark")
-        is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
+        is_new_sidebar_enabled = flag_is_active(
+            self.context["request"],
+            flags.NEW_SIDEBAR,
+        )
         return {
             "post_url": post_url,
             "user": user,

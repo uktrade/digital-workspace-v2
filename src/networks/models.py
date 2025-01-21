@@ -1,4 +1,5 @@
 from django import forms
+from django.db import models
 from django.core.paginator import EmptyPage, Paginator
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.models import Page
@@ -7,6 +8,7 @@ import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
 from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
+from networks.panels import NetworkTypesFlaggedFieldPanel
 
 
 class NetworksHome(ContentPage):
@@ -114,7 +116,27 @@ class Network(ContentOwnerMixin, ContentPage):
     template = "content/content_page.html"
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
 
+    class NetworkTypes(models.TextChoices):
+        DBT_INITIATIVES = "dbt_initiatives", "DBT Initiatives"
+        DEPARTMENT_FUNCTION = "department_function", "Department/Function"
+        DIVERSITY_AND_INCLUSION = "diversity_and_inclusion", "Diversity and Inclusion"
+        HEALTH_AND_WELLBEING = "health_and_wellbeing", "Health and Wellbeing"
+        INTERESTS_AND_HOBBIES = "interests_and_hobbies", "Interests and Hobbies"
+        PROFESSIONAL_DEVELOPMENT_AND_SKILLS = (
+            "professional_development_and_skills",
+            "Professional Development and Skills",
+        )
+        SOCIAL_AND_COMMUNITY = "social_and_community", "Social and Community"
+
+    network_type = models.CharField(
+        max_length=50,
+        choices=NetworkTypes.choices,
+        blank=True,
+        null=True,
+    )
+
     content_panels = ContentPage.content_panels + [
+        NetworkTypesFlaggedFieldPanel("network_type"),
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]
