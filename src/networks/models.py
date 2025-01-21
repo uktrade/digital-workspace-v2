@@ -14,7 +14,6 @@ from networks.panels import NetworkTypesFlaggedFieldPanel
 
 
 class NetworksHome(ContentPage):
-
     is_creatable = False
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
     template = "content/content_page.html"
