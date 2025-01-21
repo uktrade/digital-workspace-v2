@@ -109,5 +109,5 @@ def test_get_user_reaction(user, news_page, create_reaction):
 
 
 @pytest.mark.django_db
-def get_user_reaction_page_doesnot_exist(user, news_page):
+def test_get_user_reaction_no_page_found(user, news_page):
     assert get_user_reaction(user, news_page) is None
