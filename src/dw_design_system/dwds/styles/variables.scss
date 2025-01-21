@@ -66,6 +66,17 @@
   --color-button-transactional-text: var(--dbt-white);
   --color-button-navigation-background-active: var(--gds-dark-blue);
   --color-icon: var(--dbt-blue);
+  
+  // Icons
+  --color-icon-light-backdrop: #fbe3df;
+  --color-icon-light-border: var(--gds-black);
+  --color-icon-light-background: var(--dbt-white);
+  --color-icon-light-foreground: var(--gds-black);
+  --color-icon-dark-backdrop: var(--dbt-background-blue);
+  --color-icon-dark-border: var(--dbt-blue);
+  --color-icon-dark-background: var(--dbt-blue);
+  --color-icon-dark-foreground: var(--dbt-white);
+
   --color-hr: var(--gds-mid-grey);
   --color-selected-radio: var(--color-button-text-focus);
   --color-menu-active-border: var(--dbt-light-blue);

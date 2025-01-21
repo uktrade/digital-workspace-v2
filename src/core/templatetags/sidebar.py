@@ -13,6 +13,7 @@ from events.models import EventsHome
 from home.models import HomePage, QuickLink
 from interactions.services import bookmarks as bookmarks_service
 from networks.models import NetworksHome
+from news.models import NewsPage
 
 
 register = template.Library()
@@ -176,6 +177,28 @@ class Bookmark(SidebarPart):
         }
 
 
+class Comment(SidebarPart):
+    template_name = "tags/sidebar/parts/comment.html"
+
+    def is_visible(self):
+        request = self.context["request"]
+        if not flag_is_active(request, "new_sidebar"):
+            return False
+
+        page = self.context.get("self")
+        return bool(isinstance(page, NewsPage) and page.allow_comments)
+
+    def get_part_context(self):
+        page = self.context.get("self")
+        allow_comments = page.allow_comments
+        is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
+        return {
+            "page": page,
+            "allow_comments": allow_comments,
+            "is_new_sidebar_enabled": is_new_sidebar_enabled,
+        }
+
+
 class QuickLinks(SidebarPart):
     template_name = "tags/sidebar/parts/quick_links.html"
 
@@ -210,6 +233,7 @@ def sidebar(context):
             title="Primary page actions",
             parts=[
                 Bookmark,
+                Comment,
             ],
             context=context,
             template_name="tags/sidebar/sections/primary_page_actions.html",
