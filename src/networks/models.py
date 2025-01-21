@@ -29,7 +29,7 @@ class NetworksHome(ContentPage):
 
         context = super().get_context(request, *args, **kwargs)
 
-        networks = Network.objects.live().public()
+        networks = Network.objects.live().public().order_by("title")
         if flag_is_active(request, flags.NETWORKS_HUB):
             # Filtering networks by network type
             networks_filters = NetworksFilters(request.GET, queryset=networks)
@@ -44,10 +44,10 @@ class NetworksHome(ContentPage):
                 networks = paginator.page(paginator.num_pages)
 
             context["networks_filters"] = networks_filters
-            context["networks"] = networks.order_by("title")
+            context["networks"] = networks
         else:
             networks = networks.child_of(self)
-            context["children"] = networks.order_by("title")
+            context["children"] = networks
 
         context["attribution"] = False
         context["num_cols"] = 3
