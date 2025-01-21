@@ -1,6 +1,6 @@
 from django import forms
-from django.db import models
 from django.core.paginator import EmptyPage, Paginator
+from django.db import models
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.models import Page
 
