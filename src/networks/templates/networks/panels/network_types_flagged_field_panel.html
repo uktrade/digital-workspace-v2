@@ -1,0 +1,5 @@
+{% if flag_is_active %}
+    {% include "wagtailadmin/panels/field_panel.html" %}
+{% else %}
+    <p>This field is not currently active.</p>
+{% endif %}

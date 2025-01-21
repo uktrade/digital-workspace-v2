@@ -3,6 +3,7 @@ from django.urls import reverse
 from waffle import flag_is_active
 from wagtail.models import Page
 
+from core import flags
 from events.models import EventsHome
 from home.models import HomePage
 from interactions.services import bookmarks as bookmarks_service
@@ -14,7 +15,7 @@ register = template.Library()
 # TODO: Remove `bookmark_page_input` once `new_sidebar` flag is removed
 @register.inclusion_tag("interactions/bookmark_page_input.html")
 def bookmark_page_input(user, page, request):
-    if flag_is_active(request, "new_sidebar"):
+    if flag_is_active(request, flags.NEW_SIDEBAR):
         return {}
 
     if page is None:
