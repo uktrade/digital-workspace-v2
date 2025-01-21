@@ -10,6 +10,9 @@
     {% if networks.paginator.num_pages > 1 %}
         {% include "dwds/components/pagination.html" with pages=networks %}
     {% endif %}
+    {% if FEATURE_FLAGS.network_types %}
+        {% include "networks/includes/networks_filters.html" %}
+    {% endif %}
     <div class="content-grid grid-cards-auto-fill">
         {% for network in networks %}
             <div class="dwds-content-item-card">{% page_to_engagement network %}</div>
