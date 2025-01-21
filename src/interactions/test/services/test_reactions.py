@@ -107,5 +107,7 @@ def test_get_reaction_counts_invalid_page(about_page):
 def test_get_user_reaction(user, news_page, create_reaction):
     assert get_user_reaction(user, news_page) == ReactionType.LIKE.label
 
-    Reaction.objects.filter(user=user, page=news_page).delete()
+
+@pytest.mark.django_db
+def get_user_reaction_page_doesnot_exist(user, news_page):
     assert get_user_reaction(user, news_page) is None
