@@ -13,7 +13,7 @@
 
 {% block post_primary_content %}
     {% if self.allow_comments %}
-        <div class="news_comments">
+        <div class="news_comments" id="comment_section">
             {% if page.comment_count > 0 %}
                 <div class="news-article-comments">
                     <h2 class="govuk-heading-m">
