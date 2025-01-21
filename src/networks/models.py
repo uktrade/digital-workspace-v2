@@ -12,6 +12,7 @@ from networks.panels import NetworkTypesFlaggedFieldPanel
 
 
 class NetworksHome(ContentPage):
+
     is_creatable = False
     template = "networks/networks_home.html"
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
@@ -20,9 +21,16 @@ class NetworksHome(ContentPage):
         return self.template
 
     def get_context(self, request, *args, **kwargs):
+        from networks.filters import NetworksFilters
+
         context = super().get_context(request, *args, **kwargs)
 
         networks = Network.objects.live().public().child_of(self).order_by("title")
+
+        # Filtering networks by network type
+        networks_filters = NetworksFilters(request.GET, queryset=networks)
+        networks = networks_filters.qs
+
         paginator = Paginator(networks, 15)
         page = int(request.GET.get("page", 1))
 
@@ -30,7 +38,7 @@ class NetworksHome(ContentPage):
             networks = paginator.page(page)
         except EmptyPage:
             networks = paginator.page(paginator.num_pages)
-
+        context["networks_filters"] = networks_filters
         context["networks"] = networks
         context["attribution"] = False
         context["num_cols"] = 3
@@ -153,9 +161,7 @@ class Network(ContentOwnerMixin, ContentPage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        context["children"] = (
-            Network.objects.live().public().child_of(self).order_by("title")
-        )
+        context["children"] = Network.objects.live().public().child_of(self).order_by("title")
         context["attribution"] = True
         context["num_cols"] = 3
 
