@@ -26,16 +26,21 @@ class NetworksHome(ContentPage):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        networks = Network.objects.live().public().child_of(self).order_by("title")
-        paginator = Paginator(networks, 15)
-        page = int(request.GET.get("page", 1))
+        networks = Network.objects.live().public()
+        if flag_is_active(request, flags.NETWORKS_HUB):
+            paginator = Paginator(networks, 15)
+            page = int(request.GET.get("page", 1))
 
-        try:
-            networks = paginator.page(page)
-        except EmptyPage:
-            networks = paginator.page(paginator.num_pages)
+            try:
+                networks = paginator.page(page)
+            except EmptyPage:
+                networks = paginator.page(paginator.num_pages)
 
-        context["networks"] = networks
+            context["networks"] = networks.order_by("title")
+        else:
+            networks = networks.child_of(self)
+            context["children"] = networks.order_by("title")
+
         context["attribution"] = False
         context["num_cols"] = 3
 
