@@ -44,3 +44,8 @@ def get_reaction_counts(page: Page):
         {reaction["type"]: reaction["count"] for reaction in reactions}
     )
     return reaction_counts
+
+
+def get_user_reaction(user: User, page: Page):
+    reaction = Reaction.objects.filter(user=user, page=page).first()
+    return ReactionType(reaction.type).label if reaction else None
