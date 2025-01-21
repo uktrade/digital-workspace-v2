@@ -50,6 +50,8 @@ urlpatterns = [
     path("feedback/", include(feedback_urls), name="feedback"),
     # Interactions
     path("interactions/", include("interactions.urls")),
+    # Networks
+    path("networks/", include("networks.urls")),
     # DW Design System
     path("dwds/", include(dwds_urlpatterns)),
     # iCal feed for testing
