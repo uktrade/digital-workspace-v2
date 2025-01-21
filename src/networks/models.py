@@ -1,11 +1,13 @@
 from django import forms
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
+from waffle import flag_is_active
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.models import Page
 
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
+from core import flags
 from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
 from networks.panels import NetworkTypesFlaggedFieldPanel
@@ -13,11 +15,13 @@ from networks.panels import NetworkTypesFlaggedFieldPanel
 
 class NetworksHome(ContentPage):
     is_creatable = False
-    template = "networks/networks_home.html"
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
+    template = "content/content_page.html"
 
     def get_template(self, request, *args, **kwargs):
-        return self.template
+        if flag_is_active(request, flags.NETWORKS_HUB):
+            return "networks/networks_home.html"
+        return super().get_template(request, *args, **kwargs)
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
