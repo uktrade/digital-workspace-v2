@@ -7,6 +7,7 @@ from core import flags
 from events.models import EventsHome
 from home.models import HomePage
 from interactions.services import bookmarks as bookmarks_service
+from networks.models import NetworksHome
 
 
 register = template.Library()
@@ -24,7 +25,7 @@ def bookmark_page_input(user, page, request):
     if not isinstance(page, Page):
         return {}
 
-    if isinstance(page, (HomePage, EventsHome)):
+    if isinstance(page, (HomePage, EventsHome, NetworksHome)):
         return {}
 
     is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
