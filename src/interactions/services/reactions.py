@@ -6,7 +6,7 @@ from news.models import NewsPage
 from user.models import User
 
 
-def react_to_page(user: User, page: Page, reaction_type: str | None):
+def react_to_page(user: User, page: Page, reaction_type: str | None) -> Reaction | None:
 
     if not isinstance(page, NewsPage):
         raise ValueError("The page must be a NewsPage.")
@@ -25,13 +25,13 @@ def react_to_page(user: User, page: Page, reaction_type: str | None):
     return reaction
 
 
-def get_reaction_count(page: Page):
+def get_reaction_count(page: Page) -> int | None:
     if not isinstance(page, NewsPage):
         return None
     return Reaction.objects.filter(page=page).count()
 
 
-def get_reaction_counts(page: Page):
+def get_reaction_counts(page: Page) -> dict:
     if not isinstance(page, NewsPage):
         return {}
 
@@ -44,3 +44,10 @@ def get_reaction_counts(page: Page):
         {reaction["type"]: reaction["count"] for reaction in reactions}
     )
     return reaction_counts
+
+
+def get_user_reaction(user: User, page: Page) -> ReactionType | None:
+    reaction = Reaction.objects.filter(user=user, page=page).first()
+    if reaction:
+        return reaction.type
+    return None
