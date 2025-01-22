@@ -16,7 +16,7 @@ def update_profile_completion(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("peoplefinder", "0102_remove_person_manager_cannot_be_self_and_more"),
+        ("peoplefinder", "0123_ukstafflocation_building_name"),
     ]
 
     operations = [
