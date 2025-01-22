@@ -112,7 +112,7 @@ class NetworkForm(WagtailAdminPageForm):
             network, _ = pf_models.NewNetwork.objects.get_or_create(page=page)
             network.old_network_id = self.cleaned_data.get("peoplefinder_network")
             network.save()
-        else:
+        elif not page._state.adding:
             pf_models.NewNetwork.objects.filter(page=page).delete()
 
         if commit:
