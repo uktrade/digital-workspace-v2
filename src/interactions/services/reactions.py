@@ -51,3 +51,7 @@ def get_user_reaction(user: User, page: Page) -> ReactionType | None:
     if reaction:
         return reaction.type
     return None
+
+
+def has_user_reacted(user: User, page: Page) -> bool:
+    return Reaction.objects.filter(user=user, page=page).exists()
