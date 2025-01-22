@@ -114,6 +114,7 @@ class PersonService:
             "or_fields": [
                 "manager",
                 "do_not_work_for_dit",
+                "international_building",
             ],
             "edit_section": EditSections.TEAMS,
             "form_id": "manager-component",
