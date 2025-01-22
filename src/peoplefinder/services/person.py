@@ -82,11 +82,11 @@ class PersonService:
             "weight": 0,
             "edit_section": EditSections.PERSONAL,
         },
-        "photo": {
-            "weight": 1,
-            "edit_section": EditSections.PERSONAL,
-            "form_id": "photo-form-group",
-        },
+        # "photo": {
+        #     "weight": 1,
+        #     "edit_section": EditSections.PERSONAL,
+        #     "form_id": "photo-form-group",
+        # },
         "email": {
             "weight": 1,
             "edit_section": EditSections.CONTACT,
