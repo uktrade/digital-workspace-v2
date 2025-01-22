@@ -105,7 +105,7 @@ def test_get_reaction_counts_invalid_page(about_page):
 
 @pytest.mark.django_db
 def test_get_user_reaction(user, news_page, create_reaction):
-    assert get_user_reaction(user, news_page) == ReactionType.LIKE.label
+    assert get_user_reaction(user, news_page) == ReactionType.LIKE
 
 
 @pytest.mark.django_db
