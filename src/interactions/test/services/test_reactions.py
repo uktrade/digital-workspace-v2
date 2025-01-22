@@ -122,3 +122,8 @@ def test_has_user_not_reacted(user, news_page):
 @pytest.mark.django_db
 def test_has_user_reacted(user, news_page, create_reaction):
     assert has_user_reacted(user, news_page) is True
+
+
+@pytest.mark.django_db
+def test_has_user_reacted_invalid_user(user2, news_page, create_reaction):
+    assert has_user_reacted(user2, news_page) is False
