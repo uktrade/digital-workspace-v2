@@ -4,6 +4,7 @@
             event.preventDefault();
             const feedbackElement = document.querySelector('.feedback-section details');
             const feedbackInput = feedbackElement.querySelector('#id_trying_to');
+            feedbackElement.scrollIntoView({behavior: 'smooth'});
             feedbackElement.open = true;
             feedbackInput.focus();
         }
