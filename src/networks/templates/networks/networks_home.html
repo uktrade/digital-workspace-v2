@@ -11,9 +11,7 @@
         {% include "networks/includes/networks_filters.html" %}
     {% endif %}
     <div class="content-grid grid-cards-auto-fill">
-        {% if not networks %}
-            <p>There are no networks to display.</p>
-        {% endif %}
+        {% if not networks %}<p>There are no networks to display.</p>{% endif %}
         {% for network in networks %}
             <div class="dwds-content-item-card">{% page_to_engagement network %}</div>
         {% endfor %}
