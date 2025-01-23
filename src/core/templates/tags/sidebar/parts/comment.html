@@ -1,7 +1,18 @@
 {% if page %}
     {% if is_new_sidebar_enabled and page.allow_comments %}
+        <script type="text/javascript">
+        function scrollAndFocus(event, inputId) {
+            event.preventDefault();
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.scrollIntoView({behavior: 'smooth'});
+                input.focus();
+            }
+        }
+        </script>
         <a class="comment-page-input"
            href="#comment_section"
+           onClick="scrollAndFocus(event, 'id_comment')"
            title="Comment section">{% include 'dwds/icons/comment.html' with hover_dark=True %}</a>
     {% endif %}
 {% endif %}
