@@ -108,6 +108,8 @@
 {% endblock post_primary_content %}
 
 {% block secondary_content %}
-    {% include "news/includes/news_categories.html" %}
-    {{ block.super }}
+    <div class="content-stack large">
+        {{ block.super }}
+        {% comment %} {% include "news/includes/news_categories.html" %} {% endcomment %}
+    </div>
 {% endblock secondary_content %}

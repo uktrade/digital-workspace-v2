@@ -2,9 +2,10 @@
 {% load wagtailcore_tags %}
 
 {% block secondary_content %}
-    <div class="content-stack">
+    <div class="content-stack large">
+        {{ block.super }}
         {% if page_topics %}
-            <div class="dwds-content-item-card no-shadow">
+            <div class="dwds-content-item-card">
                 <div class="content-item">
                     <div class="content-main">
                         <div class="content-body content-stack">
@@ -21,6 +22,5 @@
                 </div>
             </div>
         {% endif %}
-        {{ block.super }}
     </div>
 {% endblock secondary_content %}
