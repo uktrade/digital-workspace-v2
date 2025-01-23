@@ -6,6 +6,7 @@ from interactions.services.reactions import (
     get_reaction_count,
     get_reaction_counts,
     get_user_reaction,
+    has_user_reacted,
 )
 
 ALL_REACTION_TYPES = ReactionType.values
@@ -111,3 +112,18 @@ def test_get_user_reaction(user, news_page, create_reaction):
 @pytest.mark.django_db
 def test_get_user_reaction_no_page_found(user, news_page):
     assert get_user_reaction(user, news_page) is None
+
+
+@pytest.mark.django_db
+def test_has_user_not_reacted(user, news_page):
+    assert has_user_reacted(user, news_page) is False
+
+
+@pytest.mark.django_db
+def test_has_user_reacted(user, news_page, create_reaction):
+    assert has_user_reacted(user, news_page) is True
+
+
+@pytest.mark.django_db
+def test_has_user_reacted_invalid_user(user2, news_page, create_reaction):
+    assert has_user_reacted(user2, news_page) is False
