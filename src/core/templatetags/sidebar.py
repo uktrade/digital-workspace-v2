@@ -7,9 +7,13 @@ from django.utils.safestring import SafeString
 from waffle import flag_is_active
 from wagtail.models import Page
 
+from core import flags
 from core.models.models import SiteAlertBanner
+from events.models import EventsHome
 from home.models import HomePage, QuickLink
 from interactions.services import bookmarks as bookmarks_service
+from networks.models import NetworksHome
+from news.models import NewsPage
 
 
 register = template.Library()
@@ -110,7 +114,7 @@ class GiveFeedback(SidebarPart):
 
     def is_visible(self):
         request = self.context["request"]
-        if not flag_is_active(request, "new_sidebar"):
+        if not flag_is_active(request, flags.NEW_SIDEBAR):
             return False
         page = self.context.get("self")
         if isinstance(page, HomePage):
@@ -145,11 +149,11 @@ class Bookmark(SidebarPart):
     def is_visible(self):
         request = self.context["request"]
 
-        if not flag_is_active(request, "new_sidebar"):
+        if not flag_is_active(request, flags.NEW_SIDEBAR):
             return False
 
         page = self.context.get("self")
-        if isinstance(page, HomePage):
+        if isinstance(page, (HomePage, EventsHome, NetworksHome)):
             return False
 
         return isinstance(page, Page)
@@ -159,13 +163,38 @@ class Bookmark(SidebarPart):
         page = self.context.get("self")
         is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
         post_url = reverse("interactions:bookmark")
-        is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
+        is_new_sidebar_enabled = flag_is_active(
+            self.context["request"],
+            flags.NEW_SIDEBAR,
+        )
         return {
             "post_url": post_url,
             "user": user,
             "page": page,
             "is_bookmarked": is_bookmarked,
             "csrf_token": self.context["csrf_token"],
+            "is_new_sidebar_enabled": is_new_sidebar_enabled,
+        }
+
+
+class Comment(SidebarPart):
+    template_name = "tags/sidebar/parts/comment.html"
+
+    def is_visible(self):
+        request = self.context["request"]
+        if not flag_is_active(request, "new_sidebar"):
+            return False
+
+        page = self.context.get("self")
+        return bool(isinstance(page, NewsPage) and page.allow_comments)
+
+    def get_part_context(self):
+        page = self.context.get("self")
+        allow_comments = page.allow_comments
+        is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
+        return {
+            "page": page,
+            "allow_comments": allow_comments,
             "is_new_sidebar_enabled": is_new_sidebar_enabled,
         }
 
@@ -204,6 +233,7 @@ def sidebar(context):
             title="Primary page actions",
             parts=[
                 Bookmark,
+                Comment,
             ],
             context=context,
             template_name="tags/sidebar/sections/primary_page_actions.html",
