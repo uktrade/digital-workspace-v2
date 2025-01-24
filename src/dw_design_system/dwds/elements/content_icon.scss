@@ -17,6 +17,12 @@
     align-items: normal;
     // align-items: baseline;
 
+    &.no-gap {
+        > .content-icon {
+            margin-inline-end: 0px;
+        }
+    }
+
     &.min-gap {
         > .content-icon {
             margin-inline-end: var(--s-5);
