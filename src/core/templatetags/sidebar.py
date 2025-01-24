@@ -228,25 +228,12 @@ class Share(SidebarPart):
         page = self.context.get("self")
         return bool(isinstance(page, Page))
 
-    def share_page_dialog(self):
-        request = self.context["request"]
-        page = self.context["page"]
-
-        context = {
-            "page": page,
-        }
-
-        return render_to_string(
-            "interactions/share_page_dialog.html", context=context, request=request
-        )
-
     def get_part_context(self):
         page = self.context.get("self")
         is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
         return {
             "page": page,
             "is_new_sidebar_enabled": is_new_sidebar_enabled,
-            "share_page_dialog": self.share_page_dialog,
         }
 
 
