@@ -51,7 +51,7 @@ RICH_TEXT_FEATURES = [
 ]
 
 
-def strip_tags_with_newlines(string):
+def strip_tags_with_newlines(string: str) -> str:
     spaced = string.replace("><", ">\n<")
     return strip_tags(spaced)
 
