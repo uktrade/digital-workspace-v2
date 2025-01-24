@@ -1,6 +1,6 @@
 {% if page %}
-    <div>
-        <button class="dwds-button bookmark-page-input content-with-icon"
+    {% if not FEATURE_FLAGS.new_sidebar %}<div>{% endif %}
+        <button class="dwds-button dwds-button--clear-icon {% if not FEATURE_FLAGS.new_sidebar %}bookmark-page-input{% endif %} content-with-icon no-gap"
                 title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
                 data-is-htmx="{{ request.headers.hx_request }}"
                 hx-post="{{ post_url }}"
@@ -29,5 +29,5 @@
                 {% endif %}
             </span>
         </button>
-    </div>
+        {% if not FEATURE_FLAGS.new_sidebar %}</div>{% endif %}
 {% endif %}
