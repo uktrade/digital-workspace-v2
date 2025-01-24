@@ -1,6 +1,6 @@
 {% if page %}
     <div>
-        <button class="bookmark-page-input"
+        <button class="dwds-button bookmark-page-input content-with-icon"
                 title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
                 data-is-htmx="{{ request.headers.hx_request }}"
                 hx-post="{{ post_url }}"
