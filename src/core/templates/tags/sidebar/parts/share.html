@@ -1,0 +1,24 @@
+{% load wagtailcore_tags %}
+{% if page %}
+    {% if is_new_sidebar_enabled %}
+        <dialog class="share-dialog" id="share-page-dialog">
+            <div>
+                {% include "dwds/components/copy_text.html" with url=page.get_full_url %}
+                <form method="dialog">
+                    <button>Close</button>
+                </form>
+            </div>
+        </dialog>
+        <button class="sidebar-page-input" onclick="openSharePageDialog()">
+            {% include 'dwds/icons/share.html' with hover_dark=True %}
+        </button>
+    {% endif %}
+    <script>
+    function openSharePageDialog() {
+        document.querySelector("#share-page-dialog").showModal();
+    }
+    function closeSharePageDialog() {
+        document.querySelector("#share-page-dialog").close();
+    }
+    </script>
+{% endif %}

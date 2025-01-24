@@ -1,0 +1,47 @@
+.dwds-copy-text {
+  --height: 40px;
+  display: flex;
+  flex-grow: 1;
+  border: solid 1px var(--color-border);
+
+  // i {
+  //   max-width: var(--height);
+  //   max-height: var(--height);
+  //   display: none;
+  //   align-items: center;
+  //   justify-content: center;
+  //   vertical-align: bottom;
+  // }
+
+  input {
+    border-radius: unset;
+    border: none;
+    flex-grow: 1;
+    width: fit-content;
+    height: var(--height);
+    vertical-align: bottom;
+
+    &:hover {
+      background: #cccccc;
+    }
+  }
+
+  button {
+    flex-shrink: 0;
+    width: var(--height);
+    height: var(--height);
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+    border: none;
+    border-left: solid 1px var(--color-border);
+    cursor: pointer;
+    display: inline;
+    vertical-align: bottom;
+    float: right;
+
+    &:hover {
+      background: #cccccc;
+    }
+  }
+}

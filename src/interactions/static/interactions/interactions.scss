@@ -28,6 +28,15 @@
     }
 
 }
+// Todo: Consolidate related styles for all sidebar input buttons?
+// Or keep seperate and rename to share-page-input?
+.sidebar-page-input {
+    all: unset;
+
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+}
 
 .bookmark-index-list {
     padding: 0;

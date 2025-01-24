@@ -31,6 +31,7 @@
 @forward "components/promo";
 @forward "components/profile_info";
 @forward "components/accordion";
+@forward "components/copy_text";
 
 // Elements
 @forward "elements/button";
@@ -48,6 +49,8 @@
 // Icons
 @forward "icons/bookmark";
 @forward "icons/comment";
+@forward "icons/share";
+@forward "icons/content-copy";
 
 // Layouts
 @forward "layouts/content_sidebar";
@@ -59,6 +62,7 @@
 @forward "layouts/content_custom_sidebar";
 @forward "layouts/content_cluster";
 @forward "layouts/icon_card";
+
 
 // App specific stylesheets
 @forward "../../interactions/static/interactions/interactions.scss";

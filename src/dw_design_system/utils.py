@@ -234,6 +234,13 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     ]
                 },
             },
+            {
+                "name": "Copy Text",
+                "template": "dwds/components/copy_text.html",
+                "context": {
+                    "url": "https://www.gov.uk",
+                },
+            },
         ],
         "layouts": [],
     }

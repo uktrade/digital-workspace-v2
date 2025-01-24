@@ -217,6 +217,39 @@ class Comment(SidebarPart):
         return context
 
 
+class Share(SidebarPart):
+    template_name = "tags/sidebar/parts/share.html"
+
+    def is_visible(self):
+        request = self.context["request"]
+        if not flag_is_active(request, "new_sidebar"):
+            return False
+
+        page = self.context.get("self")
+        return bool(isinstance(page, Page))
+
+    def share_page_dialog(self):
+        request = self.context["request"]
+        page = self.context["page"]
+
+        context = {
+            "page": page,
+        }
+
+        return render_to_string(
+            "interactions/share_page_dialog.html", context=context, request=request
+        )
+
+    def get_part_context(self):
+        page = self.context.get("self")
+        is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
+        return {
+            "page": page,
+            "is_new_sidebar_enabled": is_new_sidebar_enabled,
+            "share_page_dialog": self.share_page_dialog,
+        }
+
+
 class QuickLinks(SidebarPart):
     template_name = "tags/sidebar/parts/quick_links.html"
 
@@ -254,6 +287,7 @@ def sidebar(context):
             parts=[
                 Bookmark,
                 Comment,
+                Share,
             ],
             context=context,
             template_name="tags/sidebar/sections/primary_page_actions.html",
