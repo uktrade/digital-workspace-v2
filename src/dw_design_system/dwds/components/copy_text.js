@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.dwds-copy-text').forEach(function (copy_text_elem) {
-        const inputField = copy_text_elem.querySelector(".copy-text-input");
-        const copyButton = copy_text_elem.querySelector(".copy-text-button");
+    document.querySelectorAll('.dwds-copy-text').forEach(function (copy_text_element) {
+        const inputField = copy_text_element.querySelector(".copy-text-input");
+        const copyButton = copy_text_element.querySelector(".copy-text-button");
 
         copyButton.addEventListener("click", function () {
             const text = inputField.value;
