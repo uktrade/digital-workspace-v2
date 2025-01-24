@@ -14,7 +14,7 @@
         {% for network in networks %}
             <div class="dwds-content-item-card">{% page_to_engagement network %}</div>
         {% else %}
-            <p>There are no networks to display.
+            <p>There are no networks to display.</p>
         {% endfor %}
     </div>
     {% if networks.paginator.num_pages > 1 %}
