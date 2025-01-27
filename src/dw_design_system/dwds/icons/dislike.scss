@@ -1,0 +1,45 @@
+.dislike-icon {
+    --background-color:var(--color-background-light-pink);
+    --background-shade-color:var(--color-icon-light-background);
+    --foreground-color:var(--color-icon-light-foreground);
+    --foreground-stroke:var(--color-foreground-black);
+
+     &.dark {
+          --background-color:var(--color-background-very-light-grey);
+          --background-shade-color:var(--color-burnt-orange);
+          --foreground-color:var(--color-burnt-orange);
+          --foreground-stroke:'';
+     }
+
+    &.hover-light {
+        &:hover {
+            --background-color:var(--color-background-very-light-grey);
+            --background-shade-color:var(--color-burnt-orange);
+            --foreground-color:var(--color-burnt-orange);
+            --foreground-stroke:'';
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+          --background-color:var(--color-background-light-pink);
+          --background-shade-color:var(--color-icon-light-background);
+          --foreground-color:var(--color-icon-light-foreground);
+          --foreground-stroke:var(--color-foreground-black);
+        }
+    }
+
+    .background {
+        fill: var(--background-color);
+    }
+
+    .background-shade {
+        fill: var(--background-shade-color);
+    }
+
+    .foreground {
+        fill: var(--foreground-color);
+        stroke: var(--foreground-stroke);
+    }
+
+}

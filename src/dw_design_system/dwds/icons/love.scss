@@ -1,0 +1,39 @@
+.love-icon {
+
+    --background-color:var(--color-icon-light-backdrop);
+    --foreground-color:var(--color-icon-dark-foreground);
+    --foreground-stroke:var(--color-icon-light-foreground);
+
+     &.dark {
+          --background-color:var(--color-background-very-light-grey);
+          --foreground-color:var(--color-foreground-red);
+          --foreground-stroke:var(--color-foreground-red);
+     }
+
+    &.hover-light {
+        &:hover {
+            --background-color:var(--color-background-very-light-grey);
+            --foreground-color:var(--color-foreground-red);
+            --foreground-stroke:var(--color-foreground-red);
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+            --background-color:var(--color-icon-light-backdrop);
+            --foreground-color:var(--color-icon-dark-foreground);
+            --foreground-stroke:var(--color-icon-light-foreground);
+        }
+    }
+
+    .background {
+        fill: var(--background-color);
+    }
+
+    .foreground {
+        fill: var(--foreground-color);
+        stroke: var(--foreground-stroke);
+    }
+
+
+}

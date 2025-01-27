@@ -1,0 +1,45 @@
+.like-icon {
+    --background-color:var(--color-light-green);
+    --background-shade-color:var(--color-background);
+    --foreground-color:var(--color-icon-light-foreground);
+    --foreground-stroke:var(--color-icon-light-foreground);
+
+     &.dark {
+          --background-color:var(--color-background-very-light-grey);
+          --background-shade-color:var(--color-dark-teel);
+          --foreground-color:var(--color-dark-teel);
+          --foreground-stroke:'';
+     }
+
+    &.hover-light {
+        &:hover {
+            --background-color:var(--color-background-very-light-grey);
+            --background-shade-color:var(--color-dark-teel);
+            --foreground-color: var(--color-dark-teel);
+            --foreground-stroke:'';
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+          --background-color:var(--color-light-green);
+          --background-shade-color:var(--color-background);
+          --foreground-color:var(--color-icon-light-foreground);
+          --foreground-stroke:var(--color-icon-light-foreground);
+        }
+    }
+
+    .background {
+        fill: var(--background-color);
+    }
+
+    .background-shade {
+        fill: var(--background-shade-color);
+    }
+
+    .foreground {
+        fill: var(--foreground-color);
+        stroke: var(--foreground-stroke);
+    }
+
+}

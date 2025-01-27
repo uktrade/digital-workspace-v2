@@ -1,0 +1,62 @@
+.unhappy-icon {
+    --background-color:var(--color-background-light-purple);
+    --background-shade:var(--color-icon-light-background);
+    --foreground-circle-color:var(--color-foreground-black);
+    --foreground-circle-stroke:var(--color-foreground-black);
+    --curved-mouth-stroke:var(--color-foreground-black);
+    --foreground-color:var(--color-foreground-black);
+
+     &.dark {
+          --background-color:var(--color-background-very-light-grey);
+          --background-shade:var(--color-dark-purple);
+          --foreground-circle-color:var(--color-dark-purple);
+          --foreground-circle-stroke:'';
+          --curved-mouth-stroke:'';
+          --foreground-color:var(--color-icon-light-background);
+     }
+
+    &.hover-light {
+        &:hover {
+            --background-color:var(--color-background-very-light-grey);
+            --background-shade:var(--color-dark-purple);
+            --foreground-circle-color:var(--color-dark-purple);
+            --foreground-circle-stroke:'';
+            --curved-mouth-stroke:'';
+            --foreground-color:var(--color-icon-light-background);
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+          --background-color:var(--color-background-light-purple);
+          --background-shade:var(--color-icon-light-background);
+          --foreground-circle-color:var(--color-foreground-black);
+          --foreground-circle-stroke:var(--color-foreground-black);
+          --curved-mouth-stroke:var(--color-foreground-black);
+          --foreground-color:var(--color-foreground-black);
+        }
+    }
+
+    .background {
+        fill: var(--background-color);
+    }
+
+    .background-shade {
+        fill: var(--background-shade);
+    }
+
+    .foreground-circle {
+        fill: var(--foreground-circle-color);
+        stroke: var(--foreground-circle-stroke);
+    }
+
+    .curved-mouth {
+        stroke: var(--curved-mouth-stroke)
+    }
+
+    .foreground {
+        fill: var(--foreground-color);
+      }
+
+
+}
