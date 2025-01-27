@@ -1,38 +1,38 @@
 .love-icon {
 
-    --background-color:var(--color-icon-light-backdrop);
-    --foreground-color:var(--color-icon-dark-foreground);
-    --foreground-stroke:var(--color-icon-light-foreground);
+    --love-icon-background-color:var(--color-icon-light-backdrop);
+    --love-icon-foreground-color:var(--color-icon-dark-foreground);
+    --love-icon-foreground-stroke:var(--color-icon-light-foreground);
 
      &.dark {
-          --background-color:var(--color-background-very-light-grey);
-          --foreground-color:var(--color-foreground-red);
-          --foreground-stroke:var(--color-foreground-red);
+          --love-icon-background-color:var(--color-background-very-light-grey);
+          --love-icon-foreground-color:var(--color-foreground-red);
+          --love-icon-foreground-stroke:var(--color-foreground-red);
      }
 
     &.hover-light {
         &:hover {
-            --background-color:var(--color-background-very-light-grey);
-            --foreground-color:var(--color-foreground-red);
-            --foreground-stroke:var(--color-foreground-red);
+            --love-icon-background-color:var(--color-background-very-light-grey);
+            --love-icon-foreground-color:var(--color-foreground-red);
+            --love-icon-foreground-stroke:var(--color-foreground-red);
         }
     }
 
     &.hover-dark {
         &:hover {
-            --background-color:var(--color-icon-light-backdrop);
-            --foreground-color:var(--color-icon-dark-foreground);
-            --foreground-stroke:var(--color-icon-light-foreground);
+            --love-icon-background-color:var(--color-icon-light-backdrop);
+            --love-icon-foreground-color:var(--color-icon-dark-foreground);
+            --love-icon-foreground-stroke:var(--color-icon-light-foreground);
         }
     }
 
     .background {
-        fill: var(--background-color);
+        fill: var(--love-icon-background-color);
     }
 
     .foreground {
-        fill: var(--foreground-color);
-        stroke: var(--foreground-stroke);
+        fill: var(--love-icon-foreground-color);
+        stroke: var(--love-icon-foreground-stroke);
     }
 
 

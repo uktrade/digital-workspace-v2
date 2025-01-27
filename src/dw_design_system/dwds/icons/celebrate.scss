@@ -1,40 +1,40 @@
 .celebrate-icon {
-    --background-color:var(--color-background-blue);
-    --background-shade-color:var(--color-icon-light-background);
-    --foreground-color:var(--color-icon-light-foreground);
+    --celebrate-icon-background-color:var(--color-background-blue);
+    --celebrate-icon-background-shade-color:var(--color-icon-light-background);
+    --celebrate-icon-foreground-color:var(--color-icon-light-foreground);
 
      &.dark {
-          --background-color:var(--color-background-very-light-grey);
-          --background-shade-color:var(--color-light-blue);
-          --foreground-color:var(--color-light-blue);
+          --celebrate-icon-background-color:var(--color-background-very-light-grey);
+          --celebrate-icon-background-shade-color:var(--color-light-blue);
+          --celebrate-icon-foreground-color:var(--color-light-blue);
      }
 
     &.hover-light {
         &:hover {
-            --background-color:var(--color-background-very-light-grey);
-            --background-shade-color:var(--color-light-blue);
-            --foreground-color:var(--color-light-blue);
+            --celebrate-icon-background-color:var(--color-background-very-light-grey);
+            --celebrate-icon-background-shade-color:var(--color-light-blue);
+            --celebrate-icon-foreground-color:var(--color-light-blue);
         }
     }
 
     &.hover-dark {
         &:hover {
-          --background-color:var(--color-background-blue);
-          --background-shade-color:var(--color-icon-light-background);
-          --foreground-color:var(--color-icon-light-foreground);
+          --celebrate-icon-background-color:var(--color-background-blue);
+          --celebrate-icon-background-shade-color:var(--color-icon-light-background);
+          --celebrate-icon-foreground-color:var(--color-icon-light-foreground);
         }
     }
 
     .background {
-        fill: var(--background-color);
+        fill: var(--celebrate-icon-background-color);
     }
 
     .background-shade {
-        fill: var(--background-shade-color);
+        fill: var(--celebrate-icon-background-shade-color);
     }
 
     .foreground {
-        fill: var(--foreground-color);
+        fill: var(--celebrate-icon-foreground-color);
     }
 
 }

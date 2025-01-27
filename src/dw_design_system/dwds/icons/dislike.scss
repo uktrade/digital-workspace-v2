@@ -1,45 +1,45 @@
 .dislike-icon {
-    --background-color:var(--color-background-light-pink);
-    --background-shade-color:var(--color-icon-light-background);
-    --foreground-color:var(--color-icon-light-foreground);
-    --foreground-stroke:var(--color-foreground-black);
+    --dislike-icon-background-color:var(--color-background-light-pink);
+    --dislike-icon-background-shade-color:var(--color-icon-light-background);
+    --dislike-icon-foreground-color:var(--color-icon-light-foreground);
+    --dislike-icon-foreground-stroke:var(--color-foreground-black);
 
      &.dark {
-          --background-color:var(--color-background-very-light-grey);
-          --background-shade-color:var(--color-burnt-orange);
-          --foreground-color:var(--color-burnt-orange);
-          --foreground-stroke:'';
+          --dislike-icon-background-color:var(--color-background-very-light-grey);
+          --dislike-icon-background-shade-color:var(--color-burnt-orange);
+          --dislike-icon-foreground-color:var(--color-burnt-orange);
+          --dislike-icon-foreground-stroke:'';
      }
 
     &.hover-light {
         &:hover {
-            --background-color:var(--color-background-very-light-grey);
-            --background-shade-color:var(--color-burnt-orange);
-            --foreground-color:var(--color-burnt-orange);
-            --foreground-stroke:'';
+            --dislike-icon-background-color:var(--color-background-very-light-grey);
+            --dislike-icon-background-shade-color:var(--color-burnt-orange);
+            --dislike-icon-foreground-color:var(--color-burnt-orange);
+            --dislike-icon-foreground-stroke:'';
         }
     }
 
     &.hover-dark {
         &:hover {
-          --background-color:var(--color-background-light-pink);
-          --background-shade-color:var(--color-icon-light-background);
-          --foreground-color:var(--color-icon-light-foreground);
-          --foreground-stroke:var(--color-foreground-black);
+          --dislike-icon-background-color:var(--color-background-light-pink);
+          --dislike-icon-background-shade-color:var(--color-icon-light-background);
+          --dislike-icon-foreground-color:var(--color-icon-light-foreground);
+          --dislike-icon-foreground-stroke:var(--color-foreground-black);
         }
     }
 
     .background {
-        fill: var(--background-color);
+        fill: var(--dislike-icon-background-color);
     }
 
     .background-shade {
-        fill: var(--background-shade-color);
+        fill: var(--dislike-icon-background-shade-color);
     }
 
     .foreground {
-        fill: var(--foreground-color);
-        stroke: var(--foreground-stroke);
+        fill: var(--dislike-icon-foreground-color);
+        stroke: var(--dislike-icon-foreground-stroke);
     }
 
 }
