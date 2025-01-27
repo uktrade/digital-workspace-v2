@@ -195,8 +195,7 @@ class Comment(SidebarPart):
     template_name = "tags/sidebar/parts/comment.html"
 
     def is_visible(self) -> bool:
-        request = self.context["request"]
-        if not flag_is_active(request, "new_sidebar"):
+        if not flag_is_active(self.request, "new_sidebar"):
             return False
 
         page = self.context.get("self")
@@ -220,21 +219,23 @@ class Comment(SidebarPart):
 class Share(SidebarPart):
     template_name = "tags/sidebar/parts/share.html"
 
-    def is_visible(self):
-        request = self.context["request"]
-        if not flag_is_active(request, "new_sidebar"):
+    def is_visible(self) -> bool:
+        if not flag_is_active(self.request, "new_sidebar"):
             return False
 
         page = self.context.get("self")
         return bool(isinstance(page, Page))
 
-    def get_part_context(self):
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
         page = self.context.get("self")
-        is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
-        return {
-            "page": page,
-            "is_new_sidebar_enabled": is_new_sidebar_enabled,
-        }
+        is_new_sidebar_enabled = flag_is_active(self.request, "new_sidebar")
+
+        context.update(
+            page=page,
+            is_new_sidebar_enabled=is_new_sidebar_enabled,
+        )
+        return context
 
 
 class QuickLinks(SidebarPart):
