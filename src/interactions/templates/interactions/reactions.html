@@ -1,0 +1,39 @@
+<div class="reactions content-cluster small">
+
+    <div>
+        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Celebrate">
+            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
+            300 {{ reactions.celebrate }}
+        </button>
+        
+    </div>
+    
+    <div>
+        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Like">
+            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
+            30 {{ reactions.like }}
+        </button> 
+    </div>
+
+    <div>
+        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Love">
+            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
+            3,000 {{ reactions.love }}
+        </button> 
+    </div>
+
+    <div>
+        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Dislike">
+            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
+            1 {{ reactions.dislike }}
+        </button> 
+    </div>
+
+    <div>
+        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Unhappy">
+            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
+            0 {{ reactions.unhappy }}
+        </button> 
+    </div>
+    
+</div>
