@@ -241,6 +241,13 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "text": "https://www.gov.uk",
                 },
             },
+            {
+                "name": "Modal",
+                "template": "dwds/components/modal.html",
+                "context": {
+                    "content": "https://www.gov.uk",
+                },
+            },
         ],
         "layouts": [],
     }
