@@ -224,7 +224,11 @@ class Share(SidebarPart):
             return False
 
         page = self.context.get("self")
-        return bool(isinstance(page, Page))
+
+        if not isinstance(page, Page):
+            return False
+
+        return not isinstance(page, HomePage)
 
     def get_part_context(self) -> dict:
         context = super().get_part_context()
