@@ -4,7 +4,7 @@
             onclick="openSharePageDialog()">{% include 'dwds/icons/share.html' with hover_dark=True %}</button>
     <dialog class="share-dialog" id="share-page-dialog">
         <div>
-            {% include "dwds/components/copy_text.html" with url=page.get_full_url %}
+            {% include "dwds/components/copy_text.html" with text=page.get_full_url %}
             <form method="dialog">
                 <button>Close</button>
             </form>

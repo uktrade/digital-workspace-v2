@@ -229,11 +229,9 @@ class Share(SidebarPart):
     def get_part_context(self) -> dict:
         context = super().get_part_context()
         page = self.context.get("self")
-        is_new_sidebar_enabled = flag_is_active(self.request, "new_sidebar")
 
         context.update(
             page=page,
-            is_new_sidebar_enabled=is_new_sidebar_enabled,
         )
         return context
 

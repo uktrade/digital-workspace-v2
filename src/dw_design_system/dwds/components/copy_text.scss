@@ -1,7 +1,7 @@
 .dwds-copy-text {
-  --height: 40px;
+  --input-height: 40px;
   display: flex;
-  flex-grow: 1;
+
   border: solid 1px var(--color-border);
 
   input {
@@ -9,7 +9,7 @@
     border: none;
     flex-grow: 1;
     width: fit-content;
-    height: var(--height);
+    height: var(--input-height);
     vertical-align: bottom;
 
     &:hover {
@@ -19,8 +19,8 @@
 
   button {
     flex-shrink: 0;
-    width: var(--height);
-    height: var(--height);
+    width: var(--input-height);
+    height: var(--input-height);
     align-items: center;
     justify-content: center;
     color: #333333;
