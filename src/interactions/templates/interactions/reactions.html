@@ -1,39 +1,13 @@
+{% load reactions %}
 <div class="reactions content-cluster small">
-
-    <div>
-        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Celebrate">
-            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
-            300 {{ reactions.celebrate }}
-        </button>
-        
-    </div>
-    
-    <div>
-        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Like">
-            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
-            30 {{ reactions.like }}
-        </button> 
-    </div>
-
-    <div>
-        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Love">
-            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
-            3,000 {{ reactions.love }}
-        </button> 
-    </div>
-
-    <div>
-        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Dislike">
-            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
-            1 {{ reactions.dislike }}
-        </button> 
-    </div>
-
-    <div>
-        <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap" title="Unhappy">
-            {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
-            0 {{ reactions.unhappy }}
-        </button> 
-    </div>
-    
+    {% for reaction_type, reaction_count in reactions.items %}
+        <div>
+            <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap"
+                    title="Celebrate">
+                {% get_reaction_icon_template reaction_type as icon_template %}
+                {% include icon_template with hover_dark=True %}
+                {{ reaction_count }}
+            </button>
+        </div>
+    {% endfor %}
 </div>

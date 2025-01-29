@@ -1,9 +1,10 @@
 {% extends "dwds_content.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
+{% load reactions %}
 
 {% block primary_content %}
-<h4>React to this article</h4>
-{% include "interactions/reactions.html" %}
+    <h4>React to this article</h4>
+    {% reactions_list user page %}
     <div class="content-stack">
         {% image page.preview_image fill-640x360 width=None height=None style="border-radius: var(--border-radius);" %}
         {% include "includes/attribution.html" with page=page is_news_page=True perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=True %}
@@ -14,8 +15,8 @@
 {% endblock primary_content %}
 
 {% block post_primary_content %}
-<h4>React to this article</h4>
-{% include "interactions/reactions.html" %}
+    <h4>React to this article</h4>
+    {% reactions_list user page %}
     {% if self.allow_comments %}
         <div class="news_comments" id="comment_section">
             {% if page.comment_count > 0 %}
