@@ -241,6 +241,20 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     ]
                 },
             },
+            {
+                "name": "Copy Text",
+                "template": "dwds/components/copy_text.html",
+                "context": {
+                    "text": "https://www.gov.uk",
+                },
+            },
+            {
+                "name": "Modal",
+                "template": "dwds/components/modal.html",
+                "context": {
+                    "content": "https://www.gov.uk",
+                },
+            },
         ],
         "icons": [
             {

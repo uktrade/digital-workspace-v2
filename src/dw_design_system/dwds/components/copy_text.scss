@@ -1,0 +1,37 @@
+.dwds-copy-text {
+  --input-height: 40px;
+  display: flex;
+
+  border: solid 1px var(--color-border);
+
+  input {
+    border-radius: unset;
+    border: none;
+    flex-grow: 1;
+    width: fit-content;
+    height: var(--input-height);
+    vertical-align: bottom;
+
+    &:hover {
+      background: #cccccc;
+    }
+  }
+
+  button {
+    flex-shrink: 0;
+    width: var(--input-height);
+    height: var(--input-height);
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+    border: none;
+    border-left: solid 1px var(--color-border);
+    cursor: pointer;
+    display: inline;
+    vertical-align: bottom;
+
+    &:hover {
+      background: #cccccc;
+    }
+  }
+}

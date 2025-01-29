@@ -195,8 +195,7 @@ class Comment(SidebarPart):
     template_name = "tags/sidebar/parts/comment.html"
 
     def is_visible(self) -> bool:
-        request = self.context["request"]
-        if not flag_is_active(request, "new_sidebar"):
+        if not flag_is_active(self.request, "new_sidebar"):
             return False
 
         page = self.context.get("self")
@@ -213,6 +212,30 @@ class Comment(SidebarPart):
             page=page,
             allow_comments=allow_comments,
             is_new_sidebar_enabled=is_new_sidebar_enabled,
+        )
+        return context
+
+
+class Share(SidebarPart):
+    template_name = "tags/sidebar/parts/share.html"
+
+    def is_visible(self) -> bool:
+        if not flag_is_active(self.request, "new_sidebar"):
+            return False
+
+        page = self.context.get("self")
+
+        if not isinstance(page, Page):
+            return False
+
+        return not isinstance(page, HomePage)
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        page = self.context.get("self")
+
+        context.update(
+            page=page,
         )
         return context
 
@@ -254,6 +277,7 @@ def sidebar(context):
             parts=[
                 Bookmark,
                 Comment,
+                Share,
             ],
             context=context,
             template_name="tags/sidebar/sections/primary_page_actions.html",
