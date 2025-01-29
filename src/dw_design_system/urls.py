@@ -26,4 +26,9 @@ urlpatterns = [
         views.dwds_templates("components"),
         name="dwds-components",
     ),
+    path(
+        "icons/",
+        views.dwds_templates("icons"),
+        name="dwds-icons",
+    ),
 ]

@@ -235,6 +235,78 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
         ],
+        "icons": [
+            {
+                "name": "Arrow Left",
+                "template": "dwds/icons/arrow-left.html",
+                "context": {},
+            },
+            {
+                "name": "Arrow Right",
+                "template": "dwds/icons/arrow-left.html",
+                "context": {},
+            },
+            {
+                "name": "Bookmark",
+                "template": "dwds/icons/bookmark.html",
+                "context": {"hover_dark": True},
+            },
+            {
+                "name": "Briefcase",
+                "template": "dwds/icons/briefcase.html",
+                "context": {},
+            },
+            {
+                "name": "Celebrate",
+                "template": "dwds/icons/celebrate.html",
+                "context": {"hover_dark": True},
+            },
+            {
+                "name": "Comment",
+                "template": "dwds/icons/comment.html",
+                "context": {"hover_dark": True},
+            },
+            {
+                "name": "Dislike",
+                "template": "dwds/icons/dislike.html",
+                "context": {"hover_dark": True},
+            },
+            {
+                "name": "Email",
+                "template": "dwds/icons/email.html",
+                "context": {},
+            },
+            {
+                "name": "Feedback",
+                "template": "dwds/icons/feedback.html",
+                "context": {},
+            },
+            {
+                "name": "Like",
+                "template": "dwds/icons/like.html",
+                "context": {"hover_dark": True},
+            },
+            {
+                "name": "Love",
+                "template": "dwds/icons/love.html",
+                "context": {"hover_dark": True},
+            },
+            {
+                "name": "Marker",
+                "template": "dwds/icons/marker.html",
+                "context": {},
+            },
+            {
+                "name": "Phone",
+                "template": "dwds/icons/phone.html",
+                "context": {},
+            },
+            {
+                "name": "Unhappy",
+                "template": "dwds/icons/unhappy.html",
+                "context": {"hover_dark": True},
+            },
+        ],
         "layouts": [],
     }
     return dwds_templates[template_type]

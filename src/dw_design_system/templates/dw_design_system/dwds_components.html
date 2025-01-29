@@ -29,6 +29,12 @@
         .component-context {
             width: 100%;
         }
+
+    {% if template_type == "icons" %}
+        .component-container {
+            font-size: 100px;
+        }
+    {% endif %}
     </style>
     <script>
         function getComponentContext(hx_event) {
