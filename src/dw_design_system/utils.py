@@ -14,6 +14,13 @@ IMAGE_STR = "Image"
 PAGINATOR_STR = "Paginator"
 RANGE_STR = "Range"
 
+ICON_CONTEXT = {
+    "small": False,
+    "dark": False,
+    "hover_dark": True,
+    "hover_light": False,
+}
+
 
 def get_dwds_templates(template_type, request: HttpRequest):
     thumbnail_file = Image.objects.last()
@@ -247,6 +254,78 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": {
                     "content": "https://www.gov.uk",
                 },
+            },
+        ],
+        "icons": [
+            {
+                "name": "Arrow Left",
+                "template": "dwds/icons/arrow-left.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Arrow Right",
+                "template": "dwds/icons/arrow-right.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Bookmark",
+                "template": "dwds/icons/bookmark.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Briefcase",
+                "template": "dwds/icons/briefcase.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Celebrate",
+                "template": "dwds/icons/celebrate.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Comment",
+                "template": "dwds/icons/comment.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Dislike",
+                "template": "dwds/icons/dislike.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Email",
+                "template": "dwds/icons/email.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Feedback",
+                "template": "dwds/icons/feedback.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Like",
+                "template": "dwds/icons/like.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Love",
+                "template": "dwds/icons/love.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Marker",
+                "template": "dwds/icons/marker.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Phone",
+                "template": "dwds/icons/phone.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Unhappy",
+                "template": "dwds/icons/unhappy.html",
+                "context": ICON_CONTEXT,
             },
         ],
         "layouts": [],
