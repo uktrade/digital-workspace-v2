@@ -15,7 +15,7 @@
         </div>
         {% if location %}
             <div class="content-with-icon center align-center min-gap">
-                {% include "dwds/icons/marker.html" with extra_classes="small" %}
+                {% include "dwds/icons/marker.html" with small=True %}
                 {{ location }}
             </div>
         {% endif %}
@@ -24,13 +24,11 @@
                 {% spaceless %}
                     {% if email_address %}
                         <a class="content-with-icon" href="mailto:{{ email_address }}">
-                            {% include "dwds/icons/email.html" with extra_classes="small" %}
+                            {% include "dwds/icons/email.html" with small=True %}
                         </a>
                     {% endif %}
                     {% if phone_number %}
-                        <a class="content-with-icon" href="tel:{{ phone_number }}">
-                            {% include "dwds/icons/phone.html" with extra_classes="small" %}
-                        </a>
+                        <a class="content-with-icon" href="tel:{{ phone_number }}">{% include "dwds/icons/phone.html" with small=True %}</a>
                     {% endif %}
                 {% endspaceless %}
             </div>
