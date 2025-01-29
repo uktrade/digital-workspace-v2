@@ -1,31 +1,31 @@
 .like-icon {
-    --like-icon-background-color:var(--color-light-green);
-    --like-icon-background-shade-color:var(--color-background);
-    --like-icon-foreground-color:var(--color-icon-light-foreground);
-    --like-icon-foreground-stroke:var(--color-icon-light-foreground);
+    --like-icon-background-color: var(--color-light-green);
+    --like-icon-background-shade-color: var(--color-background);
+    --like-icon-foreground-color: var(--color-icon-light-foreground);
+    --like-icon-foreground-stroke: var(--color-icon-light-foreground);
 
-     &.dark {
-          --like-icon-background-color:var(--color-background-very-light-grey);
-          --like-icon-background-shade-color:var(--color-dark-teel);
-          --like-icon-foreground-color:var(--color-dark-teel);
-          --like-icon-foreground-stroke:'';
-     }
+    &.dark {
+        --like-icon-background-color: var(--color-background-very-light-grey);
+        --like-icon-background-shade-color: var(--color-dark-teel);
+        --like-icon-foreground-color: var(--color-dark-teel);
+        --like-icon-foreground-stroke: '';
+    }
 
     &.hover-light {
         &:hover {
-            --like-icon-background-color:var(--color-background-very-light-grey);
-            --like-icon-background-shade-color:var(--color-dark-teel);
-            --like-icon-foreground-color: var(--color-dark-teel);
-            --like-icon-foreground-stroke:'';
+            --like-icon-background-color: var(--color-light-green);
+            --like-icon-background-shade-color: var(--color-background);
+            --like-icon-foreground-color: var(--color-icon-light-foreground);
+            --like-icon-foreground-stroke: var(--color-icon-light-foreground);
         }
     }
 
     &.hover-dark {
         &:hover {
-          --like-icon-background-color:var(--color-light-green);
-          --like-icon-background-shade-color:var(--color-background);
-          --like-icon-foreground-color:var(--color-icon-light-foreground);
-          --like-icon-foreground-stroke:var(--color-icon-light-foreground);
+            --like-icon-background-color: var(--color-background-very-light-grey);
+            --like-icon-background-shade-color: var(--color-dark-teel);
+            --like-icon-foreground-color: var(--color-dark-teel);
+            --like-icon-foreground-stroke: '';
         }
     }
 

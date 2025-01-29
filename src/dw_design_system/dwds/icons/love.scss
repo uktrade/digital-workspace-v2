@@ -1,28 +1,27 @@
 .love-icon {
+    --love-icon-background-color: var(--color-icon-light-backdrop);
+    --love-icon-foreground-color: var(--color-icon-dark-foreground);
+    --love-icon-foreground-stroke: var(--color-icon-light-foreground);
 
-    --love-icon-background-color:var(--color-icon-light-backdrop);
-    --love-icon-foreground-color:var(--color-icon-dark-foreground);
-    --love-icon-foreground-stroke:var(--color-icon-light-foreground);
-
-     &.dark {
-          --love-icon-background-color:var(--color-background-very-light-grey);
-          --love-icon-foreground-color:var(--color-foreground-red);
-          --love-icon-foreground-stroke:var(--color-foreground-red);
-     }
+    &.dark {
+        --love-icon-background-color: var(--color-background-very-light-grey);
+        --love-icon-foreground-color: var(--color-foreground-red);
+        --love-icon-foreground-stroke: var(--color-foreground-red);
+    }
 
     &.hover-light {
         &:hover {
-            --love-icon-background-color:var(--color-background-very-light-grey);
-            --love-icon-foreground-color:var(--color-foreground-red);
-            --love-icon-foreground-stroke:var(--color-foreground-red);
+            --love-icon-background-color: var(--color-icon-light-backdrop);
+            --love-icon-foreground-color: var(--color-icon-dark-foreground);
+            --love-icon-foreground-stroke: var(--color-icon-light-foreground);
         }
     }
 
     &.hover-dark {
         &:hover {
-            --love-icon-background-color:var(--color-icon-light-backdrop);
-            --love-icon-foreground-color:var(--color-icon-dark-foreground);
-            --love-icon-foreground-stroke:var(--color-icon-light-foreground);
+            --love-icon-background-color: var(--color-background-very-light-grey);
+            --love-icon-foreground-color: var(--color-foreground-red);
+            --love-icon-foreground-stroke: var(--color-foreground-red);
         }
     }
 

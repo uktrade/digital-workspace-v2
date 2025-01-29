@@ -1,31 +1,31 @@
 .dislike-icon {
-    --dislike-icon-background-color:var(--color-background-light-pink);
-    --dislike-icon-background-shade-color:var(--color-icon-light-background);
-    --dislike-icon-foreground-color:var(--color-icon-light-foreground);
-    --dislike-icon-foreground-stroke:var(--color-foreground-black);
+    --dislike-icon-background-color: var(--color-background-light-pink);
+    --dislike-icon-background-shade-color: var(--color-icon-light-background);
+    --dislike-icon-foreground-color: var(--color-icon-light-foreground);
+    --dislike-icon-foreground-stroke: var(--color-foreground-black);
 
-     &.dark {
-          --dislike-icon-background-color:var(--color-background-very-light-grey);
-          --dislike-icon-background-shade-color:var(--color-burnt-orange);
-          --dislike-icon-foreground-color:var(--color-burnt-orange);
-          --dislike-icon-foreground-stroke:'';
-     }
+    &.dark {
+        --dislike-icon-background-color: var(--color-background-very-light-grey);
+        --dislike-icon-background-shade-color: var(--color-burnt-orange);
+        --dislike-icon-foreground-color: var(--color-burnt-orange);
+        --dislike-icon-foreground-stroke: '';
+    }
 
     &.hover-light {
         &:hover {
-            --dislike-icon-background-color:var(--color-background-very-light-grey);
-            --dislike-icon-background-shade-color:var(--color-burnt-orange);
-            --dislike-icon-foreground-color:var(--color-burnt-orange);
-            --dislike-icon-foreground-stroke:'';
+            --dislike-icon-background-color: var(--color-background-light-pink);
+            --dislike-icon-background-shade-color: var(--color-icon-light-background);
+            --dislike-icon-foreground-color: var(--color-icon-light-foreground);
+            --dislike-icon-foreground-stroke: var(--color-foreground-black);
         }
     }
 
     &.hover-dark {
         &:hover {
-          --dislike-icon-background-color:var(--color-background-light-pink);
-          --dislike-icon-background-shade-color:var(--color-icon-light-background);
-          --dislike-icon-foreground-color:var(--color-icon-light-foreground);
-          --dislike-icon-foreground-stroke:var(--color-foreground-black);
+            --dislike-icon-background-color: var(--color-background-very-light-grey);
+            --dislike-icon-background-shade-color: var(--color-burnt-orange);
+            --dislike-icon-foreground-color: var(--color-burnt-orange);
+            --dislike-icon-foreground-stroke: '';
         }
     }
 
