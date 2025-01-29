@@ -18,7 +18,7 @@ ICON_CONTEXT = {
     "small": False,
     "dark": False,
     "hover_dark": True,
-    "hover_light": True,
+    "hover_light": False,
 }
 
 
