@@ -250,7 +250,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
             },
             {
                 "name": "Arrow Right",
-                "template": "dwds/icons/arrow-left.html",
+                "template": "dwds/icons/arrow-right.html",
                 "context": ICON_CONTEXT,
             },
             {

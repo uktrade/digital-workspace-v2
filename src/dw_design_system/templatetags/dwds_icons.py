@@ -6,7 +6,7 @@ register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def icon_classes(context):
-    icon_classes = []
+    icon_classes = ["content-icon"]
 
     if context.get("small", False):
         icon_classes.append("small")
