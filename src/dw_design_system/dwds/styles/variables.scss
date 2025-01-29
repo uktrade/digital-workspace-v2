@@ -9,6 +9,14 @@
   --dbt-white: #ffffff;
   --dbt-miuk-light-grey: #dde5ed;
   --dbt-background-blue: #d2e2f1;
+  --dbt-very-light-grey: #EEEFEF;
+  --dbt-dark-teel:#004D44;
+  --dbt-light-green:#CCE2D8;
+  --dbt-black:#000000;
+  --dbt-light-pink:#FCD6C3;
+  --dbt-burnt-orange:#E24912;
+  --dbt-light-purple:#DBD5E9;
+  --dbt-dark-purple:#4814A0;
 
   // GDS colours - for re-use in this file only
   // https://design-system.service.gov.uk/styles/colour/#colour-palette
@@ -66,7 +74,17 @@
   --color-button-transactional-text: var(--dbt-white);
   --color-button-navigation-background-active: var(--gds-dark-blue);
   --color-icon: var(--dbt-blue);
-  
+  --color-dark-teel: var(--dbt-dark-teel);
+  --color-light-green: var(--dbt-light-green);
+  --color-foreground-red: var(--dbt-red);
+  --color-foreground-black: var(--dbt-black);
+  --color-background-light-pink: var(--dbt-light-pink);
+  --color-burnt-orange: var(--dbt-burnt-orange);
+  --color-background-light-purple: var(--dbt-light-purple);
+  --color-dark-purple: var(--dbt-dark-purple);
+  --color-light-blue: var(--dbt-light-blue);
+  --color-background-very-light-grey: var(--dbt-very-light-grey);
+
   // Icons
   --color-icon-light-backdrop: #fbe3df;
   --color-icon-light-border: var(--gds-black);
