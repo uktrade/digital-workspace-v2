@@ -37,6 +37,8 @@ wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortab
 elasticsearch = "<7.14.0"         # highest version for OpenSearch support
 elasticsearch-dsl = "^7.4.0"
 django-elasticsearch-dsl = "^7.4"
+# The current versions of opensearch dsl/py breaks when numpy 2+ is installed
+numpy = "<2"
 # Peoplefinder
 markdown = "^3.5.1"
 requests-hawk = "^1.1.1"
