@@ -51,8 +51,8 @@ RICH_TEXT_FEATURES = [
 ]
 
 
-def strip_tags_with_spaces(string):
-    spaced = string.replace("><", "> <")
+def strip_tags_with_newlines(string: str) -> str:
+    spaced = string.replace("><", ">\n<")
     return strip_tags(spaced)
 
 
@@ -504,7 +504,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
             [str(b.value) for b in self.body if b.block_type == "text_section"]
         )
         self.excerpt = truncate_words_and_chars(
-            text=html.unescape(strip_tags_with_spaces(content)),
+            text=html.unescape(strip_tags_with_newlines(content)),
         )
 
     def save(self, *args, **kwargs):

@@ -9,6 +9,7 @@ from wagtail.models import Page
 
 from core import flags
 from core.models.models import SiteAlertBanner
+from core.utils import get_all_feature_flags
 from events.models import EventsHome
 from home.models import HomePage, QuickLink
 from interactions.services import bookmarks as bookmarks_service
@@ -22,9 +23,11 @@ register = template.Library()
 class SidebarPart:
     template_name: str
     context: dict
+    request: dict
 
-    def __init__(self, context: dict):
+    def __init__(self, context: dict) -> None:
         self.context = context
+        self.request = context["request"]
 
     def is_visible(self) -> bool:
         """
@@ -32,11 +35,13 @@ class SidebarPart:
         """
         return True
 
-    def get_part_context(self):
+    def get_part_context(self) -> dict:
         """
         Build the context to pass into the template.
         """
-        return {}
+        return {
+            "FEATURE_FLAGS": get_all_feature_flags(self.request),
+        }
 
     def render(self) -> SafeString:
         return render_to_string(self.template_name, self.get_part_context())
@@ -71,7 +76,7 @@ class SidebarSection:
         """
         return any(part.is_visible() for part in self.parts)
 
-    def get_section_context(self):
+    def get_section_context(self) -> dict[str, list[SidebarPart]]:
         """
         Build the context to pass into the template.
         """
@@ -89,21 +94,23 @@ class SidebarSection:
 class SiteAlert(SidebarPart):
     template_name = "tags/sidebar/parts/site_alert.html"
 
-    def __init__(self, context: dict):
+    def __init__(self, context: dict) -> None:
         super().__init__(context)
         self.current_alert = SiteAlertBanner.objects.filter(activated=True).first()
 
-    def is_visible(self, *args, **kwargs):
+    def is_visible(self, *args, **kwargs) -> bool:
         page = self.context.get("self")
         if isinstance(page, HomePage) and self.current_alert:
             return True
         return False
 
-    def get_part_context(self):
-        return {
-            "banner_text": self.current_alert.banner_text,
-            "banner_link": self.current_alert.banner_link,
-        }
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        context.update(
+            banner_text=self.current_alert.banner_text,
+            banner_link=self.current_alert.banner_link,
+        )
+        return context
 
 
 class GiveFeedback(SidebarPart):
@@ -112,7 +119,7 @@ class GiveFeedback(SidebarPart):
     title = "Give feedback"
     description = "Did you find what you were looking for?"
 
-    def is_visible(self):
+    def is_visible(self) -> bool:
         request = self.context["request"]
         if not flag_is_active(request, flags.NEW_SIDEBAR):
             return False
@@ -121,32 +128,36 @@ class GiveFeedback(SidebarPart):
             return False
         return True
 
-    def get_part_context(self):
-        return {
-            "title": self.title,
-            "description": self.description,
-        }
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        context.update(
+            title=self.title,
+            description=self.description,
+        )
+        return context
 
 
 class YourBookmarks(SidebarPart):
     template_name = "interactions/bookmark_card.html"
 
-    def is_visible(self):
+    def is_visible(self) -> bool:
         page = self.context.get("self")
         if isinstance(page, HomePage):
             return True
         return False
 
-    def get_part_context(self):
-        return {
-            "user": self.context.get("user"),
-        }
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        context.update(
+            user=self.context.get("user"),
+        )
+        return context
 
 
 class Bookmark(SidebarPart):
     template_name = "tags/sidebar/parts/bookmark.html"
 
-    def is_visible(self):
+    def is_visible(self) -> bool:
         request = self.context["request"]
 
         if not flag_is_active(request, flags.NEW_SIDEBAR):
@@ -158,67 +169,99 @@ class Bookmark(SidebarPart):
 
         return isinstance(page, Page)
 
-    def get_part_context(self):
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+
         user = self.context.get("user")
         page = self.context.get("self")
         is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
         post_url = reverse("interactions:bookmark")
         is_new_sidebar_enabled = flag_is_active(
-            self.context["request"],
+            self.request,
             flags.NEW_SIDEBAR,
         )
-        return {
-            "post_url": post_url,
-            "user": user,
-            "page": page,
-            "is_bookmarked": is_bookmarked,
-            "csrf_token": self.context["csrf_token"],
-            "is_new_sidebar_enabled": is_new_sidebar_enabled,
-        }
+        context.update(
+            post_url=post_url,
+            user=user,
+            page=page,
+            is_bookmarked=is_bookmarked,
+            csrf_token=self.context["csrf_token"],
+            is_new_sidebar_enabled=is_new_sidebar_enabled,
+        )
+        return context
 
 
 class Comment(SidebarPart):
     template_name = "tags/sidebar/parts/comment.html"
 
-    def is_visible(self):
-        request = self.context["request"]
-        if not flag_is_active(request, "new_sidebar"):
+    def is_visible(self) -> bool:
+        if not flag_is_active(self.request, "new_sidebar"):
             return False
 
         page = self.context.get("self")
         return bool(isinstance(page, NewsPage) and page.allow_comments)
 
-    def get_part_context(self):
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+
         page = self.context.get("self")
         allow_comments = page.allow_comments
-        is_new_sidebar_enabled = flag_is_active(self.context["request"], "new_sidebar")
-        return {
-            "page": page,
-            "allow_comments": allow_comments,
-            "is_new_sidebar_enabled": is_new_sidebar_enabled,
-        }
+        is_new_sidebar_enabled = flag_is_active(self.request, "new_sidebar")
+
+        context.update(
+            page=page,
+            allow_comments=allow_comments,
+            is_new_sidebar_enabled=is_new_sidebar_enabled,
+        )
+        return context
+
+
+class Share(SidebarPart):
+    template_name = "tags/sidebar/parts/share.html"
+
+    def is_visible(self) -> bool:
+        if not flag_is_active(self.request, "new_sidebar"):
+            return False
+
+        page = self.context.get("self")
+
+        if not isinstance(page, Page):
+            return False
+
+        return not isinstance(page, HomePage)
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        page = self.context.get("self")
+
+        context.update(
+            page=page,
+        )
+        return context
 
 
 class QuickLinks(SidebarPart):
     template_name = "tags/sidebar/parts/quick_links.html"
 
-    def is_visible(self):
+    def is_visible(self) -> bool:
         page = self.context.get("self")
         if isinstance(page, HomePage):
             return True
         return False
 
-    def get_part_context(self):
-        request = self.context["request"]
-        return {
-            "quick_links": [
-                {
-                    "url": obj.link_to.get_url(request),
-                    "text": obj.title,
-                }
-                for obj in QuickLink.objects.all().order_by("result_weighting", "title")
-            ],
-        }
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        quick_links = [
+            {
+                "url": obj.link_to.get_url(self.request),
+                "text": obj.title,
+            }
+            for obj in QuickLink.objects.all().order_by("result_weighting", "title")
+        ]
+        context.update(
+            quick_links=quick_links,
+        )
+        return context
 
 
 @register.inclusion_tag("tags/sidebar.html", takes_context=True)
@@ -234,6 +277,7 @@ def sidebar(context):
             parts=[
                 Bookmark,
                 Comment,
+                Share,
             ],
             context=context,
             template_name="tags/sidebar/sections/primary_page_actions.html",

@@ -1,4 +1,4 @@
-{% load wagtailimages_tags static humanize %}
+{% load wagtailimages_tags static humanize formatting %}
 
 <div class="content-item content-custom-sidebar-wrapper">
     <div class="content-custom-sidebar">
@@ -17,7 +17,7 @@
                         <h4 class="post-title">{{ post_title }}</h4>
                     </div>
                 {% endif %}
-                {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
+                {% if excerpt %}<p>{{ excerpt|truncate_magic:25 }}</p>{% endif %}
             </div>
 
             {% if updated_date or created_date or comment_count %}

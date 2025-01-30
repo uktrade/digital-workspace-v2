@@ -27,9 +27,6 @@
         cursor: pointer;
     }
 
-    &:focus-visible {
-        outline: revert;
-    }
 }
 
 .bookmark-index-list {
