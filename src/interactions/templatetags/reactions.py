@@ -8,11 +8,11 @@ register = template.Library()
 
 
 @register.inclusion_tag("interactions/reactions.html")
-def reactions_list(user, page):
+def reactions_list(user, page, reaction_block):
     reactions = reactions_service.get_reaction_counts(page)
     user_reaction = reactions_service.get_user_reaction(user, page)
 
-    return {"reactions": reactions, "user_reaction": user_reaction}
+    return {"reactions": reactions, "user_reaction": user_reaction, "reaction_block": reaction_block}
 
 
 @register.simple_tag
