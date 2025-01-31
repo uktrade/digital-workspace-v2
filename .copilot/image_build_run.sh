@@ -10,9 +10,8 @@ cp ".env.ci" ".env"
 
 cd src
 
-export DJANGO_SETTINGS_MODULE=config.settings.build
 echo "Running collectstatic"
-python manage.py collectstatic --noinput
+DJANGO_SETTINGS_MODULE=config.settings.build python manage.py collectstatic --noinput
 
 echo "Delete the .env file"
 cd ../
