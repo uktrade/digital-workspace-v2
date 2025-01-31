@@ -8,7 +8,8 @@ import environ
 BASE_DIR = Path(__file__).parent.parent.parent
 PROJECT_ROOT_DIR = BASE_DIR.parent
 
-# Read environment variables using `django-environ`, use `.env` if it exists
+# Read environment variables from `.env" file because the build step doesn't
+# have access to the environment.
 env = environ.Env()
 env_file = os.path.join(PROJECT_ROOT_DIR, ".env")
 if os.path.exists(env_file):
