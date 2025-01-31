@@ -22,7 +22,6 @@ PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.
 
 # Read environment variables using `django-environ`, use `.env` if it exists
 env = environ.Env()
-env.read_env()
 
 # Set required configuration from environment
 # Should be one of the following: "local", "test", "dev", "staging", "training", "prod", "build"
