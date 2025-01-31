@@ -77,6 +77,7 @@ services:
     tty: true
 
   celery:
+    env_file: ".env"
     image: digital_workspace/wagtail:latest
     command: celery -A config.celery worker -l INFO
     volumes:
@@ -88,6 +89,7 @@ services:
       - DJANGO_SETTINGS_MODULE=config.settings.developer
 
   celery-beat:
+    env_file: ".env"
     image: digital_workspace/wagtail:latest
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.developer
@@ -101,6 +103,7 @@ services:
       - redis
 
   playwright:
+    env_file: ".env"
     build:
       context: .
       dockerfile: Dockerfile.test
