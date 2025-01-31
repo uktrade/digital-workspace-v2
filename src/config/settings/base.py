@@ -17,12 +17,11 @@ from sentry_sdk.integrations.redis import RedisIntegration
 
 
 # Set directories to be used across settings
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+BASE_DIR = Path(__file__).parent.parent.parent
+PROJECT_ROOT_DIR = BASE_DIR.parent
 
 # Read environment variables using `django-environ`, use `.env` if it exists
 env = environ.Env()
-env.read_env()
 
 # Set required configuration from environment
 # Should be one of the following: "local", "test", "dev", "staging", "training", "prod", "build"
@@ -229,7 +228,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
         "DIRS": [
-            Path(PROJECT_ROOT_DIR) / "src" / "dw_design_system",
+            PROJECT_ROOT_DIR / "src" / "dw_design_system",
         ],
         "OPTIONS": {
             "context_processors": [
