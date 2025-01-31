@@ -9,6 +9,8 @@ echo "Running post build script"
 echo "Renaming .env.ci to .env"
 mv ".env.ci" ".env"
 
+export $(cat .env | xargs)
+
 cd src
 
 echo "Running collectstatic"
