@@ -228,7 +228,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
         "DIRS": [
-            Path(PROJECT_ROOT_DIR) / "src" / "dw_design_system",
+            PROJECT_ROOT_DIR / "src" / "dw_design_system",
         ],
         "OPTIONS": {
             "context_processors": [
