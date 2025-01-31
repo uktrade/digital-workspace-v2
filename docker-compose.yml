@@ -71,12 +71,11 @@ services:
       - redis
       - opensearch
       - celery
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.developer
     stdin_open: true
     tty: true
 
   celery:
+    env_file: ".env"
     image: digital_workspace/wagtail:latest
     command: celery -A config.celery worker -l INFO
     volumes:
@@ -84,13 +83,10 @@ services:
     depends_on:
       - db
       - redis
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.developer
 
   celery-beat:
+    env_file: ".env"
     image: digital_workspace/wagtail:latest
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.developer
     volumes:
       - .:/app
     profiles:
@@ -101,6 +97,7 @@ services:
       - redis
 
   playwright:
+    env_file: ".env"
     build:
       context: .
       dockerfile: Dockerfile.test
