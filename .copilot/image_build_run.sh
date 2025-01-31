@@ -9,7 +9,10 @@ echo "Running post build script"
 echo "Renaming .env.ci to .env"
 mv ".env.ci" ".env"
 
-export $(cat .env | xargs)
+echo "Loading .env"
+set -a
+source .env
+set +a
 
 cd src
 
