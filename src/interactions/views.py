@@ -8,6 +8,7 @@ from wagtail.models import Page
 
 from core import flags
 from interactions.services import bookmarks as bookmarks_service
+from interactions.services import reactions as reactions_service
 
 
 @require_http_methods(["POST"])
@@ -52,3 +53,36 @@ def bookmark_index(request, *args, **kwargs):
             "bookmarks": bookmarks_service.get_bookmarks(request.user),
         },
     )
+
+
+@require_http_methods(["POST"])
+def react_to_page(request, *args, **kwargs):
+    user = request.user
+
+    if request.method == "POST":
+        page_id = int(request.POST["page_id"])
+        reaction_type = str(request.POST["reaction_type"])
+        is_selected = request.POST.get("is_selected") == "true"
+        page = get_object_or_404(Page, id=page_id)
+        if is_selected:
+            reactions_service.react_to_page(user, page, None)
+        else:
+            reactions_service.react_to_page(user, page, reaction_type)
+        reactions = reactions_service.get_reaction_counts(page)
+        reactions_count = reactions.get(reaction_type, 0)
+        context = {
+            "reaction_type": reaction_type,
+            "reaction_count": reactions_count or 0,
+            "reaction_selected": not is_selected,
+            "csrf_token": request.META.get("CSRF_COOKIE", ""),
+            "post_url": reverse("interactions:reaction"),
+            "page": page,
+            "request": request,
+            "reactions": reactions,
+        }
+
+        return TemplateResponse(
+            request,
+            "interactions/reactions.html",
+            context,
+        )

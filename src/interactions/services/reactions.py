@@ -7,7 +7,7 @@ from user.models import User
 
 
 def react_to_page(user: User, page: Page, reaction_type: str | None) -> Reaction | None:
-
+    page = page.specific
     if not isinstance(page, NewsPage):
         raise ValueError("The page must be a NewsPage.")
 
@@ -32,6 +32,7 @@ def get_reaction_count(page: Page) -> int | None:
 
 
 def get_reaction_counts(page: Page) -> dict:
+    page = page.specific
     if not isinstance(page, NewsPage):
         return {}
 
