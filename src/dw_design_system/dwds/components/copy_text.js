@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.dwds-copy-text').forEach(function (copy_text_element) {
+        const inputField = copy_text_element.querySelector("input");
         const copyButton = copy_text_element.querySelector("button");
 
         copyButton.addEventListener("click", function () {
-            const textSpan = copyButton.getElementsByTagName("span")[0];
-            const text = "Copy";
+            navigator.clipboard.writeText(inputField.value);
 
-            navigator.clipboard.writeText(text);
-            textSpan.innerHTML = "Copied";
+            copyButton.classList.add("copied");
             setTimeout(() => (
-                textSpan.innerHTML = text
+                copyButton.classList.remove("copied")
             ), 2000);
         });
     });
