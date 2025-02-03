@@ -6,9 +6,11 @@
         </button>
     </div>
     <dialog>
-        {% include "dwds/components/copy_text.html" with text=page.get_full_url %}
-        <form method="dialog">
-            <button class="dwds-modal-close">Close</button>
-        </form>
+        <div class="content-stack">
+            {% include "dwds/components/copy_text.html" with text=page.get_full_url %}
+            <form method="dialog">
+                <button class="dwds-modal-close dwds-button dwds-button--secondary dwds-button--inline">Close</button>
+            </form>
+        </div>
     </dialog>
 </div>

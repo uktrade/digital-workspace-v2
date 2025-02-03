@@ -1,17 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.dwds-copy-text').forEach(function (copy_text_element) {
-        const inputField = copy_text_element.querySelector("input");
         const copyButton = copy_text_element.querySelector("button");
 
         copyButton.addEventListener("click", function () {
-            const text = inputField.value;
-            
+            const textSpan = copyButton.getElementsByTagName("span")[0];
+            const text = "Copy";
+
             navigator.clipboard.writeText(text);
-            inputField.value = "Copied to clipboard";
-            // TODO: INTR-542 - Change the success icon on click
-            
+            textSpan.innerHTML = "Copied";
             setTimeout(() => (
-                inputField.value = text
+                textSpan.innerHTML = text
             ), 2000);
         });
     });
