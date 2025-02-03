@@ -7,6 +7,7 @@ from waffle import flag_is_active
 from wagtail.models import Page
 
 from core import flags
+from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
 from interactions.services import reactions as reactions_service
 
@@ -55,36 +56,52 @@ def bookmark_index(request, *args, **kwargs):
     )
 
 
-@require_http_methods(["POST"])
-def react_to_page(request, *args, **kwargs):
+@require_http_methods(["GET", "POST"])
+def react_to_page(request, *args, pk, **kwargs):
+    page = get_object_or_404(Page, id=pk)
     user = request.user
 
     if request.method == "POST":
-        page_id = int(request.POST["page_id"])
-        reaction_type = str(request.POST["reaction_type"])
+        reaction_type = ReactionType(request.POST["reaction_type"])
         is_selected = request.POST.get("is_selected") == "true"
-        page = get_object_or_404(Page, id=page_id)
         if is_selected:
             reactions_service.react_to_page(user, page, None)
         else:
             reactions_service.react_to_page(user, page, reaction_type)
-        reactions = reactions_service.get_reaction_counts(page)
-        reactions_count = reactions.get(reaction_type, 0)
-        user_reaction = reactions_service.get_user_reaction(user, page)
+
         context = {
-            "user_reaction": user_reaction,
-            "reaction_type": reaction_type,
-            "reaction_count": reactions_count or 0,
-            "reaction_selected": not is_selected,
             "csrf_token": request.META.get("CSRF_COOKIE", ""),
-            "post_url": reverse("interactions:reaction"),
-            "page": page,
             "request": request,
-            "reactions": reactions,
+            "post_url": reverse(viewname="interactions:reactions", kwargs={"pk": pk}),
+            "user_reaction": reaction_type if not is_selected else None,
+            "reaction_type": reaction_type,
+            "reaction_count": reactions_service.get_reaction_count(
+                page=page, reaction_type=reaction_type
+            ),
         }
 
         return TemplateResponse(
-            request,
-            "interactions/reactions.html",
-            context,
+            request=request,
+            template="interactions/reaction_button.html",
+            context=context,
+            headers={"HX-Trigger": "refresh-reactions"},
         )
+
+    reactions = reactions_service.get_reaction_counts(page)
+    user_reaction = reactions_service.get_user_reaction(user, page)
+
+    context = {
+        "get_url": reverse("interactions:reactions", kwargs={"pk": pk}),
+        "post_url": reverse("interactions:reactions", kwargs={"pk": pk}),
+        "csrf_token": request.META.get("CSRF_COOKIE", ""),
+        "page": page,
+        "request": request,
+        "user_reaction": user_reaction,
+        "reactions": reactions,
+    }
+
+    return TemplateResponse(
+        request=request,
+        template="interactions/reactions.html",
+        context=context,
+    )

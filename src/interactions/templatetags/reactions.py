@@ -12,12 +12,12 @@ register = template.Library()
 def reactions_list(user, page):
     reactions = reactions_service.get_reaction_counts(page)
     user_reaction = reactions_service.get_user_reaction(user, page)
-    post_url = reverse("interactions:reaction")
     return {
         "reactions": reactions,
         "user_reaction": user_reaction,
         "reaction_selected": user_reaction is not None,
-        "post_url": post_url,
+        "get_url": reverse("interactions:reactions", kwargs={"pk": page.pk}),
+        "post_url": reverse("interactions:reactions", kwargs={"pk": page.pk}),
         "page": page,
     }
 
