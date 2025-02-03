@@ -1,8 +1,10 @@
 {% load wagtailcore_tags %}
-<div class="dwds-content-item-card icon-card large dwds-modal">
-    <button class="dwds-button dwds-button--clear-icon content-with-icon no-gap dwds-modal-open">
-        {% include 'dwds/icons/share.html' with hover_dark=True %}
-    </button>
+<div class="dwds-modal">
+    <div class="dwds-content-item-card icon-card large ">
+        <button class="dwds-button dwds-button--clear-icon content-with-icon no-gap dwds-modal-open">
+            {% include 'dwds/icons/share.html' with hover_dark=True %}
+        </button>
+    </div>
     <dialog>
         {% include "dwds/components/copy_text.html" with text=page.get_full_url %}
         <form method="dialog">
