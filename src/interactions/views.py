@@ -70,7 +70,9 @@ def react_to_page(request, *args, **kwargs):
             reactions_service.react_to_page(user, page, reaction_type)
         reactions = reactions_service.get_reaction_counts(page)
         reactions_count = reactions.get(reaction_type, 0)
+        user_reaction = reactions_service.get_user_reaction(user, page)
         context = {
+            "user_reaction": user_reaction,
             "reaction_type": reaction_type,
             "reaction_count": reactions_count or 0,
             "reaction_selected": not is_selected,
