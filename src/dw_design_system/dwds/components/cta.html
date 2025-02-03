@@ -1,6 +1,6 @@
 <div class="dwds-cta">
     <div class="content-main {% if highlight %}highlight{% endif %}">
-        <div class="content-body content-stack">
+        <div class="content-body content-stack {% if tiny %}tiny{% endif %}">
             {% if url %}
                 {% include 'dwds/elements/navigational_link.html' with url=url text=title %}
             {% else %}
