@@ -31,6 +31,7 @@
 @forward "components/promo";
 @forward "components/profile_info";
 @forward "components/accordion";
+@forward "components/copy_text";
 
 // Elements
 @forward "elements/button";
@@ -45,14 +46,29 @@
 @forward "elements/navigational_link";
 @forward "elements/ribbon";
 
+// Icons
+@forward "icons/bookmark";
+@forward "icons/comment";
+@forward "icons/share";
+@forward "icons/content-copy";
+@forward "icons/celebrate";
+@forward "icons/dislike";
+@forward "icons/like";
+@forward "icons/love";
+@forward "icons/unhappy";
+@forward "icons/feedback";
+
 // Layouts
 @forward "layouts/content_sidebar";
 @forward "layouts/content_grid";
+@forward "layouts/content_spaced";
 @forward "layouts/content_stack";
 @forward "layouts/content_switcher";
 @forward "layouts/content_item_card";
 @forward "layouts/content_custom_sidebar";
 @forward "layouts/content_cluster";
+@forward "layouts/icon_card";
+
 
 // App specific stylesheets
 @forward "../../interactions/static/interactions/interactions.scss";

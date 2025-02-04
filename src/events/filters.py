@@ -29,7 +29,7 @@ class EventsFilters(django_filters.FilterSet):
             (c, c) for c in UkStaffLocationService().get_uk_staff_location_cities()
         ],
         lookup_expr="exact",
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        widget=forms.widgets.Select(attrs={"class": "dwds-select width-full"}),
         empty_label="All locations",
     )
 

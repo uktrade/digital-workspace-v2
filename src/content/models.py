@@ -51,8 +51,8 @@ RICH_TEXT_FEATURES = [
 ]
 
 
-def strip_tags_with_spaces(string):
-    spaced = string.replace("><", "> <")
+def strip_tags_with_newlines(string: str) -> str:
+    spaced = string.replace("><", ">\n<")
     return strip_tags(spaced)
 
 
@@ -345,7 +345,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
     description = models.TextField(
         blank=True,
         null=True,
-        help_text="Describe your event in 30 words.",
+        help_text="This should not be more than 30 words.",
         validators=[validate_description_word_count],
     )
 
@@ -504,7 +504,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
             [str(b.value) for b in self.body if b.block_type == "text_section"]
         )
         self.excerpt = truncate_words_and_chars(
-            html.unescape(strip_tags_with_spaces(content)), 40, 700
+            text=html.unescape(strip_tags_with_newlines(content)),
         )
 
     def save(self, *args, **kwargs):

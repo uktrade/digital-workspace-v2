@@ -1,0 +1,46 @@
+.share-icon {
+    --share-icon-background-inner-color: var(--color-icon-light-background);
+    --share-icon-background-outer-color: var(--color-icon-light-backdrop);
+    --share-icon-border-inner-color: var(--color-icon-light-border);
+    
+    &.dark {
+        --share-icon-background-inner-color: var(--color-icon-dark-background);
+        --share-icon-background-outer-color: var(--color-icon-dark-backdrop);
+        --share-icon-background-border-color: var(--color-icon-dark-border);
+    }
+
+    &.hover-light {
+        &:hover {
+            // These variables should match those from the base definition
+            --share-icon-background-inner-color: var(--color-icon-light-background);
+            --share-icon-background-outer-color: var(--color-icon-light-backdrop);
+            --share-icon-border-inner-color: var(--color-icon-light-border);
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+            // These variables should match those from .dark
+            --share-icon-background-inner-color: var(--color-icon-dark-background);
+            --share-icon-background-outer-color: var(--color-icon-dark-backdrop);
+            --share-icon-background-border-color: var(--color-icon-dark-border);
+        }
+    }
+
+    .background-inner {
+        fill: var(--share-icon-background-inner-color);
+    }
+
+    .background-outer {
+        fill: var(--share-icon-background-outer-color);
+    }
+
+    .border-inner {
+        stroke: var(--share-icon-border-inner-color);
+    }
+
+}
+
+.share-dialog {
+    width: inherit;
+}

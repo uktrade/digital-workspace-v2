@@ -1,0 +1,61 @@
+.unhappy-icon {
+    --unhappy-icon-background-color: var(--color-background-light-purple);
+    --unhappy-icon-background-shade-color: var(--color-icon-light-background);
+    --unhappy-icon-foreground-circle-color: var(--color-foreground-black);
+    --unhappy-icon-foreground-circle-stroke: var(--color-foreground-black);
+    --unhappy-icon-curved-mouth-stroke: var(--color-foreground-black);
+    --unhappy-icon-foreground-color: var(--color-foreground-black);
+
+    &.dark {
+        --unhappy-icon-background-color: var(--color-background-very-light-grey);
+        --unhappy-icon-background-shade-color: var(--color-dark-purple);
+        --unhappy-icon-foreground-circle-color: var(--color-dark-purple);
+        --unhappy-icon-foreground-circle-stroke: unset;
+        --unhappy-icon-curved-mouth-stroke: unset;
+        --unhappy-icon-foreground-color: var(--color-icon-light-background);
+    }
+
+    &.hover-light {
+        &:hover {
+            --unhappy-icon-background-color: var(--color-background-light-purple);
+            --unhappy-icon-background-shade-color: var(--color-icon-light-background);
+            --unhappy-icon-foreground-circle-color: var(--color-foreground-black);
+            --unhappy-icon-foreground-circle-stroke: var(--color-foreground-black);
+            --unhappy-icon-curved-mouth-stroke: var(--color-foreground-black);
+            --unhappy-icon-foreground-color: var(--color-foreground-black);
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+            --unhappy-icon-background-color: var(--color-background-very-light-grey);
+            --unhappy-icon-background-shade-color: var(--color-dark-purple);
+            --unhappy-icon-foreground-circle-color: var(--color-dark-purple);
+            --unhappy-icon-foreground-circle-stroke: unset;
+            --unhappy-icon-curved-mouth-stroke: unset;
+            --unhappy-icon-foreground-color: var(--color-icon-light-background);
+        }
+    }
+
+    .background {
+        fill: var(--unhappy-icon-background-color);
+    }
+
+    .background-shade {
+        fill: var(--unhappy-icon-background-shade-color);
+    }
+
+    .foreground-circle {
+        fill: var(--unhappy-icon-foreground-circle-color);
+        stroke: var(--unhappy-icon-foreground-circle-stroke);
+    }
+
+    .curved-mouth {
+        stroke: var(--unhappy-icon-curved-mouth-stroke)
+    }
+
+    .foreground {
+        fill: var(--unhappy-icon-foreground-color);
+    }
+
+}

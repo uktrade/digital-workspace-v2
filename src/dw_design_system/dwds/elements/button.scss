@@ -28,6 +28,11 @@ a.dwds-button,
         background-color: var(--color-button-primary);
     }
 
+    &--clear-icon {
+        padding: unset;
+    }
+
+    &--clear-icon,
     &--clear {
         // Unset the default button styling
         border: none;
@@ -43,6 +48,10 @@ a.dwds-button,
         &:hover {
             background-color: unset;
             border-bottom-color: unset;
+        }
+
+        &:focus {
+            border: unset;
         }
     }
 

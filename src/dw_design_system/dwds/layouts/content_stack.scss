@@ -10,6 +10,10 @@
     --content-stack-gap: 0;
 }
 
+.content-stack.tiny {
+    --content-stack-gap: var(--s-5);
+}
+
 .content-stack.small {
     --content-stack-gap: var(--s-3);
 }

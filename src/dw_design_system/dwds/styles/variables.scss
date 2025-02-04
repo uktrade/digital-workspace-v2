@@ -8,6 +8,15 @@
   --dbt-light-blue-rgb: 0, 99, 190;
   --dbt-white: #ffffff;
   --dbt-miuk-light-grey: #dde5ed;
+  --dbt-background-blue: #d2e2f1;
+  --dbt-very-light-grey: #EEEFEF;
+  --dbt-dark-teel:#004D44;
+  --dbt-light-green:#CCE2D8;
+  --dbt-black:#000000;
+  --dbt-light-pink:#FCD6C3;
+  --dbt-burnt-orange:#E24912;
+  --dbt-light-purple:#DBD5E9;
+  --dbt-dark-purple:#4814A0;
 
   // GDS colours - for re-use in this file only
   // https://design-system.service.gov.uk/styles/colour/#colour-palette
@@ -35,6 +44,7 @@
   --color-link-background-active: var(--gds-yellow);
   --color-link-visited: var(--gds-purple);
   --color-background: var(--dbt-white);
+  --color-background-blue: var(--dbt-background-blue);
   --color-background-highlight: var(--dbt-white);
   --color-background-card: var(--dbt-miuk-light-grey);
   --color-background-comments: var(--gds-light-grey);
@@ -64,6 +74,27 @@
   --color-button-transactional-text: var(--dbt-white);
   --color-button-navigation-background-active: var(--gds-dark-blue);
   --color-icon: var(--dbt-blue);
+  --color-dark-teel: var(--dbt-dark-teel);
+  --color-light-green: var(--dbt-light-green);
+  --color-foreground-red: var(--dbt-red);
+  --color-foreground-black: var(--dbt-black);
+  --color-background-light-pink: var(--dbt-light-pink);
+  --color-burnt-orange: var(--dbt-burnt-orange);
+  --color-background-light-purple: var(--dbt-light-purple);
+  --color-dark-purple: var(--dbt-dark-purple);
+  --color-light-blue: var(--dbt-light-blue);
+  --color-background-very-light-grey: var(--dbt-very-light-grey);
+
+  // Icons
+  --color-icon-light-backdrop: #fbe3df;
+  --color-icon-light-border: var(--gds-black);
+  --color-icon-light-background: var(--dbt-white);
+  --color-icon-light-foreground: var(--gds-black);
+  --color-icon-dark-backdrop: var(--dbt-background-blue);
+  --color-icon-dark-border: var(--dbt-blue);
+  --color-icon-dark-background: var(--dbt-blue);
+  --color-icon-dark-foreground: var(--dbt-white);
+
   --color-hr: var(--gds-mid-grey);
   --color-selected-radio: var(--color-button-text-focus);
   --color-menu-active-border: var(--dbt-light-blue);

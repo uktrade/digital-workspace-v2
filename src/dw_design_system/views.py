@@ -148,6 +148,11 @@ def layouts(request: HttpRequest) -> HttpResponse:
             "name": "Content custom sidebar",
             "template": "dwds/layouts/content_custom_sidebar.html",
         },
+        {
+            "name": "Content spaced",
+            "template": "dwds/layouts/content_spaced.html",
+            "content_items": range(5),
+        },
     ]
 
     return render(

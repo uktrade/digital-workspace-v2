@@ -1,25 +1,53 @@
 from django import forms
+from django.core.paginator import EmptyPage, Paginator
+from django.db import models
+from waffle import flag_is_active
 from wagtail.admin.forms import WagtailAdminPageForm
+from wagtail.models import Page
 
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
+from core import flags
 from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
+from networks.panels import NetworkTypesFlaggedFieldPanel
 
 
 class NetworksHome(ContentPage):
     is_creatable = False
-
-    subpage_types = ["networks.Network"]
-
+    subpage_types = ["networks.Network", "networks.NetworkContentPage"]
     template = "content/content_page.html"
 
+    def get_template(self, request, *args, **kwargs):
+        if flag_is_active(request, flags.NETWORKS_HUB):
+            return "networks/networks_home.html"
+        return super().get_template(request, *args, **kwargs)
+
     def get_context(self, request, *args, **kwargs):
+        from networks.filters import NetworksFilters
+
         context = super().get_context(request, *args, **kwargs)
 
-        context["children"] = (
-            Network.objects.live().public().child_of(self).order_by("title")
-        )
+        networks = Network.objects.live().public().order_by("title")
+        if flag_is_active(request, flags.NETWORKS_HUB):
+            # Filtering networks by network type
+            networks_filters = NetworksFilters(request.GET, queryset=networks)
+            networks = networks_filters.qs
+
+            paginator = Paginator(networks, 15)
+            page = int(request.GET.get("page", 1))
+
+            try:
+                networks = paginator.page(page)
+            except EmptyPage:
+                networks = paginator.page(paginator.num_pages)
+
+            context["networks_filters"] = networks_filters
+            context["networks"] = networks
+        else:
+            networks = networks.child_of(self)
+            context["children"] = networks
+
         context["attribution"] = False
         context["num_cols"] = 3
 
@@ -84,7 +112,7 @@ class NetworkForm(WagtailAdminPageForm):
             network, _ = pf_models.NewNetwork.objects.get_or_create(page=page)
             network.old_network_id = self.cleaned_data.get("peoplefinder_network")
             network.save()
-        else:
+        elif not page._state.adding:
             pf_models.NewNetwork.objects.filter(page=page).delete()
 
         if commit:
@@ -102,9 +130,29 @@ class Network(ContentOwnerMixin, ContentPage):
     ]
 
     template = "content/content_page.html"
-    subpage_types = ["networks.Network"]
+    subpage_types = ["networks.Network", "networks.NetworkContentPage"]
+
+    class NetworkTypes(models.TextChoices):
+        DBT_INITIATIVES = "dbt_initiatives", "DBT Initiatives"
+        DEPARTMENT_FUNCTION = "department_function", "Department/Function"
+        DIVERSITY_AND_INCLUSION = "diversity_and_inclusion", "Diversity and Inclusion"
+        HEALTH_AND_WELLBEING = "health_and_wellbeing", "Health and Wellbeing"
+        INTERESTS_AND_HOBBIES = "interests_and_hobbies", "Interests and Hobbies"
+        PROFESSIONAL_DEVELOPMENT_AND_SKILLS = (
+            "professional_development_and_skills",
+            "Professional Development and Skills",
+        )
+        SOCIAL_AND_COMMUNITY = "social_and_community", "Social and Community"
+
+    network_type = models.CharField(
+        max_length=50,
+        choices=NetworkTypes.choices,
+        blank=True,
+        null=True,
+    )
 
     content_panels = ContentPage.content_panels + [
+        NetworkTypesFlaggedFieldPanel("network_type"),
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]
@@ -122,7 +170,7 @@ class Network(ContentOwnerMixin, ContentPage):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = (
-            Network.objects.live().public().child_of(self).order_by("title")
+            Page.objects.live().public().child_of(self).order_by("title")
         )
         context["attribution"] = True
         context["num_cols"] = 3
@@ -132,3 +180,26 @@ class Network(ContentOwnerMixin, ContentPage):
     @property
     def peoplefinder_network(self):
         return getattr(self, "newnetwork", None)
+
+
+class NetworkContentPage(ContentOwnerMixin, ContentPage):
+    is_creatable = True
+
+    parent_page_types = [
+        "networks.NetworksHome",
+        "networks.Network",
+    ]
+
+    template = "content/content_page.html"
+    subpage_types = ["networks.Network", "networks.NetworkContentPage"]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        context["children"] = (
+            Page.objects.live().public().child_of(self).order_by("title")
+        )
+        context["attribution"] = True
+        context["num_cols"] = 3
+
+        return context

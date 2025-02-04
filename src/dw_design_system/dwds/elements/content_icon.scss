@@ -1,21 +1,28 @@
 .content-icon {
-    height: 0.75em;
-    height: 1cap;
-    width: 0.75em;
-    width: 1cap;
+    height: 3em;
+    height: 4cap;
+    width: 3em;
+    width: 4cap;
     flex: none;
 
     &.small {
-        font-size: var(--s3);
+        height: 1.5em;
+        height: 2cap;
+        width: 1.5;
+        width: 2cap;
     }
+
 }
 
 .content-with-icon {
     display: inline-flex;
+    align-items: center;
 
-    // TODO: Re address this in the ticket INTR-337
-    align-items: normal;
-    // align-items: baseline;
+    &.no-gap {
+        > .content-icon {
+            margin-inline-end: 0px;
+        }
+    }
 
     &.min-gap {
         > .content-icon {
