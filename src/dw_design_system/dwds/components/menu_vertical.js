@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.dwds-menu-vertical').forEach(function (element) {
-        const table_of_contents = element.getElementsByClassName('.page-toc')[0];
+        const table_of_contents = element.getElementsByClassName('page-toc')[0];
 
         if (!table_of_contents) {
             return;
