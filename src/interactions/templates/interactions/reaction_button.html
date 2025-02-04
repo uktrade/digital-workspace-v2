@@ -1,7 +1,7 @@
 {% load humanize %}
 {% load reactions %}
-
-<button class="dwds-button dwds-button--clear-icon content-with-icon min-gap"
+<button class="dwds-button dwds-button--clear-icon content-with-icon small-gap"
+        title="{{ reaction_type|reaction_type_display }}"
         data-is-htmx="{{ request.headers.hx_request }}"
         hx-post="{{ post_url }}"
         hx-vals='{"reaction_type": "{{ reaction_type }}", "is_selected": {% if user_reaction == reaction_type %}true{% else %}false{% endif %}}'

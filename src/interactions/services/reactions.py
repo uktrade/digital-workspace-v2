@@ -38,7 +38,7 @@ def get_reaction_count(page: Page, reaction_type: ReactionType | None) -> int | 
     return reactions.count()
 
 
-def get_reaction_counts(page: Page) -> dict:
+def get_reaction_counts(page: Page) -> dict[str, int]:
     page = page.specific
     if not isinstance(page, NewsPage):
         return {}

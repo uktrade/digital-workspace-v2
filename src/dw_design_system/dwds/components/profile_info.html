@@ -14,7 +14,7 @@
             {% if title %}<p>{{ title|truncatewords:20 }}</p>{% endif %}
         </div>
         {% if location %}
-            <div class="content-with-icon center align-center min-gap">
+            <div class="content-with-icon center align-center small-gap">
                 {% include "dwds/icons/marker.html" with small=True %}
                 {{ location }}
             </div>

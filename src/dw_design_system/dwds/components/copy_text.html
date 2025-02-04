@@ -1,5 +1,14 @@
 {% load wagtailcore_tags %}
-<div class="dwds-copy-text">
+<div class="dwds-copy-text content-spaced">
     <input type="text" value="{{ text }}" readonly>
-    <button title="Copy text" type="button">{% include "dwds/icons/content-copy.html" %}</button>
+    <button class="dwds-button" title="Copy text" type="button">
+        <div class="copy-text content-with-icon medium-gap">
+            {% include "dwds/icons/copy.html" with small=True %}
+            Copy
+        </div>
+        <div class="copied-text content-with-icon medium-gap">
+            {% include "dwds/icons/check.html" with small=True %}
+            Copied
+        </div>
+    </button>
 </div>

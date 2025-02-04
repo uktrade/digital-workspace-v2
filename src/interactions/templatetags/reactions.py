@@ -33,3 +33,8 @@ def get_reaction_icon_template(reaction_type: ReactionType) -> str:
     }
 
     return ICON_TEMPLATES[reaction_type]
+
+
+@register.filter
+def reaction_type_display(reaction_type: str) -> str:
+    return ReactionType(reaction_type).label
