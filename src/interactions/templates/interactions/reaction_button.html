@@ -1,14 +1,11 @@
 {% load humanize %}
 {% load reactions %}
+
 <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap"
         data-is-htmx="{{ request.headers.hx_request }}"
         hx-post="{{ post_url }}"
-        hx-vals='{"page_id": "{{ page.id }}", "reaction_type": "{{ reaction_type }}", "is_selected": {{ reaction_selected|yesno:"true,false" }}}'
-        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-        hx-trigger="click"
-        hx-select="button"
-        hx-target=".page-reaction"
-        hx-swap="outerHTML">
+        hx-vals='{"reaction_type": "{{ reaction_type }}", "is_selected": {% if user_reaction == reaction_type %}true{% else %}false{% endif %}}'
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     {% if reaction_type %}
         {% get_reaction_icon_template reaction_type as icon_template %}
         {% if reaction_count|default:0 > 0 %}
