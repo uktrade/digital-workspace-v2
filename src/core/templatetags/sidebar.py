@@ -236,6 +236,7 @@ class Share(SidebarPart):
 
         context.update(
             page=page,
+            page_url=page.get_full_url(self.request),
         )
         return context
 
