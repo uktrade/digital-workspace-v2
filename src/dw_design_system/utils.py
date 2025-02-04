@@ -346,7 +346,7 @@ def to_json(val):
     if isinstance(val, paginator.Page):
         return f"{PAGINATOR_STR}"
     if isinstance(val, Page):
-        return f"{PAGE_STR}"
+        return f"{PAGE_STR} {val.pk}"
     if isinstance(val, range):
         return f"{RANGE_STR} {val.start} {val.stop}"
 
@@ -359,6 +359,8 @@ def parse_str(val):
         return datetime.fromisoformat(val.split(" ")[1])
     if val.startswith(IMAGE_STR):
         return Image.objects.get(pk=int(val.split(" ")[1]))
+    if val.startswith(PAGE_STR):
+        return Page.objects.get(pk=int(val.split(" ")[1]))
     if val.startswith(PAGINATOR_STR):
         return paginator.Paginator(NewsPage.objects.all(), 2).page(1)
     if val.startswith(RANGE_STR):
