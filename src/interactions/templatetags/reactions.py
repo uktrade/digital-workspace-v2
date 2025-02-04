@@ -1,4 +1,5 @@
 from django import template
+from django.urls import reverse
 
 from interactions.models import ReactionType
 from interactions.services import reactions as reactions_service
@@ -11,8 +12,14 @@ register = template.Library()
 def reactions_list(user, page):
     reactions = reactions_service.get_reaction_counts(page)
     user_reaction = reactions_service.get_user_reaction(user, page)
-
-    return {"reactions": reactions, "user_reaction": user_reaction}
+    return {
+        "reactions": reactions,
+        "user_reaction": user_reaction,
+        "reaction_selected": user_reaction is not None,
+        "get_url": reverse("interactions:reactions", kwargs={"pk": page.pk}),
+        "post_url": reverse("interactions:reactions", kwargs={"pk": page.pk}),
+        "page": page,
+    }
 
 
 @register.simple_tag
@@ -26,3 +33,8 @@ def get_reaction_icon_template(reaction_type: ReactionType) -> str:
     }
 
     return ICON_TEMPLATES[reaction_type]
+
+
+@register.filter
+def reaction_type_display(reaction_type: str) -> str:
+    return ReactionType(reaction_type).label
