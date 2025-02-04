@@ -8,7 +8,7 @@
         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     {% if reaction_type %}
         {% get_reaction_icon_template reaction_type as icon_template %}
-        {% if reaction_count|default:0 > 0 %}
+        {% if user_reaction == reaction_type %}
             {% include icon_template with dark=True hover_light=True %}
         {% else %}
             {% include icon_template with hover_dark=True %}
