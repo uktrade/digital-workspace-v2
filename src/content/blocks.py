@@ -70,9 +70,7 @@ class TextBlock(blocks.RichTextBlock):
 
 
 class UsefulLinkBlock(blocks.StructBlock):
-    link_title = blocks.CharBlock(
-        help_text="This will be displayed on the sidebar."
-    )
+    link_title = blocks.CharBlock(help_text="This will be displayed on the sidebar.")
     page_linked = blocks.PageChooserBlock()
 
     class Meta:
