@@ -61,6 +61,8 @@ def react_to_page(request, *args, pk, **kwargs):
     page = get_object_or_404(Page, id=pk)
     user = request.user
 
+    template: str = "interactions/reactions.html"
+    headers: dict = {}
     context = {
         "get_url": reverse("interactions:reactions", kwargs={"pk": pk}),
         "post_url": reverse("interactions:reactions", kwargs={"pk": pk}),
@@ -77,27 +79,24 @@ def react_to_page(request, *args, pk, **kwargs):
         reactions_service.react_to_page(user, page, reacted_type)
 
         context.update(
-            {
-                "user_reaction": reaction_type if not is_selected else None,
-                "reaction_type": reaction_type,
-                "reaction_count": reactions_service.get_reaction_count(
-                    page=page, reaction_type=reaction_type
-                ),
-            }
+            user_reaction=reaction_type if not is_selected else None,
+            reaction_type=reaction_type,
+            reaction_count=reactions_service.get_reaction_count(
+                page=page, reaction_type=reaction_type
+            ),
         )
         template = "interactions/reaction_button.html"
-        headers = {"HX-Trigger": "refresh-reactions"}
+        headers["HX-Trigger"] = "refresh-reactions"
 
     elif request.method == "GET":
         context.update(
-            {
-                "reactions": reactions_service.get_reaction_counts(page),
-                "user_reaction": reactions_service.get_user_reaction(user, page),
-            }
+            user_reaction=reactions_service.get_user_reaction(user, page),
+            reactions=reactions_service.get_reaction_counts(page),
         )
-        template = ("interactions/reactions.html",)
-        headers = {}
 
     return TemplateResponse(
-        request=request, template=template, context=context, headers=headers
+        request=request,
+        template=template,
+        context=context,
+        headers=headers,
     )
