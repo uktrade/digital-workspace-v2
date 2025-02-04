@@ -69,6 +69,18 @@ class TextBlock(blocks.RichTextBlock):
         super().__init__(features=kwargs["features"])
 
 
+class UsefulLinkBlock(blocks.StructBlock):
+    link_title = blocks.CharBlock(
+        help_text="This will be displayed on the sidebar."
+    )
+    page_linked = blocks.PageChooserBlock()
+
+    class Meta:
+        label = "Useful links"
+        icon = "link"
+        # template = "blocks/heading_2.html"
+
+
 class ImageBlock(blocks.StructBlock):
     """An image block with accessible metadata"""
 

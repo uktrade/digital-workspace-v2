@@ -5,8 +5,10 @@
     content-stack large
 {% endblock primary_content_classes %}
 
+{% block page_title_wrapper %}
+{% endblock page_title_wrapper %}
+
 {% block primary_content %}
-    <div class="content-stack">{{ page.body }}</div>
     {% if FEATURE_FLAGS.network_types %}
         {% include "networks/includes/networks_filters.html" %}
     {% endif %}
