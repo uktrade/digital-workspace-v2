@@ -49,14 +49,24 @@ def test_react_to_page_invalid_page(user, about_page, reaction_type):
 
 @pytest.mark.django_db
 def test_get_reaction_count(user, news_page, create_reaction):
-    assert get_reaction_count(news_page) == 1
+    assert get_reaction_count(news_page, ReactionType.LIKE) == 1
     Reaction.objects.filter(user=user, page=news_page).delete()
-    assert get_reaction_count(news_page) == 0
+    assert get_reaction_count(news_page, ReactionType.LIKE) == 0
+
+
+@pytest.mark.django_db
+def test_get_reaction_count_invalid_reaction_type(user, news_page, create_reaction):
+    assert get_reaction_count(news_page, ReactionType.DISLIKE) == 0
+
+
+@pytest.mark.django_db
+def test_get_reaction_count_none_reaction_type(user, news_page, create_reaction):
+    assert get_reaction_count(news_page, None) == 1
 
 
 @pytest.mark.django_db
 def test_get_reaction_count_invalid_page(about_page):
-    assert get_reaction_count(about_page) is None
+    assert get_reaction_count(about_page, ReactionType.LIKE) is None
 
 
 @pytest.mark.django_db
