@@ -53,7 +53,11 @@ def get_reaction_counts(page: Page) -> dict[str, int]:
     if not isinstance(page, NewsPage):
         return {}
 
-    reaction_counts = {reaction_type: 0 for reaction_type in ReactionType.values}
+    reaction_counts = {
+        reaction_type: 0
+        for reaction_type in ReactionType.values
+        if reaction_type in get_active_reactions()
+    }
 
     reactions = (
         Reaction.objects.filter(page=page).values("type").annotate(count=Count("id"))
@@ -62,7 +66,7 @@ def get_reaction_counts(page: Page) -> dict[str, int]:
         {
             reaction["type"]: reaction["count"]
             for reaction in reactions
-            if ReactionType(reaction["type"]) in get_active_reactions()
+            if ReactionType(reaction["type"]) in reaction_counts
         }
     )
     return reaction_counts
