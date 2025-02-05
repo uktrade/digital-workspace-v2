@@ -4,7 +4,7 @@
 
 {% block primary_content %}
     {% if FEATURE_FLAGS.show_reactions %}
-        {% reactions_list user page %}
+        {% reactions_list user page reaction_block="top" %}
     {% endif %}
     <div class="content-stack">
         {% image page.preview_image fill-640x360 width=None height=None style="border-radius: var(--border-radius);" %}
@@ -17,7 +17,7 @@
 
 {% block post_primary_content %}
     {% if FEATURE_FLAGS.show_reactions %}
-        {% reactions_list user page %}
+        {% reactions_list user page reaction_block="bottom" %}
     {% endif %}
     {% if self.allow_comments %}
         <div class="news_comments">
@@ -87,7 +87,7 @@
             <h2 class="govuk-heading-m">Leave a comment</h2>
             <form action="" method="post" onsubmit="">
                 {% csrf_token %}
-                <div class="govuk-form-group">
+                <div class="govuk-form-group" id="comment_form">
                     {% for field in comment_form %}
                         <label class="ws-hide" for="{{ field.auto_id }}">Comment content</label>
                         {{ field }}
