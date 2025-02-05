@@ -13,9 +13,7 @@ def get_active_reactions() -> list[ReactionType]:
     inactive_reaction_types = [
         ReactionType(rt) for rt in settings.INACTIVE_REACTION_TYPES
     ]
-    return [
-        (rt.value, rt.label) for rt in ReactionType if rt not in inactive_reaction_types
-    ]
+    return [rt for rt in ReactionType if rt not in inactive_reaction_types]
 
 
 def react_to_page(user: User, page: Page, reaction_type: str | None) -> Reaction | None:
