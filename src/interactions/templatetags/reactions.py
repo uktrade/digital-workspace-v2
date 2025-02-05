@@ -1,3 +1,4 @@
+import json
 from django import template
 
 from interactions.models import ReactionType
@@ -26,3 +27,12 @@ def get_reaction_icon_template(reaction_type: ReactionType) -> str:
     }
 
     return ICON_TEMPLATES[reaction_type]
+
+# TBC - may not be needed depending on gtm_datalayer_info
+@register.simple_tag(takes_context=True)
+def get_gtm_reactions(context) -> str:
+    if hasattr(context, "page"):
+        page = context["page"]
+        reactions = reactions_service.get_reaction_counts(page)
+        context['gtm_reactions'] = json.dumps(reactions)
+    return ""

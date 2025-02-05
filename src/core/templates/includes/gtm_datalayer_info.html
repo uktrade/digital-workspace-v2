@@ -1,4 +1,11 @@
+{% load reactions %}
+{% load gtm_datalayer_info %}
+
+{% get_gtm_reactions %}
+{% get_gtm_datalayer_info %}
+
 <script>
+
 initial_page_data = {
     {% for k, v in FEATURE_FLAGS.items %}"feature_flag_{{ forloop.counter }}": "{{ k }}: {{ v|lower }}",
     {% endfor %}
@@ -8,8 +15,7 @@ initial_page_data = {
     "page_topics": "{% for topic in self.topics.all %}{{ topic.topic.title }} {% endfor %}",
     "page_tags": "{% for tag in self.tag_set %}{{ tag.name }} {% endfor %}",
     "page_content_owner": "{{ self.content_owner.slug|default:"NA"}}",
-    "page_reactions": {% if not self.reactions is not None %}{{ self.reactions }}{% else %}"NA"{% endif %},
-
+    "page_reactions": "{{ gtm_reactions }}",
     "user_profile_slug": "{{ request.user.profile.slug }}",
     {% for role in request.user.profile.roles.all %}
     "user_team_slug_{{ forloop.counter }}": "{{ role.team.slug }}",
@@ -21,5 +27,10 @@ initial_page_data = {
     "user_working_location": "{{ request.user.profile.get_office_location_display|default_if_none:"NA" }}",
     "user_account_age_in_days": {{ request.user.profile.days_since_account_creation }}
 };
-dataLayer.push(initial_page_data)
+
+var initial_page_data_v2 = {{ initial_page_data_v2|safe }}
+console.log("GTM_INITIAL_PAGE_DATA");
+console.log(initial_page_data); 
+console.log("GTM_INITIAL_PAGE_DATA_V2");
+console.log(initial_page_data_v2);
 </script>

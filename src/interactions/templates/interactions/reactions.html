@@ -9,8 +9,9 @@
                 <button class="dwds-button dwds-button--clear-icon content-with-icon min-gap"
                         title="{{ reaction_type|title }}"
                         onclick="dataLayer.push({ 
-                            'event': 'page_reaction', 
-                            'reaction_type': '{{ reaction_type }}', 
+                            'event': 'page_reaction',
+                            'from_type': null, // TBC: get previous reaction if one is already selected
+                            'to_type': '{{ reaction_type }}', 
                             'reaction_block': '{{ reaction_block }}'})">
                     {% get_reaction_icon_template reaction_type as icon_template %}
                     {% include icon_template with hover_dark=True %}
