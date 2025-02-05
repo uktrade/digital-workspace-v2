@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.db.models import Count
 from wagtail.models import Page
