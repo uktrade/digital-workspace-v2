@@ -28,7 +28,7 @@
         }
 
         .copy-text {
-            display: inline-flex;
+            display: flex;
         }
 
         .copied-text {
@@ -41,7 +41,7 @@
             }
 
             .copied-text {
-                display: inline-flex;
+                display: flex;
             }
         }
     }
