@@ -38,21 +38,21 @@
                                     </div>
                                 </div>
                                 {% for role in roles %}
-                                    <div class="content-with-icon min-gap">
+                                    <div class="content-with-icon small-gap">
                                         {% include "dwds/icons/briefcase.html" with small=True %}
                                         {% include "peoplefinder/components/profile-role.html" with role=role %}
                                     </div>
                                 {% endfor %}
 
                                 {% if profile.contact_email %}
-                                    <div class="content-with-icon min-gap">
+                                    <div class="content-with-icon small-gap">
                                         {% include "dwds/icons/email.html" with small=True %}
                                         <a class="dwds-email-wrap"
                                            href="mailto:{{ profile.contact_email }}"
                                            data-testid="preferred-email">{{ profile.contact_email }}</a>
                                     </div>
                                 {% else %}
-                                    <div class="content-with-icon min-gap">
+                                    <div class="content-with-icon small-gap">
                                         {% include "dwds/icons/email.html" with small=True %}
                                         <a class="dwds-email-wrap"
                                            href="mailto:{{ profile.email }}"
@@ -61,14 +61,14 @@
                                 {% endif %}
 
                                 {% if profile.primary_phone_number %}
-                                    <div class="content-with-icon min-gap">
+                                    <div class="content-with-icon small-gap">
                                         {% include "dwds/icons/phone.html" with small=True %}
                                         <a href="tel:{{ profile.primary_phone_number }}">{{ profile.primary_phone_number }}</a>
                                     </div>
                                 {% endif %}
 
                                 {% if profile.uk_office_location.city %}
-                                    <div class="content-with-icon min-gap">
+                                    <div class="content-with-icon small-gap">
                                         {% include "dwds/icons/marker.html" with small=True %}
                                         {{ profile.uk_office_location.city }}
                                     </div>

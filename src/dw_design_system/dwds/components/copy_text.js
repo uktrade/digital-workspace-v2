@@ -4,14 +4,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const copyButton = copy_text_element.querySelector("button");
 
         copyButton.addEventListener("click", function () {
-            const text = inputField.value;
-            
-            navigator.clipboard.writeText(text);
-            inputField.value = "Copied to clipboard";
-            // TODO: INTR-542 - Change the success icon on click
-            
+            navigator.clipboard.writeText(inputField.value);
+
+            copyButton.classList.add("copied");
             setTimeout(() => (
-                inputField.value = text
+                copyButton.classList.remove("copied")
             ), 2000);
         });
     });
