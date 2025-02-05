@@ -2,8 +2,6 @@ from django.conf import settings
 from django.db import models
 from wagtail.models import Page
 
-from interactions.services.reactions import get_active_reaction_choices
-
 
 class UserPage(models.Model):
     class Meta:
@@ -48,7 +46,7 @@ class ReactionType(models.TextChoices):
 class Reaction(UserPage):
     type = models.CharField(
         max_length=10,
-        choices=get_active_reaction_choices(),
+        choices=ReactionType.choices,
         verbose_name="Reaction Type",
         help_text="Select the type of reaction (e.g., Like or Dislike).",
     )

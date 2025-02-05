@@ -1,33 +1,24 @@
-from typing import TYPE_CHECKING, Iterable, Optional, Tuple
+from typing import Iterable
 
 from django.conf import settings
 from django.db.models import Count
 from wagtail.models import Page
 
+from interactions.models import Reaction, ReactionType
 from news.models import NewsPage
 from user.models import User
 
 
-if TYPE_CHECKING:
-    from interactions.models import Reaction, ReactionType
-
-
-def get_active_reaction_choices() -> Iterable[Tuple[str, str]]:
-    from interactions.models import ReactionType
-
+def get_active_reactions() -> list[ReactionType]:
     inactive_reaction_types = [
         ReactionType(rt) for rt in settings.INACTIVE_REACTION_TYPES
     ]
-    for rt in ReactionType:
-        if rt not in inactive_reaction_types:
-            yield rt.value, rt.label
+    return [
+        (rt.value, rt.label) for rt in ReactionType if rt not in inactive_reaction_types
+    ]
 
 
-def react_to_page(
-    user: User, page: Page, reaction_type: str | None
-) -> Optional["Reaction"]:
-    from interactions.models import Reaction, ReactionType
-
+def react_to_page(user: User, page: Page, reaction_type: str | None) -> Reaction | None:
     page = page.specific
     if not isinstance(page, NewsPage):
         raise ValueError("The page must be a NewsPage.")
@@ -46,11 +37,7 @@ def react_to_page(
     return reaction
 
 
-def get_reaction_count(
-    page: Page, reaction_type: Optional["ReactionType"]
-) -> int | None:
-    from interactions.models import Reaction
-
+def get_reaction_count(page: Page, reaction_type: ReactionType | None) -> int | None:
     page = page.specific
     if not isinstance(page, NewsPage):
         return None
@@ -64,8 +51,6 @@ def get_reaction_count(
 
 
 def get_reaction_counts(page: Page) -> dict[str, int]:
-    from interactions.models import Reaction, ReactionType
-
     page = page.specific
     if not isinstance(page, NewsPage):
         return {}
@@ -76,14 +61,16 @@ def get_reaction_counts(page: Page) -> dict[str, int]:
         Reaction.objects.filter(page=page).values("type").annotate(count=Count("id"))
     )
     reaction_counts.update(
-        {reaction["type"]: reaction["count"] for reaction in reactions}
+        {
+            reaction["type"]: reaction["count"]
+            for reaction in reactions
+            if ReactionType(reaction["type"]) in get_active_reactions()
+        }
     )
     return reaction_counts
 
 
-def get_user_reaction(user: User, page: Page) -> Optional["ReactionType"]:
-    from interactions.models import Reaction
-
+def get_user_reaction(user: User, page: Page) -> ReactionType | None:
     reaction = Reaction.objects.filter(user=user, page=page).first()
     if reaction:
         return reaction.type
