@@ -5,7 +5,12 @@
         data-is-htmx="{{ request.headers.hx_request }}"
         hx-post="{{ post_url }}"
         hx-vals='{"reaction_type": "{{ reaction_type }}", "is_selected": {% if user_reaction == reaction_type %}true{% else %}false{% endif %}}'
-        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        onclick="dataLayer.push({ 
+            'event': 'page_reaction',
+            'from_type': '{{ user_reaction }}',
+            'to_type': '{{ reaction_type }}', 
+            'reaction_block': '{{ reaction_block }}'})">
     {% if reaction_type %}
         {% get_reaction_icon_template reaction_type as icon_template %}
         {% if user_reaction == reaction_type %}
