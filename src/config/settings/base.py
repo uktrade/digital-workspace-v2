@@ -746,3 +746,6 @@ CSP_CONNECT_SRC = ("'none'",)
 
 CSP_REPORT_ONLY = True
 CSP_REPORT_URI = env("CSP_REPORT_URI", default=None)
+
+# Interactions
+INACTIVE_REACTION_TYPES = env.list("INACTIVE_REACTION_TYPES", default=["unhappy"])
