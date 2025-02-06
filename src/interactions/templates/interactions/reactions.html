@@ -1,11 +1,13 @@
-<div class="page-reactions content-stack small"
-     hx-get="{{ get_url }}"
-     hx-trigger="refresh-reactions from:body">
+{% if page.allow_reactions %}
+    <div class="page-reactions content-stack small"
+         hx-get="{{ get_url }}"
+         hx-trigger="refresh-reactions from:body">
 
-    <h4>React to this article</h4>
-    <div class="content-cluster small">
-        {% for reaction_type, reaction_count in reactions.items %}
-            {% include "interactions/reaction_button.html" %}
-        {% endfor %}
+        <h4>React to this article</h4>
+        <div class="content-cluster small">
+            {% for reaction_type, reaction_count in reactions.items %}
+                {% include "interactions/reaction_button.html" %}
+            {% endfor %}
+        </div>
     </div>
-</div>
+{% endif %}
