@@ -35,7 +35,11 @@ class EngagementCardBlock(blocks.StructBlock):
         )
 
         if isinstance(page, NewsPage):
-            news_page = NewsPage.objects.annotate_with_comment_count().get(pk=page.pk)
+            news_page = (
+                NewsPage.objects.annotate_with_comment_count()
+                .annotate_with_reaction_count()
+                .get(pk=page.pk)
+            )
             context.update(comment_count=news_page.comment_count)
         return context
 
