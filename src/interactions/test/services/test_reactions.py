@@ -24,7 +24,7 @@ def test_get_active_reactions_default():
     assert ReactionType.UNHAPPY in response
 
 
-@override_settings(INACTIVE_REACTION_TYPES=["unhappy", "love"])
+@override_settings(INACTIVE_REACTION_TYPES=["unhappy", "like"])
 def test_get_active_reactions_settings():
     response = get_active_reactions()
     assert ReactionType.CELEBRATE in response
