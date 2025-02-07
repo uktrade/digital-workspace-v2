@@ -436,13 +436,13 @@ def test_profile_edit_contact_view(state):
     response = state.client.get(view_url)
 
     assert response.status_code == 200
-    assert state.person.contact_email == "jane.smith@test.com"
+    assert state.person.contact_email == "jane.smith@test.com"  # /PS-IGNORE
     assert state.person.primary_phone_number is None
     assert state.person.secondary_phone_number is None
 
     form = ContactProfileEditForm(
         {
-            "contact_email": "jane.smith123@test.com",
+            "contact_email": "jane.smith123@test.com",  # /PS-IGNORE
             "primary_phone_number": "01234567890",
             "secondary_phone_number": "09876543210",
         },
@@ -457,7 +457,7 @@ def test_profile_edit_contact_view(state):
 
     assert response.status_code == 302
     assert response.url == view_url
-    assert state.person.contact_email == "jane.smith123@test.com"
+    assert state.person.contact_email == "jane.smith123@test.com"  # /PS-IGNORE
     assert state.person.primary_phone_number == "01234567890"
     assert state.person.secondary_phone_number == "09876543210"
 
