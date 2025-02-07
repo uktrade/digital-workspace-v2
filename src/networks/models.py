@@ -127,6 +127,7 @@ class Network(ContentOwnerMixin, ContentPage):
     parent_page_types = [
         "networks.NetworksHome",
         "networks.Network",
+        "networks.NetworkContentPage",
     ]
 
     template = "content/content_page.html"
