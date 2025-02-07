@@ -1,11 +1,23 @@
-<div class="page-reactions content-stack small"
-     hx-get="{{ get_url }}"
-     hx-trigger="refresh-reactions from:body">
+{% load humanize %}
+{% load reactions %}
 
+<div class="page-reactions content-stack small">
     <h4>React to this article</h4>
     <div class="content-cluster small">
         {% for reaction_type, reaction_count in reactions.items %}
-            {% include "interactions/reaction_button.html" %}
+            {% get_reaction_icon_template reaction_type as icon_template %}
+            {% if reaction_type %}
+                <page-react-button post-url="{{ post_url }}" title="{{ reaction_type|reaction_type_display }}" count="{{ reaction_count }}" type="{{ reaction_type }}"
+                {% if user_reaction == reaction_type %}
+                    selected="true"
+                {% else %}
+                    selected="false"
+                {% endif %}
+                active-icon-html="ACTIVE" inactive-icon-html="INACTIVE" csrf-token="{{ csrf_token }}">
+                {% include icon_template %}
+                </page-react-button>
+
+            {% endif %}
         {% endfor %}
     </div>
 </div>
