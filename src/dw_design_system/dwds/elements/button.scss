@@ -28,9 +28,6 @@ a.dwds-button,
         background-color: var(--color-button-primary);
     }
 
-    &--clear-icon {
-        padding: unset;
-    }
 
     &--clear-icon,
     &--clear {
@@ -52,6 +49,15 @@ a.dwds-button,
 
         &:focus {
             border: unset;
+        }
+    }
+
+    &--clear-icon {
+        padding: unset;
+        border-radius: var(--border-radius);
+
+        &:hover {
+            background-color: var(--dbt-very-light-grey);
         }
     }
 

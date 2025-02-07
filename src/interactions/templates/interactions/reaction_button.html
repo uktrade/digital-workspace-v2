@@ -1,18 +1,20 @@
 {% load humanize %}
 {% load reactions %}
-<button class="dwds-button dwds-button--clear-icon content-with-icon small-gap"
-        title="{{ reaction_type|reaction_type_display }}"
-        data-is-htmx="{{ request.headers.hx_request }}"
-        hx-post="{{ post_url }}"
-        hx-vals='{"reaction_type": "{{ reaction_type }}", "is_selected": {% if user_reaction == reaction_type %}true{% else %}false{% endif %}}'
-        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-    {% if reaction_type %}
-        {% get_reaction_icon_template reaction_type as icon_template %}
-        {% if user_reaction == reaction_type %}
-            {% include icon_template with dark=True hover_light=True %}
-        {% else %}
-            {% include icon_template with hover_dark=True %}
+<div class="content-cluster small">
+    <button class="dwds-button dwds-button--clear-icon content-with-icon no-gap"
+            title="{{ reaction_type|reaction_type_display }}"
+            data-is-htmx="{{ request.headers.hx_request }}"
+            hx-post="{{ post_url }}"
+            hx-vals='{"reaction_type": "{{ reaction_type }}", "is_selected": {% if user_reaction == reaction_type %}true{% else %}false{% endif %}}'
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        {% if reaction_type %}
+            {% get_reaction_icon_template reaction_type as icon_template %}
+            {% if user_reaction == reaction_type %}
+                {% include icon_template with dark=True %}
+            {% else %}
+                {% include icon_template %}
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </button>
     {{ reaction_count|intcomma }}
-</button>
+</div>
