@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -56,20 +56,10 @@ def bookmark_index(request, *args, **kwargs):
     )
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["POST"])
 def react_to_page(request, *args, pk, **kwargs):
     page = get_object_or_404(Page, id=pk)
     user = request.user
-
-    template: str = "interactions/reactions.html"
-    headers: dict = {}
-    context = {
-        "get_url": reverse("interactions:reactions", kwargs={"pk": pk}),
-        "post_url": reverse("interactions:reactions", kwargs={"pk": pk}),
-        "csrf_token": request.META.get("CSRF_COOKIE", ""),
-        "page": page,
-        "request": request,
-    }
 
     if request.method == "POST":
         reaction_type = ReactionType(request.POST["reaction_type"])
@@ -78,25 +68,9 @@ def react_to_page(request, *args, pk, **kwargs):
         reacted_type = None if is_selected else reaction_type
         reactions_service.react_to_page(user, page, reacted_type)
 
-        context.update(
-            user_reaction=reaction_type if not is_selected else None,
-            reaction_type=reaction_type,
-            reaction_count=reactions_service.get_reaction_count(
-                page=page, reaction_type=reaction_type
-            ),
-        )
-        template = "interactions/reaction_button.html"
-        headers["HX-Trigger"] = "refresh-reactions"
-
-    elif request.method == "GET":
-        context.update(
-            user_reaction=reactions_service.get_user_reaction(user, page),
-            reactions=reactions_service.get_reaction_counts(page),
-        )
-
-    return TemplateResponse(
-        request=request,
-        template=template,
-        context=context,
-        headers=headers,
+    return JsonResponse(
+        {
+            "user_reaction": reactions_service.get_user_reaction(user, page),
+            "reactions": reactions_service.get_reaction_counts(page),
+        }
     )
