@@ -264,6 +264,30 @@ class QuickLinks(SidebarPart):
         return context
 
 
+class UsefulLinks(SidebarPart):
+    template_name = "tags/sidebar/parts/useful_links.html"
+    title = "Useful links"
+
+    def is_visible(self) -> bool:
+        page = self.context.get("self")
+        # refactor with only one return
+        print("THIS IS PAGE!!!!!!!!!!!!", page)
+        print("THIS IS USEFUL LINKS!!!!!!!!!!!!", page.useful_links)
+        if getattr(page, "useful_links", None):
+            return True
+        return False
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        page = self.context.get("self")
+
+        context.update(
+            useful_links=page.useful_links,
+            title=self.title,
+        )
+        return context
+
+
 @register.inclusion_tag("tags/sidebar.html", takes_context=True)
 def sidebar(context):
     sections: list[SidebarSection] = [
@@ -288,6 +312,7 @@ def sidebar(context):
                 YourBookmarks,
                 QuickLinks,
                 GiveFeedback,
+                UsefulLinks,
             ],
             context=context,
         ),

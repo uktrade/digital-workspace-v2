@@ -1,0 +1,6 @@
+{{ title }}
+{{ useful_links }}
+{% for link in useful_links %}
+    {% comment %} <div class="dwds-content-item-card"></div> {% endcomment %}
+    <p>{{ link.title }}</p>
+{% endfor %}
