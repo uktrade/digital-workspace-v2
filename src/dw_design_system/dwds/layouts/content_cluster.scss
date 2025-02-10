@@ -8,8 +8,16 @@
     h1 {
         margin: 0;
     }
-    
+
     &.small {
         gap: var(--s-1);
+    }
+
+    &.tiny {
+        gap: var(--s-5);
+    }
+
+    &.no-gap {
+        gap: 0;
     }
 }
