@@ -7,7 +7,7 @@
         {% reactions_list user page %}
     {% endif %}
     <div class="content-stack">
-        {% image page.preview_image fill-640x360 width=None height=None style="border-radius: var(--border-radius);" %}
+        {% image page.preview_image fill-800x450 width=None height=None style="border-radius: var(--border-radius);" %}
         {% include "includes/attribution.html" with page=page is_news_page=True perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=True %}
         {% for block in page.body %}
             {% include_block block %}
