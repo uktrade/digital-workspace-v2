@@ -23,13 +23,11 @@ class PageReactButton extends HTMLElement {
 
     connectedCallback() {
         this.title = this.getAttribute("title");
-        this.active_icon_html = this.getAttribute("active-icon-html");
-        this.inactive_icon_html = this.getAttribute("inactive-icon-html");
         this.type = this.getAttribute("type");
         this.postUrl = this.getAttribute("post-url");
         this.csrfToken = this.getAttribute("csrf-token");
 
-        this.iconHtml = this.innerHTML;
+        this.iconEl = this.getElementsByTagName("svg")[0];
 
         this.render();
         this.addEventListener("click", this.handleClick);
@@ -70,17 +68,22 @@ class PageReactButton extends HTMLElement {
     }
 
     render() {
-        this.innerHTML = `
-            <div class="content-cluster small">
-                <button class="dwds-button dwds-button--clear-icon content-with-icon no-gap" title="${this.title}">
-                    ${this.iconHtml}
-                </button>
-                ${this.count}
-            </div>
-        `;
+        this.innerHTML = "";
+
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("content-cluster", "small");
+
+        const button = document.createElement("button");
+        button.classList.add("dwds-button", "dwds-button--clear-icon", "content-with-icon", "no-gap");
+        button.setAttribute("title", this.title);
+        button.appendChild(this.iconEl);
+
+        wrapper.appendChild(button);
+        wrapper.appendChild(document.createTextNode(this.count));
+        this.appendChild(wrapper);
+
 
         const icon = this.querySelector("svg");
-
         if (this.selected) {
             icon.classList.add("dark");
         } else {
