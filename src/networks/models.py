@@ -144,6 +144,7 @@ class Network(ContentOwnerMixin, ContentPage):
             "Professional Development and Skills",
         )
         SOCIAL_AND_COMMUNITY = "social_and_community", "Social and Community"
+        VOLUNTEERING = "volunteering", "Volunteering"
 
     network_type = models.CharField(
         max_length=50,

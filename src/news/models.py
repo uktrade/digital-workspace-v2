@@ -127,6 +127,10 @@ class NewsPage(PageWithTopics):
         default=True,
     )
 
+    allow_reactions = models.BooleanField(
+        default=True,
+    )
+
     @property
     def search_categories(self):
         return " ".join(
@@ -155,6 +159,7 @@ class NewsPage(PageWithTopics):
     content_panels = PageWithTopics.content_panels + [  # noqa W504
         InlinePanel("news_categories", label="News categories"),
         FieldPanel("allow_comments"),
+        FieldPanel("allow_reactions"),
         FieldPanel("perm_sec_as_author"),
         FieldPanel("pinned_on_home"),
     ]
