@@ -13,7 +13,7 @@
                 {% else %}
                     selected="false"
                 {% endif %}
-                active-icon-html="ACTIVE" inactive-icon-html="INACTIVE" csrf-token="{{ csrf_token }}">
+                csrf-token="{{ csrf_token }}">
                 {% include icon_template with hover_dark=True %}
                 </page-react-button>
             {% endif %}
