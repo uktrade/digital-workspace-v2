@@ -69,7 +69,6 @@ class PageReactButton extends HTMLElement {
 
     render() {
         this.innerHTML = "";
-
         const wrapper = document.createElement("div");
         wrapper.classList.add("content-cluster", "small");
 
@@ -81,7 +80,6 @@ class PageReactButton extends HTMLElement {
         wrapper.appendChild(button);
         wrapper.appendChild(document.createTextNode(this.count));
         this.appendChild(wrapper);
-
 
         const icon = this.querySelector("svg");
         if (this.selected) {
