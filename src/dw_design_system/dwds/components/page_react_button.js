@@ -1,8 +1,6 @@
 class PageReactButton extends HTMLElement {
     constructor() {
         super();
-
-        this.handleClick = this.handleClick.bind(this);
     }
 
     get count() {
@@ -27,10 +25,9 @@ class PageReactButton extends HTMLElement {
         this.postUrl = this.getAttribute("post-url");
         this.csrfToken = this.getAttribute("csrf-token");
 
-        this.iconEl = this.getElementsByTagName("svg")[0];
+        this.iconEl = this.querySelector("svg");
 
         this.render();
-        this.addEventListener("click", this.handleClick);
 
         document.addEventListener("reactions:updated", (e) => {
             const reactions = e.detail.reactions;
@@ -44,7 +41,7 @@ class PageReactButton extends HTMLElement {
         })
     }
 
-    async handleClick(e) {
+    handleClick = async (e) => {
         // NOTE: This is where you would add an optimistic update.
 
         const formData = new FormData();
@@ -73,6 +70,8 @@ class PageReactButton extends HTMLElement {
         wrapper.classList.add("content-cluster", "small");
 
         const button = document.createElement("button");
+        button.addEventListener("click", this.handleClick);
+
         button.classList.add("dwds-button", "dwds-button--clear-icon", "content-with-icon", "no-gap");
         button.setAttribute("title", this.title);
         button.appendChild(this.iconEl);
@@ -81,11 +80,10 @@ class PageReactButton extends HTMLElement {
         wrapper.appendChild(document.createTextNode(this.count));
         this.appendChild(wrapper);
 
-        const icon = this.querySelector("svg");
         if (this.selected) {
-            icon.classList.add("dark");
+            this.iconEl.classList.add("dark");
         } else {
-            icon.classList.remove("dark");
+            this.iconEl.classList.remove("dark");
         }
     }
 }
