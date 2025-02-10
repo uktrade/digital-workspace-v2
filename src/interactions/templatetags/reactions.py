@@ -25,11 +25,11 @@ def reactions_list(user, page):
 @register.simple_tag
 def get_reaction_icon_template(reaction_type: ReactionType) -> str:
     ICON_TEMPLATES = {
-        ReactionType.CELEBRATE: "dwds/icons/interactive/celebrate.html",
-        ReactionType.LIKE: "dwds/icons/interactive/like.html",
-        ReactionType.LOVE: "dwds/icons/interactive/love.html",
-        ReactionType.DISLIKE: "dwds/icons/interactive/dislike.html",
-        ReactionType.UNHAPPY: "dwds/icons/interactive/unhappy.html",
+        ReactionType.CELEBRATE: "dwds/icons/celebrate.html",
+        ReactionType.LIKE: "dwds/icons/like.html",
+        ReactionType.LOVE: "dwds/icons/love.html",
+        ReactionType.DISLIKE: "dwds/icons/dislike.html",
+        ReactionType.UNHAPPY: "dwds/icons/unhappy.html",
     }
 
     return ICON_TEMPLATES[reaction_type]
