@@ -4,6 +4,7 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
+from wagtail.blocks import StructValue
 
 
 class HeadingBlock(blocks.CharBlock):
