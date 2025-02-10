@@ -4,7 +4,6 @@ from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
-from wagtail.blocks import StructValue
 
 
 class HeadingBlock(blocks.CharBlock):
@@ -77,7 +76,6 @@ class UsefulLinkBlock(blocks.StructBlock):
     class Meta:
         label = "Useful links"
         icon = "link"
-        # template = "blocks/heading_2.html"
 
 
 class ImageBlock(blocks.StructBlock):

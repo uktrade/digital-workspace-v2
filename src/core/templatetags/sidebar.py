@@ -312,10 +312,10 @@ def sidebar(context):
         SidebarSection(
             title="Secondary page actions",
             parts=[
+                UsefulLinks,
                 YourBookmarks,
                 QuickLinks,
                 GiveFeedback,
-                UsefulLinks,
             ],
             context=context,
         ),
