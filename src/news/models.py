@@ -193,6 +193,7 @@ class NewsPage(PageWithTopics):
 
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
+        context["reply_comment_form"] = CommentForm(auto_id="reply_%s")
 
         response = TemplateResponse(request, self.template, context)
 

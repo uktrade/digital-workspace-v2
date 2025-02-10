@@ -55,7 +55,7 @@
                                   onsubmit="setCommentId(this, {{ comment.pk }});">
                                 {% csrf_token %}
                                 <div class="govuk-form-group">
-                                    {% for field in comment_form %}
+                                    {% for field in reply_comment_form %}
                                         <label class="ws-hide" for="{{ field.auto_id }}">Comment content</label>
                                         {{ field }}
                                     {% endfor %}
