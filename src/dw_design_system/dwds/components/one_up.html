@@ -31,9 +31,7 @@
                             {% if created_date|naturalday in 'yesterday, today' %}at {{ created_date|time:'g:iA'|lower }}{% endif %}
                         </time>
                     {% endif %}
-                    {% if comment_count %}
-                        {% include "dwds/components/comment_section.html" %}
-                    {% endif %}
+                    {% include "dwds/elements/page_counts.html" %}
                 </div>
             {% endif %}
         </div>

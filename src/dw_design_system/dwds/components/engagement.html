@@ -34,12 +34,7 @@
                         </time>
                     {% endif %}
 
-                    {% if comment_count > 0 %}
-                        {% include "dwds/components/comment_section.html" %}
-                    {% endif %}
-                    {% if reaction_count > 0 %}
-                        {% include "dwds/components/comment_section.html" with comment_count=reaction_count %}
-                    {% endif %}
+                    {% include "dwds/elements/page_counts.html" %}
                 </div>
             {% endif %}
         </div>

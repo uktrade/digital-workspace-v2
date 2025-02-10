@@ -1,0 +1,18 @@
+{% load static %}
+
+{% if comment_count > 0 %}
+    <div class="content-with-icon small-gap">
+        <img class="content-icon tiny"
+             src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+             alt="Comment bubble icon.">
+        {{ comment_count }} Comment{{ comment_count|pluralize }}
+    </div>
+{% endif %}
+{% if reaction_count > 0 %}
+    <div class="content-with-icon small-gap">
+        <img class="content-icon tiny"
+             src="{% static '/images/dwds/icons/heart.svg' %}"
+             alt="Reaction icon.">
+        {{ comment_count }} Reaction{{ reaction_count|pluralize }}
+    </div>
+{% endif %}

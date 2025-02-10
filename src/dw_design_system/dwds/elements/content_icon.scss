@@ -12,6 +12,16 @@
         width: 2cap;
     }
 
+    &.tiny {
+        height: 1em;
+        height: 1.33cap;
+        width: 1;
+        width: 1.33cap;
+    }
+
+    * {
+        fill: currentColor;
+    }
 }
 
 .content-with-icon {

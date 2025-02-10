@@ -108,7 +108,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "CTA Button",
                 "template": "dwds/components/cta_button.html",
                 "context": {
-                    "icon": "dwds/icons/feedback.html",
+                    "icon": "dwds/icons/interactive/feedback.html",
                     "url": "https://www.gov.uk",
                     "title": "This is a CTA for GOV.UK",
                     "description": "This is a description for the CTA",
@@ -273,48 +273,13 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": ICON_CONTEXT,
             },
             {
-                "name": "Bookmark",
-                "template": "dwds/icons/bookmark.html",
-                "context": ICON_CONTEXT,
-            },
-            {
                 "name": "Briefcase",
                 "template": "dwds/icons/briefcase.html",
                 "context": ICON_CONTEXT,
             },
             {
-                "name": "Celebrate",
-                "template": "dwds/icons/celebrate.html",
-                "context": ICON_CONTEXT,
-            },
-            {
-                "name": "Comment",
-                "template": "dwds/icons/comment.html",
-                "context": ICON_CONTEXT,
-            },
-            {
-                "name": "Dislike",
-                "template": "dwds/icons/dislike.html",
-                "context": ICON_CONTEXT,
-            },
-            {
                 "name": "Email",
                 "template": "dwds/icons/email.html",
-                "context": ICON_CONTEXT,
-            },
-            {
-                "name": "Feedback",
-                "template": "dwds/icons/feedback.html",
-                "context": ICON_CONTEXT,
-            },
-            {
-                "name": "Like",
-                "template": "dwds/icons/like.html",
-                "context": ICON_CONTEXT,
-            },
-            {
-                "name": "Love",
-                "template": "dwds/icons/love.html",
                 "context": ICON_CONTEXT,
             },
             {
@@ -328,8 +293,43 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": ICON_CONTEXT,
             },
             {
+                "name": "Bookmark",
+                "template": "dwds/icons/interactive/bookmark.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Celebrate",
+                "template": "dwds/icons/interactive/celebrate.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Comment",
+                "template": "dwds/icons/interactive/comment.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Dislike",
+                "template": "dwds/icons/interactive/dislike.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Feedback",
+                "template": "dwds/icons/interactive/feedback.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Like",
+                "template": "dwds/icons/interactive/like.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Love",
+                "template": "dwds/icons/interactive/love.html",
+                "context": ICON_CONTEXT,
+            },
+            {
                 "name": "Unhappy",
-                "template": "dwds/icons/unhappy.html",
+                "template": "dwds/icons/interactive/unhappy.html",
                 "context": ICON_CONTEXT,
             },
         ],

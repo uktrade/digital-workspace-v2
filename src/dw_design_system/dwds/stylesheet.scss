@@ -17,7 +17,6 @@
 
 // Components
 @forward "components/box";
-@forward "components/comment_section";
 @forward "components/content_list";
 @forward "components/cta";
 @forward "components/cta_button";
@@ -48,17 +47,17 @@
 @forward "elements/ribbon";
 
 // Icons
-@forward "icons/bookmark";
-@forward "icons/comment";
-@forward "icons/share";
-@forward "icons/copy";
+@forward "icons/interactive/bookmark";
+@forward "icons/interactive/comment";
+@forward "icons/interactive/share";
+@forward "icons/interactive/copy";
 @forward "icons/check";
-@forward "icons/celebrate";
-@forward "icons/dislike";
-@forward "icons/like";
-@forward "icons/love";
-@forward "icons/unhappy";
-@forward "icons/feedback";
+@forward "icons/interactive/celebrate";
+@forward "icons/interactive/dislike";
+@forward "icons/interactive/like";
+@forward "icons/interactive/love";
+@forward "icons/interactive/unhappy";
+@forward "icons/interactive/feedback";
 
 // Layouts
 @forward "layouts/content_sidebar";

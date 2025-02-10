@@ -12,9 +12,9 @@
                 hx-swap="outerHTML">
             {% if is_new_sidebar_enabled %}
                 {% if is_bookmarked %}
-                    {% include 'dwds/icons/bookmark.html' with dark=True hover_light=True %}
+                    {% include 'dwds/icons/interactive/bookmark.html' with dark=True hover_light=True %}
                 {% else %}
-                    {% include 'dwds/icons/bookmark.html' with hover_dark=True %}
+                    {% include 'dwds/icons/interactive/bookmark.html' with hover_dark=True %}
                 {% endif %}
             {% else %}
                 {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
