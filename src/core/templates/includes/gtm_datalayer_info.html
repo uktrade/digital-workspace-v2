@@ -1,4 +1,5 @@
 {% load reactions %}
+{% load gtm_datalayer_info %}
 
 <script>
 initial_page_data = {
@@ -24,4 +25,5 @@ initial_page_data = {
     "user_account_age_in_days": {{ request.user.profile.days_since_account_creation }}
 };
 dataLayer.push(initial_page_data)
+initial_page_data_v2 = {% get_initial_page_data %}
 </script>
