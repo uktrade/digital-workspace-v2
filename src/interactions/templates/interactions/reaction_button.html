@@ -4,7 +4,10 @@
         title="{{ reaction_type|reaction_type_display }}"
         data-is-htmx="{{ request.headers.hx_request }}"
         hx-post="{{ post_url }}"
-        hx-vals='{"reaction_type": "{{ reaction_type }}", "is_selected": {% if user_reaction == reaction_type %}true{% else %}false{% endif %}}'
+        hx-vals='{
+            "reaction_type": "{{ reaction_type }}", 
+            "is_selected": {% if user_reaction == reaction_type %}true{% else %}false{% endif %},
+            "reaction_block": "{{ reaction_block }}"}'
         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
         onclick="dataLayer.push({ 
             'event': 'page_reaction',
