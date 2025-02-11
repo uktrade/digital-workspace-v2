@@ -169,7 +169,11 @@ class NewsPage(PageWithTopics):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["page"] = NewsPage.objects.annotate_with_comment_count().get(pk=self.pk)
+        context["page"] = (
+            NewsPage.objects.annotate_with_comment_count()
+            .annotate_with_reaction_count()
+            .get(pk=self.pk)
+        )
         context["comments"] = self.get_comments()
         context["categories"] = NewsCategory.objects.all().order_by("category")
 
@@ -257,8 +261,12 @@ class NewsHome(RoutablePageMixin, BasePage):
                 )
 
         # Add comment counts
-        news_items = news_items.annotate_with_comment_count().order_by(
-            "-first_published_at",
+        news_items = (
+            news_items.annotate_with_comment_count()
+            .annotate_with_reaction_count()
+            .order_by(
+                "-first_published_at",
+            )
         )
 
         # Paginate all posts by 2 per page

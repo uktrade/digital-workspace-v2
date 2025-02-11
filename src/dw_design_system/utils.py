@@ -273,13 +273,28 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": ICON_CONTEXT,
             },
             {
-                "name": "Bookmark",
-                "template": "dwds/icons/bookmark.html",
+                "name": "Briefcase",
+                "template": "dwds/icons/briefcase.html",
                 "context": ICON_CONTEXT,
             },
             {
-                "name": "Briefcase",
-                "template": "dwds/icons/briefcase.html",
+                "name": "Email",
+                "template": "dwds/icons/email.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Marker",
+                "template": "dwds/icons/marker.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Phone",
+                "template": "dwds/icons/phone.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Bookmark",
+                "template": "dwds/icons/bookmark.html",
                 "context": ICON_CONTEXT,
             },
             {
@@ -298,11 +313,6 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": ICON_CONTEXT,
             },
             {
-                "name": "Email",
-                "template": "dwds/icons/email.html",
-                "context": ICON_CONTEXT,
-            },
-            {
                 "name": "Feedback",
                 "template": "dwds/icons/feedback.html",
                 "context": ICON_CONTEXT,
@@ -315,16 +325,6 @@ def get_dwds_templates(template_type, request: HttpRequest):
             {
                 "name": "Love",
                 "template": "dwds/icons/love.html",
-                "context": ICON_CONTEXT,
-            },
-            {
-                "name": "Marker",
-                "template": "dwds/icons/marker.html",
-                "context": ICON_CONTEXT,
-            },
-            {
-                "name": "Phone",
-                "template": "dwds/icons/phone.html",
                 "context": ICON_CONTEXT,
             },
             {

@@ -289,6 +289,7 @@ class HomePage(BasePage):
             .live()
             .public()
             .annotate_with_comment_count()
+            .annotate_with_reaction_count()
         )
 
         priority_page_ribbon_text_mapping = {
@@ -303,6 +304,7 @@ class HomePage(BasePage):
             for p in ContentPage.objects.select_related("preview_image")
             .filter(id__in=priority_page_ids)
             .annotate_with_comment_count()
+            .annotate_with_reaction_count()
             .annotate(ribbon_text=models.F("priority_page__ribbon_text"))
             .order_by("priority_page__sort_order")
         ]
