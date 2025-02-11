@@ -234,14 +234,10 @@ class Share(SidebarPart):
     def get_part_context(self) -> dict:
         context = super().get_part_context()
         page = self.context.get("self")
-        page_url = page.get_full_url(self.request)
-
-        if settings.SECURE_SSL_REDIRECT and not page_url.startswith("https://"):
-            page_url = page_url.replace("http://", "https://")
 
         context.update(
             page=page,
-            page_url=page_url,
+            page_url=page.get_full_url(self.request),
         )
         return context
 
