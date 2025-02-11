@@ -1,7 +1,7 @@
 <h3>{{ title }}</h3>
 {% for link in useful_links %}
-    <div class="useful-link">
-        {% include "dwds/icons/arrow-blue-bg.html" %}
+    <div class="content-with-icon min-gap">
+        {% include "dwds/icons/arrow-blue-bg.html" with medium=True %}
         <a href="{{ link.page }}">{{ link.title }}</a>
     </div>
 {% endfor %}
