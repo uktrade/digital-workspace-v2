@@ -265,7 +265,7 @@ class QuickLinks(SidebarPart):
 
 
 class UsefulLinks(SidebarPart):
-    template_name = "tags/sidebar/parts/useful_links.html"
+    template_name = "dwds/elements/useful_link.html"
     title = "Useful links"
 
     def is_visible(self) -> bool:
