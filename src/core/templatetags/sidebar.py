@@ -1,7 +1,6 @@
 from typing import Type
 
 from django import template
-from django.conf import settings
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.safestring import SafeString
