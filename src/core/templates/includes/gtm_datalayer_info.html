@@ -1,3 +1,5 @@
+{% load reactions %}
+
 <script>
 initial_page_data = {
     {% for k, v in FEATURE_FLAGS.items %}"feature_flag_{{ forloop.counter }}": "{{ k }}: {{ v|lower }}",
@@ -8,6 +10,7 @@ initial_page_data = {
     "page_topics": "{% for topic in self.topics.all %}{{ topic.topic.title }} {% endfor %}",
     "page_tags": "{% for tag in self.tag_set %}{{ tag.name }} {% endfor %}",
     "page_content_owner": "{{ self.content_owner.slug|default:"NA"}}",
+    "page_reactions": {% get_gtm_reactions %},
 
     "user_profile_slug": "{{ request.user.profile.slug }}",
     {% for role in request.user.profile.roles.all %}
