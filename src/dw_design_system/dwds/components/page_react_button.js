@@ -11,12 +11,16 @@ class PageReactButton extends HTMLElement {
         this.setAttribute("count", value);
     }
 
-    get selected() {
-        return this.getAttribute("selected") === "true";
+    get currentType() {
+        return this.getAttribute("current-type");
     }
 
-    set selected(value) {
-        this.setAttribute("selected", value);
+    set currentType(value) {
+        this.setAttribute("current-type", value);
+    }
+
+    get selected() {
+        return this.type == this.currentType;
     }
 
     connectedCallback() {
@@ -24,6 +28,7 @@ class PageReactButton extends HTMLElement {
         this.type = this.getAttribute("type");
         this.postUrl = this.getAttribute("post-url");
         this.csrfToken = this.getAttribute("csrf-token");
+        this.reactionLocation = this.getAttribute("reaction-location");
 
         this.iconEl = this.querySelector("svg");
 
@@ -31,7 +36,7 @@ class PageReactButton extends HTMLElement {
 
         document.addEventListener("reactions:updated", (e) => {
             const reactions = e.detail.reactions;
-            this.selected = e.detail.user_reaction === this.type;
+            this.currentType = e.detail.user_reaction;
 
             if (this.type in reactions) {
                 this.count = reactions[this.type];
@@ -60,6 +65,12 @@ class PageReactButton extends HTMLElement {
             }
             return response.json();
         }).then((data) => {
+            dataLayer.push({ 
+                'event': 'page_reaction',
+                'from_type': this.currentType,
+                'to_type': !this.selected ? this.type : "None",
+                'reaction_block': this.reactionLocation
+            });
             this.dispatchEvent(new CustomEvent("reactions:updated", { bubbles: true, detail: data }));
         });
     }

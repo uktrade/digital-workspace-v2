@@ -4,7 +4,7 @@
 
 {% block primary_content %}
     {% if FEATURE_FLAGS.show_reactions and page.allow_reactions %}
-        {% reactions_list user page %}
+        {% reactions_list user page "top" %}
     {% endif %}
     <div class="content-stack">
         {% image page.preview_image fill-800x450 width=None height=None style="border-radius: var(--border-radius);" %}
@@ -17,7 +17,7 @@
 
 {% block post_primary_content %}
     {% if FEATURE_FLAGS.show_reactions and page.allow_reactions %}
-        {% reactions_list user page %}
+        {% reactions_list user page "bottom" %}
     {% endif %}
     {% if self.allow_comments %}
         <div class="news_comments">
