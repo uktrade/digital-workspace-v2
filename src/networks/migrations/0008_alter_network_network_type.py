@@ -3,6 +3,13 @@
 from django.db import migrations, models
 
 
+def update_network_type(apps, schema_editor):
+    Network = apps.get_model("networks", "Network")
+    Network.objects.filter(
+        network_type="professional_development_and_skills"
+    ).update(network_type="professional_networks_and_skills")
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -32,4 +39,5 @@ class Migration(migrations.Migration):
                 null=True,
             ),
         ),
+        migrations.RunPython(update_network_type),
     ]
