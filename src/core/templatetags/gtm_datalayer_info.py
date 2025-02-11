@@ -60,7 +60,7 @@ def get_initial_page_data(context) -> str:
         request.user.profile.days_since_account_creation()
     )
 
-    return mark_safe(json.dumps(initial_page_data_v2))
+    return mark_safe(json.dumps(initial_page_data_v2))  # noqa S308
 
 
 def get_page_age_in_days(page):
