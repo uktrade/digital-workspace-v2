@@ -48,9 +48,7 @@ def get_initial_page_data(context) -> str:
     initial_page_data_v2["user_grade"] = (
         request.user.profile.grade.code if request.user.profile.grade else "NA"
     )
-    initial_page_data_v2["user_is_line_manager"] = str(
-        request.user.profile.is_line_manager
-    ).lower()
+    initial_page_data_v2["user_is_line_manager"] = request.user.profile.is_line_manager
     initial_page_data_v2["user_working_location"] = (
         request.user.profile.get_office_location_display()
         if request.user.profile.get_office_location_display()
