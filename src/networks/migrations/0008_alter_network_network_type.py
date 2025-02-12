@@ -5,7 +5,10 @@ from django.db import migrations, models
 OLD_NETWORK_TYPE = "professional_development_and_skills"
 NEW_NETWORK_TYPE = "professional_networks_and_skills"
 
-def update_network_type_for_page_and_revision(network_page, old_network_type: str, new_network_type: str):
+
+def update_network_type_for_page_and_revision(
+    network_page, old_network_type: str, new_network_type: str
+):
     if network_page.network_type == old_network_type:
         network_page.network_type = new_network_type
         network_page.save(update_fields=["network_type"])
@@ -14,6 +17,7 @@ def update_network_type_for_page_and_revision(network_page, old_network_type: st
     if latest_revision.content["network_type"] == old_network_type:
         latest_revision.content["network_type"] = new_network_type
         latest_revision.save(update_fields=["content"])
+
 
 def update_network_type(apps, schema_editor):
     Network = apps.get_model("networks", "Network")
