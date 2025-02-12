@@ -77,8 +77,9 @@ def get_page_type(page):
 
 
 def get_page_tags(page):
-    tag_set = []
     if hasattr(page, "tagged_items"):
-        for tagged_item in page.tagged_items.select_related("tag").all():
-            tag_set.append(tagged_item.tag.name)
-    return tag_set if tag_set else ""
+        page_tags = " ".join(
+            tagged_item.tag.name
+            for tagged_item in page.tagged_items.select_related("tag").all()
+        )
+    return page_tags if page_tags else ""
