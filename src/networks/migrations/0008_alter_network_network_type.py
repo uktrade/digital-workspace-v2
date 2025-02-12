@@ -5,35 +5,36 @@ from django.db import migrations, models
 OLD_NETWORK_TYPE = "professional_development_and_skills"
 NEW_NETWORK_TYPE = "professional_networks_and_skills"
 
+def update_network_type_for_page_and_revision(network_page, old_network_type: str, new_network_type: str):
+    if network_page.network_type == old_network_type:
+        network_page.network_type = new_network_type
+        network_page.save(update_fields=["network_type"])
+
+    latest_revision = network_page.latest_revision
+    if latest_revision.content["network_type"] == old_network_type:
+        latest_revision.content["network_type"] = new_network_type
+        latest_revision.save(update_fields=["content"])
+
 def update_network_type(apps, schema_editor):
     Network = apps.get_model("networks", "Network")
 
     for network in Network.objects.all():
-        latest_revision = network.latest_revision
-        if network.network_type != OLD_NETWORK_TYPE and latest_revision.content["network_type"] != OLD_NETWORK_TYPE:
-            continue
-
-        network.network_type = NEW_NETWORK_TYPE
-        network.save(update_fields=["network_type"])
-
-        latest_revision.content["network_type"] = NEW_NETWORK_TYPE
-        latest_revision.save(update_fields=["content"])
+        update_network_type_for_page_and_revision(
+            network,
+            OLD_NETWORK_TYPE,
+            NEW_NETWORK_TYPE,
+        )
 
 
 def rollback_network_type(apps, schema_editor):
     Network = apps.get_model("networks", "Network")
 
     for network in Network.objects.all():
-        latest_revision = network.latest_revision
-        if network.network_type != NEW_NETWORK_TYPE and latest_revision.content["network_type"] != NEW_NETWORK_TYPE:
-            continue
-
-        network.network_type = OLD_NETWORK_TYPE
-        network.save(update_fields=["network_type"])
-
-        latest_revision = network.latest_revision
-        latest_revision.content["network_type"] = OLD_NETWORK_TYPE
-        latest_revision.save(update_fields=["content"])
+        update_network_type_for_page_and_revision(
+            network,
+            NEW_NETWORK_TYPE,
+            OLD_NETWORK_TYPE,
+        )
 
 
 class Migration(migrations.Migration):
