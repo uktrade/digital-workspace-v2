@@ -3,6 +3,7 @@ import json
 from django import template
 from django.urls import reverse
 from django.utils.html import mark_safe
+from wagtail.models import Page
 
 from interactions.models import ReactionType
 from interactions.services import reactions as reactions_service
@@ -48,6 +49,7 @@ def reaction_type_display(reaction_type: str) -> str:
 def get_gtm_reactions(context) -> str:
     if "page" in context:
         page = context["page"]
-        reactions = reactions_service.get_reaction_counts(page)
-        return mark_safe(json.dumps(reactions))  # noqa S308
+        if isinstance(page, Page):
+            reactions = reactions_service.get_reaction_counts(page)
+            return mark_safe(json.dumps(reactions))  # noqa S308
     return ""
