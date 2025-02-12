@@ -2,19 +2,38 @@
 
 from django.db import migrations, models
 
+OLD_NETWORK_TYPE = "professional_development_and_skills"
+NEW_NETWORK_TYPE = "professional_networks_and_skills"
 
 def update_network_type(apps, schema_editor):
     Network = apps.get_model("networks", "Network")
-    Network.objects.filter(network_type="professional_development_and_skills").update(
-        network_type="professional_networks_and_skills"
-    )
+
+    for network in Network.objects.all():
+        latest_revision = network.latest_revision
+        if network.network_type != OLD_NETWORK_TYPE and latest_revision.content["network_type"] != OLD_NETWORK_TYPE:
+            continue
+
+        network.network_type = NEW_NETWORK_TYPE
+        network.save(update_fields=["network_type"])
+
+        latest_revision.content["network_type"] = NEW_NETWORK_TYPE
+        latest_revision.save(update_fields=["content"])
 
 
 def rollback_network_type(apps, schema_editor):
     Network = apps.get_model("networks", "Network")
-    Network.objects.filter(network_type="professional_networks_and_skills").update(
-        network_type="professional_development_and_skills"
-    )
+
+    for network in Network.objects.all():
+        latest_revision = network.latest_revision
+        if network.network_type != NEW_NETWORK_TYPE and latest_revision.content["network_type"] != NEW_NETWORK_TYPE:
+            continue
+
+        network.network_type = OLD_NETWORK_TYPE
+        network.save(update_fields=["network_type"])
+
+        latest_revision = network.latest_revision
+        latest_revision.content["network_type"] = OLD_NETWORK_TYPE
+        latest_revision.save(update_fields=["content"])
 
 
 class Migration(migrations.Migration):
