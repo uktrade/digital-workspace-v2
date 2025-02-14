@@ -40,8 +40,8 @@ def get_initial_page_data(context) -> str:
     initial_page_data["user_profile_slug"] = str(request.user.profile.slug)
 
     for i, role in enumerate(request.user.profile.roles.all()):
-        initial_page_data[f"user_job_title_{i+1}"] = role.job_title
         initial_page_data[f"user_team_slug_{i+1}"] = role.team.name.lower()
+        initial_page_data[f"user_job_title_{i+1}"] = role.job_title
 
     initial_page_data["user_professions"] = " ".join(
         profession.code for profession in request.user.profile.professions.all()
