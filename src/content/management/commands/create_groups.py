@@ -47,7 +47,6 @@ MODERATOR_ROOT_COLLECTION_PERMISSIONS = [
     "choose_image",
     "add_document",
     "change_document",
-    "choose_document",
 ]
 
 NEWS_MODERATOR_ROOT_COLLECTION_PERMISSIONS = [
