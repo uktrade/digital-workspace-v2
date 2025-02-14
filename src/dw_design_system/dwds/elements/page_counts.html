@@ -1,7 +1,7 @@
 {% load static %}
 
 <div class="dwds-page-counts content-cluster no-gap">
-    {% if comment_count > 0 %}
+    {% if allow_comments and comment_count > 0 %}
         <div class="content-with-icon small-gap">
             <img class="content-icon tiny"
                  src="{% static '/images/dwds/icons/comment_icon.svg' %}"
@@ -9,7 +9,7 @@
             {{ comment_count }} Comment{{ comment_count|pluralize }}
         </div>
     {% endif %}
-    {% if reaction_count > 0 %}
+    {% if allow_reactions and reaction_count > 0 %}
         <div class="content-with-icon small-gap">
             <img class="content-icon tiny"
                  src="{% static '/images/dwds/icons/heart.svg' %}"
