@@ -19,7 +19,6 @@ def update_network_type_for_page_and_revision(
             revision.save(update_fields=["content"])
 
 
-
 def update_network_type(apps, schema_editor):
     Network = apps.get_model("networks", "Network")
 
