@@ -9,7 +9,7 @@
             {{ comment_count }} Comment{{ comment_count|pluralize }}
         </div>
     {% endif %}
-    {% if reaction_count > 0 %}
+    {% if FEATURE_FLAGS.show_reactions and reaction_count > 0 %}
         <div class="content-with-icon small-gap">
             <img class="content-icon tiny"
                  src="{% static '/images/dwds/icons/heart.svg' %}"
