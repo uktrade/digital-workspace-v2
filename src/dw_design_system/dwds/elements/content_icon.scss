@@ -25,6 +25,10 @@
     display: inline-flex;
     align-items: center;
 
+    &.top-alignment {
+        align-items: flex-start;
+    }
+
     &.no-gap {
         > .content-icon {
             margin-inline-end: 0px;
@@ -34,6 +38,12 @@
     &.min-gap {
         > .content-icon {
             margin-inline-end: var(--s-5);
+        }
+    }
+
+    &.medium-gap {
+        > .content-icon {
+            margin-inline-end: var(--s-2);
         }
     }
 }

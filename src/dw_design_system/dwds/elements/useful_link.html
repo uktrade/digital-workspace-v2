@@ -1,7 +1,9 @@
-<h3>{{ title }}</h3>
-{% for link in useful_links %}
-    <div class="content-with-icon min-gap">
-        {% include "dwds/icons/arrow-blue-bg.html" with medium=True %}
-        <a href="{{ link.page }}">{{ link.title }}</a>
-    </div>
-{% endfor %}
+<div class="content-stack medium border-top">
+    <h3>{{ title }}</h3>
+    {% for link in useful_links %}
+        <div class="content-with-icon medium-gap top-alignment">
+            {% include "dwds/icons/arrow-blue-bg.html" with medium=True %}
+            <a href="{{ link.page }}" class="no-underline bold">{{ link.title }}</a>
+        </div>
+    {% endfor %}
+</div>
