@@ -30,6 +30,7 @@ def page_to_display_context(page: NewsPage | EventPage, hide_updated: bool = Fal
             created_date=page.first_published_at,
             comment_count=page.comment_count,
             reaction_count=page.reaction_count,
+            page=page,
         )
         if not hide_updated:
             context.update(
