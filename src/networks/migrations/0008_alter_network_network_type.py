@@ -13,10 +13,11 @@ def update_network_type_for_page_and_revision(
         network_page.network_type = new_network_type
         network_page.save(update_fields=["network_type"])
 
-    latest_revision = network_page.latest_revision
-    if latest_revision.content["network_type"] == old_network_type:
-        latest_revision.content["network_type"] = new_network_type
-        latest_revision.save(update_fields=["content"])
+    for revision in network_page.revisions.all():
+        if revision.content["network_type"] == old_network_type:
+            revision.content["network_type"] = new_network_type
+            revision.save(update_fields=["content"])
+
 
 
 def update_network_type(apps, schema_editor):
