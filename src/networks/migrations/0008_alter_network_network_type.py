@@ -42,11 +42,11 @@ def update_network_type(apps, schema_editor):
 
 
 def rollback_network_type(apps, schema_editor):
-    network_model = apps.get_model("networks", "Network")
+    Network = apps.get_model("networks", "Network")
     Revision = apps.get_model("wagtailcore", "Revision")
     ContentType = apps.get_model("contenttypes", "ContentType")
 
-    for network in network_model.objects.all():
+    for network in Network.objects.all():
         update_network_type_for_page_and_revision(
             network,
             NEW_NETWORK_TYPE,
