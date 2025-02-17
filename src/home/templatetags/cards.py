@@ -29,6 +29,9 @@ def page_to_display_context(page: NewsPage | EventPage, hide_updated: bool = Fal
         context.update(
             created_date=page.first_published_at,
             comment_count=page.comment_count,
+            reaction_count=page.reaction_count,
+            allow_comments=page.allow_comments,
+            allow_reactions=page.allow_reactions,
         )
         if not hide_updated:
             context.update(

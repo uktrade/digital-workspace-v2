@@ -15,6 +15,18 @@
 
             &.active {
                 font-weight: var(--font-weight-bold);
+
+                ol.page-toc {
+                    font-weight: var(--font-weight-normal);
+
+                    li {
+                        border-left: unset;
+
+                        a {
+                            padding: var(--s-5) var(--s-2);
+                        }
+                    }
+                }
             }
 
             &:hover,

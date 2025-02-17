@@ -19,6 +19,13 @@
         width: 2.66cap;
     }
 
+    &.tiny {
+        height: 1em;
+        height: 1.33cap;
+        width: 1;
+        width: 1.33cap;
+    }
+
 }
 
 .content-with-icon {
@@ -35,7 +42,7 @@
         }
     }
 
-    &.min-gap {
+    &.small-gap {
         > .content-icon {
             margin-inline-end: var(--s-5);
         }

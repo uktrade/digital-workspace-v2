@@ -20,7 +20,7 @@
                 {% if excerpt %}<p>{{ excerpt|truncate_magic:25 }}</p>{% endif %}
             </div>
 
-            {% if updated_date or created_date or comment_count %}
+            {% if updated_date or created_date or comment_count or reaction_count %}
                 <div class="content-footer content-stack">
                     {% if updated_date > created_date %}
                         <time>
@@ -33,9 +33,8 @@
                             {% if created_date|naturalday in 'yesterday, today' %}at {{ created_date|time:'g:iA'|lower }}{% endif %}
                         </time>
                     {% endif %}
-
-                    {% if comment_count > 0 %}
-                        {% include "dwds/components/comment_section.html" %}
+                    {% if comment_count or reaction_count %}
+                        {% include "dwds/elements/page_counts.html" %}
                     {% endif %}
                 </div>
             {% endif %}

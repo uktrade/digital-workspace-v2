@@ -1,6 +1,7 @@
 from typing import Type
 
 from django import template
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.safestring import SafeString
@@ -233,9 +234,14 @@ class Share(SidebarPart):
     def get_part_context(self) -> dict:
         context = super().get_part_context()
         page = self.context.get("self")
+        page_url = page.get_full_url(self.request)
+
+        if settings.SECURE_SSL_REDIRECT and not page_url.startswith("https://"):
+            page_url = page_url.replace("http://", "https://")
 
         context.update(
             page=page,
+            page_url=page_url,
         )
         return context
 

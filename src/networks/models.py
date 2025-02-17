@@ -131,6 +131,7 @@ class Network(ContentOwnerMixin, ContentPage):
     parent_page_types = [
         "networks.NetworksHome",
         "networks.Network",
+        "networks.NetworkContentPage",
     ]
 
     template = "content/content_page.html"
@@ -147,6 +148,7 @@ class Network(ContentOwnerMixin, ContentPage):
             "Professional Development and Skills",
         )
         SOCIAL_AND_COMMUNITY = "social_and_community", "Social and Community"
+        VOLUNTEERING = "volunteering", "Volunteering"
 
     network_type = models.CharField(
         max_length=50,
@@ -177,7 +179,7 @@ class Network(ContentOwnerMixin, ContentPage):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = (
-            Page.objects.live().public().child_of(self).order_by("title")
+            ContentPage.objects.live().public().child_of(self).order_by("title")
         )
         context["attribution"] = True
         context["num_cols"] = 3

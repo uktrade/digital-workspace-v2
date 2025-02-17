@@ -127,6 +127,10 @@ class NewsPage(PageWithTopics):
         default=True,
     )
 
+    allow_reactions = models.BooleanField(
+        default=True,
+    )
+
     @property
     def search_categories(self):
         return " ".join(
@@ -155,6 +159,7 @@ class NewsPage(PageWithTopics):
     content_panels = PageWithTopics.content_panels + [  # noqa W504
         InlinePanel("news_categories", label="News categories"),
         FieldPanel("allow_comments"),
+        FieldPanel("allow_reactions"),
         FieldPanel("perm_sec_as_author"),
         FieldPanel("pinned_on_home"),
     ]
@@ -164,7 +169,11 @@ class NewsPage(PageWithTopics):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        context["page"] = NewsPage.objects.annotate_with_comment_count().get(pk=self.pk)
+        context["page"] = (
+            NewsPage.objects.annotate_with_comment_count()
+            .annotate_with_reaction_count()
+            .get(pk=self.pk)
+        )
         context["comments"] = self.get_comments()
         context["categories"] = NewsCategory.objects.all().order_by("category")
 
@@ -184,6 +193,7 @@ class NewsPage(PageWithTopics):
 
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
+        context["reply_comment_form"] = CommentForm(auto_id="reply_%s")
 
         response = TemplateResponse(request, self.template, context)
 
@@ -251,8 +261,12 @@ class NewsHome(RoutablePageMixin, BasePage):
                 )
 
         # Add comment counts
-        news_items = news_items.annotate_with_comment_count().order_by(
-            "-first_published_at",
+        news_items = (
+            news_items.annotate_with_comment_count()
+            .annotate_with_reaction_count()
+            .order_by(
+                "-first_published_at",
+            )
         )
 
         # Paginate all posts by 2 per page
