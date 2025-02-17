@@ -22,9 +22,22 @@ class CreateGroupsTestCase(TestCase):
     def test_permissions(self):
         # news moderators have the same collection permissions as moderators
         # apart from the document choose permission
+        moderator_permissions = self.news_moderators.collection_permissions.all()
+        moderator_permission_codenames = [
+            x.permission.codename for x in moderator_permissions
+        ]
         self.assertEqual(
-            self.news_moderators.collection_permissions.count() - 1,
-            self.moderators.collection_permissions.count(),
+            moderator_permission_codenames,
+            ['add_document', 'change_document', 'choose_document', 'add_image', 'change_image', 'choose_image', 'add_media', 'change_media'],
+        )
+
+        news_moderator_permissions = self.news_moderators.collection_permissions.all()
+        news_moderator_permission_codenames = [
+            x.permission.codename for x in news_moderator_permissions
+        ]
+        self.assertEqual(
+            news_moderator_permission_codenames,
+            ['add_document', 'change_document', 'choose_document', 'add_image', 'change_image', 'choose_image', 'add_media', 'change_media'],
         )
 
         # news moderators have newscategory permissions
