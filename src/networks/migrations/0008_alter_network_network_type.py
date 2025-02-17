@@ -5,55 +5,53 @@ OLD_NETWORK_TYPE = "professional_development_and_skills"
 NEW_NETWORK_TYPE = "professional_networks_and_skills"
 
 
-def update_network_type_for_page_and_revision(
-    network_page,
-    old_network_type: str,
-    new_network_type: str,
-    Revision,
-    ContentType,
+def update_network_page_and_revision(
+    networks, old_network_type: str, new_network_type: str, Revision, content_type
 ):
-    if network_page.network_type == old_network_type:
-        network_page.network_type = new_network_type
-        network_page.save(update_fields=["network_type"])
+    for network_page in networks:
+        if network_page.network_type == old_network_type:
+            network_page.network_type = new_network_type
+            network_page.save(update_fields=["network_type"])
 
+        revisions = Revision.objects.filter(
+            content_type=content_type, object_id=network_page.id
+        )
+        for revision in revisions:
+            if revision.content["network_type"] == old_network_type:
+                revision.content["network_type"] = new_network_type
+                revision.save(update_fields=["content"])
+
+
+def run_update_network_type(apps, old_network_type, new_network_type):
+    Network = apps.get_model("networks", "Network")
+    Revision = apps.get_model("wagtailcore", "Revision")
+
+    ContentType = apps.get_model("contenttypes", "ContentType")
     content_type = ContentType.objects.get(app_label="networks", model="network")
-    revisions = Revision.objects.filter(
-        content_type=content_type, object_id=network_page.id
+
+    update_network_page_and_revision(
+        Network.objects.all(),
+        old_network_type,
+        new_network_type,
+        Revision,
+        content_type,
     )
-    for revision in revisions:
-        if revision.content["network_type"] == old_network_type:
-            revision.content["network_type"] = new_network_type
-            revision.save(update_fields=["content"])
 
 
 def update_network_type(apps, schema_editor):
-    Network = apps.get_model("networks", "Network")
-    Revision = apps.get_model("wagtailcore", "Revision")
-    ContentType = apps.get_model("contenttypes", "ContentType")
-
-    for network in Network.objects.all():
-        update_network_type_for_page_and_revision(
-            network,
-            OLD_NETWORK_TYPE,
-            NEW_NETWORK_TYPE,
-            Revision,
-            ContentType,
-        )
+    run_update_network_type(
+        apps,
+        OLD_NETWORK_TYPE,
+        NEW_NETWORK_TYPE,
+    )
 
 
 def rollback_network_type(apps, schema_editor):
-    Network = apps.get_model("networks", "Network")
-    Revision = apps.get_model("wagtailcore", "Revision")
-    ContentType = apps.get_model("contenttypes", "ContentType")
-
-    for network in Network.objects.all():
-        update_network_type_for_page_and_revision(
-            network,
-            NEW_NETWORK_TYPE,
-            OLD_NETWORK_TYPE,
-            Revision,
-            ContentType,
-        )
+    run_update_network_type(
+        apps,
+        NEW_NETWORK_TYPE,
+        OLD_NETWORK_TYPE,
+    )
 
 
 class Migration(migrations.Migration):
