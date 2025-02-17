@@ -28,7 +28,16 @@ class CreateGroupsTestCase(TestCase):
         ]
         self.assertEqual(
             moderator_permission_codenames,
-            ['add_document', 'change_document', 'choose_document', 'add_image', 'change_image', 'choose_image', 'add_media', 'change_media'],
+            [
+                "add_document",
+                "change_document",
+                "choose_document",
+                "add_image",
+                "change_image",
+                "choose_image",
+                "add_media",
+                "change_media",
+            ],
         )
 
         news_moderator_permissions = self.news_moderators.collection_permissions.all()
@@ -37,7 +46,16 @@ class CreateGroupsTestCase(TestCase):
         ]
         self.assertEqual(
             news_moderator_permission_codenames,
-            ['add_document', 'change_document', 'choose_document', 'add_image', 'change_image', 'choose_image', 'add_media', 'change_media'],
+            [
+                "add_document",
+                "change_document",
+                "choose_document",
+                "add_image",
+                "change_image",
+                "choose_image",
+                "add_media",
+                "change_media",
+            ],
         )
 
         # news moderators have newscategory permissions
