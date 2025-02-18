@@ -667,6 +667,9 @@ FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS = env.list(
     "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
 )
 
+# Wagtail Content Import
+WAGTAILCONTENTIMPORT_DOCX_PARSER = "content.imports.parsers.DocxParser"
+
 # Feedback
 DJANGO_FEEDBACK_GOVUK = {
     "SERVICE_NAME": "the beta experience",

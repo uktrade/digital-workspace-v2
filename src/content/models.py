@@ -21,9 +21,11 @@ from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
+from wagtail_content_import.models import ContentImportMixin
 
 import dw_design_system.dwds.components as dwds_blocks
 from content import blocks as content_blocks
+from content.imports.mappers import ContentPageMapper
 from content.utils import (
     get_search_content_for_block,
     manage_excluded,
@@ -332,7 +334,9 @@ class SearchFieldsMixin(models.Model):
     ]
 
 
-class ContentPage(SearchFieldsMixin, BasePage):
+class ContentPage(ContentImportMixin, SearchFieldsMixin, BasePage):
+    mapper_class = ContentPageMapper
+
     objects = PageManager.from_queryset(ContentPageQuerySet)()
 
     is_creatable = False
