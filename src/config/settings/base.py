@@ -169,6 +169,8 @@ WAGTAIL_APPS = [
     "wagtail.documents",
     "wagtail.images",
     "wagtail.search",
+    "wagtail_content_import",
+    "wagtail_content_import.pickers.local",
     "wagtail.admin",
     "wagtail",
     "wagtail.contrib.routable_page",

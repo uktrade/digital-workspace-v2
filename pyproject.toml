@@ -71,6 +71,7 @@ django-filter = "^24.3"
 django-csp = "^3.8"
 icalendar = "^6.0.1"
 granian = "^1.6.3"
+wagtail-content-import = "^0.12.1"
 
 [tool.poetry.group.dev.dependencies]
 dbt-platform-helper = "12.6.0"
