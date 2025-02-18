@@ -158,6 +158,9 @@ class NewsPage(PageWithTopics):
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504
         InlinePanel("news_categories", label="News categories"),
+    ]
+
+    settings_panels = [
         FieldPanel("allow_comments"),
         FieldPanel("allow_reactions"),
         FieldPanel("perm_sec_as_author"),
