@@ -163,7 +163,9 @@ class Network(ContentOwnerMixin, ContentPage):
         FieldPanel("peoplefinder_network"),
     ]
 
-    promote_panels = NetworksHome.promote_panels
+    promote_panels = [
+        FieldPanel("useful_links"),
+    ]
 
     base_form_class = NetworkForm
 
