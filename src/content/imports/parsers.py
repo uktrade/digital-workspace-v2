@@ -1,4 +1,6 @@
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from docx.text.hyperlink import Hyperlink
 from docx.text.paragraph import Paragraph
 from docx.text.run import Run
 from wagtail_content_import.parsers.microsoft import DocxParser
@@ -27,6 +29,13 @@ KNOWN_NAMES = HEADING_PARAGRAPH_NAMES + OTHER_NAMES
 
 
 class DocxParser(DocxParser):
+    def generate_a_tag(self, content, href):
+        return (
+            format_html('<a href="{href}">{content}</a>', href=href, content=content)
+            if content
+            else ""
+        )
+
     def paragraph_to_heading(self, paragraph: Paragraph, heading_level):
         if not paragraph.text:
             return None
@@ -49,20 +58,27 @@ class DocxParser(DocxParser):
             'value': html
         }
         """
-        runs: list[Run] = paragraph.runs
+
+        paragraph_hyperlinks: dict[Run, Hyperlink] = {}
+        for hyperlink in paragraph.hyperlinks:
+            for run in hyperlink.runs:
+                if run not in paragraph_hyperlinks:
+                    paragraph_hyperlinks[run] = []
+                paragraph_hyperlinks[run].append(hyperlink)
 
         text_list = []
-        for run in runs:
-            print("Paragraph run: ", run.text, run.element, run.style, run.part)
-            text = run.text
-            if run.bold:
-                text = self.generate_simple_tag(text, "b")
-            if run.italic:
-                text = self.generate_simple_tag(text, "em")
-            text_list.append(text)
+        for content in paragraph.iter_inner_content():
+            text = content.text
+            if isinstance(content, Run):
+                if content.bold:
+                    text = self.generate_simple_tag(text, "b")
+                if content.italic:
+                    text = self.generate_simple_tag(text, "em")
+                text_list.append(text)
+            elif isinstance(content, Hyperlink):
+                text_list.append(self.generate_a_tag(text, content.address))
 
         content = mark_safe("".join(text_list))
-
         return {"type": "html", "value": self.generate_simple_tag(content, outer_tag)}
 
     def parse(self):
@@ -76,9 +92,6 @@ class DocxParser(DocxParser):
 
         blocks = []
         for paragraph in paragraphs:
-            print("Paragraph", paragraph)
-            print("Paragraph", paragraph.text)
-
             p_style_name = paragraph.style.name
             if p_style_name not in KNOWN_NAMES:
                 raise Exception(f"Unknown paragraph style: {p_style_name}")
