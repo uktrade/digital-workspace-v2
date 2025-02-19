@@ -58,14 +58,6 @@ class DocxParser(DocxParser):
             'value': html
         }
         """
-
-        paragraph_hyperlinks: dict[Run, Hyperlink] = {}
-        for hyperlink in paragraph.hyperlinks:
-            for run in hyperlink.runs:
-                if run not in paragraph_hyperlinks:
-                    paragraph_hyperlinks[run] = []
-                paragraph_hyperlinks[run].append(hyperlink)
-
         text_list = []
         for content in paragraph.iter_inner_content():
             text = content.text
