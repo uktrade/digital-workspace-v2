@@ -11,7 +11,7 @@ def run_network_type_update(apps, old_network_type, new_network_type):
     ContentType = apps.get_model("contenttypes", "ContentType")
     content_type = ContentType.objects.get_or_create(
         app_label="networks", model="network"
-    )
+    )[0]
 
     for network_page in Network.objects.all():
         if network_page.network_type == old_network_type:
@@ -19,7 +19,7 @@ def run_network_type_update(apps, old_network_type, new_network_type):
             network_page.save(update_fields=["network_type"])
 
         revisions = Revision.objects.filter(
-            content_type=content_type, object_id=network_page.id
+            content_type_id=content_type.id, object_id=network_page.id
         )
         for revision in revisions:
             if revision.content["network_type"] == old_network_type:
