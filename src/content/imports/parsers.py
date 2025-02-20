@@ -29,6 +29,19 @@ KNOWN_NAMES = HEADING_PARAGRAPH_NAMES + OTHER_NAMES
 
 
 class DocxParser(DocxParser):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.tables = [
+            Table(
+                rows=[
+                    [Cell(cell.text) for cell in row.cells]
+                    for row in document_table.rows
+                ]
+            )
+            for document_table in self.document.tables
+        ]
+
     def generate_a_tag(self, content, href):
         return (
             format_html('<a href="{href}">{content}</a>', href=href, content=content)
@@ -134,10 +147,7 @@ class DocxParser(DocxParser):
             else:
                 converted_block = self.paragraph_to_html(paragraph)
 
-                if block_val := converted_block["value"]:
-                    # if blocks and blocks[-1]["type"] == "html":
-                    #     blocks[-1]["value"] += block_val
-                    # else:
+                if converted_block["value"]:
                     blocks.append(converted_block)
 
         # SECOND PASS
@@ -177,5 +187,14 @@ class DocxParser(DocxParser):
                         html_content = ""
             else:
                 final_blocks.append(block)
+
+        # Add tables to final blocks
+        for table in self.tables:
+            final_blocks.append(
+                {
+                    "type": "table",
+                    "value": table,
+                }
+            )
 
         return {"title": title, "elements": final_blocks}
