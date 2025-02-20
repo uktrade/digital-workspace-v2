@@ -4,6 +4,7 @@ from docx.text.hyperlink import Hyperlink
 from docx.text.paragraph import Paragraph
 from docx.text.run import Run
 from wagtail_content_import.parsers.microsoft import DocxParser
+from wagtail_content_import.parsers.tables import Cell, Table
 
 
 HEADING_PARAGRAPH_NAMES = [
