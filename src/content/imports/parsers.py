@@ -36,17 +36,6 @@ class DocxParser(DocxParser):
             else ""
         )
 
-    def generate_ol_tag(self, content, start):
-        return (
-            format_html(
-                '<ol start="{start}">{content}</ol>',
-                start=start,
-                content=content,
-            )
-            if content
-            else ""
-        )
-
     def paragraph_to_heading(
         self, paragraph: Paragraph, heading_level
     ) -> None | dict[str, str]:
@@ -70,29 +59,52 @@ class DocxParser(DocxParser):
             'type': 'html',
             'value': html
         }
+        OR
+        {
+            'type': 'html-list',
+            'list_type': 'ol' | 'ul',
+            'value': html
+        }
         """
         text_list = []
         for content in paragraph.iter_inner_content():
             text = content.text
-            if isinstance(content, Run):
-                if content.bold:
-                    text = self.generate_simple_tag(text, "b")
-                if content.italic:
-                    text = self.generate_simple_tag(text, "em")
-                text_list.append(text)
-            elif isinstance(content, Hyperlink):
-                text_list.append(self.generate_a_tag(text, content.address))
+            match content:
+                case Run():
+                    if content.bold:
+                        text = self.generate_simple_tag(text, "b")
+                    if content.italic:
+                        text = self.generate_simple_tag(text, "em")
+                    text_list.append(text)
+                case Hyperlink():
+                    text_list.append(self.generate_a_tag(text, content.address))
 
         content = mark_safe("".join(text_list))  # noqa: S308
 
-        if paragraph.style.name in ["DBT num list", "Bullet List 1"]:
-            content = self.generate_simple_tag(content, "li")
-            if paragraph.style.name == "DBT num list":
-                content = self.generate_ol_tag(content=content, start="3")
-            else:
-                content = self.generate_simple_tag(content, "ul")
+        block = {
+            "type": "html",
+            "value": "",
+        }
 
-        return {"type": "html", "value": self.generate_simple_tag(content, outer_tag)}
+        if paragraph.style.name in ["DBT num list", "Bullet List 1"]:
+            block["type"] = "html-list"
+            block["list_type"] = "ul"
+            block["value"] = self.generate_simple_tag(content, "li")
+
+            if paragraph.style.name == "DBT num list":
+                block["list_type"] = "ol"
+
+            return block
+
+        block["value"] = self.generate_simple_tag(content, outer_tag)
+        return block
+
+    def get_block_type_for_paragraph(self, paragraph: Paragraph) -> tuple[str, dict]:
+        if paragraph.style.name.startswith("Heading "):
+            return "heading", {
+                "heading_level": paragraph.style.name[8:9],
+            }
+        return "html", {}
 
     def parse(self):
         """
@@ -109,21 +121,61 @@ class DocxParser(DocxParser):
             if p_style_name not in KNOWN_NAMES:
                 raise Exception(f"Unknown paragraph style: {p_style_name}")
 
-            if p_style_name.startswith("Heading "):
-                heading_level = p_style_name[8:9]
+            block_type, block_data = self.get_block_type_for_paragraph(paragraph)
+            if block_type == "heading":
+                heading_level = block_data["heading_level"]
+
                 if heading_level == "1" and not title:
                     title = paragraph.text.strip()
 
                 if heading_block := self.paragraph_to_heading(paragraph, heading_level):
                     blocks.append(heading_block)
+
             else:
                 converted_block = self.paragraph_to_html(paragraph)
-                if block_val := converted_block["value"]:
-                    blocks.append(
-                        {
-                            "type": "html",
-                            "value": block_val,
-                        }
-                    )
 
-        return {"title": title, "elements": blocks}
+                if block_val := converted_block["value"]:
+                    # if blocks and blocks[-1]["type"] == "html":
+                    #     blocks[-1]["value"] += block_val
+                    # else:
+                    blocks.append(converted_block)
+
+        # SECOND PASS
+
+        final_blocks = []
+        html_content = ""
+
+        for i, block in enumerate(blocks):
+            prev_block = blocks[i - 1] if i > 0 else None
+            next_block = blocks[i + 1] if i < len(blocks) - 1 else None
+
+            if block["type"] == "html-list":
+                if prev_block and (
+                    prev_block["type"] != "html-list"
+                    or block["list_type"] != prev_block["list_type"]
+                ):
+                    # Open the list
+                    html_content += f"<{block['list_type']}>"
+
+                # Add the list item
+                html_content += block["value"]
+
+                if next_block and (
+                    next_block["type"] != "html-list"
+                    or block["list_type"] != next_block["list_type"]
+                ):
+                    # Close the list
+                    html_content += f"</{block['list_type']}>"
+
+                    if next_block["type"] != "html-list":
+                        final_blocks.append(
+                            {
+                                "type": "html",
+                                "value": html_content,
+                            }
+                        )
+                        html_content = ""
+            else:
+                final_blocks.append(block)
+
+        return {"title": title, "elements": final_blocks}
