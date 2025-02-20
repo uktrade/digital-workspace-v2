@@ -18,6 +18,10 @@ class NetworksHome(ContentPage):
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
     template = "content/content_page.html"
 
+    promote_panels = [
+        FieldPanel("useful_links"),
+    ]
+
     def get_template(self, request, *args, **kwargs):
         if flag_is_active(request, flags.NETWORKS_HUB):
             return "networks/networks_home.html"
@@ -158,6 +162,11 @@ class Network(ContentOwnerMixin, ContentPage):
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]
+
+    promote_panels = [
+        FieldPanel("useful_links"),
+    ]
+
     base_form_class = NetworkForm
 
     indexed_fields = [
