@@ -265,6 +265,33 @@ class QuickLinks(SidebarPart):
         return context
 
 
+class UsefulLinks(SidebarPart):
+    template_name = "dwds/elements/useful_links.html"
+    title = "Useful links"
+
+    def is_visible(self) -> bool:
+        page = self.context.get("self")
+        return bool(getattr(page, "useful_links", None))
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        page = self.context.get("self")
+
+        useful_links = [
+            {
+                "title": link.value["title"],
+                "page": link.value["page"].get_url(),
+            }
+            for link in page.useful_links
+        ]
+
+        context.update(
+            title=self.title,
+            useful_links=useful_links,
+        )
+        return context
+
+
 @register.inclusion_tag("tags/sidebar.html", takes_context=True)
 def sidebar(context):
     sections: list[SidebarSection] = [
@@ -286,6 +313,7 @@ def sidebar(context):
         SidebarSection(
             title="Secondary page actions",
             parts=[
+                UsefulLinks,
                 YourBookmarks,
                 QuickLinks,
                 GiveFeedback,

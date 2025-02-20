@@ -12,17 +12,29 @@
         width: 2cap;
     }
 
+    &.medium {
+        height: 2em;
+        height: 2.66cap;
+        width: 2;
+        width: 2.66cap;
+    }
+
     &.tiny {
         height: 1em;
         height: 1.33cap;
         width: 1;
         width: 1.33cap;
     }
+
 }
 
 .content-with-icon {
     display: inline-flex;
     align-items: center;
+
+    &.top-alignment {
+        align-items: flex-start;
+    }
 
     &.no-gap {
         > .content-icon {
@@ -38,7 +50,7 @@
 
     &.medium-gap {
         > .content-icon {
-            margin-inline-end: var(--s-3);
+            margin-inline-end: var(--s-2);
         }
     }
 }
