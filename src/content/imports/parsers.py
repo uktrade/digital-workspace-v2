@@ -113,6 +113,7 @@ class DocxParser(DocxParser):
                             if not image_rel.is_external:
                                 image = Image.from_blob(image_rel.target_part.blob)
                                 print(f"Image: {type(image)}")
+                                self.blocks.append({"type": "image", "value": image})
                                 continue
                             else:
                                 raise Exception("External images not yet supported")
@@ -157,7 +158,7 @@ class DocxParser(DocxParser):
 
         title = self.document.core_properties.title
 
-        blocks = []
+        self.blocks = []
 
         paragraphs: list[Paragraph] = self.document.paragraphs
         for paragraph in paragraphs:
@@ -173,22 +174,22 @@ class DocxParser(DocxParser):
                     title = paragraph.text.strip()
 
                 if heading_block := self.paragraph_to_heading(paragraph, heading_level):
-                    blocks.append(heading_block)
+                    self.blocks.append(heading_block)
 
             else:
                 converted_block = self.paragraph_to_html(paragraph)
 
                 if converted_block["value"]:
-                    blocks.append(converted_block)
+                    self.blocks.append(converted_block)
 
         # SECOND PASS
 
         final_blocks = []
         html_content = ""
 
-        for i, block in enumerate(blocks):
-            prev_block = blocks[i - 1] if i > 0 else None
-            next_block = blocks[i + 1] if i < len(blocks) - 1 else None
+        for i, block in enumerate(self.blocks):
+            prev_block = self.blocks[i - 1] if i > 0 else None
+            next_block = self.blocks[i + 1] if i < len(self.blocks) - 1 else None
 
             if block["type"] == "html-list":
                 if prev_block and (

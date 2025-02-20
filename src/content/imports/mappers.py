@@ -1,10 +1,11 @@
 from wagtail_content_import.mappers.converters import (
-    ImageConverter,
     RichTextConverter,
     TableConverter,
     TextConverter,
 )
 from wagtail_content_import.mappers.streamfield import StreamFieldMapper
+
+from content.imports.converters import ImageConverter
 
 
 class ContentPageMapper(StreamFieldMapper):
