@@ -9,11 +9,9 @@ def run_network_type_update(apps, old_network_type, new_network_type):
     Network = apps.get_model("networks", "Network")
     Revision = apps.get_model("wagtailcore", "Revision")
     ContentType = apps.get_model("contenttypes", "ContentType")
-
-    try:
-        content_type = ContentType.objects.get(app_label="networks", model="network")
-    except ContentType.DoesNotExist:
-        return
+    content_type = ContentType.objects.get_or_create(
+        app_label="networks", model="network"
+    )
 
     for network_page in Network.objects.all():
         if network_page.network_type == old_network_type:
