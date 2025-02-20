@@ -36,7 +36,20 @@ class DocxParser(DocxParser):
             else ""
         )
 
-    def paragraph_to_heading(self, paragraph: Paragraph, heading_level):
+    def generate_ol_tag(self, content, start):
+        return (
+            format_html(
+                '<ol start="{start}">{content}</ol>',
+                start=start,
+                content=content,
+            )
+            if content
+            else ""
+        )
+
+    def paragraph_to_heading(
+        self, paragraph: Paragraph, heading_level
+    ) -> None | dict[str, str]:
         if not paragraph.text:
             return None
 
@@ -70,7 +83,15 @@ class DocxParser(DocxParser):
             elif isinstance(content, Hyperlink):
                 text_list.append(self.generate_a_tag(text, content.address))
 
-        content = mark_safe("".join(text_list))
+        content = mark_safe("".join(text_list))  # noqa: S308
+
+        if paragraph.style.name in ["DBT num list", "Bullet List 1"]:
+            content = self.generate_simple_tag(content, "li")
+            if paragraph.style.name == "DBT num list":
+                content = self.generate_ol_tag(content=content, start="3")
+            else:
+                content = self.generate_simple_tag(content, "ul")
+
         return {"type": "html", "value": self.generate_simple_tag(content, outer_tag)}
 
     def parse(self):
@@ -80,9 +101,9 @@ class DocxParser(DocxParser):
 
         title = self.document.core_properties.title
 
-        paragraphs: list[Paragraph] = self.document.paragraphs
-
         blocks = []
+
+        paragraphs: list[Paragraph] = self.document.paragraphs
         for paragraph in paragraphs:
             p_style_name = paragraph.style.name
             if p_style_name not in KNOWN_NAMES:
