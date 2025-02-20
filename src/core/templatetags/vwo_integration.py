@@ -9,5 +9,5 @@ register = template.Library()
 def vwo_integration():
     vwo_account = settings.VWO_ACCOUNT
     vwo_version = settings.VWO_VERSION
-    
+
     return {"vwo_account": vwo_account, "vwo_version": vwo_version}
