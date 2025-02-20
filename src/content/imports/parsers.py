@@ -93,13 +93,6 @@ class DocxParser(DocxParser):
             match content:
                 case Run():
                     if text:
-                        if text in [
-                            "Document Version Control",
-                            "Document Revision History",
-                        ]:
-                            # TODO: Place the table in the correct spot???
-                            print(text)
-
                         if content.bold:
                             text = self.generate_simple_tag(text, "b")
                         if content.italic:
@@ -112,12 +105,10 @@ class DocxParser(DocxParser):
                             image_rel: _Relationship = self.images.pop(0)
                             if not image_rel.is_external:
                                 image = Image.from_blob(image_rel.target_part.blob)
-                                print(f"Image: {type(image)}")
                                 self.blocks.append({"type": "image", "value": image})
                                 continue
                             else:
                                 raise Exception("External images not yet supported")
-                        print(f"Inner content: {type(item)}")
 
                 case Hyperlink():
                     text_list.append(self.generate_a_tag(text, content.address))
@@ -162,6 +153,14 @@ class DocxParser(DocxParser):
 
         paragraphs: list[Paragraph] = self.document.paragraphs
         for paragraph in paragraphs:
+            if not paragraph.text and not paragraph.runs:
+                # TODO: Work out where the Tables go!
+                foo = [
+                    rel.reltype
+                    for id, rel in self.document.part.rels.items()
+                    if rel.reltype not in [RT.IMAGE, RT.HYPERLINK]
+                ]
+                print(paragraph)
             p_style_name = paragraph.style.name
             if p_style_name not in KNOWN_NAMES:
                 raise Exception(f"Unknown paragraph style: {p_style_name}")
