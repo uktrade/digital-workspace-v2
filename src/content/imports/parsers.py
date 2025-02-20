@@ -1,5 +1,9 @@
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from docx.drawing import Drawing
+from docx.image.image import Image
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
+from docx.opc.rel import _Relationship
 from docx.text.hyperlink import Hyperlink
 from docx.text.paragraph import Paragraph
 from docx.text.run import Run
@@ -33,6 +37,9 @@ class DocxParser(DocxParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.images = [
+            rel for _, rel in self.document.part.rels.items() if rel.reltype == RT.IMAGE
+        ]
         self.tables = [
             Table(
                 rows=[
@@ -85,13 +92,36 @@ class DocxParser(DocxParser):
             text = content.text
             match content:
                 case Run():
-                    if content.bold:
-                        text = self.generate_simple_tag(text, "b")
-                    if content.italic:
-                        text = self.generate_simple_tag(text, "em")
-                    text_list.append(text)
+                    if text:
+                        if text in [
+                            "Document Version Control",
+                            "Document Revision History",
+                        ]:
+                            # TODO: Place the table in the correct spot???
+                            print(text)
+
+                        if content.bold:
+                            text = self.generate_simple_tag(text, "b")
+                        if content.italic:
+                            text = self.generate_simple_tag(text, "em")
+                        text_list.append(text)
+                        continue
+
+                    for item in content.iter_inner_content():
+                        if isinstance(item, Drawing):
+                            image_rel: _Relationship = self.images.pop(0)
+                            if not image_rel.is_external:
+                                image = Image.from_blob(image_rel.target_part.blob)
+                                print(f"Image: {type(image)}")
+                                continue
+                            else:
+                                raise Exception("External images not yet supported")
+                        print(f"Inner content: {type(item)}")
+
                 case Hyperlink():
                     text_list.append(self.generate_a_tag(text, content.address))
+                case _:
+                    raise Exception(f"Unknown content type: {type(content)}")
 
         content = mark_safe("".join(text_list))  # noqa: S308
 
@@ -197,5 +227,9 @@ class DocxParser(DocxParser):
                     "value": table,
                 }
             )
+
+        # # Add images to final blocks
+        # for document_image in self.document.inline_shapes:
+        #     print(f"need to generate an image for : {type(document_image)}")
 
         return {"title": title, "elements": final_blocks}
