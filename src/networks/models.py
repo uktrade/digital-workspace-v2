@@ -143,9 +143,9 @@ class Network(ContentOwnerMixin, ContentPage):
         DIVERSITY_AND_INCLUSION = "diversity_and_inclusion", "Diversity and Inclusion"
         HEALTH_AND_WELLBEING = "health_and_wellbeing", "Health and Wellbeing"
         INTERESTS_AND_HOBBIES = "interests_and_hobbies", "Interests and Hobbies"
-        PROFESSIONAL_DEVELOPMENT_AND_SKILLS = (
-            "professional_development_and_skills",
-            "Professional Development and Skills",
+        PROFESSIONAL_NETWORKS_AND_SKILLS = (
+            "professional_networks_and_skills",
+            "Professional Networks and Skills",
         )
         SOCIAL_AND_COMMUNITY = "social_and_community", "Social and Community"
         VOLUNTEERING = "volunteering", "Volunteering"
