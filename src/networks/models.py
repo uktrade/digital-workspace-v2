@@ -18,7 +18,7 @@ class NetworksHome(ContentPage):
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
     template = "content/content_page.html"
 
-    promote_panels = [
+    promote_panels = ContentPage.promote_panels + [
         FieldPanel("useful_links"),
     ]
 
@@ -163,7 +163,7 @@ class Network(ContentOwnerMixin, ContentPage):
         FieldPanel("peoplefinder_network"),
     ]
 
-    promote_panels = [
+    promote_panels = ContentPage.promote_panels + [
         FieldPanel("useful_links"),
     ]
 
