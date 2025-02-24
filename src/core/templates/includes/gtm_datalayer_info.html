@@ -1,6 +1,34 @@
-{% load gtm_datalayer_info %}
+{% if not FEATURE_FLAGS.new_gtm_datalayer %}
+    {% load reactions %}
+    <script>
+    initial_page_data = {
+        {% for k, v in FEATURE_FLAGS.items %}"feature_flag_{{ forloop.counter }}": "{{ k }}: {{ v|lower }}",
+        {% endfor %}
 
-<script>
-initial_page_data = {% get_initial_page_data %}
-dataLayer.push(initial_page_data)
-</script>
+        "page_age_in_days": {% if self.days_since_last_published is not None %}{{ self.days_since_last_published }}{% else %}"NA"{% endif %},
+        "page_type": "{{ self.content_type.name|default_if_none:"NA" }}",
+        "page_topics": "{% for topic in self.topics.all %}{{ topic.topic.title }} {% endfor %}",
+        "page_tags": "{% for tag in self.tag_set %}{{ tag.name }} {% endfor %}",
+        "page_content_owner": "{{ self.content_owner.slug|default:"NA"}}",
+        "page_reactions": {% get_gtm_reactions %},
+
+        "user_profile_slug": "{{ request.user.profile.slug }}",
+        {% for role in request.user.profile.roles.all %}
+        "user_team_slug_{{ forloop.counter }}": "{{ role.team.slug }}",
+        "user_job_title_{{ forloop.counter }}": "{{ role.job_title }}",
+        {% endfor %}
+        "user_professions": "{% for profession in request.user.profile.professions.all %}{{ profession.code }} {% endfor %}",
+        "user_grade": {% if request.user.profile.grade %}"{{ request.user.profile.grade.code }}"{% else %}"NA"{% endif %},
+        "user_is_line_manager": {{ request.user.profile.is_line_manager|lower }},
+        "user_working_location": "{{ request.user.profile.get_office_location_display|default_if_none:"NA" }}",
+        "user_account_age_in_days": {{ request.user.profile.days_since_account_creation }}
+    };
+    dataLayer.push(initial_page_data)
+    </script>
+{% else %}
+    {% load gtm_datalayer_info %}
+    <script>
+        initial_page_data = {% get_initial_page_data %}
+        dataLayer.push(initial_page_data)
+    </script>
+{% endif %}
