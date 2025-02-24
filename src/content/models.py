@@ -430,7 +430,9 @@ class ContentPage(SearchFieldsMixin, BasePage):
         [
             ("useful_links", content_blocks.UsefulLinkBlock()),
         ],
+        blank=True,
         null=True,
+
     )
 
     #
