@@ -284,10 +284,20 @@ class UsefulLinks(SidebarPart):
             }
             for link in page.useful_links
         ]
+        child_pages = [
+            {
+                "title": child_page.title,
+                "page": child_page.get_url(),
+            }
+            for child_page in page.get_children()
+        ]
+        print("DEBUG_CHILD_PAGES2")
+        print(page.get_children())
+        print(child_pages)
 
         context.update(
             title=self.title,
-            useful_links=useful_links,
+            useful_links=useful_links + child_pages,
         )
         return context
 

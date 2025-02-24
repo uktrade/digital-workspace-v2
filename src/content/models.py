@@ -432,7 +432,6 @@ class ContentPage(SearchFieldsMixin, BasePage):
         ],
         blank=True,
         null=True,
-
     )
 
     #
