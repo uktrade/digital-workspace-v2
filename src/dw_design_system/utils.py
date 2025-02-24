@@ -263,6 +263,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
         ],
         "icons": [
             {
+                "name": "Arrow Blue Background",
+                "template": "dwds/icons/arrow-blue-bg.html",
+                "context": ICON_CONTEXT,
+            },
+            {
                 "name": "Arrow Left",
                 "template": "dwds/icons/arrow-left.html",
                 "context": ICON_CONTEXT,

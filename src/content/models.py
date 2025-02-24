@@ -426,6 +426,13 @@ class ContentPage(SearchFieldsMixin, BasePage):
         "from search results for these terms",
     )
 
+    useful_links = StreamField(
+        [
+            ("useful_links", content_blocks.UsefulLinkBlock()),
+        ],
+        null=True,
+    )
+
     #
     # Topics
     # This would ideally belong on PageWithTopics, but the Network model uses it
