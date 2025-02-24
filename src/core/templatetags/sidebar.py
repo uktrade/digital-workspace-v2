@@ -291,9 +291,6 @@ class UsefulLinks(SidebarPart):
             }
             for child_page in page.get_children()
         ]
-        print("DEBUG_CHILD_PAGES2")
-        print(page.get_children())
-        print(child_pages)
 
         context.update(
             title=self.title,
