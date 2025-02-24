@@ -3,7 +3,10 @@
     <button class="dwds-button dwds-modal-open">Open Modal</button>
     <dialog>
         <form method="dialog">
-            <button class="dwds-modal-close dwds-button dwds-button--clear">Close</button>
+            <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
+                {% include "dwds/icons/cross.html" with small=True %}
+                Close
+            </button>
         </form>
         {{ content }}
     </dialog>

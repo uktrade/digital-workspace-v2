@@ -34,7 +34,10 @@ Feedback component
     <dialog id="{{ prefix }}-feedback-dialog" class="feedback-dialog">
         <div class="content-stack">
             <form method="dialog">
-                <button class="dwds-modal-close dwds-button dwds-button--clear">Close</button>
+                <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/cross.html" with small=True %}
+                    Close
+                </button>
             </form>
             <div id="feedback-form-wrapper--{{ form_id }}">
                 {% if not initial %}

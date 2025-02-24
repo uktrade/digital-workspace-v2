@@ -11,6 +11,11 @@
         form[method="dialog"] {
             display: flex;
             flex-direction: row-reverse;
+
+            button {
+                // color: var(--color-link);
+            }
+
         }
     }
 

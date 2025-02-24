@@ -8,7 +8,10 @@
     <dialog>
         <div class="content-stack">
             <form method="dialog">
-                <button class="dwds-modal-close dwds-button dwds-button--clear">Close</button>
+                <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/cross.html" with small=True %}
+                    Close
+                </button>
             </form>
             {% include "dwds/components/copy_text.html" with text=page_url %}
         </div>
