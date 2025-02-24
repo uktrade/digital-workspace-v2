@@ -30,78 +30,86 @@ Feedback component
         </div>
     </div>
 </div>
+<div class="dwds-modal width-third">
+    <dialog id="{{ prefix }}-feedback-dialog" class="feedback-dialog">
+        <div class="content-stack">
+            <form method="dialog">
+                <button class="dwds-modal-close dwds-button dwds-button--clear">Close</button>
+            </form>
+            <div id="feedback-form-wrapper--{{ form_id }}">
+                {% if not initial %}
+                    {% feedback_submit form_id=form_id %}
+                {% else %}
+                    {% feedback_submit form_id=form_id initial=initial %}
+                {% endif %}
+            </div>
 
-<dialog id="{{ prefix }}-feedback-dialog" class="feedback-dialog">
-    {% if not initial %}
-        {% feedback_submit form_id=form_id %}
-    {% else %}
-        {% feedback_submit form_id=form_id initial=initial %}
-    {% endif %}
+            <script>
+                const dialog = document.querySelector("#{{ prefix }}-feedback-dialog");
+                const form = dialog.querySelector("div#feedback-form-wrapper--{{ form_id }}").querySelector("form");
+                const header = document.querySelector("#{{ prefix }}-feedback .feedback-header");
 
-    <script>
-        const dialog = document.querySelector("#{{ prefix }}-feedback-dialog");
-        const form = dialog.querySelector("form");
-        const header = document.querySelector("#{{ prefix }}-feedback .feedback-header");
-
-        function positiveResponse() {
-            // Clear all form fields except the hidden ones
-            clearFeedbackForm();
-            // Mark the `useful` hidden field to `true`
-            form.querySelector("#id_useful").value = "true";
-            // Submit the form
-            submitFeedbackForm();
-        }
-
-        function negativeResponse() {
-            // Clear all form fields except the hidden ones
-            clearFeedbackForm();
-            // Mark the `useful` hidden field to `false`
-            form.querySelector("#id_useful").value = "false";
-            // Show the feedback form
-            openFeedbackDialog();
-        }
-
-        function openFeedbackDialog() {
-            document.querySelector("#{{ prefix }}-feedback-dialog").showModal();
-        }
-
-        function showThankYouMessage() {
-            // Update text to say thanks.
-            header.innerHTML = '<div class="govuk-body-s govuk-!-margin-bottom-0">Thanks for your feedback.</div>';
-        }
-
-        form.addEventListener("submit", (event) => {
-            if (event.submitter.id == "submit-id-submit") {
-                event.preventDefault();
-                submitFeedbackForm();
-            }
-        });
-
-        function clearFeedbackForm() {
-            form.reset();
-        }
-
-        function submitFeedbackForm() {
-            const formData = new FormData(form);
-
-            {% if custom_submit_data_function %}{{ custom_submit_data_function }}(formData);{% endif %}
-
-            formData.set('page_url','{{page.url}}');
-
-            fetch(form.action, {
-                method: "POST",
-                body: formData,
-            }).then((response) => {
-                if (!response.ok) {
-                    throw new Error("There was an issue submitting your feedback.");
+                function positiveResponse() {
+                    // Clear all form fields except the hidden ones
+                    clearFeedbackForm();
+                    // Mark the `useful` hidden field to `true`
+                    form.querySelector("#id_useful").value = "true";
+                    // Submit the form
+                    submitFeedbackForm();
                 }
 
-                dialog.close();
-                showThankYouMessage();
-            }).catch((error) => {
-                alert(error.message);
-                dialog.close();
-            });
-        }
-    </script>
-</dialog>
+                function negativeResponse() {
+                    // Clear all form fields except the hidden ones
+                    clearFeedbackForm();
+                    // Mark the `useful` hidden field to `false`
+                    form.querySelector("#id_useful").value = "false";
+                    // Show the feedback form
+                    openFeedbackDialog();
+                }
+
+                function openFeedbackDialog() {
+                    document.querySelector("#{{ prefix }}-feedback-dialog").showModal();
+                }
+
+                function showThankYouMessage() {
+                    // Update text to say thanks.
+                    header.innerHTML = '<div class="govuk-body-s govuk-!-margin-bottom-0">Thanks for your feedback.</div>';
+                }
+
+                form.addEventListener("submit", (event) => {
+                    if (event.submitter.id == "submit-id-submit") {
+                        event.preventDefault();
+                        submitFeedbackForm();
+                    }
+                });
+
+                function clearFeedbackForm() {
+                    form.reset();
+                }
+
+                function submitFeedbackForm() {
+                    const formData = new FormData(form);
+
+                    {% if custom_submit_data_function %}{{ custom_submit_data_function }}(formData);{% endif %}
+
+                    formData.set('page_url','{{page.url}}');
+
+                    fetch(form.action, {
+                        method: "POST",
+                        body: formData,
+                    }).then((response) => {
+                        if (!response.ok) {
+                            throw new Error("There was an issue submitting your feedback.");
+                        }
+
+                        dialog.close();
+                        showThankYouMessage();
+                    }).catch((error) => {
+                        alert(error.message);
+                        dialog.close();
+                    });
+                }
+            </script>
+        </div>
+    </dialog>
+</div>

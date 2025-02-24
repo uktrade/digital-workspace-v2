@@ -1,8 +1,16 @@
 .dwds-modal {
     dialog {
+        border: unset;
+        border-radius: var(--border-radius);
+
         &::backdrop {
-            background: rgba(36, 32, 20, 0.5);
-            backdrop-filter: blur(0.25rem);
+            background: var(--modal-backdrop-color);
+            backdrop-filter: blur(0.3rem);
+        }
+
+        form[method="dialog"] {
+            display: flex;
+            flex-direction: row-reverse;
         }
     }
 
