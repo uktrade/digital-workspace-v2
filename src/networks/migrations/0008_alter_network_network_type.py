@@ -18,7 +18,10 @@ def run_network_type_update(apps, old_network_type, new_network_type):
             content_type_id=network_page.content_type.id, object_id=network_page.id
         )
         for revision in revisions:
-            if "network_type" in revision.content and revision.content["network_type"] == old_network_type:
+            if (
+                "network_type" in revision.content
+                and revision.content["network_type"] == old_network_type
+            ):
                 revision.content["network_type"] = new_network_type
                 revision.save(update_fields=["content"])
 
