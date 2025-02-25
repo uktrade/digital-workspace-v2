@@ -272,6 +272,9 @@ class UsefulLinks(SidebarPart):
 
     def is_visible(self) -> bool:
         page = self.context.get("self")
+        if not isinstance(page, Page):
+            return False
+
         useful_links = getattr(page, "useful_links", None)
         child_pages = page.get_children().exclude(
             content_type=ContentType.objects.get_for_model(Network)
@@ -291,15 +294,18 @@ class UsefulLinks(SidebarPart):
                 }
                 for link in page.useful_links
             ]
-        child_pages = [
-            {
-                "title": child_page.title,
-                "page": child_page.get_url(),
-            }
-            for child_page in page.get_children().exclude(
-                content_type=ContentType.objects.get_for_model(Network)
-            )
-        ]
+
+        child_pages = []
+        if isinstance(page, Page):
+            child_pages = [
+                {
+                    "title": child_page.title,
+                    "page": child_page.get_url(),
+                }
+                for child_page in page.get_children().exclude(
+                    content_type=ContentType.objects.get_for_model(Network)
+                )
+            ]
 
         context.update(
             title=self.title,
