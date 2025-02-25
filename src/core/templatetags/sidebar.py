@@ -276,10 +276,12 @@ class UsefulLinks(SidebarPart):
             return False
 
         useful_links = getattr(page, "useful_links", None)
-        child_pages = page.get_children().exclude(
-            content_type=ContentType.objects.get_for_model(Network)
+        child_pages = (
+            page.get_children()
+            .exclude(content_type=ContentType.objects.get_for_model(Network))
+            .exists()
         )
-        return bool(useful_links) or bool(child_pages)
+        return bool(useful_links or child_pages)
 
     def get_part_context(self) -> dict:
         context = super().get_part_context()
