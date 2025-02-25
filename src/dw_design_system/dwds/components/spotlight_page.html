@@ -1,0 +1,7 @@
+{% load wagtailcore_tags %}
+<div class="spotlight-page content-stack medium content-custom-sidebar">
+    <h3>Spotlight on...</h3>
+    {% include "dwds/elements/content_image.html" with content_image=thumbnail %}
+    <a href="{{ url }}" class="no-underline">{{ title }}</a>
+    <p>{{ excerpt }}</p>
+</div>

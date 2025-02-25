@@ -316,6 +316,38 @@ class UsefulLinks(SidebarPart):
         return context
 
 
+class SpotlightPage(SidebarPart):
+    template_name = "dwds/components/spotlight_page.html"
+    title = "Spotlight page"
+
+    def is_visible(self) -> bool:
+        page = self.context.get("self")
+        if not isinstance(page, Page):
+            return False
+
+        return bool(getattr(page, "spotlight_page", None))
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        page = self.context.get("self")
+
+        spotlight_page = getattr(page, "spotlight_page", None)
+        if not isinstance(spotlight_page, Page):
+            return context
+
+        spotlight_page = spotlight_page.specific
+
+        context.update(
+            page=spotlight_page,
+            url=spotlight_page.get_url(self.request),
+            title=getattr(spotlight_page, "title", None),
+            excerpt=getattr(spotlight_page, "excerpt", None),
+            thumbnail=getattr(spotlight_page, "preview_image", None),
+        )
+
+        return context
+
+
 @register.inclusion_tag("tags/sidebar.html", takes_context=True)
 def sidebar(context):
     sections: list[SidebarSection] = [
@@ -337,6 +369,7 @@ def sidebar(context):
         SidebarSection(
             title="Secondary page actions",
             parts=[
+                SpotlightPage,
                 UsefulLinks,
                 YourBookmarks,
                 QuickLinks,
