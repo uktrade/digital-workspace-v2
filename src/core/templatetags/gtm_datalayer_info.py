@@ -30,34 +30,33 @@ def get_initial_page_data(context) -> str:
         initial_page_data[f"feature_flag_{i+1}"] = f"{k}: {str(v).lower()}"
 
     # Page Data
-    if "page" in context:
+    if "page" in context and isinstance(context["page"], Page):
         page = context["page"]
-        if isinstance(page, Page):
 
-            if (
-                page_age_in_days := getattr(page, "days_since_last_published", None)
-            ) is not None:
-                initial_page_data["page_age_in_days"] = page_age_in_days
+        if (
+            page_age_in_days := getattr(page, "days_since_last_published", None)
+        ) is not None:
+            initial_page_data["page_age_in_days"] = page_age_in_days
 
-            if content_type := getattr(page, "content_type", None):
-                initial_page_data["page_type"] = content_type.name
+        if content_type := getattr(page, "content_type", None):
+            initial_page_data["page_type"] = content_type.name
 
-            if topic_titles := getattr(page, "topic_titles", None):
-                initial_page_data["page_topics"] = " ".join(
-                    topic_title for topic_title in topic_titles
-                )
+        if topic_titles := getattr(page, "topic_titles", None):
+            initial_page_data["page_topics"] = " ".join(
+                topic_title for topic_title in topic_titles
+            )
 
-            if tagged_items := getattr(page, "tagged_items", None):
-                initial_page_data["page_tags"] = " ".join(
-                    tagged_item.tag.name
-                    for tagged_item in tagged_items.select_related("tag").all()
-                )
+        if tagged_items := getattr(page, "tagged_items", None):
+            initial_page_data["page_tags"] = " ".join(
+                tagged_item.tag.name
+                for tagged_item in tagged_items.select_related("tag").all()
+            )
 
-            if content_owner := getattr(page, "content_owner", None):
-                initial_page_data["page_content_owner"] = content_owner.full_name
+        if content_owner := getattr(page, "content_owner", None):
+            initial_page_data["page_content_owner"] = content_owner.full_name
 
-            if page_reactions := reactions_service.get_reaction_counts(page):
-                initial_page_data["page_reactions"] = page_reactions
+        if page_reactions := reactions_service.get_reaction_counts(page):
+            initial_page_data["page_reactions"] = page_reactions
 
     # User Data
     initial_page_data["user_profile_slug"] = str(request.user.profile.slug)
