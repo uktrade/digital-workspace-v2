@@ -1,6 +1,7 @@
 from typing import Type
 
 from django import template
+from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.safestring import SafeString
@@ -13,7 +14,7 @@ from core.utils import get_all_feature_flags
 from events.models import EventsHome
 from home.models import HomePage, QuickLink
 from interactions.services import bookmarks as bookmarks_service
-from networks.models import NetworksHome
+from networks.models import Network, NetworksHome
 from news.models import NewsPage
 
 
@@ -271,23 +272,46 @@ class UsefulLinks(SidebarPart):
 
     def is_visible(self) -> bool:
         page = self.context.get("self")
-        return bool(getattr(page, "useful_links", None))
+        if not isinstance(page, Page):
+            return False
+
+        useful_links = getattr(page, "useful_links", None)
+        child_pages = (
+            page.get_children()
+            .exclude(content_type=ContentType.objects.get_for_model(Network))
+            .exists()
+        )
+        return bool(useful_links or child_pages)
 
     def get_part_context(self) -> dict:
         context = super().get_part_context()
         page = self.context.get("self")
 
-        useful_links = [
-            {
-                "title": link.value["title"],
-                "page": link.value["page"].get_url(),
-            }
-            for link in page.useful_links
-        ]
+        useful_links = []
+        if hasattr(page, "useful_links"):
+            useful_links = [
+                {
+                    "title": link.value["title"],
+                    "page": link.value["page"].get_url(),
+                }
+                for link in page.useful_links
+            ]
+
+        child_pages = []
+        if isinstance(page, Page):
+            child_pages = [
+                {
+                    "title": child_page.title,
+                    "page": child_page.get_url(),
+                }
+                for child_page in page.get_children().exclude(
+                    content_type=ContentType.objects.get_for_model(Network)
+                )
+            ]
 
         context.update(
             title=self.title,
-            useful_links=useful_links,
+            useful_links=useful_links + child_pages,
         )
         return context
 
