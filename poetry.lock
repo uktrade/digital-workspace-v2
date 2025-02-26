@@ -1828,13 +1828,13 @@ requests = ">=2.31.0,<3.0.0"
 
 [[package]]
 name = "dbt-platform-helper"
-version = "12.6.0"
+version = "13.1.1"
 description = "Set of tools to help transfer applications/services from GOV.UK PaaS to DBT PaaS augmenting AWS Copilot."
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "dbt_platform_helper-12.6.0-py3-none-any.whl", hash = "sha256:66738cce8a67a4ae430e6bb226fb66d1e160eacd0173c3c834feb377abed7cb3"},
-    {file = "dbt_platform_helper-12.6.0.tar.gz", hash = "sha256:46ab995be4502502abbf4fd5c37e8c7db1691e7e88529022c775f6298de545c4"},
+    {file = "dbt_platform_helper-13.1.1-py3-none-any.whl", hash = "sha256:f0a263523c2babde3be30fbdfa90095d414613eb0b6c9e0256cfb3e63c24cc72"},
+    {file = "dbt_platform_helper-13.1.1.tar.gz", hash = "sha256:4d0f0219d6fc005f6d4c1e387b2d0d78c8c7c9bc7d90240bc3a667b552b909ba"},
 ]
 
 [package.dependencies]
@@ -6932,4 +6932,4 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "18f59e41778ea0696195780ffa7784c40ff263b232b9869d1013c909838f6662"
+content-hash = "a44d0a1a15f099ab30b4d12010cd2a4ad47392a888b98e53458e4fecb2c154bc"
