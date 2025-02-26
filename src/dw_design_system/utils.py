@@ -276,16 +276,6 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "content": "https://www.gov.uk",
                 },
             },
-            {
-                "name": "Spotlight Page",
-                "template": "dwds/components/spotlight_page.html",
-                "context": {
-                    "url": "https://www.gov.uk",
-                    "title": "Spotlight Page Title",
-                    "excerpt": "This is an example Spotlight Page exceprt",
-                    "thumbnail": None,
-                },
-            },
         ],
         "icons": [
             {

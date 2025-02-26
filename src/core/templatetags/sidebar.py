@@ -321,8 +321,7 @@ class UsefulLinks(SidebarPart):
 
 
 class SpotlightPage(SidebarPart):
-    template_name = "dwds/components/spotlight_page.html"
-    title = "Spotlight page"
+    template_name = "dwds/components/spotlight.html"
 
     def is_visible(self) -> bool:
         page = self.context.get("self")
