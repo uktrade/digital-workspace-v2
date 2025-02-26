@@ -146,6 +146,21 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Spotlight",
+                "template": "dwds/components/spotlight.html",
+                "context": {
+                    "url": "https://www.gov.uk",
+                    "title": "Speak Up Week 2025",
+                    "excerpt": "At DBT, we want everyone to feel respected, included and empowered to speak up if something doesn't feel right",
+                    "author": "John Doe",
+                    "date": timezone.now(),
+                    "thumbnail": thumbnail_file,
+                    "comment_count": 10,
+                    "created_date": timezone.now(),
+                    "updated_date": timezone.now(),
+                },
+            },
+            {
                 "name": "One Up",
                 "template": "dwds/components/one_up.html",
                 "context": {
@@ -251,6 +266,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/copy_text.html",
                 "context": {
                     "text": "https://www.gov.uk",
+                    "hide_input": False,
                 },
             },
             {

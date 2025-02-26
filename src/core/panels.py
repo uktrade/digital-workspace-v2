@@ -15,7 +15,7 @@ class FieldPanel(FieldPanel):
     class BoundPanel(FieldPanel.BoundPanel):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-            if not self.bound_field.field.required:
+            if self.bound_field and not self.bound_field.field.required:
                 self.heading += " (optional)"
 
 
