@@ -251,6 +251,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/copy_text.html",
                 "context": {
                     "text": "https://www.gov.uk",
+                    "hide_input": False,
                 },
             },
             {
