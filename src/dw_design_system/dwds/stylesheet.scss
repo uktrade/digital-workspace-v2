@@ -17,7 +17,6 @@
 
 // Components
 @forward "components/box";
-@forward "components/comment_section";
 @forward "components/content_list";
 @forward "components/cta";
 @forward "components/cta_button";
@@ -32,6 +31,8 @@
 @forward "components/profile_info";
 @forward "components/accordion";
 @forward "components/copy_text";
+@forward "components/modal";
+@forward "components/spotlight";
 
 // Elements
 @forward "elements/button";
@@ -45,17 +46,21 @@
 @forward "elements/inset";
 @forward "elements/navigational_link";
 @forward "elements/ribbon";
+@forward "elements/useful_links";
+@forward "elements/page_counts";
 
 // Icons
 @forward "icons/bookmark";
 @forward "icons/comment";
 @forward "icons/share";
-@forward "icons/content-copy";
+@forward "icons/copy";
+@forward "icons/check";
 @forward "icons/celebrate";
 @forward "icons/dislike";
 @forward "icons/like";
 @forward "icons/love";
 @forward "icons/unhappy";
+@forward "icons/feedback";
 
 // Layouts
 @forward "layouts/content_sidebar";

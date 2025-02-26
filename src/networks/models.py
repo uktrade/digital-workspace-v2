@@ -18,6 +18,10 @@ class NetworksHome(ContentPage):
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
     template = "content/content_page.html"
 
+    promote_panels = ContentPage.promote_panels + [
+        FieldPanel("useful_links"),
+    ]
+
     def get_template(self, request, *args, **kwargs):
         if flag_is_active(request, flags.NETWORKS_HUB):
             return "networks/networks_home.html"
@@ -127,6 +131,7 @@ class Network(ContentOwnerMixin, ContentPage):
     parent_page_types = [
         "networks.NetworksHome",
         "networks.Network",
+        "networks.NetworkContentPage",
     ]
 
     template = "content/content_page.html"
@@ -138,11 +143,12 @@ class Network(ContentOwnerMixin, ContentPage):
         DIVERSITY_AND_INCLUSION = "diversity_and_inclusion", "Diversity and Inclusion"
         HEALTH_AND_WELLBEING = "health_and_wellbeing", "Health and Wellbeing"
         INTERESTS_AND_HOBBIES = "interests_and_hobbies", "Interests and Hobbies"
-        PROFESSIONAL_DEVELOPMENT_AND_SKILLS = (
-            "professional_development_and_skills",
-            "Professional Development and Skills",
+        PROFESSIONAL_NETWORKS_AND_SKILLS = (
+            "professional_networks_and_skills",
+            "Professional Networks and Skills",
         )
-        SOCIAL_AND_COMMUNITY = "social_and_community", "Social and Community"
+        SOCIAL_AND_SPORTS = "social_and_sports", "Social and Sports"
+        VOLUNTEERING = "volunteering", "Volunteering"
 
     network_type = models.CharField(
         max_length=50,
@@ -156,6 +162,11 @@ class Network(ContentOwnerMixin, ContentPage):
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]
+
+    promote_panels = ContentPage.promote_panels + [
+        FieldPanel("useful_links"),
+    ]
+
     base_form_class = NetworkForm
 
     indexed_fields = [
@@ -170,7 +181,7 @@ class Network(ContentOwnerMixin, ContentPage):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = (
-            Page.objects.live().public().child_of(self).order_by("title")
+            ContentPage.objects.live().public().child_of(self).order_by("title")
         )
         context["attribution"] = True
         context["num_cols"] = 3

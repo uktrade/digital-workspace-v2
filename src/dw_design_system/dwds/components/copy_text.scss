@@ -1,37 +1,57 @@
 .dwds-copy-text {
-  --input-height: 40px;
-  display: flex;
+    --display-input: inline-block;
+    --box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    --copy-text-border-radius: var(--border-radius);
 
-  border: solid 1px var(--color-border);
+    border-radius: var(--copy-text-border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
 
-  input {
-    border-radius: unset;
-    border: none;
-    flex-grow: 1;
-    width: fit-content;
-    height: var(--input-height);
-    vertical-align: bottom;
 
-    &:hover {
-      background: #cccccc;
+    &.hide-input {
+        --display-input: none;
+        --box-shadow: none;
+        --copy-text-border-radius: none;
     }
-  }
 
-  button {
-    flex-shrink: 0;
-    width: var(--input-height);
-    height: var(--input-height);
-    align-items: center;
-    justify-content: center;
-    color: #333333;
-    border: none;
-    border-left: solid 1px var(--color-border);
-    cursor: pointer;
-    display: inline;
-    vertical-align: bottom;
-
-    &:hover {
-      background: #cccccc;
+    input {
+        flex-grow: 1;
+        border-top-right-radius: unset;
+        border-bottom-right-radius: unset;
+        border-top: unset;
+        border-bottom-width: var(--button-border-width-bottom);
+        border-left: unset;
+        border-right: unset;
+        border-color: var(--gds-mid-grey);
+        display: var(--display-input);
     }
-  }
+
+    .dwds-button {
+        border-top-right-radius: var(--copy-text-border-radius);
+        border-bottom-right-radius: var(--copy-text-border-radius);
+
+        &:hover {
+            border-top-color: var(--color-button-hover);
+            border-left-color: var(--color-button-hover);
+            border-right-color: var(--color-button-hover);
+        }
+
+        .copy-text {
+            display: flex;
+        }
+
+        .copied-text {
+            display: none;
+        }
+
+        &.copied {
+            .copy-text {
+                display: none;
+            }
+
+            .copied-text {
+                display: flex;
+            }
+        }
+    }
 }

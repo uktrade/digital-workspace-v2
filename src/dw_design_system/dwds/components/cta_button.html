@@ -1,6 +1,6 @@
 <button class="dwds-cta-button" onClick="{{ button_func }}">
     <div class="content-sidebar">
-        <div class="cta-icon">{% include icon %}</div>
-        {% include "dwds/components/cta.html" %}
+        <div class="cta-icon">{% include icon with hover_dark=True %}</div>
+        {% include "dwds/components/cta.html" with tiny=True %}
     </div>
 </button>

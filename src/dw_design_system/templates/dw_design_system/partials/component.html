@@ -1,7 +1,7 @@
 {% load dw_design_system %}
 
 <div class="component-wrapper">
-    <h3>{{ component.name }}</h3>
+    <h3 id="{{ component.name|slugify }}">{{ component.name }}</h3>
     <pre class="component-template">{{ component.template }}</pre>
     <button>25%</button>
     <button>33%</button>

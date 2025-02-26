@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Count
 from wagtail.models import Page
 
@@ -6,8 +7,15 @@ from news.models import NewsPage
 from user.models import User
 
 
-def react_to_page(user: User, page: Page, reaction_type: str | None) -> Reaction | None:
+def get_active_reactions() -> list[ReactionType]:
+    inactive_reaction_types = [
+        ReactionType(rt) for rt in settings.INACTIVE_REACTION_TYPES
+    ]
+    return [rt for rt in ReactionType if rt not in inactive_reaction_types]
 
+
+def react_to_page(user: User, page: Page, reaction_type: str | None) -> Reaction | None:
+    page = page.specific
     if not isinstance(page, NewsPage):
         raise ValueError("The page must be a NewsPage.")
 
@@ -25,23 +33,39 @@ def react_to_page(user: User, page: Page, reaction_type: str | None) -> Reaction
     return reaction
 
 
-def get_reaction_count(page: Page) -> int | None:
+def get_reaction_count(page: Page, reaction_type: ReactionType | None) -> int | None:
+    page = page.specific
     if not isinstance(page, NewsPage):
         return None
-    return Reaction.objects.filter(page=page).count()
+
+    reactions = Reaction.objects.filter(page=page)
+
+    if reaction_type:
+        reactions = reactions.filter(type=reaction_type)
+
+    return reactions.count()
 
 
-def get_reaction_counts(page: Page) -> dict:
+def get_reaction_counts(page: Page) -> dict[str, int]:
+    page = page.specific
     if not isinstance(page, NewsPage):
         return {}
 
-    reaction_counts = {reaction_type: 0 for reaction_type in ReactionType.values}
+    reaction_counts = {
+        reaction_type: 0
+        for reaction_type in ReactionType.values
+        if reaction_type in get_active_reactions()
+    }
 
     reactions = (
         Reaction.objects.filter(page=page).values("type").annotate(count=Count("id"))
     )
     reaction_counts.update(
-        {reaction["type"]: reaction["count"] for reaction in reactions}
+        {
+            reaction["type"]: reaction["count"]
+            for reaction in reactions
+            if ReactionType(reaction["type"]) in reaction_counts
+        }
     )
     return reaction_counts
 

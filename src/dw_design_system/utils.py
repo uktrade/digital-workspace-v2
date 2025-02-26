@@ -1,16 +1,18 @@
 from datetime import datetime
 from json import JSONDecoder, scanner
 
-from django.core.paginator import Page, Paginator
+from django.core import paginator
 from django.http import HttpRequest
 from django.utils import timezone
 from wagtail.images.models import Image
+from wagtail.models import Page
 
 from news.models import NewsPage
 
 
 DATETIME_STR = "datetime"
 IMAGE_STR = "Image"
+PAGE_STR = "Page"
 PAGINATOR_STR = "Paginator"
 RANGE_STR = "Range"
 
@@ -24,7 +26,8 @@ ICON_CONTEXT = {
 
 def get_dwds_templates(template_type, request: HttpRequest):
     thumbnail_file = Image.objects.last()
-    pages = Paginator(NewsPage.objects.all(), 2).page(1)
+    page = NewsPage.objects.last()
+    pages = paginator.Paginator(NewsPage.objects.all(), 2).page(1)
 
     dwds_templates = {
         "content": [
@@ -143,6 +146,21 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Spotlight",
+                "template": "dwds/components/spotlight.html",
+                "context": {
+                    "url": "https://www.gov.uk",
+                    "title": "Speak Up Week 2025",
+                    "excerpt": "At DBT, we want everyone to feel respected, included and empowered to speak up if something doesn't feel right",
+                    "author": "John Doe",
+                    "date": timezone.now(),
+                    "thumbnail": thumbnail_file,
+                    "comment_count": 10,
+                    "created_date": timezone.now(),
+                    "updated_date": timezone.now(),
+                },
+            },
+            {
                 "name": "One Up",
                 "template": "dwds/components/one_up.html",
                 "context": {
@@ -179,9 +197,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "Menu (vertical)",
                 "template": "dwds/components/menu_vertical.html",
                 "context": {
+                    "current_page": page,
+                    "enable_current_page_menu": True,
                     "items": [
                         {
-                            "active": True if i == 0 else False,
+                            "active": False,
                             "title": f"Menu item {i + 1}",
                             "url": "https://www.gov.uk",
                         }
@@ -246,6 +266,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/copy_text.html",
                 "context": {
                     "text": "https://www.gov.uk",
+                    "hide_input": False,
                 },
             },
             {
@@ -258,6 +279,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
         ],
         "icons": [
             {
+                "name": "Arrow Blue Background",
+                "template": "dwds/icons/arrow-blue-bg.html",
+                "context": ICON_CONTEXT,
+            },
+            {
                 "name": "Arrow Left",
                 "template": "dwds/icons/arrow-left.html",
                 "context": ICON_CONTEXT,
@@ -268,13 +294,28 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": ICON_CONTEXT,
             },
             {
-                "name": "Bookmark",
-                "template": "dwds/icons/bookmark.html",
+                "name": "Briefcase",
+                "template": "dwds/icons/briefcase.html",
                 "context": ICON_CONTEXT,
             },
             {
-                "name": "Briefcase",
-                "template": "dwds/icons/briefcase.html",
+                "name": "Email",
+                "template": "dwds/icons/email.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Marker",
+                "template": "dwds/icons/marker.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Phone",
+                "template": "dwds/icons/phone.html",
+                "context": ICON_CONTEXT,
+            },
+            {
+                "name": "Bookmark",
+                "template": "dwds/icons/bookmark.html",
                 "context": ICON_CONTEXT,
             },
             {
@@ -293,11 +334,6 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": ICON_CONTEXT,
             },
             {
-                "name": "Email",
-                "template": "dwds/icons/email.html",
-                "context": ICON_CONTEXT,
-            },
-            {
                 "name": "Feedback",
                 "template": "dwds/icons/feedback.html",
                 "context": ICON_CONTEXT,
@@ -310,16 +346,6 @@ def get_dwds_templates(template_type, request: HttpRequest):
             {
                 "name": "Love",
                 "template": "dwds/icons/love.html",
-                "context": ICON_CONTEXT,
-            },
-            {
-                "name": "Marker",
-                "template": "dwds/icons/marker.html",
-                "context": ICON_CONTEXT,
-            },
-            {
-                "name": "Phone",
-                "template": "dwds/icons/phone.html",
                 "context": ICON_CONTEXT,
             },
             {
@@ -338,9 +364,10 @@ def to_json(val):
         return f"{DATETIME_STR} {val.isoformat()}"
     if isinstance(val, Image):
         return f"{IMAGE_STR} {val.pk}"
-    if isinstance(val, Page):
-        print("PAG Found")
+    if isinstance(val, paginator.Page):
         return f"{PAGINATOR_STR}"
+    if isinstance(val, Page):
+        return f"{PAGE_STR} {val.pk}"
     if isinstance(val, range):
         return f"{RANGE_STR} {val.start} {val.stop}"
 
@@ -353,8 +380,10 @@ def parse_str(val):
         return datetime.fromisoformat(val.split(" ")[1])
     if val.startswith(IMAGE_STR):
         return Image.objects.get(pk=int(val.split(" ")[1]))
+    if val.startswith(PAGE_STR):
+        return Page.objects.get(pk=int(val.split(" ")[1]))
     if val.startswith(PAGINATOR_STR):
-        return Paginator(NewsPage.objects.all(), 2).page(1)
+        return paginator.Paginator(NewsPage.objects.all(), 2).page(1)
     if val.startswith(RANGE_STR):
         str_range = val.split(" ")
         return range(int(str_range[1]), int(str_range[2]))

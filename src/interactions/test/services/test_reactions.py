@@ -2,14 +2,36 @@ import pytest
 
 from interactions.models import Reaction, ReactionType
 from interactions.services.reactions import (
+    get_active_reactions,
     react_to_page,
     get_reaction_count,
     get_reaction_counts,
     get_user_reaction,
     has_user_reacted,
 )
+from django.test import override_settings
 
 ALL_REACTION_TYPES = ReactionType.values
+
+
+@override_settings(INACTIVE_REACTION_TYPES=[])
+def test_get_active_reactions_default():
+    response = get_active_reactions()
+    assert ReactionType.CELEBRATE in response
+    assert ReactionType.LIKE in response
+    assert ReactionType.LOVE in response
+    assert ReactionType.DISLIKE in response
+    assert ReactionType.UNHAPPY in response
+
+
+@override_settings(INACTIVE_REACTION_TYPES=["unhappy", "like"])
+def test_get_active_reactions_settings():
+    response = get_active_reactions()
+    assert ReactionType.CELEBRATE in response
+    assert ReactionType.LIKE not in response
+    assert ReactionType.LOVE in response
+    assert ReactionType.DISLIKE in response
+    assert ReactionType.UNHAPPY not in response
 
 
 @pytest.mark.django_db
@@ -49,51 +71,67 @@ def test_react_to_page_invalid_page(user, about_page, reaction_type):
 
 @pytest.mark.django_db
 def test_get_reaction_count(user, news_page, create_reaction):
-    assert get_reaction_count(news_page) == 1
+    assert get_reaction_count(news_page, ReactionType.LIKE) == 1
     Reaction.objects.filter(user=user, page=news_page).delete()
-    assert get_reaction_count(news_page) == 0
+    assert get_reaction_count(news_page, ReactionType.LIKE) == 0
+
+
+@pytest.mark.django_db
+def test_get_reaction_count_invalid_reaction_type(user, news_page, create_reaction):
+    assert get_reaction_count(news_page, ReactionType.DISLIKE) == 0
+
+
+@pytest.mark.django_db
+def test_get_reaction_count_none_reaction_type(user, news_page, create_reaction):
+    assert get_reaction_count(news_page, None) == 1
 
 
 @pytest.mark.django_db
 def test_get_reaction_count_invalid_page(about_page):
-    assert get_reaction_count(about_page) is None
+    assert get_reaction_count(about_page, ReactionType.LIKE) is None
 
 
 @pytest.mark.django_db
+@override_settings(INACTIVE_REACTION_TYPES=[])
 def test_get_reaction_counts(user, user2, user3, news_page):
     Reaction.objects.create(user=user, page=news_page, type=ReactionType.LIKE)
     Reaction.objects.create(user=user2, page=news_page, type=ReactionType.DISLIKE)
     counts = get_reaction_counts(news_page)
     assert counts.get(ReactionType.LIKE) == 1
     assert counts.get(ReactionType.DISLIKE) == 1
-    assert_counts(counts)
+    assert counts.get(ReactionType.CELEBRATE) == 0
+    assert counts.get(ReactionType.UNHAPPY) == 0
+    assert counts.get(ReactionType.LOVE) == 0
 
     Reaction.objects.create(user=user3, page=news_page, type=ReactionType.DISLIKE)
     counts = get_reaction_counts(news_page)
     assert counts.get(ReactionType.LIKE) == 1
     assert counts.get(ReactionType.DISLIKE) == 2
-    assert_counts(counts)
+    assert counts.get(ReactionType.CELEBRATE) == 0
+    assert counts.get(ReactionType.UNHAPPY) == 0
+    assert counts.get(ReactionType.LOVE) == 0
 
     Reaction.objects.filter(user=user, page=news_page).delete()
     counts = get_reaction_counts(news_page)
     assert counts.get(ReactionType.LIKE) == 0
     assert counts.get(ReactionType.DISLIKE) == 2
-    assert_counts(counts)
+    assert counts.get(ReactionType.CELEBRATE) == 0
+    assert counts.get(ReactionType.UNHAPPY) == 0
+    assert counts.get(ReactionType.LOVE) == 0
 
     Reaction.objects.filter(user=user2, page=news_page).delete()
     counts = get_reaction_counts(news_page)
     assert counts.get(ReactionType.DISLIKE) == 1
     assert counts.get(ReactionType.LIKE) == 0
-    assert_counts(counts)
+    assert counts.get(ReactionType.CELEBRATE) == 0
+    assert counts.get(ReactionType.UNHAPPY) == 0
+    assert counts.get(ReactionType.LOVE) == 0
 
     Reaction.objects.filter(user=user3, page=news_page).delete()
     counts = get_reaction_counts(news_page)
     assert counts.get(ReactionType.DISLIKE) == 0
     assert counts.get(ReactionType.LIKE) == 0
-    assert_counts(counts)
 
-
-def assert_counts(counts):
     assert counts.get(ReactionType.CELEBRATE) == 0
     assert counts.get(ReactionType.UNHAPPY) == 0
     assert counts.get(ReactionType.LOVE) == 0

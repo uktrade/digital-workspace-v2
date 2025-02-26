@@ -1,0 +1,50 @@
+.feedback-icon {
+    --feedback-icon-background-border-color: var(--color-icon-light-border);
+    --feedback-icon-background-outer-color: var(--color-icon-light-backdrop);
+    --feedback-icon-background-inner-color: var(--color-icon-light-background);
+    --feedback-icon-foreground-color: var(--color-icon-light-foreground);
+
+    &.dark {
+        --feedback-icon-background-border-color: var(--color-icon-dark-border);
+        --feedback-icon-background-outer-color: var(--color-icon-dark-backdrop);
+        --feedback-icon-background-inner-color: var(--color-icon-dark-background);
+        --feedback-icon-foreground-color: var(--color-icon-dark-foreground);
+    }
+
+    &.hover-light {
+        &:hover {
+            // These variables should match those from the base definition
+            --feedback-icon-background-border-color: var(--color-icon-light-border);
+            --feedback-icon-background-outer-color: var(--color-icon-light-backdrop);
+            --feedback-icon-background-inner-color: var(--color-icon-light-background);
+            --feedback-icon-foreground-color: var(--color-icon-light-foreground);
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+            // These variables should match those from .dark
+            --feedback-icon-background-border-color: var(--color-icon-dark-border);
+            --feedback-icon-background-outer-color: var(--color-icon-dark-backdrop);
+            --feedback-icon-background-inner-color: var(--color-icon-dark-background);
+            --feedback-icon-foreground-color: var(--color-icon-dark-foreground);
+        }
+    }
+
+    .background-border {
+        stroke: var(--feedback-icon-background-border-color);
+    }
+
+    .background-outer {
+        fill: var(--feedback-icon-background-outer-color);
+    }
+
+    .background-inner {
+        fill: var(--feedback-icon-background-inner-color);
+    }
+
+    .stroke {
+        stroke: var(--feedback-icon-foreground-color);
+    }
+
+}

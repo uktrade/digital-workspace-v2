@@ -17,15 +17,11 @@ from sentry_sdk.integrations.redis import RedisIntegration
 
 
 # Set directories to be used across settings
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+BASE_DIR = Path(__file__).parent.parent.parent
+PROJECT_ROOT_DIR = BASE_DIR.parent
 
 # Read environment variables using `django-environ`, use `.env` if it exists
 env = environ.Env()
-env_file = os.path.join(PROJECT_ROOT_DIR, ".env")
-if os.path.exists(env_file):
-    env.read_env(env_file)
-env.read_env()
 
 # Set required configuration from environment
 # Should be one of the following: "local", "test", "dev", "staging", "training", "prod", "build"
@@ -233,7 +229,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
         "DIRS": [
-            Path(PROJECT_ROOT_DIR) / "src" / "dw_design_system",
+            PROJECT_ROOT_DIR / "src" / "dw_design_system",
         ],
         "OPTIONS": {
             "context_processors": [
@@ -594,6 +590,14 @@ if is_copilot():
 
 DLFA_INCLUDE_RAW_LOG = True
 
+# Django Tasks
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks.backends.immediate.ImmediateBackend",
+        "ENQUEUE_ON_COMMIT": False,
+    }
+}
+
 # Remove SSO protection from health check and Hawk authed URLs
 AUTHBROKER_ANONYMOUS_PATHS = (
     "/ical/all/",
@@ -751,3 +755,11 @@ CSP_CONNECT_SRC = ("'none'",)
 
 CSP_REPORT_ONLY = True
 CSP_REPORT_URI = env("CSP_REPORT_URI", default=None)
+
+# Interactions
+INACTIVE_REACTION_TYPES = env.list("INACTIVE_REACTION_TYPES", default=["unhappy"])
+
+# VWO Integration
+VWO_ENABLED = env.bool("VWO_ENABLED", False)
+VWO_ACCOUNT_ID = env("VWO_ACCOUNT_ID", default=None)
+VWO_VERSION = env("VWO_VERSION", default=None)

@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -7,7 +7,9 @@ from waffle import flag_is_active
 from wagtail.models import Page
 
 from core import flags
+from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
+from interactions.services import reactions as reactions_service
 
 
 @require_http_methods(["POST"])
@@ -51,4 +53,24 @@ def bookmark_index(request, *args, **kwargs):
         context={
             "bookmarks": bookmarks_service.get_bookmarks(request.user),
         },
+    )
+
+
+@require_http_methods(["POST"])
+def react_to_page(request, *args, pk, **kwargs):
+    page = get_object_or_404(Page, id=pk)
+    user = request.user
+
+    if request.method == "POST":
+        reaction_type = ReactionType(request.POST["reaction_type"])
+        is_selected = request.POST.get("is_selected") == "true"
+
+        reacted_type = None if is_selected else reaction_type
+        reactions_service.react_to_page(user, page, reacted_type)
+
+    return JsonResponse(
+        {
+            "user_reaction": reactions_service.get_user_reaction(user, page),
+            "reactions": reactions_service.get_reaction_counts(page),
+        }
     )

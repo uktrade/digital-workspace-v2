@@ -1,6 +1,7 @@
 from typing import Type
 
 from django import template
+from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.safestring import SafeString
@@ -13,7 +14,7 @@ from core.utils import get_all_feature_flags
 from events.models import EventsHome
 from home.models import HomePage, QuickLink
 from interactions.services import bookmarks as bookmarks_service
-from networks.models import NetworksHome
+from networks.models import Network, NetworksHome
 from news.models import NewsPage
 
 
@@ -236,6 +237,7 @@ class Share(SidebarPart):
 
         context.update(
             page=page,
+            page_url=page.get_full_url(self.request),
         )
         return context
 
@@ -264,6 +266,60 @@ class QuickLinks(SidebarPart):
         return context
 
 
+class UsefulLinks(SidebarPart):
+    template_name = "dwds/elements/useful_links.html"
+    title = "Useful links"
+
+    def __init__(self, context: dict) -> None:
+        super().__init__(context)
+        self.page = self.context.get("self")
+        self.useful_links = getattr(self.page, "useful_links", [])
+        self.child_pages = []
+        if isinstance(self.page, (Network, NetworksHome)):
+            self.child_pages = (
+                self.page.get_children()
+                .live()
+                .public()
+                .exclude(
+                    content_type__in=[
+                        ContentType.objects.get_for_model(model=NetworksHome),
+                        ContentType.objects.get_for_model(model=Network),
+                    ]
+                )
+            )
+
+    def is_visible(self) -> bool:
+        page = self.context.get("self")
+        if not isinstance(page, Page):
+            return False
+
+        return bool(self.useful_links or self.child_pages)
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+
+        useful_links = [
+            {
+                "title": link.value["title"],
+                "page": link.value["page"].get_url(),
+            }
+            for link in self.useful_links
+        ]
+        child_page_links = [
+            {
+                "title": child_page.title,
+                "page": child_page.get_url(),
+            }
+            for child_page in self.child_pages
+        ]
+
+        context.update(
+            title=self.title,
+            useful_links=useful_links + child_page_links,
+        )
+        return context
+
+
 @register.inclusion_tag("tags/sidebar.html", takes_context=True)
 def sidebar(context):
     sections: list[SidebarSection] = [
@@ -285,6 +341,7 @@ def sidebar(context):
         SidebarSection(
             title="Secondary page actions",
             parts=[
+                UsefulLinks,
                 YourBookmarks,
                 QuickLinks,
                 GiveFeedback,
