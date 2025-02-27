@@ -29,6 +29,7 @@ a.dwds-button,
     }
 
 
+    &--link,
     &--clear-icon,
     &--clear {
         // Unset the default button styling
@@ -131,6 +132,33 @@ a.dwds-button,
 
     &--inline {
         padding: var(--padding-button-inline);
+    }
+
+    &--link {
+        color: var(--color-link);
+
+        &.no-underline {
+            text-decoration: none;
+        }
+
+        &.no-underline:focus,
+        &.no-underline:active,
+        &:focus,
+        &:active {
+            text-decoration: underline var(--text-underline-hover);
+            background-color: var(--color-link-background-active);
+            color: var(--color-text);
+        }
+
+        &.no-underline:focus-visible,
+        &:focus-visible {
+            outline: none;
+        }
+
+        &.no-underline:hover,
+        &:hover {
+            text-decoration: underline var(--text-underline-hover);
+        }
     }
 
     &--navigation {
