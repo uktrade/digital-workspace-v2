@@ -372,8 +372,8 @@ def sidebar(context):
         SidebarSection(
             title="Secondary page actions",
             parts=[
-                SpotlightPage,
                 UsefulLinks,
+                SpotlightPage,
                 YourBookmarks,
                 QuickLinks,
                 GiveFeedback,
