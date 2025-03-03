@@ -267,7 +267,7 @@ class QuickLinks(SidebarPart):
 
 
 class UsefulLinks(SidebarPart):
-    template_name = "dwds/elements/useful_links.html"
+    template_name = "tags/sidebar/parts/useful_links.html"
     title = "Useful links"
 
     def __init__(self, context: dict) -> None:
@@ -324,7 +324,7 @@ class UsefulLinks(SidebarPart):
 
 
 class SpotlightPage(SidebarPart):
-    template_name = "dwds/components/spotlight.html"
+    template_name = "tags/sidebar/parts/spotlight.html"
 
     def is_visible(self) -> bool:
         if not flag_is_active(self.request, flags.NETWORKS_HUB):
