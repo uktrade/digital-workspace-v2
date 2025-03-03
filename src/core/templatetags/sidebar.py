@@ -267,7 +267,7 @@ class QuickLinks(SidebarPart):
 
 
 class UsefulLinks(SidebarPart):
-    template_name = "dwds/elements/useful_links.html"
+    template_name = "tags/sidebar/parts/useful_links.html"
     title = "Useful links"
 
     def __init__(self, context: dict) -> None:
@@ -289,6 +289,9 @@ class UsefulLinks(SidebarPart):
             )
 
     def is_visible(self) -> bool:
+        if not flag_is_active(self.request, flags.NETWORKS_HUB):
+            return False
+
         page = self.context.get("self")
         if not isinstance(page, Page):
             return False
@@ -320,6 +323,40 @@ class UsefulLinks(SidebarPart):
         return context
 
 
+class SpotlightPage(SidebarPart):
+    template_name = "tags/sidebar/parts/spotlight.html"
+
+    def is_visible(self) -> bool:
+        if not flag_is_active(self.request, flags.NETWORKS_HUB):
+            return False
+
+        page = self.context.get("self")
+        if not isinstance(page, Page):
+            return False
+
+        return bool(getattr(page, "spotlight_page", None))
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        page = self.context.get("self")
+
+        spotlight_page = getattr(page, "spotlight_page", None)
+        if not isinstance(spotlight_page, Page):
+            return context
+
+        spotlight_page = spotlight_page.specific
+
+        context.update(
+            page=spotlight_page,
+            url=spotlight_page.get_url(self.request),
+            title=getattr(spotlight_page, "title", None),
+            excerpt=getattr(spotlight_page, "excerpt", None),
+            thumbnail=getattr(spotlight_page, "preview_image", None),
+        )
+
+        return context
+
+
 @register.inclusion_tag("tags/sidebar.html", takes_context=True)
 def sidebar(context):
     sections: list[SidebarSection] = [
@@ -342,6 +379,7 @@ def sidebar(context):
             title="Secondary page actions",
             parts=[
                 UsefulLinks,
+                SpotlightPage,
                 YourBookmarks,
                 QuickLinks,
                 GiveFeedback,

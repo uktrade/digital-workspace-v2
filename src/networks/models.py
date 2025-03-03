@@ -8,7 +8,7 @@ from wagtail.models import Page
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
 from core import flags
-from core.panels import FieldPanel
+from core.panels import FieldPanel, PageChooserPanel
 from extended_search.index import DWIndexedField as IndexedField
 from networks.panels import NetworkTypesFlaggedFieldPanel
 
@@ -20,6 +20,7 @@ class NetworksHome(ContentPage):
 
     promote_panels = ContentPage.promote_panels + [
         FieldPanel("useful_links"),
+        PageChooserPanel("spotlight_page"),
     ]
 
     def get_template(self, request, *args, **kwargs):
@@ -165,6 +166,7 @@ class Network(ContentOwnerMixin, ContentPage):
 
     promote_panels = ContentPage.promote_panels + [
         FieldPanel("useful_links"),
+        PageChooserPanel("spotlight_page"),
     ]
 
     base_form_class = NetworkForm
