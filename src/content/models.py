@@ -434,7 +434,15 @@ class ContentPage(ContentImportMixin, SearchFieldsMixin, BasePage):
         [
             ("useful_links", content_blocks.UsefulLinkBlock()),
         ],
+        blank=True,
         null=True,
+    )
+
+    spotlight_page = models.ForeignKey(
+        Page,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
 
     #

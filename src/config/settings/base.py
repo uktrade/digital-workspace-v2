@@ -591,6 +591,14 @@ if is_copilot():
 
 DLFA_INCLUDE_RAW_LOG = True
 
+# Django Tasks
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks.backends.immediate.ImmediateBackend",
+        "ENQUEUE_ON_COMMIT": False,
+    }
+}
+
 # Remove SSO protection from health check and Hawk authed URLs
 AUTHBROKER_ANONYMOUS_PATHS = (
     "/ical/all/",
