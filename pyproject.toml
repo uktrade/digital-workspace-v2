@@ -72,7 +72,7 @@ icalendar = "^6.0.1"
 granian = "^1.6.3"
 
 [tool.poetry.group.dev.dependencies]
-dbt-platform-helper = "13.1.1"
+dbt-platform-helper = "13.1.2"
 # Linters
 black = "^24.4.2"
 djlint = "^1.23.2"

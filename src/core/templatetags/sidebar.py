@@ -289,6 +289,9 @@ class UsefulLinks(SidebarPart):
             )
 
     def is_visible(self) -> bool:
+        if not flag_is_active(self.request, flags.NETWORKS_HUB):
+            return False
+
         page = self.context.get("self")
         if not isinstance(page, Page):
             return False
