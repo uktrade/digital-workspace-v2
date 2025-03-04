@@ -18,7 +18,8 @@
         <!-- Share Platforms -->
         <div class="content-stack tiny">
             <!-- Email -->
-            <form action="mailto:?subject=Check%20out%20this%20page%20on%20the%20Intranet&body={{ page_url }}">
+            <form action="mailto:?subject=Check%20out%20this%20page%20on%20the%20Intranet!&body={{ page_url }}"
+                  method="post">
                 <button class="dwds-button dwds-button--link content-with-icon small-gap">
                     {% include "dwds/icons/email.html" with small=True %}
                     Email
