@@ -6,14 +6,38 @@
         </button>
     </div>
     <dialog>
-        <div class="content-stack">
+        <div class="dwds-content-item-card no-shadow content-spaced">
+            <h1>Share this page</h1>
             <form method="dialog">
                 <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
                     {% include "dwds/icons/cross.html" with small=True %}
                     Close
                 </button>
             </form>
-            {% include "dwds/components/copy_text.html" with text=page_url %}
+        </div>
+        <!-- Share Platforms -->
+        <div class="content-stack tiny">
+            <!-- Email -->
+            <form action="mailto:youraddr@domain.tld">
+                <button class="dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/email.html" with small=True dark=True %}
+                    Email
+                </button>
+            </form>
+            <!-- MS Teams -->
+            <button class="dwds-button dwds-button--link content-with-icon small-gap">
+                {% include "dwds/icons/ms_teams.html" with small=True %}
+                MS Teams
+            </button>
+            <!-- Calendar -->
+            <!-- <button class="dwds-button dwds-button--link content-with-icon small-gap">
+                {% include "dwds/icons/calendar.html" with small=True %}
+                Calendar
+            </button> -->
+            {% include "dwds/components/copy_text.html" with text=page_url hide_input=True%}
+        </div>
+        <div class="content-footer">
+            <p>This is only shareable inside the department to people with access to the intranet</p>
         </div>
     </dialog>
 </div>

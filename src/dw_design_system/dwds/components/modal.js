@@ -6,9 +6,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         openElement.addEventListener("click", function () {
             dialog.showModal();
+            document.documentElement.classList.add("no-scroll")
         });
         closeElement.addEventListener("click", function () {
             dialog.close();
+            document.documentElement.classList.remove("no-scroll")
         });
         dialog.addEventListener('click', function (event) {
             const rect = dialog.getBoundingClientRect();
