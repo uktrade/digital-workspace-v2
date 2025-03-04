@@ -6,40 +6,43 @@
         </button>
     </div>
     <dialog>
-        <div class="dwds-content-page">
-            <header class="content-spaced">
-                <h1>Share this page</h1>
-                <form method="dialog">
-                    <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
-                        {% include "dwds/icons/cross.html" with small=True %}
-                        Close
-                    </button>
-                </form>
-            </header>
-            <!-- Share Platforms -->
-            <div class="content-stack tiny">
-                <!-- Email -->
-                <form action="mailto:youraddr@domain.tld">
-                    <button class="dwds-button dwds-button--link content-with-icon small-gap">
-                        {% include "dwds/icons/email.html" with small=True dark=True %}
-                        Email
-                    </button>
-                </form>
-                <!-- MS Teams -->
-                <button class="dwds-button dwds-button--link content-with-icon small-gap">
-                    {% include "dwds/icons/ms_teams.html" with small=True %}
-                    MS Teams
+        <div class="content-spaced middle">
+            <h2>Share this page</h2>
+            <form method="dialog">
+                <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/cross.html" with small=True %}
+                    Close
                 </button>
-                <!-- Calendar -->
-                <!-- <button class="dwds-button dwds-button--link content-with-icon small-gap">
-                    {% include "dwds/icons/calendar.html" with small=True %}
-                    Calendar
-                </button> -->
-                {% include "dwds/components/copy_text.html" with text=page_url hide_input=True %}
-            </div>
-            <div class="content-footer">
-                <p>This is only shareable inside the department to people with access to the intranet</p>
-            </div>
+            </form>
         </div>
+        <!-- Share Platforms -->
+        <div class="content-stack tiny">
+            <!-- Email -->
+            <form action="mailto:?subject=Check%20out%20this%20page%20on%20the%20Intranet&body={{ page_url }}">
+                <button class="dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/email.html" with small=True %}
+                    Email
+                </button>
+            </form>
+            <!-- MS Teams -->
+            <button class="teams-share-button dwds-button dwds-button--link content-with-icon small-gap"
+                    data-href="{{ page_url }}"
+                    data-icon-px-size="0"
+                    data-msg-text="Check out this page on the intranet!"
+                    data-preview="false">
+                {% include "dwds/icons/ms_teams.html" with small=True %}
+                MS Teams
+            </button>
+            <!-- Calendar -->
+            <!-- <button class="dwds-button dwds-button--link content-with-icon small-gap">
+                {% include "dwds/icons/calendar.html" with small=True %}
+                Calendar
+            </button> -->
+            {% include "dwds/components/copy_text.html" with text=page_url hide_input=True %}
+        </div>
+        <div class="content-footer">
+            <p>This is only shareable inside the department to people with access to the intranet</p>
+        </div>
+        <script async defer src="https://teams.microsoft.com/share/launcher.js"></script>
     </dialog>
 </div>

@@ -1,32 +1,7 @@
 .email-icon {
-    // Light
-    --icon-background-color-light: #222222;
-    --icon-foreground-color-light: white;
-    // Dark
-    --icon-background-color-dark: var(--color-button-primary);
-    --icon-foreground-color-dark: var(--color-icon-dark-foreground);
-    // Default
-    --icon-background-color: var(--icon-background-color-light);
-    --icon-foreground-color: var(--icon-foreground-color-light);
-
-    &.dark {
-        --icon-background-color: var(--icon-background-color-dark);
-        --icon-foreground-color: var(--icon-foreground-color-dark);
-    }
-
-    &.hover-light {
-        &:hover {
-            --icon-background-color: var(--icon-background-color-light);
-            --icon-foreground-color: var(--icon-foreground-color-light);
-        }
-    }
-
-    &.hover-dark {
-        &:hover {
-            --icon-background-color: var(--icon-background-color-dark);
-            --icon-foreground-color: var(--icon-foreground-color-dark);
-        }
-    }
+    
+    --icon-background-color: currentColor;
+    --icon-foreground-color: white;
 
     .background {
         fill: var(--icon-background-color);
