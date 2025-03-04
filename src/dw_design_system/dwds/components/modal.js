@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
             if (!isInDialog) {
                 dialog.close();
+                document.documentElement.classList.remove("no-scroll")
             }
         });
     });
