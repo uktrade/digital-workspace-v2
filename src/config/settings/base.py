@@ -498,6 +498,7 @@ SETTINGS_EXPORT = [
     "APP_ENV",
     "SENTRY_DSN",
     "SENTRY_BROWSER_TRACES_SAMPLE_RATE",
+    "USE_SVG_LOGO",
 ]
 
 LOGGING = {
@@ -711,6 +712,7 @@ DJANGO_FEEDBACK_GOVUK = {
         },
     },
 }
+USE_SVG_LOGO = True
 
 # Leaving Service
 LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
