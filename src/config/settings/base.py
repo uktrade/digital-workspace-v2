@@ -498,6 +498,7 @@ SETTINGS_EXPORT = [
     "APP_ENV",
     "SENTRY_DSN",
     "SENTRY_BROWSER_TRACES_SAMPLE_RATE",
+    "USE_SVG_LOGO",
 ]
 
 LOGGING = {
@@ -588,6 +589,14 @@ if is_copilot():
     LOGGING["handlers"]["ecs"]["formatter"] = "asim_formatter"
 
 DLFA_INCLUDE_RAW_LOG = True
+
+# Django Tasks
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks.backends.immediate.ImmediateBackend",
+        "ENQUEUE_ON_COMMIT": False,
+    }
+}
 
 # Remove SSO protection from health check and Hawk authed URLs
 AUTHBROKER_ANONYMOUS_PATHS = (
@@ -703,6 +712,7 @@ DJANGO_FEEDBACK_GOVUK = {
         },
     },
 }
+USE_SVG_LOGO = True
 
 # Leaving Service
 LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)

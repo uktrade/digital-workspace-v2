@@ -13,8 +13,7 @@ python = "^3.12"
 django = "^5.1"
 django-environ = "^0.10.0"
 django-settings-export = "^1.2.1"
-# TODO: Set django-simple-history to the next release after 3.4.0 (when released)
-django-simple-history = { git = "https://github.com/uktrade/django-simple-history.git", rev = "29108a5" }
+django-simple-history = "^3.4.0"
 django-storages = "^1.13.2"
 django-webpack-loader = "^3.0"
 djangorestframework = "^3.15.2"
@@ -28,7 +27,7 @@ django_log_formatter_ecs = "^0.0.5"
 django-staff-sso-client = "^4.2"
 notifications-python-client = "^8.2"
 # Wagtail
-wagtail = "^6.3"
+wagtail = "^6.4"
 wagtailmedia = "^0.14.2"
 wagtailmenus = "^3.1.8"
 wagtail-draftail-anchors = "^0.6.0"
@@ -73,7 +72,7 @@ icalendar = "^6.0.1"
 granian = "^1.6.3"
 
 [tool.poetry.group.dev.dependencies]
-dbt-platform-helper = "12.6.0"
+dbt-platform-helper = "13.1.2"
 # Linters
 black = "^24.4.2"
 djlint = "^1.23.2"

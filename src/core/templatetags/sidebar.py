@@ -267,52 +267,93 @@ class QuickLinks(SidebarPart):
 
 
 class UsefulLinks(SidebarPart):
-    template_name = "dwds/elements/useful_links.html"
+    template_name = "tags/sidebar/parts/useful_links.html"
     title = "Useful links"
 
+    def __init__(self, context: dict) -> None:
+        super().__init__(context)
+        self.page = self.context.get("self")
+        self.useful_links = getattr(self.page, "useful_links", [])
+        self.child_pages = []
+        if isinstance(self.page, (Network, NetworksHome)):
+            self.child_pages = (
+                self.page.get_children()
+                .live()
+                .public()
+                .exclude(
+                    content_type__in=[
+                        ContentType.objects.get_for_model(model=NetworksHome),
+                        ContentType.objects.get_for_model(model=Network),
+                    ]
+                )
+            )
+
     def is_visible(self) -> bool:
+        if not flag_is_active(self.request, flags.NETWORKS_HUB):
+            return False
+
         page = self.context.get("self")
         if not isinstance(page, Page):
             return False
 
-        useful_links = getattr(page, "useful_links", None)
-        child_pages = (
-            page.get_children()
-            .exclude(content_type=ContentType.objects.get_for_model(Network))
-            .exists()
+        return bool(self.useful_links or self.child_pages)
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+
+        useful_links = [
+            {
+                "title": link.value["title"],
+                "page": link.value["page"].get_url(),
+            }
+            for link in self.useful_links
+        ]
+        child_page_links = [
+            {
+                "title": child_page.title,
+                "page": child_page.get_url(),
+            }
+            for child_page in self.child_pages
+        ]
+
+        context.update(
+            title=self.title,
+            useful_links=useful_links + child_page_links,
         )
-        return bool(useful_links or child_pages)
+        return context
+
+
+class SpotlightPage(SidebarPart):
+    template_name = "tags/sidebar/parts/spotlight.html"
+
+    def is_visible(self) -> bool:
+        if not flag_is_active(self.request, flags.NETWORKS_HUB):
+            return False
+
+        page = self.context.get("self")
+        if not isinstance(page, Page):
+            return False
+
+        return bool(getattr(page, "spotlight_page", None))
 
     def get_part_context(self) -> dict:
         context = super().get_part_context()
         page = self.context.get("self")
 
-        useful_links = []
-        if hasattr(page, "useful_links"):
-            useful_links = [
-                {
-                    "title": link.value["title"],
-                    "page": link.value["page"].get_url(),
-                }
-                for link in page.useful_links
-            ]
+        spotlight_page = getattr(page, "spotlight_page", None)
+        if not isinstance(spotlight_page, Page):
+            return context
 
-        child_pages = []
-        if isinstance(page, Page):
-            child_pages = [
-                {
-                    "title": child_page.title,
-                    "page": child_page.get_url(),
-                }
-                for child_page in page.get_children().exclude(
-                    content_type=ContentType.objects.get_for_model(Network)
-                )
-            ]
+        spotlight_page = spotlight_page.specific
 
         context.update(
-            title=self.title,
-            useful_links=useful_links + child_pages,
+            page=spotlight_page,
+            url=spotlight_page.get_url(self.request),
+            title=getattr(spotlight_page, "title", None),
+            excerpt=getattr(spotlight_page, "excerpt", None),
+            thumbnail=getattr(spotlight_page, "preview_image", None),
         )
+
         return context
 
 
@@ -338,6 +379,7 @@ def sidebar(context):
             title="Secondary page actions",
             parts=[
                 UsefulLinks,
+                SpotlightPage,
                 YourBookmarks,
                 QuickLinks,
                 GiveFeedback,
