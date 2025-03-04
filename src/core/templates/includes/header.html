@@ -8,10 +8,16 @@
         <div class="govuk-header__logo govuk-header__logo--ws gov-grid-column-one-third">
             <a href="/" class="govuk-header__link govuk-header__link--homepage">
                 <span class="govuk-header__logotype govuk-header__logotype--ws">
-                    <img aria-hidden="true"
-                         src="{% webpack_static 'dbt-logo.142w.png' %}"
-                         srcset="{% webpack_static 'dbt-logo.284w.png' %} 2x"
-                         alt="Department for Business & Trade logo" />
+                    {% if settings.USE_SVG_LOGO %}
+                        <img aria-hidden="true"
+                             src="{% webpack_static 'dbt-logo.svg' %}"
+                             alt="Department for Business & Trade logo" />
+                    {% else %}
+                        <img aria-hidden="true"
+                             src="{% webpack_static 'dbt-logo.142w.png' %}"
+                             srcset="{% webpack_static 'dbt-logo.284w.png' %} 2x"
+                             alt="Department for Business & Trade logo" />
+                    {% endif %}
                     <span class="govuk-visually-hidden">Department for Business & Trade</span>
                 </span>
             </a>
