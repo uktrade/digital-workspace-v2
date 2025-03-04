@@ -6,6 +6,7 @@
 {% endblock primary_content_classes %}
 
 {% block primary_content %}
+    {{ block.super }}
     <div class="content-grid grid-cards-auto-fill">
         {% for child in children %}
             <div class="dwds-content-item-card">{% page_to_engagement child %}</div>
