@@ -3,7 +3,7 @@
 {% load reactions %}
 
 {% block primary_content %}
-    {% if FEATURE_FLAGS.show_reactions and page.allow_reactions %}
+    {% if page.allow_reactions %}
         {% reactions_list user page "top" %}
     {% endif %}
     <div class="content-stack">
@@ -16,7 +16,7 @@
 {% endblock primary_content %}
 
 {% block post_primary_content %}
-    {% if FEATURE_FLAGS.show_reactions and page.allow_reactions %}
+    {% if  page.allow_reactions %}
         {% reactions_list user page "bottom" %}
     {% endif %}
     {% if self.allow_comments %}

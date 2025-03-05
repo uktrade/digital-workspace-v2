@@ -75,7 +75,7 @@
         <!-- VWO Integration -->
         {% vwo_integration %}
     </head>
-    <body class="govuk-template__body {% block body_classes %}{% endblock %}">
+    <body class="govuk-template__body {% block body_classes %}{% endblock body_classes %}">
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.GTM_CODE }}"
