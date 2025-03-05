@@ -35,7 +35,7 @@ class UserPage(UserObject):
     )
 
 
-class UserComment(models.Model):
+class UserComment(UserObject):
     class Meta(UserObject.Meta):
         abstract = True
         constraints = [
