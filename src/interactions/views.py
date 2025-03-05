@@ -68,8 +68,8 @@ def react_to_page(request, *args, pk, **kwargs):
 
     return JsonResponse(
         {
-            "user_reaction": reactions_service.get_user_reaction(user, page),
-            "reactions": reactions_service.get_reaction_counts(page),
+            "user_reaction": reactions_service.get_user_page_reaction(user, page),
+            "reactions": reactions_service.get_page_reaction_counts(page),
         }
     )
 

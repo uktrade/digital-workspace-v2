@@ -4,10 +4,10 @@ from interactions.models import PageReaction, ReactionType
 from interactions.services.reactions import (
     get_active_reactions,
     react_to_page,
-    get_reaction_count,
-    get_reaction_counts,
-    get_user_reaction,
-    has_user_reacted,
+    get_page_reaction_count,
+    get_page_reaction_counts,
+    get_user_page_reaction,
+    has_user_reacted_to_page,
 )
 from django.test import override_settings
 
@@ -70,33 +70,33 @@ def test_react_to_page_invalid_page(user, about_page, reaction_type):
 
 
 @pytest.mark.django_db
-def test_get_reaction_count(user, news_page, create_reaction):
-    assert get_reaction_count(news_page, ReactionType.LIKE) == 1
+def test_get_page_reaction_count(user, news_page, create_reaction):
+    assert get_page_reaction_count(news_page, ReactionType.LIKE) == 1
     PageReaction.objects.filter(user=user, page=news_page).delete()
-    assert get_reaction_count(news_page, ReactionType.LIKE) == 0
+    assert get_page_reaction_count(news_page, ReactionType.LIKE) == 0
 
 
 @pytest.mark.django_db
-def test_get_reaction_count_invalid_reaction_type(user, news_page, create_reaction):
-    assert get_reaction_count(news_page, ReactionType.DISLIKE) == 0
+def test_get_page_reaction_count_invalid_reaction_type(user, news_page, create_reaction):
+    assert get_page_reaction_count(news_page, ReactionType.DISLIKE) == 0
 
 
 @pytest.mark.django_db
-def test_get_reaction_count_none_reaction_type(user, news_page, create_reaction):
-    assert get_reaction_count(news_page, None) == 1
+def test_get_page_reaction_count_none_reaction_type(user, news_page, create_reaction):
+    assert get_page_reaction_count(news_page, None) == 1
 
 
 @pytest.mark.django_db
-def test_get_reaction_count_invalid_page(about_page):
-    assert get_reaction_count(about_page, ReactionType.LIKE) is None
+def test_get_page_reaction_count_invalid_page(about_page):
+    assert get_page_reaction_count(about_page, ReactionType.LIKE) is None
 
 
 @pytest.mark.django_db
 @override_settings(INACTIVE_REACTION_TYPES=[])
-def test_get_reaction_counts(user, user2, user3, news_page):
+def test_get_page_reaction_counts(user, user2, user3, news_page):
     PageReaction.objects.create(user=user, page=news_page, type=ReactionType.LIKE)
     PageReaction.objects.create(user=user2, page=news_page, type=ReactionType.DISLIKE)
-    counts = get_reaction_counts(news_page)
+    counts = get_page_reaction_counts(news_page)
     assert counts.get(ReactionType.LIKE) == 1
     assert counts.get(ReactionType.DISLIKE) == 1
     assert counts.get(ReactionType.CELEBRATE) == 0
@@ -104,7 +104,7 @@ def test_get_reaction_counts(user, user2, user3, news_page):
     assert counts.get(ReactionType.LOVE) == 0
 
     PageReaction.objects.create(user=user3, page=news_page, type=ReactionType.DISLIKE)
-    counts = get_reaction_counts(news_page)
+    counts = get_page_reaction_counts(news_page)
     assert counts.get(ReactionType.LIKE) == 1
     assert counts.get(ReactionType.DISLIKE) == 2
     assert counts.get(ReactionType.CELEBRATE) == 0
@@ -112,7 +112,7 @@ def test_get_reaction_counts(user, user2, user3, news_page):
     assert counts.get(ReactionType.LOVE) == 0
 
     PageReaction.objects.filter(user=user, page=news_page).delete()
-    counts = get_reaction_counts(news_page)
+    counts = get_page_reaction_counts(news_page)
     assert counts.get(ReactionType.LIKE) == 0
     assert counts.get(ReactionType.DISLIKE) == 2
     assert counts.get(ReactionType.CELEBRATE) == 0
@@ -120,7 +120,7 @@ def test_get_reaction_counts(user, user2, user3, news_page):
     assert counts.get(ReactionType.LOVE) == 0
 
     PageReaction.objects.filter(user=user2, page=news_page).delete()
-    counts = get_reaction_counts(news_page)
+    counts = get_page_reaction_counts(news_page)
     assert counts.get(ReactionType.DISLIKE) == 1
     assert counts.get(ReactionType.LIKE) == 0
     assert counts.get(ReactionType.CELEBRATE) == 0
@@ -128,7 +128,7 @@ def test_get_reaction_counts(user, user2, user3, news_page):
     assert counts.get(ReactionType.LOVE) == 0
 
     PageReaction.objects.filter(user=user3, page=news_page).delete()
-    counts = get_reaction_counts(news_page)
+    counts = get_page_reaction_counts(news_page)
     assert counts.get(ReactionType.DISLIKE) == 0
     assert counts.get(ReactionType.LIKE) == 0
 
@@ -138,30 +138,30 @@ def test_get_reaction_counts(user, user2, user3, news_page):
 
 
 @pytest.mark.django_db
-def test_get_reaction_counts_invalid_page(about_page):
-    assert get_reaction_counts(about_page) == {}
+def test_get_page_reaction_counts_invalid_page(about_page):
+    assert get_page_reaction_counts(about_page) == {}
 
 
 @pytest.mark.django_db
-def test_get_user_reaction(user, news_page, create_reaction):
-    assert get_user_reaction(user, news_page) == ReactionType.LIKE
+def test_get_user_page_reaction(user, news_page, create_reaction):
+    assert get_user_page_reaction(user, news_page) == ReactionType.LIKE
 
 
 @pytest.mark.django_db
-def test_get_user_reaction_no_page_found(user, news_page):
-    assert get_user_reaction(user, news_page) is None
+def test_get_user_page_reaction_no_page_found(user, news_page):
+    assert get_user_page_reaction(user, news_page) is None
 
 
 @pytest.mark.django_db
 def test_has_user_not_reacted(user, news_page):
-    assert has_user_reacted(user, news_page) is False
+    assert has_user_reacted_to_page(user, news_page) is False
 
 
 @pytest.mark.django_db
-def test_has_user_reacted(user, news_page, create_reaction):
-    assert has_user_reacted(user, news_page) is True
+def test_has_user_reacted_to_page(user, news_page, create_reaction):
+    assert has_user_reacted_to_page(user, news_page) is True
 
 
 @pytest.mark.django_db
-def test_has_user_reacted_invalid_user(user2, news_page, create_reaction):
-    assert has_user_reacted(user2, news_page) is False
+def test_has_user_reacted_to_page_invalid_user(user2, news_page, create_reaction):
+    assert has_user_reacted_to_page(user2, news_page) is False

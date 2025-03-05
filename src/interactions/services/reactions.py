@@ -35,7 +35,9 @@ def react_to_page(
     return reaction
 
 
-def get_reaction_count(page: Page, reaction_type: ReactionType | None) -> int | None:
+def get_page_reaction_count(
+    page: Page, reaction_type: ReactionType | None
+) -> int | None:
     page = page.specific
     if not isinstance(page, NewsPage):
         return None
@@ -48,7 +50,7 @@ def get_reaction_count(page: Page, reaction_type: ReactionType | None) -> int | 
     return reactions.count()
 
 
-def get_reaction_counts(page: Page) -> dict[str, int]:
+def get_page_reaction_counts(page: Page) -> dict[str, int]:
     page = page.specific
     if not isinstance(page, NewsPage):
         return {}
@@ -74,12 +76,12 @@ def get_reaction_counts(page: Page) -> dict[str, int]:
     return reaction_counts
 
 
-def get_user_reaction(user: User, page: Page) -> ReactionType | None:
+def get_user_page_reaction(user: User, page: Page) -> ReactionType | None:
     reaction = PageReaction.objects.filter(user=user, page=page).first()
     if reaction:
         return reaction.type
     return None
 
 
-def has_user_reacted(user: User, page: Page) -> bool:
+def has_user_reacted_to_page(user: User, page: Page) -> bool:
     return PageReaction.objects.filter(user=user, page=page).exists()

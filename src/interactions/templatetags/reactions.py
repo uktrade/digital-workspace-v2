@@ -14,8 +14,8 @@ register = template.Library()
 
 @register.inclusion_tag("interactions/reactions.html")
 def reactions_list(user, page, reaction_location):
-    reactions = reactions_service.get_reaction_counts(page)
-    user_reaction = reactions_service.get_user_reaction(user, page)
+    reactions = reactions_service.get_page_reaction_counts(page)
+    user_reaction = reactions_service.get_user_page_reaction(user, page)
     return {
         "reaction_location": reaction_location,
         "reactions": reactions,
@@ -50,6 +50,6 @@ def get_gtm_reactions(context) -> str:
     if "page" in context:
         page = context["page"]
         if isinstance(page, Page):
-            reactions = reactions_service.get_reaction_counts(page)
+            reactions = reactions_service.get_page_reaction_counts(page)
             return mark_safe(json.dumps(reactions))  # noqa S308
     return ""
