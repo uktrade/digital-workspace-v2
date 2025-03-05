@@ -3,10 +3,8 @@ from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from waffle import flag_is_active
 from wagtail.models import Page
 
-from core import flags
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
 from interactions.services import reactions as reactions_service
@@ -29,7 +27,6 @@ def bookmark(request, *args, **kwargs):
             "user": user,
             "page": page,
             "is_bookmarked": is_bookmarked,
-            "is_new_sidebar_enabled": flag_is_active(request, flags.NEW_SIDEBAR),
         }
 
         return TemplateResponse(
