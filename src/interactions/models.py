@@ -67,7 +67,7 @@ class ReactionType(models.TextChoices):
     UNHAPPY = "unhappy", "Unhappy"
 
 
-class Reaction(UserPage):
+class PageReaction(UserPage):
     type = models.CharField(
         max_length=10,
         choices=ReactionType.choices,

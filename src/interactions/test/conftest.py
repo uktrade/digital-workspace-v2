@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from about_us.models import AboutUs
 from news.models import NewsPage
 
-from interactions.models import Reaction, ReactionType
+from interactions.models import PageReaction, ReactionType
 
 
 @pytest.fixture
@@ -42,4 +42,4 @@ def about_page():
 
 @pytest.fixture
 def create_reaction(user, news_page):
-    return Reaction.objects.create(user=user, page=news_page, type=ReactionType.LIKE)
+    return PageReaction.objects.create(user=user, page=news_page, type=ReactionType.LIKE)

@@ -65,13 +65,13 @@ class PageReactButton extends HTMLElement {
             }
             return response.json();
         }).then((data) => {
-            dataLayer.push({ 
+            this.dispatchEvent(new CustomEvent("reactions:updated", { bubbles: true, detail: data }));
+            dataLayer.push({
                 'event': 'page_reaction',
                 'from_type': this.currentType,
                 'to_type': !this.selected ? this.type : "None",
                 'reaction_block': this.reactionLocation
             });
-            this.dispatchEvent(new CustomEvent("reactions:updated", { bubbles: true, detail: data }));
         });
     }
 
