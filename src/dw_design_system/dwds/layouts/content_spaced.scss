@@ -1,4 +1,8 @@
 .content-spaced {
     display: flex;
     justify-content: space-between;
+    
+    &.middle {
+        align-items: center;
+    }
 }
