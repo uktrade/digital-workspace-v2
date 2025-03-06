@@ -1,33 +1,25 @@
 {% if page %}
-    {% if not FEATURE_FLAGS.new_sidebar %}<div>{% endif %}
-        <button class="dwds-button dwds-button--clear-icon {% if not FEATURE_FLAGS.new_sidebar %}bookmark-page-input{% endif %} content-with-icon no-gap"
-                title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
-                data-is-htmx="{{ request.headers.hx_request }}"
-                hx-post="{{ post_url }}"
-                hx-vals='{"page_id": {{ page.id }}}'
-                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                hx-trigger="click"
-                hx-select="button"
-                hx-target="this"
-                hx-swap="outerHTML">
-            {% if is_new_sidebar_enabled %}
-                {% if is_bookmarked %}
-                    {% include 'dwds/icons/bookmark.html' with dark=True %}
-                {% else %}
-                    {% include 'dwds/icons/bookmark.html' %}
-                {% endif %}
+    <button class="dwds-button dwds-button--clear-icon content-with-icon no-gap"
+            title="{{ is_bookmarked|yesno:'Remove bookmark,Bookmark this page' }}"
+            data-is-htmx="{{ request.headers.hx_request }}"
+            hx-post="{{ post_url }}"
+            hx-vals='{"page_id": {{ page.id }}}'
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-trigger="click"
+            hx-select="button"
+            hx-target="this"
+            hx-swap="outerHTML">
+        {% if is_bookmarked %}
+            {% include 'dwds/icons/bookmark.html' with dark=True %}
+        {% else %}
+            {% include 'dwds/icons/bookmark.html' %}
+        {% endif %}
+        <span class="dwds-sr-only">
+            {% if is_bookmarked %}
+                Bookmarked
             {% else %}
-                {% include 'dwds/elements/icon.html' with id='bookmark-icon' is_filled=is_bookmarked %}
+                Bookmark this page
             {% endif %}
-            <span class="{{ is_new_sidebar_enabled|yesno:'dwds-sr-only,' }}">
-                {% if is_bookmarked %}
-                    Bookmarked
-                {% elif is_new_sidebar_enabled %}
-                    Bookmark this page
-                {% else %}
-                    Bookmark
-                {% endif %}
-            </span>
-        </button>
-        {% if not FEATURE_FLAGS.new_sidebar %}</div>{% endif %}
+        </span>
+    </button>
 {% endif %}
