@@ -395,22 +395,19 @@ class CustomSearchQueryCompiler(
 
 
 class CustomAtomicIndexRebuilder(ElasticsearchAtomicIndexRebuilder):
-    def start(self):
-        index = super().start()
-
+    def finish(self):
+        super().finish()
         models_grouped_by_index = group_models_by_index(
             get_search_backend(), get_indexed_models()
         )
         models_for_current_index = []
 
         for index_models in models_grouped_by_index.keys():
-            if index.name.startswith(index_models.name):
+            if self.index.name.startswith(index_models.name):
                 models_for_current_index = models_grouped_by_index[index_models]
 
         if models_for_current_index:
             build_queries(models=models_for_current_index)
-
-        return index
 
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):
