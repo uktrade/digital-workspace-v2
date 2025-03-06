@@ -4,6 +4,7 @@ from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
+    ElasticsearchAtomicIndexRebuilder,
     Field,
 )
 from wagtail.search.index import SearchField
@@ -12,6 +13,7 @@ from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, Plain
 from extended_search import settings as search_settings
 from extended_search.index import RelatedFields
 from extended_search.query import Filtered, FunctionScore, Nested, OnlyFields
+from extended_search.query_builder import build_queries_for_index
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
@@ -390,9 +392,17 @@ class CustomSearchQueryCompiler(
     mapping_class = CustomSearchMapping
 
 
+class CustomAtomicIndexRebuilder(ElasticsearchAtomicIndexRebuilder):
+    def start(self):
+        index = super().start()
+        build_queries_for_index(index)
+        return index
+
+
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = CustomSearchQueryCompiler
     mapping_class = CustomSearchMapping
+    atomic_rebuilder_class = CustomAtomicIndexRebuilder
 
 
 SearchBackend = CustomSearchBackend

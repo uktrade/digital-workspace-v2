@@ -1,13 +1,15 @@
 import inspect
 import logging
-from typing import Optional, Type
+from typing import TYPE_CHECKING, Optional, Type
 
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from wagtail.search import index
+from wagtail.search.backends import get_search_backend
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
+from extended_search import query_builder
 from extended_search import settings as search_settings
 from extended_search.index import (
     BaseField,
@@ -22,6 +24,11 @@ from extended_search.index import (
 from extended_search.query import Filtered, FunctionScore, Nested, OnlyFields
 from extended_search.types import AnalysisType, SearchQueryType
 
+
+if TYPE_CHECKING:
+    from wagtail.search.backends.elasticsearch7 import Elasticsearch7Index
+
+    from extended_search.backends.backend import CustomSearchBackend
 
 logger = logging.getLogger(__name__)
 
@@ -324,7 +331,9 @@ class CustomQueryBuilder(QueryBuilder):
         return cls.swap_variables(built_query, query_str)
 
     @classmethod
-    def build_search_query(cls, model_class, ignore_cache=False):
+    def build_search_query(
+        cls, model_class, ignore_cache=False, index: "Elasticsearch7Index | None" = None
+    ):
         """
         Generates a full query for a model class, by running query builder
         against the given model as well as all models with the given as a
@@ -332,7 +341,11 @@ class CustomQueryBuilder(QueryBuilder):
         type, and all are joined together at the end.
         """
         if settings.SEARCH_ENABLE_QUERY_CACHE:
-            cache_key = model_class.__name__
+            search_backend: "CustomSearchBackend" = get_search_backend()
+            model_index = search_backend.get_index_for_model(model_class)
+            if index and index != model_index:
+                return None
+            cache_key = f"{model_index.name}__{model_class.__name__}"
             if not ignore_cache:
                 built_query = cache.get(cache_key, None)
                 if built_query:
@@ -410,3 +423,11 @@ class CustomQueryBuilder(QueryBuilder):
             ):
                 extended_model_classes.append(indexed_model)
         return extended_model_classes
+
+
+def build_queries_for_index(index: "Elasticsearch7Index"):
+    for model_class in get_indexed_models():
+        if hasattr(model_class, "indexed_fields") and model_class.indexed_fields:
+            query_builder.CustomQueryBuilder.build_search_query(
+                model_class, True, index=index
+            )
