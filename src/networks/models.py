@@ -179,6 +179,14 @@ class Network(ContentOwnerMixin, ContentPage):
         ),
     ] + ContentOwnerMixin.indexed_fields
 
+    def get_template(self, request, *args, **kwargs):
+        if (
+            flag_is_active(request, flags.NETWORKS_HUB)
+            and Network.objects.live().public().child_of(self).exists()
+        ):
+            self.template = "networks/group_network.html"
+        return super().get_template(request, *args, **kwargs)
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 

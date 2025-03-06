@@ -36,8 +36,6 @@ WAGTAILADMIN_BASE_URL = env("WAGTAIL_BASE_URL")
 
 DEBUG = env.bool("DJANGO_DEBUG", False)
 
-ENABLE_DEBUGPY = env.bool("ENABLE_DEBUGPY", False)
-
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 AUTH_USER_MODEL = "user.User"
@@ -499,6 +497,7 @@ SETTINGS_EXPORT = [
     "APP_ENV",
     "SENTRY_DSN",
     "SENTRY_BROWSER_TRACES_SAMPLE_RATE",
+    "USE_SVG_LOGO",
 ]
 
 LOGGING = {
@@ -712,6 +711,7 @@ DJANGO_FEEDBACK_GOVUK = {
         },
     },
 }
+USE_SVG_LOGO = True
 
 # Leaving Service
 LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
