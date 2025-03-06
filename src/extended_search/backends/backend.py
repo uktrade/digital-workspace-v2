@@ -1,5 +1,6 @@
 from typing import Optional, Union
 
+from wagtail.search.backends import get_search_backend
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,
@@ -8,12 +9,13 @@ from wagtail.search.backends.elasticsearch7 import (
     Field,
 )
 from wagtail.search.index import SearchField
+from wagtail.search.management.commands.update_index import group_models_by_index
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
 from extended_search import settings as search_settings
-from extended_search.index import RelatedFields
+from extended_search.index import RelatedFields, get_indexed_models
 from extended_search.query import Filtered, FunctionScore, Nested, OnlyFields
-from extended_search.query_builder import build_queries_for_index
+from extended_search.query_builder import build_queries
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
@@ -395,7 +397,19 @@ class CustomSearchQueryCompiler(
 class CustomAtomicIndexRebuilder(ElasticsearchAtomicIndexRebuilder):
     def start(self):
         index = super().start()
-        build_queries_for_index(index)
+
+        models_grouped_by_index = group_models_by_index(
+            get_search_backend(), get_indexed_models()
+        )
+        models_for_current_index = []
+
+        for index_models in models_grouped_by_index.keys():
+            if index.name.startswith(index_models.name):
+                models_for_current_index = models_grouped_by_index[index_models]
+
+        if models_for_current_index:
+            build_queries(models=models_for_current_index)
+
         return index
 
 

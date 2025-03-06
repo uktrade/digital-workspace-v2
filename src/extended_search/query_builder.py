@@ -26,8 +26,6 @@ from extended_search.types import AnalysisType, SearchQueryType
 
 
 if TYPE_CHECKING:
-    from wagtail.search.backends.elasticsearch7 import Elasticsearch7Index
-
     from extended_search.backends.backend import CustomSearchBackend
 
 logger = logging.getLogger(__name__)
@@ -331,9 +329,7 @@ class CustomQueryBuilder(QueryBuilder):
         return cls.swap_variables(built_query, query_str)
 
     @classmethod
-    def build_search_query(
-        cls, model_class, ignore_cache=False, index: "Elasticsearch7Index | None" = None
-    ):
+    def build_search_query(cls, model_class, ignore_cache=False):
         """
         Generates a full query for a model class, by running query builder
         against the given model as well as all models with the given as a
@@ -343,8 +339,6 @@ class CustomQueryBuilder(QueryBuilder):
         if settings.SEARCH_ENABLE_QUERY_CACHE:
             search_backend: "CustomSearchBackend" = get_search_backend()
             model_index = search_backend.get_index_for_model(model_class)
-            if index and index != model_index:
-                return None
             cache_key = f"{model_index.name}__{model_class.__name__}"
             if not ignore_cache:
                 built_query = cache.get(cache_key, None)
@@ -425,9 +419,10 @@ class CustomQueryBuilder(QueryBuilder):
         return extended_model_classes
 
 
-def build_queries_for_index(index: "Elasticsearch7Index"):
-    for model_class in get_indexed_models():
+def build_queries(models: list[models.Model] | None = None):
+    if not models:
+        models = get_indexed_models()
+
+    for model_class in models:
         if hasattr(model_class, "indexed_fields") and model_class.indexed_fields:
-            query_builder.CustomQueryBuilder.build_search_query(
-                model_class, True, index=index
-            )
+            query_builder.CustomQueryBuilder.build_search_query(model_class, True)
