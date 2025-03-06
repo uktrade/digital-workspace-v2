@@ -339,6 +339,10 @@ class CustomQueryBuilder(QueryBuilder):
         if settings.SEARCH_ENABLE_QUERY_CACHE:
             search_backend: "CustomSearchBackend" = get_search_backend()
             model_index = search_backend.get_index_for_model(model_class)
+            if model_index.is_alias():
+                alias_indexes = model_index.aliased_indices()
+                if len(alias_indexes) == 1:
+                    model_index = model_index.aliased_indices()[0]
             cache_key = f"{model_index.name}__{model_class.__name__}"
             if not ignore_cache:
                 built_query = cache.get(cache_key, None)
