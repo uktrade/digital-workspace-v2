@@ -1,17 +1,21 @@
 from typing import Optional, Union
 
+from wagtail.search.backends import get_search_backend
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
+    ElasticsearchAtomicIndexRebuilder,
     Field,
 )
 from wagtail.search.index import SearchField
+from wagtail.search.management.commands.update_index import group_models_by_index
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
 from extended_search import settings as search_settings
-from extended_search.index import RelatedFields
+from extended_search.index import RelatedFields, get_indexed_models
 from extended_search.query import Filtered, FunctionScore, Nested, OnlyFields
+from extended_search.query_builder import build_queries
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
@@ -390,9 +394,26 @@ class CustomSearchQueryCompiler(
     mapping_class = CustomSearchMapping
 
 
+class CustomAtomicIndexRebuilder(ElasticsearchAtomicIndexRebuilder):
+    def finish(self):
+        super().finish()
+        models_grouped_by_index = group_models_by_index(
+            get_search_backend(), get_indexed_models()
+        )
+        models_for_current_index = []
+
+        for index_models in models_grouped_by_index.keys():
+            if self.index.name.startswith(index_models.name):
+                models_for_current_index = models_grouped_by_index[index_models]
+
+        if models_for_current_index:
+            build_queries(models=models_for_current_index)
+
+
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = CustomSearchQueryCompiler
     mapping_class = CustomSearchMapping
+    atomic_rebuilder_class = CustomAtomicIndexRebuilder
 
 
 SearchBackend = CustomSearchBackend
