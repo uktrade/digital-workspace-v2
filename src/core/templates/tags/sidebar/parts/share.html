@@ -25,15 +25,17 @@
                     Email
                 </button>
             </form>
-            <!-- MS Teams -->
-            <button class="teams-share-button dwds-button dwds-button--link content-with-icon small-gap"
-                    data-href="{{ page_url }}"
-                    data-icon-px-size="1"
-                    data-msg-text="Check out this page on the intranet!"
-                    data-preview="false">
-                {% include "dwds/icons/ms_teams.html" with small=True %}
-                MS Teams
-            </button>
+            {% if FEATURE_FLAGS.share_teams %}
+                <!-- MS Teams -->
+                <button class="teams-share-button dwds-button dwds-button--link content-with-icon small-gap"
+                        data-href="{{ page_url }}"
+                        data-icon-px-size="1"
+                        data-msg-text="Check out this page on the intranet!"
+                        data-preview="false">
+                    {% include "dwds/icons/ms_teams.html" with small=True %}
+                    MS Teams
+                </button>
+            {% endif %}
             <!-- Calendar -->
             <!-- <button class="dwds-button dwds-button--link content-with-icon small-gap">
                 {% include "dwds/icons/calendar.html" with small=True %}
