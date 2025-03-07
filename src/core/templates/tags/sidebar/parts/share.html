@@ -36,11 +36,13 @@
                     MS Teams
                 </button>
             {% endif %}
-            <!-- Calendar -->
-            <!-- <button class="dwds-button dwds-button--link content-with-icon small-gap">
-                {% include "dwds/icons/calendar.html" with small=True %}
-                Calendar
-            </button> -->
+            {% comment %}
+                <!-- Calendar -->
+                <button class="dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/calendar.html" with small=True %}
+                    Calendar
+                </button>
+            {% endcomment %}
             {% include "dwds/components/copy_text.html" with text=page_url hide_input=True %}
         </div>
         <div class="content-footer">
