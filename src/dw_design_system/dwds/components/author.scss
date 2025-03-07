@@ -1,0 +1,20 @@
+.dwds-author {
+    &.content-sidebar {
+        --sidebar-gap: 0;
+        --sidebar-size: 60px;
+        --sidebar-min-size: 50%;
+        align-items: center;
+
+        > div:first-child {
+            margin: var(--s-4);
+            text-align: center;
+            display: flex;
+            justify-content: center;
+
+            a:first-child {
+                display: flex;
+                justify-content: center;
+            }
+        }
+    }
+}
