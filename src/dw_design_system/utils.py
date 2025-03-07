@@ -276,6 +276,20 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "content": "MODAL CONTENT",
                 },
             },
+            {
+                "name": "Author",
+                "template": "dwds/components/author.html",
+                "context": {
+                    "name": "John Doe",
+                    "profile_image_url": (
+                        thumbnail_file.file.url
+                        if thumbnail_file and thumbnail_file.file
+                        else None
+                    ),
+                    "profile_url": "https://www.gov.uk",
+                    "timestamp": timezone.now(),
+                },
+            },
         ],
         "icons": [
             {
