@@ -8,7 +8,9 @@ class NetworksFilters(django_filters.FilterSet):
 
     def get_network_type_choices():
         network_types = (
-            Network.objects.exclude(network_type__isnull=True)
+            Network.objects.live()
+            .public()
+            .exclude(network_type__isnull=True)
             .values_list("network_type", flat=True)
             .distinct()
         )
