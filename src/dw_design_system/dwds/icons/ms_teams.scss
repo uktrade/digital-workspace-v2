@@ -1,0 +1,14 @@
+.ms-teams-icon {
+    
+    --icon-background-color: currentColor;
+    --icon-foreground-color: white;
+
+    .background {
+        fill: var(--icon-background-color);
+    }
+
+    .foreground {
+        fill: var(--icon-foreground-color);
+    }
+
+}
