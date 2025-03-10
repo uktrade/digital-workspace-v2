@@ -56,23 +56,3 @@
         </div>
     </dialog>
 </div>
-<!-- <script>
-    function sendEmail(form) {
-        let to = form.to.value;
-        let cc = form.cc.value;
-        let bcc = form.bcc.value;
-        let subject = encodeURIComponent(form.subject.value);
-        let body = encodeURIComponent(form.body.value);
-
-        let mailto_url = `mailto:{to}`
-        let params = [];
-
-        if (cc) params.push(`cc=${encodeURIComponent(cc)}`);
-        if (bcc) params.push(`bcc=${encodeURIComponent(bcc)}`);
-        if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
-        if (body) params.push(`body=${encodeURIComponent(body)}`);
-
-        if (params.length > 0) mailto_url += `?${params.join("&")}`;
-        window.location.href = mailto_url;
-    }
-</script> -->
