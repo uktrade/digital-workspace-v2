@@ -1,7 +1,6 @@
 import django_filters
 from django import forms
 
-from networks.models import Network
 from networks.utils import get_active_network_types
 
 
