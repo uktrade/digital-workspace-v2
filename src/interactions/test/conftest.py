@@ -2,9 +2,9 @@ import pytest
 from django.contrib.auth import get_user_model
 
 from about_us.models import AboutUs
-from news.models import NewsPage
+from news.models import NewsPage, Comment
 
-from interactions.models import PageReaction, ReactionType
+from interactions.models import PageReaction, ReactionType, CommentReaction
 
 
 @pytest.fixture
@@ -41,5 +41,19 @@ def about_page():
 
 
 @pytest.fixture
-def create_reaction(user, news_page):
-    return PageReaction.objects.create(user=user, page=news_page, type=ReactionType.LIKE)
+def create_page_reaction(user, news_page):
+    return PageReaction.objects.create(
+        user=user, page=news_page, type=ReactionType.LIKE
+    )
+
+
+@pytest.fixture
+def comment(user, news_page):
+    return Comment.objects.create(author=user, page=news_page, content="a comment")
+
+
+@pytest.fixture
+def create_comment_reaction(user, comment, news_page):
+    return CommentReaction.objects.create(
+        user=user, comment=comment, type=ReactionType.LIKE
+    )
