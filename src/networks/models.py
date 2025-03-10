@@ -35,6 +35,7 @@ class NetworksHome(ContentPage):
 
         networks = Network.objects.live().public().order_by("title")
         if flag_is_active(request, flags.NETWORKS_HUB):
+            networks = networks.select_related("preview_image")
             # Filtering networks by network type
             networks_filters = NetworksFilters(request.GET, queryset=networks)
             networks = networks_filters.qs
