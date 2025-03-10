@@ -6,7 +6,7 @@ from django.utils.html import mark_safe
 from wagtail.models import Page
 
 from interactions.models import ReactionType
-from interactions.services import reactions as reactions_service
+from interactions.services import page_reactions as page_reactions_service
 
 
 register = template.Library()
@@ -14,8 +14,8 @@ register = template.Library()
 
 @register.inclusion_tag("interactions/reactions.html")
 def reactions_list(user, page, reaction_location):
-    reactions = reactions_service.get_page_reaction_counts(page)
-    user_reaction = reactions_service.get_user_page_reaction(user, page)
+    reactions = page_reactions_service.get_page_reaction_counts(page)
+    user_reaction = page_reactions_service.get_user_page_reaction(user, page)
     return {
         "reaction_location": reaction_location,
         "reactions": reactions,
@@ -50,6 +50,6 @@ def get_gtm_reactions(context) -> str:
     if "page" in context:
         page = context["page"]
         if isinstance(page, Page):
-            reactions = reactions_service.get_page_reaction_counts(page)
+            reactions = page_reactions_service.get_page_reaction_counts(page)
             return mark_safe(json.dumps(reactions))  # noqa S308
     return ""
