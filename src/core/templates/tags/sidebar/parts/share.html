@@ -18,9 +18,14 @@
         <!-- Share Platforms -->
         <div class="content-stack tiny">
             <!-- Email -->
-            <form action="mailto:?subject=Check%20out%20this%20page%20on%20the%20Intranet!&body=Check%20out%20this%20page%20on%20the%20Intranet!%0D%0A{{ page_url }}"
-                  method="post">
-                <button class="dwds-button dwds-button--link content-with-icon small-gap">
+            <form class="mailto-form">
+                <input name="subject" type="hidden" value="{{ page.title }} - DBT Intranet">
+                <div name="body" style="display: none;">
+                    {{ page_url }}
+                    Only people with access to the Department for Business and Trade intranet can open this link.
+                </div>
+                <button type="submit"
+                        class="dwds-button dwds-button--link content-with-icon small-gap">
                     {% include "dwds/icons/email.html" with small=True %}
                     Email
                 </button>
@@ -35,6 +40,7 @@
                     {% include "dwds/icons/ms_teams.html" with small=True %}
                     MS Teams
                 </button>
+                <script async defer src="https://teams.microsoft.com/share/launcher.js"></script>
             {% endif %}
             {% comment %}
                 <!-- Calendar -->
@@ -48,6 +54,25 @@
         <div class="content-footer">
             <p>This is only shareable inside the department to people with access to the intranet</p>
         </div>
-        <script async defer src="https://teams.microsoft.com/share/launcher.js"></script>
     </dialog>
 </div>
+<!-- <script>
+    function sendEmail(form) {
+        let to = form.to.value;
+        let cc = form.cc.value;
+        let bcc = form.bcc.value;
+        let subject = encodeURIComponent(form.subject.value);
+        let body = encodeURIComponent(form.body.value);
+
+        let mailto_url = `mailto:{to}`
+        let params = [];
+
+        if (cc) params.push(`cc=${encodeURIComponent(cc)}`);
+        if (bcc) params.push(`bcc=${encodeURIComponent(bcc)}`);
+        if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
+        if (body) params.push(`body=${encodeURIComponent(body)}`);
+
+        if (params.length > 0) mailto_url += `?${params.join("&")}`;
+        window.location.href = mailto_url;
+    }
+</script> -->
