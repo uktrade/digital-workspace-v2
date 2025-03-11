@@ -1,24 +1,16 @@
-{% extends "dwds_content.html" %}
+{% extends "content/content_page.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
-{% load reactions %}
 
-{% block primary_content %}
-    {% if page.allow_reactions %}
-        {% reactions_list user page "top" %}
-    {% endif %}
+
+{% block pre_page_body %}
     <div class="content-stack">
         {% image page.preview_image fill-800x450 width=None height=None style="border-radius: var(--border-radius);" %}
         {% include "includes/attribution.html" with page=page is_news_page=True perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=True %}
-        {% for block in page.body %}
-            {% include_block block %}
-        {% endfor %}
     </div>
-{% endblock primary_content %}
+{% endblock pre_page_body %}
 
 {% block post_primary_content %}
-    {% if  page.allow_reactions %}
-        {% reactions_list user page "bottom" %}
-    {% endif %}
+    {{ block.super }}
     {% if self.allow_comments %}
         <div class="news_comments">
             {% if page.comment_count > 0 %}
@@ -111,7 +103,6 @@
             </script>
         </div>
     {% endif %}
-    {{ block.super }}
 {% endblock post_primary_content %}
 
 {% block secondary_content %}

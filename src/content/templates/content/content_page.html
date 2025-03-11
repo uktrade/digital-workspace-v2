@@ -1,10 +1,15 @@
 {% extends "dwds_content.html" %}
-{% load wagtailcore_tags bookmarks %}
+{% load wagtailcore_tags bookmarks reactions %}
 
 {% block primary_content %}
     {% if attribution %}
         <div>{% include "includes/attribution.html" with page=page %}</div>
     {% endif %}
+    {% if page.allow_reactions %}
+        {% reactions_list user page "top" %}
+    {% endif %}
+    {% block pre_page_body %}
+    {% endblock pre_page_body %}
     {% if page.body %}
         <div>
             {% for block in page.body %}
