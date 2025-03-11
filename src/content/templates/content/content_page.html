@@ -20,9 +20,12 @@
 {% endblock primary_content %}
 
 {% block post_primary_content %}
-    {% if page.allow_reactions %}
-        {% reactions_list user page "bottom" %}
-    {% endif %}
+    <div class="content-stack">
+        {% include "includes/page_publishing_information.html" with page=self %}
+        {% if page.allow_reactions %}
+            <div>{% reactions_list user page "bottom" %}</div>
+        {% endif %}
+    </div>
     {% if children %}
         {% include "includes/child-links.html" with children=children num_cols=num_cols display=display target_blank=target_blank %}
     {% endif %}

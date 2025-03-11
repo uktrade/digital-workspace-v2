@@ -1,0 +1,34 @@
+{% load page %}
+<details class="dwds-details">
+    <summary>
+        <span>Publishing information</span>
+    </summary>
+    <div class="content-stack">
+        <div>
+            <time datetime="{{ self.first_published_at|date:"c" }}">
+                First published: {{ self.first_published_at|date:"j F Y" }}, {{ self.first_published_at|time:"g:iA"|lower }}
+            </time>
+            <br>
+            <time datetime="{{ self.last_published_at|date:"c" }}">
+                Last updated: {{ self.last_published_at|date:"j F Y" }}, {{ self.last_published_at|time:"g:iA"|lower }}
+            </time>
+        </div>
+        <table role="table">
+            <thead>
+                <tr>
+                    <th scope="col">Updates</th>
+                    <th scope="col">Author</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% get_published_rows self as published_rows %}
+                {% for row in published_rows %}
+                    <tr>
+                        <td>{{ row.0 }}</td>
+                        <td>{{ row.1.full_name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</details>
