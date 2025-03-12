@@ -290,6 +290,65 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "timestamp": timezone.now(),
                 },
             },
+            {
+                "name": "Comment",
+                "template": "dwds/components/comment.html",
+                "context": {
+                    "comment": {
+                        "author_name": "Joe Bloggs",
+                        "posted_date": timezone.now(),
+                        "message": "This is a comment from Joe Bloggs about the article.",
+                        "reply_count": 1,
+                        "replies": [
+                            {
+                                "author_name": "Jane Doe",
+                                "posted_date": timezone.now(),
+                                "message": "This is a comment from Jane Doe about the article.",
+                            }
+                        ],
+                    },
+                },
+            },
+            {
+                "name": "Comments",
+                "template": "dwds/components/comments.html",
+                "context": {
+                    "comment_count": 5,
+                    "comments": [
+                        {
+                            "author_name": "Joe Bloggs",
+                            "posted_date": timezone.now(),
+                            "message": "This is a comment from Joe Bloggs about the article.",
+                        },
+                        {
+                            "author_name": "Jane Doe",
+                            "posted_date": timezone.now(),
+                            "message": "This is a comment from Jane Doe about the article.",
+                            "reply_count": 3,
+                            "replies": [
+                                {
+                                    "author_name": "Mary Smith",
+                                    "posted_date": timezone.now(),
+                                    "message": "This is a reply from Mary Smith about Jane Doe's comment.",
+                                },
+                                {
+                                    "author_name": "Jane Doe",
+                                    "posted_date": timezone.now(),
+                                    "message": "This is a reply from Jane Doe about Mary Smith's reply.",
+                                    "reply_count": 1,
+                                    "replies": [
+                                        {
+                                            "author_name": "Mary Smith",
+                                            "posted_date": timezone.now(),
+                                            "message": "This is a reply comment from Mary Smith about Jane Doe's reply.",
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
         ],
         "icons": [
             {

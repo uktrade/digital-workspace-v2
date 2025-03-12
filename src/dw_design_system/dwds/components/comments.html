@@ -1,0 +1,6 @@
+<div class="dwds-comments content-stack">
+    <h2>{{ comment_count }} comment{{ comment_count|pluralize }}</h2>
+    {% for comment in comments %}
+        {% include "dwds/components/comment.html" with comment=comment %}
+    {% endfor %}
+</div>
