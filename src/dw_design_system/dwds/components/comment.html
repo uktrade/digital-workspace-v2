@@ -24,7 +24,7 @@
                     <form action="{{ comment.reply_form_url }}" method="post" onsubmit="">
                         {% csrf_token %}
                         {{ comment.reply_form }}
-                        <input value="Submit comment" type="submit" />
+                        <input value="Add reply" type="submit" class="dwds-button" />
                     </form>
                 </details>
             {% endif %}
