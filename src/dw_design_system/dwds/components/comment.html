@@ -1,8 +1,8 @@
 <div class="dwds-comment content-stack">
     {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date %}
     <div>{{ comment.message }}</div>
-    {% if comment.replies %}
-        <div class="replies content-stack">
+    {% if not hide_replies and comment.replies %}
+        <div class="content-stack">
             <h3>
                 {{ comment.reply_count }}
                 {% if comment.reply_count == 1 %}
@@ -12,7 +12,7 @@
                 {% endif %}
             </h3>
             {% for reply in comment.replies %}
-                <div class="dwds-inset">{% include "dwds/components/comment.html" with comment=reply %}</div>
+                <div class="dwds-inset">{% include "dwds/components/comment.html" with hide_replies=True comment=reply %}</div>
             {% endfor %}
         </div>
     {% endif %}
