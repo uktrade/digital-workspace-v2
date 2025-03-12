@@ -1,7 +1,5 @@
 <div class="dwds-comment content-stack">
-    <div class="content-cluster">
-        <strong>{{ comment.author_name }}</strong>{{ comment.posted_date }}
-    </div>
+    {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date %}
     <div>{{ comment.message }}</div>
     {% if comment.replies %}
         <div class="replies content-stack">
