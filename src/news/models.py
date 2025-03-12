@@ -168,7 +168,9 @@ class NewsPage(PageWithTopics):
     ]
 
     def get_comments(self):
-        return self.comments.filter(parent_id=None).order_by("-posted_date")
+        from interactions.services.comments import get_page_comments
+
+        return get_page_comments(self)
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
@@ -183,17 +185,6 @@ class NewsPage(PageWithTopics):
         return context
 
     def serve(self, request, *args, **kwargs):
-        # Add comment before calling get_context, so it's included
-        if "comment" in request.POST:
-            comment = request.POST["comment"]
-            in_reply_to = request.POST.get("in_reply_to", None)
-            Comment.objects.create(
-                content=comment,
-                author=request.user,
-                page=self,
-                parent_id=in_reply_to,
-            )
-
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
         context["reply_comment_form"] = CommentForm(auto_id="reply_%s")
