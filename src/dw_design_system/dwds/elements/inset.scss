@@ -1,13 +1,16 @@
 .dwds-inset {
     padding: var(--s0);
     border-left: var(--s-2) solid var(--color-text-secondary);
-    color: var(--color-text-secondary);
-
-    > p {
-        font-weight: var(--font-weight-bold);
-    }
 
     > div > time {
         display: block;
+    }
+
+    &.font-changes {
+        color: var(--color-text-secondary);
+
+        > p {
+            font-weight: var(--font-weight-bold);
+        }
     }
 }
