@@ -295,6 +295,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                         "author_image_url": thumbnail_url,
                         "posted_date": timezone.now(),
                         "message": "This is a comment from Joe Bloggs about the article.",
+                        "show_replies": True,
                         "reply_count": 1,
                         "replies": [
                             {
