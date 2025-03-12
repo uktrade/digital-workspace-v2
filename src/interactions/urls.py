@@ -14,4 +14,5 @@ urlpatterns = [
     path(
         "edit-comment-form/<int:pk>/", views.edit_comment_form, name="edit-comment-form"
     ),
+    path("comment/<int:pk>/", views.comment_on_page, name="comment-on-page"),
 ]

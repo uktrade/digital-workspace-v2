@@ -4,4 +4,11 @@
     {% for comment in comments %}
         {% include "dwds/components/comment.html" with comment=comment %}
     {% endfor %}
+    {% if comment_form %}
+        <form action="{{ comment_form_url }}" method="post" onsubmit="">
+            {% csrf_token %}
+            {{ comment_form }}
+            <input value="Submit comment" type="submit" />
+        </form>
+    {% endif %}
 </div>
