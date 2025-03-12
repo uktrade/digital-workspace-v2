@@ -1,4 +1,8 @@
 .dwds-comment {
+    > .content-cluster {
+        gap: var(--s-5);
+    }
+
     > .replies {
         margin-left: var(--space);
 
