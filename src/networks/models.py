@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
 from waffle import flag_is_active
@@ -8,7 +9,7 @@ from wagtail.models import Page
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
 from core import flags
-from core.panels import FieldPanel
+from core.panels import FieldPanel, PageChooserPanel
 from extended_search.index import DWIndexedField as IndexedField
 from networks.panels import NetworkTypesFlaggedFieldPanel
 
@@ -20,6 +21,7 @@ class NetworksHome(ContentPage):
 
     promote_panels = ContentPage.promote_panels + [
         FieldPanel("useful_links"),
+        PageChooserPanel("spotlight_page"),
     ]
 
     def get_template(self, request, *args, **kwargs):
@@ -165,6 +167,7 @@ class Network(ContentOwnerMixin, ContentPage):
 
     promote_panels = ContentPage.promote_panels + [
         FieldPanel("useful_links"),
+        PageChooserPanel("spotlight_page"),
     ]
 
     base_form_class = NetworkForm
@@ -177,11 +180,23 @@ class Network(ContentOwnerMixin, ContentPage):
         ),
     ] + ContentOwnerMixin.indexed_fields
 
+    def get_template(self, request, *args, **kwargs):
+        if (
+            flag_is_active(request, flags.NETWORKS_HUB)
+            and Network.objects.live().public().child_of(self).exists()
+        ):
+            self.template = "networks/group_network.html"
+        return super().get_template(request, *args, **kwargs)
+
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = (
-            ContentPage.objects.live().public().child_of(self).order_by("title")
+            ContentPage.objects.live()
+            .public()
+            .child_of(self)
+            .filter(content_type=ContentType.objects.get_for_model(Network))
+            .order_by("title")
         )
         context["attribution"] = True
         context["num_cols"] = 3

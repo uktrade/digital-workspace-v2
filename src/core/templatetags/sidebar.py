@@ -121,9 +121,6 @@ class GiveFeedback(SidebarPart):
     description = "Did you find what you were looking for?"
 
     def is_visible(self) -> bool:
-        request = self.context["request"]
-        if not flag_is_active(request, flags.NEW_SIDEBAR):
-            return False
         page = self.context.get("self")
         if isinstance(page, HomePage):
             return False
@@ -159,11 +156,6 @@ class Bookmark(SidebarPart):
     template_name = "tags/sidebar/parts/bookmark.html"
 
     def is_visible(self) -> bool:
-        request = self.context["request"]
-
-        if not flag_is_active(request, flags.NEW_SIDEBAR):
-            return False
-
         page = self.context.get("self")
         if isinstance(page, (HomePage, EventsHome, NetworksHome)):
             return False
@@ -177,17 +169,12 @@ class Bookmark(SidebarPart):
         page = self.context.get("self")
         is_bookmarked = bookmarks_service.is_page_bookmarked(user, page)
         post_url = reverse("interactions:bookmark")
-        is_new_sidebar_enabled = flag_is_active(
-            self.request,
-            flags.NEW_SIDEBAR,
-        )
         context.update(
             post_url=post_url,
             user=user,
             page=page,
             is_bookmarked=is_bookmarked,
             csrf_token=self.context["csrf_token"],
-            is_new_sidebar_enabled=is_new_sidebar_enabled,
         )
         return context
 
@@ -196,9 +183,6 @@ class Comment(SidebarPart):
     template_name = "tags/sidebar/parts/comment.html"
 
     def is_visible(self) -> bool:
-        if not flag_is_active(self.request, "new_sidebar"):
-            return False
-
         page = self.context.get("self")
         return bool(isinstance(page, NewsPage) and page.allow_comments)
 
@@ -207,12 +191,10 @@ class Comment(SidebarPart):
 
         page = self.context.get("self")
         allow_comments = page.allow_comments
-        is_new_sidebar_enabled = flag_is_active(self.request, "new_sidebar")
 
         context.update(
             page=page,
             allow_comments=allow_comments,
-            is_new_sidebar_enabled=is_new_sidebar_enabled,
         )
         return context
 
@@ -221,9 +203,6 @@ class Share(SidebarPart):
     template_name = "tags/sidebar/parts/share.html"
 
     def is_visible(self) -> bool:
-        if not flag_is_active(self.request, "new_sidebar"):
-            return False
-
         page = self.context.get("self")
 
         if not isinstance(page, Page):
@@ -267,7 +246,7 @@ class QuickLinks(SidebarPart):
 
 
 class UsefulLinks(SidebarPart):
-    template_name = "dwds/elements/useful_links.html"
+    template_name = "tags/sidebar/parts/useful_links.html"
     title = "Useful links"
 
     def __init__(self, context: dict) -> None:
@@ -323,6 +302,40 @@ class UsefulLinks(SidebarPart):
         return context
 
 
+class SpotlightPage(SidebarPart):
+    template_name = "tags/sidebar/parts/spotlight.html"
+
+    def is_visible(self) -> bool:
+        if not flag_is_active(self.request, flags.NETWORKS_HUB):
+            return False
+
+        page = self.context.get("self")
+        if not isinstance(page, Page):
+            return False
+
+        return bool(getattr(page, "spotlight_page", None))
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+        page = self.context.get("self")
+
+        spotlight_page = getattr(page, "spotlight_page", None)
+        if not isinstance(spotlight_page, Page):
+            return context
+
+        spotlight_page = spotlight_page.specific
+
+        context.update(
+            page=spotlight_page,
+            url=spotlight_page.get_url(self.request),
+            title=getattr(spotlight_page, "title", None),
+            excerpt=getattr(spotlight_page, "excerpt", None),
+            thumbnail=getattr(spotlight_page, "preview_image", None),
+        )
+
+        return context
+
+
 @register.inclusion_tag("tags/sidebar.html", takes_context=True)
 def sidebar(context):
     sections: list[SidebarSection] = [
@@ -345,6 +358,7 @@ def sidebar(context):
             title="Secondary page actions",
             parts=[
                 UsefulLinks,
+                SpotlightPage,
                 YourBookmarks,
                 QuickLinks,
                 GiveFeedback,

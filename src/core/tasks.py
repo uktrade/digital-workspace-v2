@@ -30,9 +30,6 @@ def ingest_uk_staff_locations(self):
 @celery_app.task(bind=True)
 @cache_lock(cache_key="update_search_index")
 def update_search_index(self):
-    # Run update_index --schema-only
-    call_command("update_index", schema_only=True)
-
     # Run update_index
     call_command("update_index")
 

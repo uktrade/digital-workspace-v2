@@ -10,13 +10,13 @@
   --dbt-miuk-light-grey: #dde5ed;
   --dbt-background-blue: #d2e2f1;
   --dbt-very-light-grey: #EEEFEF;
-  --dbt-dark-teel:#004D44;
-  --dbt-light-green:#CCE2D8;
-  --dbt-black:#000000;
-  --dbt-light-pink:#FCD6C3;
-  --dbt-burnt-orange:#E24912;
-  --dbt-light-purple:#DBD5E9;
-  --dbt-dark-purple:#4814A0;
+  --dbt-dark-teel: #004D44;
+  --dbt-light-green: #CCE2D8;
+  --dbt-black: #000000;
+  --dbt-light-pink: #FCD6C3;
+  --dbt-burnt-orange: #E24912;
+  --dbt-light-purple: #DBD5E9;
+  --dbt-dark-purple: #4814A0;
 
   // GDS colours - for re-use in this file only
   // https://design-system.service.gov.uk/styles/colour/#colour-palette
@@ -162,4 +162,7 @@
   --card-bg-white: var(--dbt-white);
   --card-bg-blue: var(--dbt-blue);
   --card-bg-red: var(--dbt-red);
+
+  // Modal
+  --modal-backdrop-color: rgba(0, 0, 0, 0.6);
 }

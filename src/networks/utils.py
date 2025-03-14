@@ -1,5 +1,5 @@
 import inspect
-from typing import Type
+from typing import Tuple, Type
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import connections, models, transaction
@@ -187,3 +187,16 @@ def convert_network_to_networks_home(page: Network):
     Convert a network page to a networks home page.
     """
     convert(model_instance=page, to_model=NetworksHome)
+
+
+def get_active_network_types() -> list[Tuple[str]]:
+    network_types = (
+        Network.objects.live()
+        .public()
+        .exclude(network_type__isnull=True)
+        .values_list("network_type", flat=True)
+        .distinct()
+    )
+    return [
+        (nt.value, nt.label) for nt in Network.NetworkTypes if nt.value in network_types
+    ]

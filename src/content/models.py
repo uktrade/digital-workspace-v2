@@ -434,6 +434,13 @@ class ContentPage(SearchFieldsMixin, BasePage):
         null=True,
     )
 
+    spotlight_page = models.ForeignKey(
+        Page,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
     #
     # Topics
     # This would ideally belong on PageWithTopics, but the Network model uses it
