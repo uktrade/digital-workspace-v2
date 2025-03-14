@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.text import slugify
 from modelcluster.fields import ParentalKey
 from simple_history.models import HistoricalRecords
@@ -185,6 +186,9 @@ class NewsPage(PageWithTopics):
     def serve(self, request, *args, **kwargs):
         # Add comment before calling get_context, so it's included
         if "comment" in request.POST:
+            print("DEBUG_COMMENT_CREATION")
+            print(request.POST)
+            print("END_DEBUG_COMMENT_CREATION")
             comment = request.POST["comment"]
             in_reply_to = request.POST.get("in_reply_to", None)
             Comment.objects.create(
@@ -193,10 +197,16 @@ class NewsPage(PageWithTopics):
                 page=self,
                 parent_id=in_reply_to,
             )
+        # in_reply_to = request.POST.get("edit-commment", None)
 
+        # print("DEBUG_COMMENT_CONTENT")
+        # print(request.POST)
         context = self.get_context(request, **kwargs)
-        context["comment_form"] = CommentForm()
+        context["comment_form"] = CommentForm(initial={"comment": "Hi there!"})
         context["reply_comment_form"] = CommentForm(auto_id="reply_%s")
+        # context["edit_comment_form"] = CommentForm(auto_id="edit_%s", initial={"comment": None})
+        # context["edit_comment_url"] = reverse("interactions:edit-comment")
+        # context["edit_comment_form_url"] = reverse("interactions:edit-comment-form")
 
         response = TemplateResponse(request, self.template, context)
 

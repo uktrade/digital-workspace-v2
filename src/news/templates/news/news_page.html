@@ -38,15 +38,24 @@
                             {% else %}
                                 {{ comment.legacy_author_name }}
                             {% endif %}
+                            {{ comment.id }}
                             <span class="comment-posted-date govuk-body-s">{{ comment.posted_date }}</span>
                         </p>
-                        <p class="govuk-body">{{ comment.content }}</p>
+                        <p class="govuk-body" id="comment-content-{{ comment.pk }}">{{ comment.content }}</p>
                         <p class="govuk-body"
                            aria-hidden="true"
                            id="reply-link-{{ comment.pk }}">
                             <a class="govuk-link"
                                href="#"
                                onclick="return displayReplyForm({{ comment.pk }})">Reply</a>
+                             | 
+                            <a class="govuk-link"
+                               id="edit-link-{{ comment.pk }}"
+                               href="{% url 'interactions:edit-comment-form' comment.pk %}"
+                               hx-get="{% url 'interactions:edit-comment-form' comment.pk %}"
+                               hx-target="#comment-content-{{ comment.pk }}"
+                               hx-swap="outerHTML">Edit</a>
+                            <!-- <div id="edit-comment-form"></div> -->
                         </p>
                         <fieldset id="reply-{{ comment.pk }}" class="reply-fieldset govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Reply to this comment</legend>
@@ -65,6 +74,24 @@
                                 </div>
                             </form>
                         </fieldset>
+                        <!-- <fieldset id="edit-{{ comment.pk }}" class="reply-fieldset govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Edit this comment</legend>
+                            <form action=""
+                                  method="post"
+                                  onsubmit="setCommentId(this, {{ comment.pk }});">
+                                {% csrf_token %}
+                                <div class="govuk-form-group">
+                                    {% for field in edit_comment_form %}
+                                        <label class="ws-hide" for="{{ field.auto_id }}">Comment content</label>
+                                        {{ field }}
+                                    {% endfor %}
+                                    <p>
+                                        <input value="Submit comment" type="submit" class="govuk-button" />
+                                    </p>
+                                </div>
+                            </form>
+                        </fieldset> -->
+                        {% include "comment/edit_comment.html" with comment_id=comment.pk %}
                         {% if comment.replies.all.count > 0 %}
                             <h3 class="govuk-heading-s">Replies</h3>
                             {% for reply in comment.replies.all %}
@@ -77,7 +104,20 @@
                                         {% endif %}
                                         <span class="comment-posted-date govuk-body-s">{{ reply.posted_date }}</span>
                                     </p>
-                                    <p class="govuk-body">{{ reply.content }}</p>
+                                    <p class="govuk-body" id="reply-content-{{ comment.pk }}">{{ reply.content }}</p>
+                                    <p class="govuk-body"
+                                        aria-hidden="true"
+                                        id="reply-link-{{ comment.pk }}">
+                                        <a class="govuk-link"
+                                            href="#"
+                                            onclick="return displayReplyForm({{ comment.pk }})">Reply</a>
+                                         | 
+                                        <a class="govuk-link"
+                                           id="edit-link-{{ comment.pk }}"
+                                           href="#"
+                                           onclick="return displayEditForm({{ comment.pk }}, 'reply', {{ reply.content }})">Edit</a>
+                                    </p>
+                                    <!-- {% include "comment/edit_comment.html" with comment_id=comment.pk %} -->
                                 </div>
                             {% endfor %}
                         {% endif %}
@@ -105,6 +145,17 @@
                 function displayReplyForm(commentId) {
                     document.getElementById("reply-" + commentId).style.display = 'block';
                     document.getElementById("reply-link-" + commentId).style.display = 'none';
+
+                    return false;
+                }
+
+                function displayEditForm(commentId, commentType, content) {
+                    console.log("comment id: ");
+                    console.log(commentId);
+                    console.log(commentType);
+                    // document.getElementById(`edit-${commentId}`).style.display = 'block';
+                    document.getElementById(`reply-link-${commentId}`).style.display = 'none';
+                    document.getElementById(`${commentType}-content-${commentId}`).style.display = 'none';
 
                     return false;
                 }

@@ -8,6 +8,9 @@ from wagtail.models import Page
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
 from interactions.services import reactions as reactions_service
+from interactions.services import comments as comments_service
+from news.forms import CommentForm
+from news.models import Comment
 
 
 @require_http_methods(["POST"])
@@ -69,5 +72,28 @@ def react_to_page(request, *args, pk, **kwargs):
         {
             "user_reaction": reactions_service.get_user_reaction(user, page),
             "reactions": reactions_service.get_reaction_counts(page),
+        }
+    )
+
+
+@require_http_methods(["POST"])
+def edit_comment(request, *args, pk, **kwargs):
+
+    if request.method == "POST":
+        comment = request.POST.get("edit_comment")
+        comments_service.edit_comment(comment, pk)
+
+    return HttpResponse()
+
+@require_http_methods(["GET"])
+def edit_comment_form(request, pk):
+    comment = get_object_or_404(Comment, id=pk)
+
+    return TemplateResponse(
+        request,
+        "interactions/edit_comment_form.html",
+        context={
+            "edit_comment_form": CommentForm(initial={"comment": comment}),
+            "comment_id": pk,
         }
     )
