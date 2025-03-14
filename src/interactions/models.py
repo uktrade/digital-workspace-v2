@@ -2,15 +2,12 @@ from django.conf import settings
 from django.db import models
 from wagtail.models import Page
 
+from news.models import Comment
 
-class UserPage(models.Model):
+
+class UserObject(models.Model):
     class Meta:
         abstract = True
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "page"], name="unique_%(app_label)s_%(class)s"
-            )
-        ]
         ordering = ["-updated_at"]
 
     user = models.ForeignKey(
@@ -18,13 +15,40 @@ class UserPage(models.Model):
         on_delete=models.CASCADE,
         related_name="+",
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class UserPage(UserObject):
+    class Meta(UserObject.Meta):
+        abstract = True
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "page"], name="unique_%(app_label)s_%(class)s"
+            )
+        ]
+
     page = models.ForeignKey(
         Page,
         on_delete=models.CASCADE,
         related_name="%(app_label)s_%(class)ss",
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
+
+class UserComment(UserObject):
+    class Meta(UserObject.Meta):
+        abstract = True
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "comment"], name="unique_%(app_label)s_%(class)s"
+            )
+        ]
+
+    comment = models.ForeignKey(
+        Comment,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)ss",
+    )
 
 
 class Bookmark(UserPage):
@@ -43,7 +67,16 @@ class ReactionType(models.TextChoices):
     UNHAPPY = "unhappy", "Unhappy"
 
 
-class Reaction(UserPage):
+class PageReaction(UserPage):
+    type = models.CharField(
+        max_length=10,
+        choices=ReactionType.choices,
+        verbose_name="Reaction Type",
+        help_text="Select the type of reaction (e.g., Like or Dislike).",
+    )
+
+
+class CommentReaction(UserComment):
     type = models.CharField(
         max_length=10,
         choices=ReactionType.choices,
