@@ -120,7 +120,7 @@ def recreate_db_between_tests(django_db_blocker):
 
 @pytest.fixture
 def superuser(django_db_blocker, django_user_model, page):
-    email = "super.user@example.com"
+    email = "super.user@example.com"  # /PS-IGNORE
 
     user, _ = django_user_model.objects.get_or_create(
         username="testsuperuser",
@@ -144,10 +144,10 @@ def superuser(django_db_blocker, django_user_model, page):
 @pytest.fixture
 def user(django_db_blocker, django_user_model):
     user, _ = django_user_model.objects.get_or_create(
-        username="john.smith-1234abcd@digital.trade.gov.uk",
+        username="john.smith-1234abcd@digital.trade.gov.uk",  # /PS-IGNORE
         first_name="John",
         last_name="Smith",
-        email="john.smith@digital.trade.gov.uk",
+        email="john.smith@digital.trade.gov.uk",  # /PS-IGNORE
         legacy_sso_user_id="1234abcd-1234-abcd-1234-abcd1234abcd",
     )
     user.set_password("password")

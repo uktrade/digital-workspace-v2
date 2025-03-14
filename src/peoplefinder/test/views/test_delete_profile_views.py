@@ -179,10 +179,10 @@ def test_delete_profile_with_no_user(state):
     other_user = UserFactory(
         first_name="Other",
         last_name="User",
-        email="other.user@example.com",
+        email="other.user@example.com",  # /PS-IGNORE
         legacy_sso_user_id=None,
-        username="other.user-11111111@example.com",
-        sso_contact_email="other.user@example.com",
+        username="other.user-11111111@example.com",  # /PS-IGNORE
+        sso_contact_email="other.user@example.com",  # /PS-IGNORE
     )
     other_user.save()
     other_person = PersonService().create_user_profile(other_user)

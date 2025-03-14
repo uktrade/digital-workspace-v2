@@ -188,7 +188,7 @@ class PersonService:
             Q(legacy_sso_user_id=user.legacy_sso_user_id),
             # Next see if we can match on the email.
             Q(email=user.email),
-            # Finally try and match on the first and last name.
+            # Finally try and match on the first and last names /PS-IGNORE.
             Q(first_name=user.first_name, last_name=user.last_name),
         ]
 
