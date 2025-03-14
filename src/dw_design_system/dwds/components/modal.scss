@@ -2,20 +2,20 @@
     dialog {
         border: unset;
         border-radius: var(--border-radius);
+        padding: var(--space);
 
         &::backdrop {
             background: var(--modal-backdrop-color);
             backdrop-filter: blur(0.3rem);
         }
 
+        h2 {
+            margin: unset;
+        }
+
         form[method="dialog"] {
             display: flex;
             flex-direction: row-reverse;
-
-            button {
-                // color: var(--color-link);
-            }
-
         }
     }
 
