@@ -7,6 +7,7 @@ from wagtail.models import Page
 
 from interactions.models import ReactionType
 from interactions.services import page_reactions as page_reactions_service
+from interactions.services import comment_reactions as comment_reactions_service
 
 
 register = template.Library()
@@ -21,9 +22,23 @@ def reactions_list(user, page, reaction_location):
         "reactions": reactions,
         "user_reaction": user_reaction,
         "reaction_selected": user_reaction is not None,
-        "get_url": reverse("interactions:reactions", kwargs={"pk": page.pk}),
-        "post_url": reverse("interactions:reactions", kwargs={"pk": page.pk}),
+        "get_url": reverse("interactions:page-reactions", kwargs={"pk": page.pk}),
+        "post_url": reverse("interactions:page-reactions", kwargs={"pk": page.pk}),
         "page": page,
+    }
+
+@register.inclusion_tag("interactions/reactions.html")
+def comment_reactions_list(user, comment, reaction_location):
+    reactions = comment_reactions_service.get_comment_reaction_counts(comment)
+    user_reaction = comment_reactions_service.get_user_comment_reaction(user, comment)
+    return {
+        "reaction_location": reaction_location,
+        "reactions": reactions,
+        "user_reaction": user_reaction,
+        "reaction_selected": user_reaction is not None,
+        "get_url": reverse("interactions:comment-reactions", kwargs={"pk": comment.pk}),
+        "post_url": reverse("interactions:comment-reactions", kwargs={"pk": comment.pk}),
+        "page": comment.page,
     }
 
 

@@ -1,6 +1,7 @@
 {% extends "content/content_page.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 {% load comments %}
+{% load reactions %}
 
 {% block pre_page_body %}
     {% image page.preview_image fill-800x450 width=None height=None style="border-radius: var(--border-radius);" %}
