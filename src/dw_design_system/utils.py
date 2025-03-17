@@ -262,6 +262,14 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Details",
+                "template": "dwds/components/details.html",
+                "context": {
+                    "summary_text": "This is a details component",
+                    "content": "This is some content that is hidden by default",
+                },
+            },
+            {
                 "name": "Copy Text",
                 "template": "dwds/components/copy_text.html",
                 "context": {

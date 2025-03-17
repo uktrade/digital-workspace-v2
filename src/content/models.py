@@ -5,6 +5,7 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from wagtail.blocks.stream_block import StreamValue
 from django.db import models
 from django.db.models import Q, Subquery
 from django.forms import widgets
@@ -167,10 +168,74 @@ class BasePage(Page, Indexed):
         null=True,
     )
 
+    page_updates = StreamField(
+        [
+            ("page_update", content_blocks.PageUpdate()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+        help_text="Tell readers about page important page changes."
+    )
+
     promote_panels = []
     content_panels = [
         TitleFieldPanel("title"),
     ]
+    publishing_panels = [
+        FieldPanel("page_updates"),
+    ]
+
+    tabbed_interface_objects = [
+        ("content_panels", "Content"),
+        ("promote_panels", "Promote"),
+        ("publishing_panels", "Publishing"),
+    ]
+
+    def initial_page_updates(self) -> None:
+        """
+        Add the first page update when a page is first published
+        """
+
+        if self.published_date and not self.page_updates:
+            block_def = self.page_updates.stream_block.child_blocks["page_update"]
+            self.page_updates.append(self.page_updates.StreamChild(block_def, {
+                "update_time": timezone.now(),
+                "person": None,
+                "note": "Page published",
+            }, id=None))
+
+        return None
+
+    def sort_page_updates(self) -> None:
+        """
+        Reorder the `page_updates` blocks by the `update_time` value from most
+        recent to oldest
+        """
+        self.page_updates = StreamValue(
+            self.page_updates.stream_block,
+            sorted(
+                self.page_updates,
+                key=lambda x: x.value["update_time"],
+                reverse=True,
+            ),
+        )
+
+        return None
+
+    def full_clean(self, *args, **kwargs):
+        self.initial_page_updates()
+        self.sort_page_updates()
+        super().full_clean(*args, **kwargs)
+
+    @cached_classmethod
+    def get_edit_handler(cls):
+        return TabbedInterface(
+            [
+                ObjectList(getattr(cls, field_name), heading=heading)
+                for field_name, heading in cls.tabbed_interface_objects
+            ]
+        ).bind_to_model(cls)
 
     @property
     def published_date(self):
@@ -194,6 +259,26 @@ class BasePage(Page, Indexed):
             return result.days
         return None
 
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        page_updates_table = []
+        for block in self.page_updates:
+            page_update = {
+                "update_time": block.value["update_time"],
+                "person": None,
+                "note": None,
+            }
+            if page_update_person := block.value.get("person"):
+                page_update["person"] = page_update_person.full_name
+            if page_update_note := block.value.get("note"):
+                page_update["note"] = page_update_note
+
+            page_updates_table.append(page_update)
+
+        context["page_updates_table"] = page_updates_table
+        return context
+
 
 class ContentPageQuerySet(BasePageQuerySet):
     def annotate_with_reaction_count(self):
@@ -206,6 +291,10 @@ class ContentPageQuerySet(BasePageQuerySet):
 
 
 class ContentOwnerMixin(models.Model):
+    tabbed_interface_objects = BasePage.tabbed_interface_objects + [
+        ("content_owner_panels", "Content owner"),
+    ]
+
     content_owner = models.ForeignKey(
         "peoplefinder.Person",
         on_delete=models.SET_NULL,
@@ -235,16 +324,6 @@ class ContentOwnerMixin(models.Model):
         ),
         IndexedField("content_contact_email", explicit=True),
     ]
-
-    @cached_classmethod
-    def get_edit_handler(cls):
-        return TabbedInterface(
-            [
-                ObjectList(cls.content_panels, heading="Content"),
-                ObjectList(cls.promote_panels, heading="Promote"),
-                ObjectList(cls.content_owner_panels, heading="Content owner"),
-            ]
-        ).bind_to_model(cls)
 
     class Meta:
         abstract = True
