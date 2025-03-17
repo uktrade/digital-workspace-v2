@@ -170,7 +170,7 @@ class BasePage(Page, Indexed):
 
     page_updates = StreamField(
         [
-            ("publishing_information", content_blocks.PageUpdate()),
+            ("page_update", content_blocks.PageUpdate()),
         ],
         null=True,
         blank=True,
@@ -192,6 +192,21 @@ class BasePage(Page, Indexed):
         ("publishing_panels", "Publishing"),
     ]
 
+    def initial_page_updates(self) -> None:
+        """
+        Add the first page update when a page is first published
+        """
+
+        if self.published_date and not self.page_updates:
+            block_def = self.page_updates.stream_block.child_blocks["page_update"]
+            self.page_updates.append(self.page_updates.StreamChild(block_def, {
+                "update_time": timezone.now(),
+                "person": None,
+                "note": "Page published",
+            }, id=None))
+
+        return None
+
     def sort_page_updates(self) -> None:
         """
         Reorder the `page_updates` blocks by the `update_time` value from most
@@ -209,6 +224,7 @@ class BasePage(Page, Indexed):
         return None
 
     def full_clean(self, *args, **kwargs):
+        self.initial_page_updates()
         self.sort_page_updates()
         super().full_clean(*args, **kwargs)
 
@@ -242,6 +258,26 @@ class BasePage(Page, Indexed):
             result = timezone.now() - self.last_published_at
             return result.days
         return None
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        page_updates_table = []
+        for block in self.page_updates:
+            page_update = {
+                "update_time": block.value["update_time"],
+                "person": None,
+                "note": None,
+            }
+            if page_update_person := block.value.get("person"):
+                page_update["person"] = page_update_person.full_name
+            if page_update_note := block.value.get("note"):
+                page_update["note"] = page_update_note
+
+            page_updates_table.append(page_update)
+
+        context["page_updates_table"] = page_updates_table
+        return context
 
 
 class ContentPageQuerySet(BasePageQuerySet):

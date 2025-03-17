@@ -13,7 +13,7 @@
                 Last updated: {{ self.last_published_at|date:"j F Y" }}, {{ self.last_published_at|time:"g:iA"|lower }}
             </time>
         </div>
-        {% if self.page_updates %}
+        {% if page_updates_table %}
             <table role="table">
                 <thead>
                     <tr>
@@ -23,11 +23,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for page_update in self.page_updates %}
+                    {% for page_update in page_updates_table %}
                         <tr>
-                            <td>{{ page_update.value.update_time|date:"j F Y" }}, {{ page_update.value.update_time|time:"g:iA"|lower }}</td>
-                            <td>{{ page_update.value.person.full_name }}</td>
-                            <td>{{ page_update.value.note }}</td>
+                            <td>{{ page_update.update_time|date:"j F Y" }}, {{ page_update.update_time|time:"g:iA"|lower }}</td>
+                            <td>{% firstof page_update.person "-" %}</td>
+                            <td>{% firstof page_update.note "-" %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

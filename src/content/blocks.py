@@ -201,7 +201,7 @@ class CTABlock(blocks.StructBlock):
 
 class PageUpdate(blocks.StructBlock):
     update_time = blocks.DateTimeBlock()
-    person = PersonChooserBlock()
+    person = PersonChooserBlock(required=False)
     note = blocks.CharBlock(required=False)
 
     class Meta:
