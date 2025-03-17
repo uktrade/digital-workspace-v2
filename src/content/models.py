@@ -5,7 +5,6 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from wagtail.blocks.stream_block import StreamValue
 from django.db import models
 from django.db.models import Q, Subquery
 from django.forms import widgets
@@ -18,6 +17,7 @@ from wagtail.admin.panels import (
     TitleFieldPanel,
 )
 from wagtail.admin.widgets.slug import SlugInput
+from wagtail.blocks.stream_block import StreamValue
 from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.snippets.models import register_snippet
@@ -175,7 +175,7 @@ class BasePage(Page, Indexed):
         null=True,
         blank=True,
         use_json_field=True,
-        help_text="Tell readers about page important page changes."
+        help_text="Tell readers about page important page changes.",
     )
 
     promote_panels = []
@@ -199,11 +199,17 @@ class BasePage(Page, Indexed):
 
         if self.published_date and not self.page_updates:
             block_def = self.page_updates.stream_block.child_blocks["page_update"]
-            self.page_updates.append(self.page_updates.StreamChild(block_def, {
-                "update_time": timezone.now(),
-                "person": None,
-                "note": "Page published",
-            }, id=None))
+            self.page_updates.append(
+                self.page_updates.StreamChild(
+                    block_def,
+                    {
+                        "update_time": timezone.now(),
+                        "person": None,
+                        "note": "Page published",
+                    },
+                    id=None,
+                )
+            )
 
         return None
 
