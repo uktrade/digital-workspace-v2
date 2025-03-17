@@ -1,22 +1,24 @@
 {% load humanize %}
 {% load reactions %}
 
-<div class="page-reactions content-stack small">
-    <h4>React to this article</h4>
-    <div class="content-cluster small">
-        {% for reaction_type, reaction_count in reactions.items %}
-            {% get_reaction_icon_template reaction_type as icon_template %}
-            {% if reaction_type %}
-                <page-react-button post-url="{{ post_url }}"
-                                   title="{{ reaction_type|reaction_type_display }}"
-                                   count="{{ reaction_count }}"
-                                   type="{{ reaction_type }}"
-                                   current-type="{{ user_reaction }}"
-                                   csrf-token="{{ csrf_token }}"
-                                   reaction-location="{{ reaction_location }}">
-                    {% include icon_template %}
-                </page-react-button>
-            {% endif %}
-        {% endfor %}
+<div class="page-reactions">
+    <div class="content-stack small">
+        <h4>React to this article</h4>
+        <div class="content-cluster small">
+            {% for reaction_type, reaction_count in reactions.items %}
+                {% get_reaction_icon_template reaction_type as icon_template %}
+                {% if reaction_type %}
+                    <page-react-button post-url="{{ post_url }}"
+                                       title="{{ reaction_type|reaction_type_display }}"
+                                       count="{{ reaction_count }}"
+                                       type="{{ reaction_type }}"
+                                       current-type="{{ user_reaction }}"
+                                       csrf-token="{{ csrf_token }}"
+                                       reaction-location="{{ reaction_location }}">
+                        {% include icon_template %}
+                    </page-react-button>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
 </div>
