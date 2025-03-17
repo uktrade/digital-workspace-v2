@@ -1,15 +1,16 @@
 .dwds-author {
     &.content-sidebar {
         --sidebar-gap: 0;
-        --sidebar-size: 60px;
+        --sidebar-size: 80px;
         --sidebar-min-size: 50%;
         align-items: center;
+        min-width: var(--sidebar-size);
 
         > div:first-child {
             margin: var(--s-4);
-            text-align: center;
             display: flex;
             justify-content: center;
+            align-self: flex-start;
 
             > a {
                 display: flex;
