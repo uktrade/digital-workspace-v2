@@ -13,22 +13,25 @@
                 Last updated: {{ self.last_published_at|date:"j F Y" }}, {{ self.last_published_at|time:"g:iA"|lower }}
             </time>
         </div>
-        <table role="table">
-            <thead>
-                <tr>
-                    <th scope="col">Updates</th>
-                    <th scope="col">Author</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% get_published_rows self as published_rows %}
-                {% for row in published_rows %}
+        {% if self.page_updates %}
+            <table role="table">
+                <thead>
                     <tr>
-                        <td>{{ row.0 }}</td>
-                        <td>{{ row.1.full_name }}</td>
+                        <th scope="col">Updates</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Notes</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for page_update in self.page_updates %}
+                        <tr>
+                            <td>{{ page_update.value.update_time|date:"j F Y" }}, {{ page_update.value.update_time|time:"g:iA"|lower }}</td>
+                            <td>{{ page_update.value.person.full_name }}</td>
+                            <td>{{ page_update.value.note }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     </div>
 </details>

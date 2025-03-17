@@ -5,6 +5,7 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from wagtail.blocks.stream_block import StreamValue
 from django.db import models
 from django.db.models import Q, Subquery
 from django.forms import widgets
@@ -167,10 +168,58 @@ class BasePage(Page, Indexed):
         null=True,
     )
 
+    page_updates = StreamField(
+        [
+            ("publishing_information", content_blocks.PageUpdate()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+        help_text="Tell readers about page important page changes."
+    )
+
     promote_panels = []
     content_panels = [
         TitleFieldPanel("title"),
     ]
+    publishing_panels = [
+        FieldPanel("page_updates"),
+    ]
+
+    tabbed_interface_objects = [
+        ("content_panels", "Content"),
+        ("promote_panels", "Promote"),
+        ("publishing_panels", "Publishing"),
+    ]
+
+    def sort_page_updates(self) -> None:
+        """
+        Reorder the `page_updates` blocks by the `update_time` value from most
+        recent to oldest
+        """
+        self.page_updates = StreamValue(
+            self.page_updates.stream_block,
+            sorted(
+                self.page_updates,
+                key=lambda x: x.value["update_time"],
+                reverse=True,
+            ),
+        )
+
+        return None
+
+    def full_clean(self, *args, **kwargs):
+        self.sort_page_updates()
+        super().full_clean(*args, **kwargs)
+
+    @cached_classmethod
+    def get_edit_handler(cls):
+        return TabbedInterface(
+            [
+                ObjectList(getattr(cls, field_name), heading=heading)
+                for field_name, heading in cls.tabbed_interface_objects
+            ]
+        ).bind_to_model(cls)
 
     @property
     def published_date(self):
@@ -206,6 +255,10 @@ class ContentPageQuerySet(BasePageQuerySet):
 
 
 class ContentOwnerMixin(models.Model):
+    tabbed_interface_objects = BasePage.tabbed_interface_objects + [
+        ("content_owner_panels", "Content owner"),
+    ]
+
     content_owner = models.ForeignKey(
         "peoplefinder.Person",
         on_delete=models.SET_NULL,
@@ -235,16 +288,6 @@ class ContentOwnerMixin(models.Model):
         ),
         IndexedField("content_contact_email", explicit=True),
     ]
-
-    @cached_classmethod
-    def get_edit_handler(cls):
-        return TabbedInterface(
-            [
-                ObjectList(cls.content_panels, heading="Content"),
-                ObjectList(cls.promote_panels, heading="Promote"),
-                ObjectList(cls.content_owner_panels, heading="Content owner"),
-            ]
-        ).bind_to_model(cls)
 
     class Meta:
         abstract = True

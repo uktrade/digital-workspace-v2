@@ -5,6 +5,8 @@ from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
+from peoplefinder.blocks import PersonChooserBlock
+
 
 class HeadingBlock(blocks.CharBlock):
     """A (section) heading
@@ -193,5 +195,15 @@ class CTABlock(blocks.StructBlock):
 
     class Meta:
         template = "blocks/cta.html"
+        icon = "thumbtack"
+        label = "CTA Button"
+
+
+class PageUpdate(blocks.StructBlock):
+    update_time = blocks.DateTimeBlock()
+    person = PersonChooserBlock()
+    note = blocks.CharBlock(required=False)
+
+    class Meta:
         icon = "thumbtack"
         label = "CTA Button"
