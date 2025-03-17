@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
 from waffle import flag_is_active
@@ -191,7 +192,11 @@ class Network(ContentOwnerMixin, ContentPage):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = (
-            ContentPage.objects.live().public().child_of(self).order_by("title")
+            ContentPage.objects.live()
+            .public()
+            .child_of(self)
+            .filter(content_type=ContentType.objects.get_for_model(Network))
+            .order_by("title")
         )
         context["attribution"] = True
         context["num_cols"] = 3
