@@ -24,7 +24,7 @@ def page_comments(page):
             comment = comment_to_dict(page_comment)
             comment.update(
                 reply_form=CommentForm(
-                    {"in_reply_to": page_comment.pk},
+                    initial={"in_reply_to": page_comment.pk},
                     auto_id="reply_%s",
                 ),
                 reply_form_url=comment_form_submission_url,

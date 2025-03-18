@@ -19,14 +19,13 @@
                 </div>
             {% endif %}
             {% if comment.reply_form %}
-                <details>
-                    <summary>Reply</summary>
-                    <form action="{{ comment.reply_form_url }}" method="post" onsubmit="">
-                        {% csrf_token %}
-                        {{ comment.reply_form }}
-                        <input value="Add reply" type="submit" class="dwds-button" />
-                    </form>
-                </details>
+                <button class="dwds-button dwds-button--link">Reply</button>
+                <h3>Reply to this comment</h3>
+                <form action="{{ comment.reply_form_url }}" method="post" onsubmit="">
+                    {% csrf_token %}
+                    {{ comment.reply_form }}
+                    <input value="Submit reply" type="submit" class="dwds-button dwds-button--transactional" />
+                </form>
             {% endif %}
         {% endif %}
     </div>
