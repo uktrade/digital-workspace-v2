@@ -1,8 +1,7 @@
-from django.shortcuts import get_object_or_404
 from news.models import Comment
 
-class CommentNotFound(Exception):
-    ...
+
+class CommentNotFound(Exception): ...
 
 
 def edit_comment(content: str, pk: str) -> None:

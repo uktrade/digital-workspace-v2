@@ -7,8 +7,8 @@ from wagtail.models import Page
 
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
-from interactions.services import reactions as reactions_service
 from interactions.services import comments as comments_service
+from interactions.services import reactions as reactions_service
 from news.forms import CommentForm
 from news.models import Comment
 
@@ -92,6 +92,7 @@ def edit_comment(request, pk):
 
     # return response
 
+
 @require_http_methods(["GET"])
 def edit_comment_form(request, pk):
     comment = get_object_or_404(Comment, id=pk)
@@ -101,5 +102,5 @@ def edit_comment_form(request, pk):
         context={
             "edit_comment_form": CommentForm(initial={"comment": comment}),
             "comment_id": pk,
-        }
+        },
     )

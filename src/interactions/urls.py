@@ -11,5 +11,7 @@ urlpatterns = [
     path("bookmark/<int:pk>/remove", views.remove_bookmark, name="bookmark-remove"),
     path("bookmarks", views.bookmark_index, name="bookmark-index"),
     path("edit-comment/<int:pk>/", views.edit_comment, name="edit-comment"),
-    path("edit-comment-form/<int:pk>/", views.edit_comment_form, name="edit-comment-form"),
+    path(
+        "edit-comment-form/<int:pk>/", views.edit_comment_form, name="edit-comment-form"
+    ),
 ]

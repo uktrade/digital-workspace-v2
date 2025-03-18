@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils.text import slugify
 from modelcluster.fields import ParentalKey
 from simple_history.models import HistoricalRecords
