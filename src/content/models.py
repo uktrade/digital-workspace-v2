@@ -192,27 +192,6 @@ class BasePage(Page, Indexed):
         ("publishing_panels", "Publishing"),
     ]
 
-    def initial_page_updates(self) -> None:
-        """
-        Add the first page update when a page is first published
-        """
-
-        if self.published_date and not self.page_updates:
-            block_def = self.page_updates.stream_block.child_blocks["page_update"]
-            self.page_updates.append(
-                self.page_updates.StreamChild(
-                    block_def,
-                    {
-                        "update_time": timezone.now(),
-                        "person": None,
-                        "note": "Page published",
-                    },
-                    id=None,
-                )
-            )
-
-        return None
-
     def sort_page_updates(self) -> None:
         """
         Reorder the `page_updates` blocks by the `update_time` value from most
@@ -230,7 +209,6 @@ class BasePage(Page, Indexed):
         return None
 
     def full_clean(self, *args, **kwargs):
-        self.initial_page_updates()
         self.sort_page_updates()
         super().full_clean(*args, **kwargs)
 
@@ -269,6 +247,7 @@ class BasePage(Page, Indexed):
         context = super().get_context(request, *args, **kwargs)
 
         page_updates_table = []
+
         for block in self.page_updates:
             page_update = {
                 "update_time": block.value["update_time"],
@@ -281,6 +260,20 @@ class BasePage(Page, Indexed):
                 page_update["note"] = page_update_note
 
             page_updates_table.append(page_update)
+
+        # Build first published update
+        if self.first_published_at:
+            first_publisher_profile = None
+            if first_publisher := self.get_first_publisher():
+                first_publisher_profile = first_publisher.profile
+
+            page_updates_table.append(
+                {
+                    "update_time": self.first_published_at,
+                    "person": first_publisher_profile,
+                    "note": "Page published",
+                }
+            )
 
         context["page_updates_table"] = page_updates_table
         return context
