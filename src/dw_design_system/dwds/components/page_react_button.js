@@ -29,14 +29,16 @@ class PageReactButton extends HTMLElement {
         this.postUrl = this.getAttribute("post-url");
         this.csrfToken = this.getAttribute("csrf-token");
         this.reactionLocation = this.getAttribute("reaction-location");
+        this.groupId = this.getAttribute("group-id");
 
         this.iconEl = this.querySelector("svg");
 
         this.render();
 
         document.addEventListener("reactions:updated", (e) => {
-            const reactions = e.detail.reactions;
-            this.currentType = e.detail.user_reaction;
+            if(e.detail.groupId !== this.groupId) return;
+            const reactions = e.detail.data.reactions;
+            this.currentType = e.detail.data.user_reaction;
 
             if (this.type in reactions) {
                 this.count = reactions[this.type];
@@ -65,7 +67,7 @@ class PageReactButton extends HTMLElement {
             }
             return response.json();
         }).then((data) => {
-            this.dispatchEvent(new CustomEvent("reactions:updated", { bubbles: true, detail: data }));
+            this.dispatchEvent(new CustomEvent("reactions:updated", { bubbles: true, detail: { groupId: this.groupId, data:data } }));
             dataLayer.push({
                 'event': 'page_reaction',
                 'from_type': this.currentType,

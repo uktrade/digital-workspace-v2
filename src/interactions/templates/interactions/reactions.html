@@ -9,6 +9,7 @@
                 {% get_reaction_icon_template reaction_type as icon_template %}
                 {% if reaction_type %}
                     <page-react-button post-url="{{ post_url }}"
+                                       group-id="{% firstof group_id 'page' %}"
                                        title="{{ reaction_type|reaction_type_display }}"
                                        count="{{ reaction_count }}"
                                        type="{{ reaction_type }}"

@@ -1,17 +1,10 @@
-from django.conf import settings
 from django.db.models import Count
 from wagtail.models import Page
 
 from interactions.models import PageReaction, ReactionType
+from interactions.services.reactions import get_active_reactions
 from news.models import NewsPage
 from user.models import User
-
-
-def get_active_reactions() -> list[ReactionType]:
-    inactive_reaction_types = [
-        ReactionType(rt) for rt in settings.INACTIVE_REACTION_TYPES
-    ]
-    return [rt for rt in ReactionType if rt not in inactive_reaction_types]
 
 
 def react_to_page(

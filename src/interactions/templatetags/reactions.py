@@ -29,11 +29,11 @@ def reactions_list(user, page, reaction_location):
 
 
 @register.inclusion_tag("interactions/reactions.html")
-def comment_reactions_list(user, comment, reaction_location):
+def comment_reactions_list(user, comment):
     reactions = comment_reactions_service.get_comment_reaction_counts(comment)
     user_reaction = comment_reactions_service.get_user_comment_reaction(user, comment)
     return {
-        "reaction_location": reaction_location,
+        "reaction_location": "comment",
         "reactions": reactions,
         "user_reaction": user_reaction,
         "reaction_selected": user_reaction is not None,
@@ -42,6 +42,7 @@ def comment_reactions_list(user, comment, reaction_location):
             "interactions:comment-reactions", kwargs={"pk": comment.pk}
         ),
         "page": comment.page,
+        "group_id": f"comment-{ comment.pk }",
     }
 
 

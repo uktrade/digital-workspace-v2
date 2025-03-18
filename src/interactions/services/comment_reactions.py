@@ -1,7 +1,7 @@
-from django.conf import settings
 from django.db.models import Count
 
 from interactions.models import CommentReaction, ReactionType
+from interactions.services.reactions import get_active_reactions
 from news.models import Comment
 from user.models import User
 
@@ -34,13 +34,6 @@ def get_comment_reaction_count(
         reactions = reactions.filter(type=reaction_type)
 
     return reactions.count()
-
-
-def get_active_reactions() -> list[ReactionType]:
-    inactive_reaction_types = [
-        ReactionType(rt) for rt in settings.INACTIVE_REACTION_TYPES
-    ]
-    return [rt for rt in ReactionType if rt not in inactive_reaction_types]
 
 
 def get_comment_reaction_counts(comment: Comment) -> dict[str, int]:
