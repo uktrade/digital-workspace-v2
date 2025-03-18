@@ -1,5 +1,4 @@
 import pytest
-
 from interactions.models import PageReaction, ReactionType
 from interactions.services.page_reactions import (
     react_to_page,
@@ -8,6 +7,8 @@ from interactions.services.page_reactions import (
     get_user_page_reaction,
     has_user_reacted_to_page,
 )
+
+from django.test import override_settings
 
 ALL_REACTION_TYPES = ReactionType.values
 
