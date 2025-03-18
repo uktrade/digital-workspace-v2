@@ -35,6 +35,7 @@ class Comment(models.Model):
     legacy_author_email = models.EmailField(blank=True, null=True)
     content = models.TextField()
     posted_date = models.DateTimeField(default=datetime.now)
+    is_visible = models.BooleanField(default=True)
     parent = models.ForeignKey(
         "news.Comment",
         on_delete=models.CASCADE,
@@ -168,7 +169,9 @@ class NewsPage(PageWithTopics):
     ]
 
     def get_comments(self):
-        return self.comments.filter(parent_id=None).order_by("-posted_date")
+        return self.comments.filter(parent_id=None, is_visible=True).order_by(
+            "-posted_date"
+        )
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)

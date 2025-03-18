@@ -202,7 +202,11 @@ class ContentPageQuerySet(BasePageQuerySet):
         )
 
     def annotate_with_comment_count(self):
-        return self.annotate(comment_count=models.Count("comments", distinct=True))
+        return self.annotate(
+            comment_count=models.Count(
+                "comments", filter=models.Q(comments__is_visible=True), distinct=True
+            )
+        )
 
 
 class ContentOwnerMixin(models.Model):

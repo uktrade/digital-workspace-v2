@@ -48,6 +48,7 @@
                                href="#"
                                onclick="return displayReplyForm({{ comment.pk }})">Reply</a>
                         </p>
+                        {% include "news/includes/delete_comment.html" with comment=comment %}
                         <fieldset id="reply-{{ comment.pk }}" class="reply-fieldset govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Reply to this comment</legend>
                             <form action=""
@@ -78,6 +79,8 @@
                                         <span class="comment-posted-date govuk-body-s">{{ reply.posted_date }}</span>
                                     </p>
                                     <p class="govuk-body">{{ reply.content }}</p>
+                                    {% comment %} TODO: don't show replies if is_visible=False {% endcomment %}
+                                    {% include "news/includes/delete_comment.html" with comment=reply %}
                                 </div>
                             {% endfor %}
                         {% endif %}
