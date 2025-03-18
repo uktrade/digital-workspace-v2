@@ -172,6 +172,7 @@ class NewsPage(PageWithTopics):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+
         context["page"] = (
             NewsPage.objects.annotate_with_comment_count()
             .annotate_with_reaction_count()
