@@ -26,6 +26,9 @@ ICON_CONTEXT = {
 
 def get_dwds_templates(template_type, request: HttpRequest):
     thumbnail_file = Image.objects.last()
+    thumbnail_url = (
+        thumbnail_file.file.url if thumbnail_file and thumbnail_file.file else None
+    )
     page = NewsPage.objects.last()
     pages = paginator.Paginator(NewsPage.objects.all(), 2).page(1)
 
@@ -222,11 +225,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "name": "John Doe",
                     "title": "Permanent Secretary",
                     "profile_url": "https://www.gov.uk",
-                    "profile_image_url": (
-                        thumbnail_file.file.url
-                        if thumbnail_file and thumbnail_file.file
-                        else None
-                    ),
+                    "profile_image_url": thumbnail_url,
                     "location": "London",
                     "show_icons": True,
                     "email_address": "someone@example.com",
@@ -289,14 +288,84 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/author.html",
                 "context": {
                     "name": "John Doe",
-                    "profile_image_url": (
-                        thumbnail_file.file.url
-                        if thumbnail_file and thumbnail_file.file
-                        else None
-                    ),
+                    "profile_image_url": thumbnail_url,
                     "profile_url": "https://www.gov.uk",
                     "published_timestamp": timezone.now(),
                     "updated_timestamp": timezone.now(),
+                },
+            },
+            {
+                "name": "Comment",
+                "template": "dwds/components/comment.html",
+                "context": {
+                    "comment": {
+                        "author_name": "Joe Bloggs",
+                        "author_url": "https://gov.uk/",
+                        "author_image_url": thumbnail_url,
+                        "posted_date": timezone.now(),
+                        "message": "This is a comment from Joe Bloggs about the article.",
+                        "show_replies": True,
+                        "reply_count": 1,
+                        "replies": [
+                            {
+                                "author_name": "Jane Doe",
+                                "author_url": "https://gov.uk/",
+                                "author_image_url": thumbnail_url,
+                                "posted_date": timezone.now(),
+                                "message": "This is a comment from Jane Doe about the article.",
+                            }
+                        ],
+                    },
+                },
+            },
+            {
+                "name": "Comments",
+                "template": "dwds/components/comments.html",
+                "context": {
+                    "comment_count": 5,
+                    "comments": [
+                        {
+                            "author_name": "Joe Bloggs",
+                            "author_url": "https://gov.uk/",
+                            "author_image_url": thumbnail_url,
+                            "posted_date": timezone.now(),
+                            "message": "This is a comment from Joe Bloggs about the article.",
+                        },
+                        {
+                            "author_name": "Jane Doe",
+                            "author_url": "https://gov.uk/",
+                            "author_image_url": thumbnail_url,
+                            "posted_date": timezone.now(),
+                            "message": "This is a comment from Jane Doe about the article.",
+                            "reply_count": 3,
+                            "replies": [
+                                {
+                                    "author_name": "Mary Smith",
+                                    "author_url": "https://gov.uk/",
+                                    "author_image_url": thumbnail_url,
+                                    "posted_date": timezone.now(),
+                                    "message": "This is a reply from Mary Smith about Jane Doe's comment.",
+                                },
+                                {
+                                    "author_name": "Jane Doe",
+                                    "author_url": "https://gov.uk/",
+                                    "author_image_url": thumbnail_url,
+                                    "posted_date": timezone.now(),
+                                    "message": "This is a reply from Jane Doe about Mary Smith's reply.",
+                                    "reply_count": 1,
+                                    "replies": [
+                                        {
+                                            "author_name": "Mary Smith",
+                                            "author_url": "https://gov.uk/",
+                                            "author_image_url": thumbnail_url,
+                                            "posted_date": timezone.now(),
+                                            "message": "This is a reply comment from Mary Smith about Jane Doe's reply.",
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
                 },
             },
         ],

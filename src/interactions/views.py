@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
@@ -7,6 +7,7 @@ from wagtail.models import Page
 
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
+from interactions.services import comments as comments_service
 from interactions.services import reactions as reactions_service
 
 
@@ -71,3 +72,19 @@ def react_to_page(request, *args, pk, **kwargs):
             "reactions": reactions_service.get_reaction_counts(page),
         }
     )
+
+
+@require_http_methods(["POST"])
+def comment_on_page(request, *args, pk, **kwargs):
+    page = get_object_or_404(Page, id=pk).specific
+    user = request.user
+
+    if request.method == "POST":
+        comments_service.add_page_comment(
+            page,
+            user,
+            request.POST["comment"],
+            request.POST.get("in_reply_to", None),
+        )
+
+    return redirect(page.url)
