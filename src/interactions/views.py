@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -77,18 +77,24 @@ def react_to_page(request, *args, pk, **kwargs):
 
 
 @require_http_methods(["POST"])
-def edit_comment(request, *args, pk, **kwargs):
+def edit_comment(request, pk):
 
     if request.method == "POST":
-        comment = request.POST.get("edit_comment")
-        comments_service.edit_comment(comment, pk)
+        comment_detail = request.POST.get("comment")
+        try:
+            comments_service.edit_comment(comment_detail, pk)
+        except comments_service.CommentNotFound:
+            raise Http404
 
     return HttpResponse()
+
+    # response = TemplateResponse(request, self.template, context)
+
+    # return response
 
 @require_http_methods(["GET"])
 def edit_comment_form(request, pk):
     comment = get_object_or_404(Comment, id=pk)
-
     return TemplateResponse(
         request,
         "interactions/edit_comment_form.html",

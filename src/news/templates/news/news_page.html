@@ -41,7 +41,9 @@
                             {{ comment.id }}
                             <span class="comment-posted-date govuk-body-s">{{ comment.posted_date }}</span>
                         </p>
-                        <p class="govuk-body" id="comment-content-{{ comment.pk }}">{{ comment.content }}</p>
+                        <div id="comment-content-{{ comment.pk }}">
+                            <p class="govuk-body">{{ comment.content }}</p>
+                        </div>
                         <p class="govuk-body"
                            aria-hidden="true"
                            id="reply-link-{{ comment.pk }}">
@@ -51,11 +53,10 @@
                              | 
                             <a class="govuk-link"
                                id="edit-link-{{ comment.pk }}"
-                               href="{% url 'interactions:edit-comment-form' comment.pk %}"
+                               href="#"
                                hx-get="{% url 'interactions:edit-comment-form' comment.pk %}"
                                hx-target="#comment-content-{{ comment.pk }}"
-                               hx-swap="outerHTML">Edit</a>
-                            <!-- <div id="edit-comment-form"></div> -->
+                               hx-swap="innerHTML">Edit</a>
                         </p>
                         <fieldset id="reply-{{ comment.pk }}" class="reply-fieldset govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Reply to this comment</legend>
@@ -74,24 +75,7 @@
                                 </div>
                             </form>
                         </fieldset>
-                        <!-- <fieldset id="edit-{{ comment.pk }}" class="reply-fieldset govuk-fieldset">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Edit this comment</legend>
-                            <form action=""
-                                  method="post"
-                                  onsubmit="setCommentId(this, {{ comment.pk }});">
-                                {% csrf_token %}
-                                <div class="govuk-form-group">
-                                    {% for field in edit_comment_form %}
-                                        <label class="ws-hide" for="{{ field.auto_id }}">Comment content</label>
-                                        {{ field }}
-                                    {% endfor %}
-                                    <p>
-                                        <input value="Submit comment" type="submit" class="govuk-button" />
-                                    </p>
-                                </div>
-                            </form>
-                        </fieldset> -->
-                        {% include "comment/edit_comment.html" with comment_id=comment.pk %}
+                        <!-- {% include "comment/edit_comment.html" with comment_id=comment.pk %} -->
                         {% if comment.replies.all.count > 0 %}
                             <h3 class="govuk-heading-s">Replies</h3>
                             {% for reply in comment.replies.all %}
@@ -140,6 +124,7 @@
             <script>
                 function setCommentId(commentForm, commentId) {
                     commentForm.elements["in_reply_to"].value = commentId;
+                    console.log("SET IN REPLY TO");
                 }
 
                 function displayReplyForm(commentId) {

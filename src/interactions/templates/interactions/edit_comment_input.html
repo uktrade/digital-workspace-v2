@@ -1,6 +1,6 @@
-<fieldset id="edit-{{ comment_id }}" class="govuk-fieldset">
+<fieldset id="edit-{{ comment_id }}" class="reply-fieldset govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Edit this comment</legend>
-    <form action="{% url 'interactions:edit-comment' comment_id %}"
+    <form action=""
         method="post"
         onsubmit="setCommentId(this, {{ comment_id }});">
         {% csrf_token %}

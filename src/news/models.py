@@ -202,11 +202,8 @@ class NewsPage(PageWithTopics):
         # print("DEBUG_COMMENT_CONTENT")
         # print(request.POST)
         context = self.get_context(request, **kwargs)
-        context["comment_form"] = CommentForm(initial={"comment": "Hi there!"})
+        context["comment_form"] = CommentForm()
         context["reply_comment_form"] = CommentForm(auto_id="reply_%s")
-        # context["edit_comment_form"] = CommentForm(auto_id="edit_%s", initial={"comment": None})
-        # context["edit_comment_url"] = reverse("interactions:edit-comment")
-        # context["edit_comment_form_url"] = reverse("interactions:edit-comment-form")
 
         response = TemplateResponse(request, self.template, context)
 

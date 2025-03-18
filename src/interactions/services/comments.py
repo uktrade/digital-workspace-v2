@@ -1,9 +1,16 @@
 from django.shortcuts import get_object_or_404
 from news.models import Comment
 
+class CommentNotFound(Exception):
+    ...
+
 
 def edit_comment(content: str, pk: str) -> None:
-    comment = get_object_or_404(Comment, id=pk)
+    try:
+        comment = Comment.objects.get(pk=pk)
+    except Comment.DoesNotExist:
+        raise CommentNotFound()
+
     if comment:
         comment.content = content
         comment.save()
