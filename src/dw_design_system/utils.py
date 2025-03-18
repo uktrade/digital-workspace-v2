@@ -295,7 +295,8 @@ def get_dwds_templates(template_type, request: HttpRequest):
                         else None
                     ),
                     "profile_url": "https://www.gov.uk",
-                    "timestamp": timezone.now(),
+                    "published_timestamp": timezone.now(),
+                    "updated_timestamp": timezone.now(),
                 },
             },
         ],
