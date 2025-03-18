@@ -1,0 +1,34 @@
+<div class="dwds-comment">
+    <div class="content-stack small">
+        {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date %}
+        <div>{{ comment.message }}</div>
+        {% include "news/includes/delete_comment.html" with comment=comment %}
+        {% if comment.show_replies %}
+            {% if comment.replies %}
+                <div class="content-stack">
+                    <h3>
+                        {{ comment.reply_count }}
+                        {% if comment.reply_count == 1 %}
+                            reply
+                        {% else %}
+                            replies
+                        {% endif %}
+                    </h3>
+                    {% for reply in comment.replies %}
+                        <div class="dwds-inset">{% include "dwds/components/comment.html" with comment=reply %}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if comment.reply_form %}
+                <details>
+                    <summary>Reply</summary>
+                    <form action="{{ comment.reply_form_url }}" method="post" onsubmit="">
+                        {% csrf_token %}
+                        {{ comment.reply_form }}
+                        <input value="Add reply" type="submit" class="dwds-button" />
+                    </form>
+                </details>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
