@@ -276,7 +276,7 @@ class BasePage(Page, Indexed):
                 "note": None,
             }
             if page_update_person := block.value.get("person"):
-                page_update["person"] = page_update_person.full_name
+                page_update["person"] = page_update_person
             if page_update_note := block.value.get("note"):
                 page_update["note"] = page_update_note
 
