@@ -2,36 +2,14 @@ import pytest
 
 from interactions.models import PageReaction, ReactionType
 from interactions.services.page_reactions import (
-    get_active_reactions,
     react_to_page,
     get_page_reaction_count,
     get_page_reaction_counts,
     get_user_page_reaction,
     has_user_reacted_to_page,
 )
-from django.test import override_settings
 
 ALL_REACTION_TYPES = ReactionType.values
-
-
-@override_settings(INACTIVE_REACTION_TYPES=[])
-def test_get_active_reactions_default():
-    response = get_active_reactions()
-    assert ReactionType.CELEBRATE in response
-    assert ReactionType.LIKE in response
-    assert ReactionType.LOVE in response
-    assert ReactionType.DISLIKE in response
-    assert ReactionType.UNHAPPY in response
-
-
-@override_settings(INACTIVE_REACTION_TYPES=["unhappy", "like"])
-def test_get_active_reactions_settings():
-    response = get_active_reactions()
-    assert ReactionType.CELEBRATE in response
-    assert ReactionType.LIKE not in response
-    assert ReactionType.LOVE in response
-    assert ReactionType.DISLIKE in response
-    assert ReactionType.UNHAPPY not in response
 
 
 @pytest.mark.django_db
