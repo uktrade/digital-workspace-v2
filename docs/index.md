@@ -111,7 +111,7 @@ DEBUGPY_ENABLED=True
 
 Create launch.json file inside .vscode directory
 
-```bash
+```json
     {
         "version": "0.2.0",
         "configurations": [
