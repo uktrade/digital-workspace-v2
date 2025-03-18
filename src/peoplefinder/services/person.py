@@ -27,7 +27,7 @@ from peoplefinder.services.audit_log import (
     ObjectRepr,
 )
 from peoplefinder.services.team import TeamService
-from peoplefinder.tasks import notify_user_about_profile_changes, person_update_notifier
+from peoplefinder.tasks import notify_user_about_profile_changes
 from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
 
@@ -296,9 +296,6 @@ class PersonService:
             person.save()
 
             self.trigger_profile_change_notification(request, person)
-
-        # Notify external services
-        person_update_notifier.delay(person.id)
 
         for team_id in person.roles.all().values_list("team__pk", flat=True).distinct():
             TeamService().clear_profile_completion_cache(team_id)

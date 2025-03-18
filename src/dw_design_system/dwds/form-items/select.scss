@@ -65,6 +65,7 @@ select:focus::-ms-value {
     background-repeat: no-repeat;
     background-position: calc(100% - var(--s-2));
     padding-left: var(--s-2);
+    padding-right: var(--s3);
     max-width: fit-content;
 
     &.width-full {
