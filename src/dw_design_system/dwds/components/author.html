@@ -1,11 +1,14 @@
 {% load wagtailimages_tags static humanize formatting %}
 
-<div class="dwds-author content-sidebar">
+<div class="dwds-author content-cluster">
     <div>
         {% include "dwds/elements/profile_image.html" with small=True profile_image_url=profile_image_url name=name profile_url=profile_url %}
     </div>
     <div class="content-stack no-gap">
         <a href="{{ profile_url }}">{{ name }}</a>
-        <div>Added {{ timestamp|naturalday:'j F Y' }} at {{ timestamp|date:"gA"|lower }}</div>
+        <div>Published {{ published_timestamp|naturalday:'j F Y' }} at {{ published_timestamp|date:"gA"|lower }}</div>
+        {% if updated_timestamp %}
+            <div>Updated at {{ updated_timestamp|naturalday:'j F Y' }} at {{ updated_timestamp|date:"gA"|lower }}</div>
+        {% endif %}
     </div>
 </div>
