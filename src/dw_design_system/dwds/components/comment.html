@@ -5,6 +5,7 @@
         {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date %}
         <div>{{ comment.message }}</div>
         {% reactions_for_comment user comment.id %}
+        {% include "news/includes/delete_comment.html" with comment=comment %}
         {% if comment.show_replies %}
             {% if comment.replies %}
                 <div class="content-stack">
