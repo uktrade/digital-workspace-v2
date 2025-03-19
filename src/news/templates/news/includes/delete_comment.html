@@ -1,0 +1,24 @@
+{% load comments %}
+
+{% user_can_delete_comment request.user comment.id as can_delete %}
+{% if can_delete %}
+    <div class="dwds-modal width-third">
+        <button class="dwds-button dwds-modal-open dwds-button--link">Delete</button>
+        <dialog>
+            <form class="modal-header" method="dialog">
+                <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/cross.html" with small=True %}
+                    Close
+                </button>
+            </form>
+            <h3>Are you sure you want to delete this comment?</h3>
+            <form method="dialog">
+                <button class="dwds-modal-close dwds-button"
+                        hx-post="{% url 'interactions:hide-comment' comment.id %}"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-on::after-request="window.location.replace(window.location.href)">Yes</button>
+                <button class="dwds-modal-close dwds-button">No</button>
+            </form>
+        </dialog>
+    </div>
+{% endif %}

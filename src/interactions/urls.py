@@ -7,7 +7,9 @@ app_name = "interactions"
 
 urlpatterns = [
     path("bookmark", views.bookmark, name="bookmark"),
-    path("reactions/<int:pk>/", views.react_to_page, name="reactions"),
+    path(
+        "comment-reactions/<int:pk>/", views.react_to_comment, name="comment-reactions"
+    ),
     path("bookmark/<int:pk>/remove", views.remove_bookmark, name="bookmark-remove"),
     path("bookmarks", views.bookmark_index, name="bookmark-index"),
     path("edit-comment/<int:pk>/", views.edit_comment, name="edit-comment"),
@@ -15,4 +17,7 @@ urlpatterns = [
         "edit-comment-form/<int:pk>/", views.edit_comment_form, name="edit-comment-form"
     ),
     path("comment/<int:pk>/", views.comment_on_page, name="comment-on-page"),
+    path("page/<int:pk>/react", views.react_to_page, name="page-reactions"),
+    path("page/<int:pk>/comment", views.comment_on_page, name="comment-on-page"),
+    path("comment/<int:pk>/hide", views.hide_comment, name="hide-comment"),
 ]

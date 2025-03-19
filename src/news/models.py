@@ -35,6 +35,7 @@ class Comment(models.Model):
     legacy_author_email = models.EmailField(blank=True, null=True)
     content = models.TextField()
     posted_date = models.DateTimeField(default=datetime.now)
+    is_visible = models.BooleanField(default=True)
     parent = models.ForeignKey(
         "news.Comment",
         on_delete=models.CASCADE,
@@ -174,11 +175,15 @@ class NewsPage(PageWithTopics):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
+
         context["page"] = (
             NewsPage.objects.annotate_with_comment_count()
             .annotate_with_reaction_count()
             .get(pk=self.pk)
         )
+        context["attribution"] = True
+        context["attribution__is_news_page"] = True
+        context["attribution__first_publisher_as_author"] = True
         context["comments"] = self.get_comments()
         context["categories"] = NewsCategory.objects.all().order_by("category")
 

@@ -1,5 +1,5 @@
-from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
@@ -7,9 +7,10 @@ from wagtail.models import Page
 
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
-from interactions.services import comments as comments_service
-from interactions.services import reactions as reactions_service
 from news.forms import CommentForm
+from interactions.services import comment_reactions as comment_reactions_service
+from interactions.services import comments as comments_service
+from interactions.services import page_reactions as page_reactions_service
 from news.models import Comment
 
 
@@ -66,12 +67,12 @@ def react_to_page(request, *args, pk, **kwargs):
         is_selected = request.POST.get("is_selected") == "true"
 
         reacted_type = None if is_selected else reaction_type
-        reactions_service.react_to_page(user, page, reacted_type)
+        page_reactions_service.react_to_page(user, page, reacted_type)
 
     return JsonResponse(
         {
-            "user_reaction": reactions_service.get_user_reaction(user, page),
-            "reactions": reactions_service.get_reaction_counts(page),
+            "user_reaction": page_reactions_service.get_user_page_reaction(user, page),
+            "reactions": page_reactions_service.get_page_reaction_counts(page),
         }
     )
 
@@ -104,3 +105,49 @@ def edit_comment_form(request, pk):
             "comment_id": pk,
         },
     )
+  
+  
+def react_to_comment(request, *args, pk, **kwargs):
+    comment = get_object_or_404(Comment, id=pk)
+    user = request.user
+
+    if request.method == "POST":
+        reaction_type = ReactionType(request.POST["reaction_type"])
+        is_selected = request.POST.get("is_selected") == "true"
+
+        reacted_type = None if is_selected else reaction_type
+        comment_reactions_service.react_to_comment(user, comment, reacted_type)
+
+    return JsonResponse(
+        {
+            "user_reaction": comment_reactions_service.get_user_comment_reaction(
+                user, comment
+            ),
+            "reactions": comment_reactions_service.get_comment_reaction_counts(comment),
+        }
+    )
+
+
+@require_http_methods(["POST"])
+def comment_on_page(request, *args, pk, **kwargs):
+    page = get_object_or_404(Page, id=pk).specific
+    user = request.user
+
+    if request.method == "POST":
+        comments_service.add_page_comment(
+            page,
+            user,
+            request.POST["comment"],
+            request.POST.get("in_reply_to", None),
+        )
+
+    return redirect(page.url)
+
+
+@require_http_methods(["POST"])
+def hide_comment(request: HttpRequest, pk: int) -> HttpResponse:
+    comment = get_object_or_404(Comment, pk=pk)
+    if not comments_service.can_hide_comment(request.user, comment):
+        return HttpResponseForbidden()
+    comments_service.hide_comment(comment)
+    return HttpResponse(status=200)

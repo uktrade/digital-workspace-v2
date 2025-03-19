@@ -1,8 +1,10 @@
 from django.db.models import QuerySet
+from django.urls import reverse
 from wagtail.models import Page
 
 from news.models import Comment
 from user.models import User
+
 
 class CommentNotFound(Exception): ...
 
@@ -31,22 +33,24 @@ def add_page_comment(
 
 def get_page_comments(page: Page) -> QuerySet[Comment]:
     if hasattr(page, "comments"):
-        return page.comments.filter(parent_id=None).order_by("-posted_date")
+        return page.comments.filter(parent_id=None, is_visible=True).order_by(
+            "-posted_date"
+        )
     return Comment.objects.none()
 
 
 def get_page_comment_count(page: Page) -> int:
     if hasattr(page, "comments"):
-        return page.comments.count()
+        return page.comments.filter(is_visible=True).count()
     return 0
 
 
 def get_comment_replies(comment: Comment) -> QuerySet[Comment]:
-    return comment.replies.all()
+    return comment.replies.filter(is_visible=True)
 
 
 def get_comment_reply_count(comment: Comment) -> int:
-    return comment.replies.count()
+    return comment.replies.filter(is_visible=True).count()
 
 
 def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
@@ -58,8 +62,9 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
             replies.append(comment_to_dict(reply, include_replies=False))
 
     return {
+        "id": comment.id,
         "author_name": author_profile.full_name,
-        "author_url": "https://gov.uk/",
+        "author_url": reverse("profile-view", args=[author_profile.slug]),
         "author_image_url": (
             author_profile.photo.url if author_profile.photo else None
         ),
@@ -69,3 +74,19 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
         "reply_count": get_comment_reply_count(comment),
         "replies": replies,
     }
+
+
+def show_comment(comment: Comment) -> None:
+    comment.is_visible = True
+    comment.save(update_fields=["is_visible"])
+
+
+def hide_comment(comment: Comment) -> None:
+    comment.is_visible = False
+    comment.save(update_fields=["is_visible"])
+
+
+def can_hide_comment(user: User, comment: Comment | int) -> bool:
+    if isinstance(comment, int):
+        comment = Comment.objects.get(id=comment)
+    return user == comment.author
