@@ -282,7 +282,7 @@ class BasePage(Page, Indexed):
 class ContentPageQuerySet(BasePageQuerySet):
     def annotate_with_reaction_count(self):
         return self.annotate(
-            reaction_count=models.Count("interactions_reactions", distinct=True)
+            reaction_count=models.Count("interactions_pagereactions", distinct=True)
         )
 
     def annotate_with_comment_count(self):

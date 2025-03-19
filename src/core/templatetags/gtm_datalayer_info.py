@@ -4,7 +4,7 @@ from django import template
 from django.utils.html import mark_safe
 from wagtail.models import Page
 
-from interactions.services import reactions as reactions_service
+from interactions.services import page_reactions as page_reactions_service
 
 
 register = template.Library()
@@ -55,7 +55,7 @@ def get_initial_page_data(context) -> str:
         if content_owner := getattr(page, "content_owner", None):
             initial_page_data["page_content_owner"] = content_owner.full_name
 
-        if page_reactions := reactions_service.get_reaction_counts(page):
+        if page_reactions := page_reactions_service.get_page_reaction_counts(page):
             initial_page_data["page_reactions"] = page_reactions
 
     # User Data
