@@ -1,7 +1,10 @@
+{% load reactions %}
+
 <div class="dwds-comment">
     <div class="content-stack small">
         {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date %}
         <div>{{ comment.message }}</div>
+        {% reactions_for_comment user comment.id %}
         {% if comment.show_replies %}
             {% if comment.replies %}
                 <div class="content-stack">

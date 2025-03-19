@@ -3,7 +3,9 @@ import json
 from django import template
 from django.urls import reverse
 from django.utils.html import mark_safe
+from news.models import Comment
 from wagtail.models import Page
+from user.models import User
 
 from interactions.models import ReactionType
 from interactions.services import comment_reactions as comment_reactions_service
@@ -14,7 +16,7 @@ register = template.Library()
 
 
 @register.inclusion_tag("interactions/reactions.html")
-def reactions_list(user, page, reaction_location):
+def reactions_list(user: User, page: Page, reaction_location: str):
     reactions = page_reactions_service.get_page_reaction_counts(page)
     user_reaction = page_reactions_service.get_user_page_reaction(user, page)
     return {
@@ -29,7 +31,8 @@ def reactions_list(user, page, reaction_location):
 
 
 @register.inclusion_tag("interactions/reactions.html")
-def comment_reactions_list(user, comment):
+def reactions_for_comment(user: User, comment_id: int):
+    comment = Comment.objects.get(id=comment_id)
     reactions = comment_reactions_service.get_comment_reaction_counts(comment)
     user_reaction = comment_reactions_service.get_user_comment_reaction(user, comment)
     return {

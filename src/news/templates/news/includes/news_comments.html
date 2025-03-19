@@ -1,5 +1,3 @@
-{% load reactions %}
-
 <div class="news_comments">
     {% if page.comment_count > 0 %}
         <div class="news-article-comments">
@@ -45,9 +43,6 @@
                         </div>
                     </form>
                 </fieldset>
-                {% if page.allow_reactions %}
-                    {% comment_reactions_list user comment %}
-                {% endif %}
                 {% if comment.replies.all.count > 0 %}
                     <h3 class="govuk-heading-s">Replies</h3>
                     {% for reply in comment.replies.all %}
