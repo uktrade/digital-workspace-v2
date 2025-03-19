@@ -1,6 +1,6 @@
 <div class="dwds-comment">
     <div class="content-stack small">
-        {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date %}
+        {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date %}
         <div>{{ comment.message }}</div>
         {% if comment.show_replies %}
             {% if comment.replies %}
@@ -19,14 +19,19 @@
                 </div>
             {% endif %}
             {% if comment.reply_form %}
-                <details>
-                    <summary>Reply</summary>
+                <button class="dwds-toggle-visibility dwds-button dwds-button--link"
+                        data-target-identifier="comment-{{ comment.id }}-reply-form"
+                        data-target-state="hidden">Reply</button>
+                <div id="comment-{{ comment.id }}-reply-form">
+                    <h3>Reply to this comment</h3>
                     <form action="{{ comment.reply_form_url }}" method="post" onsubmit="">
                         {% csrf_token %}
                         {{ comment.reply_form }}
-                        <input value="Add reply" type="submit" class="dwds-button" />
+                        <input value="Submit reply"
+                               type="submit"
+                               class="dwds-button dwds-button--transactional" />
                     </form>
-                </details>
+                </div>
             {% endif %}
         {% endif %}
     </div>

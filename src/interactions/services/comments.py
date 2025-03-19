@@ -1,4 +1,5 @@
 from django.db.models import QuerySet
+from django.urls import reverse
 from wagtail.models import Page
 
 from news.models import Comment
@@ -45,8 +46,9 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
             replies.append(comment_to_dict(reply, include_replies=False))
 
     return {
+        "id": comment.id,
         "author_name": author_profile.full_name,
-        "author_url": "https://gov.uk/",
+        "author_url": reverse("profile-view", args=[author_profile.slug]),
         "author_image_url": (
             author_profile.photo.url if author_profile.photo else None
         ),
