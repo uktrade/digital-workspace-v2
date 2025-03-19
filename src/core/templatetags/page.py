@@ -1,6 +1,5 @@
 from django import template
 from django.urls import reverse
-from django.utils import timezone
 from wagtail.models import Page
 
 
@@ -14,6 +13,6 @@ def page_author(page: Page):
         "name": person.full_name,
         "profile_image_url": (person.photo.url if person.photo else None),
         "profile_url": reverse("profile-view", args=[person.slug]),
-        "published_timestamp": timezone.now(),
-        "updated_timestamp": timezone.now(),
+        "published_timestamp": page.first_published_at,
+        "updated_timestamp": page.last_published_at,
     }
