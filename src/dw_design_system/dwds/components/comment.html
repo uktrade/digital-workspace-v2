@@ -1,6 +1,6 @@
 {% load reactions %}
 
-<div class="dwds-comment">
+<div class="dwds-comment" id="comment-{{ comment.id }}">
     <div class="content-stack small">
         {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date %}
         <div id="comment-{{ comment.id }}-message">{{ comment.message }}</div>

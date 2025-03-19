@@ -4,11 +4,15 @@
 {% if can_edit %}
     {% if comment.edit_form %}
         <button class="dwds-toggle-visibility dwds-button dwds-button--link"
+                id="edit-comment-submit-{{ comment.id }}"
                 data-target-identifier="comment-{{ comment.id }}-edit-form"
                 data-target-state="hidden">Edit</button>
         <div id="comment-{{ comment.id }}-edit-form">
             <h3>Edit this comment</h3>
-            <form action="{{ comment.edit_form_url }}" method="post" onsubmit="">
+            <form hx-post="{{ comment.edit_form_url }}"
+                  hx-target="#comment-{{ comment.id }}-message"
+                  hx-swap="innerHTML"
+                  hx-on="htmx:afterRequest:document.getElementById('edit-comment-submit-{{ comment.id }}').click();">
                 {% csrf_token %}
                 {{ comment.edit_form }}
                 <input value="Submit edited comment"

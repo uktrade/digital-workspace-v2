@@ -86,7 +86,6 @@ def react_to_page(request, *args, pk, **kwargs):
 def edit_comment(request, *args, page_id, comment_id, **kwargs):
 
     if request.method == "POST":
-        page = get_object_or_404(Page, id=page_id).specific
         comment_message = request.POST.get("comment")
         try:
             print("DEBUG_EDIT_REQUEST")
@@ -95,7 +94,8 @@ def edit_comment(request, *args, page_id, comment_id, **kwargs):
         except comments_service.CommentNotFound:
             raise Http404
 
-    return redirect(page.url)
+        return HttpResponse(comment_message, content_type="text/html")
+    return HttpResponse(status=400)
 
 
 def react_to_comment(request, *args, pk, **kwargs):
