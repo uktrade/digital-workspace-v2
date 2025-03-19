@@ -16,7 +16,7 @@ register = template.Library()
 
 
 @register.inclusion_tag("interactions/reactions.html")
-def reactions_list(user: User, page: Page, reaction_location: str):
+def reactions_for_page(user: User, page: Page, reaction_location: str):
     reactions = page_reactions_service.get_page_reaction_counts(page)
     user_reaction = page_reactions_service.get_user_page_reaction(user, page)
     return {
