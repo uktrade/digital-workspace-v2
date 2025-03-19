@@ -10,7 +10,7 @@
         {% endif %}
     {% endif %}
     {% if page.allow_reactions %}
-        {% reactions_list user page "top" %}
+        {% reactions_for_page user page "top" %}
     {% endif %}
     {% block pre_page_body %}
     {% endblock pre_page_body %}
@@ -25,7 +25,7 @@
 
 {% block post_primary_content %}
     {% if page.allow_reactions %}
-        <div>{% reactions_list user page "bottom" %}</div>
+        <div>{% reactions_for_page user page "bottom" %}</div>
     {% endif %}
     {% include "includes/page_publishing_information.html" with page=self %}
     {% if children %}
