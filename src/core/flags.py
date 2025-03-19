@@ -3,4 +3,3 @@ NETWORK_TYPES = "network_types"
 NETWORKS_HUB = "networks_hub"
 NEW_COMMENTS = "new_comments"
 NEW_NEWS_AUTHOR = "new_news_author"
-

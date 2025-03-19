@@ -12,9 +12,10 @@ urlpatterns = [
     ),
     path("bookmark/<int:pk>/remove", views.remove_bookmark, name="bookmark-remove"),
     path("bookmarks", views.bookmark_index, name="bookmark-index"),
-    path("edit-comment/<int:pk>/", views.edit_comment, name="edit-comment"),
     path(
-        "edit-comment-form/<int:pk>/", views.edit_comment_form, name="edit-comment-form"
+        "edit-page-comment/<int:page_id>/<int:comment_id>/",
+        views.edit_comment,
+        name="edit-page-comment",
     ),
     path("comment/<int:pk>/", views.comment_on_page, name="comment-on-page"),
     path("page/<int:pk>/react", views.react_to_page, name="page-reactions"),

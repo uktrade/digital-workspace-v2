@@ -1,4 +1,10 @@
-from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import (
+    Http404,
+    HttpRequest,
+    HttpResponse,
+    HttpResponseForbidden,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -7,7 +13,6 @@ from wagtail.models import Page
 
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
-from news.forms import CommentForm
 from interactions.services import comment_reactions as comment_reactions_service
 from interactions.services import comments as comments_service
 from interactions.services import page_reactions as page_reactions_service
@@ -78,35 +83,21 @@ def react_to_page(request, *args, pk, **kwargs):
 
 
 @require_http_methods(["POST"])
-def edit_comment(request, pk):
+def edit_comment(request, *args, page_id, comment_id, **kwargs):
 
     if request.method == "POST":
-        comment_detail = request.POST.get("comment")
+        page = get_object_or_404(Page, id=page_id).specific
+        comment_message = request.POST.get("comment")
         try:
-            comments_service.edit_comment(comment_detail, pk)
+            print("DEBUG_EDIT_REQUEST")
+            print(request)
+            comments_service.edit_comment(comment_message, comment_id)
         except comments_service.CommentNotFound:
             raise Http404
 
-    return HttpResponse()
-
-    # response = TemplateResponse(request, self.template, context)
-
-    # return response
+    return redirect(page.url)
 
 
-@require_http_methods(["GET"])
-def edit_comment_form(request, pk):
-    comment = get_object_or_404(Comment, id=pk)
-    return TemplateResponse(
-        request,
-        "interactions/edit_comment_form.html",
-        context={
-            "edit_comment_form": CommentForm(initial={"comment": comment}),
-            "comment_id": pk,
-        },
-    )
-  
-  
 def react_to_comment(request, *args, pk, **kwargs):
     comment = get_object_or_404(Comment, id=pk)
     user = request.user

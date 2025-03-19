@@ -28,6 +28,14 @@ def page_comments(context, page: Page):
                 auto_id="reply_%s",
             ),
             reply_form_url=comment_form_submission_url,
+            edit_form=CommentForm(initial={"comment": comment["message"]}),
+            edit_form_url=reverse(
+                "interactions:edit-page-comment",
+                kwargs={
+                    "page_id": page.pk,
+                    "comment_id": page_comment.pk,
+                },
+            ),
         )
         comments.append(comment)
     return {
@@ -42,4 +50,9 @@ def page_comments(context, page: Page):
 
 @register.simple_tag
 def user_can_delete_comment(user, comment_id):
+    return can_hide_comment(user, comment_id)
+
+
+@register.simple_tag
+def user_can_edit_comment(user, comment_id):
     return can_hide_comment(user, comment_id)
