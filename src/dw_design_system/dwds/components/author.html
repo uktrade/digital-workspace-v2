@@ -6,7 +6,9 @@
     </div>
     <div class="content-stack no-gap">
         <a href="{{ profile_url }}">{{ name }}</a>
-        <div>Published {{ published_timestamp|naturalday:'j F Y' }} at {{ published_timestamp|date:"gA"|lower }}</div>
+        {% if published_timestamp %}
+            <div>Published {{ published_timestamp|naturalday:'j F Y' }} at {{ published_timestamp|date:"gA"|lower }}</div>
+        {% endif %}
         {% if updated_timestamp %}
             <div>Updated at {{ updated_timestamp|naturalday:'j F Y' }} at {{ updated_timestamp|date:"gA"|lower }}</div>
         {% endif %}
