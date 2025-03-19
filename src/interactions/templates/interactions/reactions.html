@@ -3,7 +3,7 @@
 
 <div class="page-reactions">
     <div class="content-stack small">
-        <h4>React to this article</h4>
+        {% if reactions_header %}<h4>{{ reactions_header }}</h4>{% endif %}
         <div class="content-cluster small">
             {% for reaction_type, reaction_count in reactions.items %}
                 {% get_reaction_icon_template reaction_type as icon_template %}

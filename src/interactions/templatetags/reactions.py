@@ -26,7 +26,7 @@ def reactions_list(user: User, page: Page, reaction_location: str):
         "reaction_selected": user_reaction is not None,
         "get_url": reverse("interactions:page-reactions", kwargs={"pk": page.pk}),
         "post_url": reverse("interactions:page-reactions", kwargs={"pk": page.pk}),
-        "page": page,
+        "reactions_header": "React to this article",
     }
 
 
@@ -44,7 +44,6 @@ def reactions_for_comment(user: User, comment_id: int):
         "post_url": reverse(
             "interactions:comment-reactions", kwargs={"pk": comment.pk}
         ),
-        "page": comment.page,
         "group_id": f"comment-{ comment.pk }",
     }
 
