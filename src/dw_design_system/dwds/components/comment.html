@@ -1,6 +1,6 @@
 <div class="dwds-comment">
     <div class="content-stack small">
-        {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date %}
+        {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date %}
         <div>{{ comment.message }}</div>
         {% if comment.show_replies %}
             {% if comment.replies %}
