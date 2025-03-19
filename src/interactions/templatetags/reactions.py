@@ -3,13 +3,13 @@ import json
 from django import template
 from django.urls import reverse
 from django.utils.html import mark_safe
-from news.models import Comment
 from wagtail.models import Page
-from user.models import User
 
 from interactions.models import ReactionType
 from interactions.services import comment_reactions as comment_reactions_service
 from interactions.services import page_reactions as page_reactions_service
+from news.models import Comment
+from user.models import User
 
 
 register = template.Library()
