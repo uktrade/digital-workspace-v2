@@ -9,7 +9,9 @@
         <form action="{{ comment_form_url }}" method="post" onsubmit="">
             {% csrf_token %}
             {{ comment_form }}
-            <input value="Add comment" type="submit" class="dwds-button" />
+            <input value="Submit comment"
+                   type="submit"
+                   class="dwds-button dwds-button--transactional" />
         </form>
     {% endif %}
 </div>

@@ -284,6 +284,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Toggle Visibility",
+                "template": "dwds/components/toggle_visibility_button.html",
+                "context": {},
+            },
+            {
                 "name": "Author",
                 "template": "dwds/components/author.html",
                 "context": {
