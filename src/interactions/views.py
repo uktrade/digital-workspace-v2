@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -9,6 +9,7 @@ from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
 from interactions.services import comments as comments_service
 from interactions.services import reactions as reactions_service
+from news.models import Comment
 
 
 @require_http_methods(["POST"])
@@ -88,3 +89,12 @@ def comment_on_page(request, *args, pk, **kwargs):
         )
 
     return redirect(page.url)
+
+
+@require_http_methods(["POST"])
+def hide_comment(request: HttpRequest, pk: int) -> HttpResponse:
+    comment = get_object_or_404(Comment, pk=pk)
+    if not comments_service.can_hide_comment(request.user, comment):
+        return HttpResponseForbidden()
+    comments_service.hide_comment(comment)
+    return HttpResponse(status=200)

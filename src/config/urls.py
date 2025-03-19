@@ -52,8 +52,6 @@ urlpatterns = [
     path("interactions/", include("interactions.urls")),
     # Networks
     path("networks/", include("networks.urls")),
-    # News
-    path("news/", include("news.urls")),
     # DW Design System
     path("dwds/", include(dwds_urlpatterns)),
     # iCal feed for testing
