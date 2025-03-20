@@ -1,0 +1,46 @@
+<details class="dwds-details">
+    <summary>
+        <span>Publishing information</span>
+    </summary>
+    <div class="content-stack">
+        {% if self.first_published_at %}
+            <div>
+                <time datetime="{{ self.first_published_at|date:"c" }}">
+                    First published: {{ self.first_published_at|date:"j F Y" }}, {{ self.first_published_at|time:"g:iA"|lower }}
+                </time>
+                <br>
+                <time datetime="{{ self.last_published_at|date:"c" }}">
+                    Last updated: {{ self.last_published_at|date:"j F Y" }}, {{ self.last_published_at|time:"g:iA"|lower }}
+                </time>
+            </div>
+        {% else %}
+            <p>There currently isn't any publishing information as the page hasn't been published yet.</p>
+        {% endif %}
+        {% if page_updates_table %}
+            <table role="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Published date</th>
+                        <th scope="col">Editor</th>
+                        <th scope="col">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for page_update in page_updates_table %}
+                        <tr>
+                            <td>{{ page_update.update_time|date:"j F Y" }}, {{ page_update.update_time|time:"g:iA"|lower }}</td>
+                            {% if page_update.person %}
+                                <td>
+                                    <a href="{% url 'profile-view' page_update.person.slug %}">{{ page_update.person.full_name }}</a>
+                                </td>
+                            {% else %}
+                                <td>-</td>
+                            {% endif %}
+                            <td>{% firstof page_update.note "-" %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</details>

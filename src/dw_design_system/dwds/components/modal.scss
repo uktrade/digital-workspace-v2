@@ -13,7 +13,7 @@
             margin: unset;
         }
 
-        form[method="dialog"] {
+        form[method="dialog"].modal-header {
             display: flex;
             flex-direction: row-reverse;
         }

@@ -4,10 +4,10 @@ from django.core.exceptions import ValidationError
 
 class CommentForm(forms.Form):
     comment = forms.CharField(
-        label="Comment",
+        label="",
         max_length=500,
         required=True,
-        widget=forms.Textarea(attrs={"class": "govuk-textarea"}),
+        widget=forms.Textarea(),
     )
     in_reply_to = forms.IntegerField(
         required=False,

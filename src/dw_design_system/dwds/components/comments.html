@@ -1,0 +1,17 @@
+{% comment %} TODO: Update to use sections/articles/etc. https://www.w3.org/TR/2013/CR-html5-20130806/sections.html#the-article-element {% endcomment %}
+<div class="dwds-comments content-stack">
+    <h2>{{ comment_count }} comment{{ comment_count|pluralize }}</h2>
+    {% for comment in comments %}
+        {% include "dwds/components/comment.html" with comment=comment %}
+    {% endfor %}
+    {% if comment_form %}
+        <h3>Leave a comment</h3>
+        <form action="{{ comment_form_url }}" method="post" onsubmit="">
+            {% csrf_token %}
+            {{ comment_form }}
+            <input value="Submit comment"
+                   type="submit"
+                   class="dwds-button dwds-button--transactional" />
+        </form>
+    {% endif %}
+</div>

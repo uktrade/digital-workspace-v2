@@ -101,6 +101,40 @@ buildpack will automatically run the npm `heroku-postbuild` step after
 - [Wagtail](https://www.wagtail.io)
 - [Django](https://www.djangoproject.com/)
 
+## Setup DebugPy
+
+Add environment variable in your .env file
+
+```bash
+DEBUGPY_ENABLED=True
+```
+
+Create launch.json file inside .vscode directory
+
+```json
+    {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Python: Remote Attach (DebugPy)",
+                "type": "debugpy",
+                "request": "attach",
+                "connect": {
+                    "host": "localhost",
+                    "port": 5678
+                },
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/app/"
+                    }
+                ],
+                "justMyCode": true
+            }
+        ]
+    }
+```
+
 ## Notable design decisions
 
 We had to artificially increase the length of the varchar in the following tables so they would work with longer S3 keys:
