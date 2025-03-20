@@ -21,7 +21,7 @@ from news.models import Comment
 
 
 @require_http_methods(["POST"])
-def bookmark(request, *args, **kwargs):
+def bookmark(request):
     user = request.user
 
     if request.method == "POST":
@@ -47,13 +47,13 @@ def bookmark(request, *args, **kwargs):
 
 
 @require_http_methods(["DELETE"])
-def remove_bookmark(request, pk, *args, **kwargs):
+def remove_bookmark(request, *, pk):
     bookmarks_service.remove_bookmark(pk, request.user)
     return HttpResponse()
 
 
 @require_http_methods(["GET"])
-def bookmark_index(request, *args, **kwargs):
+def bookmark_index(request):
     return TemplateResponse(
         request,
         "interactions/bookmark_index.html",
@@ -64,7 +64,7 @@ def bookmark_index(request, *args, **kwargs):
 
 
 @require_http_methods(["POST"])
-def react_to_page(request, *args, pk, **kwargs):
+def react_to_page(request, *, pk):
     page = get_object_or_404(Page, id=pk)
     user = request.user
 
@@ -84,7 +84,7 @@ def react_to_page(request, *args, pk, **kwargs):
 
 
 @require_http_methods(["POST"])
-def edit_comment(request, *args, comment_id, **kwargs):
+def edit_comment(request, *, comment_id):
     if not comments_service.can_edit_comment(request.user, comment_id):
         return HttpResponse(status=403)
 
@@ -104,7 +104,7 @@ def edit_comment(request, *args, comment_id, **kwargs):
     return HttpResponse(status=400)
 
 @require_http_methods(["GET"])
-def get_comment(request, *args, comment_id, field=None, **kwargs):
+def get_comment(request, *, comment_id, field=None):
     if request.method == "GET":
         comment = comments_service.comment_to_dict(
                 get_object_or_404(Comment, id=comment_id)
@@ -114,7 +114,9 @@ def get_comment(request, *args, comment_id, field=None, **kwargs):
     
     return HttpResponse(status=400)
 
-def edit_comment_form(request, *args, comment_id, **kwargs):
+
+@require_http_methods(["GET"])
+def edit_comment_form(request, *, comment_id):
     if not comments_service.can_edit_comment(request.user, comment_id):
         return HttpResponse(status=403)
 
@@ -145,8 +147,9 @@ def edit_comment_form(request, *args, comment_id, **kwargs):
             "comment": comment,
         },
     )
+
 # TODO: wip
-def toggle_edit_comment(request, *args, comment_id, editing, **kwargs):
+def toggle_edit_comment(request, *, comment_id, editing):
     if not comments_service.can_edit_comment(request.user, comment_id):
         return HttpResponse(status=403)
 
@@ -184,7 +187,8 @@ def toggle_edit_comment(request, *args, comment_id, editing, **kwargs):
         },
     )
 
-def react_to_comment(request, *args, pk, **kwargs):
+
+def react_to_comment(request, *, pk):
     comment = get_object_or_404(Comment, id=pk)
     user = request.user
 
@@ -206,7 +210,7 @@ def react_to_comment(request, *args, pk, **kwargs):
 
 
 @require_http_methods(["POST"])
-def comment_on_page(request, *args, pk, **kwargs):
+def comment_on_page(request, *, pk):
     page = get_object_or_404(Page, id=pk).specific
     user = request.user
 
