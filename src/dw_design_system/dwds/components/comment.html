@@ -20,12 +20,18 @@
         {% if comment.reply_form %}
             <div id="comment-{{ comment.id }}-reply-form">
                 <h3>Reply to this comment</h3>
-                <form action="{{ comment.reply_form_url }}" method="post" onsubmit="">
+                <form class="content-stack"
+                      action="{{ comment.reply_form_url }}"
+                      method="post"
+                      onsubmit="">
                     {% csrf_token %}
                     {{ comment.reply_form }}
-                    <input value="Reply"
-                           type="submit"
-                           class="dwds-button dwds-button--transactional" />
+                    <div class="dwds-button-group">
+                        <input value="Reply" type="submit" class="dwds-button" />
+                        <input value="Cancel"
+                               type="submit"
+                               class="dwds-button dwds-button--secondary" />
+                    </div>
                 </form>
             </div>
 

@@ -12,7 +12,7 @@ a.dwds-button,
     text-decoration: none;
     border: solid var(--button-border-width) var(--color-button-primary);
     border-bottom: solid var(--button-border-width-bottom) var(--color-button-bottom-border);
-    border-radius: unset;
+    border-radius: var(--border-radius);
     cursor: pointer;
     align-self: flex-start;
 
@@ -136,6 +136,7 @@ a.dwds-button,
 
     &--link {
         color: var(--color-link);
+        text-decoration: underline var(--text-underline);
 
         &.no-underline {
             text-decoration: none;
