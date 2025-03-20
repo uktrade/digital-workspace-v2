@@ -103,6 +103,16 @@ def edit_comment(request, *args, comment_id, **kwargs):
 
     return HttpResponse(status=400)
 
+@require_http_methods(["GET"])
+def get_comment(request, *args, comment_id, field=None, **kwargs):
+    if request.method == "GET":
+        comment = comments_service.comment_to_dict(
+                get_object_or_404(Comment, id=comment_id)
+            )
+        
+        return HttpResponse(comment[field] or comment, content_type="text/html")
+    
+    return HttpResponse(status=400)
 
 def edit_comment_form(request, *args, comment_id, **kwargs):
     if not comments_service.can_edit_comment(request.user, comment_id):
@@ -119,6 +129,13 @@ def edit_comment_form(request, *args, comment_id, **kwargs):
                 "comment_id": comment_id,
             },
         ),
+        edit_comment_cancel_url=reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment_id,
+                "field": "message",
+            },
+        ),
     )
 
     return TemplateResponse(
@@ -128,7 +145,44 @@ def edit_comment_form(request, *args, comment_id, **kwargs):
             "comment": comment,
         },
     )
+# TODO: wip
+def toggle_edit_comment(request, *args, comment_id, editing, **kwargs):
+    if not comments_service.can_edit_comment(request.user, comment_id):
+        return HttpResponse(status=403)
 
+    comment = comments_service.comment_to_dict(
+        get_object_or_404(Comment, id=comment_id)
+    )
+
+    if editing:
+        return HttpResponse(comment["message"], content_type="text/html", headers={"editing": "false"})
+    
+
+    comment.update(
+        edit_comment_form=CommentForm(initial={"comment": comment["message"]}),
+        edit_comment_url=reverse(
+            "interactions:edit-comment",
+            kwargs={
+                "comment_id": comment_id,
+            },
+        ),
+        edit_comment_cancel_url=reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment_id,
+                "field": "message",
+            },
+        ),
+    )
+
+    return TemplateResponse(
+        request,
+        "interactions/edit_comment_form.html",
+        context={
+            "comment": comment,
+            "editing": True,
+        },
+    )
 
 def react_to_comment(request, *args, pk, **kwargs):
     comment = get_object_or_404(Comment, id=pk)

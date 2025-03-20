@@ -59,6 +59,21 @@ def edit_comment_input(context, comment_id: int):
                 "comment_id": comment_id,
             },
         ),
+        edit_comment_cancel_url=reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment_id,
+                "field": "message",
+            },
+        ),
+        # TODO: wip
+        toggle_edit_comment_url=reverse(
+            "interactions:toggle-edit-comment",
+            kwargs={
+                "comment_id": comment_id,
+                "editing": int(False),
+            },
+        ),
     )
 
     return {

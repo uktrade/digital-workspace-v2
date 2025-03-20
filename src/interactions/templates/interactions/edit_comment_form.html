@@ -12,6 +12,14 @@
                 <input value="Submit edited comment"
                        type="submit"
                        class="dwds-button dwds-button--transactional" />
+                {% if comment.edit_comment_cancel_url %}
+                <!-- TODO: button styling: using input sets the width of all buttons to the same size -->
+                    <button class="dwds-button dwds-button--warning"
+                            id="edit-comment-{{ comment.id }}-cancel"
+                            hx-get="{{ comment.edit_comment_cancel_url }}"
+                            hx-target="#comment-{{ comment.id }}-message"
+                            hx-swap="innerHTML">Cancel</button> 
+                {% endif %}
             </form>
         </div>
     {% endif %}

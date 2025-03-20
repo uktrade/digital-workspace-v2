@@ -25,4 +25,14 @@ urlpatterns = [
         views.edit_comment_form,
         name="edit-comment-form",
     ),
+    path(
+        "comment/<int:comment_id>/<str:field>",
+        views.get_comment,
+        name="get-comment",
+    ),
+        path(
+        "toggle-edit-comment/<int:comment_id>/<int:editing>/",
+        views.toggle_edit_comment,
+        name="toggle-edit-comment",
+    ),
 ]
