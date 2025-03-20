@@ -85,7 +85,7 @@ def react_to_page(request, *args, pk, **kwargs):
 
 @require_http_methods(["POST"])
 def edit_comment(request, *args, comment_id, **kwargs):
-    if not comments_service.can_edit_comment(request["user"], comment_id):
+    if not comments_service.can_edit_comment(request.user, comment_id):
         return HttpResponse(status=403)
 
     if request.method == "POST":
@@ -95,12 +95,17 @@ def edit_comment(request, *args, comment_id, **kwargs):
         except comments_service.CommentNotFound:
             raise Http404
 
-        return HttpResponse(comment_message, content_type="text/html")
+        comment = comments_service.comment_to_dict(
+            get_object_or_404(Comment, id=comment_id)
+        )
+
+        return HttpResponse(comment["message"], content_type="text/html")
+
     return HttpResponse(status=400)
 
 
 def edit_comment_form(request, *args, comment_id, **kwargs):
-    if not comments_service.can_edit_comment(request["user"], comment_id):
+    if not comments_service.can_edit_comment(request.user, comment_id):
         return HttpResponse(status=403)
 
     comment = comments_service.comment_to_dict(

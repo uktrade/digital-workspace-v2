@@ -12,6 +12,9 @@ urlpatterns = [
     ),
     path("bookmark/<int:pk>/remove", views.remove_bookmark, name="bookmark-remove"),
     path("bookmarks", views.bookmark_index, name="bookmark-index"),
+    path("page/<int:pk>/react", views.react_to_page, name="page-reactions"),
+    path("page/<int:pk>/comment", views.comment_on_page, name="comment-on-page"),
+    path("comment/<int:pk>/hide", views.hide_comment, name="hide-comment"),
     path(
         "edit-comment/<int:comment_id>/",
         views.edit_comment,
@@ -22,7 +25,4 @@ urlpatterns = [
         views.edit_comment_form,
         name="edit-comment-form",
     ),
-    path("page/<int:pk>/react", views.react_to_page, name="page-reactions"),
-    path("page/<int:pk>/comment", views.comment_on_page, name="comment-on-page"),
-    path("comment/<int:pk>/hide", views.hide_comment, name="hide-comment"),
 ]

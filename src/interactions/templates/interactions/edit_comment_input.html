@@ -2,7 +2,6 @@
 {% user_can_edit_comment request.user comment.id as can_edit %}
 {% if can_edit %}
     {% if comment.edit_comment_form_url %}
-        <!-- TODO: put hx-target element id in a parameter? Templatetag would solve... -->
         <button class="dwds-button dwds-button--link"
                 id="edit-comment-submit-{{ comment.id }}"
                 hx-get="{{ comment.edit_comment_form_url }}"
