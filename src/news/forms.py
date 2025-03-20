@@ -8,7 +8,6 @@ class CommentForm(forms.Form):
         max_length=500,
         required=True,
         widget=forms.Textarea(
-            # Add classes
             attrs={"class": "dwds-textarea width-full"},
         ),
     )
