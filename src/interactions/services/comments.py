@@ -1,3 +1,4 @@
+from django.db import models
 from django.db.models import QuerySet
 from django.urls import reverse
 from wagtail.models import Page
@@ -41,7 +42,11 @@ def get_page_comments(page: Page) -> QuerySet[Comment]:
 
 def get_page_comment_count(page: Page) -> int:
     if hasattr(page, "comments"):
-        return page.comments.filter(is_visible=True).count()
+        return (
+            page.comments.filter(is_visible=True)
+            .filter(models.Q(parent__isnull=True) | models.Q(parent__is_visible=True))
+            .count()
+        )
     return 0
 
 
