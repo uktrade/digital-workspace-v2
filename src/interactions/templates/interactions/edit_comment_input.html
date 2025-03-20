@@ -1,17 +1,12 @@
-<fieldset id="edit-{{ comment_id }}" class="reply-fieldset govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Edit this comment</legend>
-    <form action=""
-          method="post"
-          onsubmit="setCommentId(this, {{ comment_id }});">
-        {% csrf_token %}
-        <div class="govuk-form-group">
-            {% for field in edit_comment_form %}
-                <label class="ws-hide" for="{{ field.auto_id }}">Comment content</label>
-                {{ field }}
-            {% endfor %}
-            <p>
-                <input value="Submit comment" type="submit" class="govuk-button" />
-            </p>
-        </div>
-    </form>
-</fieldset>
+{% load comments %}
+{% user_can_edit_comment request.user comment.id as can_edit %}
+{% if can_edit %}
+    {% if comment.edit_comment_form_url %}
+        <!-- TODO: put hx-target element id in a parameter? Templatetag would solve... -->
+        <button class="dwds-button dwds-button--link"
+                id="edit-comment-submit-{{ comment.id }}"
+                hx-get="{{ comment.edit_comment_form_url }}"
+                hx-target="#comment-{{ comment.id }}-message"
+                hx-swap="innerHTML">Edit</button>
+    {% endif %}
+{% endif %}

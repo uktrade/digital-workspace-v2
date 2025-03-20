@@ -16,6 +16,7 @@ from interactions.services import bookmarks as bookmarks_service
 from interactions.services import comment_reactions as comment_reactions_service
 from interactions.services import comments as comments_service
 from interactions.services import page_reactions as page_reactions_service
+from news.forms import CommentForm
 from news.models import Comment
 
 
@@ -83,19 +84,45 @@ def react_to_page(request, *args, pk, **kwargs):
 
 
 @require_http_methods(["POST"])
-def edit_comment(request, *args, page_id, comment_id, **kwargs):
+def edit_comment(request, *args, comment_id, **kwargs):
+    if not comments_service.can_edit_comment(request["user"], comment_id):
+        return HttpResponse(status=403)
 
     if request.method == "POST":
         comment_message = request.POST.get("comment")
         try:
-            print("DEBUG_EDIT_REQUEST")
-            print(request)
             comments_service.edit_comment(comment_message, comment_id)
         except comments_service.CommentNotFound:
             raise Http404
 
         return HttpResponse(comment_message, content_type="text/html")
     return HttpResponse(status=400)
+
+
+def edit_comment_form(request, *args, comment_id, **kwargs):
+    if not comments_service.can_edit_comment(request["user"], comment_id):
+        return HttpResponse(status=403)
+
+    comment = comments_service.comment_to_dict(
+        get_object_or_404(Comment, id=comment_id)
+    )
+    comment.update(
+        edit_comment_form=CommentForm(initial={"comment": comment["message"]}),
+        edit_comment_url=reverse(
+            "interactions:edit-comment",
+            kwargs={
+                "comment_id": comment_id,
+            },
+        ),
+    )
+
+    return TemplateResponse(
+        request,
+        "interactions/edit_comment_form.html",
+        context={
+            "comment": comment,
+        },
+    )
 
 
 def react_to_comment(request, *args, pk, **kwargs):

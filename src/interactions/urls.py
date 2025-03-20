@@ -13,11 +13,15 @@ urlpatterns = [
     path("bookmark/<int:pk>/remove", views.remove_bookmark, name="bookmark-remove"),
     path("bookmarks", views.bookmark_index, name="bookmark-index"),
     path(
-        "edit-page-comment/<int:page_id>/<int:comment_id>/",
+        "edit-comment/<int:comment_id>/",
         views.edit_comment,
-        name="edit-page-comment",
+        name="edit-comment",
     ),
-    path("comment/<int:pk>/", views.comment_on_page, name="comment-on-page"),
+    path(
+        "edit-comment-form/<int:comment_id>/",
+        views.edit_comment_form,
+        name="edit-comment-form",
+    ),
     path("page/<int:pk>/react", views.react_to_page, name="page-reactions"),
     path("page/<int:pk>/comment", views.comment_on_page, name="comment-on-page"),
     path("comment/<int:pk>/hide", views.hide_comment, name="hide-comment"),

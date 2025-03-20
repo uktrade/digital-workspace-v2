@@ -1,12 +1,14 @@
-{% load reactions %}
+{% load reactions comments %}
 
 <div class="dwds-comment" id="comment-{{ comment.id }}">
     <div class="content-stack small">
-        {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date %}
+        {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date updated_timestamp=comment.edited_date %}
         <div id="comment-{{ comment.id }}-message">{{ comment.message }}</div>
         {% reactions_for_comment user comment.id %}
         {% include "news/includes/delete_comment.html" with comment=comment %}
-        {% include "news/includes/edit_comment.html" with comment=comment %}
+        {% edit_comment_input comment.id %}
+        <!-- TODO: convert reply_comment to templatetag and use htmx -->
+        {% include "news/includes/reply_comment.html" with comment=comment %}
         {% if comment.show_replies %}
             {% if comment.replies %}
                 <div class="content-stack">
@@ -21,21 +23,6 @@
                     {% for reply in comment.replies %}
                         <div class="dwds-inset">{% include "dwds/components/comment.html" with comment=reply %}</div>
                     {% endfor %}
-                </div>
-            {% endif %}
-            {% if comment.reply_form %}
-                <button class="dwds-toggle-visibility dwds-button dwds-button--link"
-                        data-target-identifier="comment-{{ comment.id }}-reply-form"
-                        data-target-state="hidden">Reply</button>
-                <div id="comment-{{ comment.id }}-reply-form">
-                    <h3>Reply to this comment</h3>
-                    <form action="{{ comment.reply_form_url }}" method="post" onsubmit="">
-                        {% csrf_token %}
-                        {{ comment.reply_form }}
-                        <input value="Submit reply"
-                               type="submit"
-                               class="dwds-button dwds-button--transactional" />
-                    </form>
                 </div>
             {% endif %}
         {% endif %}

@@ -69,6 +69,7 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
             author_profile.photo.url if author_profile.photo else None
         ),
         "posted_date": comment.posted_date,
+        "edited_date": comment.edited_date,
         "message": comment.content,
         "show_replies": include_replies,
         "reply_count": get_comment_reply_count(comment),
@@ -87,6 +88,12 @@ def hide_comment(comment: Comment) -> None:
 
 
 def can_hide_comment(user: User, comment: Comment | int) -> bool:
+    if isinstance(comment, int):
+        comment = Comment.objects.get(id=comment)
+    return user == comment.author
+
+
+def can_edit_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
         comment = Comment.objects.get(id=comment)
     return user == comment.author
