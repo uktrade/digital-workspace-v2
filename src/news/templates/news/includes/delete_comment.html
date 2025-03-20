@@ -17,7 +17,7 @@
                 <button class="dwds-modal-close dwds-button"
                         hx-post="{% url 'interactions:hide-comment' comment.id %}"
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                        hx-on::after-request="window.location.replace(window.location.href)">Yes</button>
+                        hx-on::after-request="window.location.replace(window.location.href.split('#')[0])">Yes</button>
                 <button class="dwds-modal-close dwds-button">No</button>
             </form>
         </dialog>
