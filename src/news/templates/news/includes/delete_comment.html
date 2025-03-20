@@ -2,6 +2,7 @@
 
 {% user_can_delete_comment request.user comment.id as can_delete %}
 {% if can_delete %}
+    <span class="separator"></span>
     <div class="dwds-modal width-third">
         <button class="dwds-button dwds-modal-open dwds-button--link">Delete</button>
         <dialog>
