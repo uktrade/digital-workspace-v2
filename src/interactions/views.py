@@ -103,15 +103,16 @@ def edit_comment(request, *, comment_id):
 
     return HttpResponse(status=400)
 
+
 @require_http_methods(["GET"])
 def get_comment(request, *, comment_id, field=None):
     if request.method == "GET":
         comment = comments_service.comment_to_dict(
-                get_object_or_404(Comment, id=comment_id)
-            )
-        
+            get_object_or_404(Comment, id=comment_id)
+        )
+
         return HttpResponse(comment[field] or comment, content_type="text/html")
-    
+
     return HttpResponse(status=400)
 
 
@@ -148,6 +149,7 @@ def edit_comment_form(request, *, comment_id):
         },
     )
 
+
 # TODO: wip
 def toggle_edit_comment(request, *, comment_id, editing):
     if not comments_service.can_edit_comment(request.user, comment_id):
@@ -158,8 +160,9 @@ def toggle_edit_comment(request, *, comment_id, editing):
     )
 
     if editing:
-        return HttpResponse(comment["message"], content_type="text/html", headers={"editing": "false"})
-    
+        return HttpResponse(
+            comment["message"], content_type="text/html", headers={"editing": "false"}
+        )
 
     comment.update(
         edit_comment_form=CommentForm(initial={"comment": comment["message"]}),

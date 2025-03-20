@@ -30,7 +30,7 @@ urlpatterns = [
         views.get_comment,
         name="get-comment",
     ),
-        path(
+    path(
         "toggle-edit-comment/<int:comment_id>/<int:editing>/",
         views.toggle_edit_comment,
         name="toggle-edit-comment",
