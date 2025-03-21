@@ -1,44 +1,61 @@
-export class DWDSLinks {
-    constructor() {
+function isExternalLink(url) {
+    const schemas = ["http:", "https:"];
+    if (!schemas.some(schema => url.protocol == schema)) {
+        return false;
     }
-
-    initAll() {
-        const localDomains = [
-        ];
-
-        const domainMapping = {
-        }
-
-        document.querySelectorAll('a').forEach(function (anchor_element) {
-            const anchor_link = anchor_element.getAttribute("href");
-            // Check if the link starts with http or https
-            if (!anchor_link.startsWith("http://") && !anchor_link.startsWith("https://")) {
-                return;
-            }
-
-            let anchor_domain = anchor_link.split("/")[2];
-            if (anchor_domain === null) {
-                anchor_domain = "";
-            }
-
-            anchor_element.classList.add("dwds-link-external");
-
-            if (!localDomains.includes(anchor_domain)) {
-                const after_element = document.createElement("div");
-                after_element.classList.add("external-link-text");
-
-                if (domainMapping[anchor_domain]) {
-                    anchor_domain = domainMapping[anchor_domain];
-                }
-
-                after_element.innerText = "[" + anchor_domain + "]";
-
-                anchor_element.appendChild(after_element);
-            }
-
-        });
-    }
+    return new URL(document.baseURI).origin !== url.origin;
 }
 
-// FIX AFTER REFACTORING
-new DWDSLinks().initAll();
+function addExternalLinkText(anchorElement, anchorLink, settings) {
+    const anchorDomain = anchorLink.hostname;
+    if (settings.exclude_domains.includes(anchorDomain)) {
+        return;
+    }
+    const anchorWrapper = document.createElement("span");
+    anchorElement.parentNode.replaceChild(anchorWrapper, anchorElement);
+    anchorWrapper.appendChild(anchorElement);
+
+    const anchorText = settings.domain_mapping[anchorDomain] || "external link";
+    const externalText = document.createElement("span");
+    externalText.classList.add("dwds-link-external");
+    externalText.dataset.externalLinkText = " [" + anchorText + "]";
+
+    anchorElement.insertAdjacentElement("afterend", externalText);
+}
+
+function addExternalTextToAnchor(anchorElement, settings) {
+    const anchorLink = new URL(anchorElement.getAttribute("href"), document.baseURI);
+
+    if (!isExternalLink(anchorLink)) {
+        return;
+    }
+
+    addExternalLinkText(anchorElement, anchorLink, settings);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const settings = JSON.parse(document.getElementById('external-links-settings').textContent);
+
+    // Add external link text to all existing anchor elements
+    document.querySelectorAll('a').forEach(function (anchorElement) {
+        addExternalTextToAnchor(anchorElement, settings);
+    });
+
+    // Create a MutationObserver to watch for new anchor elements in the DOM
+    const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function (node) {
+                    if (node.nodeType === 1 && node.tagName === 'A') {
+                        addExternalTextToAnchor(node, settings);
+                    }
+                });
+            }
+        });
+    });
+    // Observe the document body for changes
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+});
