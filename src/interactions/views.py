@@ -111,7 +111,17 @@ def get_comment(request, *, comment_id, field=None):
             get_object_or_404(Comment, id=comment_id)
         )
 
-        return HttpResponse(comment[field] or comment, content_type="text/html")
+        if field and comment[field]:
+            return HttpResponse(comment[field], content_type="text/html")
+
+        return TemplateResponse(
+            request,
+            "dwds/components/comment.html",
+            context={
+                "comment": comment,
+                "request": request,
+            },
+        )
 
     return HttpResponse(status=400)
 
@@ -136,7 +146,6 @@ def edit_comment_form(request, *, comment_id):
             "interactions:get-comment",
             kwargs={
                 "comment_id": comment_id,
-                "field": "message",
             },
         ),
     )

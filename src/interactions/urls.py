@@ -26,7 +26,12 @@ urlpatterns = [
         name="edit-comment-form",
     ),
     path(
-        "comment/<int:comment_id>/<str:field>",
+        "comment/<int:comment_id>/<str:field>/",
+        views.get_comment,
+        name="get-comment",
+    ),
+    path(
+        "comment/<int:comment_id>/",
         views.get_comment,
         name="get-comment",
     ),

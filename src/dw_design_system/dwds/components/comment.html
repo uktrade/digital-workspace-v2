@@ -8,7 +8,7 @@
         </div>
         <div class="dwds-button-group with-separator">
             {% reactions_for_comment user comment.id %}
-          
+ 
             {% if comment.reply_form %}
                 <span class="separator"></span>
                 <button class="dwds-toggle-visibility dwds-button dwds-button--link"
@@ -16,7 +16,12 @@
                         data-target-state="hidden">Reply</button>
             {% endif %}
             {% include "news/includes/delete_comment.html" with comment=comment %}
-            {% edit_comment_input comment.id %}
+            {% user_can_edit_comment request.user comment.id as can_edit %}
+            {% if can_edit %}
+                <span class="separator"></span>
+                {% edit_comment_input comment.id %}
+            {% endif %}
+            <span class="separator"></span>
         </div>
 
         {% if comment.reply_form %}
