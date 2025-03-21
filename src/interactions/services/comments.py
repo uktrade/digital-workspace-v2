@@ -9,8 +9,8 @@ from user.models import User
 
 def add_page_comment(
     page: Page, commenter: User, comment: str, in_reply_to: int
-) -> None:
-    Comment.objects.create(
+) -> Comment:
+    return Comment.objects.create(
         content=comment,
         author=commenter,
         page=page,
