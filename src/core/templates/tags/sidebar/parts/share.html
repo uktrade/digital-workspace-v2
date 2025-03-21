@@ -5,14 +5,53 @@
         </button>
     </div>
     <dialog>
-        <div class="content-stack">
+        <div class="content-spaced middle">
+            <h2>Share this page</h2>
             <form class="modal-header" method="dialog">
                 <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
                     {% include "dwds/icons/cross.html" with small=True %}
                     Close
                 </button>
             </form>
-            {% include "dwds/components/copy_text.html" with text=page_url %}
+        </div>
+        <!-- Share Platforms -->
+        <div class="content-stack tiny">
+            <!-- Email -->
+            <form class="mailto-form">
+                <input name="subject" type="hidden" value="{{ page.title }} - DBT Intranet">
+                <div name="body" style="display: none;">
+                    {{ page_url }}
+                    Only people with access to the Department for Business and Trade intranet can open this link.
+                </div>
+                <button type="submit"
+                        class="dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/email.html" with small=True %}
+                    Email
+                </button>
+            </form>
+            {% if FEATURE_FLAGS.share_teams %}
+                <!-- MS Teams -->
+                <button class="teams-share-button dwds-button dwds-button--link content-with-icon small-gap"
+                        data-href="{{ page_url }}"
+                        data-icon-px-size="1"
+                        data-msg-text="Check out this page on the intranet!"
+                        data-preview="false">
+                    {% include "dwds/icons/ms_teams.html" with small=True %}
+                    MS Teams
+                </button>
+                <script async defer src="https://teams.microsoft.com/share/launcher.js"></script>
+            {% endif %}
+            {% comment %}
+                <!-- Calendar -->
+                <button class="dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/calendar.html" with small=True %}
+                    Calendar
+                </button>
+            {% endcomment %}
+            {% include "dwds/components/copy_text.html" with text=page_url hide_input=True %}
+        </div>
+        <div class="content-footer">
+            <p>This is only shareable inside the department to people with access to the intranet</p>
         </div>
     </dialog>
 </div>

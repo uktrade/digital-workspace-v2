@@ -10,10 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         openElement.addEventListener("click", function () {
             dialog.showModal();
+            document.documentElement.classList.add("no-scroll");
         });
         closeElements.forEach((element) => {
             element.addEventListener("click", function () {
                 dialog.close();
+                document.documentElement.classList.remove("no-scroll");
             });
         });
 
@@ -26,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 event.clientX <= rect.left + rect.width;
             if (!isInDialog) {
                 dialog.close();
+                document.documentElement.classList.remove("no-scroll");
             }
         });
     });
