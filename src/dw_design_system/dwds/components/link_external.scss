@@ -1,0 +1,15 @@
+.dwds-link-external {
+    > .external-link-text {
+        display: inline-block;
+        margin-inline-start: var(--s-5);
+        color: var(--color-text-secondary);
+    }
+
+    &:active,
+    &:hover,
+    &:focus {
+        > .external-link-text {
+            text-decoration: inherit;
+        }
+    }
+}
