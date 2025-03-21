@@ -2,6 +2,7 @@
 
 {% user_can_delete_comment request.user comment.id as can_delete %}
 {% if can_delete %}
+    <span class="separator"></span>
     <div class="dwds-modal width-third">
         <button class="dwds-button dwds-modal-open dwds-button--link">Delete</button>
         <dialog>
@@ -16,7 +17,7 @@
                 <button class="dwds-modal-close dwds-button"
                         hx-post="{% url 'interactions:hide-comment' comment.id %}"
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                        hx-on::after-request="window.location.replace(window.location.href)">Yes</button>
+                        hx-on::after-request="window.location.replace(window.location.href.split('#')[0])">Yes</button>
                 <button class="dwds-modal-close dwds-button">No</button>
             </form>
         </dialog>
