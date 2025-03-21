@@ -217,15 +217,14 @@ def comment_on_page(request, *, pk):
     page = get_object_or_404(Page, id=pk).specific
     user = request.user
 
-    if request.method == "POST":
-        comments_service.add_page_comment(
-            page,
-            user,
-            request.POST["comment"],
-            request.POST.get("in_reply_to", None),
-        )
+    comment = comments_service.add_page_comment(
+        page,
+        user,
+        request.POST["comment"],
+        request.POST.get("in_reply_to", None),
+    )
 
-    return redirect(page.url)
+    return redirect(page.url + f"#comment-{comment.id}")
 
 
 @require_http_methods(["POST"])

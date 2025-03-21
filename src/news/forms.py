@@ -7,7 +7,9 @@ class CommentForm(forms.Form):
         label="",
         max_length=500,
         required=True,
-        widget=forms.Textarea(),
+        widget=forms.Textarea(
+            attrs={"class": "dwds-textarea width-full"},
+        ),
     )
     in_reply_to = forms.IntegerField(
         required=False,
