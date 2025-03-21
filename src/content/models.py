@@ -38,18 +38,9 @@ from extended_search.index import Indexed, RelatedFields
 from peoplefinder.widgets import PersonChooser
 from user.models import User as UserModel
 
-
 logger = logging.getLogger(__name__)
 
 User = get_user_model()
-
-RICH_TEXT_FEATURES = [
-    "ol",
-    "ul",
-    "link",
-    "document-link",
-    "anchor-identifier",
-]
 
 
 def strip_tags_with_newlines(string: str) -> str:
@@ -458,12 +449,11 @@ class ContentPage(SearchFieldsMixin, BasePage):
                 "text_section",
                 content_blocks.TextBlock(
                     blank=True,
-                    features=RICH_TEXT_FEATURES,
-                    help_text="""Some text to describe what this section is about (will be
-            displayed above the list of child pages)""",
+                    help_text="""Some text to describe what this section is about (will be displayed above the list of child pages)""",
                 ),
             ),
             ("image", content_blocks.ImageBlock()),
+            ("image_with_text", content_blocks.ImageWithTextBlock()),
             (
                 "embed_video",
                 content_blocks.EmbedVideoBlock(help_text="""Embed a video"""),

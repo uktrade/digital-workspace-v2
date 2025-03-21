@@ -8,6 +8,14 @@ from wagtailmedia.blocks import AbstractMediaChooserBlock
 from peoplefinder.blocks import PersonChooserBlock
 
 
+RICH_TEXT_FEATURES = [
+    "ol",
+    "ul",
+    "link",
+    "document-link",
+    "anchor-identifier",
+]
+
 class HeadingBlock(blocks.CharBlock):
     """A (section) heading
     Base block used to provide functionality for all heading blocks
@@ -68,7 +76,8 @@ class TextBlock(blocks.RichTextBlock):
         template = "blocks/text.html"
 
     def __init__(self, *args, **kwargs):
-        super().__init__(features=kwargs["features"])
+        kwargs["features"] = kwargs.get("features", RICH_TEXT_FEATURES)
+        super().__init__(*args, **kwargs)
 
 
 class UsefulLinkBlock(blocks.StructBlock):
@@ -136,6 +145,17 @@ class ImageBlock(blocks.StructBlock):
             )
         return super().clean(value)
 
+
+class ImageWithTextBlock(blocks.StructBlock):
+    """An image block with text left or right of it"""
+    image = ImageChooserBlock()
+    heading = Heading3Block()
+    text = TextBlock()
+
+    class Meta:
+        label = "Image with text"
+        icon = "image"
+        template = "blocks/image_with_text.html"
 
 class MediaChooserBlock(AbstractMediaChooserBlock):
     """Media file chooser for the admin interface
