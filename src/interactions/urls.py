@@ -16,28 +16,23 @@ urlpatterns = [
     path("page/<int:pk>/comment", views.comment_on_page, name="comment-on-page"),
     path("comment/<int:pk>/hide", views.hide_comment, name="hide-comment"),
     path(
-        "edit-comment/<int:comment_id>/",
+        "comment/<int:comment_id>/edit",
         views.edit_comment,
         name="edit-comment",
     ),
     path(
-        "edit-comment-form/<int:comment_id>/",
-        views.edit_comment_form,
-        name="edit-comment-form",
+        "page/<int:page_id>/comment/<int:comment_id>/edit",
+        views.edit_page_comment_form,
+        name="edit-page-comment-form",
     ),
     path(
-        "comment/<int:comment_id>/<str:field>/",
-        views.get_comment,
-        name="get-comment",
+        "page/<int:page_id>/comment/<int:comment_id>/<str:field>/",
+        views.page_comment,
+        name="page-comment",
     ),
     path(
-        "comment/<int:comment_id>/",
-        views.get_comment,
-        name="get-comment",
-    ),
-    path(
-        "toggle-edit-comment/<int:comment_id>/<int:editing>/",
-        views.toggle_edit_comment,
-        name="toggle-edit-comment",
+        "page/<int:page_id>/comment/<int:comment_id>/",
+        views.page_comment,
+        name="page-comment",
     ),
 ]

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.db.models import QuerySet
 from django.urls import reverse
@@ -18,6 +20,7 @@ def edit_comment(content: str, pk: str) -> None:
 
     if comment:
         comment.content = content
+        comment.edited_date = datetime.now()
         comment.save()
 
 
@@ -79,6 +82,7 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
         "show_replies": include_replies,
         "reply_count": get_comment_reply_count(comment),
         "replies": replies,
+        "in_reply_to": comment.parent.pk if comment.parent else None,
     }
 
 

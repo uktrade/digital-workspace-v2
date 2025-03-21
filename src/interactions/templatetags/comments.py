@@ -34,6 +34,7 @@ def page_comments(context, page: Page):
         "comment_form": CommentForm(),
         "comment_form_url": comment_form_submission_url,
         "request": context["request"],
+        "page": page,
     }
 
 
@@ -47,31 +48,24 @@ def user_can_edit_comment(user, comment_id):
     return comments_service.can_edit_comment(user, comment_id)
 
 
-@register.inclusion_tag("interactions/edit_comment_input.html", takes_context=True)
-def edit_comment_input(context, comment_id: int):
+@register.inclusion_tag("interactions/edit_page_comment_input.html", takes_context=True)
+def edit_page_comment_input(context, page_id: int, comment_id: int):
     comment = comments_service.comment_to_dict(
         get_object_or_404(Comment, id=comment_id)
     )
     comment.update(
-        edit_comment_form_url=reverse(
-            "interactions:edit-comment-form",
+        edit_page_comment_form_url=reverse(
+            "interactions:edit-page-comment-form",
             kwargs={
+                "page_id": page_id,
                 "comment_id": comment_id,
             },
         ),
         edit_comment_cancel_url=reverse(
-            "interactions:get-comment",
+            "interactions:page-comment",
             kwargs={
+                "page_id": page_id,
                 "comment_id": comment_id,
-                "field": "message",
-            },
-        ),
-        # TODO: wip
-        toggle_edit_comment_url=reverse(
-            "interactions:toggle-edit-comment",
-            kwargs={
-                "comment_id": comment_id,
-                "editing": int(False),
             },
         ),
     )
