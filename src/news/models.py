@@ -35,6 +35,11 @@ class Comment(models.Model):
     legacy_author_email = models.EmailField(blank=True, null=True)
     content = models.TextField()
     posted_date = models.DateTimeField(default=datetime.now)
+    edited_date = models.DateTimeField(
+        default=None,
+        null=True,
+        blank=True,
+    )
     is_visible = models.BooleanField(default=True)
     parent = models.ForeignKey(
         "news.Comment",

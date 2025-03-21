@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.db.models import QuerySet
 from django.urls import reverse
@@ -5,6 +7,21 @@ from wagtail.models import Page
 
 from news.models import Comment
 from user.models import User
+
+
+class CommentNotFound(Exception): ...
+
+
+def edit_comment(content: str, pk: str) -> None:
+    try:
+        comment = Comment.objects.get(pk=pk)
+    except Comment.DoesNotExist:
+        raise CommentNotFound()
+
+    if comment:
+        comment.content = content
+        comment.edited_date = datetime.now()
+        comment.save()
 
 
 def add_page_comment(
@@ -60,10 +77,12 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
             author_profile.photo.url if author_profile.photo else None
         ),
         "posted_date": comment.posted_date,
+        "edited_date": comment.edited_date,
         "message": comment.content,
         "show_replies": include_replies,
         "reply_count": get_comment_reply_count(comment),
         "replies": replies,
+        "in_reply_to": comment.parent.pk if comment.parent else None,
     }
 
 
@@ -78,6 +97,12 @@ def hide_comment(comment: Comment) -> None:
 
 
 def can_hide_comment(user: User, comment: Comment | int) -> bool:
+    if isinstance(comment, int):
+        comment = Comment.objects.get(id=comment)
+    return user == comment.author
+
+
+def can_edit_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
         comment = Comment.objects.get(id=comment)
     return user == comment.author
