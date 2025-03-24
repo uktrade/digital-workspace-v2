@@ -35,7 +35,6 @@ from content.validators import validate_description_word_count
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
-from peoplefinder.models import Person
 from peoplefinder.widgets import PersonChooser
 from user.models import User as UserModel
 
@@ -183,6 +182,7 @@ class BasePage(Page, Indexed):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+        help_text="If the 'page author' field is empty, we will fall back to the owner of this page.",
     )
 
     promote_panels = []

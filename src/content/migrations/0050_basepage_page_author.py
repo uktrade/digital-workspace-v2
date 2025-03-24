@@ -17,6 +17,7 @@ class Migration(migrations.Migration):
             name="page_author",
             field=models.ForeignKey(
                 blank=True,
+                help_text="If the 'page author' field is empty, we will fall back to the owner of this page.",
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to="peoplefinder.person",
