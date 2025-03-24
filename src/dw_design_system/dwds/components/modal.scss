@@ -8,7 +8,7 @@
             backdrop-filter: blur(0.3rem);
         }
 
-        form[method="dialog"] {
+        form[method="dialog"].modal-header {
             display: flex;
             flex-direction: row-reverse;
 

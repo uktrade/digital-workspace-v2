@@ -14,24 +14,29 @@
 @forward "form-items/input";
 @forward "form-items/radio";
 @forward "form-items/select";
+@forward "form-items/textarea";
 
 // Components
+@forward "components/accordion";
+@forward "components/author";
 @forward "components/box";
+@forward "components/comment";
+@forward "components/comments";
 @forward "components/content_list";
+@forward "components/copy_text";
 @forward "components/cta";
 @forward "components/cta_button";
+@forward "components/details";
 @forward "components/link_action";
 @forward "components/link_list";
 @forward "components/link_navigate";
 @forward "components/message";
+@forward "components/modal";
 @forward "components/menu_vertical";
 @forward "components/one_up";
 @forward "components/pagination";
 @forward "components/promo";
 @forward "components/profile_info";
-@forward "components/accordion";
-@forward "components/copy_text";
-@forward "components/modal";
 @forward "components/spotlight";
 
 // Elements

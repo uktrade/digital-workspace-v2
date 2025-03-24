@@ -1,4 +1,5 @@
 {% load wagtailuserbar %}
+{% load webpack_static from webpack_loader %}
 
 <!-- Load dev_tools -->
 {% load dev_tools %}
@@ -47,7 +48,7 @@
                         </span>
                         <span class="govuk-footer__licence-description">
                             <a class="govuk-footer__link"
-                               href="mailto:digitalworkspace@digital.trade.gov.uk">Feedback</a>
+                               href="mailto:{{ settings.SERVICE_CONTACT_EMAIL }}">Feedback</a>
                         </span>
 
                         <!-- Add a way to open the dialog -->
@@ -56,9 +57,11 @@
                 {% endif %}
             </div>
             <div class="govuk-footer__meta-item">
-                <a class="govuk-footer__link govuk-footer__copyright-logo"
-                   href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">©
-                Crown copyright</a>
+                <a class="govuk-footer__link content-stack small"
+                   href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">
+                    <img src="{% webpack_static 'govuk-crest.svg' %}" alt="Royal Arms crest">
+                    <span>©Crown copyright</span>
+                </a>
             </div>
         </div>
     </div>

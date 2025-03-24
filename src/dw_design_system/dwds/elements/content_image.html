@@ -1,11 +1,11 @@
 {% load wagtailimages_tags static %}
 
 {% if content_image %}
-    {% image content_image fill-420x240 class="content-image" %}
+    {% image content_image fill-544x306 class="content-image" %}
 {% else %}
     <img class="content-image"
          src="{% static '/images/dwds/fallback_image_card.png' %}"
          alt="Colourful circles on a blue background."
-         width="420"
-         height="240">
+         width="544"
+         height="306">
 {% endif %}

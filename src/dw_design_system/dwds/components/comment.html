@@ -1,0 +1,58 @@
+{% load reactions %}
+
+<div class="dwds-comment" id="comment-{{ comment.id }}">
+    <div class="content-stack">
+        <div class="content-stack small">
+            {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date %}
+            <div>{{ comment.message }}</div>
+        </div>
+        <div class="dwds-button-group with-separator">
+            {% reactions_for_comment user comment.id %}
+            {% if comment.reply_form %}
+                <span class="separator"></span>
+                <button class="dwds-toggle-visibility dwds-button dwds-button--link"
+                        data-target-identifier="comment-{{ comment.id }}-reply-form"
+                        data-target-state="hidden">Reply</button>
+            {% endif %}
+            {% include "news/includes/delete_comment.html" with comment=comment %}
+        </div>
+
+        {% if comment.reply_form %}
+            <div id="comment-{{ comment.id }}-reply-form">
+                <h3>Reply to this comment</h3>
+                <form class="content-stack"
+                      action="{{ comment.reply_form_url }}"
+                      method="post"
+                      onsubmit="">
+                    {% csrf_token %}
+                    {{ comment.reply_form }}
+                    <div class="dwds-button-group">
+                        <input value="Reply" type="submit" class="dwds-button" />
+                        <input value="Cancel"
+                               type="submit"
+                               class="dwds-button dwds-button--secondary" />
+                    </div>
+                </form>
+            </div>
+
+            {% if comment.show_replies %}
+                {% if comment.replies %}
+                    <div class="content-stack">
+                        <h3>
+                            {{ comment.reply_count }}
+                            {% if comment.reply_count == 1 %}
+                                reply
+                            {% else %}
+                                replies
+                            {% endif %}
+                        </h3>
+                        {% for reply in comment.replies %}
+                            <div class="dwds-inset">{% include "dwds/components/comment.html" with comment=reply %}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endif %}
+
+        {% endif %}
+    </div>
+</div>
