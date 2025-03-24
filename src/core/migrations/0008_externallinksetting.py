@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 
+
 def create_initial_external_link_settings(apps, schema_editor):
     """
     Create initial ExternalLinkSetting objects for the default domains.
