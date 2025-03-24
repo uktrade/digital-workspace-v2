@@ -9,6 +9,15 @@ from core import flags
 from core.models import ExternalLinkSetting, FeatureFlag
 
 
+EXTENDED_LINKS_SETTINGS_CACHE = {
+    "keys": {
+        "exclude_domains": "external_link_settings__exclude_domains",
+        "domain_mapping": "external_link_settings__domain_mapping",
+    },
+    "timeout": 60 * 60 * 12,
+}
+
+
 def get_all_feature_flags(request):
     return {
         flag.name: flag_is_active(request, flag.name)
@@ -58,8 +67,12 @@ def get_external_link_settings(request: HttpRequest) -> dict:
         "enabled": flag_is_active(request, flags.EXTERNAL_LINKS),
     }
 
-    exclude_domains = cache.get("external_link_settings__exclude_domains", None)
-    domain_mapping = cache.get("external_link_settings__domain_mapping", None)
+    exclude_domains = cache.get(
+        EXTENDED_LINKS_SETTINGS_CACHE["keys"]["exclude_domains"], None
+    )
+    domain_mapping = cache.get(
+        EXTENDED_LINKS_SETTINGS_CACHE["keys"]["domain_mapping"], None
+    )
 
     if exclude_domains is None or domain_mapping is None:
         exclude_domains = []
@@ -72,10 +85,14 @@ def get_external_link_settings(request: HttpRequest) -> dict:
                 domain_mapping[els.domain] = els.external_link_text
 
             cache.set(
-                "external_link_settings__exclude_domains", exclude_domains, 60 * 60 * 12
+                EXTENDED_LINKS_SETTINGS_CACHE["keys"]["exclude_domains"],
+                exclude_domains,
+                EXTENDED_LINKS_SETTINGS_CACHE["timeout"],
             )
             cache.set(
-                "external_link_settings__domain_mapping", domain_mapping, 60 * 60 * 12
+                EXTENDED_LINKS_SETTINGS_CACHE["keys"]["domain_mapping"],
+                domain_mapping,
+                EXTENDED_LINKS_SETTINGS_CACHE["timeout"],
             )
 
     external_link_settings["exclude_domains"] = exclude_domains
