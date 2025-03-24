@@ -30,16 +30,10 @@ def get_share_page_email_link(request: HttpRequest, page: Page) -> str:
         "subject": f"{page.title} - DBT Intranet",
         "body": (
             page.get_full_url(request)
-            + "\n"
+            + urllib.parse.quote_plus("\n")
             + "Only people with access to the Department for Business and Trade"
             " intranet can open this link."
         ),
     }
-    params_str = "&".join(
-        [
-            f"{key}={urllib.parse.quote_plus(value)}"
-            for key, value in params.items()
-            if value
-        ]
-    )
+    params_str = "&".join([f"{key}={value}" for key, value in params.items() if value])
     return f"mailto:{to_email}?{params_str}"
