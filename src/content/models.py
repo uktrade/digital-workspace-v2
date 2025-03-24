@@ -38,6 +38,7 @@ from extended_search.index import Indexed, RelatedFields
 from peoplefinder.widgets import PersonChooser
 from user.models import User as UserModel
 
+
 logger = logging.getLogger(__name__)
 
 User = get_user_model()

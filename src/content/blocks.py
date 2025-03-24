@@ -16,6 +16,7 @@ RICH_TEXT_FEATURES = [
     "anchor-identifier",
 ]
 
+
 class HeadingBlock(blocks.CharBlock):
     """A (section) heading
     Base block used to provide functionality for all heading blocks
@@ -148,14 +149,30 @@ class ImageBlock(blocks.StructBlock):
 
 class ImageWithTextBlock(blocks.StructBlock):
     """An image block with text left or right of it"""
+
     image = ImageChooserBlock()
     heading = Heading3Block()
     text = TextBlock()
+    image_position = blocks.ChoiceBlock(
+        choices=[
+            ('left', 'Left'),
+            ('right', 'Right')
+        ],
+        default='left',
+        help_text="Position of the image relative to the text"
+    )
+    image_description = blocks.CharBlock(
+        required=False,
+        help_text="""
+        Optional text displayed under the image to provide context.
+        """,
+    )
 
     class Meta:
         label = "Image with text"
         icon = "image"
         template = "blocks/image_with_text.html"
+
 
 class MediaChooserBlock(AbstractMediaChooserBlock):
     """Media file chooser for the admin interface
