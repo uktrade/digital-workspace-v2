@@ -35,6 +35,9 @@ function addExternalTextToAnchor(anchorElement, settings) {
 
 document.addEventListener('DOMContentLoaded', function () {
     const settings = JSON.parse(document.getElementById('external-links-settings').textContent);
+    if (!settings.enabled) {
+        return;
+    }
 
     // Add external link text to all existing anchor elements
     document.querySelectorAll('a').forEach(function (anchorElement) {
