@@ -265,6 +265,9 @@ class BasePage(Page, Indexed):
         if getattr(self, "perm_sec_as_author", False) and settings.PERM_SEC_NAME:
             return settings.PERM_SEC_NAME
 
+        if first_publisher := self.get_first_publisher():
+            return first_publisher.profile
+
         return self.owner.profile
 
     def get_first_publisher(self) -> Optional[UserModel]:
@@ -275,8 +278,8 @@ class BasePage(Page, Indexed):
 
         if first_revision_with_user:
             return first_revision_with_user.user
-        else:
-            return None
+
+        return None
 
     @property
     def days_since_last_published(self):
