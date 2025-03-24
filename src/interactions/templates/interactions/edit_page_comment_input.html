@@ -5,42 +5,7 @@
         <button class="dwds-button dwds-button--link"
                 id="edit-comment-{{ comment.id }}-form-show"
                 hx-get="{{ comment.edit_page_comment_form_url }}"
-                hx-target="#comment-{{ comment.id }}-message"
-                hx-swap="innerHTML">Edit</button>
-
-        <button class="dwds-button dwds-button--link"
-                style="display: none"
-                id="edit-comment-{{ comment.id }}-form-hide"
-                hx-get="{{ comment.edit_comment_cancel_url }}"
                 hx-target="#comment-{{ comment.id }}"
                 hx-swap="innerHTML">Edit</button>
     {% endif %}
 {% endif %}
-<script>
-    // TODO: Not sure where/how to structure this as it will get created each time a comment is rendered, 
-    // placed in comments.js for now
-
-    // function toggleElement(currentElement, swapElement) {
-    //     if (swapElement.style.display === "none" || swapElement.style.display === "") {
-    //         currentElement.style.display = "none";
-    //         swapElement.style.display = "block";
-    //     } else {
-    //         currentElement.style.display = "block";
-    //         swapElement.style.display = "none";
-    //     }
-    // }
-    document.getElementById(
-        `edit-comment-${'{{ comment.id }}'}-form-show`
-    ).addEventListener("click", function(event) {
-        showFormElement = event.target;
-        hideFormElement = document.getElementById(`edit-comment-${'{{ comment.id }}'}-form-hide`);
-        toggleElement(showFormElement, hideFormElement);
-    });
-    document.getElementById(
-        `edit-comment-${'{{ comment.id }}'}-form-hide`
-    ).addEventListener("click", function(event) {
-        hideFormElement = event.target;
-        showFormElement = document.getElementById(`edit-comment-${'{{ comment.id }}'}-form-show`);
-        toggleElement(hideFormElement, showFormElement);
-    });
-</script>

@@ -49,22 +49,21 @@ def user_can_edit_comment(user, comment_id):
 
 
 @register.inclusion_tag("interactions/edit_page_comment_input.html", takes_context=True)
-def edit_page_comment_input(context, page_id: int, comment_id: int):
-    comment = comments_service.comment_to_dict(
-        get_object_or_404(Comment, id=comment_id)
-    )
-    comment.update(
+def edit_page_comment_input(context, comment_id: int):
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment_dict = comments_service.comment_to_dict(comment)
+    comment_dict.update(
         edit_page_comment_form_url=reverse(
             "interactions:edit-page-comment-form",
             kwargs={
-                "page_id": page_id,
+                "page_id": comment.page.id,
                 "comment_id": comment_id,
             },
         ),
         edit_comment_cancel_url=reverse(
             "interactions:page-comment",
             kwargs={
-                "page_id": page_id,
+                "page_id": comment.page.id,
                 "comment_id": comment_id,
             },
         ),
@@ -72,6 +71,6 @@ def edit_page_comment_input(context, page_id: int, comment_id: int):
 
     return {
         "user": context["user"],
-        "comment": comment,
+        "comment": comment_dict,
         "request": context["request"],
     }
