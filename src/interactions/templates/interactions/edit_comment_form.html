@@ -1,7 +1,7 @@
 {% load comments %}
 {% user_can_edit_comment request.user comment.id as can_edit %}
 {% if can_edit %}
-    {% if comment.edit_page_comment_form %}
+    {% if comment.edit_comment_form %}
         <div id="comment-{{ comment.id }}-edit-form">
             {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date updated_timestamp=comment.edited_date %}
             <h3>Edit this comment</h3>
@@ -9,14 +9,12 @@
                   hx-target="#comment-{{ comment.id }}"
                   hx-swap="innerHTML">
                 {% csrf_token %}
-                {{ comment.edit_page_comment_form }}
+                {{ comment.edit_comment_form }}
                 <input value="Submit edited comment"
                        type="submit"
                        class="dwds-button dwds-button--transactional" />
                 {% if comment.edit_comment_cancel_url %}
-                    <!-- TODO: button styling: using input sets the width of all buttons to the same size -->
                     <button class="dwds-button dwds-button--warning"
-                            id="edit-comment-{{ comment.id }}-cancel"
                             hx-get="{{ comment.edit_comment_cancel_url }}"
                             hx-target="#comment-{{ comment.id }}"
                             hx-swap="innerHTML">Cancel</button>

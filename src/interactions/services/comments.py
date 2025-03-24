@@ -12,16 +12,11 @@ from user.models import User
 class CommentNotFound(Exception): ...
 
 
-def edit_comment(content: str, pk: str) -> None:
-    try:
-        comment = Comment.objects.get(pk=pk)
-    except Comment.DoesNotExist:
-        raise CommentNotFound()
-
-    if comment:
-        comment.content = content
-        comment.edited_date = datetime.now()
-        comment.save()
+def edit_comment(pk: str, content: str) -> None:
+    comment = Comment.objects.get(pk=pk)
+    comment.content = content
+    comment.edited_date = datetime.now()
+    comment.save()
 
 
 def add_page_comment(

@@ -4,7 +4,7 @@
     <div class="content-stack">
         <div class="content-stack small">
             {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date updated_timestamp=comment.edited_date %}
-            <div id="comment-{{ comment.id }}-message">{{ comment.message }}</div>
+            <div>{{ comment.message }}</div>
         </div>
         <div class="dwds-button-group with-separator">
             {% reactions_for_comment user comment.id %}
@@ -19,7 +19,7 @@
             {% user_can_edit_comment request.user comment.id as can_edit %}
             {% if can_edit %}
                 <span class="separator"></span>
-                {% edit_page_comment_input comment.id %}
+                {% edit_comment_input comment.id %}
             {% endif %}
         </div>
 

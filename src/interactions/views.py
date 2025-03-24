@@ -88,105 +88,88 @@ def edit_comment(request, *, comment_id):
     if not comments_service.can_edit_comment(request.user, comment_id):
         return HttpResponse(status=403)
 
-    if request.method == "POST":
-        comment_message = request.POST.get("comment")
-        try:
-            comments_service.edit_comment(comment_message, comment_id)
-        except comments_service.CommentNotFound:
-            raise Http404
+    comment_message = request.POST.get("comment")
+    try:
+        comments_service.edit_comment(comment_id, comment_message)
+    except comments_service.CommentNotFound:
+        raise Http404
 
-        comment = get_object_or_404(Comment, id=comment_id)
-        comment_dict = comments_service.comment_to_dict(comment)
-        comment_dict.update(
-            # TODO: Remove once reply input/form has been moved to htmx
-            reply_form=CommentForm(
-                initial={"in_reply_to": comment_dict["in_reply_to"]},
-                auto_id="reply_%s",
-            ),
-            reply_form_url=reverse(
-                "interactions:comment-on-page", args=[comment.page.id]
-            ),
-        )
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment_dict = comments_service.comment_to_dict(comment)
+    comment_dict.update(
+        # TODO: Remove once reply input/form has been moved to htmx
+        reply_form=CommentForm(
+            initial={"in_reply_to": comment_dict["in_reply_to"]},
+            auto_id="reply_%s",
+        ),
+        reply_form_url=reverse("interactions:comment-on-page", args=[comment.page.id]),
+    )
 
-        return TemplateResponse(
-            request,
-            "dwds/components/comment.html",
-            context={
-                "comment": comment_dict,
-                "request": request,
-            },
-        )
-
-    return HttpResponse(status=400)
+    return TemplateResponse(
+        request,
+        "dwds/components/comment.html",
+        context={
+            "comment": comment_dict,
+            "request": request,
+        },
+    )
 
 
 @require_http_methods(["GET"])
-def page_comment(request, *, page_id, comment_id, field=None):
-    if request.method == "GET":
-        comment = comments_service.comment_to_dict(
-            get_object_or_404(Comment, id=comment_id)
-        )
+def get_comment(request, *, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment_dict = comments_service.comment_to_dict(comment)
 
-        if field and comment[field]:
-            return HttpResponse(comment[field], content_type="text/html")
+    comment_dict.update(
+        # TODO: Remove once reply input/form has been moved to htmx
+        reply_form=CommentForm(
+            initial={"in_reply_to": comment_dict["in_reply_to"]},
+            auto_id="reply_%s",
+        ),
+        reply_form_url=reverse("interactions:comment-on-page", args=[comment.page.id]),
+    )
 
-        comment.update(
-            # TODO: Remove once reply input/form has been moved to htmx
-            reply_form=CommentForm(
-                initial={"in_reply_to": comment["in_reply_to"]},
-                auto_id="reply_%s",
-            ),
-            reply_form_url=reverse("interactions:comment-on-page", args=[page_id]),
-        )
-
-        return TemplateResponse(
-            request,
-            "dwds/components/comment.html",
-            context={
-                "comment": comment,
-                "request": request,
-            },
-        )
-
-    return HttpResponse(status=400)
+    return TemplateResponse(
+        request,
+        "dwds/components/comment.html",
+        context={
+            "comment": comment_dict,
+            "request": request,
+        },
+    )
 
 
 @require_http_methods(["GET"])
-def edit_page_comment_form(request, *, page_id, comment_id):
+def edit_comment_form(request, *, comment_id):
     if not comments_service.can_edit_comment(request.user, comment_id):
         return HttpResponse(status=403)
 
-    if request.method == "GET":
-        comment = comments_service.comment_to_dict(
-            get_object_or_404(Comment, id=comment_id)
-        )
-        page = get_object_or_404(Page, id=page_id).specific
-        comment.update(
-            edit_page_comment_form=CommentForm(initial={"comment": comment["message"]}),
-            edit_comment_url=reverse(
-                "interactions:edit-comment",
-                kwargs={
-                    "comment_id": comment_id,
-                },
-            ),
-            edit_comment_cancel_url=reverse(
-                "interactions:page-comment",
-                kwargs={
-                    "page_id": page_id,
-                    "comment_id": comment_id,
-                },
-            ),
-        )
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment_dict = comments_service.comment_to_dict(comment)
 
-        return TemplateResponse(
-            request,
-            "interactions/edit_page_comment_form.html",
-            context={
-                "page": page,
-                "comment": comment,
+    comment_dict.update(
+        edit_comment_form=CommentForm(initial={"comment": comment_dict["message"]}),
+        edit_comment_url=reverse(
+            "interactions:edit-comment",
+            kwargs={
+                "comment_id": comment_id,
             },
-        )
-    return HttpResponse(status=400)
+        ),
+        edit_comment_cancel_url=reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment_id,
+            },
+        ),
+    )
+
+    return TemplateResponse(
+        request,
+        "interactions/edit_comment_form.html",
+        context={
+            "comment": comment_dict,
+        },
+    )
 
 
 def react_to_comment(request, *, pk):

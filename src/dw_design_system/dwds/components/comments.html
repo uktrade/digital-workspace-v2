@@ -2,7 +2,7 @@
 <div class="dwds-comments content-stack large">
     <h2>{{ comment_count }} comment{{ comment_count|pluralize }}</h2>
     {% for comment in comments %}
-        {% include "dwds/components/comment.html" with comment=comment page=page %}
+        {% include "dwds/components/comment.html" with comment=comment %}
     {% endfor %}
     {% if comment_form %}
         <h3>Leave a comment</h3>
