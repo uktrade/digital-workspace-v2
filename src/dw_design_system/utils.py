@@ -24,6 +24,10 @@ ICON_CONTEXT = {
 }
 
 
+INTERNAL_URL = "/"
+EXTERNAL_URL = "https://gov.uk/"
+
+
 def get_dwds_templates(template_type, request: HttpRequest):
     thumbnail_file = Image.objects.last()
     thumbnail_url = (
@@ -68,7 +72,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/link_action.html",
                 "context": {
                     "link_text": "Action Link",
-                    "link_url": "https://www.gov.uk",
+                    "link_url": INTERNAL_URL,
                     "left": True,
                     "right": True,
                 },
@@ -77,9 +81,9 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "Link navigate",
                 "template": "dwds/components/link_navigate.html",
                 "context": {
-                    "previous_url": "https://www.gov.uk",
+                    "previous_url": INTERNAL_URL,
                     "previous_text": "Previous",
-                    "next_url": "https://www.gov.uk",
+                    "next_url": INTERNAL_URL,
                     "next_text": "Next",
                 },
             },
@@ -88,7 +92,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/banner.html",
                 "context": {
                     "alert": False,
-                    "link": "https://www.gov.uk",
+                    "link": INTERNAL_URL,
                     "text": (
                         "This is a banner for GOV.UK, it can be really long or"
                         " really short. In this example we have a long banner to"
@@ -101,7 +105,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/cta.html",
                 "context": {
                     "highlight": False,
-                    "url": "https://www.gov.uk",
+                    "url": INTERNAL_URL,
                     "title": "This is a CTA for GOV.UK",
                     "description": "This is a description for the CTA",
                     "footer_text": "This is some footer text",
@@ -112,7 +116,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/cta_button.html",
                 "context": {
                     "icon": "dwds/icons/feedback.html",
-                    "url": "https://www.gov.uk",
+                    "url": INTERNAL_URL,
                     "title": "This is a CTA for GOV.UK",
                     "description": "This is a description for the CTA",
                     "footer_text": "This is some footer text",
@@ -126,7 +130,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "description": "A list of links",
                     "list": [
                         {
-                            "link": "https://www.gov.uk",
+                            "link": EXTERNAL_URL,
                             "text": f"Link {i + 1} for GOV.UK",
                         }
                         for i in range(10)
@@ -137,7 +141,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "Engagement",
                 "template": "dwds/components/engagement.html",
                 "context": {
-                    "url": "https://www.gov.uk",
+                    "url": INTERNAL_URL,
                     "title": "This is engaging content for GOV.UK with a really long title to show what a long title looks like",
                     "excerpt": "This is an excerpt for the engaging content. This excerpt is longer than it should be for test data.",
                     "author": "John Doe",
@@ -152,7 +156,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "Spotlight",
                 "template": "dwds/components/spotlight.html",
                 "context": {
-                    "url": "https://www.gov.uk",
+                    "url": INTERNAL_URL,
                     "title": "Speak Up Week 2025",
                     "excerpt": "At DBT, we want everyone to feel respected, included and empowered to speak up if something doesn't feel right",
                     "author": "John Doe",
@@ -167,7 +171,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "One Up",
                 "template": "dwds/components/one_up.html",
                 "context": {
-                    "url": "https://www.gov.uk",
+                    "url": INTERNAL_URL,
                     "title": "One Up",
                     "excerpt": "This is an excerpt for the one up content",
                     "date": timezone.now(),
@@ -184,7 +188,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "ribbon_text": "One DBT",
                     "description": "We value your ideas to help make it simpler to work at DBT, make a difference and celebrate innovation.",
                     "link_text": "Collaborate and connect",
-                    "link_url": "http://localhost:8000/dwds/",
+                    "link_url": INTERNAL_URL,
                     "background_image": thumbnail_file,
                 },
             },
@@ -206,7 +210,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                         {
                             "active": False,
                             "title": f"Menu item {i + 1}",
-                            "url": "https://www.gov.uk",
+                            "url": INTERNAL_URL,
                         }
                         for i in range(10)
                     ],
@@ -224,7 +228,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "show_profile_image": True,
                     "name": "John Doe",
                     "title": "Permanent Secretary",
-                    "profile_url": "https://www.gov.uk",
+                    "profile_url": INTERNAL_URL,
                     "profile_image_url": thumbnail_url,
                     "location": "London",
                     "show_icons": True,
@@ -272,7 +276,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "Copy Text",
                 "template": "dwds/components/copy_text.html",
                 "context": {
-                    "text": "https://www.gov.uk",
+                    "text": EXTERNAL_URL,
                     "hide_input": False,
                 },
             },
@@ -294,7 +298,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": {
                     "name": "John Doe",
                     "profile_image_url": thumbnail_url,
-                    "profile_url": "https://www.gov.uk",
+                    "profile_url": INTERNAL_URL,
                     "published_timestamp": timezone.now(),
                     "updated_timestamp": timezone.now(),
                 },
@@ -305,7 +309,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": {
                     "comment": {
                         "author_name": "Joe Bloggs",
-                        "author_url": "https://gov.uk/",
+                        "author_url": INTERNAL_URL,
                         "author_image_url": thumbnail_url,
                         "posted_date": timezone.now(),
                         "message": "This is a comment from Joe Bloggs about the article.",
@@ -314,7 +318,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                         "replies": [
                             {
                                 "author_name": "Jane Doe",
-                                "author_url": "https://gov.uk/",
+                                "author_url": INTERNAL_URL,
                                 "author_image_url": thumbnail_url,
                                 "posted_date": timezone.now(),
                                 "message": "This is a comment from Jane Doe about the article.",
@@ -331,14 +335,14 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "comments": [
                         {
                             "author_name": "Joe Bloggs",
-                            "author_url": "https://gov.uk/",
+                            "author_url": INTERNAL_URL,
                             "author_image_url": thumbnail_url,
                             "posted_date": timezone.now(),
                             "message": "This is a comment from Joe Bloggs about the article.",
                         },
                         {
                             "author_name": "Jane Doe",
-                            "author_url": "https://gov.uk/",
+                            "author_url": INTERNAL_URL,
                             "author_image_url": thumbnail_url,
                             "posted_date": timezone.now(),
                             "message": "This is a comment from Jane Doe about the article.",
@@ -346,14 +350,14 @@ def get_dwds_templates(template_type, request: HttpRequest):
                             "replies": [
                                 {
                                     "author_name": "Mary Smith",
-                                    "author_url": "https://gov.uk/",
+                                    "author_url": INTERNAL_URL,
                                     "author_image_url": thumbnail_url,
                                     "posted_date": timezone.now(),
                                     "message": "This is a reply from Mary Smith about Jane Doe's comment.",
                                 },
                                 {
                                     "author_name": "Jane Doe",
-                                    "author_url": "https://gov.uk/",
+                                    "author_url": INTERNAL_URL,
                                     "author_image_url": thumbnail_url,
                                     "posted_date": timezone.now(),
                                     "message": "This is a reply from Jane Doe about Mary Smith's reply.",
@@ -361,7 +365,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                                     "replies": [
                                         {
                                             "author_name": "Mary Smith",
-                                            "author_url": "https://gov.uk/",
+                                            "author_url": INTERNAL_URL,
                                             "author_image_url": thumbnail_url,
                                             "posted_date": timezone.now(),
                                             "message": "This is a reply comment from Mary Smith about Jane Doe's reply.",
