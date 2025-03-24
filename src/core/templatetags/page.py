@@ -13,7 +13,9 @@ register = template.Library()
 def page_author(page: Page):
     person = page.owner.profile
 
-    if getattr(page, "perm_sec_as_author", False) and settings.PERM_SEC_NAME:
+    if page_author := getattr(page, "page_author", False):
+        person = page_author
+    elif getattr(page, "perm_sec_as_author", False) and settings.PERM_SEC_NAME:
         perm_sec_names = settings.PERM_SEC_NAME.split(" ")
         person = Person.objects.get(
             first_name=perm_sec_names[0], last_name=perm_sec_names[1]

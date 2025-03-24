@@ -35,6 +35,7 @@ from content.validators import validate_description_word_count
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
+from peoplefinder.models import Person
 from peoplefinder.widgets import PersonChooser
 from user.models import User as UserModel
 
@@ -177,12 +178,19 @@ class BasePage(Page, Indexed):
         use_json_field=True,
         help_text="Tell readers about page important page changes.",
     )
+    page_author = models.ForeignKey(
+        "peoplefinder.Person",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     promote_panels = []
     content_panels = [
         TitleFieldPanel("title"),
     ]
     publishing_panels = [
+        FieldPanel("page_author", widget=PersonChooser),
         FieldPanel("page_updates"),
     ]
 
