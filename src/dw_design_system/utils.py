@@ -7,9 +7,12 @@ from django.utils import timezone
 from wagtail.images.models import Image
 from wagtail.models import Page
 
-from news.models import NewsPage
+from interactions.services import comments as comments_service
+from news.models import Comment, NewsPage
+from user.models import User
 
 
+USER_STR = "user"
 DATETIME_STR = "datetime"
 IMAGE_STR = "Image"
 PAGE_STR = "Page"
@@ -29,6 +32,8 @@ EXTERNAL_URL = "https://gov.uk/"
 
 
 def get_dwds_templates(template_type, request: HttpRequest):
+    user = request.user
+
     thumbnail_file = Image.objects.last()
     thumbnail_url = (
         thumbnail_file.file.url if thumbnail_file and thumbnail_file.file else None
@@ -307,73 +312,24 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "Comment",
                 "template": "dwds/components/comment.html",
                 "context": {
-                    "comment": {
-                        "author_name": "Joe Bloggs",
-                        "author_url": INTERNAL_URL,
-                        "author_image_url": thumbnail_url,
-                        "posted_date": timezone.now(),
-                        "message": "This is a comment from Joe Bloggs about the article.",
-                        "show_replies": True,
-                        "reply_count": 1,
-                        "replies": [
-                            {
-                                "author_name": "Jane Doe",
-                                "author_url": INTERNAL_URL,
-                                "author_image_url": thumbnail_url,
-                                "posted_date": timezone.now(),
-                                "message": "This is a comment from Jane Doe about the article.",
-                            }
-                        ],
-                    },
+                    "user": user,
+                    "comment": comments_service.comment_to_dict(
+                        Comment.objects.last(),
+                        include_replies=False,
+                    ),
                 },
             },
             {
                 "name": "Comments",
                 "template": "dwds/components/comments.html",
                 "context": {
+                    "user": user,
                     "comment_count": 5,
                     "comments": [
-                        {
-                            "author_name": "Joe Bloggs",
-                            "author_url": INTERNAL_URL,
-                            "author_image_url": thumbnail_url,
-                            "posted_date": timezone.now(),
-                            "message": "This is a comment from Joe Bloggs about the article.",
-                        },
-                        {
-                            "author_name": "Jane Doe",
-                            "author_url": INTERNAL_URL,
-                            "author_image_url": thumbnail_url,
-                            "posted_date": timezone.now(),
-                            "message": "This is a comment from Jane Doe about the article.",
-                            "reply_count": 3,
-                            "replies": [
-                                {
-                                    "author_name": "Mary Smith",
-                                    "author_url": INTERNAL_URL,
-                                    "author_image_url": thumbnail_url,
-                                    "posted_date": timezone.now(),
-                                    "message": "This is a reply from Mary Smith about Jane Doe's comment.",
-                                },
-                                {
-                                    "author_name": "Jane Doe",
-                                    "author_url": INTERNAL_URL,
-                                    "author_image_url": thumbnail_url,
-                                    "posted_date": timezone.now(),
-                                    "message": "This is a reply from Jane Doe about Mary Smith's reply.",
-                                    "reply_count": 1,
-                                    "replies": [
-                                        {
-                                            "author_name": "Mary Smith",
-                                            "author_url": INTERNAL_URL,
-                                            "author_image_url": thumbnail_url,
-                                            "posted_date": timezone.now(),
-                                            "message": "This is a reply comment from Mary Smith about Jane Doe's reply.",
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
+                        comments_service.comment_to_dict(
+                            comment,
+                        )
+                        for comment in Comment.objects.all()[:5]
                     ],
                 },
             },
@@ -461,6 +417,8 @@ def get_dwds_templates(template_type, request: HttpRequest):
 
 
 def to_json(val):
+    if isinstance(val, User):
+        return f"{USER_STR} {val.pk}"
     if isinstance(val, datetime):
         return f"{DATETIME_STR} {val.isoformat()}"
     if isinstance(val, Image):
@@ -477,6 +435,8 @@ def to_json(val):
 
 
 def parse_str(val):
+    if val.startswith(USER_STR):
+        return User.objects.get(pk=int(val.split(" ")[1]))
     if val.startswith(DATETIME_STR):
         return datetime.fromisoformat(val.split(" ")[1])
     if val.startswith(IMAGE_STR):
