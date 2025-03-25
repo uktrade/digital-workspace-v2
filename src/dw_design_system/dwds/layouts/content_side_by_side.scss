@@ -14,8 +14,16 @@
     }
 }
 
+.content-side-by-side.image-right {
+    flex-direction: row;
+}
+
+.content-side-by-side.image-left {
+    flex-direction: row-reverse;
+}
+
 @container side_by_side (width > 70ch) {
     .content-side-by-side {
-        flex-direction: row;
+        flex-direction: column;
     }
 }

@@ -1,7 +1,7 @@
 {% load wagtailimages_tags %}
 
-{% comment %} <div class="content-side-by-side-wrapper">
-    <div class="content-side-by-side">
+<div class="content-side-by-side-wrapper">
+    <div class="content-side-by-side image-{{ self.image_position }}">
         <div class="content-stack">
             <h3>{{ self.heading }}</h3>
             <p>{{ self.text }}</p>
@@ -11,8 +11,8 @@
             <p>{{ self.image_description }}</p>
         </div>
     </div>
-</div> {% endcomment %}
-<div class="content-sidebar-right">
+</div>
+{% comment %} <div class="content-sidebar-right">
     <div class="content-stack">
         <h3>{{ self.heading }}</h3>
         <p>{{ self.text }}</p>
@@ -21,4 +21,4 @@
         {% include "dwds/elements/content_image.html" with content_image=value.image %}
         <p>{{ self.image_description }}</p>
     </div>
-</div>
+</div> {% endcomment %}
