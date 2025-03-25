@@ -158,6 +158,19 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Quotes Component",
+                "template": "dwds/components/quotes.html",
+                "context": {
+                    "quote": "It makes you happy that you provided several kilowatts to the power sector, and it means that someone will turn their lights on today. That motivates me, that’s your work really impacts the wellbeing of the country.",
+                    "source_name": "Pavolo Sorokin",
+                    "source_url": "https://www.gov.uk",
+                    "source_image": "dwds/icons/quote-profile.html",
+                    "source_role": "Trade policy and Healthcare Adviser",
+                    "source_team": "Ukraine",
+                    "source_team_url": "https://www.gov.uk",
+                },
+            },
+            {
                 "name": "Spotlight",
                 "template": "dwds/components/spotlight.html",
                 "context": {

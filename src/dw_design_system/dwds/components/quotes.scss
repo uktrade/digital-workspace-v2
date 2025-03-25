@@ -1,0 +1,34 @@
+.dwds-quote {
+    background: var(--color-background);
+    border: var(--border-width-small) solid var(--color-background-very-light-grey);
+    padding: var(--s0);
+    display: flex;
+    flex-direction: column;
+
+    .quote-body {
+        display: flex;
+        gap: var(--s0);
+
+        .profile-pic {
+            border-radius: 50%;
+            svg {
+                height: 100%;
+            }
+        }
+
+        .quote-content {
+            flex: 1;
+            .quote-text,
+            .author {
+                margin: 0;
+                line-height: var(--s3);
+            }
+        }
+
+    }
+
+    .right-quote {
+        align-self: flex-end;
+    }
+
+}
