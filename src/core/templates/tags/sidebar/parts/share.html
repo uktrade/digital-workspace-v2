@@ -18,12 +18,11 @@
         <!-- Share Platforms -->
         <div class="content-stack tiny">
             <!-- Email -->
-            <button type="button"
-                    class="dwds-button dwds-button--link content-with-icon small-gap"
-                    onclick="window.location.href='{% get_share_page_email_link request page %}'">
+            <a class="content-with-icon small-gap"
+               href="{% get_share_page_email_link request page %}">
                 {% include "dwds/icons/email.html" with small=True %}
                 Email
-            </button>
+            </a>
             {% if FEATURE_FLAGS.share_teams %}
                 <!-- MS Teams -->
                 <button class="teams-share-button dwds-button dwds-button--link content-with-icon small-gap"
