@@ -1,11 +1,24 @@
 {% load wagtailimages_tags %}
 
-<div>
-    {{ self.image_position }}
-    <h3>{{ self.heading }}</h3>
-    <p>{{ self.text }}</p>
-    <div>
-        {% image value.image fill-800x500 %}
+{% comment %} <div class="content-side-by-side-wrapper">
+    <div class="content-side-by-side">
+        <div class="content-stack">
+            <h3>{{ self.heading }}</h3>
+            <p>{{ self.text }}</p>
+        </div>
+        <div class="content-stack">
+            {% include "dwds/elements/content_image.html" with content_image=value.image %}
+            <p>{{ self.image_description }}</p>
+        </div>
+    </div>
+</div> {% endcomment %}
+<div class="content-sidebar-right">
+    <div class="content-stack">
+        <h3>{{ self.heading }}</h3>
+        <p>{{ self.text }}</p>
+    </div>
+    <div class="content-stack">
+        {% include "dwds/elements/content_image.html" with content_image=value.image %}
         <p>{{ self.image_description }}</p>
     </div>
 </div>

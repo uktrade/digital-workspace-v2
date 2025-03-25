@@ -20,10 +20,10 @@
         grid-template-rows: 1fr;
 
         > .content-image {
-            object-fit: cover;
-            object-position: center;
-            height: 100%;
-            width: 100%;
+            // object-fit: cover;
+            // object-position: center;
+            // height: 100%;
+            // width: 100%;
         }
     }
 
@@ -36,8 +36,8 @@
         }
 
         > .content-image {
-            grid-row: 1;
-            grid-column: 1;
+            // grid-row: 1;
+            // grid-column: 1;
         }
     }
 
@@ -50,8 +50,8 @@
         }
 
         > .content-image {
-            grid-row: 1;
-            grid-column: 2;
+            // grid-row: 1;
+            // grid-column: 2;
         }
     }
 }

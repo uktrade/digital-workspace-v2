@@ -154,12 +154,9 @@ class ImageWithTextBlock(blocks.StructBlock):
     heading = Heading3Block()
     text = TextBlock()
     image_position = blocks.ChoiceBlock(
-        choices=[
-            ('left', 'Left'),
-            ('right', 'Right')
-        ],
-        default='left',
-        help_text="Position of the image relative to the text"
+        choices=[("left", "Left"), ("right", "Right")],
+        default="left",
+        help_text="Position of the image relative to the text",
     )
     image_description = blocks.CharBlock(
         required=False,
@@ -167,6 +164,7 @@ class ImageWithTextBlock(blocks.StructBlock):
         Optional text displayed under the image to provide context.
         """,
     )
+    # add alt text from ImageBlock above and maybe caption as well
 
     class Meta:
         label = "Image with text"

@@ -1,0 +1,21 @@
+.content-side-by-side-wrapper {
+    container-name: side_by_side;
+    container-type: inline-size;
+}
+
+.content-side-by-side {
+    --content-side-by-side-gap: var(--space);
+    display: flex;
+    flex-direction: column;
+    gap: var(--content-side-by-side-gap);
+
+    > div {
+        flex-grow: 1;
+    }
+}
+
+@container side_by_side (width > 70ch) {
+    .content-side-by-side {
+        flex-direction: row;
+    }
+}
