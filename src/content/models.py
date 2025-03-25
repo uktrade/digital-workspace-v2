@@ -268,7 +268,10 @@ class BasePage(Page, Indexed):
         if first_publisher := self.get_first_publisher():
             return first_publisher.profile
 
-        return self.owner.profile
+        if self.owner:
+            return self.owner.profile
+
+        return None
 
     def get_first_publisher(self) -> Optional[UserModel]:
         """Return the first publisher of the page or None."""

@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("content", "0049_basepage_page_updates"),
+        ("content", "0050_alter_contentpage_useful_links"),
         ("peoplefinder", "0124_update_profile_completion"),
     ]
 
@@ -21,6 +21,15 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to="peoplefinder.person",
+            ),
+        ),
+        migrations.AddField(
+            model_name="basepage",
+            name="page_author_name",
+            field=models.CharField(
+                blank=True,
+                help_text="Use this to show the name of the author when there isn't an active Person to show",
+                null=True,
             ),
         ),
     ]
