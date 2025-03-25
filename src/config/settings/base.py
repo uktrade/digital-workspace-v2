@@ -115,7 +115,7 @@ ALLOWED_HOSTS = setup_allowed_hosts(["*"])
 # Set up Django
 LOCAL_APPS = [
     "patch",
-    "core",
+    "core.apps.CoreConfig",
     "feedback",
     "home",
     "content",
