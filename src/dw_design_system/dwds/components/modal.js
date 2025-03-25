@@ -38,21 +38,21 @@ document.addEventListener("DOMContentLoaded", function () {
         initialiseModal(modalElement);
     });
 
-    // Create a MutationObserver to watch for new anchor elements in the DOM
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (mutation.type === 'childList') {
-                mutation.addedNodes.forEach(function (node) {
-                    if (node.nodeType === 1 && node.classList.contains('dwds-modal')) {
-                        initialiseModal(node);
-                    }
-                });
-            }
-        });
-    });
-    // Observe the document body for changes
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+    // // Create a MutationObserver to watch for new anchor elements in the DOM
+    // const observer = new MutationObserver(function (mutations) {
+    //     mutations.forEach(function (mutation) {
+    //         if (mutation.type === 'childList') {
+    //             mutation.addedNodes.forEach(function (node) {
+    //                 if (node.nodeType === 1 && node.classList.contains('dwds-modal')) {
+    //                     initialiseModal(node);
+    //                 }
+    //             });
+    //         }
+    //     });
+    // });
+    // // Observe the document body for changes
+    // observer.observe(document.body, {
+    //     childList: true,
+    //     subtree: true
+    // });
 });
