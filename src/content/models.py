@@ -189,6 +189,7 @@ class BasePage(Page, Indexed):
     tabbed_interface_objects = [
         ("content_panels", "Content"),
         ("promote_panels", "Promote"),
+        ("settings_panels", "Settings"),
         ("publishing_panels", "Publishing"),
     ]
 
