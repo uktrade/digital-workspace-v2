@@ -19,7 +19,7 @@
         <div class="content-stack tiny">
             <!-- Email -->
             <a href="{% get_share_page_email_link request page %}">Email</a>
-            <form class="mailto-form">
+            <form>
                 <input name="subject" type="hidden" value="{{ page.title }} - DBT Intranet">
                 <div name="body" style="display: none;">
                     {{ page_url }}
