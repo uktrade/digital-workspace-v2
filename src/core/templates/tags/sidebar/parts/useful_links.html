@@ -4,7 +4,7 @@
         {% for link in useful_links %}
             <div class="content-with-icon medium-gap top-alignment">
                 {% include "dwds/icons/arrow-blue-bg.html" with medium=True %}
-                <a href="{{ link.page }}" class="no-underline">{{ link.title }}</a>
+                <a href="{{ link.url }}" class="no-underline">{{ link.title }}</a>
             </div>
         {% endfor %}
     </div>
