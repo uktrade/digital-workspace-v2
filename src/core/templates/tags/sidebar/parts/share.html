@@ -18,19 +18,12 @@
         <!-- Share Platforms -->
         <div class="content-stack tiny">
             <!-- Email -->
-            <a href="{% get_share_page_email_link request page %}">Email</a>
-            <form>
-                <input name="subject" type="hidden" value="{{ page.title }} - DBT Intranet">
-                <div name="body" style="display: none;">
-                    {{ page_url }}
-                    Only people with access to the Department for Business and Trade intranet can open this link.
-                </div>
-                <button type="submit"
-                        class="dwds-button dwds-button--link content-with-icon small-gap">
-                    {% include "dwds/icons/email.html" with small=True %}
-                    Email
-                </button>
-            </form>
+            <button type="button"
+                    class="dwds-button dwds-button--link content-with-icon small-gap"
+                    onclick="window.location.href='{% get_share_page_email_link request page %}'">
+                {% include "dwds/icons/email.html" with small=True %}
+                Email
+            </button>
             {% if FEATURE_FLAGS.share_teams %}
                 <!-- MS Teams -->
                 <button class="teams-share-button dwds-button dwds-button--link content-with-icon small-gap"
