@@ -7,6 +7,12 @@ function isExternalLink(url) {
 }
 
 function addExternalLinkText(anchorElement, anchorLink, settings) {
+
+    if (anchorElement.dataset.dwdsExternalLink) {
+        return;
+    }
+    anchorElement.dataset.dwdsExternalLink = true;
+
     const anchorDomain = anchorLink.hostname;
     if (settings.exclude_domains.includes(anchorDomain)) {
         return;
@@ -33,32 +39,22 @@ function addExternalTextToAnchor(anchorElement, settings) {
     addExternalLinkText(anchorElement, anchorLink, settings);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+
+export function reInitialiseLinks() {
     const settings = JSON.parse(document.getElementById('external-links-settings').textContent);
     if (!settings.enabled) {
         return;
     }
-
     // Add external link text to all existing anchor elements
     document.querySelectorAll('a').forEach(function (anchorElement) {
         addExternalTextToAnchor(anchorElement, settings);
     });
+}
 
-    // // Create a MutationObserver to watch for new anchor elements in the DOM
-    // const observer = new MutationObserver(function (mutations) {
-    //     mutations.forEach(function (mutation) {
-    //         if (mutation.type === 'childList') {
-    //             mutation.addedNodes.forEach(function (node) {
-    //                 if (node.nodeType === 1 && node.tagName === 'A') {
-    //                     addExternalTextToAnchor(node, settings);
-    //                 }
-    //             });
-    //         }
-    //     });
-    // });
-    // // Observe the document body for changes
-    // observer.observe(document.body, {
-    //     childList: true,
-    //     subtree: true
-    // });
-});
+export function initialiseLinks() {
+    document.addEventListener('DOMContentLoaded', function () {
+        reInitialiseLinks();
+    });
+}
+
+
