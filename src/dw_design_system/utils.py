@@ -333,6 +333,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     ],
                 },
             },
+            {
+                "name": "Link External",
+                "template": "dwds/components/link_external.html",
+                "context": {},
+            },
         ],
         "icons": [
             {
