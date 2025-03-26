@@ -165,7 +165,6 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "source_name": "Pavolo Sorokin",
                     "source_url": "https://www.gov.uk",
                     "source_image": thumbnail_url,
-                    "profile_image_url": thumbnail_url,
                     "source_role": "Trade policy and Healthcare Adviser",
                     "source_team": "Ukraine",
                     "source_team_url": "https://www.gov.uk",
