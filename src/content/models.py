@@ -266,7 +266,10 @@ class BasePage(Page, Indexed):
             return settings.PERM_SEC_NAME
 
         if first_publisher := self.get_first_publisher():
-            return first_publisher.profile
+            try:
+                return first_publisher.profile
+            except User.profile.RelatedObjectDoesNotExist:
+                pass
 
         if self.owner:
             return self.owner.profile
