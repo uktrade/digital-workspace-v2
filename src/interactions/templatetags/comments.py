@@ -1,11 +1,9 @@
 from django import template
-from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from wagtail.models import Page
 
 from interactions.services import comments as comments_service
 from news.forms import CommentForm
-from news.models import Comment
 
 
 register = template.Library()
@@ -34,7 +32,6 @@ def page_comments(context, page: Page):
         "comment_form": CommentForm(),
         "comment_form_url": comment_form_submission_url,
         "request": context["request"],
-        "page": page,
     }
 
 
@@ -46,29 +43,3 @@ def user_can_delete_comment(user, comment_id):
 @register.simple_tag
 def user_can_edit_comment(user, comment_id):
     return comments_service.can_edit_comment(user, comment_id)
-
-
-@register.inclusion_tag("interactions/edit_comment_input.html", takes_context=True)
-def edit_comment_input(context, comment_id: int):
-    comment = get_object_or_404(Comment, id=comment_id)
-    comment_dict = comments_service.comment_to_dict(comment)
-    comment_dict.update(
-        edit_comment_form_url=reverse(
-            "interactions:edit-comment-form",
-            kwargs={
-                "comment_id": comment_id,
-            },
-        ),
-        edit_comment_cancel_url=reverse(
-            "interactions:get-comment",
-            kwargs={
-                "comment_id": comment_id,
-            },
-        ),
-    )
-
-    return {
-        "user": context["user"],
-        "comment": comment_dict,
-        "request": context["request"],
-    }

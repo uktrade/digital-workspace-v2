@@ -19,7 +19,7 @@
             {% user_can_edit_comment request.user comment.id as can_edit %}
             {% if can_edit %}
                 <span class="separator"></span>
-                {% edit_comment_input comment.id %}
+                {% include "interactions/edit_comment_input.html" with comment=comment %}
             {% endif %}
         </div>
 

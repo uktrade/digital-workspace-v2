@@ -78,6 +78,18 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
         "reply_count": get_comment_reply_count(comment),
         "replies": replies,
         "in_reply_to": comment.parent.pk if comment.parent else None,
+        "edit_comment_form_url": reverse(
+            "interactions:edit-comment-form",
+            kwargs={
+                "comment_id": comment.id,
+            },
+        ),
+        "edit_comment_cancel_url": reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment.id,
+            },
+        ),
     }
 
 
