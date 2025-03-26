@@ -1,0 +1,37 @@
+{% load wagtailimages_tags static humanize %}
+
+<div class="dwds-quote">
+    {% include 'dwds/icons/left-quote.html' %}
+    <div class="quote-body">
+        <div class="profile-pic {% if not source_image %}hidden{% endif %}">
+            {% if source_image %}
+                {% include "dwds/elements/profile_image.html" with  small=True profile_image_url=source_image name=source_name %}
+            {% endif %}
+        </div>
+        <div class="quote-content">
+            <p class="quote-text">{{ quote }}</p>
+            <p class="author">
+                {% if source_name %}
+                    {% if source_url %}
+                        <a href="{{ source_url }}">{{ source_name }}</a>
+                    {% else %}
+                        {{ source_name }}
+                    {% endif %}
+                {% endif %}
+                {% if source_role %}
+                    {% if source_name %}|{% endif %}
+                    {{ source_role }}
+                {% endif %}
+                {% if source_team %}
+                    {% if source_name or source_role %}|{% endif %}
+                    {% if source_team_url %}
+                        <a href="{{ source_team_url }}">{{ source_team }}</a>
+                    {% else %}
+                        {{ source_team }}
+                    {% endif %}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    <div class="right-quote">{% include 'dwds/icons/right-quote.html' %}</div>
+</div>
