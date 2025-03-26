@@ -3,14 +3,15 @@ from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, ObjectList, TabbedInterface
 from wagtail.admin.ui.tables import Column
 from wagtail.admin.widgets import PageListingButton
 from wagtail.snippets.models import register_snippet
-from wagtail.snippets.views.snippets import SnippetViewSet
+from wagtail.snippets.views.snippets import IndexView, SnippetViewSet
 from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
 from core.models import SiteAlertBanner, Tag
+from core.models.external_links import ExternalLinkSetting
 
 
 class SiteAlertBannerAdmin(ModelAdmin):
@@ -71,3 +72,37 @@ def page_listing_more_buttons(page, user, next_url=None):
         user=user,
         priority=1,
     )
+
+
+class ExternalLinkSettingIndexView(IndexView):
+    def get_queryset(self):
+        return super().get_queryset().order_by("external_link_text", "domain")
+
+
+class ExternalLinkSettingViewSet(SnippetViewSet):
+    model = ExternalLinkSetting
+    icon = "info-circle"
+    index_view_class = ExternalLinkSettingIndexView
+    list_display = [
+        "exclude",
+        "domain",
+        "external_link_text",
+    ]
+    list_per_page = 50
+    inspect_view_enabled = True
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(
+                [
+                    FieldPanel("domain"),
+                    FieldPanel("exclude"),
+                    FieldPanel("external_link_text"),
+                ],
+                heading="Details",
+            ),
+        ]
+    )
+
+
+register_snippet(ExternalLinkSettingViewSet)

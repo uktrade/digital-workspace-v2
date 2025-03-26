@@ -9,9 +9,12 @@ require.context(
 );
 import { initAll } from "govuk-frontend";
 import mojFrontend from "@ministryofjustice/frontend";
+import { DigitalWorkspaceDesignSystem } from "../../src/dw_design_system/dwds/main";
 
 initAll();
 mojFrontend.initAll();
+document.DWDS = new DigitalWorkspaceDesignSystem()
+document.DWDS.initAll();
 
 if (typeof window.djdt !== "undefined" && typeof window.htmx !== "undefined") {
     htmx.on("htmx:afterSettle", function (detail) {

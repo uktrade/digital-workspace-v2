@@ -181,6 +181,7 @@ class BasePage(Page, Indexed):
     tabbed_interface_objects = [
         ("content_panels", "Content"),
         ("promote_panels", "Promote"),
+        ("settings_panels", "Settings"),
         ("publishing_panels", "Publishing"),
     ]
 
@@ -257,7 +258,10 @@ class BasePage(Page, Indexed):
         if self.first_published_at:
             first_publisher_profile = None
             if first_publisher := self.get_first_publisher():
-                first_publisher_profile = first_publisher.profile
+                try:
+                    first_publisher_profile = first_publisher.profile
+                except User.profile.RelatedObjectDoesNotExist:
+                    pass
 
             page_updates_table.append(
                 {

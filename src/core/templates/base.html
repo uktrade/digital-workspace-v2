@@ -35,6 +35,7 @@
               content="{{ settings.SENTRY_DSN|default_if_none:'' }}">
         <meta name="intranet:sentry:browser-traces-sample-rate"
               content="{{ settings.SENTRY_BROWSER_TRACES_SAMPLE_RATE }}">
+        {{ EXTERNAL_LINKS_SETTINGS|json_script:"external-links-settings" }}
         {% render_bundle 'init' 'js' %}
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager -->
