@@ -16,11 +16,7 @@
                         data-target-state="hidden">Reply</button>
             {% endif %}
             {% include "news/includes/delete_comment.html" with comment=comment %}
-            {% user_can_edit_comment request.user comment.id as can_edit %}
-            {% if can_edit %}
-                <span class="separator"></span>
-                {% include "interactions/edit_comment_input.html" with comment=comment %}
-            {% endif %}
+            {% include "interactions/edit_comment_input.html" with comment=comment %}
         </div>
 
         {% if comment.reply_form %}
