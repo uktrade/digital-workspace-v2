@@ -57,7 +57,6 @@ def get_comment_reply_count(comment: Comment) -> int:
 
 
 def comment_to_dict(comment: Comment) -> dict:
-    from news.forms import CommentForm
 
     include_replies = bool(not comment.parent)
 
