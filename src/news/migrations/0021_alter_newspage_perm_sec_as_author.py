@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("news", "0019_comment_is_visible_historicalcomment_is_visible"),
+        ("news", "0020_comment_edited_date_historicalcomment_edited_date"),
     ]
 
     operations = [
