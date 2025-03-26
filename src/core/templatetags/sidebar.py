@@ -280,17 +280,19 @@ class UsefulLinks(SidebarPart):
     def get_part_context(self) -> dict:
         context = super().get_part_context()
 
-        useful_links = [
-            {
-                "title": link.value["title"],
-                "page": link.value["page"].get_url(),
-            }
-            for link in self.useful_links
-        ]
+        useful_links = []
+        for link in self.useful_links:
+            useful_links.append(
+                {
+                    "title": link.value["title"],
+                    "url": link.block.get_url(link.value),
+                }
+            )
+
         child_page_links = [
             {
                 "title": child_page.title,
-                "page": child_page.get_url(),
+                "url": child_page.get_url(),
             }
             for child_page in self.child_pages
         ]
