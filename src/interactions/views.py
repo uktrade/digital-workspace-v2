@@ -100,7 +100,7 @@ def edit_comment(request, *, comment_id):
 
 
 @require_http_methods(["GET"])
-def get_comment(request, *, comment_id):
+def get_comment(request, *, comment_id, show_reply_form=False):
     comment = get_object_or_404(Comment, id=comment_id)
     comment_dict = comments_service.comment_to_dict(comment)
 
@@ -110,6 +110,7 @@ def get_comment(request, *, comment_id):
         context={
             "comment": comment_dict,
             "request": request,
+            "show_reply_form": show_reply_form,
         },
     )
 
@@ -144,6 +145,62 @@ def edit_comment_form(request, *, comment_id):
         context={
             "comment": comment_dict,
         },
+    )
+
+
+# TODO: Remove? if able to include in comment_to_dict
+@require_http_methods(["GET"])
+def reply_comment_form(request, *, comment_id):
+    if not comments_service.can_reply_comment(request.user, comment_id):
+        return HttpResponse(status=403)
+
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment_dict = comments_service.comment_to_dict(comment)
+
+    comment_dict.update(
+        reply_comment_form=CommentForm(
+            initial={"in_reply_to": comment_id},
+            auto_id="reply_%s",
+        ),
+        reply_comment_url=reverse(
+            "interactions:reply-comment",
+            kwargs={
+                "comment_id": comment_id,
+            },
+        ),
+        reply_comment_cancel_url=reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment_id,
+            },
+        ),
+    )
+
+    return TemplateResponse(
+        request,
+        "interactions/reply_comment_form.html",
+        context={
+            "comment": comment_dict,
+        },
+    )
+
+
+# TODO: If submitting regular comments also gets changed to use htmx,
+# could/should we combine them?
+@require_http_methods(["POST"])
+def reply_to_comment(request, *, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    user = request.user
+
+    comments_service.add_page_comment(
+        comment.page,
+        user,
+        request.POST["comment"],
+        request.POST.get("in_reply_to", comment_id),
+    )
+
+    return redirect(
+        reverse("interactions:get-comment", kwargs={"comment_id": comment_id})
     )
 
 

@@ -197,11 +197,8 @@ class NewsPage(PageWithTopics):
     def serve(self, request, *args, **kwargs):
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
-        context["reply_comment_form"] = CommentForm(auto_id="reply_%s")
 
-        response = TemplateResponse(request, self.template, context)
-
-        return response
+        return TemplateResponse(request, self.template, context)
 
 
 class NewsHome(RoutablePageMixin, BasePage):
