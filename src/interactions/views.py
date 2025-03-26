@@ -94,24 +94,8 @@ def edit_comment(request, *, comment_id):
     except comments_service.CommentNotFound:
         raise Http404
 
-    comment = get_object_or_404(Comment, id=comment_id)
-    comment_dict = comments_service.comment_to_dict(comment)
-    comment_dict.update(
-        # TODO: Remove once reply input/form has been moved to htmx
-        reply_form=CommentForm(
-            initial={"in_reply_to": comment_dict["in_reply_to"]},
-            auto_id="reply_%s",
-        ),
-        reply_form_url=reverse("interactions:comment-on-page", args=[comment.page.id]),
-    )
-
-    return TemplateResponse(
-        request,
-        "dwds/components/comment.html",
-        context={
-            "comment": comment_dict,
-            "request": request,
-        },
+    return redirect(
+        reverse("interactions:get-comment", kwargs={"comment_id": comment_id})
     )
 
 
@@ -119,15 +103,6 @@ def edit_comment(request, *, comment_id):
 def get_comment(request, *, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     comment_dict = comments_service.comment_to_dict(comment)
-
-    comment_dict.update(
-        # TODO: Remove once reply input/form has been moved to htmx
-        reply_form=CommentForm(
-            initial={"in_reply_to": comment_dict["in_reply_to"]},
-            auto_id="reply_%s",
-        ),
-        reply_form_url=reverse("interactions:comment-on-page", args=[comment.page.id]),
-    )
 
     return TemplateResponse(
         request,
