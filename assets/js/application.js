@@ -13,7 +13,8 @@ import { DigitalWorkspaceDesignSystem } from "../../src/dw_design_system/dwds/ma
 
 initAll();
 mojFrontend.initAll();
-new DigitalWorkspaceDesignSystem().initAll();
+document.DWDS = new DigitalWorkspaceDesignSystem()
+document.DWDS.initAll();
 
 if (typeof window.djdt !== "undefined" && typeof window.htmx !== "undefined") {
     htmx.on("htmx:afterSettle", function (detail) {

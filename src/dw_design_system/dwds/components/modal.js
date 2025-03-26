@@ -1,4 +1,8 @@
 function initialiseModal(modalElement) {
+    if (modalElement.dataset.dwdsModal) {
+        return;
+    }
+    modalElement.dataset.dwdsModal = true;
     const dialog = modalElement.querySelector("dialog");
     const openElement = modalElement.querySelector(
         "button.dwds-modal-open",
@@ -9,10 +13,12 @@ function initialiseModal(modalElement) {
 
     openElement.addEventListener("click", function () {
         dialog.showModal();
+        document.documentElement.classList.add("no-scroll");
     });
     closeElements.forEach((element) => {
         element.addEventListener("click", function () {
             dialog.close();
+            document.documentElement.classList.remove("no-scroll");
         });
     });
 
@@ -25,30 +31,20 @@ function initialiseModal(modalElement) {
             event.clientX <= rect.left + rect.width;
         if (!isInDialog) {
             dialog.close();
+            document.documentElement.classList.remove("no-scroll");
         }
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+export function reInitialiseModals() {
     document.querySelectorAll(".dwds-modal").forEach(function (modalElement) {
         initialiseModal(modalElement);
     });
+}
 
-    // Create a MutationObserver to watch for new anchor elements in the DOM
-    const observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (mutation.type === 'childList') {
-                mutation.addedNodes.forEach(function (node) {
-                    if (node.nodeType === 1 && node.classList.contains('dwds-modal')) {
-                        initialiseModal(node);
-                    }
-                });
-            }
-        });
+export function initialiseModals() {
+    document.addEventListener("DOMContentLoaded", function () {
+        reInitialiseModals();
     });
-    // Observe the document body for changes
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-});
+}
+

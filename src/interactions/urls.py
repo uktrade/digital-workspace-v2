@@ -15,4 +15,19 @@ urlpatterns = [
     path("page/<int:pk>/react", views.react_to_page, name="page-reactions"),
     path("page/<int:pk>/comment", views.comment_on_page, name="comment-on-page"),
     path("comment/<int:pk>/hide", views.hide_comment, name="hide-comment"),
+    path(
+        "comment/<int:comment_id>/edit",
+        views.edit_comment,
+        name="edit-comment",
+    ),
+    path(
+        "comment/<int:comment_id>/form",
+        views.edit_comment_form,
+        name="edit-comment-form",
+    ),
+    path(
+        "comment/<int:comment_id>/",
+        views.get_comment,
+        name="get-comment",
+    ),
 ]
