@@ -7,6 +7,7 @@ from django.utils import timezone
 from wagtail.images.models import Image
 from wagtail.models import Page
 
+from content.models import ContentPage
 from interactions.services import comments as comments_service
 from news.models import Comment, NewsPage
 from user.models import User
@@ -29,6 +30,13 @@ ICON_CONTEXT = {
 
 INTERNAL_URL = "/"
 EXTERNAL_URL = "https://gov.uk/"
+
+
+def get_page_that_has_comments() -> ContentPage | None:
+    for p in ContentPage.objects.filter(comments__isnull=False):
+        if p.comments.filter(is_visible=True).exists():
+            return p
+    return None
 
 
 def get_dwds_templates(template_type, request: HttpRequest):
@@ -313,9 +321,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/comment.html",
                 "context": {
                     "user": user,
-                    "comment": comments_service.comment_to_dict(
-                        Comment.objects.last(),
-                    ),
+                    "comment": comments_service.comment_to_dict(Comment.objects.last()),
                 },
             },
             {
@@ -325,10 +331,10 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "user": user,
                     "comment_count": 5,
                     "comments": [
-                        comments_service.comment_to_dict(
-                            comment,
+                        comments_service.comment_to_dict(comment)
+                        for comment in comments_service.get_page_comments(
+                            page=get_page_that_has_comments()
                         )
-                        for comment in Comment.objects.all()[:5]
                     ],
                 },
             },
@@ -434,7 +440,6 @@ def to_json(val):
     if isinstance(val, range):
         return f"{RANGE_STR} {val.start} {val.stop}"
 
-    print(type(val))
     return val
 
 
@@ -466,5 +471,5 @@ class CustomJSONDecoder(JSONDecoder):
         obj = super().decode(*args, **kwargs)
         for k, v in obj.items():
             if isinstance(v, str):
-                obj[k] = parse_str(v)
+                obj[k] = self.parse_string(v)
         return obj

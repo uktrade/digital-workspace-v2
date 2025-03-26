@@ -103,11 +103,6 @@ def comment_to_dict(comment: Comment) -> dict:
             reply_form_url=reverse(
                 "interactions:comment-on-page", args=[comment.page.pk]
             ),
-            # TODO: Remove once reply input/form has been moved to htmx
-            reply_form=CommentForm(
-                initial={"in_reply_to": in_reply_to},
-                auto_id="reply_%s",
-            ),
         )
 
     return comment_dict
