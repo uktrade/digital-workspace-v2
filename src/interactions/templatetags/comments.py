@@ -11,26 +11,17 @@ register = template.Library()
 
 @register.inclusion_tag("dwds/components/comments.html", takes_context=True)
 def page_comments(context, page: Page):
-    comment_form_submission_url = reverse(
-        "interactions:comment-on-page", args=[page.pk]
-    )
     comments = []
     for page_comment in comments_service.get_page_comments(page):
         comment = comments_service.comment_to_dict(page_comment)
-        comment.update(
-            reply_form=CommentForm(
-                initial={"in_reply_to": page_comment.pk},
-                auto_id="reply_%s",
-            ),
-            reply_form_url=comment_form_submission_url,
-        )
+
         comments.append(comment)
     return {
         "user": context["user"],
         "comment_count": comments_service.get_page_comment_count(page),
         "comments": comments,
         "comment_form": CommentForm(),
-        "comment_form_url": comment_form_submission_url,
+        "comment_form_url": reverse("interactions:comment-on-page", args=[page.pk]),
         "request": context["request"],
     }
 

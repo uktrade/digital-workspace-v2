@@ -315,7 +315,6 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "user": user,
                     "comment": comments_service.comment_to_dict(
                         Comment.objects.last(),
-                        include_replies=False,
                     ),
                 },
             },
