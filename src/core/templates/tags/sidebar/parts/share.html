@@ -6,45 +6,45 @@
         </button>
     </div>
     <dialog>
-        <div class="content-spaced middle">
-            <h2>Share this page</h2>
-            <form class="modal-header" method="dialog">
-                <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
-                    {% include "dwds/icons/cross.html" with small=True %}
-                    Close
-                </button>
-            </form>
-        </div>
-        <!-- Share Platforms -->
-        <div class="content-stack tiny">
-            <!-- Email -->
-            <a class="content-with-icon small-gap"
-               href="{% get_share_page_email_link request page %}">
-                {% include "dwds/icons/email.html" with small=True %}
-                Email
-            </a>
-            {% if FEATURE_FLAGS.share_teams %}
-                <!-- MS Teams -->
-                <button class="teams-share-button dwds-button dwds-button--link content-with-icon small-gap"
-                        data-href="{{ page_url }}"
-                        data-icon-px-size="1"
-                        data-msg-text="Check out this page on the intranet!"
-                        data-preview="false">
-                    {% include "dwds/icons/ms_teams.html" with small=True %}
-                    MS Teams
-                </button>
-                <script async defer src="https://teams.microsoft.com/share/launcher.js"></script>
-            {% endif %}
-            {% comment %}
-                <!-- Calendar -->
-                <button class="dwds-button dwds-button--link content-with-icon small-gap">
-                    {% include "dwds/icons/calendar.html" with small=True %}
-                    Calendar
-                </button>
-            {% endcomment %}
-            {% include "dwds/components/copy_text.html" with text=page_url hide_input=True %}
-        </div>
-        <div class="content-footer">
+        <div class="content-stack">
+            <div class="content-spaced middle">
+                <h2>Share this page</h2>
+                <form class="modal-header" method="dialog">
+                    <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
+                        {% include "dwds/icons/cross.html" with small=True %}
+                        Close
+                    </button>
+                </form>
+            </div>
+            <!-- Share Platforms -->
+            <div class="content-stack ">
+                <!-- Email -->
+                <a class="content-with-icon small-gap"
+                   href="{% get_share_page_email_link request page %}">
+                    {% include "dwds/icons/email.html" with small=True %}
+                    Email
+                </a>
+                {% if FEATURE_FLAGS.share_teams %}
+                    <!-- MS Teams -->
+                    <button class="teams-share-button dwds-button dwds-button--link content-with-icon small-gap"
+                            data-href="{{ page_url }}"
+                            data-icon-px-size="1"
+                            data-msg-text="Check out this page on the intranet!"
+                            data-preview="false">
+                        {% include "dwds/icons/ms_teams.html" with small=True %}
+                        MS Teams
+                    </button>
+                    <script async defer src="https://teams.microsoft.com/share/launcher.js"></script>
+                {% endif %}
+                {% comment %}
+                    <!-- Calendar -->
+                    <button class="dwds-button dwds-button--link content-with-icon small-gap">
+                        {% include "dwds/icons/calendar.html" with small=True %}
+                        Calendar
+                    </button>
+                {% endcomment %}
+                {% include "dwds/components/copy_text.html" with text=page_url hide_input=True %}
+            </div>
             <p>This is only shareable inside the department to people with access to the intranet</p>
         </div>
     </dialog>
