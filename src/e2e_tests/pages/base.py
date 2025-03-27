@@ -40,3 +40,10 @@ class SitePage(Page):
         from .wagtail_admin import WagtailAdminPage
 
         return WagtailAdminPage(self.page)
+
+    def goto_profile_view_page(self):
+        self.page.get_by_test_id("view-profile").click()
+
+        from .peoplefinder.profile import ProfileViewPage
+
+        return ProfileViewPage(self.page)
