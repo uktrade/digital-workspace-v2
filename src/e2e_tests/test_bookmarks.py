@@ -35,3 +35,11 @@ def test_bookmark_a_news_page(superuser, user, page: Page):
     first_bookmark = home_page.bookmarks[0]
     first_bookmark.click()
     expect(page).to_have_title(re.compile(rf"{news_page.title}.*"))
+
+    # Remove the bookmark
+    page.get_by_test_id("bookmark-this-page").click()
+
+    # Check the bookmark has been removed
+    page.goto("/")
+    home_page = HomePage(page)
+    assert 0 == len(home_page.bookmarks)
