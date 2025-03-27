@@ -7,8 +7,7 @@
             <p>{{ self.text }}</p>
         </div>
         <div class="content-stack">
-            {% include "dwds/elements/content_image.html" with content_image=value.image %}
-            <p>{{ self.image_description }}</p>
+            {% include "dwds/elements/content_image.html" with content_image=value.image caption=self.image_description %}
         </div>
     </div>
 </div>
