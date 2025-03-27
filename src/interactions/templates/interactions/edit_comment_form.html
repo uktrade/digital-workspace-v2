@@ -1,5 +1,5 @@
 {% load comments %}
-{% if comment.edit_comment_form %}
+{% if comment.edit_comment_form and comment.edit_comment_url %}
     <div id="comment-{{ comment.id }}-edit-form">
         {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date updated_timestamp=comment.edited_date %}
         <h3>Edit this comment</h3>

@@ -93,13 +93,28 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
                 "comment_id": comment.id,
             },
         ),
-        "reply_form_url": reverse(
-            "interactions:comment-on-page", args=[comment.page.id]
-        ),
-        # TODO: Remove once reply input/form has been moved to htmx
-        "reply_form": CommentForm(
-            initial={"in_reply_to": in_reply_to},
+        "reply_comment_form": CommentForm(
+            initial={"in_reply_to": comment.id},
             auto_id="reply_%s",
+        ),
+        "reply_comment_form_url": reverse(
+            "interactions:reply-comment-form",
+            kwargs={
+                "comment_id": comment.id,
+                "show_reply_form": True,
+            },
+        ),
+        "reply_comment_url": reverse(
+            "interactions:reply-comment",
+            kwargs={
+                "comment_id": comment.id,
+            },
+        ),
+        "reply_comment_cancel_url": reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment.id,
+            },
         ),
     }
 
@@ -124,3 +139,10 @@ def can_edit_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
         comment = Comment.objects.get(id=comment)
     return user == comment.author
+
+
+# TODO: Confirm if this is needed and what the condition should be
+def can_reply_comment(user: User, comment: Comment | int) -> bool:
+    if isinstance(comment, int):
+        comment = Comment.objects.get(id=comment)
+    return True if comment else False

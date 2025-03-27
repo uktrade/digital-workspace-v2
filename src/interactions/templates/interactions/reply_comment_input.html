@@ -1,0 +1,9 @@
+{% load comments %}
+{% user_can_reply_comment request.user comment.id as can_reply %}
+{% if can_reply and comment.reply_comment_form_url %}
+    <span class="separator"></span>
+    <button class="dwds-button dwds-button--link"
+            hx-get="{% if not cancel_reply %}{{ comment.reply_comment_form_url }}{% elif comment.reply_comment_cancel_url %}{{ comment.reply_comment_cancel_url }}{% endif %}"
+            hx-target="#comment-{{ comment.id }}"
+            hx-swap="innerHTML">Reply</button>
+{% endif %}

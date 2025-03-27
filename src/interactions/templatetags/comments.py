@@ -17,13 +17,6 @@ def page_comments(context, page: Page):
     comments = []
     for page_comment in comments_service.get_page_comments(page):
         comment = comments_service.comment_to_dict(page_comment)
-        comment.update(
-            reply_form=CommentForm(
-                initial={"in_reply_to": page_comment.pk},
-                auto_id="reply_%s",
-            ),
-            reply_form_url=comment_form_submission_url,
-        )
         comments.append(comment)
     return {
         "user": context["user"],
@@ -43,3 +36,9 @@ def user_can_delete_comment(user, comment_id):
 @register.simple_tag
 def user_can_edit_comment(user, comment_id):
     return comments_service.can_edit_comment(user, comment_id)
+
+
+# TODO: Confirm if needed
+@register.simple_tag
+def user_can_reply_comment(user, comment_id):
+    return comments_service.can_reply_comment(user, comment_id)
