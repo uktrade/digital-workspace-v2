@@ -1,12 +1,9 @@
-import re
-
 import pytest
 from playwright.sync_api import Page, expect
 
 from news.factories import NewsPageFactory
 from news.models import NewsHome
 
-from .pages.homepage import HomePage
 from .utils import login
 
 
