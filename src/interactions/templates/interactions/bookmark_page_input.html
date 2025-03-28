@@ -8,7 +8,8 @@
             hx-trigger="click"
             hx-select="button"
             hx-target="this"
-            hx-swap="outerHTML">
+            hx-swap="outerHTML"
+            data-testid="bookmark-this-page">
         {% if is_bookmarked %}
             {% include 'dwds/icons/bookmark.html' with dark=True %}
         {% else %}

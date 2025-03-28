@@ -1,4 +1,6 @@
-<button class="dwds-cta-button" onClick="{{ button_func }}">
+<button class="dwds-cta-button"
+        onClick="{{ button_func }}"
+        {% if data_testid %}data-testid="{{ data_testid }}"{% endif %}>
     <div class="content-sidebar">
         <div class="cta-icon">{% include icon with hover_dark=True %}</div>
         {% include "dwds/components/cta.html" with tiny=True %}
