@@ -16,13 +16,7 @@ from networks.panels import NetworkTypesFlaggedFieldPanel
 
 class NetworksHome(ContentPage):
     is_creatable = False
-    # TODO: Remove "networks.NetworksHome" from subpage_types after networks
-    # reordering.
-    subpage_types = [
-        "networks.Network",
-        "networks.NetworkContentPage",
-        "networks.NetworksHome",
-    ]
+    subpage_types = ["networks.Network", "networks.NetworkContentPage"]
     template = "content/content_page.html"
 
     promote_panels = ContentPage.promote_panels + [
