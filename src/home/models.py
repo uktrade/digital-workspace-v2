@@ -181,7 +181,7 @@ class HomePage(BasePage):
     is_creatable = False
     show_in_menus = True
     # TODO: Remove this after networks reordering!
-    subpage_types = ["networks.NetworkHome"]
+    subpage_types = ["networks.NetworksHome"]
     base_form_class = HomePageForm
 
     # Fields
