@@ -26,3 +26,14 @@ def test_can_hide_comment(user, user2, comment):
 
     # Test function called with comment_id instead of comment object
     assert comments_service.can_hide_comment(user, comment.id) == True
+
+
+# TODO: further methods to test
+# edit_comment
+# add_page_comment
+# get_page_comments
+# get_page_comment_count
+# get_comment_replies
+# get_comment_reply_count
+# can_edit_comment
+# comment_to_dict (a little more complex)

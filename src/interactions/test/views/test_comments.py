@@ -18,3 +18,10 @@ def test_hide_comment_view(comment, mocker):
     mocker.patch("interactions.services.comments.can_hide_comment", return_value=False)
     response = client.post(url)
     assert response.status_code == 403
+
+
+# TODO: other views to test
+# comment_on_page
+# edit_comment
+# edit_comment_form
+# get_comment
