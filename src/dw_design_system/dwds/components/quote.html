@@ -8,27 +8,29 @@
         {% endif %}
         <div class="content-stack">
             <p>{{ quote }}</p>
-            <p>
-                {% if source_name %}
-                    {% if source_url %}
-                        <a href="{{ source_url }}">{{ source_name }}</a>
-                    {% else %}
-                        {{ source_name }}
+            {% if source_name or source_role or source_team %}
+                <p>
+                    {% if source_name %}
+                        {% if source_url %}
+                            <a href="{{ source_url }}">{{ source_name }}</a>
+                        {% else %}
+                            {{ source_name }}
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-                {% if source_role %}
-                    {% if source_name %}|{% endif %}
-                    {{ source_role }}
-                {% endif %}
-                {% if source_team %}
-                    {% if source_name or source_role %}|{% endif %}
-                    {% if source_team_url %}
-                        <a href="{{ source_team_url }}">{{ source_team }}</a>
-                    {% else %}
-                        {{ source_team }}
+                    {% if source_role %}
+                        {% if source_name %}|{% endif %}
+                        {{ source_role }}
                     {% endif %}
-                {% endif %}
-            </p>
+                    {% if source_team %}
+                        {% if source_name or source_role %}|{% endif %}
+                        {% if source_team_url %}
+                            <a href="{{ source_team_url }}">{{ source_team }}</a>
+                        {% else %}
+                            {{ source_team }}
+                        {% endif %}
+                    {% endif %}
+                </p>
+            {% endif %}
         </div>
     </div>
     {% include 'dwds/icons/quote.html' with invert=True %}
