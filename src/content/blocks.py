@@ -173,7 +173,6 @@ class ImageBlock(blocks.StructBlock):
 class ImageWithTextBlock(blocks.StructBlock):
     """An image block with text left or right of it"""
 
-    image = ImageChooserBlock()
     heading = Heading3Block()
     text = TextBlock()
     image_position = blocks.ChoiceBlock(
@@ -181,13 +180,27 @@ class ImageWithTextBlock(blocks.StructBlock):
         default="left",
         help_text="Position of the image relative to the text",
     )
+    image = ImageChooserBlock()
     image_description = blocks.CharBlock(
         required=False,
         help_text="""
         Optional text displayed under the image to provide context.
         """,
     )
+    alt = blocks.CharBlock(
+        required=False,
+        label="Alt text",
+        help_text="""
+        Read out by screen readers or displayed if an image does not load
+        or if images have been switched off.
+
+        Unless this is a decorative image, it MUST have alt text that
+        tells people what information the image provides, describes its
+        content and function, and is specific, meaningful and concise.
+        """,
+    )
     # add alt text from ImageBlock above and maybe caption as well
+    # reorder
 
     class Meta:
         label = "Image with text"
