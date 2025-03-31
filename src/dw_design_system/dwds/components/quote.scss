@@ -1,7 +1,6 @@
 .dwds-quote {
     --quote-background-colour: #EEF2F6;
     --quote-foreground-colour: var(--color-text);
-    // border: var(--border-width-small) solid var(--color-background-very-light-grey);
     background-color: var(--quote-background-colour);
     padding: var(--s0);
     border-radius: var(--border-radius);
@@ -34,6 +33,7 @@
 
     .quote-icon {
         height: var(--s1);
+        width: fit-content;
     }
 
     > .content-sidebar {
