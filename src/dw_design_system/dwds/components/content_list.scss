@@ -11,9 +11,8 @@
                 --content-main-padding: 0;
             }
 
-            .content-image {
-                // height: fit-content;
-                // border-radius: 6px;
+            .content-image > img {
+                border-radius: var(--border-radius);
             }
         }
     }
