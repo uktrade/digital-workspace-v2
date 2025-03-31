@@ -153,14 +153,6 @@ class DocxParser(DocxParser):
 
         paragraphs: list[Paragraph] = self.document.paragraphs
         for paragraph in paragraphs:
-            if not paragraph.text and not paragraph.runs:
-                # TODO: Work out where the Tables go!
-                foo = [
-                    rel.reltype
-                    for id, rel in self.document.part.rels.items()
-                    if rel.reltype not in [RT.IMAGE, RT.HYPERLINK]
-                ]
-                print(paragraph)
             p_style_name = paragraph.style.name
             if p_style_name not in KNOWN_NAMES:
                 raise Exception(f"Unknown paragraph style: {p_style_name}")
