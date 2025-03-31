@@ -127,6 +127,7 @@ class NewsPage(PageWithTopics):
 
     perm_sec_as_author = models.BooleanField(
         default=False,
+        help_text="To set the author of a page, go to the 'Publishing' tab and select a 'Page author'",
     )
 
     allow_comments = models.BooleanField(
@@ -169,7 +170,7 @@ class NewsPage(PageWithTopics):
     settings_panels = [
         FieldPanel("allow_comments"),
         FieldPanel("allow_reactions"),
-        FieldPanel("perm_sec_as_author"),
+        FieldPanel("perm_sec_as_author", read_only=True),
         FieldPanel("pinned_on_home"),
     ]
 
