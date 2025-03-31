@@ -344,7 +344,11 @@ class ContentPageQuerySet(BasePageQuerySet):
             comment_count=models.Count(
                 "comments",
                 filter=models.Q(
-                    comments__is_visible=True, comments__parent__is_visible=True
+                    models.Q(comments__is_visible=True)
+                    and models.Q(
+                        models.Q(comments__parent__is_visible=True)
+                        | models.Q(comments__parent__isnull=True)
+                    )
                 ),
                 distinct=True,
             )

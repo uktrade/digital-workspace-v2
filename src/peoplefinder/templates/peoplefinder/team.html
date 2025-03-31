@@ -22,8 +22,8 @@
                 <div class="content-main">
                     <div class="content-body content-body-space-padding content-stack">
                         <h1>
-                            {{ page_title }}
-                            {% if team.abbreviation %}({{ team.abbreviation }}){% endif %}
+                            <span data-testid="name">{{ page_title }}</span>
+                            {% if team.abbreviation %}(<span data-testid="abbreviation">{{ team.abbreviation }}</span>){% endif %}
                         </h1>
                         <div data-testid="description">{{ team.description|markdown }}</div>
                         {% if profile_completion %}<p class="text-small">{{ profile_completion }}</p>{% endif %}
