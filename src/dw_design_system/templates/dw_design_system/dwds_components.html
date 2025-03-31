@@ -51,7 +51,7 @@
         document.querySelectorAll('.component-wrapper .component-html').forEach(function(componentHtml) {
             componentHtml.innerText = componentHtml.parentElement.querySelector('.component-container').innerHTML;
         });
-        document.querySelectorAll('.component-wrapper button').forEach(function(button) {
+        document.querySelectorAll('.component-wrapper > button').forEach(function(button) {
             button.addEventListener('click', function() {
                 var container = this.parentElement.querySelector('.component-container');
                 container.style.width = this.innerText;

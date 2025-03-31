@@ -49,15 +49,3 @@
             </div>
         </div>
     {% endblock main_content %}
-
-    {% block scripts %}
-        {{ block.super }}
-        <script src='{% static "dwds/components/accordion.js" %}'></script>
-        <script src='{% static "dwds/components/copy_text.js" %}'></script>
-        <script src='{% static "dwds/components/cta_button.js" %}'></script>
-        <script src='{% static "dwds/components/menu_vertical.js" %}'></script>
-        <script src='{% static "dwds/components/modal.js" %}'></script>
-        <script src='{% static "dwds/components/page_react_button.js" %}'></script>
-        <script src='{% static "dwds/elements/ribbon.js" %}'></script>
-        <script src='{% static "dwds/components/toggle_visibility_button.js" %}'></script>
-    {% endblock scripts %}

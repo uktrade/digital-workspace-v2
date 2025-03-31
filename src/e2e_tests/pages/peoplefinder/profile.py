@@ -24,10 +24,6 @@ class ProfileViewPage(PeoplefinderPage):
 
 
 class ProfileEditPage(PeoplefinderPage):
-    def goto_profile_view_page(self):
-        self.page.get_by_text("Back to profile").click()
-        return ProfileViewPage(self.page)
-
     def goto_profile_edit_team_page(self):
         self.page.get_by_text("Team and role").click()
         return ProfileEditPage(self.page)

@@ -1,4 +1,10 @@
-from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import (
+    Http404,
+    HttpRequest,
+    HttpResponse,
+    HttpResponseForbidden,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -10,11 +16,12 @@ from interactions.services import bookmarks as bookmarks_service
 from interactions.services import comment_reactions as comment_reactions_service
 from interactions.services import comments as comments_service
 from interactions.services import page_reactions as page_reactions_service
+from news.forms import CommentForm
 from news.models import Comment
 
 
 @require_http_methods(["POST"])
-def bookmark(request, *args, **kwargs):
+def bookmark(request):
     user = request.user
 
     if request.method == "POST":
@@ -40,13 +47,13 @@ def bookmark(request, *args, **kwargs):
 
 
 @require_http_methods(["DELETE"])
-def remove_bookmark(request, pk, *args, **kwargs):
+def remove_bookmark(request, *, pk):
     bookmarks_service.remove_bookmark(pk, request.user)
     return HttpResponse()
 
 
 @require_http_methods(["GET"])
-def bookmark_index(request, *args, **kwargs):
+def bookmark_index(request):
     return TemplateResponse(
         request,
         "interactions/bookmark_index.html",
@@ -57,7 +64,7 @@ def bookmark_index(request, *args, **kwargs):
 
 
 @require_http_methods(["POST"])
-def react_to_page(request, *args, pk, **kwargs):
+def react_to_page(request, *, pk):
     page = get_object_or_404(Page, id=pk)
     user = request.user
 
@@ -77,7 +84,70 @@ def react_to_page(request, *args, pk, **kwargs):
 
 
 @require_http_methods(["POST"])
-def react_to_comment(request, *args, pk, **kwargs):
+def edit_comment(request, *, comment_id):
+    if not comments_service.can_edit_comment(request.user, comment_id):
+        return HttpResponse(status=403)
+
+    comment_message = request.POST.get("comment")
+    try:
+        comments_service.edit_comment(comment_id, comment_message)
+    except comments_service.CommentNotFound:
+        raise Http404
+
+    return redirect(
+        reverse("interactions:get-comment", kwargs={"comment_id": comment_id})
+    )
+
+
+@require_http_methods(["GET"])
+def get_comment(request, *, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment_dict = comments_service.comment_to_dict(comment)
+
+    return TemplateResponse(
+        request,
+        "dwds/components/comment.html",
+        context={
+            "comment": comment_dict,
+            "request": request,
+        },
+    )
+
+
+@require_http_methods(["GET"])
+def edit_comment_form(request, *, comment_id):
+    if not comments_service.can_edit_comment(request.user, comment_id):
+        return HttpResponse(status=403)
+
+    comment = get_object_or_404(Comment, id=comment_id)
+    comment_dict = comments_service.comment_to_dict(comment)
+
+    comment_dict.update(
+        edit_comment_form=CommentForm(initial={"comment": comment_dict["message"]}),
+        edit_comment_url=reverse(
+            "interactions:edit-comment",
+            kwargs={
+                "comment_id": comment_id,
+            },
+        ),
+        edit_comment_cancel_url=reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment_id,
+            },
+        ),
+    )
+
+    return TemplateResponse(
+        request,
+        "interactions/edit_comment_form.html",
+        context={
+            "comment": comment_dict,
+        },
+    )
+
+
+def react_to_comment(request, *, pk):
     comment = get_object_or_404(Comment, id=pk)
     user = request.user
 
@@ -99,7 +169,7 @@ def react_to_comment(request, *args, pk, **kwargs):
 
 
 @require_http_methods(["POST"])
-def comment_on_page(request, *args, pk, **kwargs):
+def comment_on_page(request, *, pk):
     page = get_object_or_404(Page, id=pk).specific
     user = request.user
 

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.db.models import QuerySet
 from django.urls import reverse
@@ -5,6 +7,16 @@ from wagtail.models import Page
 
 from news.models import Comment
 from user.models import User
+
+
+class CommentNotFound(Exception): ...
+
+
+def edit_comment(pk: str, content: str) -> None:
+    comment = Comment.objects.get(pk=pk)
+    comment.content = content
+    comment.edited_date = datetime.now()
+    comment.save()
 
 
 def add_page_comment(
@@ -44,15 +56,20 @@ def get_comment_reply_count(comment: Comment) -> int:
     return comment.replies.filter(is_visible=True).count()
 
 
-def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
+def comment_to_dict(comment: Comment) -> dict:
+
+    include_replies = bool(not comment.parent)
+
     author_profile = comment.author.profile
 
     replies: list[dict] = []
     if include_replies:
         for reply in get_comment_replies(comment):
-            replies.append(comment_to_dict(reply, include_replies=False))
+            replies.append(comment_to_dict(reply))
 
-    return {
+    in_reply_to = comment.pk
+
+    comment_dict = {
         "id": comment.id,
         "author_name": author_profile.full_name,
         "author_url": reverse("profile-view", args=[author_profile.slug]),
@@ -60,11 +77,34 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
             author_profile.photo.url if author_profile.photo else None
         ),
         "posted_date": comment.posted_date,
+        "edited_date": comment.edited_date,
         "message": comment.content,
         "show_replies": include_replies,
         "reply_count": get_comment_reply_count(comment),
         "replies": replies,
+        "in_reply_to": in_reply_to,
+        "edit_comment_form_url": reverse(
+            "interactions:edit-comment-form",
+            kwargs={
+                "comment_id": comment.id,
+            },
+        ),
+        "edit_comment_cancel_url": reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment.id,
+            },
+        ),
     }
+
+    if include_replies:
+        comment_dict.update(
+            reply_form_url=reverse(
+                "interactions:comment-on-page", args=[comment.page.pk]
+            ),
+        )
+
+    return comment_dict
 
 
 def show_comment(comment: Comment) -> None:
@@ -78,6 +118,12 @@ def hide_comment(comment: Comment) -> None:
 
 
 def can_hide_comment(user: User, comment: Comment | int) -> bool:
+    if isinstance(comment, int):
+        comment = Comment.objects.get(id=comment)
+    return user == comment.author
+
+
+def can_edit_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
         comment = Comment.objects.get(id=comment)
     return user == comment.author

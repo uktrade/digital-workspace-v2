@@ -28,6 +28,7 @@
 @forward "components/cta_button";
 @forward "components/details";
 @forward "components/link_action";
+@forward "components/link_external";
 @forward "components/link_list";
 @forward "components/link_navigate";
 @forward "components/message";
@@ -38,6 +39,7 @@
 @forward "components/promo";
 @forward "components/profile_info";
 @forward "components/spotlight";
+@forward "components/quote";
 
 // Elements
 @forward "elements/button";
@@ -56,17 +58,22 @@
 
 // Icons
 @forward "icons/bookmark";
+@forward "icons/calendar";
 @forward "icons/celebrate";
 @forward "icons/check";
 @forward "icons/comment";
 @forward "icons/copy";
 @forward "icons/cross";
 @forward "icons/dislike";
+@forward "icons/email";
 @forward "icons/feedback";
 @forward "icons/like";
 @forward "icons/love";
+@forward "icons/ms_teams";
 @forward "icons/share";
 @forward "icons/unhappy";
+@forward "icons/quote";
+
 
 // Layouts
 @forward "layouts/content_sidebar";

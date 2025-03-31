@@ -73,11 +73,34 @@ class TextBlock(blocks.RichTextBlock):
 
 class UsefulLinkBlock(blocks.StructBlock):
     title = blocks.CharBlock(help_text="This will be displayed on the sidebar.")
-    page = blocks.PageChooserBlock()
+    page = blocks.PageChooserBlock(required=False)
+    url = blocks.URLBlock(required=False)
 
     class Meta:
         label = "Useful links"
         icon = "link"
+
+    def clean(self, value):
+        if not value.get("page") and not value.get("url"):
+            raise ValidationError(
+                "You must provide either a page or a URL",
+                params={"page": ["You must provide either a page or a URL"]},
+            )
+        if value.get("page") and value.get("url"):
+            raise ValidationError(
+                "You must provide either a page or a URL, not both",
+                params={
+                    "page": ["You must provide either a page or a URL"],
+                    "url": ["You must provide either a page or a URL"],
+                },
+            )
+        return super().clean(value)
+
+    def get_url(self, value):
+        """Get the URL of the page or the URL provided"""
+        if value.get("page"):
+            return value["page"].url
+        return value["url"]
 
 
 class ImageBlock(blocks.StructBlock):
