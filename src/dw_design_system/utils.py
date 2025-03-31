@@ -169,6 +169,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "Quotes Component",
                 "template": "dwds/components/quote.html",
                 "context": {
+                    "highlight": True,
                     "quote": "It makes you happy that you provided several kilowatts to the power sector, and it means that someone will turn their lights on today. That motivates me, that’s your work really impacts the wellbeing of the country.",
                     "source_name": "Pavolo Sorokin",
                     "source_url": "https://www.gov.uk",
