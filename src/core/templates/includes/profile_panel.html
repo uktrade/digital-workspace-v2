@@ -3,7 +3,8 @@
 <div class="people-finder-panel">
     {% if peoplefinder_profile %}
         <a class="profile-link"
-           href="{% url 'profile-view' peoplefinder_profile.slug %}">
+           href="{% url 'profile-view' peoplefinder_profile.slug %}"
+           data-testid="view-profile">
             <div class="profile-details">
                 <span class="salutation">Hi {{ peoplefinder_profile.get_first_name_display|truncatechars:25 }}</span>
                 <span class="profile-prompt"><span>View your profile</span>
