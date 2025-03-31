@@ -3,21 +3,11 @@
 <div class="content-side-by-side-wrapper">
     <div class="content-side-by-side image-{{ self.image_position }}">
         <div class="content-stack">
-            <h3>{{ self.heading }}</h3>
-            <p>{{ self.text }}</p>
+            <h3>{{ value.heading }}</h3>
+            {{ value.text }}
         </div>
         <div class="content-stack">
-            {% include "dwds/elements/content_image.html" with content_image=value.image caption=self.image_description %}
+            {% include "dwds/elements/content_image.html" with content_image=value.image caption=value.image_description alt=value.alt %}
         </div>
     </div>
 </div>
-{% comment %} <div class="content-sidebar-right">
-    <div class="content-stack">
-        <h3>{{ self.heading }}</h3>
-        <p>{{ self.text }}</p>
-    </div>
-    <div class="content-stack">
-        {% include "dwds/elements/content_image.html" with content_image=value.image %}
-        <p>{{ self.image_description }}</p>
-    </div>
-</div> {% endcomment %}
