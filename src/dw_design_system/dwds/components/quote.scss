@@ -14,6 +14,22 @@
         > svg > * {
             fill: var(--quote-foreground-colour);
         }
+
+        a:not(.dwds-button) {
+            color: var(--quote-foreground-colour);
+            text-decoration-color: var(--quote-foreground-colour);
+
+            &:visited,
+            &:link {
+                color: var(--quote-foreground-colour);
+                text-decoration-color: var(--quote-foreground-colour);
+            }
+
+            &:focus {
+                color: var(--color-text);
+                text-decoration-color: var(--color-text);
+            }
+        }
     }
 
     .quote-icon {
