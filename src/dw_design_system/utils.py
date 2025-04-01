@@ -188,7 +188,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "image_position": "right",
                     "image": thumbnail_file,
                     "image_description": "Text for image description",
-                    "alt": "Alt text for screen readers",
+                    "image_alt": "Alt text for screen readers",
                 },
             },
             {

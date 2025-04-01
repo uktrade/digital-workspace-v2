@@ -4,7 +4,7 @@
 {% if image_position == "left" %}
     <div class="content-sidebar">
         <div class="content-stack">
-            {% include "dwds/elements/content_image.html" with content_image=image caption=image_description alt=alt %}
+            {% include "dwds/elements/content_image.html" with content_image=image caption=image_description alt=image_alt %}
         </div>
         <div class="content-stack">
             <h3>{{ heading }}</h3>
@@ -18,7 +18,7 @@
             {{ text }}
         </div>
         <div class="content-stack">
-            {% include "dwds/elements/content_image.html" with content_image=image caption=image_description alt=alt %}
+            {% include "dwds/elements/content_image.html" with content_image=image caption=image_description alt=image_alt %}
         </div>
     </div>
 {% endif %}

@@ -105,7 +105,7 @@ class Migration(migrations.Migration):
                                 ("image_position", 11),
                                 ("image", 5),
                                 ("image_description", 12),
-                                ("alt", 7),
+                                ("image_alt", 7),
                             ]
                         ],
                         {},

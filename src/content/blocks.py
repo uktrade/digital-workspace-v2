@@ -187,7 +187,7 @@ class ImageWithTextBlock(blocks.StructBlock):
         Optional text displayed under the image to provide context.
         """,
     )
-    alt = blocks.CharBlock(
+    image_alt = blocks.CharBlock(
         required=False,
         label="Alt text",
         help_text="""
