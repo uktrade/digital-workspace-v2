@@ -58,7 +58,6 @@ def get_comment_reply_count(comment: Comment) -> int:
 
 
 def comment_to_dict(comment: Comment) -> dict:
-
     include_replies = bool(not comment.parent)
 
     author_profile = comment.author.profile
@@ -155,5 +154,9 @@ def can_edit_comment(user: User, comment: Comment | int) -> bool:
 
 def can_reply_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
-        comment = Comment.objects.get(id=comment)
-    return True if comment else False
+        try:
+            comment = Comment.objects.get(id=comment)
+        except Comment.DoesNotExist:
+            return False
+
+    return bool(not comment.parent)
