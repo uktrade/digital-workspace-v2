@@ -99,12 +99,14 @@ def comment_to_dict(comment: Comment) -> dict:
             initial={"in_reply_to": comment.id},
             auto_id="reply_%s",
         ),
-        "reply_comment_form_url": reverse(
-            "interactions:reply-comment-form",
-            kwargs={
-                "comment_id": comment.id,
-                "show_reply_form": True,
-            },
+        "reply_comment_form_url": (
+            reverse(
+                "interactions:get-comment",
+                kwargs={
+                    "comment_id": comment.id,
+                },
+            )
+            + "?show_reply_form=True"
         ),
         "reply_comment_url": reverse(
             "interactions:reply-comment",

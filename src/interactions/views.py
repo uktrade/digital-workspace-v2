@@ -123,9 +123,11 @@ def get_page_comments(request, *, pk):
 
 
 @require_http_methods(["GET"])
-def get_comment(request, *, comment_id, show_reply_form=False):
+def get_comment(request, *, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     comment_dict = comments_service.comment_to_dict(comment)
+
+    show_reply_form = request.GET.get("show_reply_form", False)
 
     return TemplateResponse(
         request,

@@ -30,11 +30,6 @@ urlpatterns = [
         name="edit-comment-form",
     ),
     path(
-        "comment/<int:comment_id>/reply/<str:show_reply_form>/",
-        views.get_comment,
-        name="reply-comment-form",
-    ),
-    path(
         "comment/<int:comment_id>/",
         views.get_comment,
         name="get-comment",
