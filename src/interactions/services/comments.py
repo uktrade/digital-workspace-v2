@@ -5,6 +5,7 @@ from django.db.models import QuerySet
 from django.urls import reverse
 from wagtail.models import Page
 
+from news.forms import CommentForm
 from news.models import Comment
 from user.models import User
 
