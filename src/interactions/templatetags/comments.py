@@ -11,9 +11,6 @@ register = template.Library()
 
 @register.inclusion_tag("dwds/components/comments.html", takes_context=True)
 def page_comments(context, page: Page):
-    comment_form_submission_url = reverse(
-        "interactions:comment-on-page", args=[page.pk]
-    )
     comments = []
     for page_comment in comments_service.get_page_comments(page):
         comment = comments_service.comment_to_dict(page_comment)
@@ -23,7 +20,7 @@ def page_comments(context, page: Page):
         "comment_count": comments_service.get_page_comment_count(page),
         "comments": comments,
         "comment_form": CommentForm(),
-        "comment_form_url": comment_form_submission_url,
+        "comment_form_url": reverse("interactions:comment-on-page", args=[page.pk]),
         "request": context["request"],
     }
 
@@ -38,7 +35,6 @@ def user_can_edit_comment(user, comment_id):
     return comments_service.can_edit_comment(user, comment_id)
 
 
-# TODO: Confirm if needed
 @register.simple_tag
 def user_can_reply_comment(user, comment_id):
     return comments_service.can_reply_comment(user, comment_id)

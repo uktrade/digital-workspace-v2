@@ -5,7 +5,6 @@ from django.db.models import QuerySet
 from django.urls import reverse
 from wagtail.models import Page
 
-from news.forms import CommentForm
 from news.models import Comment
 from user.models import User
 
@@ -57,17 +56,20 @@ def get_comment_reply_count(comment: Comment) -> int:
     return comment.replies.filter(is_visible=True).count()
 
 
-def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
+def comment_to_dict(comment: Comment) -> dict:
+
+    include_replies = bool(not comment.parent)
+
     author_profile = comment.author.profile
 
     replies: list[dict] = []
     if include_replies:
         for reply in get_comment_replies(comment):
-            replies.append(comment_to_dict(reply, include_replies=False))
+            replies.append(comment_to_dict(reply))
 
-    in_reply_to = comment.parent.pk if comment.parent else None
+    in_reply_to = comment.pk
 
-    return {
+    comment_dict = {
         "id": comment.id,
         "author_name": author_profile.full_name,
         "author_url": reverse("profile-view", args=[author_profile.slug]),
@@ -118,6 +120,15 @@ def comment_to_dict(comment: Comment, include_replies: bool = True) -> dict:
         ),
     }
 
+    if include_replies:
+        comment_dict.update(
+            reply_form_url=reverse(
+                "interactions:comment-on-page", args=[comment.page.pk]
+            ),
+        )
+
+    return comment_dict
+
 
 def show_comment(comment: Comment) -> None:
     comment.is_visible = True
@@ -141,7 +152,6 @@ def can_edit_comment(user: User, comment: Comment | int) -> bool:
     return user == comment.author
 
 
-# TODO: Confirm if this is needed and what the condition should be
 def can_reply_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
         comment = Comment.objects.get(id=comment)

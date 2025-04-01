@@ -5,7 +5,7 @@
         {% for bookmark in bookmarks %}
             <li>
                 <div>
-                    <a href="{% pageurl bookmark.page %}">{{ bookmark.page }}</a>
+                    <a href="{% pageurl bookmark.page %}" data-testid="bookmark-link">{{ bookmark.page }}</a>
                 </div>
             </li>
         {% endfor %}
