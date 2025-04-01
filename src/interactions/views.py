@@ -100,6 +100,29 @@ def edit_comment(request, *, comment_id):
 
 
 @require_http_methods(["GET"])
+def get_page_comments(request, *, pk):
+    comment_form_submission_url = reverse("interactions:comment-on-page", args=[pk])
+    page = get_object_or_404(Page, id=pk).specific
+    comments = []
+    for page_comment in comments_service.get_page_comments(page):
+        comment = comments_service.comment_to_dict(page_comment)
+        comments.append(comment)
+
+    return TemplateResponse(
+        request,
+        "dwds/components/comments.html",
+        context={
+            "user": request.user,
+            "comment_count": comments_service.get_page_comment_count(page),
+            "comments": comments,
+            "comment_form": CommentForm(),
+            "comment_form_url": comment_form_submission_url,
+            "request": request,
+        },
+    )
+
+
+@require_http_methods(["GET"])
 def get_comment(request, *, comment_id, show_reply_form=False):
     comment = get_object_or_404(Comment, id=comment_id)
     comment_dict = comments_service.comment_to_dict(comment)
@@ -148,45 +171,6 @@ def edit_comment_form(request, *, comment_id):
     )
 
 
-# TODO: Remove? if able to include in comment_to_dict
-@require_http_methods(["GET"])
-def reply_comment_form(request, *, comment_id):
-    if not comments_service.can_reply_comment(request.user, comment_id):
-        return HttpResponse(status=403)
-
-    comment = get_object_or_404(Comment, id=comment_id)
-    comment_dict = comments_service.comment_to_dict(comment)
-
-    comment_dict.update(
-        reply_comment_form=CommentForm(
-            initial={"in_reply_to": comment_id},
-            auto_id="reply_%s",
-        ),
-        reply_comment_url=reverse(
-            "interactions:reply-comment",
-            kwargs={
-                "comment_id": comment_id,
-            },
-        ),
-        reply_comment_cancel_url=reverse(
-            "interactions:get-comment",
-            kwargs={
-                "comment_id": comment_id,
-            },
-        ),
-    )
-
-    return TemplateResponse(
-        request,
-        "interactions/reply_comment_form.html",
-        context={
-            "comment": comment_dict,
-        },
-    )
-
-
-# TODO: If submitting regular comments also gets changed to use htmx,
-# could/should we combine them?
 @require_http_methods(["POST"])
 def reply_to_comment(request, *, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -230,14 +214,14 @@ def comment_on_page(request, *, pk):
     page = get_object_or_404(Page, id=pk).specific
     user = request.user
 
-    comment = comments_service.add_page_comment(
+    comments_service.add_page_comment(
         page,
         user,
         request.POST["comment"],
         request.POST.get("in_reply_to", None),
     )
 
-    return redirect(page.url + f"#comment-{comment.id}")
+    return redirect(reverse("interactions:get-page-comments", kwargs={"pk": pk}))
 
 
 @require_http_methods(["POST"])

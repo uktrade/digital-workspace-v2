@@ -13,8 +13,7 @@ urlpatterns = [
     path("bookmark/<int:pk>/remove", views.remove_bookmark, name="bookmark-remove"),
     path("bookmarks", views.bookmark_index, name="bookmark-index"),
     path("page/<int:pk>/react", views.react_to_page, name="page-reactions"),
-    # TODO: create view for reloading whole comments section (for when new comments are added)
-    # path("page/<int:pk>/comments", views.get_page_comments, name="page-comments"),
+    path("page/<int:pk>/comments", views.get_page_comments, name="get-page-comments"),
     path("page/<int:pk>/comment", views.comment_on_page, name="comment-on-page"),
     path(
         "comment/<int:comment_id>/reply", views.reply_to_comment, name="reply-comment"
@@ -30,7 +29,6 @@ urlpatterns = [
         views.edit_comment_form,
         name="edit-comment-form",
     ),
-    # TODO: Should this also be named get-comment?
     path(
         "comment/<int:comment_id>/reply/<str:show_reply_form>/",
         views.get_comment,
