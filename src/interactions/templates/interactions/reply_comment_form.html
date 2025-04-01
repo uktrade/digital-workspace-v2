@@ -1,4 +1,6 @@
-{% if comment.reply_comment_form and comment.reply_comment_url %}
+{% load comments %}
+{% user_can_reply_comment request.user comment.id as can_reply %}
+{% if can_reply and comment.reply_comment_form and comment.reply_comment_url %}
     <div id="comment-{{ comment.id }}-reply-form">
         <h3>Reply to this comment</h3>
         <form hx-post="{{ comment.reply_comment_url }}"
