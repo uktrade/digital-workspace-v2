@@ -180,6 +180,18 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
+                "name": "Image with text Component",
+                "template": "dwds/components/image_with_text.html",
+                "context": {
+                    "heading": "Heading for the component",
+                    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+                    "image_position": "right",
+                    "image": thumbnail_file,
+                    "image_description": "Text for image description",
+                    "alt": "Alt text for screen readers",
+                },
+            },
+            {
                 "name": "Spotlight",
                 "template": "dwds/components/spotlight.html",
                 "context": {

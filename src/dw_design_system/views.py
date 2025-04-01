@@ -145,10 +145,6 @@ def layouts(request: HttpRequest) -> HttpResponse:
             "content_items": range(3),
         },
         {
-            "name": "Content side by side",
-            "template": "dwds/layouts/content_side_by_side.html",
-        },
-        {
             "name": "Content custom sidebar",
             "template": "dwds/layouts/content_custom_sidebar.html",
         },

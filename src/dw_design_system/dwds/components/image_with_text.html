@@ -1,0 +1,13 @@
+{% load wagtailimages_tags %}
+
+<div class="content-side-by-side-wrapper">
+    <div class="content-side-by-side image-{{ self.image_position }}">
+        <div class="content-stack">
+            <h3>{{ heading }}</h3>
+            <p>{{ text }}</p>
+        </div>
+        <div class="content-stack">
+            {% include "dwds/elements/content_image.html" with content_image=image caption=image_description alt=alt %}
+        </div>
+    </div>
+</div>
