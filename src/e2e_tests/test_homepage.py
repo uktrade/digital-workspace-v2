@@ -10,15 +10,13 @@ from .utils import login
 
 @pytest.mark.e2e
 def test_homepage(superuser, user, page: Page):
-    NewsPageFactory.create_batch(5)
+    news_pages = NewsPageFactory.create_batch(5)
 
     login(page, user)
     page.goto("/")
     expect(page).to_have_title(re.compile(r"Home.*"))
 
-    page.get_by_title("News page 1")
-    page.get_by_title("News page 2")
-    page.get_by_title("News page 3")
-    page.get_by_title("News page 4")
-    page.get_by_title("News page 5")
+    for news_page in news_pages:
+        page.get_by_title(news_page.title)
+
     page.get_by_role("link", name="View all news").click()

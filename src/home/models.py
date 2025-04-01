@@ -180,8 +180,7 @@ class WhatsPopular(models.Model):
 class HomePage(BasePage):
     is_creatable = False
     show_in_menus = True
-    # TODO: Remove this after networks reordering!
-    subpage_types = ["networks.NetworksHome"]
+    subpage_types = []
     base_form_class = HomePageForm
 
     # Fields

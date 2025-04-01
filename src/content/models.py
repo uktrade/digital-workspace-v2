@@ -2,6 +2,7 @@ import html
 import logging
 from typing import Optional
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -35,6 +36,7 @@ from content.validators import validate_description_word_count
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
+from peoplefinder.models import Person
 from peoplefinder.widgets import PersonChooser
 from user.models import User as UserModel
 
@@ -169,12 +171,26 @@ class BasePage(Page, Indexed):
         use_json_field=True,
         help_text="Tell readers about page important page changes.",
     )
+    page_author = models.ForeignKey(
+        "peoplefinder.Person",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="If the 'page author' field is empty, we will fall back to the owner of this page.",
+    )
+    page_author_name = models.CharField(
+        null=True,
+        blank=True,
+        help_text="Use this to show the name of the author when there isn't an active Person to show",
+    )
 
     promote_panels = []
     content_panels = [
         TitleFieldPanel("title"),
     ]
     publishing_panels = [
+        FieldPanel("page_author", widget=PersonChooser),
+        FieldPanel("page_author_name", read_only=True),
         FieldPanel("page_updates"),
     ]
 
@@ -184,6 +200,17 @@ class BasePage(Page, Indexed):
         ("settings_panels", "Settings"),
         ("publishing_panels", "Publishing"),
     ]
+
+    def fill_page_author_name(self) -> None:
+        author = self.get_author()
+
+        if isinstance(author, str) and self.page_author_name != author:
+            self.page_author_name = author
+            return
+
+        if isinstance(author, Person) and self.page_author_name != author.full_name:
+            self.page_author_name = author.full_name
+            return
 
     def sort_page_updates(self) -> None:
         """
@@ -202,6 +229,7 @@ class BasePage(Page, Indexed):
         return None
 
     def full_clean(self, *args, **kwargs):
+        self.fill_page_author_name()
         self.sort_page_updates()
         super().full_clean(*args, **kwargs)
 
@@ -218,6 +246,28 @@ class BasePage(Page, Indexed):
     def published_date(self):
         return self.last_published_at
 
+    def get_author(self) -> Optional[Person | str]:
+        if self.page_author:
+            return self.page_author
+
+        if self.page_author_name:
+            return self.page_author_name
+
+        # TODO: Remove this in future ticket when we strip out the "perm_sec_as_author" field.
+        if getattr(self, "perm_sec_as_author", False) and settings.PERM_SEC_NAME:
+            return settings.PERM_SEC_NAME
+
+        if first_publisher := self.get_first_publisher():
+            try:
+                return first_publisher.profile
+            except User.profile.RelatedObjectDoesNotExist:
+                pass
+
+        if self.owner:
+            return self.owner.profile
+
+        return None
+
     def get_first_publisher(self) -> Optional[UserModel]:
         """Return the first publisher of the page or None."""
         first_revision_with_user = (
@@ -226,8 +276,8 @@ class BasePage(Page, Indexed):
 
         if first_revision_with_user:
             return first_revision_with_user.user
-        else:
-            return None
+
+        return None
 
     @property
     def days_since_last_published(self):
