@@ -9,8 +9,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+from waffle import flag_is_active
 from wagtail.models import Page
 
+from core import flags
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
 from interactions.services import comment_reactions as comment_reactions_service
@@ -101,12 +103,11 @@ def edit_comment(request, *, comment_id):
 
 @require_http_methods(["GET"])
 def get_page_comments(request, *, pk):
-    comment_form_submission_url = reverse("interactions:comment-on-page", args=[pk])
     page = get_object_or_404(Page, id=pk).specific
-    comments = []
-    for page_comment in comments_service.get_page_comments(page):
-        comment = comments_service.comment_to_dict(page_comment)
-        comments.append(comment)
+    comments = [
+        comments_service.comment_to_dict(page_comment)
+        for page_comment in comments_service.get_page_comments(page)
+    ]
 
     return TemplateResponse(
         request,
@@ -116,7 +117,7 @@ def get_page_comments(request, *, pk):
             "comment_count": comments_service.get_page_comment_count(page),
             "comments": comments,
             "comment_form": CommentForm(),
-            "comment_form_url": comment_form_submission_url,
+            "comment_form_url": reverse("interactions:comment-on-page", args=[pk]),
             "request": request,
         },
     )
@@ -216,12 +217,15 @@ def comment_on_page(request, *, pk):
     page = get_object_or_404(Page, id=pk).specific
     user = request.user
 
-    comments_service.add_page_comment(
+    comment = comments_service.add_page_comment(
         page,
         user,
         request.POST["comment"],
         request.POST.get("in_reply_to", None),
     )
+
+    if not flag_is_active(request, flags.NEW_COMMENTS):
+        return redirect(page.url + f"#comment-{comment.id}")
 
     return redirect(reverse("interactions:get-page-comments", kwargs={"pk": pk}))
 
