@@ -199,8 +199,6 @@ class ImageWithTextBlock(blocks.StructBlock):
         content and function, and is specific, meaningful and concise.
         """,
     )
-    # add alt text from ImageBlock above and maybe caption as well
-    # reorder
 
     class Meta:
         label = "Image with text"

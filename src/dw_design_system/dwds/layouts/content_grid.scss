@@ -18,13 +18,6 @@
     .content-grid.image-right {
         grid-gap: 0;
         grid-template-rows: 1fr;
-
-        > .content-image {
-            // object-fit: cover;
-            // object-position: center;
-            // height: 100%;
-            // width: 100%;
-        }
     }
 
     .content-grid.image-left {
@@ -34,11 +27,6 @@
             grid-row: 1;
             grid-column: 2;
         }
-
-        > .content-image {
-            // grid-row: 1;
-            // grid-column: 1;
-        }
     }
 
     .content-grid.image-right {
@@ -47,11 +35,6 @@
         > .content-main {
             grid-row: 1;
             grid-column: 1;
-        }
-
-        > .content-image {
-            // grid-row: 1;
-            // grid-column: 2;
         }
     }
 }
