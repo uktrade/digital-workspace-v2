@@ -1,7 +1,17 @@
 {% load wagtailimages_tags %}
 
-<div class="content-side-by-side-wrapper">
-    <div class="content-side-by-side image-{{ self.image_position }}">
+{% if self.image_position == "left" %}
+    <div class="content-sidebar">
+        <div class="content-stack">
+            {% include "dwds/elements/content_image.html" with content_image=value.image caption=value.image_description alt=value.alt %}
+        </div>
+        <div class="content-stack">
+            <h3>{{ value.heading }}</h3>
+            {{ value.text }}
+        </div>
+    </div>
+{% else %}
+    <div class="content-sidebar-right">
         <div class="content-stack">
             <h3>{{ value.heading }}</h3>
             {{ value.text }}
@@ -10,4 +20,4 @@
             {% include "dwds/elements/content_image.html" with content_image=value.image caption=value.image_description alt=value.alt %}
         </div>
     </div>
-</div>
+{% endif %}
