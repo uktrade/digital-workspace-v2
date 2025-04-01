@@ -15,11 +15,9 @@
     {% block pre_page_body %}
     {% endblock pre_page_body %}
     {% if page.body %}
-        <div>
-            {% for block in page.body %}
-                {% include_block block %}
-            {% endfor %}
-        </div>
+        {% for block in page.body %}
+            {% include_block block %}
+        {% endfor %}
     {% endif %}
 {% endblock primary_content %}
 
