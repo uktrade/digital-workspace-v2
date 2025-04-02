@@ -8,11 +8,9 @@
               hx-swap="innerHTML">
             {% csrf_token %}
             {{ comment.edit_comment_form }}
-            <input value="Submit edited comment"
-                   type="submit"
-                   class="dwds-button dwds-button--transactional" />
+            <input value="Submit edited comment" type="submit" class="dwds-button" />
             {% if comment.edit_comment_cancel_url %}
-                <button class="dwds-button dwds-button--warning"
+                <button class="dwds-button dwds-button--secondary"
                         hx-get="{{ comment.edit_comment_cancel_url }}"
                         hx-target="#comment-{{ comment.id }}"
                         hx-swap="innerHTML">Cancel</button>
