@@ -22,8 +22,12 @@ from wagtail.utils.decorators import cached_classmethod
 
 import dw_design_system.dwds.components as dwds_blocks
 from content import blocks as content_blocks
-from content.utils import (get_search_content_for_block, manage_excluded,
-                           manage_pinned, truncate_words_and_chars)
+from content.utils import (
+    get_search_content_for_block,
+    manage_excluded,
+    manage_pinned,
+    truncate_words_and_chars,
+)
 from content.validators import validate_description_word_count
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
@@ -31,6 +35,7 @@ from extended_search.index import Indexed, RelatedFields
 from peoplefinder.models import Person
 from peoplefinder.widgets import PersonChooser
 from user.models import User as UserModel
+
 
 logger = logging.getLogger(__name__)
 
