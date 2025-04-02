@@ -7,16 +7,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import Q, Subquery
+from django.db.models import F, Func, OuterRef, Q, Subquery
 from django.forms import widgets
 from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
-from wagtail.admin.panels import (
-    ObjectList,
-    TabbedInterface,
-    TitleFieldPanel,
-)
+from wagtail.admin.panels import ObjectList, TabbedInterface, TitleFieldPanel
 from wagtail.admin.widgets.slug import SlugInput
 from wagtail.blocks.stream_block import StreamValue
 from wagtail.fields import StreamField
@@ -26,12 +22,8 @@ from wagtail.utils.decorators import cached_classmethod
 
 import dw_design_system.dwds.components as dwds_blocks
 from content import blocks as content_blocks
-from content.utils import (
-    get_search_content_for_block,
-    manage_excluded,
-    manage_pinned,
-    truncate_words_and_chars,
-)
+from content.utils import (get_search_content_for_block, manage_excluded,
+                           manage_pinned, truncate_words_and_chars)
 from content.validators import validate_description_word_count
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
@@ -39,7 +31,6 @@ from extended_search.index import Indexed, RelatedFields
 from peoplefinder.models import Person
 from peoplefinder.widgets import PersonChooser
 from user.models import User as UserModel
-
 
 logger = logging.getLogger(__name__)
 
@@ -332,17 +323,20 @@ class ContentPageQuerySet(BasePageQuerySet):
         )
 
     def annotate_with_comment_count(self):
+        from news.models import Comment
+
         return self.annotate(
-            comment_count=models.Count(
-                "comments",
-                filter=models.Q(
-                    models.Q(comments__is_visible=True)
-                    and models.Q(
-                        models.Q(comments__parent__is_visible=True)
-                        | models.Q(comments__parent__isnull=True)
-                    )
-                ),
-                distinct=True,
+            comment_count=Subquery(
+                Comment.objects.filter(
+                    models.Q(
+                        models.Q(parent__is_visible=True)
+                        | models.Q(parent__isnull=True)
+                    ),
+                    is_visible=True,
+                    page=OuterRef("id"),
+                )
+                .annotate(count=Func(F("id"), function="Count"))
+                .values("count")
             )
         )
 
