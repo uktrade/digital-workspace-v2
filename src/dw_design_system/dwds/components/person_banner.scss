@@ -1,0 +1,23 @@
+.dwds-person-banner {
+    height: 120px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: var(--border-radius);
+    border: 1px solid red;
+
+    .person-image {
+        width: 120px;
+        border-radius: 50%;
+    }
+
+    .person-banner-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+
+        & > * {
+            margin: 0;
+        }
+    }
+}

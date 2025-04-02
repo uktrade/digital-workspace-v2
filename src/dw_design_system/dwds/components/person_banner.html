@@ -1,0 +1,10 @@
+{% load wagtailimages_tags %}
+
+<div class="dwds-person-banner">
+    {% if person_image %}<img class="person-image" src="{{ person_image }}" alt="">{% endif %}
+    <div class="person-banner-text">
+        <h3>{{ person_name }}</h3>
+        {% if person_role %}<h3>{{ person_role }}</h3>{% endif %}
+    </div>
+    {% if secondary_image %}<img src="{{ secondary_image }}" alt="">{% endif %}
+</div>
