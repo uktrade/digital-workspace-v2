@@ -15,6 +15,9 @@ initAll();
 mojFrontend.initAll();
 document.DWDS = new DigitalWorkspaceDesignSystem()
 document.DWDS.initAll();
+document.addEventListener('htmx:afterRequest', (e) => {
+    document.DWDS.reInitAll();
+});
 
 if (typeof window.djdt !== "undefined" && typeof window.htmx !== "undefined") {
     htmx.on("htmx:afterSettle", function (detail) {

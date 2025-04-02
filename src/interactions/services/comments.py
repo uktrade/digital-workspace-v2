@@ -5,6 +5,7 @@ from django.db.models import QuerySet
 from django.urls import reverse
 from wagtail.models import Page
 
+from news.forms import CommentForm
 from news.models import Comment
 from user.models import User
 
@@ -57,7 +58,6 @@ def get_comment_reply_count(comment: Comment) -> int:
 
 
 def comment_to_dict(comment: Comment) -> dict:
-
     include_replies = bool(not comment.parent)
 
     author_profile = comment.author.profile
@@ -95,6 +95,31 @@ def comment_to_dict(comment: Comment) -> dict:
                 "comment_id": comment.id,
             },
         ),
+        "reply_comment_form": CommentForm(
+            initial={"in_reply_to": comment.id},
+            auto_id="reply_%s",
+        ),
+        "reply_comment_form_url": (
+            reverse(
+                "interactions:get-comment",
+                kwargs={
+                    "comment_id": comment.id,
+                },
+            )
+            + "?show_reply_form=True"
+        ),
+        "reply_comment_url": reverse(
+            "interactions:reply-comment",
+            kwargs={
+                "comment_id": comment.id,
+            },
+        ),
+        "reply_comment_cancel_url": reverse(
+            "interactions:get-comment",
+            kwargs={
+                "comment_id": comment.id,
+            },
+        ),
     }
 
     if include_replies:
@@ -127,3 +152,13 @@ def can_edit_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
         comment = Comment.objects.get(id=comment)
     return user == comment.author
+
+
+def can_reply_comment(user: User, comment: Comment | int) -> bool:
+    if isinstance(comment, int):
+        try:
+            comment = Comment.objects.get(id=comment)
+        except Comment.DoesNotExist:
+            return False
+
+    return bool(not comment.parent)

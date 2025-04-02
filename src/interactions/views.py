@@ -9,8 +9,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+from waffle import flag_is_active
 from wagtail.models import Page
 
+from core import flags
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
 from interactions.services import comment_reactions as comment_reactions_service
@@ -100,9 +102,33 @@ def edit_comment(request, *, comment_id):
 
 
 @require_http_methods(["GET"])
+def get_page_comments(request, *, pk):
+    page = get_object_or_404(Page, id=pk).specific
+    comments = [
+        comments_service.comment_to_dict(page_comment)
+        for page_comment in comments_service.get_page_comments(page)
+    ]
+
+    return TemplateResponse(
+        request,
+        "dwds/components/comments.html",
+        context={
+            "user": request.user,
+            "comment_count": comments_service.get_page_comment_count(page),
+            "comments": comments,
+            "comment_form": CommentForm(),
+            "comment_form_url": reverse("interactions:comment-on-page", args=[pk]),
+            "request": request,
+        },
+    )
+
+
+@require_http_methods(["GET"])
 def get_comment(request, *, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     comment_dict = comments_service.comment_to_dict(comment)
+
+    show_reply_form = request.GET.get("show_reply_form", False)
 
     return TemplateResponse(
         request,
@@ -110,6 +136,7 @@ def get_comment(request, *, comment_id):
         context={
             "comment": comment_dict,
             "request": request,
+            "show_reply_form": show_reply_form,
         },
     )
 
@@ -147,6 +174,23 @@ def edit_comment_form(request, *, comment_id):
     )
 
 
+@require_http_methods(["POST"])
+def reply_to_comment(request, *, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    user = request.user
+
+    comments_service.add_page_comment(
+        comment.page,
+        user,
+        request.POST["comment"],
+        request.POST.get("in_reply_to", comment_id),
+    )
+
+    return redirect(
+        reverse("interactions:get-comment", kwargs={"comment_id": comment_id})
+    )
+
+
 def react_to_comment(request, *, pk):
     comment = get_object_or_404(Comment, id=pk)
     user = request.user
@@ -180,7 +224,10 @@ def comment_on_page(request, *, pk):
         request.POST.get("in_reply_to", None),
     )
 
-    return redirect(page.url + f"#comment-{comment.id}")
+    if not flag_is_active(request, flags.NEW_COMMENTS):
+        return redirect(page.url + f"#comment-{comment.id}")
+
+    return redirect(reverse("interactions:get-page-comments", kwargs={"pk": pk}))
 
 
 @require_http_methods(["POST"])
