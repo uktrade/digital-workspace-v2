@@ -8,3 +8,9 @@ jobs:
       - run: cp .env.example .env
       - run: make setup
       - run: make test-lighthouse
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: ./lighthouse-results.html
+          retention-days: 5
