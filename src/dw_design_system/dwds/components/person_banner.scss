@@ -1,23 +1,41 @@
-.dwds-person-banner {
-    height: 120px;
-    display: flex;
-    justify-content: space-between;
+.dwds-person-banner.content-switcher {
+    --content-switcher-gap: 0;
+    --content-switcher-min-width: 26rem;
+    --person-banner-image-size: 120px;
+    background-color: var(--dbt-blue);
     border-radius: var(--border-radius);
-    border: 1px solid red;
+    overflow: hidden;
 
-    .person-image {
-        width: 120px;
-        border-radius: 50%;
-    }
+    > .person-image{
+        display: flex;
+        max-width: var(--person-banner-image-size);
+        padding: var(--s-2);
+
+        img {
+            max-height: var(--person-banner-image-size);
+            max-width: var(--person-banner-image-size);
+        }
+    } 
 
     .person-banner-text {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         text-align: center;
+        align-items: center;
+        justify-content: center;
 
-        & > * {
-            margin: 0;
+        > h3 {
+            color: var(--color-text-highlight);
+        }
+    }
+    
+    > .secondary-image {
+        max-width: var(--person-banner-image-size);
+        min-height: var(--person-banner-image-size);
+
+
+        .content-image {
+            height: 100%;
+            width: auto;
         }
     }
 }

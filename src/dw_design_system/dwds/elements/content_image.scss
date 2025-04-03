@@ -4,10 +4,6 @@
     display: flex;
     flex-direction: column;
 
-    &.rounded > img {
-        border-radius: var(--border-radius);
-    }
-
     img {
         // Fill the available space, but don't crop or stretch the image
         height: fit-content;
@@ -15,4 +11,12 @@
         object-position: center;
     }
 
+    &.rounded > img {
+        border-radius: var(--border-radius);
+    }
+
+    &.fill > img {
+        height: 100%;
+        object-fit: cover;
+    }
 }
