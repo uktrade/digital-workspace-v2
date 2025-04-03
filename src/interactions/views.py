@@ -235,5 +235,9 @@ def hide_comment(request: HttpRequest, pk: int) -> HttpResponse:
     comment = get_object_or_404(Comment, pk=pk)
     if not comments_service.can_hide_comment(request.user, comment):
         return HttpResponseForbidden()
+
     comments_service.hide_comment(comment)
-    return HttpResponse(status=200)
+
+    return redirect(
+        reverse("interactions:get-page-comments", kwargs={"pk": comment.page.pk})
+    )
