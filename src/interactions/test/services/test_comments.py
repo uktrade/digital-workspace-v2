@@ -55,3 +55,4 @@ def test_can_edit_comment(user, user2, comment):
 # get_comment_replies
 # get_comment_reply_count
 # comment_to_dict (a little more complex)
+# can_reply_comment

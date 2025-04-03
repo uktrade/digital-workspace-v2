@@ -25,3 +25,5 @@ def test_hide_comment_view(comment, mocker):
 # edit_comment
 # edit_comment_form
 # get_comment
+# get_page_comments
+# reply_to_comment
