@@ -96,49 +96,21 @@ def edit_comment(request, *, comment_id):
     except comments_service.CommentNotFound:
         raise Http404
 
-    return redirect(
-        reverse("interactions:get-comment", kwargs={"comment_id": comment_id})
-    )
+    return comments_service.get_comment_response(request, comment_id)
 
 
 @require_http_methods(["GET"])
 def get_page_comments(request, *, pk):
     page = get_object_or_404(Page, id=pk).specific
-    comments = [
-        comments_service.comment_to_dict(page_comment)
-        for page_comment in comments_service.get_page_comments(page)
-    ]
 
-    return TemplateResponse(
-        request,
-        "dwds/components/comments.html",
-        context={
-            "user": request.user,
-            "comment_count": comments_service.get_page_comment_count(page),
-            "comments": comments,
-            "comment_form": CommentForm(),
-            "comment_form_url": reverse("interactions:comment-on-page", args=[pk]),
-            "request": request,
-        },
-    )
+    return comments_service.get_page_comments_response(request, page)
 
 
 @require_http_methods(["GET"])
 def get_comment(request, *, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    comment_dict = comments_service.comment_to_dict(comment)
 
-    show_reply_form = request.GET.get("show_reply_form", False)
-
-    return TemplateResponse(
-        request,
-        "dwds/components/comment.html",
-        context={
-            "comment": comment_dict,
-            "request": request,
-            "show_reply_form": show_reply_form,
-        },
-    )
+    return comments_service.get_comment_response(request, comment)
 
 
 @require_http_methods(["GET"])
@@ -186,9 +158,7 @@ def reply_to_comment(request, *, comment_id):
         request.POST.get("in_reply_to", comment_id),
     )
 
-    return redirect(
-        reverse("interactions:get-comment", kwargs={"comment_id": comment_id})
-    )
+    return comments_service.get_comment_response(request, comment)
 
 
 def react_to_comment(request, *, pk):
@@ -227,7 +197,7 @@ def comment_on_page(request, *, pk):
     if not flag_is_active(request, flags.NEW_COMMENTS):
         return redirect(page.url + f"#comment-{comment.id}")
 
-    return redirect(reverse("interactions:get-page-comments", kwargs={"pk": pk}))
+    return comments_service.get_page_comments_response(request, pk)
 
 
 @require_http_methods(["POST"])
@@ -238,6 +208,4 @@ def hide_comment(request: HttpRequest, pk: int) -> HttpResponse:
 
     comments_service.hide_comment(comment)
 
-    return redirect(
-        reverse("interactions:get-page-comments", kwargs={"pk": comment.page.pk})
-    )
+    return comments_service.get_page_comments_response(request, comment.page)
