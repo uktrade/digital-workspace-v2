@@ -175,7 +175,7 @@ test-e2e: # Run (only) end to end tests with playwright and pytest
 
 test-lighthouse:
 	docker compose up -d
-	npx lighthouse http://0.0.0.0:8000/ --chrome-flags="--headless" --output-path=./lighthouse-results.html
+	npx lighthouse http://localhost:8000/ --chrome-flags="--headless" --output-path=./lighthouse-results.html
 
 test-all: # Run all tests with pytest
 	$(testrunner) pytest
