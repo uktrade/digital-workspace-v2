@@ -12,5 +12,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse-report
-          path: ./lighthouse-results.html
+          path: ./lighthouse-results/
           retention-days: 5
