@@ -11,26 +11,31 @@ from wagtail_content_import.parsers.microsoft import DocxParser
 from wagtail_content_import.parsers.tables import Cell, Table
 
 
-HEADING_PARAGRAPH_NAMES = [
-    "Heading 1",
-    "Heading 2",
-    "Heading 3",
-    "Heading 4",
-    "Heading 5",
-    "Heading 1_DBT",
-    "Heading 2_DBT",
-    "Heading 3_DBT",
-    "Heading 4_DBT",
-    "Heading 5_DBT",
-]
+HEADINGS_MAPPING: dict[str, str] = {
+    "Heading 1": "1",
+    "Heading 2": "2",
+    "Heading 3": "3",
+    "Heading 4": "4",
+    "Heading 5": "5",
+    "Heading 1_DBT": "1",
+    "Heading 2_DBT": "2",
+    "Heading 3_DBT": "3",
+    "Heading 4_DBT": "4",
+    "Heading 5_DBT": "5",
+}
 
-OTHER_NAMES = [
+PARAGRAPH_NAMES = [
     "Normal",
-    "DBT num list",
-    "Bullet List 1",
 ]
 
-KNOWN_NAMES = HEADING_PARAGRAPH_NAMES + OTHER_NAMES
+LIST_MAPPING: dict[str, str] = {
+    "DBT num list": "ol",
+    "Bullet List 1": "ul",
+}
+
+KNOWN_NAMES = (
+    list(HEADINGS_MAPPING.keys()) + PARAGRAPH_NAMES + list(LIST_MAPPING.keys())
+)
 
 
 class DocxParser(DocxParser):
@@ -122,13 +127,10 @@ class DocxParser(DocxParser):
             "value": "",
         }
 
-        if paragraph.style.name in ["DBT num list", "Bullet List 1"]:
+        if list_type := LIST_MAPPING.get(paragraph.style.name, None):
             block["type"] = "html-list"
-            block["list_type"] = "ul"
+            block["list_type"] = list_type
             block["value"] = self.generate_simple_tag(content, "li")
-
-            if paragraph.style.name == "DBT num list":
-                block["list_type"] = "ol"
 
             return block
 
@@ -136,9 +138,9 @@ class DocxParser(DocxParser):
         return block
 
     def get_block_type_for_paragraph(self, paragraph: Paragraph) -> tuple[str, dict]:
-        if paragraph.style.name.startswith("Heading "):
+        if heading_level := HEADINGS_MAPPING.get(paragraph.style.name, None):
             return "heading", {
-                "heading_level": paragraph.style.name[8:9],
+                "heading_level": heading_level,
             }
         return "html", {}
 
