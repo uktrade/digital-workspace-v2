@@ -4,7 +4,7 @@
 }
 
 .dwds-person-banner {
-    --person-banner-image-size: 120px;
+    --person-banner-image-size: 7.5rem;
     display: flex;
     justify-content: space-between;
     background-color: var(--dbt-blue);
@@ -27,6 +27,7 @@
         text-align: center;
         align-items: center;
         justify-content: center;
+        padding-right: var(--s-1);
 
         > h3 {
             color: var(--color-text-highlight);
@@ -45,7 +46,7 @@
     }
 }
 
-@container person-banner (width < 530px) {
+@container person-banner (width < 33rem) {
     .dwds-person-banner {
         > .person-image{
             padding: var(--s0);
@@ -65,7 +66,7 @@
     }
 }
 
-@container person-banner (width < 320px) {
+@container person-banner (width < 20rem) {
     .dwds-person-banner {
         > .person-image {
             display: none;
