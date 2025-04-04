@@ -98,10 +98,6 @@ def comment_to_dict(comment: Comment) -> dict:
                 "comment_id": comment.id,
             },
         ),
-        "reply_comment_form": CommentForm(
-            initial={"in_reply_to": comment.id},
-            auto_id="reply_%s",
-        ),
         "reply_comment_form_url": (
             reverse(
                 "interactions:get-comment",

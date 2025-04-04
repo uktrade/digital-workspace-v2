@@ -1,13 +1,13 @@
 {% load comments %}
 {% user_can_reply_comment request.user comment.id as can_reply %}
-{% if can_reply and comment.reply_comment_form and comment.reply_comment_url %}
+{% if can_reply and comment.reply_comment_url %}
     <div id="comment-{{ comment.id }}-reply-form">
         <h3>Reply to this comment</h3>
         <form hx-post="{{ comment.reply_comment_url }}"
               hx-target="#comment-{{ comment.id }}"
               hx-swap="innerHTML">
             {% csrf_token %}
-            {{ comment.reply_comment_form }}
+            {% get_comment_reply_form comment.id %}
             <input value="Reply" type="submit" class="dwds-button" />
             {% if comment.reply_comment_cancel_url %}
                 <button class="dwds-button dwds-button--secondary"
