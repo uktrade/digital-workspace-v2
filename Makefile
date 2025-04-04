@@ -175,11 +175,12 @@ test-e2e: # Run (only) end to end tests with playwright and pytest
 
 test-lighthouse:
 	mkdir -p ./lighthouse-results
-	npx lighthouse http://localhost:8000/$(path) --quiet --chrome-flags="--headless" --output-path=./lighthouse-results/$(name).html
+	npx lighthouse http://localhost:8000/$(path) --chrome-flags="--headless" --output-path=./lighthouse-results/$(name).html
 
 test-lighthouse-all:
 	rm -rf ./lighthouse-results
 	docker compose up -d
+	sleep 5
 	make test-lighthouse path= name=home
 	make test-lighthouse path=news-and-views/ name=news
 	make test-lighthouse path=working-at-dbt/ name=working-at-dbt
