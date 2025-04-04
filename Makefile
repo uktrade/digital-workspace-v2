@@ -184,7 +184,7 @@ test-lighthouse-all:
 	make test-lighthouse path=news-and-views/ name=news
 	make test-lighthouse path=working-at-dbt/ name=working-at-dbt
 	make test-lighthouse path=about-us/ name=about-us
-	# make test-lighthouse path=search/all/?query=search name=search
+	make test-lighthouse path=search/all/?query=search name=search
 	docker compose stop
 
 test-all: # Run all tests with pytest
