@@ -14,11 +14,11 @@
     height: 100%;
 
     > .content-image {
-        flex-grow: 1;
         flex-basis: 0;
-
-        width: 100%;
-        height: auto;
+        img {
+            width: 100%;
+            height: auto;
+        }
     }
 
     > .content-main {
@@ -30,8 +30,10 @@
     .content-custom-sidebar {
         flex-direction: row;
 
-        > .content-image {
+        > .content-image img {
             width: 30ch;
+            object-fit: contain;
+            object-position: 0 0;
         }
 
         > .content-main {

@@ -140,16 +140,16 @@ class Network(ContentOwnerMixin, ContentPage):
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
 
     class NetworkTypes(models.TextChoices):
-        DBT_INITIATIVES = "dbt_initiatives", "DBT Initiatives"
-        DEPARTMENT_FUNCTION = "department_function", "Department/Function"
-        DIVERSITY_AND_INCLUSION = "diversity_and_inclusion", "Diversity and Inclusion"
-        HEALTH_AND_WELLBEING = "health_and_wellbeing", "Health and Wellbeing"
-        INTERESTS_AND_HOBBIES = "interests_and_hobbies", "Interests and Hobbies"
+        DBT_INITIATIVES = "dbt_initiatives", "DBT initiatives"
+        DEPARTMENT_FUNCTION = "department_function", "Department/function"
+        DIVERSITY_AND_INCLUSION = "diversity_and_inclusion", "Diversity and inclusion"
+        HEALTH_AND_WELLBEING = "health_and_wellbeing", "Health and wellbeing"
+        INTERESTS_AND_HOBBIES = "interests_and_hobbies", "Interests and hobbies"
         PROFESSIONAL_NETWORKS_AND_SKILLS = (
             "professional_networks_and_skills",
-            "Professional Networks and Skills",
+            "Professional networks and skills",
         )
-        SOCIAL_AND_SPORTS = "social_and_sports", "Social and Sports"
+        SOCIAL_AND_SPORTS = "social_and_sports", "Social and sports"
         VOLUNTEERING = "volunteering", "Volunteering"
 
     network_type = models.CharField(

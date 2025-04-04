@@ -32,6 +32,7 @@ body {
     font-weight: var(--font-weight-normal);
     color: var(--color-text);
 
+
     article,
     div,
     footer,
@@ -40,6 +41,7 @@ body {
     hr,
     img,
     main,
+    figure,
     figcaption,
     nav {
         max-inline-size: none;

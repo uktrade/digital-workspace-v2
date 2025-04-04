@@ -2,20 +2,17 @@ import html
 import logging
 from typing import Optional
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import Q, Subquery
+from django.db.models import F, Func, OuterRef, Q, Subquery
 from django.forms import widgets
 from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
-from wagtail.admin.panels import (
-    ObjectList,
-    TabbedInterface,
-    TitleFieldPanel,
-)
+from wagtail.admin.panels import ObjectList, TabbedInterface, TitleFieldPanel
 from wagtail.admin.widgets.slug import SlugInput
 from wagtail.blocks.stream_block import StreamValue
 from wagtail.fields import StreamField
@@ -35,6 +32,7 @@ from content.validators import validate_description_word_count
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
+from peoplefinder.models import Person
 from peoplefinder.widgets import PersonChooser
 from user.models import User as UserModel
 
@@ -42,14 +40,6 @@ from user.models import User as UserModel
 logger = logging.getLogger(__name__)
 
 User = get_user_model()
-
-RICH_TEXT_FEATURES = [
-    "ol",
-    "ul",
-    "link",
-    "document-link",
-    "anchor-identifier",
-]
 
 
 def strip_tags_with_newlines(string: str) -> str:
@@ -177,12 +167,26 @@ class BasePage(Page, Indexed):
         use_json_field=True,
         help_text="Tell readers about page important page changes.",
     )
+    page_author = models.ForeignKey(
+        "peoplefinder.Person",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="If the 'page author' field is empty, we will fall back to the owner of this page.",
+    )
+    page_author_name = models.CharField(
+        null=True,
+        blank=True,
+        help_text="Use this to show the name of the author when there isn't an active Person to show",
+    )
 
     promote_panels = []
     content_panels = [
         TitleFieldPanel("title"),
     ]
     publishing_panels = [
+        FieldPanel("page_author", widget=PersonChooser),
+        FieldPanel("page_author_name", read_only=True),
         FieldPanel("page_updates"),
     ]
 
@@ -192,6 +196,17 @@ class BasePage(Page, Indexed):
         ("settings_panels", "Settings"),
         ("publishing_panels", "Publishing"),
     ]
+
+    def fill_page_author_name(self) -> None:
+        author = self.get_author()
+
+        if isinstance(author, str) and self.page_author_name != author:
+            self.page_author_name = author
+            return
+
+        if isinstance(author, Person) and self.page_author_name != author.full_name:
+            self.page_author_name = author.full_name
+            return
 
     def sort_page_updates(self) -> None:
         """
@@ -210,6 +225,7 @@ class BasePage(Page, Indexed):
         return None
 
     def full_clean(self, *args, **kwargs):
+        self.fill_page_author_name()
         self.sort_page_updates()
         super().full_clean(*args, **kwargs)
 
@@ -226,6 +242,28 @@ class BasePage(Page, Indexed):
     def published_date(self):
         return self.last_published_at
 
+    def get_author(self) -> Optional[Person | str]:
+        if self.page_author:
+            return self.page_author
+
+        if self.page_author_name:
+            return self.page_author_name
+
+        # TODO: Remove this in future ticket when we strip out the "perm_sec_as_author" field.
+        if getattr(self, "perm_sec_as_author", False) and settings.PERM_SEC_NAME:
+            return settings.PERM_SEC_NAME
+
+        if first_publisher := self.get_first_publisher():
+            try:
+                return first_publisher.profile
+            except User.profile.RelatedObjectDoesNotExist:
+                pass
+
+        if self.owner:
+            return self.owner.profile
+
+        return None
+
     def get_first_publisher(self) -> Optional[UserModel]:
         """Return the first publisher of the page or None."""
         first_revision_with_user = (
@@ -234,8 +272,8 @@ class BasePage(Page, Indexed):
 
         if first_revision_with_user:
             return first_revision_with_user.user
-        else:
-            return None
+
+        return None
 
     @property
     def days_since_last_published(self):
@@ -290,17 +328,20 @@ class ContentPageQuerySet(BasePageQuerySet):
         )
 
     def annotate_with_comment_count(self):
+        from news.models import Comment
+
         return self.annotate(
-            comment_count=models.Count(
-                "comments",
-                filter=models.Q(
-                    models.Q(comments__is_visible=True)
-                    and models.Q(
-                        models.Q(comments__parent__is_visible=True)
-                        | models.Q(comments__parent__isnull=True)
-                    )
-                ),
-                distinct=True,
+            comment_count=Subquery(
+                Comment.objects.filter(
+                    models.Q(
+                        models.Q(parent__is_visible=True)
+                        | models.Q(parent__isnull=True)
+                    ),
+                    is_visible=True,
+                    page=OuterRef("id"),
+                )
+                .annotate(count=Func(F("id"), function="Count"))
+                .values("count")
             )
         )
 
@@ -466,12 +507,11 @@ class ContentPage(SearchFieldsMixin, BasePage):
                 "text_section",
                 content_blocks.TextBlock(
                     blank=True,
-                    features=RICH_TEXT_FEATURES,
-                    help_text="""Some text to describe what this section is about (will be
-            displayed above the list of child pages)""",
+                    help_text="""Some text to describe what this section is about (will be displayed above the list of child pages)""",
                 ),
             ),
             ("image", content_blocks.ImageBlock()),
+            ("image_with_text", content_blocks.ImageWithTextBlock()),
             (
                 "embed_video",
                 content_blocks.EmbedVideoBlock(help_text="""Embed a video"""),

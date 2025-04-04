@@ -4,6 +4,7 @@ from json import JSONDecoder, scanner
 from django.core import paginator
 from django.http import HttpRequest
 from django.utils import timezone
+from django.utils.html import mark_safe
 from wagtail.images.models import Image
 from wagtail.models import Page
 
@@ -163,6 +164,34 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "comment_count": 10,
                     "created_date": timezone.now(),
                     "updated_date": timezone.now(),
+                },
+            },
+            {
+                "name": "Quotes Component",
+                "template": "dwds/components/quote.html",
+                "context": {
+                    "highlight": True,
+                    "quote": "It makes you happy that you provided several kilowatts to the power sector, and it means that someone will turn their lights on today. That motivates me, that’s your work really impacts the wellbeing of the country.",
+                    "source_name": "Pavolo Sorokin",
+                    "source_url": "https://www.gov.uk",
+                    "source_image": thumbnail_url,
+                    "source_role": "Trade policy and Healthcare Adviser",
+                    "source_team": "Ukraine",
+                    "source_team_url": "https://www.gov.uk",
+                },
+            },
+            {
+                "name": "Image with text Component",
+                "template": "dwds/components/image_with_text.html",
+                "context": {
+                    "heading": "Heading for the component",
+                    "text": mark_safe(  # noqa: S308
+                        "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>"
+                    ),
+                    "image_position": "right",
+                    "image": thumbnail_file,
+                    "image_description": "Text for image description",
+                    "image_alt": "Alt text for screen readers",
                 },
             },
             {

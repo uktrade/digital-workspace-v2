@@ -8,35 +8,14 @@
         </div>
         <div class="dwds-button-group with-separator">
             {% reactions_for_comment user comment.id %}
-
-            {% if comment.show_replies %}
-                <span class="separator"></span>
-                <button class="dwds-toggle-visibility dwds-button dwds-button--link"
-                        data-target-identifier="comment-{{ comment.id }}-reply-form"
-                        data-target-state="hidden">Reply</button>
-            {% endif %}
+            {% include "interactions/reply_comment_input.html" with comment=comment cancel_reply=show_reply_form %}
             {% include "news/includes/delete_comment.html" with comment=comment %}
             {% include "interactions/edit_comment_input.html" with comment=comment %}
         </div>
-
         {% if comment.show_replies %}
-            <div id="comment-{{ comment.id }}-reply-form">
-                <h3>Reply to this comment</h3>
-                <form class="content-stack"
-                      action="{{ comment.reply_form_url }}"
-                      method="post"
-                      onsubmit="">
-                    {% csrf_token %}
-                    {% get_comment_reply_form comment.id %}
-                    <div class="dwds-button-group">
-                        <input value="Reply" type="submit" class="dwds-button" />
-                        <input value="Cancel"
-                               type="submit"
-                               class="dwds-button dwds-button--secondary" />
-                    </div>
-                </form>
-            </div>
-            <!-- TODO: convert comment replies to templatetag and use htmx -->
+            {% if show_reply_form %}
+                {% include "interactions/reply_comment_form.html" with comment=comment %}
+            {% endif %}
             {% if comment.replies %}
                 <div class="content-stack">
                     <h3>
@@ -52,7 +31,6 @@
                     {% endfor %}
                 </div>
             {% endif %}
-
         {% endif %}
     </div>
 </div>
