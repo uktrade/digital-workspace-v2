@@ -72,3 +72,5 @@ ner_output_file.txt
 /playwright/.auth
 
 dw.dump
+
+lighthouse-results/
