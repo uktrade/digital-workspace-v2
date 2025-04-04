@@ -1,7 +1,12 @@
-.dwds-person-banner.content-switcher {
-    --content-switcher-gap: 0;
-    --content-switcher-min-width: 26rem;
+.dwds-person-banner-wrapper {
+    container-name: person-banner;
+    container-type: inline-size;
+}
+
+.dwds-person-banner {
     --person-banner-image-size: 120px;
+    display: flex;
+    justify-content: space-between;
     background-color: var(--dbt-blue);
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -36,6 +41,37 @@
         .content-image {
             height: 100%;
             width: auto;
+        }
+    }
+}
+
+@container person-banner (width < 530px) {
+    .dwds-person-banner {
+        > .person-image{
+            padding: var(--s0);
+        } 
+    
+        .person-banner-text {    
+            width: 100%;
+            padding-right: var(--s-1);
+            > h3 {
+                font-size: var(--s0);
+            }
+        }
+
+        > .secondary-image {
+            display: none;
+        }
+    }
+}
+
+@container person-banner (width < 320px) {
+    .dwds-person-banner {
+        > .person-image {
+            display: none;
+        }
+        .person-banner-text {    
+            padding: 0 var(--s-1);
         }
     }
 }

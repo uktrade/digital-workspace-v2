@@ -1,23 +1,25 @@
 {% load wagtailimages_tags %}
 
-<div class="dwds-person-banner content-switcher {% if secondary_image %}max-3{% else %}max-2{% endif %}">
-    {% if person_image %}
-        <div class="person-image">
-            {% include "dwds/elements/profile_image.html" with profile_image_url=person_image name=person_name %}
+<div class="dwds-person-banner-wrapper">
+    <div class="dwds-person-banner">
+        {% if person_image %}
+            <div class="person-image">
+                {% include "dwds/elements/profile_image.html" with profile_image_url=person_image name=person_name %}
+            </div>
+        {% endif %}
+        <div class="person-banner-text">
+            <h3>
+                {{ person_name }}
+                {% if person_role %}
+                    <br>
+                    {{ person_role }}
+                {% endif %}
+            </h3>
         </div>
-    {% endif %}
-    <div class="person-banner-text">
-        <h3>
-            {{ person_name }}
-            {% if person_role %}
-                <br>
-                {{ person_role }}
-            {% endif %}
-        </h3>
+        {% if secondary_image %}
+            <div class="secondary-image">
+                {% include "dwds/elements/content_image.html" with content_image=secondary_image fill=True %}
+            </div>
+        {% endif %}
     </div>
-    {% if secondary_image %}
-        <div class="secondary-image">
-            {% include "dwds/elements/content_image.html" with content_image=secondary_image fill=True %}
-        </div>
-    {% endif %}
 </div>
