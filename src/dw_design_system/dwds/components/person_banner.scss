@@ -20,7 +20,7 @@
             max-height: var(--person-banner-image-size);
             max-width: var(--person-banner-image-size);
         }
-    } 
+    }
 
     .person-banner-text {
         display: flex;
@@ -33,7 +33,7 @@
             color: var(--color-text-highlight);
         }
     }
-    
+
     > .secondary-image {
         max-width: var(--person-banner-image-size);
         min-height: var(--person-banner-image-size);
@@ -49,11 +49,12 @@
     .dwds-person-banner {
         > .person-image {
             padding: var(--s0);
-        } 
+        }
 
-        .person-banner-text {    
+        .person-banner-text {
             width: 100%;
             padding: 0 var(--s-1);
+
             > h3 {
                 font-size: var(--s0);
             }
@@ -71,7 +72,7 @@
             display: none;
         }
 
-        .person-banner-text {    
+        .person-banner-text {
             padding: 0 var(--s-1);
         }
     }
