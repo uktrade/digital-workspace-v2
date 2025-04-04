@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: cp .env.example .env
       - run: make setup
-      - run: make test-lighthouse
+      - run: make test-lighthouse-all
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v4
         with:
