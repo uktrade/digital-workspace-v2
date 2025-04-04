@@ -11,7 +11,7 @@
     border-radius: var(--border-radius);
     overflow: hidden;
 
-    > .person-image{
+    > .person-image {
         display: flex;
         max-width: var(--person-banner-image-size);
         padding: var(--s-2);
@@ -27,7 +27,7 @@
         text-align: center;
         align-items: center;
         justify-content: center;
-        padding-right: var(--s-1);
+        padding: 0 var(--s-1);
 
         > h3 {
             color: var(--color-text-highlight);
@@ -48,13 +48,13 @@
 
 @container person-banner (width < 33rem) {
     .dwds-person-banner {
-        > .person-image{
+        > .person-image {
             padding: var(--s0);
         } 
     
         .person-banner-text {    
             width: 100%;
-            padding-right: var(--s-1);
+            padding: 0 var(--s-1);
             > h3 {
                 font-size: var(--s0);
             }
