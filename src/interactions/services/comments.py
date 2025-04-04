@@ -163,10 +163,7 @@ def can_reply_comment(user: User, comment: Comment | int) -> bool:
     return bool(not comment.parent)
 
 
-def get_page_comments_response(request, page: Page | int) -> TemplateResponse:
-    if isinstance(page, int):
-        page = get_object_or_404(Page, id=page)
-
+def get_page_comments_response(request, page: Page) -> TemplateResponse:
     comments = [
         comments_service.comment_to_dict(page_comment)
         for page_comment in comments_service.get_page_comments(page)

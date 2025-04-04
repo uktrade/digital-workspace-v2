@@ -197,7 +197,7 @@ def comment_on_page(request, *, pk):
     if not flag_is_active(request, flags.NEW_COMMENTS):
         return redirect(page.url + f"#comment-{comment.id}")
 
-    return comments_service.get_page_comments_response(request, pk)
+    return comments_service.get_page_comments_response(request, page)
 
 
 @require_http_methods(["POST"])
