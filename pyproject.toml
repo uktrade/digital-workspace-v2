@@ -158,4 +158,4 @@ ignore = "T002,H006,H017,H023"
 preserve_blank_lines = true
 extend_exclude = "htmlcov,staticfiles,static,node_modules"
 custom_blocks = "flag"
-custom_html = "page-react-button"
+custom_html = "page-react-button,c-\\w+"
