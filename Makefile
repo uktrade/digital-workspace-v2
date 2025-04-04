@@ -176,11 +176,11 @@ test-e2e: # Run (only) end to end tests with playwright and pytest
 test-lighthouse:
 	docker compose up -d
 	mkdir -p ./lighthouse-results
-	npx lighthouse http://localhost:8000/ --chrome-flags="--headless" --output-path=./lighthouse-results/homepage.html
-	npx lighthouse http://localhost:8000/search/all/?query=search --chrome-flags="--headless" --output-path=./lighthouse-results/search.html
-	npx lighthouse http://localhost:8000/news-and-views/ --chrome-flags="--headless" --output-path=./lighthouse-results/news-listing.html
-	npx lighthouse http://localhost:8000/working-at-dbt/ --chrome-flags="--headless" --output-path=./lighthouse-results/working-at-dbt.html
-	npx lighthouse http://localhost:8000/about-us/ --chrome-flags="--headless" --output-path=./lighthouse-results/about-us.html
+	npx lighthouse http://localhost:8000/ --quiet --chrome-flags="--headless" --output-path=./lighthouse-results/homepage.html
+	npx lighthouse http://localhost:8000/search/all/?query=search --quiet --chrome-flags="--headless" --output-path=./lighthouse-results/search.html
+	npx lighthouse http://localhost:8000/news-and-views/ --quiet --chrome-flags="--headless" --output-path=./lighthouse-results/news-listing.html
+	npx lighthouse http://localhost:8000/working-at-dbt/ --quiet --chrome-flags="--headless" --output-path=./lighthouse-results/working-at-dbt.html
+	npx lighthouse http://localhost:8000/about-us/ --quiet --chrome-flags="--headless" --output-path=./lighthouse-results/about-us.html
 
 test-all: # Run all tests with pytest
 	$(testrunner) pytest
