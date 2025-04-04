@@ -1,7 +1,4 @@
 {% load wagtailimages_tags %}
-
-<figure class="ws-streamfield-content__image" role="group">
-    {% image value.image width-825 alt=value.alt %}
-
-    {% if value.caption %}<figcaption class="ws-streamfield-content__caption">{{ value.caption }}</figcaption>{% endif %}
-</figure>
+<div>
+    {% include "dwds/elements/content_image.html" with content_image=value.image caption=value.caption alt=value.alt rounded=True %}
+</div>

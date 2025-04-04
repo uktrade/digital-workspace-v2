@@ -760,8 +760,3 @@ CSP_REPORT_URI = env("CSP_REPORT_URI", default=None)
 
 # Interactions
 INACTIVE_REACTION_TYPES = env.list("INACTIVE_REACTION_TYPES", default=["unhappy"])
-
-# VWO Integration
-VWO_ENABLED = env.bool("VWO_ENABLED", False)
-VWO_ACCOUNT_ID = env("VWO_ACCOUNT_ID", default=None)
-VWO_VERSION = env("VWO_VERSION", default=None)

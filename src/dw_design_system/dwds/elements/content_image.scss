@@ -1,7 +1,23 @@
 .content-image {
-    // Fill the available space, but don't crop or stretch the image
-    inline-size: 100%;
-    object-fit: contain;
-    object-position: 0 0;
-    flex-basis: 300px;
+    background-color: var(--card-bg-white);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+
+    img {
+        // Fill the available space, but don't crop or stretch the image
+        height: fit-content;
+        width: 100%;
+        object-position: center;
+    }
+
+    &.rounded > img {
+        border-radius: var(--border-radius);
+    }
+
+    &.fill > img {
+        height: 100%;
+        object-fit: cover;
+    }
+
 }

@@ -7,16 +7,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import Q, Subquery
+from django.db.models import F, Func, OuterRef, Q, Subquery
 from django.forms import widgets
 from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
-from wagtail.admin.panels import (
-    ObjectList,
-    TabbedInterface,
-    TitleFieldPanel,
-)
+from wagtail.admin.panels import ObjectList, TabbedInterface, TitleFieldPanel
 from wagtail.admin.widgets.slug import SlugInput
 from wagtail.blocks.stream_block import StreamValue
 from wagtail.fields import StreamField
@@ -46,14 +42,6 @@ from user.models import User as UserModel
 logger = logging.getLogger(__name__)
 
 User = get_user_model()
-
-RICH_TEXT_FEATURES = [
-    "ol",
-    "ul",
-    "link",
-    "document-link",
-    "anchor-identifier",
-]
 
 
 def strip_tags_with_newlines(string: str) -> str:
@@ -342,17 +330,20 @@ class ContentPageQuerySet(BasePageQuerySet):
         )
 
     def annotate_with_comment_count(self):
+        from news.models import Comment
+
         return self.annotate(
-            comment_count=models.Count(
-                "comments",
-                filter=models.Q(
-                    models.Q(comments__is_visible=True)
-                    and models.Q(
-                        models.Q(comments__parent__is_visible=True)
-                        | models.Q(comments__parent__isnull=True)
-                    )
-                ),
-                distinct=True,
+            comment_count=Subquery(
+                Comment.objects.filter(
+                    models.Q(
+                        models.Q(parent__is_visible=True)
+                        | models.Q(parent__isnull=True)
+                    ),
+                    is_visible=True,
+                    page=OuterRef("id"),
+                )
+                .annotate(count=Func(F("id"), function="Count"))
+                .values("count")
             )
         )
 
@@ -520,12 +511,11 @@ class ContentPage(ContentImportMixin, SearchFieldsMixin, BasePage):
                 "text_section",
                 content_blocks.TextBlock(
                     blank=True,
-                    features=RICH_TEXT_FEATURES,
-                    help_text="""Some text to describe what this section is about (will be
-            displayed above the list of child pages)""",
+                    help_text="""Some text to describe what this section is about (will be displayed above the list of child pages)""",
                 ),
             ),
             ("image", content_blocks.ImageBlock()),
+            ("image_with_text", content_blocks.ImageWithTextBlock()),
             (
                 "embed_video",
                 content_blocks.EmbedVideoBlock(help_text="""Embed a video"""),

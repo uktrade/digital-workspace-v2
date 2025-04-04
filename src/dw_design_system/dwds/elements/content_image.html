@@ -1,11 +1,14 @@
 {% load wagtailimages_tags static %}
 
-{% if content_image %}
-    {% image content_image fill-544x306 class="content-image" %}
-{% else %}
-    <img class="content-image"
-         src="{% static '/images/dwds/fallback_image_card.png' %}"
-         alt="Colourful circles on a blue background."
-         width="544"
-         height="306">
-{% endif %}
+<figure class="content-image {% if rounded %}rounded{% endif %} {% if fill %}fill{% endif %} content-stack small"
+        role="group">
+    {% if content_image %}
+        {% image content_image fill-800x450 alt=alt %}
+    {% else %}
+        <img src="{% static '/images/dwds/fallback_image_card.png' %}"
+             alt="Colourful circles on a blue background."
+             width="544"
+             height="306">
+    {% endif %}
+    {% if caption %}<figcaption>{{ caption }}</figcaption>{% endif %}
+</figure>
