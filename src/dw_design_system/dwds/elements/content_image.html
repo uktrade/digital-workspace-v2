@@ -1,6 +1,6 @@
 {% load wagtailimages_tags static %}
 
-<figure class="content-image {% if rounded %}rounded{% endif %} content-stack small"
+<figure class="content-image {% if rounded %}rounded{% endif %} {% if fill %}fill{% endif %} content-stack small"
         role="group">
     {% if content_image %}
         {% image content_image fill-800x450 alt=alt %}
