@@ -21,9 +21,8 @@
                     <button class="dwds-modal-close dwds-button"
                             hx-post="{% url 'interactions:hide-comment' comment.id %}"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                            hx-on::after-request="window.location.replace(window.location.href.split('#')[0])">
-                        Delete
-                    </button>
+                            hx-target="#comments"
+                            hx-swap="outerHTML">Delete</button>
                     <button class="dwds-modal-close dwds-button dwds-button--secondary">Cancel</button>
                 </form>
             </div>
