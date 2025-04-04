@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 from modelcluster.fields import ParentalKey
 
+from content.imports.mappers import ContentPageMapper
 from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
@@ -201,6 +202,8 @@ class Guidance(ContentOwnerMixin, PageWithTopics):
 
 
 class Policy(ContentOwnerMixin, PageWithTopics):
+    mapper_class = ContentPageMapper
+
     template = "working_at_dit/content_with_related_topics.html"
     is_creatable = True
 
