@@ -70,6 +70,7 @@ django-filter = "^24.3"
 django-csp = "^3.8"
 icalendar = "^6.0.1"
 granian = "^1.6.3"
+django-cotton = "^2.0.3"
 
 [tool.poetry.group.dev]
 optional = true

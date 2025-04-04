@@ -151,6 +151,7 @@ THIRD_PARTY_APPS = [
     "generic_chooser",
     "waffle",
     "wagtailorderable",
+    "django_cotton",
 ]
 
 WAGTAIL_APPS = [
