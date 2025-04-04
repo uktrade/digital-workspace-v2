@@ -1,7 +1,7 @@
 {% load wagtailimages_tags static humanize %}
 <div class="dwds-promo content-item">
     <div class="content-grid image-right">
-        {% include "dwds/elements/content_image.html" with content_image=thumbnail fill=True %}
+        {% include "dwds/elements/content_image.html" with content_image=thumbnail fill=False %}
         <div class="content-main highlight">
             <div class="content-body content-stack">
                 {% if ribbon_text %}
