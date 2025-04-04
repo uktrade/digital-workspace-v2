@@ -38,7 +38,6 @@
         max-width: var(--person-banner-image-size);
         min-height: var(--person-banner-image-size);
 
-
         .content-image {
             height: 100%;
             width: auto;
@@ -51,7 +50,7 @@
         > .person-image {
             padding: var(--s0);
         } 
-    
+
         .person-banner-text {    
             width: 100%;
             padding: 0 var(--s-1);
@@ -71,6 +70,7 @@
         > .person-image {
             display: none;
         }
+
         .person-banner-text {    
             padding: 0 var(--s-1);
         }
