@@ -178,12 +178,14 @@ test-lighthouse:
 	npx lighthouse http://localhost:8000/$(path) --quiet --chrome-flags="--headless" --output-path=./lighthouse-results/$(name).html
 
 test-lighthouse-all:
+	rm -rf ./lighthouse-results
 	docker compose up -d
 	make test-lighthouse path= name=home
+	make test-lighthouse path=news-and-views/ name=news
+	make test-lighthouse path=working-at-dbt/ name=working-at-dbt
+	make test-lighthouse path=about-us/ name=about-us
 	# make test-lighthouse path=search/all/?query=search name=search
-	# make test-lighthouse path=news-and-views/ name=news
-	# make test-lighthouse path=working-at-dbt/ name=working-at-dbt
-	# make test-lighthouse path=about-us/ name=about-us
+	docker compose stop
 
 test-all: # Run all tests with pytest
 	$(testrunner) pytest
