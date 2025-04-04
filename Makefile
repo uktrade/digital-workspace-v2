@@ -125,7 +125,7 @@ setup: # Run the first use commands to set up the project for development
 	make ingest-uk-staff-locations
 	make superuser
 	make index
-	make up
+	# make up
 
 superuser: # Create a superuser
 	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.create_superuser('admin', email='admin', password='password', first_name='admin', last_name='test')"
@@ -172,6 +172,21 @@ test-e2e: # Run (only) end to end tests with playwright and pytest
 	make up-all
 	docker compose exec playwright poetry run pytest -m "e2e" $(tests)
 	docker compose stop playwright
+
+test-lighthouse:
+	mkdir -p ./lighthouse-results
+	npx lighthouse http://localhost:8000/$(path) --chrome-flags="--headless" --output-path=./lighthouse-results/$(name).html
+
+test-lighthouse-all:
+	rm -rf ./lighthouse-results
+	docker compose up -d
+	sleep 5
+	make test-lighthouse path= name=home
+	make test-lighthouse path=news-and-views/ name=news
+	make test-lighthouse path=working-at-dbt/ name=working-at-dbt
+	make test-lighthouse path=about-us/ name=about-us
+	make test-lighthouse path=search/all/?query=search name=search
+	docker compose stop
 
 test-all: # Run all tests with pytest
 	$(testrunner) pytest
