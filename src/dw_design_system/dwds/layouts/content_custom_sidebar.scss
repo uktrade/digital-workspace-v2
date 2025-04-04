@@ -1,5 +1,5 @@
 .content-custom-sidebar-wrapper {
-    container-name: custom_sidebar;
+    container-name: custom-sidebar;
     container-type: inline-size;
 }
 
@@ -26,7 +26,7 @@
     }
 }
 
-@container custom_sidebar (width > 600px) {
+@container custom-sidebar (width > 600px) {
     .content-custom-sidebar {
         flex-direction: row;
 
