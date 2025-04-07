@@ -5,10 +5,9 @@
         font-weight: var(--font-weight-bold);
     }
 
-    div {
-        h3 {
-            margin-top: var(--s-1);
-        }
+    > div > h3 {
+        margin-top: var(--s-1);
     }
+
 
 }

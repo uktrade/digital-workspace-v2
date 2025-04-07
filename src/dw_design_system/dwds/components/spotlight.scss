@@ -5,10 +5,8 @@
 
   .content-main {
     --content-main-padding: 0;
+    padding-top: var(--s0);
     --content-main-bg-color: transparent;
   }
 
-  h3 {
-    margin-top: var(--s-1);
-  }
 }
