@@ -32,6 +32,15 @@ def news_page():
 
 
 @pytest.fixture
+def news_page2():
+    return NewsPage.objects.create(
+        title="News 2",
+        depth=1,
+        path="page3",
+    )
+
+
+@pytest.fixture
 def about_page():
     return AboutUs.objects.create(
         title="About Us",
@@ -48,8 +57,16 @@ def create_page_reaction(user, news_page):
 
 
 @pytest.fixture
-def comment(user, news_page):
-    return Comment.objects.create(author=user, page=news_page, content="a comment")
+def comment(comment_factory):
+    return comment_factory()
+
+# TODO: switch to kwargs for comment_factory and add back default values 
+@pytest.fixture
+def comment_factory(user, news_page):
+    def create_comment(author=user, page=news_page, content="a comment"):
+        return Comment.objects.create(author=author, page=page, content=content)
+
+    return create_comment
 
 
 @pytest.fixture

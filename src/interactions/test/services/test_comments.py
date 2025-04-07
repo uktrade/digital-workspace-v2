@@ -1,5 +1,6 @@
 import pytest
 from interactions.services import comments as comments_service
+from news.models import Comment
 
 pytestmark = pytest.mark.django_db
 
@@ -48,10 +49,57 @@ def test_can_edit_comment(user, user2, comment):
     assert comments_service.can_edit_comment(user, comment.id) == True
 
 
+def test_add_page_comment(news_page, user, user2):
+    comment_content = "A new comment"
+    comment = comments_service.add_page_comment(news_page, user, comment_content, None)
+
+    # The comment is created succesfully
+    assert isinstance(comment, Comment)
+    assert comment.content == comment_content
+
+    reply_content = "A comment reply"
+    reply = comments_service.add_page_comment(
+        news_page, user2, reply_content, comment.pk
+    )
+
+    # The comment reply is created succesfully
+    assert isinstance(reply, Comment)
+    assert reply.content == reply_content
+    assert reply.parent == comment
+
+
+def test_get_page_comments(news_page, news_page2, comment_factory):
+    comment_1 = comment_factory(page=news_page)
+    comment_2 = comment_factory(page=news_page)
+    comment_3 = comment_factory(page=news_page2)
+    comments = comments_service.get_page_comments(news_page)
+
+    # The comments are returned for the requested page
+    assert comment_1 in comments
+    assert comment_2 in comments
+    assert comment_3 not in comments
+
+
+def test_get_page_comment_count(news_page, comment_factory):
+    comment_factory(page=news_page)
+    comment_factory(page=news_page)
+
+    # The comment count is returned for the requested page
+    assert comments_service.get_page_comment_count(news_page) == 2
+
+
+def test_get_comment_replies(comment, comment_factory):
+    reply_1 = comment_factory(parent=comment)
+    reply_2 = comment_factory(parent=comment)
+
+    replies = comments_service.get_comment_replies(comment)
+
+    # The replies are returned for the requested comment
+    assert reply_1 in replies
+    assert reply_2 in replies
+
+
 # TODO: further methods to test
-# add_page_comment
-# get_page_comments
-# get_page_comment_count
 # get_comment_replies
 # get_comment_reply_count
 # comment_to_dict (a little more complex)
