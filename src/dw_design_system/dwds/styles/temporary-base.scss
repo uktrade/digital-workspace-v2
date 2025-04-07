@@ -17,7 +17,7 @@
 html,
 
 html.no-scroll {
-	overflow: hidden;
+    overflow: hidden;
 }
 
 body {
@@ -110,6 +110,11 @@ body {
         border-right: 0;
         border-left: 0;
         color: var(--color-hr);
+    }
+
+    ul,
+    ol {
+        margin: unset;
     }
 
     ul.clean {
