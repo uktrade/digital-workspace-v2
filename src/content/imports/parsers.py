@@ -1,5 +1,5 @@
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
+from django.utils.safestring import SafeText, mark_safe
 from docx.drawing import Drawing
 from docx.image.image import Image
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
@@ -9,7 +9,6 @@ from docx.text.paragraph import Paragraph
 from docx.text.run import Run
 from wagtail_content_import.parsers.microsoft import DocxParser
 from wagtail_content_import.parsers.tables import Cell, Table
-
 
 HEADINGS_MAPPING: dict[str, str] = {
     "Heading 1": "1",
@@ -23,17 +22,16 @@ HEADINGS_MAPPING: dict[str, str] = {
     "Heading 4_DBT": "4",
     "Heading 5_DBT": "5",
 }
-
-PARAGRAPH_NAMES = [
-    "Normal",
-]
-
 LIST_MAPPING: dict[str, str] = {
     "DBT num list": "ol",
     "Bullet List 1": "ul",
+    "List Paragraph": "ul",
 }
+PARAGRAPH_NAMES: list[str] = [
+    "Normal",
+]
 
-KNOWN_NAMES = (
+KNOWN_NAMES: list[str] = (
     list(HEADINGS_MAPPING.keys()) + PARAGRAPH_NAMES + list(LIST_MAPPING.keys())
 )
 
@@ -77,7 +75,7 @@ class DocxParser(DocxParser):
             "value": block_val,
         }
 
-    def paragraph_to_html(self, paragraph: Paragraph, outer_tag="p"):
+    def paragraph_to_html(self, paragraph: Paragraph, block_type, block_data):
         """
         Compile a paragraph into a HTML string, optionally with semantic markup for styles.
         Returns a dictionary of the form:
@@ -92,6 +90,8 @@ class DocxParser(DocxParser):
             'value': html
         }
         """
+        outer_tag = "p"
+
         text_list = []
         for content in paragraph.iter_inner_content():
             text = content.text
@@ -120,19 +120,23 @@ class DocxParser(DocxParser):
                 case _:
                     raise Exception(f"Unknown content type: {type(content)}")
 
-        content = mark_safe("".join(text_list))  # noqa: S308
+        if not text_list:
+            return None
+
+        content: SafeText = mark_safe("".join(text_list))  # noqa: S308
 
         block = {
             "type": "html",
             "value": "",
         }
 
-        if list_type := LIST_MAPPING.get(paragraph.style.name, None):
-            block["type"] = "html-list"
-            block["list_type"] = list_type
-            block["value"] = self.generate_simple_tag(content, "li")
-
-            return block
+        if block_type == "list":
+            outer_tag = "li"
+            block = {
+                "type": "html-list",
+                "list_type": block_data["list_type"],
+                "indent_level": paragraph.style.paragraph_format.left_indent,
+            }
 
         block["value"] = self.generate_simple_tag(content, outer_tag)
         return block
@@ -142,6 +146,13 @@ class DocxParser(DocxParser):
             return "heading", {
                 "heading_level": heading_level,
             }
+
+        if list_type := LIST_MAPPING.get(paragraph.style.name, None):
+            return "list", {
+                "list_type": list_type,
+                "list_indent": 0,
+            }
+
         return "html", {}
 
     def parse(self):
@@ -155,10 +166,6 @@ class DocxParser(DocxParser):
 
         paragraphs: list[Paragraph] = self.document.paragraphs
         for paragraph in paragraphs:
-            p_style_name = paragraph.style.name
-            if p_style_name not in KNOWN_NAMES:
-                raise Exception(f"Unknown paragraph style: {p_style_name}")
-
             block_type, block_data = self.get_block_type_for_paragraph(paragraph)
             if block_type == "heading":
                 heading_level = block_data["heading_level"]
@@ -168,12 +175,15 @@ class DocxParser(DocxParser):
 
                 if heading_block := self.paragraph_to_heading(paragraph, heading_level):
                     self.blocks.append(heading_block)
+                continue
 
-            else:
-                converted_block = self.paragraph_to_html(paragraph)
-
-                if converted_block["value"]:
-                    self.blocks.append(converted_block)
+            converted_block = self.paragraph_to_html(
+                paragraph,
+                block_type,
+                block_data,
+            )
+            if converted_block:
+                self.blocks.append(converted_block)
 
         # SECOND PASS
 
