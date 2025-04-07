@@ -10,6 +10,7 @@ from docx.text.run import Run
 from wagtail_content_import.parsers.microsoft import DocxParser
 from wagtail_content_import.parsers.tables import Cell, Table
 
+
 HEADINGS_MAPPING: dict[str, str] = {
     "Heading 1": "1",
     "Heading 2": "2",
