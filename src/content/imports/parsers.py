@@ -194,32 +194,38 @@ class DocxParser(DocxParser):
             prev_block = self.blocks[i - 1] if i > 0 else None
             next_block = self.blocks[i + 1] if i < len(self.blocks) - 1 else None
 
-            if block["type"] == "html-list":
-                if prev_block and (
-                    prev_block["type"] != "html-list"
-                    or block["list_type"] != prev_block["list_type"]
-                ):
-                    # Open the list
-                    html_content += f"<{block['list_type']}>"
+            if block["type"] in ["html", "html-list"]:
+                # Open the list
+                if block["type"] == "html-list":
+                    if (
+                        not prev_block
+                        or prev_block["type"] != "html-list"
+                        or prev_block["list_type"] != block["list_type"]
+                    ):
+                        # Open the list
+                        html_content += f"<{block['list_type']}>"
 
-                # Add the list item
+                # Add the html content
                 html_content += block["value"]
 
-                if next_block and (
-                    next_block["type"] != "html-list"
-                    or block["list_type"] != next_block["list_type"]
-                ):
-                    # Close the list
-                    html_content += f"</{block['list_type']}>"
+                # Close the list
+                if block["type"] == "html-list":
+                    if (
+                        not next_block
+                        or next_block["type"] != "html-list"
+                        or next_block["list_type"] != block["list_type"]
+                    ):
+                        # Close the list
+                        html_content += f"</{block['list_type']}>"
 
-                    if next_block["type"] != "html-list":
-                        final_blocks.append(
-                            {
-                                "type": "html",
-                                "value": html_content,
-                            }
-                        )
-                        html_content = ""
+                if not next_block or next_block["type"] not in ["html", "html-list"]:
+                    final_blocks.append(
+                        {
+                            "type": "html",
+                            "value": html_content,
+                        }
+                    )
+                    html_content = ""
             else:
                 final_blocks.append(block)
 
