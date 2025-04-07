@@ -27,13 +27,6 @@ LIST_MAPPING: dict[str, str] = {
     "Bullet List 1": "ul",
     "List Paragraph": "ul",
 }
-PARAGRAPH_NAMES: list[str] = [
-    "Normal",
-]
-
-KNOWN_NAMES: list[str] = (
-    list(HEADINGS_MAPPING.keys()) + PARAGRAPH_NAMES + list(LIST_MAPPING.keys())
-)
 
 
 class DocxParser(DocxParser):
@@ -237,9 +230,5 @@ class DocxParser(DocxParser):
                     "value": table,
                 }
             )
-
-        # # Add images to final blocks
-        # for document_image in self.document.inline_shapes:
-        #     print(f"need to generate an image for : {type(document_image)}")
 
         return {"title": title, "elements": final_blocks}
