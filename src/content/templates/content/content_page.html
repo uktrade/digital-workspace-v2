@@ -15,9 +15,7 @@
     {% block pre_page_body %}
     {% endblock pre_page_body %}
     {% if page.body %}
-        {% for block in page.body %}
-            {% include_block block %}
-        {% endfor %}
+        {% include "includes/page_body.html" %}
     {% endif %}
 {% endblock primary_content %}
 
