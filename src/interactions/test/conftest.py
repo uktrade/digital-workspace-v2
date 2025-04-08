@@ -40,6 +40,7 @@ def about_page():
         path="page1",
     )
 
+
 # TODO: Update test_comment_reactions.py usage
 @pytest.fixture
 def comment():
