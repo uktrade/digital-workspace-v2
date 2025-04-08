@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db import models
 from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -144,12 +145,19 @@ def hide_comment(comment: Comment) -> None:
 def can_hide_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
         comment = Comment.objects.get(id=comment)
+
+    assert isinstance(comment, Comment)
     return user == comment.author
 
 
 def can_edit_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
-        comment = Comment.objects.get(id=comment)
+        try:
+            comment = Comment.objects.get(id=comment)
+        except Comment.DoesNotExist:
+            return False
+
+    assert isinstance(comment, Comment)
     return user == comment.author
 
 
@@ -160,10 +168,11 @@ def can_reply_comment(user: User, comment: Comment | int) -> bool:
         except Comment.DoesNotExist:
             return False
 
-    return bool(not comment.parent)
+    assert isinstance(comment, Comment)
+    return not bool(getattr(comment, "parent", False))
 
 
-def get_page_comments_response(request, page: Page) -> TemplateResponse:
+def get_page_comments_response(request: HttpRequest, page: Page) -> TemplateResponse:
     comments = [
         comments_service.comment_to_dict(page_comment)
         for page_comment in comments_service.get_page_comments(page)

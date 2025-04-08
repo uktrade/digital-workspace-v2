@@ -2,9 +2,10 @@ import pytest
 from django.contrib.auth import get_user_model
 
 from about_us.models import AboutUs
-from news.models import NewsPage, Comment
+from news.models import NewsPage
 
 from interactions.models import PageReaction, ReactionType, CommentReaction
+from news.factories import CommentFactory
 
 
 @pytest.fixture
@@ -32,15 +33,6 @@ def news_page():
 
 
 @pytest.fixture
-def news_page2():
-    return NewsPage.objects.create(
-        title="News 2",
-        depth=1,
-        path="page3",
-    )
-
-
-@pytest.fixture
 def about_page():
     return AboutUs.objects.create(
         title="About Us",
@@ -48,25 +40,17 @@ def about_page():
         path="page1",
     )
 
+# TODO: Update test_comment_reactions.py usage
+@pytest.fixture
+def comment():
+    return CommentFactory.create()
+
 
 @pytest.fixture
 def create_page_reaction(user, news_page):
     return PageReaction.objects.create(
         user=user, page=news_page, type=ReactionType.LIKE
     )
-
-
-@pytest.fixture
-def comment(comment_factory):
-    return comment_factory()
-
-# TODO: switch to kwargs for comment_factory and add back default values 
-@pytest.fixture
-def comment_factory(user, news_page):
-    def create_comment(author=user, page=news_page, content="a comment"):
-        return Comment.objects.create(author=author, page=page, content=content)
-
-    return create_comment
 
 
 @pytest.fixture
