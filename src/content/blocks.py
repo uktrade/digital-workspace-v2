@@ -276,3 +276,42 @@ class PageUpdate(blocks.StructBlock):
     class Meta:
         icon = "thumbtack"
         label = "CTA Button"
+
+
+class PersonBanner(blocks.StructBlock):
+    person = PersonChooserBlock(required=False)
+    person_name = blocks.CharBlock(required=False)
+    person_role = blocks.CharBlock(required=False)
+    person_image = blocks.CharBlock(required=False)
+    secondary_image = ImageChooserBlock(required=False)
+
+    class Meta:
+        template = "dwds/components/person_banner.html"
+        icon = "user"
+        label = "Person Banner"
+
+    def clean(self, value):
+        if value["person"] and (
+            value["person_name"] or value["person_role"] or value["person_image"]
+        ):
+            raise ValidationError(
+                "Either choose a person or enter the details manually."
+            )
+        return super().clean(value)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context.update(secondary_image=value["secondary_image"])
+        if value["person"]:
+            context.update(
+                person_name=value["person"].full_name,
+                person_role=value["person"].roles.first().job_title,
+                person_image=value["person"].photo.url,
+            )
+        else:
+            context.update(
+                person_name=value["person"],
+                person_role=value["person_role"],
+                person_image=value["person_image"],
+            )
+        return context
