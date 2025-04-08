@@ -5,9 +5,11 @@
         > .content-main {
             min-inline-size: var(--one-up-min-inline-size);
         }
-        
+
         > .content-image {
+            background-color: var(--card-bg-white);
             height: 100%;
+
             img {
                 object-position: center;
                 object-fit: contain;
