@@ -276,3 +276,21 @@ class PageUpdate(blocks.StructBlock):
     class Meta:
         icon = "thumbtack"
         label = "CTA Button"
+
+
+class QuoteBlock(blocks.StructBlock):
+    quote = blocks.CharBlock()
+    person = PersonChooserBlock(required=False)
+    person_name = blocks.CharBlock(required=False)
+    person_role = blocks.CharBlock(required=False)
+    person_team = blocks.CharBlock(required=False)
+    person_image = ImageChooserBlock(required=False)
+
+    class Meta:
+        template = "dwds/components/quote.html"
+        icon = "openquote"
+        label = "Quote component"
+
+    def clean(self, value): ...
+
+    def get_context(self, value, parent_context=None): ...
