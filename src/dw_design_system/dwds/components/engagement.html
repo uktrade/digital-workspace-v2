@@ -24,12 +24,12 @@
                 <div class="content-footer content-stack">
                     {% if updated_date > created_date %}
                         <time>
-                            Updated {{ updated_date|naturalday:'j F Y' }}
+                            Updated: {{ updated_date|naturalday:'j F Y' }}
                             {% if updated_date|naturalday in 'yesterday, today' %}at {{ updated_date|time:'g:iA'|lower }}{% endif %}
                         </time>
                     {% elif created_date %}
                         <time>
-                            Added {{ created_date|naturalday:'j F Y' }}
+                            Published: {{ created_date|naturalday:'j F Y' }}
                             {% if created_date|naturalday in 'yesterday, today' %}at {{ created_date|time:'g:iA'|lower }}{% endif %}
                         </time>
                     {% endif %}
