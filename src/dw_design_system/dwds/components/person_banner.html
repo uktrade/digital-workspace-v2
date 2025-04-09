@@ -4,7 +4,12 @@
     <div class="dwds-person-banner">
         {% if person_image %}
             <div class="person-image">
-                {% include "dwds/elements/profile_image.html" with profile_image_url=person_image name=person_name %}
+                {% image person_image fill-278x278 as person_image_square %}
+                {% include "dwds/elements/profile_image.html" with profile_image_url=person_image_square.file.url name=person_name %}
+            </div>
+        {% elif person_image_url %}
+            <div class="person-image">
+                {% include "dwds/elements/profile_image.html" with profile_image_url=person_image_url name=person_name %}
             </div>
         {% endif %}
         <div class="person-banner-text">

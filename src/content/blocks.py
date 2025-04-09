@@ -282,7 +282,9 @@ class PersonBanner(blocks.StructBlock):
     person = PersonChooserBlock(required=False)
     person_name = blocks.CharBlock(required=False)
     person_role = blocks.CharBlock(required=False)
-    person_image = ImageChooserBlock(required=False)
+    person_image = ImageChooserBlock(
+        required=False, help_text="This image should be square"
+    )
     secondary_image = ImageChooserBlock(required=False)
 
     class Meta:
@@ -306,12 +308,12 @@ class PersonBanner(blocks.StructBlock):
             context.update(
                 person_name=value["person"].full_name,
                 person_role=value["person"].roles.first().job_title,
-                person_image=value["person"].photo.url,
+                person_image_url=value["person"].photo.url,
             )
         else:
             context.update(
                 person_name=value["person_name"],
                 person_role=value["person_role"],
-                person_image=value["person_image"].file.url,
+                person_image=value["person_image"],
             )
         return context
