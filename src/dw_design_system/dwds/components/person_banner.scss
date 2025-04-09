@@ -17,6 +17,7 @@
         padding: var(--s-2);
 
         img {
+            object-fit: cover;
             max-height: var(--person-banner-image-size);
             max-width: var(--person-banner-image-size);
         }

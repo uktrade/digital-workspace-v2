@@ -282,7 +282,7 @@ class PersonBanner(blocks.StructBlock):
     person = PersonChooserBlock(required=False)
     person_name = blocks.CharBlock(required=False)
     person_role = blocks.CharBlock(required=False)
-    person_image = blocks.CharBlock(required=False)
+    person_image = ImageChooserBlock(required=False)
     secondary_image = ImageChooserBlock(required=False)
 
     class Meta:
@@ -310,8 +310,8 @@ class PersonBanner(blocks.StructBlock):
             )
         else:
             context.update(
-                person_name=value["person"],
+                person_name=value["person_name"],
                 person_role=value["person_role"],
-                person_image=value["person_image"],
+                person_image=value["person_image"].file.url,
             )
         return context
