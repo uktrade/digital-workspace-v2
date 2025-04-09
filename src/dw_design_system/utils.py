@@ -336,6 +336,8 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "name": "Modal",
                 "template": "dwds/components/modal.html",
                 "context": {
+                    "button": "Open modal",
+                    "title": "MODAL TITLE",
                     "content": "MODAL CONTENT",
                 },
             },
