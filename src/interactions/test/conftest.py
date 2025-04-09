@@ -1,16 +1,34 @@
 import pytest
 from django.contrib.auth import get_user_model
-
+from django.core.management import call_command
 from about_us.models import AboutUs
 from news.models import NewsPage
 
 from interactions.models import PageReaction, ReactionType, CommentReaction
 from news.factories import CommentFactory
+from peoplefinder.services.person import PersonService
 
 
 @pytest.fixture
 def user():
     return get_user_model().objects.create(username="test_user")
+
+
+@pytest.fixture
+def test_user():
+    test_user_email = "test@test.com"
+    test_password = "test_password"
+
+    test_user, _ = get_user_model().objects.get_or_create(
+        username="test_user",
+        email=test_user_email,
+    )
+    test_user.set_password(test_password)
+    test_user.save()
+    call_command("loaddata", "countries.json")
+    profile = PersonService().create_user_profile(test_user)
+    test_user.profile = profile
+    return test_user
 
 
 @pytest.fixture

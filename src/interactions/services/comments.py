@@ -192,7 +192,9 @@ def get_page_comments_response(request: HttpRequest, page: Page) -> TemplateResp
     )
 
 
-def get_comment_response(request, comment: Comment | int) -> TemplateResponse:
+def get_comment_response(
+    request: HttpRequest, comment: Comment | int
+) -> TemplateResponse:
     if isinstance(comment, int):
         comment = get_object_or_404(Comment, id=comment)
 

@@ -5,6 +5,7 @@ from news.factories import CommentFactory, NewsPageFactory
 from django.urls import reverse
 
 from peoplefinder.services.person import PersonService
+from peoplefinder.test.factories import PersonFactory
 
 
 pytestmark = pytest.mark.django_db
@@ -122,16 +123,18 @@ def test_get_comment_reply_count():
     assert comments_service.get_comment_reply_count(comment) == len(replies)
 
 
-@pytest.mark.skip(reason="Missing user profile setup")
+# @pytest.mark.skip(reason="Missing user profile setup")
 def test_comment_to_dict(news_page):
     comment = CommentFactory.create(page=news_page, content="a new comment")
     replies = CommentFactory.create_batch(3, page=news_page, parent=comment)
 
     # TODO: Fix user profile creation
-    PersonService().create_user_profile(user=comment.author)
+    # PersonService().create_user_profile(user=comment.author)
+    PersonFactory.create(user=comment.author)
+    comment.refresh_from_db()
     # call_command("create_user_profiles")
     comment_author_profile = comment.author.profile
-
+    assert comment_author_profile
     comment_dict = comments_service.comment_to_dict(comment)
     replies_dict: list[dict] = [
         comments_service.comment_to_dict(reply) for reply in replies
@@ -256,3 +259,15 @@ def test_can_reply_comment():
 
     # Test function called with invalid comment_id instead of comment object
     assert comments_service.can_reply_comment(user, 123456) == False
+
+
+@pytest.mark.skip(reason="TODO, create mock request")
+def test_get_page_comments_response(news_page, mocker):
+    comments = CommentFactory.create_batch(5, page=news_page)
+    request = mocker.Mock()
+
+
+@pytest.mark.skip(reason="TODO, create mock request")
+def test_get_comment_response(news_page, mocker):
+    comment = CommentFactory.create()
+    request = mocker.Mock()
