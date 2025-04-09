@@ -329,7 +329,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/copy_text.html",
                 "context": {
                     "text": EXTERNAL_URL,
-                    "hide_input": False,
+                    "hide_input": True,
                 },
             },
             {

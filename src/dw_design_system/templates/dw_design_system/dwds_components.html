@@ -1,6 +1,21 @@
 {% extends "dwds_content.html" %}
 
 {% block primary_content %}
+    {% if template_type == "icons" %}
+        <div class="content-stack">
+            <h2>Sizes</h2>
+            <h3>Tiny</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" with tiny=True %}
+            <h3>Small</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" with small=True %}
+            <h3>Medium</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" with medium=True %}
+            <h3>Large</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" with large=True %}
+            <h3>Standard</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" %}
+        </div>
+    {% endif %}
     <div class="content-stack">
         {% for template in templates %}
             {% include "dw_design_system/partials/component.html" with component=template new=template.new %}

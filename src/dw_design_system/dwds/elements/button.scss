@@ -14,7 +14,7 @@ a.dwds-button,
     border-bottom: solid var(--button-border-width-bottom) var(--color-button-bottom-border);
     border-radius: var(--border-radius);
     cursor: pointer;
-    align-self: flex-start;
+    width: fit-content;
 
     &:hover {
         background-color: var(--color-button-hover);
@@ -36,8 +36,7 @@ a.dwds-button,
         border: none;
         background: none;
         // Reset styling
-        padding-left: unset;
-        padding-right: unset;
+        padding: unset;
         color: unset;
         background-color: unset;
         font-weight: unset;
