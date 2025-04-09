@@ -4,7 +4,7 @@ from rest_framework import routers
 from peoplefinder.views.activity_stream import ActivityStreamViewSet
 from peoplefinder.views.api.person import PersonViewSet
 from peoplefinder.views.api.team import TeamView
-from peoplefinder.views.directory import PeopleDirectory
+from peoplefinder.views.directory import PeopleDirectory, discover
 from peoplefinder.views.home import PeopleHome, TeamHome
 from peoplefinder.views.manager import (
     ManagerCancel,
@@ -41,6 +41,7 @@ from peoplefinder.views.team import (
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
     path("directory/", PeopleDirectory.as_view(), name="people-directory"),
+    path("discover/", discover, name="discover"),
     path(
         "delete-confirmation/",
         DeleteConfirmationView.as_view(),

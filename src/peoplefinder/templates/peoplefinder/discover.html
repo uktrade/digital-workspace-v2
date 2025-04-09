@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sidebar %}
+
+{% block body_classes %}
+    dwds-body
+{% endblock body_classes %}
+
+{% block pre_main %}
+    <div class="dwds-container">
+    {% endblock pre_main %}
+
+    {% block main_content %}
+        <div class="dwds" style="margin-bottom: var(--s2)">
+            <div class="content-stack large">
+                {% block pre_content %}
+                {% endblock pre_content %}
+
+                <div class="content-sidebar">
+                    <div class="secondary-content"></div>
+                    <div class="primary-content dwds-content-page content-stack large">
+                        <div class="page-title content-stack">
+                            <h1>Discover</h1>
+                            {% for person in people %}
+                                <a href="{% url 'profile-view' person.slug %}"class="text-medium">{{ person }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock main_content %}
