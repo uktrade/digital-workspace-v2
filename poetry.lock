@@ -2052,6 +2052,20 @@ docs = ["Sphinx (>=1.7.4)", "pyenchant (>=2.0)", "sphinx-rtd-theme (>=0.3)", "sp
 testing = ["coverage"]
 
 [[package]]
+name = "django-cotton"
+version = "2.0.3"
+description = "Bringing component based design to Django templates."
+optional = false
+python-versions = "<4,>=3.8"
+files = [
+    {file = "django_cotton-2.0.3-py3-none-any.whl", hash = "sha256:53fc1d7756c3728ca9c76c1402758c6778147e0653b12cb3890a5f5e679125e4"},
+    {file = "django_cotton-2.0.3.tar.gz", hash = "sha256:ffce33d8e680718928e67fe7e9c6bc64c9d03fea0098b313863728fc38c049bf"},
+]
+
+[package.dependencies]
+django = ">=4.2,<5.3"
+
+[[package]]
 name = "django-crispy-forms"
 version = "1.14.0"
 description = "Best way to have Django DRY forms"
@@ -7012,4 +7026,4 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "bb6d2e119ec12eae7c6a087cb8d9b5b7414313ee5d61bb70400f037325a12497"
+content-hash = "520641cd04df0cef83e2932a0f4f0918454b73836fe58b0ce1d1312fdd5f8fc0"
