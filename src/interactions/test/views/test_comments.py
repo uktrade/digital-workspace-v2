@@ -3,11 +3,14 @@ from django.test.client import Client
 from django.urls import reverse
 from django.test import override_settings
 from core.models import FeatureFlag
+from news.factories import CommentFactory
+from peoplefinder.test.factories import UserWithPersonFactory
 
 pytestmark = pytest.mark.django_db
 
 
-def test_hide_comment_view(comment, mocker):
+def test_hide_comment_view(mocker):
+    comment = CommentFactory()
     client = Client()
     url = reverse("interactions:hide-comment", args=[comment.id])
 
@@ -23,10 +26,12 @@ def test_hide_comment_view(comment, mocker):
 
 
 # @pytest.mark.skip(reason="TODO")
-def test_comment_on_page_view(comment, mocker, test_user):
+def test_comment_on_page_view(mocker):
+    test_user1 = UserWithPersonFactory()
+    comment = CommentFactory()
     client = Client()
     url = reverse("interactions:comment-on-page", args=[comment.page.id])
-    client.force_login(test_user)
+    client.force_login(test_user1)
     FeatureFlag.objects.create(name="new_comments", everyone=True)
     response = client.post(
         url,
@@ -35,8 +40,6 @@ def test_comment_on_page_view(comment, mocker, test_user):
         },
     )
 
-    print("TEST_RESPONSE")
-    print(response)
     assert response.status_code == 200
 
 

@@ -128,13 +128,8 @@ def test_comment_to_dict(news_page):
     comment = CommentFactory.create(page=news_page, content="a new comment")
     replies = CommentFactory.create_batch(3, page=news_page, parent=comment)
 
-    # TODO: Fix user profile creation
-    # PersonService().create_user_profile(user=comment.author)
-    PersonFactory.create(user=comment.author)
-    comment.refresh_from_db()
-    # call_command("create_user_profiles")
     comment_author_profile = comment.author.profile
-    assert comment_author_profile
+
     comment_dict = comments_service.comment_to_dict(comment)
     replies_dict: list[dict] = [
         comments_service.comment_to_dict(reply) for reply in replies
@@ -233,7 +228,7 @@ def test_comment_to_dict(news_page):
 
 
 def test_can_reply_comment():
-    comment = CommentFactory.create()
+    comment = CommentFactory()
     user = comment.author
 
     # Can reply to a new comment
