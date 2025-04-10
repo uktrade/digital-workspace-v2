@@ -3,14 +3,14 @@
 <div class="dwds-comment" id="comment-{{ comment.id }}">
     <div class="content-stack">
         <div class="content-stack small">
-            {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url published_timestamp=comment.posted_date updated_timestamp=comment.edited_date %}
+            {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date edited_timestamp=comment.edited_date %}
             <div>{{ comment.message }}</div>
         </div>
         <div class="dwds-button-group with-separator">
             {% reactions_for_comment user comment.id %}
             {% include "interactions/reply_comment_input.html" with comment=comment cancel_reply=show_reply_form %}
-            {% include "news/includes/delete_comment.html" with comment=comment %}
             {% include "interactions/edit_comment_input.html" with comment=comment %}
+            {% include "news/includes/delete_comment.html" with comment=comment %}
         </div>
         {% if comment.show_replies %}
             {% if show_reply_form %}
