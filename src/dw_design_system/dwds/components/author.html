@@ -13,7 +13,7 @@
         {% if published_timestamp %}
             <div>Published: {{ published_timestamp|naturalday:'j F Y' }} at {{ published_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}
-        {% if updated_timestamp %}
+        {% if updated_timestamp and updated_timestamp != published_timestamp %}
             <div>Updated: {{ updated_timestamp|naturalday:'j F Y' }} at {{ updated_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}
         {% if timestamp %}<div>{{ timestamp|naturalday:'j F Y' }} at {{ timestamp|date:"g:iA"|lower }}</div>{% endif %}
