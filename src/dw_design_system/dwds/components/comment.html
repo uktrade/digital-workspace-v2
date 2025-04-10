@@ -7,7 +7,7 @@
             <div>{{ comment.message }}</div>
         </div>
         <div class="dwds-button-group">
-            {% if comment.page.specific.allow_reactions %}
+            {% if comment.allow_reactions %}
                 {% reactions_for_comment user comment.id %}
             {% endif %}
             {% include "interactions/reply_comment_input.html" with comment=comment cancel_reply=show_reply_form %}
