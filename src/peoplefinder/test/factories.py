@@ -16,6 +16,7 @@ class UserWithPersonFactory(UserFactory):
         if not getattr(self, "profile", None):
             PersonFactory(user=self)
 
+
 class TeamFactory(factory.django.DjangoModelFactory):
     """Team factory class which defaults to DBT."""
 

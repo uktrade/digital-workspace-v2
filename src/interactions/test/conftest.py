@@ -26,5 +26,3 @@ def about_page():
         depth=4,
         path="page1",
     )
-
-

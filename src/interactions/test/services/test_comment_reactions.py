@@ -30,9 +30,7 @@ def test_react_to_comment_create(reaction_type):
 def test_react_to_comment_update(reaction_type):
     test_user1 = UserWithPersonFactory()
     comment = CommentFactory()
-    CommentReaction.objects.create(
-        user=test_user1, comment=comment, type=reaction_type
-    )
+    CommentReaction.objects.create(user=test_user1, comment=comment, type=reaction_type)
     reaction = react_to_comment(test_user1, comment, reaction_type)
     assert reaction.type == reaction_type
 
@@ -42,9 +40,7 @@ def test_react_to_comment_update(reaction_type):
 def test_react_to_comment_delete(reaction_type):
     test_user1 = UserWithPersonFactory()
     comment = CommentFactory()
-    CommentReaction.objects.create(
-        user=test_user1, comment=comment, type=reaction_type
-    )
+    CommentReaction.objects.create(user=test_user1, comment=comment, type=reaction_type)
     reaction = react_to_comment(test_user1, comment, None)
     assert reaction is None
     assert not CommentReaction.objects.filter(user=test_user1, comment=comment).exists()
@@ -95,7 +91,9 @@ def test_get_comment_reaction_counts():
     test_user3 = UserWithPersonFactory()
     test_comment = CommentFactory()
 
-    CommentReaction.objects.create(user=test_user1, comment=test_comment, type=ReactionType.LIKE)
+    CommentReaction.objects.create(
+        user=test_user1, comment=test_comment, type=ReactionType.LIKE
+    )
     CommentReaction.objects.create(
         user=test_user2, comment=test_comment, type=ReactionType.DISLIKE
     )

@@ -71,7 +71,7 @@ def comment_to_dict(comment: Comment) -> dict:
         for reply in get_comment_replies(comment):
             replies.append(comment_to_dict(reply))
 
-    in_reply_to = comment.pk
+    in_reply_to = getattr(comment.parent, "id", None)
 
     comment_dict = {
         "id": comment.id,
@@ -152,10 +152,7 @@ def can_hide_comment(user: User, comment: Comment | int) -> bool:
 
 def can_edit_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
-        try:
-            comment = Comment.objects.get(id=comment)
-        except Comment.DoesNotExist:
-            return False
+        comment = Comment.objects.get(id=comment)
 
     assert isinstance(comment, Comment)
     return user == comment.author
@@ -163,13 +160,10 @@ def can_edit_comment(user: User, comment: Comment | int) -> bool:
 
 def can_reply_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
-        try:
-            comment = Comment.objects.get(id=comment)
-        except Comment.DoesNotExist:
-            return False
+        comment = Comment.objects.get(id=comment)
 
     assert isinstance(comment, Comment)
-    return not bool(getattr(comment, "parent", False))
+    return not bool(comment.parent)
 
 
 def get_page_comments_response(request: HttpRequest, page: Page) -> TemplateResponse:

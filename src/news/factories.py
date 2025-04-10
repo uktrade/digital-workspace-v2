@@ -17,11 +17,7 @@ class NewsPageFactory(PageWithTopicsFactory, wagtail_factories.PageFactory):
 class CommentFactory(factory.django.DjangoModelFactory):
     author = factory.SubFactory(UserWithPersonFactory)
     content = factory.fuzzy.FuzzyText(length=50)
-    page = factory.Sequence(
-        lambda n: NewsPageFactory.create(
-            title=f"News Page {n + 1}",
-        )
-    )
+    page = factory.SubFactory(NewsPageFactory)
 
     class Meta:
         model = models.Comment

@@ -1,11 +1,9 @@
 import pytest
 from interactions.services import comments as comments_service
 from news.models import Comment
-from news.factories import CommentFactory, NewsPageFactory
+from news.factories import CommentFactory
 from django.urls import reverse
-
-from peoplefinder.services.person import PersonService
-from peoplefinder.test.factories import PersonFactory
+from django.test import override_settings
 
 
 pytestmark = pytest.mark.django_db
@@ -28,6 +26,7 @@ def test_hide_comment():
 
 def test_can_hide_comment(user):
     comment = CommentFactory.create()
+
     # The user is the author of the comment
     assert comments_service.can_hide_comment(comment.author, comment) == True
 
@@ -50,6 +49,7 @@ def test_edit_comment():
 
 def test_can_edit_comment(user):
     comment = CommentFactory.create()
+
     # The user is the author of the comment
     assert comments_service.can_edit_comment(comment.author, comment) == True
 
@@ -84,12 +84,19 @@ def test_add_page_comment(news_page, user):
 
 def test_get_page_comments(news_page):
     news_comments = CommentFactory.create_batch(3, page=news_page)
+    hidden_news_comments = CommentFactory.create_batch(
+        3, page=news_page, is_visible=False
+    )
     comment = CommentFactory.create()
     news_page_comments = comments_service.get_page_comments(news_page)
 
     for news_comment in news_comments:
         # The comments are returned for the requested page
         assert news_comment in news_page_comments
+
+    for hidden_news_comment in hidden_news_comments:
+        # Hidden comments are not returned
+        assert hidden_news_comment not in news_page_comments
 
     # Comments on other pages are not returned
     assert comment not in news_page_comments
@@ -98,6 +105,9 @@ def test_get_page_comments(news_page):
 def test_get_page_comment_count(news_page):
     comments = CommentFactory.create_batch(3, page=news_page)
 
+    # Hidden comments are not included in the comment count
+    CommentFactory.create_batch(3, page=news_page, is_visible=False)
+
     # The comment count is returned for the requested page
     assert comments_service.get_page_comment_count(news_page) == len(comments)
 
@@ -105,6 +115,10 @@ def test_get_page_comment_count(news_page):
 def test_get_comment_replies():
     comment = CommentFactory.create()
     replies = CommentFactory.create_batch(3, page=comment.page, parent=comment)
+
+    # Hidden replies are not retrieved
+    CommentFactory.create_batch(3, page=comment.page, parent=comment, is_visible=False)
+
     comment_replies = comments_service.get_comment_replies(comment)
 
     for reply in replies:
@@ -119,11 +133,14 @@ def test_get_comment_reply_count():
 
     replies = CommentFactory.create_batch(3, page=comment.page, parent=comment)
 
+    # Hidden replies are not counted
+    CommentFactory.create_batch(3, page=comment.page, parent=comment, is_visible=False)
+
     # The correct number of replies are returned for the requested comment
     assert comments_service.get_comment_reply_count(comment) == len(replies)
 
 
-# @pytest.mark.skip(reason="Missing user profile setup")
+@override_settings(USE_TZ=False)
 def test_comment_to_dict(news_page):
     comment = CommentFactory.create(page=news_page, content="a new comment")
     replies = CommentFactory.create_batch(3, page=news_page, parent=comment)
@@ -163,12 +180,14 @@ def test_comment_to_dict(news_page):
     for reply_dict in replies_dict:
         assert reply_dict["reply_count"] == 0
 
+    print("REPLIES_DICT_TEST")
+    print(comment_dict)
     # The replies are returned correctly
-    for reply in comment_dict["replies"]:
-        assert reply in replies_dict
+    assert comment_dict["replies"] == replies_dict
 
     # in_reply_to returns the correct parent comment id
     assert comment_dict["in_reply_to"] == None
+
     for reply_dict in replies_dict:
         assert reply_dict["in_reply_to"] == comment.id
 
@@ -216,15 +235,13 @@ def test_comment_to_dict(news_page):
         },
     )
 
-    # The correct reply_form_url is returned for replies only
-    assert comment_dict["reply_form_url"] == None
+    # The correct reply_form_url is returned for non-replies only
+    assert comment_dict["reply_form_url"] == reverse(
+        "interactions:comment-on-page",
+        args=[comment.page.pk],
+    )
     for reply_dict in replies_dict:
-        assert reply_dict["reply_form_url"] == reverse(
-            "interactions:edit-comment-form",
-            kwargs={
-                "comment_id": comment.id,
-            },
-        )
+        assert getattr(reply_dict, "reply_form_url", None) == None
 
 
 def test_can_reply_comment():
@@ -253,7 +270,8 @@ def test_can_reply_comment():
         comments_service.can_reply_comment(user, None)
 
     # Test function called with invalid comment_id instead of comment object
-    assert comments_service.can_reply_comment(user, 123456) == False
+    with pytest.raises(Comment.DoesNotExist):
+        comments_service.can_reply_comment(user, 123456)
 
 
 @pytest.mark.skip(reason="TODO, create mock request")
