@@ -24,7 +24,7 @@
                 <div class="content-footer content-stack">
                     {% if updated_date > created_date %}
                         <time>
-                            Updated: {{ updated_date|date:'j F Y'| }} at {{ updated_date|time:'g:iA'|lower }}
+                            Updated: {{ updated_date|date:'j F Y' }} at {{ updated_date|time:'g:iA'|lower }}
                         </time>
                     {% elif created_date %}
                         <time>
