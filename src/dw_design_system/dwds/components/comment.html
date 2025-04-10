@@ -6,8 +6,10 @@
             {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date edited_timestamp=comment.edited_date %}
             <div>{{ comment.message }}</div>
         </div>
-        <div class="dwds-button-group with-separator">
-            {% reactions_for_comment user comment.id %}
+        <div class="dwds-button-group">
+            {% if comment.page.specific.allow_reactions %}
+                {% reactions_for_comment user comment.id %}
+            {% endif %}
             {% include "interactions/reply_comment_input.html" with comment=comment cancel_reply=show_reply_form %}
             {% include "interactions/edit_comment_input.html" with comment=comment %}
             {% include "news/includes/delete_comment.html" with comment=comment %}
