@@ -87,6 +87,8 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     context = {
         "page_title": "Discover",
         "people": people,
-        "extra_breadcrumbs": [(None, "Discover"),]
+        "extra_breadcrumbs": [
+            (None, "Discover"),
+        ],
     }
     return render(request, "peoplefinder/discover.html", context)
