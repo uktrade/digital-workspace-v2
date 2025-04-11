@@ -31,7 +31,7 @@ def build_team_breadcrumbs(request, team: Team) -> list[tuple[str, str]]:
 def breadcrumbs(context) -> list[tuple[str, str]]:
     """Shows a breadcrumb list based on a page's ancestors"""
     request = context["request"]
-    breadcrumbs = []
+    breadcrumbs = breadcrumbs = build_home_breadcrumbs(request)
     extra_breadcrumbs = context.get("extra_breadcrumbs", [])
 
     self = context.get("self")
@@ -51,8 +51,6 @@ def breadcrumbs(context) -> list[tuple[str, str]]:
             team: Team | None = context.get("team", None)
             if team:
                 breadcrumbs = build_team_breadcrumbs(request, team)
-            else:
-                breadcrumbs = build_home_breadcrumbs(request)
             return {"breadcrumbs": breadcrumbs + extra_breadcrumbs}
 
         # Build profile breadcrumbs
@@ -60,8 +58,6 @@ def breadcrumbs(context) -> list[tuple[str, str]]:
             team: Team | None = context.get("team", None)
             if team:
                 breadcrumbs = build_team_breadcrumbs(request, team)
-            else:
-                breadcrumbs = build_home_breadcrumbs(request)
 
             profile: Person = context["profile"]
             breadcrumbs.append(

@@ -84,5 +84,9 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         return redirect("people-directory")
 
     people = directory_service.get_people(request.user)
-    context = {"people": people}
+    context = {
+        "page_title": "Discover",
+        "people": people,
+        "extra_breadcrumbs": [(None, "Discover"),]
+    }
     return render(request, "peoplefinder/discover.html", context)

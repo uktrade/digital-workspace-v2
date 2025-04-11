@@ -1,4 +1,4 @@
-{% extends "dwds_page.html" %}
+{% extends "dwds_sidebar_left.html" %}
 {% load static %}
 {% load sidebar %}
 
@@ -6,23 +6,21 @@
     dwds-body
 {% endblock body_classes %}
 
-{% block main_content %}
-    <div class="dwds" style="margin-bottom: var(--s2)">
-        <div class="content-stack large">
-            {% block pre_content %}
-            {% endblock pre_content %}
+{% block secondary_content %}
+{% endblock secondary_content %}
 
-            <div class="content-sidebar">
-                <div class="secondary-content"></div>
-                <div class="primary-content dwds-content-page content-stack large">
-                    <div class="page-title content-stack">
-                        <h1>Discover</h1>
-                        {% for person in people %}
-                            <a href="{% url 'profile-view' person.slug %}"class="text-medium">{{ person }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+{% block primary_content_classes %}
+content-stack large
+{% endblock primary_content_classes %}
+
+{% block primary_content %}
+    {% if people %}
+        <div class="content-grid grid-cards-auto-fill">
+            {% for person in people %}
+                <a href="{% url 'profile-view' person.slug %}"class="text-medium">{{ person }}</a>
+            {% endfor %}
         </div>
-    </div>
-{% endblock main_content %}
+    {% else %}
+        <p>There's no team members to show.</p>
+    {% endif %}
+{% endblock primary_content %}
