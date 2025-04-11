@@ -63,8 +63,6 @@ def get_comment_reply_count(comment: Comment) -> int:
 def comment_to_dict(comment: Comment) -> dict:
     include_replies = bool(not comment.parent)
 
-
-
     replies: list[dict] = []
     if include_replies:
         for reply in get_comment_replies(comment):
@@ -124,15 +122,15 @@ def comment_to_dict(comment: Comment) -> dict:
 
     if author_profile := getattr(comment.author, "profile", None):
         comment_dict.update(
-            author_name = author_profile.full_name,
-            author_url = reverse("profile-view", args=[author_profile.slug]),
-            author_image_url = (
+            author_name=author_profile.full_name,
+            author_url=reverse("profile-view", args=[author_profile.slug]),
+            author_image_url=(
                 author_profile.photo.url if author_profile.photo else None
             ),
         )
     else:
         comment_dict.update(
-            author_name = comment.author.get_full_name(),
+            author_name=comment.author.get_full_name(),
         )
 
     if include_replies:
