@@ -15,11 +15,9 @@ content-stack large
 
 {% block primary_content %}
     {% if people %}
-        <div class="content-grid grid-cards-auto-fill">
-            {% for person in people %}
-                <a href="{% url 'profile-view' person.slug %}"class="text-medium">{{ person }}</a>
-            {% endfor %}
-        </div>
+        {% for person in people %}
+            <a href="{% url 'profile-view' person.slug %}"class="text-medium">{{ person }}</a>
+        {% endfor %}
     {% else %}
         <p>There's no team members to show.</p>
     {% endif %}
