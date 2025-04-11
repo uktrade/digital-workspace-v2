@@ -1,0 +1,7 @@
+{% load wagtailcore_tags %}
+
+<div class="content-stack">
+    {% for block in page.body %}
+        {% include_block block %}
+    {% endfor %}
+</div>
