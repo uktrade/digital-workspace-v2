@@ -73,11 +73,6 @@ def comment_to_dict(comment: Comment) -> dict:
     comment_dict = {
         "id": comment.id,
         "allow_reactions": comment.page.specific.allow_reactions,
-        "author_name": author_profile.full_name,
-        "author_url": reverse("profile-view", args=[author_profile.slug]),
-        "author_image_url": (
-            author_profile.photo.url if author_profile.photo else None
-        ),
         "posted_date": comment.posted_date,
         "edited_date": comment.edited_date,
         "message": comment.content,
