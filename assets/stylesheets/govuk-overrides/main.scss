@@ -16,6 +16,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  &:empty {
+    height: var(--space);
+    width: 100%;
+  }
 }
 
 .govuk-heading-m a,

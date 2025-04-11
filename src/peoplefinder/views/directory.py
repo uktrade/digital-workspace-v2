@@ -3,9 +3,14 @@ from typing import Any
 from django.conf import settings
 from django.db.models import OuterRef, Subquery
 from django.db.models.query import QuerySet
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.views.generic import ListView
+from waffle import flag_is_active
 
+from core import flags
 from peoplefinder.models import Person, Team, TeamMember
+from peoplefinder.services import directory as directory_service
 from peoplefinder.services.team import TeamService
 
 
@@ -64,3 +69,26 @@ class PeopleDirectory(ListView):
             is_root_team=self.team == root_team,
         )
         return context
+
+
+# Identity Service - discovery
+
+
+def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
+    """
+    If the pf_discover flag is enabled, returns the discover page with all the people
+    the given user has permission to see.
+    Otherwise, redirects to people-directory page.
+    """
+    if not flag_is_active(request, flags.PF_DISCOVER):
+        return redirect("people-directory")
+
+    people = directory_service.get_people(request.user)
+    context = {
+        "page_title": "Discover",
+        "people": people,
+        "extra_breadcrumbs": [
+            (None, "Discover"),
+        ],
+    }
+    return render(request, "peoplefinder/discover.html", context)
