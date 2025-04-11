@@ -18,9 +18,18 @@
 
 {% block primary_content %}
     {% if people %}
-        {% for person in people %}
-            <a href="{% url 'profile-view' person.slug %}"class="text-medium">{{ person }}</a>
-        {% endfor %}
+        <div class="content-grid grid-cards-auto-fill">
+            {% for person in people %}
+                <div class="dwds-content-item-card">
+                    {% url 'profile-view' person.slug as profile_url %}
+                    {% if person.photo %}
+                        {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=person.photo.url name=person.full_name title=person.formatted_roles|join:", " location=person.uk_office_location.city profile_url=profile_url %}
+                    {% else %}
+                        {% include "dwds/components/profile_info.html" with show_profile_image=True name=person.full_name title=person.formatted_roles|join:", " location=person.uk_office_location.city profile_url=profile_url %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
         <p>There's no team members to show.</p>
     {% endif %}
