@@ -95,11 +95,13 @@
                   id="main-content"
                   role="main"
                   tabindex="1">
+                {% spaceless %}
                 <div class="breadcrumb-bookmark">
                     {% block breadcrumbs %}
                         {% breadcrumbs %}
                     {% endblock breadcrumbs %}
                 </div>
+                {% endspaceless %}
                 {% block main_content %}
                 {% endblock main_content %}
                 {% block page_problem %}
