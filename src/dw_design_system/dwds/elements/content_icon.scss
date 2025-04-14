@@ -5,25 +5,32 @@
     width: 4cap;
     flex: none;
 
+    &.tiny {
+        height: 1em;
+        height: 1.33cap;
+        width: 1em;
+        width: 1.33cap;
+    }
+
     &.small {
         height: 1.5em;
         height: 2cap;
-        width: 1.5;
+        width: 1.5em;
         width: 2cap;
     }
 
     &.medium {
         height: 2em;
         height: 2.66cap;
-        width: 2;
+        width: 2em;
         width: 2.66cap;
     }
 
-    &.tiny {
-        height: 1em;
-        height: 1.33cap;
-        width: 1;
-        width: 1.33cap;
+    &.large {
+        height: 2.5em;
+        height: 3.325cap;
+        width: 2.5em;
+        width: 3.325cap;
     }
 
 }
