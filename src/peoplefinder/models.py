@@ -847,8 +847,13 @@ class Person(Indexed, models.Model):
             location_parts.append(escape(strip_tags(self.location_in_building)))
 
         if self.uk_office_location:
-            location_parts.append(self.uk_office_location.building_name)
-            location_parts.append(self.uk_office_location.city)
+            if self.uk_office_location.building_name:
+                location_parts.append(self.uk_office_location.building_name)
+                location_parts.append(self.uk_office_location.city)
+            else:
+                for location_part in self.uk_office_location.name.split(","):
+                    if clean_location_part := location_part.strip():
+                        location_parts.append(clean_location_part)
 
         return mark_safe("<br>".join(location_parts))  # noqa: S308
 
