@@ -76,7 +76,7 @@ django-cotton = "^2.0.3"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-dbt-platform-helper = "13.2.0"
+dbt-platform-helper = "13.4.1"
 # Linters
 black = "*"
 djlint = "*"

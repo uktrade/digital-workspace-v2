@@ -6,11 +6,11 @@
         {% if self.first_published_at %}
             <div>
                 <time datetime="{{ self.first_published_at|date:"c" }}">
-                    First published: {{ self.first_published_at|date:"j F Y" }}, {{ self.first_published_at|time:"g:iA"|lower }}
+                    Published: {{ self.first_published_at|date:"j F Y" }}, {{ self.first_published_at|time:"g:iA"|lower }}
                 </time>
                 <br>
                 <time datetime="{{ self.last_published_at|date:"c" }}">
-                    Last updated: {{ self.last_published_at|date:"j F Y" }}, {{ self.last_published_at|time:"g:iA"|lower }}
+                    Updated: {{ self.last_published_at|date:"j F Y" }}, {{ self.last_published_at|time:"g:iA"|lower }}
                 </time>
             </div>
         {% else %}
