@@ -289,7 +289,9 @@ class QuoteBlock(blocks.StructBlock):
     source_name = blocks.CharBlock(required=False)
     source_role = blocks.CharBlock(required=False)
     source_team = blocks.CharBlock(required=False)
-    source_image = ImageChooserBlock(required=False)
+    source_image = ImageChooserBlock(
+        required=False, help_text="This image should be square"
+    )
 
     class Meta:
         template = "dwds/components/quote.html"
