@@ -1,0 +1,27 @@
+{% extends "dwds_sidebar_left.html" %}
+{% load static %}
+{% load sidebar %}
+
+{% block body_classes %}
+    dwds-body
+{% endblock body_classes %}
+
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+
+{% block secondary_content %}
+{% endblock secondary_content %}
+
+{% block primary_content_classes %}
+    content-stack large
+{% endblock primary_content_classes %}
+
+{% block primary_content %}
+    {% if people %}
+        {% for person in people %}
+            <a href="{% url 'profile-view' person.slug %}"class="text-medium">{{ person }}</a>
+        {% endfor %}
+    {% else %}
+        <p>There's no team members to show.</p>
+    {% endif %}
+{% endblock primary_content %}

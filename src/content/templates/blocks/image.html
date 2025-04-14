@@ -1,4 +1,4 @@
 {% load wagtailimages_tags %}
 <div>
-    {% include "dwds/elements/content_image.html" with content_image=value.image caption=value.caption alt=value.alt rounded=True %}
+    {% include "dwds/elements/content_image.html" with content_image=value.image use_original_image=True caption=value.caption alt=value.alt rounded=True %}
 </div>
