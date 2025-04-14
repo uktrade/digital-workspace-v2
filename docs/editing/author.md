@@ -12,4 +12,3 @@ The best way to manage the page author is the "page author" field in the "Publis
     * This is an old field, and the new way to set the Perm Sec as the author is to use the "Page author" field in the "Publishing" tab
 * The person that first published the page
 * The person that first created the page
-
