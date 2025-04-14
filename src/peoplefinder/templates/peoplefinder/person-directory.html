@@ -1,4 +1,4 @@
-{% extends "dwds_content.html" %}
+{% extends "dwds_sidebar.html" %}
 {% load wagtailroutablepage_tags %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
@@ -56,6 +56,3 @@
         {% include "dwds/components/pagination.html" with pages=page_obj %}
     {% endif %}
 {% endblock primary_content %}
-
-{% block secondary_content %}
-{% endblock secondary_content %}
