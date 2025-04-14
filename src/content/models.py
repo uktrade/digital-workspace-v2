@@ -512,6 +512,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
             ),
             ("image", content_blocks.ImageBlock()),
             ("image_with_text", content_blocks.ImageWithTextBlock()),
+            ("quote", content_blocks.QuoteBlock()),
             (
                 "embed_video",
                 content_blocks.EmbedVideoBlock(help_text="""Embed a video"""),

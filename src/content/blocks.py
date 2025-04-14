@@ -280,17 +280,48 @@ class PageUpdate(blocks.StructBlock):
 
 class QuoteBlock(blocks.StructBlock):
     quote = blocks.CharBlock()
-    person = PersonChooserBlock(required=False)
-    person_name = blocks.CharBlock(required=False)
-    person_role = blocks.CharBlock(required=False)
-    person_team = blocks.CharBlock(required=False)
-    person_image = ImageChooserBlock(required=False)
+    quote_theme = blocks.ChoiceBlock(
+        choices=[("light", "Light"), ("dark", "Dark")],
+        default="true",
+        help_text="Colour of the background. This can either be light grey or dark blue",
+    )
+    source = PersonChooserBlock(required=False)
+    source_name = blocks.CharBlock(required=False)
+    source_role = blocks.CharBlock(required=False)
+    source_team = blocks.CharBlock(required=False)
+    source_image = ImageChooserBlock(required=False)
 
     class Meta:
         template = "dwds/components/quote.html"
         icon = "openquote"
-        label = "Quote component"
+        label = "Quote"
 
-    def clean(self, value): ...
+    def clean(self, value):
+        if value["source"] and (
+            value["source_name"] or value["source_role"] or value["source_team"] or value["source_image"] 
+        ):
+            raise ValidationError(
+                "Either choose a source or enter the details manually."
+            )
+        return super().clean(value)
 
-    def get_context(self, value, parent_context=None): ...
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context.update(quote=value["quote"], highlight = True)
+        if value["quote_theme"] == "light":
+            context.update(highlight = False)
+        if value["source"]:
+            context.update(
+                source_name=value["source"].full_name,
+                source_role=value["source"].roles.first().job_title,
+                source_team=value["source"].teams.first(),
+                source_image_url=value["source"].photo.url,
+            )
+        else:
+            context.update(
+                source_name=value["source_name"],
+                source_role=value["source_role"],
+                source_team=value["source_team"],
+                source_image=value["source_image"],
+            )
+        return context
