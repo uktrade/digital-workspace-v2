@@ -148,6 +148,9 @@ def edit_comment_form(request: HttpRequest, *, comment_id):
 
 @require_http_methods(["POST"])
 def reply_to_comment(request: HttpRequest, *, comment_id):
+    if not comments_service.can_reply_comment(request.user, comment_id):
+        return HttpResponse(status=403)
+
     comment = get_object_or_404(Comment, id=comment_id)
     user = request.user
 

@@ -180,8 +180,6 @@ def test_comment_to_dict(news_page):
     for reply_dict in replies_dict:
         assert reply_dict["reply_count"] == 0
 
-    print("REPLIES_DICT_TEST")
-    print(comment_dict)
     # The replies are returned correctly
     assert comment_dict["replies"] == replies_dict
 

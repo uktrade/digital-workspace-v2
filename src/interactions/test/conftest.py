@@ -3,6 +3,7 @@ from about_us.models import AboutUs
 from news.models import NewsPage
 
 from peoplefinder.test.factories import UserWithPersonFactory
+from news.factories import NewsPageFactory
 
 
 @pytest.fixture
@@ -12,11 +13,12 @@ def user():
 
 @pytest.fixture
 def news_page():
-    return NewsPage.objects.create(
-        title="News",
-        depth=1,
-        path="page2",
-    )
+    return NewsPageFactory()
+    # return NewsPage.objects.create(
+    #     title="News",
+    #     depth=1,
+    #     path="page2",
+    # )
 
 
 @pytest.fixture
