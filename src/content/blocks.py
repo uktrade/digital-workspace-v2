@@ -298,7 +298,10 @@ class QuoteBlock(blocks.StructBlock):
 
     def clean(self, value):
         if value["source"] and (
-            value["source_name"] or value["source_role"] or value["source_team"] or value["source_image"] 
+            value["source_name"]
+            or value["source_role"]
+            or value["source_team"]
+            or value["source_image"]
         ):
             raise ValidationError(
                 "Either choose a source or enter the details manually."
@@ -307,9 +310,9 @@ class QuoteBlock(blocks.StructBlock):
 
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context)
-        context.update(quote=value["quote"], highlight = True)
+        context.update(quote=value["quote"], highlight=True)
         if value["quote_theme"] == "light":
-            context.update(highlight = False)
+            context.update(highlight=False)
         if value["source"]:
             context.update(
                 source_name=value["source"].full_name,

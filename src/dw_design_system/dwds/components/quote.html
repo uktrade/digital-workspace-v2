@@ -5,7 +5,9 @@
     <div class="content-sidebar">
         {% if source_image %}
             {% image source_image fill-278x278 as source_image_square %}
-            <div>{% include "dwds/elements/profile_image.html" with profile_image_url=source_image_square.file.url name=source_name %}</div>
+            <div>
+                {% include "dwds/elements/profile_image.html" with profile_image_url=source_image_square.file.url name=source_name %}
+            </div>
         {% elif source_image_url %}
             <div class="person-image">
                 {% include "dwds/elements/profile_image.html" with profil_image_url=source_image_url name=source_name %}
