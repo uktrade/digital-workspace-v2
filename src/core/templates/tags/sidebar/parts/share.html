@@ -11,9 +11,9 @@
         <!-- Share Platforms -->
         <div class="content-stack medium">
             <!-- Email -->
-            <a class="content-with-icon small-gap"
+            <a class="content-with-icon medium-gap"
                href="{% get_share_page_email_link request page %}">
-                {% include "dwds/icons/email.html" with small=True %}
+                {% include "dwds/icons/email.html" with large=True %}
                 Email
             </a>
             {% if FEATURE_FLAGS.share_teams %}

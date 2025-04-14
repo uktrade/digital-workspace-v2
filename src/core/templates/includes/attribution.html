@@ -13,10 +13,10 @@
     {% endif %}
     <div>
         <time datetime="{{ page.first_published_at|date:"c" }}">
-            First published: {{ page.first_published_at|naturalday:'j F Y' }} at {{ page.first_published_at|date:"g:iA"|lower }}
+            First published: {{ page.first_published_at|date:'j F Y' }} at {{ page.first_published_at|date:"g:iA"|lower }}
         </time>
         <time datetime="{{ page.last_published_at|date:"c" }}">
-            Last updated: {{ page.last_published_at|naturalday:'j F Y' }} at {{ page.last_published_at|date:"g:iA"|lower }}
+            Last updated: {{ page.last_published_at|date:'j F Y' }} at {{ page.last_published_at|date:"g:iA"|lower }}
         </time>
     </div>
     {% if page.content_owner or page.content_contact_email %}<br>{% endif %}
