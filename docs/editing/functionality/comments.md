@@ -1,4 +1,3 @@
-
 # Comments
 
 Currently, comments can only be added to News pages and anyone can comment on a page that has comments enabled. By default, a new page will have comments enabled.
