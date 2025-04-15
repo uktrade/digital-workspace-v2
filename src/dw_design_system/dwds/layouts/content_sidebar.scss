@@ -1,8 +1,8 @@
 .content-sidebar,
 .content-sidebar-right {
     --sidebar-gap: var(--space);
-    --sidebar-size: 300px;
-    --sidebar-min-size: 40%;
+    --sidebar-size: var(--card-min-width);
+    --sidebar-min-size: var(--sidebar-size);
 
     display: flex;
     flex-wrap: wrap;
