@@ -8,8 +8,12 @@
                     <div class="content-stack large">
                         <div class="content-switcher">
                             <div class="content-stack">
-                                <label for="id_location">Filter people by location</label>
-                                {{ discover_filters.form.uk_office_location }}
+                                <label for="id_city">Filter people by city</label>
+                                {{ discover_filters.form.city }}
+                            </div>
+                            <div class="content-stack">
+                                <label for="id_location">Filter people by building name</label>
+                                <div class="small">{{ discover_filters.form.building_name }}</div>
                             </div>
                         </div>
                     </div>

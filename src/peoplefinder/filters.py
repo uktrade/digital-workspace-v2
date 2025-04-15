@@ -1,16 +1,20 @@
 import django_filters
 from django import forms
 
-from peoplefinder.models import Person, UkStaffLocation
+from peoplefinder.utils import get_uk_buildings, get_uk_locations
 
 
 class DiscoverFilters(django_filters.FilterSet):
-    uk_office_location = django_filters.ModelChoiceFilter(
-        queryset=UkStaffLocation.objects.all(),
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
-        empty_label=None,
+    building_name = django_filters.ChoiceFilter(
+        field_name="uk_office_location__building_name",
+        choices=get_uk_buildings,
+        widget=forms.widgets.Select(
+            attrs={"class": "dwds-select", "style": "padding-right: 0"}
+        ),
     )
 
-    class Meta:
-        model = Person
-        fields = ["uk_office_location"]
+    city = django_filters.ChoiceFilter(
+        field_name="uk_office_location__city",
+        choices=get_uk_locations,
+        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+    )
