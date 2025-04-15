@@ -27,6 +27,17 @@ class Tag(Indexed, TagBase):
         return reverse("tag_index", kwargs={"slug": self.slug})
 
 
+class TagGroup(Tag):
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f"{self.__name__}: {self.name}"
+
+
+class Campaign(TagGroup): ...
+
+
 class TaggedItem(ItemBase):
     class Meta:
         abstract = True
@@ -49,6 +60,22 @@ class TaggedPage(TaggedItem):
         to="content.ContentPage",
         on_delete=models.CASCADE,
         related_name="tagged_items",
+    )
+
+
+class TaggedPerson(TaggedItem):
+    person_object = ParentalKey(
+        to="peoplefinder.Person",
+        on_delete=models.CASCADE,
+        related_name="tagged_people",
+    )
+
+
+class TaggedTeam(TaggedItem):
+    team_object = ParentalKey(
+        to="peoplefinder.Team",
+        on_delete=models.CASCADE,
+        related_name="tagged_teams",
     )
 
 
