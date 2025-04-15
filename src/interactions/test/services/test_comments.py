@@ -4,7 +4,9 @@ from news.models import Comment
 from news.factories import CommentFactory
 from django.urls import reverse
 from django.test import override_settings
+from django.test import RequestFactory
 
+from news.forms import CommentForm
 
 pytestmark = pytest.mark.django_db
 
@@ -272,13 +274,41 @@ def test_can_reply_comment():
         comments_service.can_reply_comment(user, 123456)
 
 
-@pytest.mark.skip(reason="TODO, create mock request")
-def test_get_page_comments_response(news_page, mocker):
+# @pytest.mark.skip(reason="TODO, create mock request")
+@override_settings(USE_TZ=False)
+def test_get_page_comments_response(user, news_page):
     comments = CommentFactory.create_batch(5, page=news_page)
-    request = mocker.Mock()
+    comments_dict = [
+        comments_service.comment_to_dict(page_comment)
+        for page_comment in comments_service.get_page_comments(news_page)
+    ]
+
+    request = RequestFactory().get(path="/")
+    request.user = user
+    template_response = comments_service.get_page_comments_response(request, news_page)
+
+    # Test response template contains the expected context
+    assert template_response.template_name == "dwds/components/comments.html"
+    assert template_response.context_data["user"] == user
+    assert template_response.context_data["comment_count"] == len(comments)
+    assert template_response.context_data["comments"] == comments_dict
+    assert isinstance(template_response.context_data["comment_form"], CommentForm)
+    assert template_response.context_data["comment_form_url"] == reverse(
+        "interactions:comment-on-page", args=[news_page.pk]
+    )
+    assert template_response.context_data["request"] == request
 
 
 @pytest.mark.skip(reason="TODO, create mock request")
-def test_get_comment_response(news_page, mocker):
-    comment = CommentFactory.create()
-    request = mocker.Mock()
+def test_get_comment_response(user, news_page):
+    comment = CommentFactory()
+    comment_dict = comments_service.comment_to_dict(comment)
+
+    request = RequestFactory().get(path="/")
+    template_response = comments_service.get_comment_response(request, comment_dict)
+
+    # Test response template contains the expected context
+    assert template_response.template_name == "dwds/components/comment.html"
+    assert template_response.context_data["comment"] == comment_dict
+    assert template_response.context_data["request"] == request
+    assert template_response.context_data["show_reply_form"] == False

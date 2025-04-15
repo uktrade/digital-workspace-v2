@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db import models
 from django.db.models import QuerySet
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -166,7 +166,10 @@ def can_reply_comment(user: User, comment: Comment | int) -> bool:
     return not bool(comment.parent)
 
 
-def get_page_comments_response(request: HttpRequest, page: Page) -> TemplateResponse:
+def get_page_comments_response(request: HttpRequest, page: Page) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
     comments = [
         comments_service.comment_to_dict(page_comment)
         for page_comment in comments_service.get_page_comments(page)
@@ -186,9 +189,10 @@ def get_page_comments_response(request: HttpRequest, page: Page) -> TemplateResp
     )
 
 
-def get_comment_response(
-    request: HttpRequest, comment: Comment | int
-) -> TemplateResponse:
+def get_comment_response(request: HttpRequest, comment: Comment | int) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
     if isinstance(comment, int):
         comment = get_object_or_404(Comment, id=comment)
 
