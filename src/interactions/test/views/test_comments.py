@@ -8,9 +8,10 @@ from news.models import Comment
 pytestmark = pytest.mark.django_db
 
 
-def test_hide_comment_view(mocker):
+def test_hide_comment_view(mocker, user):
     comment = CommentFactory()
     client = Client()
+    client.force_login(user)
     url = reverse("interactions:hide-comment", args=[comment.id])
 
     # Test view when the user IS authorised to delete comment

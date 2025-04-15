@@ -15,7 +15,6 @@ class UserWithPersonFactory(UserFactory):
     @factory.post_generation
     def create_profile(self, create, extracted, **kwargs):
         if not getattr(self, "profile", None):
-            # call_command("loaddata", "countries.json")
             PersonFactory(user=self)
 
 
