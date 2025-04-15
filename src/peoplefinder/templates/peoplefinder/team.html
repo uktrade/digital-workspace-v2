@@ -26,7 +26,7 @@
                     </h1>
                     <div data-testid="description">{{ team.description|markdown }}</div>
                     {% if profile_completion %}<p class="text-small">{{ profile_completion }}</p>{% endif %}
-                    <div class="dwds-button-group">
+                    <c-dwds-button-group>
                         {% if perms.peoplefinder.change_team %}
                             <a class="dwds-button dwds-button--secondary dwds-button--inline"
                                href="{% url 'team-edit' team.slug %}"
@@ -42,7 +42,7 @@
                                    href="{% url 'team-delete' team.slug %}">Delete team</a>
                             {% endif %}
                         {% endif %}
-                    </div>
+                    </c-dwds-button-group>
                     {% if perms.peoplefinder.delete_team %}
                         {% if not can_team_be_deleted %}
                             <div class="text-small">

@@ -91,7 +91,7 @@
                         {% endif %}
                     </div>
 
-                    <div class="dwds-button-group">
+                    <c-dwds-button-group>
                         {% if profile.is_active %}
                             <a class="dwds-button dwds-button--inline dwds-button--secondary"
                                href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
@@ -126,7 +126,7 @@
                                        value="Delete profile" />
                             </form>
                         {% endif %}
-                    </div>
+                    </c-dwds-button-group>
                 </c-dwds-content-list>
             </c-slot>
         </c-dwds-card>
@@ -135,12 +135,12 @@
                 <div class="dwds-content-list content-item">
                     <div class="content-main">
                         <div class="content-body content-body-space-padding content-stack">
-                            <div class="dwds-button-group">
+                            <c-dwds-button-group>
                                 {% for profile_section_dict in profile_section_dicts %}
                                     <a class="dwds-button dwds-button--navigation {% if current_tab.value == profile_section_dict.profile_section.value %}active{% endif %}"
                                        href="{{ profile_section_dict.url }}">{{ profile_section_dict.title }}</a>
                                 {% endfor %}
-                            </div>
+                            </c-dwds-button-group>
                             <div class="content-stack">
                                 <h2>{{ current_tab.title }}</h2>
                                 {% if current_tab.values %}
