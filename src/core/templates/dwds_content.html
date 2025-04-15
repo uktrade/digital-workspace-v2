@@ -6,46 +6,17 @@
     dwds-body
 {% endblock body_classes %}
 
-{% block pre_main %}
-    <div class="dwds-container">
-    {% endblock pre_main %}
+{% block main_content %}
+    <div class="dwds" style="margin-bottom: var(--s2)">
+        <div class="content-stack large">
+            {% block pre_content %}
+            {% endblock pre_content %}
 
-    {% block main_content %}
-        <div class="dwds" style="margin-bottom: var(--s2)">
-            <div class="content-stack large">
-                {% block pre_content %}
-                {% endblock pre_content %}
+            {% block page_content %}
+            {% endblock page_content %}
 
-                <div class="content-sidebar-right">
-                    <div class="primary-content {% block primary_content_classes %}dwds-content-page content-stack large{% endblock primary_content_classes %}">
-                        {% block page_title_wrapper %}
-                            <div class="page-title content-stack">
-                                {% block page_title %}
-                                    <h1>{% firstof page_title page.title %}</h1>
-                                    {% if page.description %}<p class="text-medium">{{ page.description }}</p>{% endif %}
-                                {% endblock page_title %}
-                            </div>
-                        {% endblock page_title_wrapper %}
-                        {% block pre_primary_content %}
-                        {% endblock pre_primary_content %}
-                        {% block primary_content %}
-                        {% endblock primary_content %}
-                        {% block post_primary_content %}
-                            {% include 'includes/tag_set.html' %}
-                        {% endblock post_primary_content %}
-                    </div>
-                    <div class="secondary-content">
-                        {% block pre_secondary_content %}
-                        {% endblock pre_secondary_content %}
-                        {% block secondary_content %}
-                            {% sidebar %}
-                        {% endblock secondary_content %}
-                        {% block post_secondary_content %}
-                        {% endblock post_secondary_content %}
-                    </div>
-                </div>
-                {% block post_content %}
-                {% endblock post_content %}
-            </div>
+            {% block post_content %}
+            {% endblock post_content %}
         </div>
-    {% endblock main_content %}
+    </div>
+{% endblock main_content %}

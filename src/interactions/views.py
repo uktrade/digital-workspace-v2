@@ -61,6 +61,7 @@ def bookmark_index(request: HttpRequest):
         "interactions/bookmark_index.html",
         context={
             "bookmarks": bookmarks_service.get_bookmarks(request.user),
+            "extra_breadcrumbs": [(None, "Your bookmarks")],
         },
     )
 

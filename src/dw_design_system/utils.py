@@ -329,13 +329,15 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "template": "dwds/components/copy_text.html",
                 "context": {
                     "text": EXTERNAL_URL,
-                    "hide_input": False,
+                    "hide_input": True,
                 },
             },
             {
                 "name": "Modal",
                 "template": "dwds/components/modal.html",
                 "context": {
+                    "button": "Open modal",
+                    "title": "MODAL TITLE",
                     "content": "MODAL CONTENT",
                 },
             },

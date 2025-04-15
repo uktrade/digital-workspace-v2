@@ -36,6 +36,10 @@
         width: fit-content;
     }
 
+    .quote-text {
+        font-weight: var(--font-weight-bold);
+    }
+
     > .content-sidebar {
         --sidebar-size: 160px;
         padding: 0 var(--s4);
