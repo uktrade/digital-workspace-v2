@@ -1,7 +1,7 @@
 .content-sidebar,
 .content-sidebar-right {
     --sidebar-gap: var(--space);
-    --sidebar-size: var(--card-min-width);
+    --sidebar-size: calc(var(--card-min-width) + calc(var(--space) * 2));
     --sidebar-min-size: var(--sidebar-size);
 
     display: flex;
