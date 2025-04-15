@@ -1,5 +1,7 @@
 {% if banner_text %}
-    <div class="dwds-content-item-card no-shadow">
-        {% include 'dwds/components/banner.html' with text=banner_text link=banner_link %}
-    </div>
+    <c-dwds-card no-shadow="true">
+        <c-slot name="card_content">
+            {% include 'dwds/components/banner.html' with text=banner_text link=banner_link %}
+        </c-slot>
+    </c-dwds-card>
 {% endif %}

@@ -31,13 +31,15 @@
                         {% if pages %}
                             <div class="content-switcher max-3">
                                 {% for page in pages %}
-                                    <div class="dwds-content-item-card">
-                                        {% if pages|length == 1 %}
-                                            {% page_to_one_up page %}
-                                        {% else %}
-                                            {% page_to_engagement page %}
-                                        {% endif %}
-                                    </div>
+                                    <c-dwds-card>
+                                        <c-slot name="card_content">
+                                            {% if pages|length == 1 %}
+                                                {% page_to_one_up page %}
+                                            {% else %}
+                                                {% page_to_engagement page %}
+                                            {% endif %}
+                                        </c-slot>
+                                    </c-dwds-card>
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -45,29 +47,37 @@
                 {% endif %}
 
                 {% if page.promo_enabled %}
-                    <div class="dwds-content-item-card">
-                        {% include 'dwds/components/promo.html' with ribbon_text=page.promo_ribbon_text description=page.promo_description link_url=page.promo_link_url link_text=page.promo_link_text thumbnail=page.promo_image %}
-                    </div>
+                    <c-dwds-card>
+                        <c-slot name="card_content">
+                            {% include 'dwds/components/promo.html' with ribbon_text=page.promo_ribbon_text description=page.promo_description link_url=page.promo_link_url link_text=page.promo_link_text thumbnail=page.promo_image %}
+                        </c-slot>
+                    </c-dwds-card>
                 {% endif %}
 
                 {% if news_items %}
-                    <div class="dwds-content-item-card no-shadow">
-                        {% include "dwds/components/content_list.html" with title="More DBT news" content_items=news_items link_url="/news-and-views/" link_text="View all news" %}
-                    </div>
+                    <c-dwds-card no-shadow="true">
+                        <c-slot name="card_content">
+                            {% include "dwds/components/content_list.html" with title="More DBT news" content_items=news_items link_url="/news-and-views/" link_text="View all news" %}
+                        </c-slot>
+                    </c-dwds-card>
                 {% endif %}
 
                 {% if events %}
-                    <div class="dwds-content-item-card no-shadow">
-                        {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events link_url="/events/" link_text="View all events" %}
-                    </div>
+                    <c-dwds-card no-shadow="true">
+                        <c-slot name="card_content">
+                            {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events link_url="/events/" link_text="View all events" %}
+                        </c-slot>
+                    </c-dwds-card>
                 {% endif %}
 
                 {% if not hide_news %}
-                    <div class="dwds-content-item-card">
-                        <div class="content-item">
-                            {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
-                        </div>
-                    </div>
+                    <c-dwds-card>
+                        <c-slot name="card_content">
+                            <div class="content-item">
+                                {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
+                            </div>
+                        </c-slot>
+                    </c-dwds-card>
                 {% endif %}
             </div>
         </section>

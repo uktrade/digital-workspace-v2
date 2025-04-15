@@ -1,17 +1,19 @@
 {% load bookmarks %}
 
-<div class="dwds-content-item-card">
-    <div class="dwds-link-list content-item">
-        <div class="content-header content-stack">
-            <h3>Your bookmarks</h3>
-        </div>
-        <div class="content-main">
-            <div class="content-body content-stack">{% bookmark_list user %}</div>
+<c-dwds-card>
+    <c-slot name="card_content">
+        <div class="dwds-link-list content-item">
+            <div class="content-header content-stack">
+                <h3>Your bookmarks</h3>
+            </div>
+            <div class="content-main">
+                <div class="content-body content-stack">{% bookmark_list user %}</div>
 
-            <div class="content-footer content-stack">
-                <hr>
-                <a href="{% url 'interactions:bookmark-index' %}">View all bookmarks</a>
+                <div class="content-footer content-stack">
+                    <hr>
+                    <a href="{% url 'interactions:bookmark-index' %}">View all bookmarks</a>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </c-slot>
+</c-dwds-card>
