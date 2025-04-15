@@ -77,7 +77,3 @@ class TaggedTeam(TaggedItem):
         on_delete=models.CASCADE,
         related_name="tagged_teams",
     )
-
-
-# TODO: TaggedPerson
-# TODO: TaggedTeam
