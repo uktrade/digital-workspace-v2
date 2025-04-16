@@ -6,6 +6,7 @@ from core.models import FeatureFlag
 from news.factories import CommentFactory
 from news.models import Comment
 from django.http import HttpResponseRedirect
+from waffle.testutils import override_flag
 
 # from waffle.models import cache_flag
 # from waffle.models import Flag
@@ -37,31 +38,28 @@ def test_hide_comment_view(mocker, user):
 def test_comment_on_page_view(mocker, news_page, user):
     client = Client()
     client.force_login(user)
-    FeatureFlag.objects.create(name="new_comments", everyone=True)
+
     comment_content = "a new comment"
-    url = reverse("interactions:comment-on-page", args=[news_page.pk])
     data = {
         "comment": comment_content,
     }
-    # TODO: Fix flag persisting (cache issue?) | Test view when the feature flag is off
-    # response = client.post(path=url, data=data)
-    # assert response.status_code == 302
-    # assert isinstance(response, HttpResponseRedirect)
-    # Ensure feature flag is re-retrieved from the database
-    # cache.clear()
-    # cache_flag('new_comments', None)
-    # mocker.patch("interactions.views.comment_on_page.flag_is_active", return_value=True)
-    # Flag.get('new_comments', refresh=True)
+
+    url = reverse("interactions:comment-on-page", args=[news_page.pk])
+    with override_flag("new_comments", active=False):
+        response = client.post(path=url, data=data)
+        assert response.status_code == 302
 
     # Test view contains new comment within the response template
-    response = client.post(path=url, data=data)
-    assert response.status_code == 200
-    assert comment_content in response.content.decode()
+    with override_flag("new_comments", active=True):
+        response = client.post(path=url, data=data)
+        assert response.status_code == 200
+        assert comment_content in response.content.decode()
 
     # Test 404 is returned for an invalid page id
     url = reverse("interactions:comment-on-page", args=[123456])
-    response = client.post(path=url, data=data)
-    assert response.status_code == 404
+    with override_flag("new_comments", active=True):
+        response = client.post(path=url, data=data)
+        assert response.status_code == 404
 
 
 @mock.patch("interactions.services.comments.can_edit_comment", return_value=True)
