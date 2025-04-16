@@ -26,12 +26,12 @@
                         {% if source_name %}|{% endif %}
                         {{ source_role }}
                     {% endif %}
-                    {% if source_team %}
+                    {% if source_team_name %}
                         {% if source_name or source_role %}|{% endif %}
                         {% if source_team_url %}
-                            in <a href="{{ source_team_url }}">{{ source_team }}</a>
+                            in <a href="{{ source_team_url }}">{{ source_team_name }}</a>
                         {% else %}
-                            in {{ source_team }}
+                            in {{ source_team_name }}
                         {% endif %}
                     {% endif %}
                 </p>
