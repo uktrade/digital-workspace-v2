@@ -208,7 +208,7 @@ class TeamTreeView(DetailView, PeoplefinderView):
 
         team = context["team"]
         team_service = TeamService()
-        page_title = f"All sub-teams ({ team.short_name })"
+        page_title = f"All sub-teams ({team.short_name})"
 
         context.update(
             parent_teams=team_service.get_all_parent_teams(team),

@@ -13,6 +13,7 @@ from peoplefinder.views.manager import (
     ManagerSelect,
     ManagerUpdate,
 )
+from peoplefinder.views.organogram import OrganogramView
 from peoplefinder.views.profile import (
     DeleteConfirmationView,
     ProfileActivateAction,
@@ -52,6 +53,12 @@ people_urlpatterns = [
         "<profile_legacy_slug>/",
         ProfileLegacyView.as_view(),
         name="profile-legacy-view",
+    ),
+    # designed to be viewed inside an iframe
+    path(
+        "<uuid:profile_slug>/organogram/",
+        OrganogramView.as_view(),
+        name="organogram-person",
     ),
     # Redirects to profile-edit-section with edit_section=personal
     path(

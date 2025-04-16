@@ -1,0 +1,131 @@
+{% load git_info markdown workspace_navigation static wagtailcore_tags %}
+{% load webpack_static from webpack_loader %}
+{% load render_bundle webpack_static from webpack_loader %}
+
+<!DOCTYPE html>
+<html lang="en" class="govuk-template ">
+    <head>
+        {% if request.in_preview_panel %}<base target="_blank">{% endif %}
+        <meta charset="utf-8" />
+        <title>Organogram</title>
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <meta name="theme-color" content="#cd1632" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <link rel="shortcut icon"
+              sizes="16x16 32x32 48x48"
+              href="{% static 'core/favicon.ico' %}"
+              type="image/x-icon" />
+        <link rel="mask-icon"
+              href="{% webpack_static 'govuk-mask-icon.svg' %}"
+              color="#0b0c0c">
+        <link rel="apple-touch-icon"
+              href="{% static 'core/apple-touch-icon.png' %}">
+        <meta name="robots" content="noindex, nofollow">
+        <meta property="og:image"
+              content="{% webpack_static 'govuk-opengraph-image.png' %}">
+        {% render_bundle 'main' 'css' %}
+    </head>
+    <body class="govuk-template__body ">
+        <a href="#main-content"
+           data-module="govuk-skip-link"
+           class="govuk-skip-link">Skip to main content</a>
+        <div class="govuk-width-container">
+            <main class="govuk-main-wrapper "
+                  id="main-content"
+                  role="main"
+                  tabindex="1">
+                <div style="display:flex; justify-content:center">
+                    {% if manager %}
+                        <div class="pf-team-card" style="max-width:33%">
+                            <p class="govuk-body-s mb-0">
+                                <a class="govuk-link" href="{% url 'organogram-person' manager.slug %}">{{ manager.full_name }}</a>
+                            </p>
+                            <p class="govuk-body-s">
+                                {% for role in manager.roles.all %}
+                                    {% if role.job_title %}
+                                        {{ role.job_title }} in
+                                    {% else %}
+                                        Member of
+                                    {% endif %}
+                                    {{ role.team.name }}
+                                    <br>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div style="display:flex; justify-content:center">|</div>
+
+                <div style="display:flex; justify-content:center">
+
+                    <div style="display:flex; gap:5px; border: 3px solid black;">
+                        {% if profile.photo %}
+                            <img src="{{ profile.photo.url }}" style="width:40px; height:40px;">
+                        {% else %}
+                            <img src="{% webpack_static 'no-photo-large.png' %}"
+                                 style="width:40px;
+                                        height:40px">
+                        {% endif %}
+                        <div>
+                            {% if not profile.is_active %}
+                                <div>
+                                    <strong class="govuk-tag govuk-tag--orange">Inactive</strong>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <a class="govuk-link govuk-body govuk-!-font-weight-bold"
+                                   href="{% url 'profile-view' profile.slug %}">{{ profile.full_name }}</a>
+                            </div>
+                            <div class="govuk-body-s">
+                                {% for role in roles %}
+                                    {% if role.job_title %}
+                                        {{ role.job_title }} in
+                                    {% else %}
+                                        Member of
+                                    {% endif %}
+                                    {{ role.team.name }}
+                                    <br>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if manages_profiles %}
+                    <div style="display:flex;
+                                justify-content:center;
+                                gap:5px;
+                                overflow-x:scroll;
+                                overflow-y: hidden">
+                        {% for profile in manages_profiles %}
+                            <div style="max-width:33%; text-align:center">
+                                |
+                                <br>
+                                <div class="pf-team-card">
+                                    <p class="govuk-body-s mb-0">
+                                        <a class="govuk-link" href="{% url 'organogram-person' profile.slug %}">{{ profile.full_name }}</a>
+                                    </p>
+                                    <p class="govuk-body-s">
+                                        {% for role in profile.roles.all %}
+                                            {% if role.job_title %}
+                                                {{ role.job_title }} in
+                                            {% else %}
+                                                Member of
+                                            {% endif %}
+                                            {{ role.team.name }}
+                                            <br>
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div style="clear:both">&nbsp;</div>
+                {% endif %}
+            </main>
+        </div>
+        {% render_bundle 'main' 'js' %}
+        {% git_info %}
+    </body>
+</html>
