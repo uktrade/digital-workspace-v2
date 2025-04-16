@@ -339,6 +339,26 @@ class SpotlightPage(SidebarPart):
         return context
 
 
+class DiscoverPage(SidebarPart):
+    template_name = "tags/sidebar/parts/site_alert.html"
+
+    def is_visible(self) -> bool:
+        page = self.context.get("self")
+        if not flag_is_active(self.request, flags.PF_DISCOVER):
+            return False
+        if isinstance(page, HomePage):
+            return True
+
+    def get_part_context(self) -> dict:
+        context = super().get_part_context()
+
+        context.update(
+            banner_text="New 'discover people' page is available!",
+            banner_link=reverse("discover"),
+        )
+        return context
+
+
 @register.inclusion_tag("tags/sidebar.html", takes_context=True)
 def sidebar(context):
     sections: list[SidebarSection] = [
@@ -360,6 +380,7 @@ def sidebar(context):
         SidebarSection(
             title="Secondary page actions",
             parts=[
+                DiscoverPage,
                 UsefulLinks,
                 SpotlightPage,
                 YourBookmarks,
