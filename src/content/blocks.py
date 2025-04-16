@@ -370,7 +370,7 @@ class QuoteBlock(blocks.StructBlock):
             context.update(
                 source_name=value["source_name"],
                 source_role=value["source_role"],
-                source_team=value["source_team"],
+                source_team_name=value["source_team"],
                 source_image=value["source_image"],
             )
         return context
