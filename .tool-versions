@@ -1,2 +1,4 @@
 python 3.12.2
 nodejs 20.11.1
+poetry 1.8.3
+aws-copilot 1.34.0

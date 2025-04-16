@@ -12,7 +12,7 @@ from django.db.models.functions import Concat
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 from django.utils.safestring import mark_safe
 from notifications_python_client.notifications import NotificationsAPIClient
 
@@ -26,7 +26,8 @@ from peoplefinder.services.audit_log import (
     AuditLogService,
     ObjectRepr,
 )
-from peoplefinder.tasks import notify_user_about_profile_changes, person_update_notifier
+from peoplefinder.services.team import TeamService
+from peoplefinder.tasks import notify_user_about_profile_changes
 from peoplefinder.types import EditSections, ProfileSections
 from user.models import User
 
@@ -81,11 +82,11 @@ class PersonService:
             "weight": 0,
             "edit_section": EditSections.PERSONAL,
         },
-        "photo": {
-            "weight": 1,
-            "edit_section": EditSections.PERSONAL,
-            "form_id": "photo-form-group",
-        },
+        # "photo": {
+        #     "weight": 1,
+        #     "edit_section": EditSections.PERSONAL,
+        #     "form_id": "photo-form-group",
+        # },
         "email": {
             "weight": 1,
             "edit_section": EditSections.CONTACT,
@@ -113,6 +114,7 @@ class PersonService:
             "or_fields": [
                 "manager",
                 "do_not_work_for_dit",
+                "international_building",
             ],
             "edit_section": EditSections.TEAMS,
             "form_id": "manager-component",
@@ -123,53 +125,42 @@ class PersonService:
             "form_id": "team-and-role-heading",
         },
     }
+
     # Map of profile sections to edit sections and fields.
     PROFILE_SECTION_MAPPING: Dict[Any, ProfileSectionMapping] = {
-        ProfileSections.CONTACT: {
-            "edit_section": EditSections.CONTACT,
+        ProfileSections.TEAM_AND_ROLE: {
             "fields": [
-                ("contact_email", "Email"),
-                ("primary_phone_number", "Phone number"),
-                ("secondary_phone_number", "Alternative phone number"),
-            ],
-            "empty_text": "Add your work email address and phone number to your profile.",
-        },
-        ProfileSections.ROLE: {
-            "edit_section": EditSections.TEAMS,
-            "fields": [
-                ("get_manager_display", "My manager"),
                 ("get_grade_display", "Grade"),
+                ("get_manager_display", "Manager"),
                 ("get_roles_display", "My role(s)"),
             ],
             "empty_text": "Add your grade, team, and role to your profile.",
         },
-        ProfileSections.LOCATION: {
-            "edit_section": EditSections.LOCATION,
+        ProfileSections.WAYS_OF_WORKING: {
             "fields": [
                 ("get_remote_working_display", "Where I work"),
                 ("get_office_location_display", "Office location"),
-                ("usual_office_days", "Days I'm in the office"),
-                ("get_workdays_display", "Days I work"),
+                ("usual_office_days", "Days in the office"),
+                ("international_building", "International location"),
+                ("get_workdays_display", "Working days"),
             ],
             "empty_text": "Add your office location and working pattern to your profile.",
         },
-        ProfileSections.ABOUT: {
-            "edit_section": EditSections.SKILLS,
+        ProfileSections.SKILLS: {
             "fields": [
-                ("get_key_skills_display", "My skills"),
-                ("fluent_languages", "Fluent languages"),
-                ("intermediate_languages", "Non-fluent languages"),
+                ("get_key_skills_display", "Skills"),
+                ("fluent_languages", "Languages"),
                 (
                     "get_learning_interests_display",
-                    "My learning and development interests",
+                    "Learning and development interests",
                 ),
-                ("get_networks_display", "My networks"),
-                ("get_professions_display", "My professions"),
+                ("get_networks_display", "Networks"),
+                ("get_professions_display", "Professions"),
                 (
                     "get_additional_roles_display",
-                    "My further roles and responsibilities",
+                    "Additional roles or responsibilities",
                 ),
-                ("previous_experience", "My previous experience"),
+                ("previous_experience", "Previous experience"),
             ],
             "empty_text": "Add skills, interests, and networks to your profile.",
         },
@@ -306,8 +297,8 @@ class PersonService:
 
             self.trigger_profile_change_notification(request, person)
 
-        # Notify external services
-        person_update_notifier.delay(person.id)
+        for team_id in person.roles.all().values_list("team__pk", flat=True).distinct():
+            TeamService().clear_profile_completion_cache(team_id)
 
     def profile_deletion_initiated(
         self, request: Optional[HttpRequest], person: Person, initiated_by: User
@@ -558,6 +549,8 @@ class PersonService:
             field_value = getattr(person, field_name)
 
             if isinstance(field_value, str):
+                # escaping field_value before using mark_safe -> https://docs.djangoproject.com/en/dev/releases/4.2.17/#django-4-2-17-release-notes
+                field_value = escape(field_value)
                 # Replace newlines with "<br>".
                 field_value = mark_safe(  # noqa: S308
                     strip_tags(field_value).replace("\n", "<br>")
@@ -603,7 +596,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
     # the audit log code when we update the model. The tests will execute this code so
     # it should fail locally and in CI. If you need to update this number you can call
     # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 56, (
+    assert len(Person._meta.get_fields()) == 59, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )

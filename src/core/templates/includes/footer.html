@@ -1,7 +1,13 @@
 {% load wagtailuserbar %}
+{% load webpack_static from webpack_loader %}
+
+<!-- Load dev_tools -->
+{% load dev_tools %}
+<!-- Add the dialog -->
+{% dev_tools_dialog %}
 
 <footer class="govuk-footer " role="contentinfo">
-    <div class="govuk-width-container">
+    <div class="dwds-container">
         <div class="govuk-footer__meta">
             <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
                 {% if USER_IS_AUTHENTICATED %}
@@ -42,15 +48,20 @@
                         </span>
                         <span class="govuk-footer__licence-description">
                             <a class="govuk-footer__link"
-                               href="mailto:digitalworkspace@digital.trade.gov.uk">Feedback</a> {# /PS-IGNORE #}
+                               href="mailto:{{ settings.SERVICE_CONTACT_EMAIL }}">Feedback</a>
                         </span>
+
+                        <!-- Add a way to open the dialog -->
+                        {% if DEV_TOOLS_ENABLED %}<button onclick="openDevToolsDialog()">Dev tools</button>{% endif %}
                     </div>
                 {% endif %}
             </div>
             <div class="govuk-footer__meta-item">
-                <a class="govuk-footer__link govuk-footer__copyright-logo"
-                   href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">©
-                Crown copyright</a>
+                <a class="govuk-footer__link content-stack small"
+                   href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">
+                    <img src="{% webpack_static 'govuk-crest.svg' %}" alt="Royal Arms crest">
+                    <span>©Crown copyright</span>
+                </a>
             </div>
         </div>
     </div>

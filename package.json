@@ -4,16 +4,15 @@
     "private": true,
     "dependencies": {
         "@ministryofjustice/frontend": "^1.8.0",
-        "@sentry/browser": "^6.19.7",
-        "@sentry/tracing": "^6.19.7",
-        "cropperjs": "^1.5.13",
+        "@sentry/browser": "^7.119.1",
+        "cropperjs": "^1.6.2",
         "css-loader": "^5.2.7",
         "govuk-frontend": "^4.5.0",
         "htmx.org": "^1.9.8",
         "mini-css-extract-plugin": "^1.6.2",
         "sass": "^1.59.3",
         "sass-loader": "^12.6.0",
-        "webpack": "^5.76.2",
+        "webpack": "^5.94.0",
         "webpack-bundle-tracker": "^1.8.1",
         "webpack-cli": "^4.10.0",
         "y18n": "^4.0.3"
@@ -35,5 +34,8 @@
     "engines": {
         "npm": ">8.0.0",
         "node": ">20.0.0"
+    },
+    "devDependencies": {
+        "prettier": "3.2.5"
     }
 }

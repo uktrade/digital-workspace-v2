@@ -13,7 +13,7 @@ $input-size: 40px;
     position: relative;
     display: flex;
     flex: 0 $input-size;
-    margin: 7px 0;
+    margin: 7px 0 7px 0;
 
     input {
         // overly specific to prevent some overrides from outside
@@ -84,9 +84,9 @@ $input-size: 40px;
         button {
             background-color: $govuk-link-colour;
         }
-            input {
-                border: none;
-            }
+        input {
+          border: none;
+        }
     }
 }
 

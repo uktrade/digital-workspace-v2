@@ -1,0 +1,24 @@
+.dwds-navigational-link {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-link);
+    font-family: var(--font-family-primary);
+    font-size: var(--text-medium);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--font-lineheight-headings);
+    text-decoration: none;
+    gap: var(--space);
+
+    svg {
+        height: var(--font-lineheight-headings);
+        width: var(--s1);
+
+        path {
+            fill: currentColor;
+        }
+    }
+}
+
+.dwds-navigational-link > * {
+    max-width: calc(100% - var(--space) - 2ch); // 100% - gap - width of the arrow
+}

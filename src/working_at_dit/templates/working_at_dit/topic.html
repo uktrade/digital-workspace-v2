@@ -1,12 +1,9 @@
-{% extends "2_col_content.html" %}
+{% extends "content/content_page.html" %}
 {% load wagtailcore_tags %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    {% include "includes/attribution.html" with page=page %}
-    {% for block in page.body %}
-        {% include_block block %}
-    {% endfor %}
+{% block primary_content %}
+    {{ block.super }}
+
     {% if how_do_is %}
         <h2 class="govuk-heading-m">How do I?</h2>
         <ul class="govuk-list">
@@ -29,11 +26,9 @@
             </ul>
         {% endfor %}
     {% endif %}
+{% endblock primary_content %}
 
-{% endblock %}
-
-{% block tertiary_col_content %}
-
+{% block secondary_content %}
     {% if tools %}
         <h2 class="govuk-heading-m">Tools</h2>
         <ul class="govuk-list">
@@ -55,5 +50,5 @@
             {% endfor %}
         </ul>
     {% endif %}
-
-{% endblock %}
+    {{ block.super }}
+{% endblock secondary_content %}

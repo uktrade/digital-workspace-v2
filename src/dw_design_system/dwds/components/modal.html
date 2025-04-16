@@ -1,0 +1,21 @@
+<div class="dwds-modal width-third">
+    {% if button_text %}
+        <button class="dwds-modal-open dwds-button {{ button_classes }}">{{ button_text }}</button>
+    {% elif button %}
+        {{ button }}
+    {% endif %}
+    <dialog>
+        <div class="content-stack">
+            <div class="content-spaced middle">
+                <h2>{{ title }}</h2>
+                <form class="modal-header" method="dialog">
+                    <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
+                        {% include "dwds/icons/cross.html" with small=True %}
+                        Close
+                    </button>
+                </form>
+            </div>
+            {{ content }}
+        </div>
+    </dialog>
+</div>

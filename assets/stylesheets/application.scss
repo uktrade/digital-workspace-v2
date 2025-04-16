@@ -1,9 +1,9 @@
-@function frontend-font-url($filename) {
-  @return url("~govuk-frontend/govuk/assets/fonts/" + $filename);
+@function frontend-font-url($filename){
+@return url("~govuk-frontend/govuk/assets/fonts/" + $filename);
 }
 
-@function frontend-image-url($filename) {
-  @return url("~govuk-frontend/govuk/assets/images/" + $filename);
+@function frontend-image-url($filename){
+@return url("~govuk-frontend/govuk/assets/images/" + $filename);
 }
 
 $govuk-font-url-function: frontend-font-url;
@@ -31,7 +31,6 @@ $moj-assets-path: "/static/moj-frontend/";
 @import "components/layout";
 @import "components/news_article";
 @import "components/news_article_comments";
-@import "components/news_category_menu";
 @import "components/pagination";
 @import "components/peoplefinder";
 @import "components/search_and_profile_bar";
@@ -39,5 +38,6 @@ $moj-assets-path: "/static/moj-frontend/";
 @import "components/search_results";
 @import "components/site_alert";
 @import "components/streamfield-content";
+@import "components/tag_set";
 
 @import "../../src/dw_design_system/dwds/stylesheet";

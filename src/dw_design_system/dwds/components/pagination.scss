@@ -1,0 +1,48 @@
+.dwds-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s0);
+
+    a {
+        display: flex;
+        gap: var(--s0);
+
+
+        svg {
+            height: var(--font-lineheight-body);
+            width: var(--s1);
+            text-decoration: none;
+
+            path {
+                fill: currentColor;
+            }
+        }
+    }
+
+    ul {
+        display: flex;
+        justify-content: space-between;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--s-1) var(--s1);
+
+            span {
+                gap: var(--space);
+            }
+        }
+
+        li.active {
+            background-color: var(--color-link);
+
+            a {
+                color: var(--color-text-highlight);
+            }
+        }
+    }
+}

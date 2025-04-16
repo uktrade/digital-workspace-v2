@@ -1,68 +1,19 @@
-{% extends "base.html" %}
+{% extends "dwds_sidebar.html" %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
+{% load cards %}
 
-{% block bookmark %}
-{% endblock bookmark %}
+{% block primary_content %}
+    {% for news_item in posts %}
+        {% page_to_engagement news_item hide_updated=True %}
+    {% endfor %}
 
-{% block main_content %}
-    <article>
-        <div class="govuk-grid-row">
-            {% if category %}
-                <div class="govuk-grid-column-full">
-                    <div class="govuk-width-container">
-                        <div class="ws-primary-content">
-                            <h1 class="govuk-heading-l">{{ category.category }}</h1>
-                        </div>
-                        {% if category.lead_story %}
-                            {% include "news/includes/lead_story.html" with news_article=category.lead_story %}
-                        {% endif %}
-                    </div>
-                </div>
-            {% endif %}
-            {% if featured_page %}
-                {% include "news/includes/lead_story.html" with news_article=featured_page %}
-            {% endif %}
-            <div class="govuk-grid-column-two-thirds">
-                <div class="govuk-width-container ws-primary-content">
-                    <ul class="ws-news-items">
-                        {% for news_item in posts %}
-                            <li>
-                                <h2 class="govuk-heading-m">
-                                    <a href="{% pageurl news_item %}">{{ news_item.title }}</a>
-                                </h2>
-                                <p class="govuk-body-s">
-                                    {% if news_item.perm_sec_as_author %}
-                                        {{ settings.PERM_SEC_NAME }}
-                                    {% else %}
-                                        {% if news_item.get_first_publisher %}{{ news_item.get_first_publisher.get_full_name }},{% endif %}
-                                    {% endif %}
-                                    {{ news_item.first_published_at }}
-                                    {% for news_category_lkup in news_item.news_categories.all %}
-                                        <a class="govuk-link"
-                                           href="/news-and-views/category/{{ news_category_lkup.news_category.slug }}">{{ news_category_lkup.news_category.category }}</a>,
-                                    {% endfor %}
-                                </p>
-                                {% image news_item.preview_image width-540 %}
-                                <p class="govuk-body">
-                                    <a href="{% pageurl news_item %}" class="govuk-link">{{ news_item.excerpt }}</a>
-                                </p>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    {# Only show pagination if there is more than one page to click through #}
-                    {% if posts.paginator.num_pages > 1 %}
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-12">{% include "includes/pagination.html" %}</div>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="govuk-grid-column-one-third">
-                <div class="govuk-width-container ws-secondary-content">{% include "news/includes/news_categories.html" %}</div>
-            </div>
-        </div>
-    </article>
-{% endblock %}
+    {% if posts.paginator.num_pages > 1 %}
+        {% include "dwds/components/pagination.html" with pages=posts %}
+    {% endif %}
+{% endblock primary_content %}
+
+{% block secondary_content %}
+    {% comment %} {% include "news/includes/news_categories.html" %} {% endcomment %}
+    {{ block.super }}
+{% endblock secondary_content %}

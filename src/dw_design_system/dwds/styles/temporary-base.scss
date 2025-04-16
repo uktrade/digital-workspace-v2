@@ -1,0 +1,196 @@
+// implements a .dwds container class to hold "globals" while our approach is
+// limited to specific pages and parts of pages
+//
+// replace with base styling eventually to use real globals
+
+.dwds * {
+    box-sizing: border-box;
+    max-inline-size: var(--measure);
+}
+
+
+.dwds-body {
+    // TODO: Cheryl to work out the colour for the CTA card background and the new body background.
+    background-color: #E6EBF0;
+}
+
+html,
+
+html.no-scroll {
+	overflow: hidden;
+}
+
+body {
+    max-inline-size: none;
+}
+
+
+.dwds {
+    font-family: var(--font-family-primary);
+    font-size: var(--text-small);
+    line-height: var(--font-lineheight-body);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text);
+
+
+    article,
+    div,
+    footer,
+    form,
+    header,
+    hr,
+    img,
+    main,
+    figure,
+    figcaption,
+    nav {
+        max-inline-size: none;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-weight: var(--font-weight-bold);
+        line-height: var(--font-lineheight-headings);
+        color: var(--color-heading);
+    }
+
+    h1 {
+        font-size: var(--text-xlarge);
+    }
+
+    h2 {
+        font-size: var(--text-large);
+    }
+
+    h3 {
+        font-size: var(--text-medium);
+    }
+
+    h4,
+    h5,
+    h6 {
+        font-size: var(--text-small);
+    }
+
+    a {
+        color: var(--color-link);
+        width: fit-content;
+    }
+
+    a.no-underline {
+        text-decoration: none;
+    }
+
+    a.no-underline:focus,
+    a.no-underline:active,
+    a:focus,
+    a:active {
+        text-decoration: underline var(--text-underline-hover);
+        background-color: var(--color-link-background-active);
+        color: var(--color-text);
+    }
+
+    a.no-underline:focus-visible,
+    a:focus-visible {
+        outline: none;
+    }
+
+    a.no-underline:hover,
+    a:hover {
+        text-decoration: underline var(--text-underline-hover);
+    }
+
+    hr {
+        width: 100%;
+        border-top: 1px solid;
+        border-bottom: 0;
+        border-right: 0;
+        border-left: 0;
+        color: var(--color-hr);
+    }
+
+    ul.clean {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    dl {
+        dt {
+            margin-top: var(--s-1);
+            font-weight: var(--font-weight-bold);
+
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+
+        dd {
+            margin-left: 0;
+        }
+    }
+
+    dl.invert {
+        dt {
+            font-weight: var(--font-weight-normal);
+        }
+
+        dd {
+            font-weight: var(--font-weight-bold);
+        }
+    }
+
+    table {
+        text-align: left;
+        border-collapse: collapse;
+        width: 100%;
+
+        caption {
+            text-align: inherit;
+            color: var(--color-text-secondary);
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid var(--color-text);
+            padding: var(--s-3);
+        }
+
+    }
+
+    figure {
+        margin-block-start: 0;
+        margin-block-end: 0;
+    }
+}
+
+.dwds {
+    .feedback-header {
+        background-color: transparent;
+        padding-right: 0 !important;
+
+        div {
+            color: var(--color-text) !important;
+        }
+    }
+
+    .comment-posted-date {
+        color: var(--color-text);
+    }
+
+    // TEMPORARILY REMOVED UNTIL NEW HEADER RE-DESIGN IS FINALISED
+
+    // .homepage-welcome-bar {
+    //     display: flex;
+    //     justify-content: space-between;
+    //     align-items: flex-end;
+    //     margin-top: var(--s0);
+
+    //     h1 {
+    //         margin: 0;
+    //     }
+    // }
+}

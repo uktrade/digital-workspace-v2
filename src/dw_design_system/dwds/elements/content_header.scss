@@ -1,0 +1,18 @@
+.content-header {
+    --content-header-text-colour: var(--card-bg-white);
+
+    padding: var(--s0) var(--s1) var(--s0) var(--s0);
+    background: linear-gradient(180deg, rgba(0, 40, 95, 0.00) 53.55%, #00285F 99.65%), url("/assets/images/dwds/card-header-bg-small.webp") center / cover no-repeat, #00285F;
+    font-weight: var(--font-weight-bold);
+    color: var(--content-header-text-colour);
+
+    .content-subtitle {
+        font-size: var(--text-small);
+        color: var(--content-header-text-colour);
+    }
+
+    h2,
+    h3 {
+        color: var(--content-header-text-colour);
+    }
+}

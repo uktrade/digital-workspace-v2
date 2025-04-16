@@ -1,0 +1,56 @@
+.dwds-copy-text {
+    --display-input: inline-block;
+    --box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    --copy-text-border-radius: var(--border-radius);
+
+    border-radius: var(--copy-text-border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+
+
+    &.hide-input {
+        --display-input: none;
+        --box-shadow: none;
+    }
+
+    input {
+        flex-grow: 1;
+        border-top-right-radius: unset;
+        border-bottom-right-radius: unset;
+        border-top: unset;
+        border-bottom-width: var(--button-border-width-bottom);
+        border-left: unset;
+        border-right: unset;
+        border-color: var(--gds-mid-grey);
+        display: var(--display-input);
+    }
+
+    .dwds-button {
+        border-top-right-radius: var(--copy-text-border-radius);
+        border-bottom-right-radius: var(--copy-text-border-radius);
+
+        &:hover {
+            border-top-color: var(--color-button-hover);
+            border-left-color: var(--color-button-hover);
+            border-right-color: var(--color-button-hover);
+        }
+
+        .copy-text {
+            display: flex;
+        }
+
+        .copied-text {
+            display: none;
+        }
+
+        &.copied {
+            .copy-text {
+                display: none;
+            }
+
+            .copied-text {
+                display: flex;
+            }
+        }
+    }
+}

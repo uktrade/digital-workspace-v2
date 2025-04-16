@@ -5,8 +5,31 @@ from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
+from peoplefinder.blocks import PersonChooserBlock
 
-class Heading2Block(blocks.CharBlock):
+
+RICH_TEXT_FEATURES = [
+    "ol",
+    "ul",
+    "link",
+    "document-link",
+    "anchor-identifier",
+]
+
+
+class HeadingBlock(blocks.CharBlock):
+    """A (section) heading
+    Base block used to provide functionality for all heading blocks
+
+    Usage:
+    - If you know the heading level you want, use the appropriate block,
+      otherwise use this block
+    """
+
+    ...
+
+
+class Heading2Block(HeadingBlock):
     """A (section) heading"""
 
     class Meta:
@@ -16,7 +39,7 @@ class Heading2Block(blocks.CharBlock):
         template = "blocks/heading_2.html"
 
 
-class Heading3Block(blocks.CharBlock):
+class Heading3Block(HeadingBlock):
     """A (section) heading"""
 
     class Meta:
@@ -26,7 +49,7 @@ class Heading3Block(blocks.CharBlock):
         template = "blocks/heading_3.html"
 
 
-class Heading4Block(blocks.CharBlock):
+class Heading4Block(HeadingBlock):
     """A (section) heading"""
 
     class Meta:
@@ -36,7 +59,7 @@ class Heading4Block(blocks.CharBlock):
         template = "blocks/heading_4.html"
 
 
-class Heading5Block(blocks.CharBlock):
+class Heading5Block(HeadingBlock):
     """A (section) heading"""
 
     class Meta:
@@ -54,7 +77,40 @@ class TextBlock(blocks.RichTextBlock):
         template = "blocks/text.html"
 
     def __init__(self, *args, **kwargs):
-        super().__init__(features=kwargs["features"])
+        kwargs["features"] = kwargs.get("features", RICH_TEXT_FEATURES)
+        super().__init__(*args, **kwargs)
+
+
+class UsefulLinkBlock(blocks.StructBlock):
+    title = blocks.CharBlock(help_text="This will be displayed on the sidebar.")
+    page = blocks.PageChooserBlock(required=False)
+    url = blocks.URLBlock(required=False)
+
+    class Meta:
+        label = "Useful links"
+        icon = "link"
+
+    def clean(self, value):
+        if not value.get("page") and not value.get("url"):
+            raise ValidationError(
+                "You must provide either a page or a URL",
+                params={"page": ["You must provide either a page or a URL"]},
+            )
+        if value.get("page") and value.get("url"):
+            raise ValidationError(
+                "You must provide either a page or a URL, not both",
+                params={
+                    "page": ["You must provide either a page or a URL"],
+                    "url": ["You must provide either a page or a URL"],
+                },
+            )
+        return super().clean(value)
+
+    def get_url(self, value):
+        """Get the URL of the page or the URL provided"""
+        if value.get("page"):
+            return value["page"].url
+        return value["url"]
 
 
 class ImageBlock(blocks.StructBlock):
@@ -112,6 +168,42 @@ class ImageBlock(blocks.StructBlock):
                 "Alt text is missing", params={"alt": ["Image must have alt text"]}
             )
         return super().clean(value)
+
+
+class ImageWithTextBlock(blocks.StructBlock):
+    """An image block with text left or right of it"""
+
+    heading = Heading3Block()
+    text = TextBlock()
+    image_position = blocks.ChoiceBlock(
+        choices=[("left", "Left"), ("right", "Right")],
+        default="left",
+        help_text="Position of the image relative to the text",
+    )
+    image = ImageChooserBlock()
+    image_description = blocks.CharBlock(
+        required=False,
+        help_text="""
+        Optional text displayed under the image to provide context.
+        """,
+    )
+    image_alt = blocks.CharBlock(
+        required=False,
+        label="Alt text",
+        help_text="""
+        Read out by screen readers or displayed if an image does not load
+        or if images have been switched off.
+
+        Unless this is a decorative image, it MUST have alt text that
+        tells people what information the image provides, describes its
+        content and function, and is specific, meaningful and concise.
+        """,
+    )
+
+    class Meta:
+        label = "Image with text"
+        icon = "image"
+        template = "blocks/image_with_text.html"
 
 
 class MediaChooserBlock(AbstractMediaChooserBlock):
@@ -176,28 +268,106 @@ class CTABlock(blocks.StructBlock):
         label = "CTA Button"
 
 
-class TitleBlock(blocks.CharBlock):
-    """A (section) heading"""
+class PageUpdate(blocks.StructBlock):
+    update_time = blocks.DateTimeBlock()
+    person = PersonChooserBlock(required=False)
+    note = blocks.CharBlock(required=False)
 
     class Meta:
-        label = "Title"
-        icon = "title"
-        classname = "full title"
-        template = "blocks/title.html"
+        icon = "thumbtack"
+        label = "CTA Button"
 
 
-class PagePickerBlock(blocks.PageChooserBlock):
-
-    class Meta:
-        label = "Link"
-
-
-class CustomPageLinkListBlock(blocks.StructBlock):
-
-    title = TitleBlock(search_index=False)
-    pages = blocks.ListBlock(PagePickerBlock(), search_index=False)
+class PersonBanner(blocks.StructBlock):
+    person = PersonChooserBlock(required=False)
+    person_name = blocks.CharBlock(required=False)
+    person_role = blocks.CharBlock(required=False)
+    person_image = ImageChooserBlock(
+        required=False, help_text="This image should be square"
+    )
+    secondary_image = ImageChooserBlock(required=False)
 
     class Meta:
-        template = "blocks/custom_page_link_list.html"
-        label = "Link box"
-        help_text = "Test"
+        template = "dwds/components/person_banner.html"
+        icon = "user"
+        label = "Person Banner"
+
+    def clean(self, value):
+        if value["person"] and (
+            value["person_name"] or value["person_role"] or value["person_image"]
+        ):
+            raise ValidationError(
+                "Either choose a person or enter the details manually."
+            )
+        return super().clean(value)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context.update(secondary_image=value["secondary_image"])
+        if value["person"]:
+            context.update(
+                person_name=value["person"].full_name,
+                person_role=value["person"].roles.first().job_title,
+                person_image_url=value["person"].photo.url,
+            )
+        else:
+            context.update(
+                person_name=value["person_name"],
+                person_role=value["person_role"],
+                person_image=value["person_image"],
+            )
+        return context
+
+
+class QuoteBlock(blocks.StructBlock):
+    quote = blocks.CharBlock()
+    quote_theme = blocks.ChoiceBlock(
+        choices=[("light", "Light"), ("dark", "Dark")],
+        default="true",
+        help_text="Colour of the background. This can either be light grey or dark blue",
+    )
+    source = PersonChooserBlock(required=False)
+    source_name = blocks.CharBlock(required=False)
+    source_role = blocks.CharBlock(required=False)
+    source_team = blocks.CharBlock(required=False)
+    source_image = ImageChooserBlock(
+        required=False, help_text="This image should be square"
+    )
+
+    class Meta:
+        template = "dwds/components/quote.html"
+        icon = "openquote"
+        label = "Quote"
+
+    def clean(self, value):
+        if value["source"] and (
+            value["source_name"]
+            or value["source_role"]
+            or value["source_team"]
+            or value["source_image"]
+        ):
+            raise ValidationError(
+                "Either choose a source or enter the details manually."
+            )
+        return super().clean(value)
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context)
+        context.update(quote=value["quote"], highlight=True)
+        if value["quote_theme"] == "light":
+            context.update(highlight=False)
+        if value["source"]:
+            context.update(
+                source_name=value["source"].full_name,
+                source_role=value["source"].roles.first().job_title,
+                source_team=value["source"].teams.first(),
+                source_image_url=value["source"].photo.url,
+            )
+        else:
+            context.update(
+                source_name=value["source_name"],
+                source_role=value["source_role"],
+                source_team=value["source_team"],
+                source_image=value["source_image"],
+            )
+        return context

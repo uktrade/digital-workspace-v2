@@ -12,11 +12,15 @@
             {% block title %}
                 {% if self.seo_title %}
                     {{ self.seo_title }}
-                {% else %}
+                {% elif page_title %}
+                    {{ page_title }}
+                {% elif self %}
                     {{ self.title }}
                 {% endif %}
-            {% endblock %}
-            {% block title_suffix %}- Digital Workspace{% endblock %}
+            {% endblock title %}
+            {% block title_suffix %}
+                - The Intranet
+            {% endblock title_suffix %}
         </title>
         <meta name="viewport"
               content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -30,6 +34,7 @@
               content="{{ settings.SENTRY_DSN|default_if_none:'' }}">
         <meta name="intranet:sentry:browser-traces-sample-rate"
               content="{{ settings.SENTRY_BROWSER_TRACES_SAMPLE_RATE }}">
+        {{ EXTERNAL_LINKS_SETTINGS|json_script:"external-links-settings" }}
         {% render_bundle 'init' 'js' %}
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager -->
@@ -45,7 +50,9 @@
                 return false;
             };
             </script>
-            {% include "includes/gtm_datalayer_info.html" %}
+            {% if not request.is_preview %}
+                {% include "includes/gtm_datalayer_info.html" %}
+            {% endif %}
             <!-- End Google Tag Manager -->
         {% endif %}
         <link rel="shortcut icon"
@@ -61,10 +68,12 @@
         <meta property="og:image"
               content="{% webpack_static 'govuk-opengraph-image.png' %}">
         {% render_bundle 'main' 'css' %}
-        {% block stylesheets %}{% endblock %}
-        {% block libraries %}{% endblock %}
+        {% block stylesheets %}
+        {% endblock stylesheets %}
+        {% block libraries %}
+        {% endblock libraries %}
     </head>
-    <body class="govuk-template__body {% block body_classes %}{% endblock %} ">
+    <body class="govuk-template__body {% block body_classes %}{% endblock body_classes %}">
         {% if settings.GTM_CODE %}
             <!-- Google Tag Manager (noscript) -->
             <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.GTM_CODE }}"
@@ -79,30 +88,33 @@
            data-module="govuk-skip-link"
            class="govuk-skip-link">Skip to main content</a>
         {% include "includes/header.html" %}
-        <div class="govuk-width-container">
+        {% block pre_main %}
+            <div class="dwds-container">
+            {% endblock pre_main %}
             <main class="govuk-main-wrapper "
                   id="main-content"
                   role="main"
                   tabindex="1">
-                <div class="breadcrumb-bookmark">
-                    {% block breadcrumbs %}
-                        {% breadcrumbs %}
-                    {% endblock breadcrumbs %}
-                    {% block bookmark %}
-                        {% if FEATURE_FLAGS.new_homepage %}
-                            {% bookmark_page user page %}
-                        {% endif %}
-                    {% endblock bookmark %}
-                </div>
-                {% block main_content %}{% endblock %}
+                {% spaceless %}
+                    <div class="breadcrumb-bookmark">
+                        {% block breadcrumbs %}
+                            {% breadcrumbs %}
+                        {% endblock breadcrumbs %}
+                    </div>
+                {% endspaceless %}
+                {% block main_content %}
+                {% endblock main_content %}
                 {% block page_problem %}
-                    {% include "includes/problem_found.html" %}
-                {% endblock %}
+                    <div class="feedback-section">{% include "includes/problem_found.html" %}</div>
+                {% endblock page_problem %}
             </main>
-        </div>
+            {% block post_main %}
+            </div>
+        {% endblock post_main %}
         {% include "includes/footer.html" %}
         {% render_bundle 'main' 'js' %}
-        {% block scripts %}{% endblock %}
+        {% block scripts %}
+        {% endblock scripts %}
         {% git_info %}
     </body>
 </html>

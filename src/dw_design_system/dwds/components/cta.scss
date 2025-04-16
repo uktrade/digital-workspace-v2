@@ -1,0 +1,10 @@
+.dwds-cta {
+    background: var(--color-background);
+    flex-grow: 1;
+
+    .content-main {
+        a[href^="mailto:"] {
+            overflow-wrap: anywhere;
+        }
+    }
+}

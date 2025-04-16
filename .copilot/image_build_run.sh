@@ -5,14 +5,14 @@ set -e
 
 echo "Running post build script"
 
-echo "Renaming .env.ci to .env"
-mv ".env.ci" ".env"
+echo "Copy .env.ci to .env"
+cp ".env.ci" ".env"
 
 cd src
 
 echo "Running collectstatic"
-python manage.py collectstatic --settings=config.settings.build --noinput
+DJANGO_SETTINGS_MODULE=config.settings.build python manage.py collectstatic --noinput
 
-echo "Renaming .env to .env.ci"
+echo "Delete the .env file"
 cd ../
-mv ".env" ".env.ci"
+rm ".env"

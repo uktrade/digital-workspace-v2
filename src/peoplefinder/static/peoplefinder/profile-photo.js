@@ -59,55 +59,8 @@ class ProfilePhoto extends HTMLElement {
     };
     this.removePhotoName = this.getAttribute("remove-photo-name");
 
-    const photoHeadingText = this.photoUrl
-      ? "Current profile photo"
-      : "No current profile photo";
-
-    this.innerHTML = `
-      <h3 class="govuk-heading-s" id="photo-heading">${photoHeadingText}</h3>
-      <div style="max-width: 300px;">
-        <img
-            src="${this.photoUrl || this.noPhotoUrl}"
-            id="profile-photo"
-            style="display: block; max-width: 100%;"
-        >
-      </div>
-      <div class="govuk-form-group" id="photo-form-group">
-        <label class="govuk-label" for="photo">
-          Choose a new profile photo
-        </label>
-        <div class="govuk-hint">
-          Choose a picture that helps others recognise you.
-          Your picture must be at least 500 by 500 pixels and no more than 8MB.
-          Once you have chosen a picture, you will be able to crop it.
-        </div>
-        <div id="photo-errors"></div>
-        <input
-          class="govuk-file-upload"
-          type="file"
-          name="${this.name}"
-          id="photo"
-        >
-        <br>
-        <button type="button" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" id="clear-image" style="display: none;">Clear image</button>
-        <div class="govuk-checkboxes govuk-checkboxes--small" id="remove-photo-wrapper" style="display: none;">
-          <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="remove-photo" name="${
-              this.removePhotoName
-            }" type="checkbox" value="True">
-            <label class="govuk-label govuk-checkboxes__label" for="remove-photo">
-              Remove photo
-            </label>
-          </div>
-        </div>
-      </div>
-      <div>
-          <input type="hidden" name="${this.cropFieldNames.x}">
-          <input type="hidden" name="${this.cropFieldNames.y}">
-          <input type="hidden" name="${this.cropFieldNames.width}">
-          <input type="hidden" name="${this.cropFieldNames.height}">
-      </div>
-    `;
+    // Replace innerHTML
+    this.buildPhotoComponent();
 
     this.photoHeadingEl = this.querySelector("#photo-heading");
     this.photoImgEl = this.querySelector("#profile-photo");
@@ -131,6 +84,109 @@ class ProfilePhoto extends HTMLElement {
 
     this.photoInputEl.addEventListener("change", this.handleChangePhoto);
     this.clearImageEl.addEventListener("click", this.handleClearImage);
+  }
+
+  buildPhotoComponent() {
+    const photoHeadingText = this.photoUrl
+      ? "Current profile photo"
+      : "No current profile photo";
+
+    const photoHeading = document.createElement("h3");
+    photoHeading.classList.add("govuk-heading-s");
+    photoHeading.id = "photo-heading";
+    photoHeading.textContent = photoHeadingText;
+    this.appendChild(photoHeading);
+
+    const cropperWrapper = document.createElement("div");
+    cropperWrapper.classList.add("cropper-wrapper");
+    cropperWrapper.style.maxWidth = "300px";
+
+    const photoImg = document.createElement("img");
+    photoImg.src = this.photoUrl || this.noPhotoUrl;
+    photoImg.id = "profile-photo";
+    photoImg.style.display = "block";
+    photoImg.style.maxWidth = "100%";
+    cropperWrapper.appendChild(photoImg);
+    this.appendChild(cropperWrapper);
+
+    const formGroup = document.createElement("div");
+    formGroup.classList.add("govuk-form-group");
+    formGroup.id = "photo-form-group";
+
+    const label = document.createElement("label");
+    label.classList.add("govuk-label");
+    label.setAttribute("for", "photo");
+    label.textContent = "Choose a new profile photo";
+    formGroup.appendChild(label);
+
+    const hint = document.createElement("div");
+    hint.classList.add("govuk-hint");
+    hint.textContent =
+      "Choose a picture that helps others recognise you. " +
+      "Your picture must be at least 500 by 500 pixels and no more than 8MB. " +
+      "Once you have chosen a picture, you will be able to crop it.";
+    formGroup.appendChild(hint);
+
+    const errorsDiv = document.createElement("div");
+    errorsDiv.id = "photo-errors";
+    formGroup.appendChild(errorsDiv);
+
+    const photoInput = document.createElement("input");
+    photoInput.classList.add("govuk-file-upload");
+    photoInput.type = "file";
+    photoInput.name = this.name;
+    photoInput.id = "photo";
+    formGroup.appendChild(photoInput);
+
+    const lineBreak = document.createElement("br");
+    formGroup.appendChild(lineBreak);
+
+    const clearImageButton = document.createElement("button");
+    clearImageButton.type = "button";
+    clearImageButton.id = "clear-image";
+    clearImageButton.classList.add("dwds-button", "dwds-button--secondary");
+    clearImageButton.style.display = "none";
+    clearImageButton.textContent = "Clear image";
+    formGroup.appendChild(clearImageButton);
+
+    const removePhotoWrapper = document.createElement("div");
+    removePhotoWrapper.classList.add(
+      "govuk-checkboxes",
+      "govuk-checkboxes--small"
+    );
+    removePhotoWrapper.id = "remove-photo-wrapper";
+    removePhotoWrapper.style.display = "none";
+
+    const removePhotoItem = document.createElement("div");
+    removePhotoItem.classList.add("govuk-checkboxes__item");
+
+    const removePhotoCheckbox = document.createElement("input");
+    removePhotoCheckbox.classList.add("govuk-checkboxes__input");
+    removePhotoCheckbox.type = "checkbox";
+    removePhotoCheckbox.id = "remove-photo";
+    removePhotoCheckbox.name = this.removePhotoName;
+    removePhotoCheckbox.value = "True";
+    removePhotoItem.appendChild(removePhotoCheckbox);
+
+    const removePhotoLabel = document.createElement("label");
+    removePhotoLabel.classList.add("govuk-label", "govuk-checkboxes__label");
+    removePhotoLabel.setAttribute("for", "remove-photo");
+    removePhotoLabel.textContent = "Remove photo";
+    removePhotoItem.appendChild(removePhotoLabel);
+
+    removePhotoWrapper.appendChild(removePhotoItem);
+    formGroup.appendChild(removePhotoWrapper);
+
+    this.appendChild(formGroup);
+
+    const hiddenFields = ["x", "y", "width", "height"].map((field) => {
+      const inputEl = document.createElement("input");
+      inputEl.type = "hidden";
+      inputEl.name = this.cropFieldNames[field];
+      return inputEl;
+    });
+
+    hiddenFields.forEach((hiddenField) => this.appendChild(hiddenField));
   }
 
   handleChangePhoto(e) {

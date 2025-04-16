@@ -1,6 +1,7 @@
 import os
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 import dj_database_url
 import environ
@@ -16,15 +17,11 @@ from sentry_sdk.integrations.redis import RedisIntegration
 
 
 # Set directories to be used across settings
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+BASE_DIR = Path(__file__).parent.parent.parent
+PROJECT_ROOT_DIR = BASE_DIR.parent
 
 # Read environment variables using `django-environ`, use `.env` if it exists
 env = environ.Env()
-env_file = os.path.join(PROJECT_ROOT_DIR, ".env")
-if os.path.exists(env_file):
-    env.read_env(env_file)
-env.read_env()
 
 # Set required configuration from environment
 # Should be one of the following: "local", "test", "dev", "staging", "training", "prod", "build"
@@ -51,15 +48,26 @@ AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
 # Asset path used in parser
 NEW_ASSET_PATH = env("NEW_ASSET_PATH")
 
-# DEFAULT_FILE_STORAGE must be set to 'storages.backends.s3boto3.S3Boto3Storage'
-# or a class than inherits from it if using S3FileUploadHandler for
-# file upload handling
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
 FILE_UPLOAD_HANDLERS = (
     "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
     "django_chunk_upload_handlers.s3.S3FileUploadHandler",
 )  # Order is important
+
+# Storage
+# https://docs.djangoproject.com/en/4.2/ref/settings/#storages
+
+STORAGES = {
+    "default": {
+        # BACKEND must be set to 'storages.backends.s3boto3.S3Boto3Storage'
+        # or a class than inherits from it if using S3FileUploadHandler for
+        # file upload handling
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    # WhiteNoise
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 AWS_S3_FILE_OVERWRITE = False
 
@@ -75,6 +83,18 @@ if env.str("DJANGO_EMAIL_BACKEND", None):
 # Sentry
 SENTRY_DSN = env.str("SENTRY_DSN", None)
 SENTRY_BROWSER_TRACES_SAMPLE_RATE = env.float("SENTRY_BROWSER_TRACES_SAMPLE_RATE", 0.0)
+
+
+def filter_transactions(event, hint):
+    url_string = event["request"]["url"]
+    parsed_url = urlparse(url_string)
+
+    if parsed_url.path.startswith("/pingdom"):
+        return None
+
+    return event
+
+
 # Configure Sentry if a DSN is set
 if SENTRY_DSN:
     sentry_sdk.init(
@@ -85,6 +105,7 @@ if SENTRY_DSN:
         send_default_pii=True,  # Enable associating exceptions to users
         enable_tracing=env.bool("SENTRY_ENABLE_TRACING", False),
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
+        before_send_transaction=filter_transactions,
     )
 
 # Allow all hosts
@@ -94,7 +115,7 @@ ALLOWED_HOSTS = setup_allowed_hosts(["*"])
 # Set up Django
 LOCAL_APPS = [
     "patch",
-    "core",
+    "core.apps.CoreConfig",
     "feedback",
     "home",
     "content",
@@ -104,6 +125,9 @@ LOCAL_APPS = [
     "about_us",
     "networks",
     "country_fact_sheet",
+    "events",
+    "dw_design_system",
+    "dev_tools",
     "user.apps.UserConfig",
     "pingdom.apps.PingdomConfig",
     "peoplefinder.apps.PeoplefinderConfig",
@@ -126,6 +150,8 @@ THIRD_PARTY_APPS = [
     "django_feedback_govuk",
     "generic_chooser",
     "waffle",
+    "wagtailorderable",
+    "django_cotton",
 ]
 
 WAGTAIL_APPS = [
@@ -191,6 +217,7 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "django_audit_log_middleware.AuditLogMiddleware",
     "waffle.middleware.WaffleMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -200,7 +227,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
         "DIRS": [
-            Path(PROJECT_ROOT_DIR) / "dw-design-system",
+            PROJECT_ROOT_DIR / "src" / "dw_design_system",
         ],
         "OPTIONS": {
             "context_processors": [
@@ -271,9 +298,11 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT_DIR, "assets"),
+    (
+        "dwds",
+        os.path.join(PROJECT_ROOT_DIR, "src", "dw_design_system", "dwds"),
+    ),
 ]
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT_DIR, "static")
 STATIC_URL = "/static/"
@@ -468,6 +497,8 @@ SETTINGS_EXPORT = [
     "APP_ENV",
     "SENTRY_DSN",
     "SENTRY_BROWSER_TRACES_SAMPLE_RATE",
+    "SERVICE_CONTACT_EMAIL",
+    "USE_SVG_LOGO",
 ]
 
 LOGGING = {
@@ -559,8 +590,17 @@ if is_copilot():
 
 DLFA_INCLUDE_RAW_LOG = True
 
+# Django Tasks
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks.backends.immediate.ImmediateBackend",
+        "ENQUEUE_ON_COMMIT": False,
+    }
+}
+
 # Remove SSO protection from health check and Hawk authed URLs
 AUTHBROKER_ANONYMOUS_PATHS = (
+    "/ical/all/",
     "/pingdom/ping.xml",
     "/peoplefinder/api/activity-stream/",
     "/peoplefinder/api/person-api/",
@@ -616,11 +656,6 @@ DJANGO_HAWK = {
 PAGINATION_PAGE_SIZE = env.int("PAGINATION_PAGE_SIZE", 100)
 PAGINATION_MAX_PAGE_SIZE = env.int("PAGINATION_MAX_PAGE_SIZE", 100)
 
-# Person update web hook
-PERSON_UPDATE_HAWK_ID = env("PERSON_UPDATE_HAWK_ID", None)
-PERSON_UPDATE_HAWK_KEY = env("PERSON_UPDATE_HAWK_KEY", None)
-PERSON_UPDATE_WEBHOOK_URL = env("PERSON_UPDATE_WEBHOOK_URL", None)
-
 # Home page
 HIDE_NEWS = env.bool("HIDE_NEWS", False)
 
@@ -672,6 +707,9 @@ DJANGO_FEEDBACK_GOVUK = {
         },
     },
 }
+USE_SVG_LOGO = True
+
+SERVICE_CONTACT_EMAIL = env("SERVICE_CONTACT_EMAIL", default=None)
 
 # Leaving Service
 LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
@@ -701,3 +739,20 @@ SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
 
 # Enable the caching of the generated search query DSLs
 SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
+
+# Content Security Policy header settings
+CSP_DEFAULT_SRC = ("'none'",)
+CSP_SCRIPT_SRC = ("'none'",)
+CSP_SCRIPT_SRC_ATTR = ("'none'",)
+CSP_SCRIPT_SRC_ELEM = ("'none'",)
+CSP_IMG_SRC = ("'none'",)
+CSP_MEDIA_SRC = ("'none'",)
+CSP_FRAME_SRC = ("'none'",)
+CSP_FONT_SRC = ("'none'",)
+CSP_CONNECT_SRC = ("'none'",)
+
+CSP_REPORT_ONLY = True
+CSP_REPORT_URI = env("CSP_REPORT_URI", default=None)
+
+# Interactions
+INACTIVE_REACTION_TYPES = env.list("INACTIVE_REACTION_TYPES", default=["unhappy"])

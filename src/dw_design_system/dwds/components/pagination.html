@@ -1,0 +1,35 @@
+{% load paginator %}
+
+<div class="dwds-pagination">
+    {% if pages.has_previous %}
+        <a href="{% get_pagination_url pages.previous_page_number %}">
+            {% include "dwds/icons/arrow-left.html" %}
+            <span>Previous</span>
+        </a>
+    {% endif %}
+    {% if pages %}
+        <ul>
+            {% for num in pages|get_elided_page_range %}
+                {% if num == pages.number %}
+                    <li class="active">
+                        <a class=""
+                           href="{% get_pagination_url num %}"
+                           aria-label="Page {{ num }}"
+                           aria-current="page">{{ num }}</a>
+                    </li>
+                {% elif num == pages.paginator.ELLIPSIS %}
+                    <li>&ctdot;</li>
+                {% else %}
+                    <li>
+                        <a href="{% get_pagination_url num %}" aria-label="Page {{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if pages.has_next %}
+        <a href="{% get_pagination_url pages.next_page_number %}"> <span>Next</span>
+            {% include "dwds/icons/arrow-right.html" %}
+        </a>
+    {% endif %}
+</div>

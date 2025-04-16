@@ -1,0 +1,23 @@
+.dwds-icon {
+    // TODO: Need to resolve our approach to icons in general.
+    width: var(--icon-width) !important;
+    height: var(--icon-height) !important;
+
+    transition: fill-opacity 0.3s ease;
+
+    stroke-width: 2px;
+
+    // Using variables is the best way I've found so far to style SVG sprites.
+    --icon-outline-stroke: var(--color-icon);
+    --icon-outline-fill: var(--color-icon);
+    --icon-path-stroke: var(--color-icon);
+    --icon-path-fill: #ffffff;
+
+    fill-opacity: 0;
+
+    &.is-filled {
+        --icon-path-stroke: #ffffff;
+
+        fill-opacity: 1;
+    }
+}

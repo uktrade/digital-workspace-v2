@@ -1,0 +1,13 @@
+.dwds-sidebar-part {
+    border-top: var(--s-5) solid var(--dbt-light-blue);
+
+    a {
+        font-weight: var(--font-weight-bold);
+    }
+
+    > div > h3 {
+        margin-top: var(--s-1);
+    }
+
+
+}

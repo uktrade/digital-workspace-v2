@@ -1,0 +1,19 @@
+.content-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space);
+    justify-content: flex-start;
+    align-items: center;
+
+    h1 {
+        margin: 0;
+    }
+
+    &.small {
+        gap: var(--s-1);
+    }
+
+    &.no-gap {
+        gap: 0;
+    }
+}

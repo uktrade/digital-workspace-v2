@@ -11,6 +11,8 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from core.admin import admin_site
 from core.urls import urlpatterns as core_urlpatterns
+from dw_design_system.urls import urlpatterns as dwds_urlpatterns
+from events.views import ical_feed, ical_links
 from peoplefinder.urls import api_urlpatterns, people_urlpatterns, teams_urlpatterns
 
 
@@ -48,6 +50,13 @@ urlpatterns = [
     path("feedback/", include(feedback_urls), name="feedback"),
     # Interactions
     path("interactions/", include("interactions.urls")),
+    # Networks
+    path("networks/", include("networks.urls")),
+    # DW Design System
+    path("dwds/", include(dwds_urlpatterns)),
+    # iCal feed for testing
+    path("ical/", ical_links, name="ical_links"),
+    path("ical/all/", ical_feed, name="ical_feed"),
 ]
 
 # If django-silk is installed, add its URLs
@@ -62,10 +71,22 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+    if hasattr(settings, "DEV_TOOLS_ENABLED") and settings.DEV_TOOLS_ENABLED:
+        # Dev tools purposefully only active with DEBUG=True clause
+        urlpatterns += [
+            path("dev-tools/", include("dev_tools.urls", namespace="dev_tools"))
+        ]
+    if "debug_toolbar" in settings.INSTALLED_APPS:
+        # Django Debug Toolbar purposefully only active with DEBUG=True
+        from debug_toolbar.toolbar import debug_toolbar_urls
+
+        urlpatterns += debug_toolbar_urls()
+
 urlpatterns += [
     # Wagtail
     path("", include(wagtail_urls)),
 ]
+
 
 # Removed until we find a fix for Wagtail's redirect behaviour
 handler404 = "core.views.view_404"

@@ -1,26 +1,32 @@
 import inspect
 import logging
-from typing import Optional, Type
+from typing import TYPE_CHECKING, Optional, Type
 
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from wagtail.search import index
+from wagtail.search.backends import get_search_backend
 from wagtail.search.query import Boost, Fuzzy, Phrase, PlainText, SearchQuery
 
+from extended_search import query_builder
 from extended_search import settings as search_settings
 from extended_search.index import (
     BaseField,
     Indexed,
     IndexedField,
     RelatedFields,
+    ScoreFunction,
     SearchField,
     get_indexed_field_name,
     get_indexed_models,
 )
-from extended_search.query import Filtered, Nested, OnlyFields
+from extended_search.query import Filtered, FunctionScore, Nested, OnlyFields
 from extended_search.types import AnalysisType, SearchQueryType
 
+
+if TYPE_CHECKING:
+    from extended_search.backends.backend import CustomSearchBackend
 
 logger = logging.getLogger(__name__)
 
@@ -118,6 +124,7 @@ class QueryBuilder:
     @classmethod
     def _build_searchquery_for_query_field_querytype_analysistype(
         cls,
+        model_class: models.Model,
         base_field_name: str,
         query_type: SearchQueryType,
         analysis_type: AnalysisType,
@@ -133,7 +140,9 @@ class QueryBuilder:
 
         field_name = get_indexed_field_name(base_field_name, analysis_type)
         return OnlyFields(
-            Boost(Variable("search_query", query_type), boost), fields=[field_name]
+            Boost(Variable("search_query", query_type), boost),
+            fields=[field_name],
+            only_model=model_class,
         )
 
     @classmethod
@@ -143,12 +152,15 @@ class QueryBuilder:
         return q1 or q2
 
     @classmethod
-    def _build_search_query_for_searchfield(cls, field, subquery, analyzer):
+    def _build_search_query_for_searchfield(
+        cls, model_class, field, subquery, analyzer
+    ):
         for query_type in search_settings.extended_search_settings["analyzers"][
             analyzer.value
         ]["query_types"]:
             query_element = (
                 cls._build_searchquery_for_query_field_querytype_analysistype(
+                    model_class,
                     field.model_field_name,
                     SearchQueryType(query_type),
                     analyzer,
@@ -162,18 +174,19 @@ class QueryBuilder:
         return subquery
 
     @classmethod
-    def _build_search_query_for_indexfield(cls, field, subquery):
+    def _build_search_query_for_indexfield(cls, model_class, field, subquery):
         if not field.search:
             return subquery
 
         for analyzer in field.get_search_analyzers():
             subquery = cls._build_search_query_for_searchfield(
-                field, subquery, analyzer
+                model_class, field, subquery, analyzer
             )
 
         if field.fuzzy:
             query_element = (
                 cls._build_searchquery_for_query_field_querytype_analysistype(
+                    model_class,
                     field.model_field_name,
                     SearchQueryType("fuzzy"),
                     AnalysisType.TOKENIZED,
@@ -194,7 +207,7 @@ class QueryBuilder:
         field: index.BaseField,
     ):
         if isinstance(field, IndexedField):
-            return cls._build_search_query_for_indexfield(field, None)
+            return cls._build_search_query_for_indexfield(model_class, field, None)
 
         if isinstance(field, RelatedFields):
             internal_subquery = None
@@ -203,13 +216,26 @@ class QueryBuilder:
                     internal_subquery,
                     cls._build_search_query(model_class, related_field),
                 )
+
+            path = field.model_field_name
+            root_index_model = model_class.get_root_index_model()
+            if field.configuration_model != root_index_model:
+                path = (
+                    field.configuration_model._meta.app_label
+                    + "_"
+                    + field.configuration_model.__name__.lower()
+                    + "__"
+                    + field.model_field_name
+                )
+
             return cls._combine_queries(
-                Nested(subquery=internal_subquery, path=field.model_field_name),
+                Nested(subquery=internal_subquery, path=path),
                 None,
             )
 
         if isinstance(field, SearchField):
             return cls._build_search_query_for_searchfield(
+                model_class,
                 field,
                 None,
                 cls.infer_analyzer_from_field(field),
@@ -245,13 +271,27 @@ class CustomQueryBuilder(QueryBuilder):
     @classmethod
     def build_query_for_model(cls, model_class) -> Optional[SearchQuery]:
         query = None
+        score_configurations = []
         for field in model_class.get_indexed_fields():
-            query_elements = cls._build_search_query(model_class, field)
-            if query_elements is not None:
-                query = cls._combine_queries(
-                    query,
-                    query_elements,
+            if isinstance(field, ScoreFunction):
+                score_configurations.append(field)
+            else:
+                query_elements = cls._build_search_query(model_class, field)
+                if query_elements is not None:
+                    query = cls._combine_queries(
+                        query,
+                        query_elements,
+                    )
+
+        if query:
+            for score_configuration in score_configurations:
+                query = FunctionScore(
+                    model_class=score_configuration.configuration_model,
+                    subquery=query,
+                    function_name=score_configuration.function_name,
+                    function_params=score_configuration.params,
                 )
+
         return query
 
     @classmethod
@@ -297,7 +337,13 @@ class CustomQueryBuilder(QueryBuilder):
         type, and all are joined together at the end.
         """
         if settings.SEARCH_ENABLE_QUERY_CACHE:
-            cache_key = model_class.__name__
+            search_backend: "CustomSearchBackend" = get_search_backend()
+            model_index = search_backend.get_index_for_model(model_class)
+            if model_index.is_alias():
+                alias_indexes = model_index.aliased_indices()
+                if len(alias_indexes) == 1:
+                    model_index = model_index.aliased_indices()[0]
+            cache_key = f"{model_index.name}__{model_class.__name__}"
             if not ignore_cache:
                 built_query = cache.get(cache_key, None)
                 if built_query:
@@ -334,25 +380,29 @@ class CustomQueryBuilder(QueryBuilder):
         # Build query for root model passed in to method, filter to exclude docs
         # with contenttypes matching any of the already queried models.
         subquery = cls.build_query_for_model(model_class)
-        root_query = Filtered(
-            subquery=subquery,
-            filters=[
-                (
-                    "content_type",
-                    "excludes",
-                    queried_content_types,
-                ),
-            ],
-        )
+        if subquery is not None:
+            root_query = Filtered(
+                subquery=subquery,
+                filters=[
+                    (
+                        "content_type",
+                        "excludes",
+                        queried_content_types,
+                    ),
+                ],
+            )
+            # Add root_query to the front of the list
+            queries.insert(0, root_query)
 
-        for q in queries:
-            root_query |= q
+        search_query = queries[0]
+        for q in queries[1:]:
+            search_query |= q
 
         if settings.SEARCH_ENABLE_QUERY_CACHE:
-            cache.set(cache_key, root_query)
+            cache.set(cache_key, search_query)
 
-        logger.debug(root_query)
-        return root_query
+        logger.debug(search_query)
+        return search_query
 
     @classmethod
     def get_extended_models_with_unique_indexed_fields(
@@ -371,3 +421,12 @@ class CustomQueryBuilder(QueryBuilder):
             ):
                 extended_model_classes.append(indexed_model)
         return extended_model_classes
+
+
+def build_queries(models: list[models.Model] | None = None):
+    if not models:
+        models = get_indexed_models()
+
+    for model_class in models:
+        if hasattr(model_class, "indexed_fields") and model_class.indexed_fields:
+            query_builder.CustomQueryBuilder.build_search_query(model_class, True)

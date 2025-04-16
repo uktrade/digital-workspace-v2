@@ -1,0 +1,11 @@
+<div class="content-main{% if alert %} warning {% else %} highlight {% endif %}">
+    <div class="content-body content-stack">
+        {% if link %}
+            <p role="alert">
+                <a href="{{ link }}">{{ text }}</a>
+            </p>
+        {% else %}
+            <p role="alert">{{ text }}</p>
+        {% endif %}
+    </div>
+</div>

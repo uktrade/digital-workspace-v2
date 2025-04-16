@@ -1,11 +1,19 @@
-<nav class="ws-news-category-nav" aria-labelledby="news-category-heading">
-    <h3 class="govuk-heading-m" id="news-category-heading">All news categories</h3>
-    <ul class="govuk-list">
-        {% for category in categories %}
-            <li>
-                <a class="govuk-link"
-                   href="/news-and-views/category/{{ category.slug }}">{{ category.category }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-</nav>
+{% if categories %}
+    <div class="dwds-content-item-card no-shadow">
+        <div class="content-item">
+            <div class="content-main">
+                <nav class="content-body content-stack ws-news-category-nav"
+                     aria-labelledby="news-category-heading">
+                    <h3 id="news-category-heading">All news categories</h3>
+                    <ul class="clean">
+                        {% for category in categories %}
+                            <li>
+                                <a href="/news-and-views/category/{{ category.slug }}">{{ category.category }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endif %}

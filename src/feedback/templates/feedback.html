@@ -1,79 +1,118 @@
+{% comment %}
+Feedback component
+- form_id: The ID of the form that will be submitted (a key from DJANGO_FEEDBACK_GOVUK)
+- prefix: The prefix to use for the feedback component (should be unique)
+- classes (optional): Additional classes to add to the feedback component
+- title (optional): The title of the feedback component
+- question (optional): The yes/no question to ask the user
+- custom_submit_data_function (optional): A JavaScript function to call to add custom data to the form before submission
+- initial (optional): The initial value of the feedback form
+{% endcomment %}
+
 {% load feedback_tags %}
 
-<div id="search-feedback">
-    <div class="search-feedback-header govuk-!-padding-1 govuk-!-padding-left-2 govuk-!-margin-bottom-4">
-        <div class="govuk-body-s govuk-body--inverse govuk-!-margin-bottom-0 govuk-!-margin-right-2">Is this page useful?</div>
-        <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-left-1"
-                onclick="positiveResponse();">Yes</button>
-        <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-left-1"
-                onclick="negativeResponse();">No</button>
+<div id="{{ prefix }}-feedback"
+     class="feedback {% if classes %}{{ classes }}{% endif %}">
+    {% if title %}<h1 class="govuk-heading-m">{{ title }}</h1>{% endif %}
+    <div class="feedback-header govuk-!-padding-1 govuk-!-padding-left-2">
+        <div class="govuk-body-s govuk-!-margin-bottom-0 govuk-!-margin-right-2">
+            {% if question %}
+                {{ question }}
+            {% else %}
+                Is this page useful?
+            {% endif %}
+        </div>
+        <div>
+            <button class="dwds-button dwds-button--secondary-dark dwds-button--inline govuk-!-margin-left-1"
+                    onclick="positiveResponse();">Yes</button>
+            <button class="dwds-button dwds-button--secondary-dark dwds-button--inline govuk-!-margin-left-1"
+                    onclick="negativeResponse();">No</button>
+        </div>
     </div>
 </div>
+<div class="dwds-modal width-third">
+    <dialog id="{{ prefix }}-feedback-dialog" class="feedback-dialog">
+        <div class="content-stack">
+            <form class="modal-header" method="dialog">
+                <button class="dwds-modal-close dwds-button dwds-button--link content-with-icon small-gap">
+                    {% include "dwds/icons/cross.html" with small=True %}
+                    Close
+                </button>
+            </form>
+            <div id="feedback-form-wrapper--{{ form_id }}">
+                {% if not initial %}
+                    {% feedback_submit form_id=form_id %}
+                {% else %}
+                    {% feedback_submit form_id=form_id initial=initial %}
+                {% endif %}
+            </div>
 
-<dialog id="feedback-dialog">
-    {% feedback_submit form_id="hr-v1" %}
-    <script>
-        const dialog = document.querySelector("#feedback-dialog");
-        const form = dialog.querySelector("form");
-        const search_header = document.querySelector("#search-feedback .search-feedback-header");
+            <script>
+                const dialog = document.querySelector("#{{ prefix }}-feedback-dialog");
+                const form = dialog.querySelector("div#feedback-form-wrapper--{{ form_id }}").querySelector("form");
+                const header = document.querySelector("#{{ prefix }}-feedback .feedback-header");
 
-        function positiveResponse() {
-            // Clear all form fields except the hidden ones
-            clearFeedbackForm();
-            // Mark the `useful` hidden field to `true`
-            form.querySelector("#id_useful").value = "true";
-            // Submit the form
-            submitFeedbackForm();
-        }
-
-        function negativeResponse() {
-            // Clear all form fields except the hidden ones
-            clearFeedbackForm();
-            // Mark the `useful` hidden field to `false`
-            form.querySelector("#id_useful").value = "false";
-            // Show the feedback form
-            openFeedbackDialog();
-        }
-
-        function openFeedbackDialog() {
-            document.querySelector("#feedback-dialog").showModal();
-        }
-
-        function showThankYouMessage() {
-            // Update text to say thanks.
-            search_header.innerHTML = '<div class="govuk-body-s govuk-body--inverse govuk-!-margin-bottom-0">Thanks for your feedback.</div>';
-        }
-
-        form.addEventListener("submit", (event) => {
-            if (event.submitter.id == "submit-id-submit") {
-                event.preventDefault();
-                submitFeedbackForm();
-            }
-        });
-
-        function clearFeedbackForm() {
-            form.reset();
-        }
-
-        function submitFeedbackForm() {
-            const formData = new FormData(form);
-
-            formData.set('page_url','{{page.url}}');
-
-            fetch(form.action, {
-                method: "POST",
-                body: formData,
-            }).then((response) => {
-                if (!response.ok) {
-                    throw new Error("There was an issue submitting your feedback.");
+                function positiveResponse() {
+                    // Clear all form fields except the hidden ones
+                    clearFeedbackForm();
+                    // Mark the `useful` hidden field to `true`
+                    form.querySelector("#id_useful").value = "true";
+                    // Submit the form
+                    submitFeedbackForm();
                 }
 
-                dialog.close();
-                showThankYouMessage();
-            }).catch((error) => {
-                alert(error.message);
-                dialog.close();
-            });
-        }
-    </script>
-</dialog>
+                function negativeResponse() {
+                    // Clear all form fields except the hidden ones
+                    clearFeedbackForm();
+                    // Mark the `useful` hidden field to `false`
+                    form.querySelector("#id_useful").value = "false";
+                    // Show the feedback form
+                    openFeedbackDialog();
+                }
+
+                function openFeedbackDialog() {
+                    document.querySelector("#{{ prefix }}-feedback-dialog").showModal();
+                }
+
+                function showThankYouMessage() {
+                    // Update text to say thanks.
+                    header.innerHTML = '<div class="govuk-body-s govuk-!-margin-bottom-0">Thanks for your feedback.</div>';
+                }
+
+                form.addEventListener("submit", (event) => {
+                    if (event.submitter.id == "submit-id-submit") {
+                        event.preventDefault();
+                        submitFeedbackForm();
+                    }
+                });
+
+                function clearFeedbackForm() {
+                    form.reset();
+                }
+
+                function submitFeedbackForm() {
+                    const formData = new FormData(form);
+
+                    {% if custom_submit_data_function %}{{ custom_submit_data_function }}(formData);{% endif %}
+
+                    formData.set('page_url','{{page.url}}');
+
+                    fetch(form.action, {
+                        method: "POST",
+                        body: formData,
+                    }).then((response) => {
+                        if (!response.ok) {
+                            throw new Error("There was an issue submitting your feedback.");
+                        }
+
+                        dialog.close();
+                        showThankYouMessage();
+                    }).catch((error) => {
+                        alert(error.message);
+                        dialog.close();
+                    });
+                }
+            </script>
+        </div>
+    </dialog>
+</div>

@@ -1,0 +1,38 @@
+{% load wagtailimages_tags static humanize %}
+
+<div class="dwds-one-up content-item content-custom-sidebar-wrapper">
+    <div class="content-custom-sidebar large">
+        <div class="content-main content">
+            <div class="content-body content-stack">
+                {% if ribbon_text %}
+                    {% include "dwds/elements/ribbon.html" with text=ribbon_text colour="blue" %}
+                {% endif %}
+                <h3>
+                    <a class="no-underline" href="{{ url }}">{{ title }}</a>
+                </h3>
+                {% if post_title %}
+                    <div class="post-title-container">
+                        <h4 class="post-title">{{ post_title }}</h4>
+                    </div>
+                {% endif %}
+                {% if excerpt %}<p>{{ excerpt|truncatewords:16 }}</p>{% endif %}
+            </div>
+
+            {% if updated_date or created_date or comment_count %}
+                <div class="content-footer content-stack">
+                    {% if updated_date > created_date %}
+                        <time>
+                            Updated {{ updated_date|date:'j F Y' }} at {{ updated_date|time:'g:iA'|lower }}
+                        </time>
+                    {% elif created_date %}
+                        <time>
+                            Published: {{ created_date|date:'j F Y' }} at {{ created_date|time:'g:iA'|lower }}
+                        </time>
+                    {% endif %}
+                    {% include "dwds/elements/page_counts.html" %}
+                </div>
+            {% endif %}
+        </div>
+        {% include "dwds/elements/content_image.html" with content_image=thumbnail %}
+    </div>
+</div>

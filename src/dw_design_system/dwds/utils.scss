@@ -1,0 +1,39 @@
+.dwds-sr-only {
+    // Visually hidden but accessible to screen readers
+    // See: https://github.com/alphagov/govuk-frontend/blob/main/packages/govuk-frontend/src/govuk/helpers/_visually-hidden.scss
+
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+    // If margin is set to a negative value it can cause text to be announced in
+    // the wrong order in VoiceOver for OSX
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+
+    // `clip` is needed for IE11 support
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+
+    border: 0 !important;
+
+    // For long content, line feeds are not interpreted as spaces and small width
+    // causes content to wrap 1 word per line:
+    // https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe
+    white-space: nowrap !important;
+
+    // Prevent users from selecting or copying visually-hidden text. This prevents
+    // a user unintentionally copying more text than they intended and needing to
+    // manually trim it down again.
+    user-select: none;
+}
+
+.dwds-email-wrap {
+    overflow-wrap: anywhere;
+}
+
+.dwds-title-question {
+    align-self: center;
+}

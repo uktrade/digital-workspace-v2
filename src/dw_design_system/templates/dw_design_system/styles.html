@@ -1,0 +1,185 @@
+{% extends "dwds_page.html" %}
+
+{% block primary_content %}
+
+    <h1>Styles</h1>
+
+    <h2>Spacing</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 3fr">
+        {% for s in spaces %}
+            <span>{{ s }}</span>
+            <div style="width: 100%;
+                        border: 1px solid black;
+                        height: var({{ s }});
+                        margin: 5px 0px"></div>
+        {% endfor %}
+    </div>
+
+    <h2>Typography</h2>
+
+    {% for ts in text_sizes %}
+        <span style="font-size: var({{ ts }});">{{ ts }}</span>
+        <br>
+    {% endfor %}
+
+    <h1>Heading 1</h1>
+    <h2>Heading 2</h2>
+    <h3>Heading 3</h3>
+    <h4>Heading 4</h4>
+    <h5>Heading 5</h5>
+    <h6>Heading 6</h6>
+
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce condimentum feugiat odio, eu interdum odio commodo a. Ut sollicitudin, nisi non tempor bibendum, justo eros tincidunt urna, at rhoncus dui ante sed urna. Aenean sed nisi vitae dui sagittis iaculis vitae quis nulla. Vivamus malesuada, massa id semper mollis, dolor tellus vehicula mi, ut posuere lacus justo vel velit. Nulla at consectetur ipsum. Nam dui massa, dignissim non vulputate nec, rutrum mollis magna. Duis nec facilisis massa.
+    </p>
+    <p>
+        <b>
+            Lorem ipsum dolor sit amet
+        </b>
+    </p>
+    <p>
+        <i>
+            Lorem ipsum dolor sit amet
+        </i>
+    </p>
+    <p>
+        <q>
+            Lorem ipsum dolor sit amet
+        </q>
+    </p>
+    <blockquote>
+        Lorem ipsum dolor sit amet
+    </blockquote>
+
+    <a href="#">Lorem ipsum dolor sit amet</a>
+
+    <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ul>
+
+    <ol>
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ol>
+
+    <hr>
+
+    <h2>Colours</h2>
+
+    <h3>GDS Colours</h3>
+    {% for colour in gds_colours %}
+        <span>{{ colour }}</span>
+        <div style="width: 100%;
+                    height: 50px;
+                    margin: 5px 0px;
+                    background-color: var({{ colour }})"></div>
+    {% endfor %}
+
+    <h3>DBT Colours</h3>
+    {% for colour in dbt_colours %}
+        <span>{{ colour }}</span>
+        <div style="width: 100%;
+                    height: 50px;
+                    margin: 5px 0px;
+                    background-color: var({{ colour }})"></div>
+    {% endfor %}
+
+    <h2>Buttons</h2>
+
+    <div class="dwds-button-group">
+        <button class="dwds-button">Primary button</button>
+        <button class="dwds-button dwds-button--secondary">Secondary button</button>
+        <button class="dwds-button dwds-button--secondary-dark">Secondary-dark button</button>
+        <button class="dwds-button dwds-button--warning">Warning button</button>
+        <button class="dwds-button dwds-button--transactional">Transactional button</button>
+        <button class="dwds-button dwds-button--clear">A clear button</button>
+    </div>
+    <div class="dwds-button-group">
+        <button class="dwds-button dwds-button--inline">PB (inline)</button>
+        <button class="dwds-button dwds-button--secondary dwds-button--inline">SB (inline)</button>
+        <button class="dwds-button dwds-button--secondary-dark dwds-button--inline">SDB (inline)</button>
+        <button class="dwds-button dwds-button--warning dwds-button--inline">WB (inline)</button>
+        <button class="dwds-button dwds-button--transactional dwds-button--inline">TB (inline)</button>
+        <button class="dwds-button dwds-button--clear dwds-button--inline">CB (inline)</button>
+    </div>
+
+    <h2>Navigation buttons</h2>
+
+    <div class="dwds-button-group">
+        <button class="dwds-button dwds-button--navigation active">Active navigation button</button>
+        <button class="dwds-button dwds-button--navigation">Inactive navigation button</button>
+    </div>
+
+    <h2>Buttons as links</h2>
+
+    <div class="dwds-button-group">
+        <button class="dwds-button dwds-button--link">A button that looks like a link</button>
+    </div>
+
+    <h2>Links</h2>
+
+    <div class="content-stack">
+        <a class="active" href="#">A normal link</a>
+        <a class="active" href="https://gov.uk">A link to gov uk</a>
+        <a class="active" href="https://google.com">A link to google</a>
+    </div>
+
+    <h2>Links as buttons</h2>
+
+    <div class="dwds-button-group">
+        <a class="dwds-button" href="#">Primary button</a>
+        <a class="dwds-button dwds-button--secondary" href="#">Secondary button</a>
+        <a class="dwds-button dwds-button--secondary-dark" href="#">Secondary-dark button</a>
+        <a class="dwds-button dwds-button--warning" href="#">Warning button</a>
+        <a class="dwds-button dwds-button--transactional" href="#">Transactional button</a>
+        <a class="dwds-button dwds-button--clear" href="#">Clear button</a>
+    </div>
+    <div class="dwds-button-group">
+        <a class="dwds-button dwds-button--inline" href="#">PB (inline)</a>
+        <a class="dwds-button dwds-button--secondary dwds-button--inline"
+           href="#">SB (inline)</a>
+        <a class="dwds-button dwds-button--secondary-dark dwds-button--inline"
+           href="#">SDB (inline)</a>
+        <a class="dwds-button dwds-button--warning dwds-button--inline" href="#">WB (inline)</a>
+        <a class="dwds-button dwds-button--transactional dwds-button--inline"
+           href="#">TB (inline)</a>
+        <a class="dwds-button dwds-button--clear dwds-button--inline" href="#">CB (inline)</a>
+    </div>
+
+    <h2>Links as Navigation buttons</h2>
+
+    <div class="dwds-button-group">
+        <a class="dwds-button dwds-button--navigation active" href="#">Active navigation link</a>
+        <a class="dwds-button dwds-button--navigation" href="#">Inactive navigation link</a>
+    </div>
+
+    <h2>Table</h2>
+
+    <table role="table">
+        <caption>This is a table caption</caption>
+        <thead>
+            <tr>
+                <th scope="col">Header 1</th>
+                <th scope="col">Header 2</th>
+                <th scope="col">Header 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Row 1 Col 1</td>
+                <td>Row 1 Col 2</td>
+                <td>Row 1 Col 3</td>
+            </tr>
+            <tr>
+                <td>Row 2 Col 1</td>
+                <td>Row 2 Col 2</td>
+                <td>Row 2 Col 3</td>
+            </tr>
+        </tbody>
+    </table>
+
+{% endblock primary_content %}

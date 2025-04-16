@@ -1,49 +1,49 @@
 import html
+import logging
 from typing import Optional
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import Q, Subquery
+from django.db.models import F, Func, OuterRef, Q, Subquery
 from django.forms import widgets
 from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
-from wagtail.admin.panels import (
-    FieldPanel,
-    ObjectList,
-    TabbedInterface,
-    TitleFieldPanel,
-)
+from wagtail.admin.panels import ObjectList, TabbedInterface, TitleFieldPanel
 from wagtail.admin.widgets.slug import SlugInput
+from wagtail.blocks.stream_block import StreamValue
 from wagtail.fields import StreamField
 from wagtail.models import Page, PageManager, PageQuerySet
 from wagtail.snippets.models import register_snippet
 from wagtail.utils.decorators import cached_classmethod
 
-from content import blocks
-from content.utils import manage_excluded, manage_pinned, truncate_words_and_chars
+import dw_design_system.dwds.components as dwds_blocks
+from content import blocks as content_blocks
+from content.utils import (
+    get_search_content_for_block,
+    manage_excluded,
+    manage_pinned,
+    truncate_words_and_chars,
+)
+from content.validators import validate_description_word_count
+from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
-from extended_search.index import Indexed
+from extended_search.index import Indexed, RelatedFields
+from peoplefinder.models import Person
 from peoplefinder.widgets import PersonChooser
-from search.utils import split_query
 from user.models import User as UserModel
 
 
+logger = logging.getLogger(__name__)
+
 User = get_user_model()
 
-RICH_TEXT_FEATURES = [
-    "ol",
-    "ul",
-    "link",
-    "document-link",
-    "anchor-identifier",
-]
 
-
-def strip_tags_with_spaces(string):
-    spaced = string.replace("><", "> <")
+def strip_tags_with_newlines(string: str) -> str:
+    spaced = string.replace("><", ">\n<")
     return strip_tags(spaced)
 
 
@@ -66,43 +66,7 @@ class Theme(models.Model):
         ordering = ["-title"]
 
 
-class BasePage(Page, Indexed):
-    legacy_path = models.CharField(
-        max_length=500,
-        blank=True,
-        null=True,
-    )
-
-    promote_panels = []
-    content_panels = [
-        TitleFieldPanel("title"),
-    ]
-
-    def serve(self, request):
-        response = super().serve(request)
-
-        return response
-
-    def get_first_publisher(self) -> Optional[UserModel]:
-        """Return the first publisher of the page or None."""
-        first_revision_with_user = (
-            self.revisions.exclude(user=None).order_by("created_at", "id").first()
-        )
-
-        if first_revision_with_user:
-            return first_revision_with_user.user
-        else:
-            return None
-
-    @property
-    def days_since_last_published(self):
-        if self.last_published_at:
-            result = timezone.now() - self.last_published_at
-            return result.days
-        return None
-
-
-class ContentPageQuerySet(PageQuerySet):
+class BasePageQuerySet(PageQuerySet):
     def restricted_q(self, restriction_type):
         from wagtail.models import BaseViewRestriction, PageViewRestriction
 
@@ -124,13 +88,13 @@ class ContentPageQuerySet(PageQuerySet):
 
         return q if q else Q(pk__in=[])
 
+    def public_or_login(self):
+        return self.exclude(self.restricted_q(["password", "groups"]))
+
     def pinned_q(self, query):
         pinned = SearchPinPageLookUp.objects.filter_by_query(query)
 
         return Q(pk__in=Subquery(pinned.values("object_id")))
-
-    def public_or_login(self):
-        return self.exclude(self.restricted_q(["password", "groups"]))
 
     def pinned(self, query):
         return self.filter(self.pinned_q(query))
@@ -146,8 +110,247 @@ class ContentPageQuerySet(PageQuerySet):
     def exclusions(self, query):
         return self.filter(self.exclusions_q(query))
 
+    def annotate_with_total_views(self):
+        return self.annotate(
+            total_views=models.Sum(
+                "interactions_recentpageviews__count",
+                distinct=True,
+            )
+        )
+
+    def annotate_with_unique_views_all_time(self):
+        return self.annotate(
+            unique_views_all_time=models.Count(
+                "interactions_recentpageviews",
+                distinct=True,
+            )
+        )
+
+    def annotate_with_unique_views_past_month(self):
+        return self.annotate(
+            unique_views_past_month=models.Count(
+                "interactions_recentpageviews",
+                filter=Q(
+                    interactions_recentpageviews__updated_at__gte=timezone.now()
+                    - timezone.timedelta(weeks=4)
+                ),
+                distinct=True,
+            )
+        )
+
+    def order_by_most_recent_unique_views_past_month(self):
+        return self.annotate_with_unique_views_past_month().order_by(
+            "-unique_views_past_month"
+        )
+
+
+class BasePage(Page, Indexed):
+    class Meta:
+        permissions = [
+            ("view_info_page", "Can view the info page in the Wagtail admin"),
+        ]
+
+    objects = PageManager.from_queryset(BasePageQuerySet)()
+
+    legacy_path = models.CharField(
+        max_length=500,
+        blank=True,
+        null=True,
+    )
+
+    page_updates = StreamField(
+        [
+            ("page_update", content_blocks.PageUpdate()),
+        ],
+        null=True,
+        blank=True,
+        use_json_field=True,
+        help_text="Tell readers about page important page changes.",
+    )
+    page_author = models.ForeignKey(
+        "peoplefinder.Person",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="If the 'page author' field is empty, we will fall back to the owner of this page.",
+    )
+    page_author_name = models.CharField(
+        null=True,
+        blank=True,
+        help_text="Use this to show the name of the author when there isn't an active Person to show",
+    )
+
+    promote_panels = []
+    content_panels = [
+        TitleFieldPanel("title"),
+    ]
+    publishing_panels = [
+        FieldPanel("page_author", widget=PersonChooser),
+        FieldPanel("page_author_name", read_only=True),
+        FieldPanel("page_updates"),
+    ]
+
+    tabbed_interface_objects = [
+        ("content_panels", "Content"),
+        ("promote_panels", "Promote"),
+        ("settings_panels", "Settings"),
+        ("publishing_panels", "Publishing"),
+    ]
+
+    def fill_page_author_name(self) -> None:
+        author = self.get_author()
+
+        if isinstance(author, str) and self.page_author_name != author:
+            self.page_author_name = author
+            return
+
+        if isinstance(author, Person) and self.page_author_name != author.full_name:
+            self.page_author_name = author.full_name
+            return
+
+    def sort_page_updates(self) -> None:
+        """
+        Reorder the `page_updates` blocks by the `update_time` value from most
+        recent to oldest
+        """
+        self.page_updates = StreamValue(
+            self.page_updates.stream_block,
+            sorted(
+                self.page_updates,
+                key=lambda x: x.value["update_time"],
+                reverse=True,
+            ),
+        )
+
+        return None
+
+    def full_clean(self, *args, **kwargs):
+        self.fill_page_author_name()
+        self.sort_page_updates()
+        super().full_clean(*args, **kwargs)
+
+    @cached_classmethod
+    def get_edit_handler(cls):
+        return TabbedInterface(
+            [
+                ObjectList(getattr(cls, field_name), heading=heading)
+                for field_name, heading in cls.tabbed_interface_objects
+            ]
+        ).bind_to_model(cls)
+
+    @property
+    def published_date(self):
+        return self.last_published_at
+
+    def get_author(self) -> Optional[Person | str]:
+        if self.page_author:
+            return self.page_author
+
+        if self.page_author_name:
+            return self.page_author_name
+
+        # TODO: Remove this in future ticket when we strip out the "perm_sec_as_author" field.
+        if getattr(self, "perm_sec_as_author", False) and settings.PERM_SEC_NAME:
+            return settings.PERM_SEC_NAME
+
+        if first_publisher := self.get_first_publisher():
+            try:
+                return first_publisher.profile
+            except User.profile.RelatedObjectDoesNotExist:
+                pass
+
+        if self.owner:
+            return self.owner.profile
+
+        return None
+
+    def get_first_publisher(self) -> Optional[UserModel]:
+        """Return the first publisher of the page or None."""
+        first_revision_with_user = (
+            self.revisions.exclude(user=None).order_by("created_at", "id").first()
+        )
+
+        if first_revision_with_user:
+            return first_revision_with_user.user
+
+        return None
+
+    @property
+    def days_since_last_published(self):
+        if self.last_published_at:
+            result = timezone.now() - self.last_published_at
+            return result.days
+        return None
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        page_updates_table = []
+
+        for block in self.page_updates:
+            page_update = {
+                "update_time": block.value["update_time"],
+                "person": None,
+                "note": None,
+            }
+            if page_update_person := block.value.get("person"):
+                page_update["person"] = page_update_person
+            if page_update_note := block.value.get("note"):
+                page_update["note"] = page_update_note
+
+            page_updates_table.append(page_update)
+
+        # Build first published update
+        if self.first_published_at:
+            first_publisher_profile = None
+            if first_publisher := self.get_first_publisher():
+                try:
+                    first_publisher_profile = first_publisher.profile
+                except User.profile.RelatedObjectDoesNotExist:
+                    pass
+
+            page_updates_table.append(
+                {
+                    "update_time": self.first_published_at,
+                    "person": first_publisher_profile,
+                    "note": "Page published",
+                }
+            )
+
+        context["page_updates_table"] = page_updates_table
+        return context
+
+
+class ContentPageQuerySet(BasePageQuerySet):
+    def annotate_with_reaction_count(self):
+        return self.annotate(
+            reaction_count=models.Count("interactions_pagereactions", distinct=True)
+        )
+
+    def annotate_with_comment_count(self):
+        from news.models import Comment
+
+        return self.annotate(
+            comment_count=Subquery(
+                Comment.objects.filter(
+                    models.Q(
+                        models.Q(parent__is_visible=True)
+                        | models.Q(parent__isnull=True)
+                    ),
+                    is_visible=True,
+                    page=OuterRef("id"),
+                )
+                .annotate(count=Func(F("id"), function="Count"))
+                .values("count")
+            )
+        )
+
 
 class ContentOwnerMixin(models.Model):
+    tabbed_interface_objects = BasePage.tabbed_interface_objects + [
+        ("content_owner_panels", "Content owner"),
+    ]
+
     content_owner = models.ForeignKey(
         "peoplefinder.Person",
         on_delete=models.SET_NULL,
@@ -165,15 +368,18 @@ class ContentOwnerMixin(models.Model):
         FieldPanel("content_contact_email"),
     ]
 
-    @cached_classmethod
-    def get_edit_handler(cls):
-        return TabbedInterface(
+    # This should be imported in the model that uses this mixin, e.g: Network.indexed_fields = [ ... ] + ContentOwnerMixin.indexed_fields
+    indexed_fields = [
+        RelatedFields(
+            "content_owner",
             [
-                ObjectList(cls.content_panels, heading="Content"),
-                ObjectList(cls.promote_panels, heading="Promote"),
-                ObjectList(cls.content_owner_panels, heading="Content owner"),
-            ]
-        ).bind_to_model(cls)
+                IndexedField("first_name", explicit=True),
+                IndexedField("preferred_first_name", explicit=True),
+                IndexedField("last_name", explicit=True),
+            ],
+        ),
+        IndexedField("content_contact_email", explicit=True),
+    ]
 
     class Meta:
         abstract = True
@@ -190,11 +396,83 @@ class ContentOwnerMixin(models.Model):
         return subclasses
 
 
-class ContentPage(BasePage):
+class SearchFieldsMixin(models.Model):
+    """
+    Specific fields and settings to manage search. Extra fields are generally
+    defined to make custom and specific indexing as defined in /docs/search.md
+
+    Usage:
+    - Add this mixin to a model
+    - Define the fields that should be indexed in search_stream_fields.
+      Example: ["body"]
+    - Add SearchFieldsMixin.indexed_fields to the Model's indexed_fields list
+    - Run self._generate_search_field_content() in full_clean() to generate
+      search fields
+    """
+
+    class Meta:
+        abstract = True
+
+    search_stream_fields: list[str] = []
+
+    search_title = models.CharField(
+        max_length=255,
+    )
+    search_headings = models.TextField(
+        blank=True,
+        null=True,
+    )
+    search_content = models.TextField(
+        blank=True,
+        null=True,
+    )
+
+    def _generate_search_field_content(self):
+        self.search_title = self.title
+        search_headings = []
+        search_content = []
+
+        for stream_field_name in self.search_stream_fields:
+            stream_field = getattr(self, stream_field_name)
+            for stream_child in stream_field:
+                block_search_headings, block_search_content = (
+                    get_search_content_for_block(stream_child.block, stream_child.value)
+                )
+                search_headings += block_search_headings
+                search_content += block_search_content
+
+        self.search_headings = " ".join(search_headings)
+        self.search_content = " ".join(search_content)
+
+    indexed_fields = [
+        IndexedField(
+            "search_title",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=5.0,
+        ),
+        IndexedField(
+            "search_headings",
+            tokenized=True,
+            explicit=True,
+            fuzzy=True,
+            boost=3.0,
+        ),
+        IndexedField(
+            "search_content",
+            tokenized=True,
+            explicit=True,
+        ),
+    ]
+
+
+class ContentPage(SearchFieldsMixin, BasePage):
     objects = PageManager.from_queryset(ContentPageQuerySet)()
 
     is_creatable = False
     show_in_menus = True
+    search_stream_fields = ["body"]
 
     legacy_guid = models.CharField(
         blank=True, null=True, max_length=255, help_text="""Wordpress GUID"""
@@ -204,39 +482,56 @@ class ContentPage(BasePage):
         blank=True, null=True, help_text="""Legacy content, pre-conversion"""
     )
 
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text="This should not be more than 30 words.",
+        validators=[validate_description_word_count],
+    )
+
+    preview_image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
     body = StreamField(
         [
-            ("heading2", blocks.Heading2Block()),
-            ("heading3", blocks.Heading3Block()),
-            ("heading4", blocks.Heading4Block()),
-            ("heading5", blocks.Heading5Block()),
+            ("heading2", content_blocks.Heading2Block()),
+            ("heading3", content_blocks.Heading3Block()),
+            ("heading4", content_blocks.Heading4Block()),
+            ("heading5", content_blocks.Heading5Block()),
             (
                 "text_section",
-                blocks.TextBlock(
+                content_blocks.TextBlock(
                     blank=True,
-                    features=RICH_TEXT_FEATURES,
-                    help_text="""Some text to describe what this section is about (will be
-            displayed above the list of child pages)""",
+                    help_text="""Some text to describe what this section is about (will be displayed above the list of child pages)""",
                 ),
             ),
-            ("image", blocks.ImageBlock()),
-            ("embed_video", blocks.EmbedVideoBlock(help_text="""Embed a video""")),
-            ("media", blocks.InternalMediaBlock(help_text="""Link to a media block""")),
+            ("image", content_blocks.ImageBlock()),
+            ("image_with_text", content_blocks.ImageWithTextBlock()),
+            ("quote", content_blocks.QuoteBlock()),
+            (
+                "embed_video",
+                content_blocks.EmbedVideoBlock(help_text="""Embed a video"""),
+            ),
+            (
+                "media",
+                content_blocks.InternalMediaBlock(
+                    help_text="""Link to a media block"""
+                ),
+            ),
             (
                 "data_table",
-                blocks.DataTableBlock(
+                content_blocks.DataTableBlock(
                     help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
                 ),
             ),
+            ("person_banner", content_blocks.PersonBanner()),
         ],
         use_json_field=True,
-    )
-
-    custom_page_links = StreamField(
-        [
-            ("page_links", blocks.CustomPageLinkListBlock()),
-        ],
-        blank=True,
     )
 
     excerpt = models.CharField(
@@ -267,71 +562,59 @@ class ContentPage(BasePage):
         "from search results for these terms",
     )
 
+    useful_links = StreamField(
+        [
+            ("useful_links", content_blocks.UsefulLinkBlock()),
+        ],
+        blank=True,
+        null=True,
+    )
+
+    spotlight_page = models.ForeignKey(
+        Page,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
+    #
+    # Topics
+    # This would ideally belong on PageWithTopics, but the Network model uses it
+    # and it's not worth the effort to refactor it.
+    #
+
+    @property
+    def topics(self):
+        from working_at_dit.models import Topic
+
+        # This needs to be a list comprehension to work nicely with modelcluster.
+        topic_ids = [page_topic.topic.pk for page_topic in self.page_topics.all()]
+        return Topic.objects.filter(pk__in=topic_ids)
+
+    @property
+    def topic_titles(self):
+        return [topic.title for topic in self.topics]
+
     #
     # Search
     # Specific fields and settings to manage search. Extra fields are generally
     # defined to make custom and specific indexing as defined in /docs/search.md
     #
 
-    search_title = models.CharField(
-        max_length=255,
-    )
-
-    search_headings = models.TextField(
-        blank=True,
-        null=True,
-    )
-
-    search_content = models.TextField(
-        blank=True,
-        null=True,
-    )
-
-    indexed_fields = [
-        IndexedField(
-            "search_title",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=5.0,
-        ),
-        IndexedField(
-            "search_headings",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-            boost=3.0,
-        ),
+    indexed_fields = SearchFieldsMixin.indexed_fields + [
         IndexedField(
             "excerpt",
             tokenized=True,
             explicit=True,
             boost=2.0,
         ),
+        IndexedField("is_creatable", filter=True),
         IndexedField(
-            "search_content",
+            "description",
             tokenized=True,
             explicit=True,
         ),
-        IndexedField("is_creatable", filter=True),
-        IndexedField("published_date", proximity=True),
     ]
-
-    @property
-    def published_date(self):
-        return self.last_published_at
-
-    def _generate_search_field_content(self):
-        self.search_title = self.title
-        self.search_headings = ""
-        self.search_content = ""
-        for block in self.body:
-            if block.block_type in ["heading2", "heading3", "heading4", "heading5"]:
-                self.search_headings += f" {strip_tags(block.value)}"
-            elif block.block_type == "text_section":
-                self.search_content += f" {strip_tags_with_spaces(str(block.value))}"
-            elif block.block_type == "image":
-                self.search_content += f" {block.value['caption']}"
 
     #
     # Wagtail admin configuration
@@ -340,9 +623,11 @@ class ContentPage(BasePage):
     subpage_types = []
 
     content_panels = BasePage.content_panels + [
-        FieldPanel("excerpt", widget=widgets.Textarea),
-        FieldPanel("custom_page_links"),
+        FieldPanel("description"),
         FieldPanel("body"),
+        FieldPanel("excerpt", widget=widgets.Textarea),
+        FieldPanel("preview_image"),
+        InlinePanel("tagged_items", label="Tags"),
     ]
 
     promote_panels = [
@@ -351,6 +636,17 @@ class ContentPage(BasePage):
         FieldPanel("pinned_phrases"),
         FieldPanel("excluded_phrases"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        tag_set = []
+        # TODO: Enable when we want to show tags to users.
+        # for tagged_item in self.tagged_items.select_related("tag").all():
+        #     tag_set.append(tagged_item.tag)
+        context["tag_set"] = tag_set
+
+        return context
 
     def full_clean(self, *args, **kwargs):
         self._generate_search_field_content()
@@ -364,7 +660,7 @@ class ContentPage(BasePage):
             [str(b.value) for b in self.body if b.block_type == "text_section"]
         )
         self.excerpt = truncate_words_and_chars(
-            html.unescape(strip_tags_with_spaces(content)), 40, 700
+            text=html.unescape(strip_tags_with_newlines(content)),
         )
 
     def save(self, *args, **kwargs):
@@ -386,42 +682,56 @@ class SearchKeywordOrPhrase(models.Model):
 
 class SearchKeywordOrPhraseQuerySet(models.QuerySet):
     def filter_by_query(self, query):
-        query_parts = split_query(query)
+        from search.utils import split_query
 
+        query_parts = split_query(query)
         return self.filter(search_keyword_or_phrase__keyword_or_phrase__in=query_parts)
 
 
-class ServiceNavigation(ContentPage):
+class NavigationPage(SearchFieldsMixin, BasePage):
     template = "content/navigation_page.html"
 
-    primary_content = StreamField(
+    search_stream_fields: list[str] = ["primary_elements", "secondary_elements"]
+
+    primary_elements = StreamField(
         [
-            ("curated_page_links", blocks.CustomPageLinkListBlock()),
-            ("cta", blocks.CTABlock()),
+            ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),
         ],
         blank=True,
     )
 
-    secondary_content = StreamField(
+    secondary_elements = StreamField(
         [
-            ("curated_page_links", blocks.CustomPageLinkListBlock()),
-            ("cta", blocks.CTABlock()),
+            ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
+            ("dw_tagged_page_list", dwds_blocks.TaggedPageListBlock()),
+            ("dw_cta", dwds_blocks.CTACardBlock()),
+            ("dw_engagement_card", dwds_blocks.EngagementCardBlock()),
+            ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),
         ],
         blank=True,
     )
 
     content_panels = BasePage.content_panels + [
-        FieldPanel(
-            "primary_content",
-        ),
-        FieldPanel("body"),
-        FieldPanel("secondary_content"),
+        FieldPanel("primary_elements"),
+        FieldPanel("secondary_elements"),
     ]
+
+    indexed_fields = SearchFieldsMixin.indexed_fields + [
+        IndexedField("primary_elements"),
+        IndexedField("secondary_elements"),
+    ]
+
+    def get_template(self, request, *args, **kwargs):
+        return self.template
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         return context
+
+    def full_clean(self, *args, **kwargs):
+        self._generate_search_field_content()
+        super().full_clean(*args, **kwargs)
 
 
 class SearchExclusionPageLookUp(models.Model):
@@ -450,3 +760,28 @@ class SearchPinPageLookUp(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
     # TODO: Remove historical records.
     history = HistoricalRecords()
+
+
+class BlogIndex(BasePage):
+    template = "content/blog_index.html"
+    subpage_types = [
+        "content.BlogPost",
+    ]
+    is_creatable = False
+
+    def get_template(self, request, *args, **kwargs):
+        return self.template
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["children"] = self.get_children().live().public().order_by("title")
+        return context
+
+
+class BlogPost(ContentPage):
+    template = "content/blog_post.html"
+    subpage_types = []
+    is_creatable = True
+
+    def get_template(self, request, *args, **kwargs):
+        return self.template

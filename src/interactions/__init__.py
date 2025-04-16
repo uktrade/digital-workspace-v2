@@ -9,16 +9,6 @@ def get_recent_page_views(user, *, limit=10, exclude_pages=None):
     return qs[:limit]
 
 
-def get_bookmarks(user):
-    from .models import Bookmark
-
-    return Bookmark.objects.select_related("page").filter(user=user)
-
-
-def is_page_bookmarked(user, page):
-    return get_bookmarks(user).filter(page=page).exists()
-
-
 def get_updated_pages(user):
     from .models import RecentPageView
 

@@ -1,0 +1,11 @@
+<div class="dwds-sidebar-part">
+    <div class="content-stack medium">
+        <h3>{{ title }}</h3>
+        {% for link in useful_links %}
+            <div class="content-with-icon medium-gap top-alignment">
+                {% include "dwds/icons/arrow-blue-bg.html" with medium=True %}
+                <a href="{{ link.url }}" class="no-underline">{{ link.title }}</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>

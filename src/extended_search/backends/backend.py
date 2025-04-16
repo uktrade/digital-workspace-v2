@@ -1,17 +1,21 @@
-from typing import Union
+from typing import Optional, Union
 
+from wagtail.search.backends import get_search_backend
 from wagtail.search.backends.elasticsearch7 import (
     Elasticsearch7Mapping,
     Elasticsearch7SearchBackend,
     Elasticsearch7SearchQueryCompiler,
+    ElasticsearchAtomicIndexRebuilder,
     Field,
 )
 from wagtail.search.index import SearchField
+from wagtail.search.management.commands.update_index import group_models_by_index
 from wagtail.search.query import MATCH_NONE, Fuzzy, MatchAll, Not, Phrase, PlainText
 
 from extended_search import settings as search_settings
-from extended_search.index import RelatedFields
-from extended_search.query import Filtered, Nested, OnlyFields
+from extended_search.index import RelatedFields, get_indexed_models
+from extended_search.query import Filtered, FunctionScore, Nested, OnlyFields
+from extended_search.query_builder import build_queries
 
 
 class FilteredSearchMapping(Elasticsearch7Mapping):
@@ -44,16 +48,32 @@ class ExtendedSearchQueryCompiler(Elasticsearch7SearchQueryCompiler):
 
         return super().get_boosted_fields(boostable_fields)
 
-    def _remap_fields(self, fields):
+    def _remap_fields(
+        self,
+        fields,
+        get_searchable_fields__args: Optional[tuple] = None,
+        get_searchable_fields__kwargs: Optional[dict] = None,
+    ):
         """
         Convert field names into index column names
         """
+        if get_searchable_fields__args is None:
+            get_searchable_fields__args = ()
+        if get_searchable_fields__kwargs is None:
+            get_searchable_fields__kwargs = {}
+
         if not fields:
             return super()._remap_fields(fields)
 
         remapped_fields = []
 
-        searchable_fields = {f.field_name: f for f in self.get_searchable_fields()}
+        searchable_fields = {
+            f.field_name: f
+            for f in self.get_searchable_fields(
+                *get_searchable_fields__args,
+                **get_searchable_fields__kwargs,
+            )
+        }
 
         for field_name in fields:
             field = searchable_fields.get(field_name)
@@ -172,6 +192,15 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
     SearchQuery
     """
 
+    def get_searchable_fields(self, *args, only_model, **kwargs):
+        if not only_model:
+            return super().get_searchable_fields()
+        return [
+            f
+            for f in only_model.get_search_fields(ignore_cache=True)
+            if isinstance(f, SearchField) or isinstance(f, RelatedFields)
+        ]
+
     def _compile_query(self, query, field, boost=1.0):
         """
         Override the parent method to handle specifics of the OnlyFields
@@ -180,7 +209,12 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
         if not isinstance(query, OnlyFields):
             return super()._compile_query(query, field, boost)
 
-        remapped_fields = self._remap_fields(query.fields)
+        remapped_fields = self._remap_fields(
+            query.fields,
+            get_searchable_fields__kwargs={
+                "only_model": query.only_model,
+            },
+        )
 
         if isinstance(field, list) and len(field) == 1:
             field = field[0]
@@ -207,7 +241,7 @@ class OnlyFieldSearchQueryCompiler(ExtendedSearchQueryCompiler):
 
 
 class NestedSearchQueryCompiler(ExtendedSearchQueryCompiler):
-    def get_searchable_fields(self):
+    def get_searchable_fields(self, *args, **kwargs):
         return [
             f
             for f in self.queryset.model.get_search_fields()
@@ -318,23 +352,68 @@ class BoostSearchQueryCompiler(ExtendedSearchQueryCompiler):
         return match_query
 
 
+class FunctionScoreSearchQueryCompiler(ExtendedSearchQueryCompiler):
+    def _compile_query(self, query, field, boost=1.0):
+        if isinstance(query, FunctionScore):
+            return self._compile_function_score_query(query, [field], boost)
+        return super()._compile_query(query, field, boost)
+
+    def _compile_function_score_query(self, query, fields, boost=1.0):
+        if query.function_name == "script_score":
+            params = query.function_params
+        else:  # it's a decay query
+            score_functions = {
+                f.function_name: f for f in query.model_class.get_score_functions()
+            }
+            score_func = score_functions[query.function_name]
+
+            # This is in place of get_field_column_name to build the name of the indexed field.
+            remapped_field_name = score_func.get_score_name() + "_filter"
+            params = {remapped_field_name: query.function_params["_field_name_"]}
+
+        return {
+            "function_score": {
+                "query": self._join_and_compile_queries(query.subquery, fields, boost),
+                query.function_name: params,
+            }
+        }
+
+
 class CustomSearchMapping(
     FilteredSearchMapping,
 ): ...
 
 
 class CustomSearchQueryCompiler(
+    FunctionScoreSearchQueryCompiler,
     BoostSearchQueryCompiler,
     FilteredSearchQueryCompiler,
-    NestedSearchQueryCompiler,
     OnlyFieldSearchQueryCompiler,
+    NestedSearchQueryCompiler,
 ):
     mapping_class = CustomSearchMapping
+
+
+class CustomAtomicIndexRebuilder(ElasticsearchAtomicIndexRebuilder):
+    def finish(self):
+        super().finish()
+        models_grouped_by_index = group_models_by_index(
+            get_search_backend(), get_indexed_models()
+        )
+        models_for_current_index = []
+
+        for index_models in models_grouped_by_index.keys():
+            if self.index.name.startswith(index_models.name):
+                models_for_current_index = models_grouped_by_index[index_models]
+
+        if models_for_current_index:
+            build_queries(models=models_for_current_index)
 
 
 class CustomSearchBackend(Elasticsearch7SearchBackend):
     query_compiler_class = CustomSearchQueryCompiler
     mapping_class = CustomSearchMapping
+    atomic_rebuilder_class = CustomAtomicIndexRebuilder
 
 
 SearchBackend = CustomSearchBackend

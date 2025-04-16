@@ -23,6 +23,8 @@ make setup
 make webpack
 ```
 
+If you're on a local (non-production!) environment you may want to ensure that `DEV_TOOLS_ENABLED` is set to `True` to avoid integrating with the SSO service. This is a workaround to allow developers to impersonate different users and should be used with caution.
+
 You can now access:
 
 - Digital Workspace on http://localhost:8000
@@ -98,6 +100,40 @@ buildpack will automatically run the npm `heroku-postbuild` step after
 - [Project playbook](https://readme.trade.gov.uk/docs/playbooks/workspace.html)
 - [Wagtail](https://www.wagtail.io)
 - [Django](https://www.djangoproject.com/)
+
+## Setup DebugPy
+
+Add environment variable in your .env file
+
+```bash
+DEBUGPY_ENABLED=True
+```
+
+Create launch.json file inside .vscode directory
+
+```json
+    {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Python: Remote Attach (DebugPy)",
+                "type": "debugpy",
+                "request": "attach",
+                "connect": {
+                    "host": "localhost",
+                    "port": 5678
+                },
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/app/"
+                    }
+                ],
+                "justMyCode": true
+            }
+        ]
+    }
+```
 
 ## Notable design decisions
 

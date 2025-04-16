@@ -1,117 +1,35 @@
 .new-home {
   margin-top: 0;
 
-  section {
-    border-bottom: 1px solid $brand-color-grey50;
-
-    .header-with-action {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-  }
-
-  section.homepage-site-alert {
-    margin: 0 0 20px 0;
-    border: none;
-
-    &:empty {
-      margin: 0;
-      padding: 0 !important;
-    }
-  }
-
-  .updates {
-    li::marker {
-      content: "⇨";
-    }
-
-    li {
-      list-style-position: outside;
-      margin-left: 1rem;
-      padding-left: 0.3rem;
-
-      p {
-        display: inline;
-      }
-    }
-  }
-
-  //   NEWS
-  .home-news-item {
-    position: relative;
-
-    .home-news-item-text-content {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      background-color: rgba(255, 255, 255, 0.85);
-      width: 100%;
-      padding: 10px;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-  }
-
   .main-news-item {
-    .home-news-item {
-      margin-bottom: 10px;
+    .frame {
+      //   aspect-ratio: 21/9;
 
-      .frame {
-        img {
-          inline-size: 100%;
-          block-size: 100%;
-          object-fit: cover;
-        }
+      img {
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
       }
     }
   }
 
   .ws-news-grid-items {
-    margin-bottom: 20px;
-
-    h4.govuk-body-s {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    h4 > a {
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  .govuk-news {
-    h2 {
-      column-span: all;
-    }
-
-    li {
-      display: inline-block;
-    }
-
-    a {
-      text-decoration: none;
-      font-weight: bold;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  @media only screen and (min-width: 768px) {
-    .ws-news-grid-items {
-      gap: 20px;
+    .home-news-item {
       display: flex;
-      block-size: auto;
-      overflow-x: auto;
-      overflow-y: hidden;
+      flex-flow: row nowrap;
+      gap: 10px;
+
+      .frame {
+        flex: none none 30%;
+      }
+
+      .home-news-item-text-content {
+        flex: none none 70%;
+
+        h4.govuk-heading-s {
+          margin-bottom: 10px;
+        }
+      }
     }
   }
 
@@ -119,53 +37,44 @@
     column-count: unset;
 
     li.ws-whats-popular-item {
-      position: relative;
       margin-bottom: 20px;
 
       img {
         width: 300px;
         height: 100px;
       }
-
-      p {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        background-color: rgba(255, 255, 255, 0.85);
-        width: 100%;
-        padding: 10px !important;
-        margin: 0 !important;
-        font-weight: bold;
-
-        a {
-          text-decoration: none;
-
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
     }
   }
 
-  p.govuk-body-xs {
-    margin: 0 !important;
+  @media only screen and (min-width: 768px) {
+    .ws-news-grid-items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+}
+
+.new-home {
+
+  article,
+  section {
+    display: inline;
+  }
+
+  .govuk-phase-banner__text {
+    color: var(--color-text-highlight);
+
+    a {
+      color: var(--color-link);
+    }
   }
 }
 
 .ws-secondary-content {
   .new-home {
     li {
-      margin-bottom: 12px;
-
-      a {
-        text-decoration: none;
-        font-weight: bold;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
+      margin-bottom: 10px;
     }
   }
 }

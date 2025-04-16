@@ -1,20 +1,33 @@
-{% extends "1_col_content.html" %}
-{% load wagtailcore_tags %}
+{% extends "dwds_sidebar.html" %}
+{% load wagtailcore_tags bookmarks reactions page %}
 
-{% if bookmark %}
-    {% block bookmark %}
-    {% endblock bookmark %}
-{% endif %}
-
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
+{% block primary_content %}
     {% if attribution %}
-        {% include "includes/attribution.html" with page=page %}
+        {% if attribution__is_news_page and FEATURE_FLAGS.new_news_author %}
+            {% page_author self %}
+        {% else %}
+            {% include "includes/attribution.html" with page=page is_news_page=attribution__is_news_page perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=attribution__first_publisher_as_author %}
+        {% endif %}
     {% endif %}
-    {% for block in page.body %}
-        {% include_block block %}
-    {% endfor %}
+    {% if page.allow_reactions %}
+        {% reactions_for_page user page "top" %}
+    {% endif %}
+    {% block pre_page_body %}
+    {% endblock pre_page_body %}
+    {% if page.body %}
+        {% for block in page.body %}
+            {% include_block block %}
+        {% endfor %}
+    {% endif %}
+{% endblock primary_content %}
+
+{% block post_primary_content %}
+    {% if page.allow_reactions %}
+        <div>{% reactions_for_page user page "bottom" %}</div>
+    {% endif %}
+    {% include "includes/page_publishing_information.html" with page=self %}
     {% if children %}
         {% include "includes/child-links.html" with children=children num_cols=num_cols display=display target_blank=target_blank %}
     {% endif %}
-{% endblock %}
+    {{ block.super }}
+{% endblock post_primary_content %}

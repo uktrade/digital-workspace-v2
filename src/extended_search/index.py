@@ -54,10 +54,16 @@ class Indexed(index.Indexed):
             if class_is_indexed(model_class) and issubclass(model_class, Indexed):
                 for f in model_class.indexed_fields:
                     f.configuration_model = model_class
-                    if f.model_field_name not in model_field_names:
-                        processed_index_fields[f.model_field_name] = []
-                        model_field_names.append(f.model_field_name)
-                    processed_index_fields[f.model_field_name].append(f)
+                    if isinstance(f, BaseField):
+                        if f.model_field_name not in model_field_names:
+                            processed_index_fields[f.model_field_name] = []
+                            model_field_names.append(f.model_field_name)
+                        processed_index_fields[f.model_field_name].append(f)
+                    else:
+                        if f.field_name not in model_field_names:
+                            processed_index_fields[f.field_name] = []
+                            model_field_names.append(f.field_name)
+                        processed_index_fields[f.field_name].append(f)
 
         if as_dict:
             return processed_index_fields
@@ -71,7 +77,7 @@ class Indexed(index.Indexed):
         for k, v in processed_index_fields.items():
             processed_index_fields[k] = []
             for f in v:
-                processed_index_fields[k] += f.generate_fields()
+                processed_index_fields[k] += f.generate_fields(cls)
         return processed_index_fields
 
     processed_search_fields = {}
@@ -101,9 +107,26 @@ class Indexed(index.Indexed):
     @classmethod
     def has_unique_index_fields(cls):
         # @TODO [DWPF-1066] this doesn't account for a diverging MRO
-        parent_model = inspect.getmro(cls)[1]
+        parent_model = cls.indexed_get_parent()
         parent_indexed_fields = getattr(parent_model, "indexed_fields", [])
         return cls.indexed_fields != parent_indexed_fields
+
+    @classmethod
+    def get_score_functions(cls):
+        return [
+            field
+            for field in cls.get_indexed_fields()
+            if isinstance(field, ScoreFunction)
+        ]
+
+    @classmethod
+    def get_root_index_model(cls):
+        class_mro = list(inspect.getmro(cls))
+        class_mro.reverse()
+        for model in class_mro:
+            if model != Indexed and issubclass(model, Indexed):
+                return model
+        return cls
 
 
 def get_indexed_models() -> list[Type[Indexed]]:
@@ -265,22 +288,38 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
         return queryset
 
     def generate_fields(
-        self, parent_field: Optional[BaseField] = None
+        self,
+        cls,
+        parent_field: Optional[BaseField] = None,
+        configuration_model: Optional[Type[Indexed]] = None,
     ) -> list[BaseField]:
         if parent_field:
             self.is_relation_of(parent_field)
+        if configuration_model:
+            self.configuration_model = configuration_model
 
         generated_fields = []
         for field in self.fields:
             if isinstance(field, IndexedField) or isinstance(field, RelatedFields):
-                generated_fields += field.generate_fields(parent_field=self)
+                generated_fields += field.generate_fields(
+                    cls,
+                    parent_field=self,
+                    configuration_model=self.configuration_model,
+                )
             else:
                 # is_relation_of won't work on Wagtail native fields
                 field.is_relation_of(self)
                 generated_fields.append(field)
 
-        self.fields = generated_fields
-        return [self]
+        return [
+            RelatedFields(
+                field_name=self.field_name,
+                model_field_name=self.model_field_name,
+                parent_field=self.parent_field,
+                configuration_model=self.configuration_model,
+                fields=generated_fields,
+            )
+        ]
 
     def get_related_field(self, field_name):
         """
@@ -296,6 +335,106 @@ class RelatedFields(ModelFieldNameMixin, index.RelatedFields):
                     return f.get_related_field(new_field_name)
                 return f
 
+    def __repr__(self) -> str:
+        return f"<RelatedFields {self.field_name} fields={sorted([str(f) for f in self.fields])}>"
+
+
+class ScoreFunction:
+    SUPPORTED_FUNCTIONS = ["script_score", "gauss", "exp", "linear"]
+    configuration_model: Optional[models.Model] = None
+
+    def __init__(self, function_name, **kwargs) -> None:
+        if function_name not in self.SUPPORTED_FUNCTIONS:
+            raise AttributeError(
+                f"Function {function_name} is not supported, expecting one of {', '.join(self.SUPPORTED_FUNCTIONS)}"
+            )
+        self.function_name = kwargs["function_name"] = function_name
+
+        if function_name == "script_score":
+            if "script" not in kwargs and "source" not in kwargs:
+                raise AttributeError(
+                    "The 'script_score' function type requires passing either a 'script' or a 'source' parameter"
+                )
+
+            if "script" in kwargs:
+                if (
+                    not isinstance(kwargs["script"], dict)
+                    or "source" not in kwargs["script"]
+                ):
+                    raise AttributeError(
+                        "The 'script' parameter must be a dict containing a 'source' key"
+                    )
+                self.script = kwargs["script"]
+            elif "source" in kwargs:
+                self.script = {"source": kwargs["source"]}
+
+            self.params = {"script": self.script}
+
+        else:  # it's a decay function
+            if "field_name" not in kwargs:
+                raise AttributeError(
+                    f"The '{function_name}' function requires a 'field_name' parameter"
+                )
+            if "scale" not in kwargs:
+                raise AttributeError(
+                    f"The '{function_name}' function requires a 'scale' parameter"
+                )
+            if "decay" not in kwargs:
+                # optional for ES, but we want explicit values in the config
+                raise AttributeError(
+                    f"The '{function_name}' function requires a 'decay' parameter"
+                )
+            self.field_name = kwargs["field_name"]
+            self.scale = kwargs["scale"]
+            self.decay = kwargs["decay"]
+            self.params = {
+                # TODO look into this field_name, see comment below
+                "_field_name_": {  # NB important this is the model field name
+                    "scale": self.scale,
+                    "decay": self.decay,
+                }
+            }
+            if "offset" in kwargs:
+                self.offset = kwargs["offset"]
+                self.params["_field_name_"]["offset"] = self.offset
+            if "origin" in kwargs:
+                self.origin = kwargs["origin"]
+                self.params["_field_name_"]["origin"] = self.origin
+
+    def get_score_name(self):
+        if not self.configuration_model:
+            raise AttributeError(
+                "The configuration_model attribute must be set on the "
+                "ScoreFunction instance to use it."
+            )
+        score_name = f"{self.field_name}_scorefunction"
+        if self.configuration_model != self.configuration_model.get_root_index_model():
+            score_name = (
+                self.configuration_model._meta.app_label
+                + "_"
+                + self.configuration_model.__name__.lower()
+                + "__"
+                + score_name
+            )
+        return score_name
+
+    def generate_fields(
+        self,
+        parent_field: Optional[BaseField] = None,
+    ) -> list[BaseField]:
+        generated_fields = []
+
+        if self.field_name:
+            generated_fields.append(
+                FilterField(
+                    self.get_score_name(),
+                    model_field_name=self.field_name,
+                    parent_field=parent_field,
+                )
+            )
+
+        return generated_fields
+
 
 #############################
 # One-to-many supporting code
@@ -307,6 +446,7 @@ class IndexedField(BaseField):
         self,
         *args,
         boost: float = 1.0,
+        proximity: bool = False,
         search: bool = False,
         search_kwargs: Optional[dict] = None,
         autocomplete: bool = False,
@@ -318,6 +458,7 @@ class IndexedField(BaseField):
         super().__init__(*args, **kwargs)
 
         self.boost = boost
+        self.proximity = proximity
         self.search = search
         self.search_kwargs = search_kwargs or {}
         self.autocomplete = autocomplete
@@ -327,72 +468,84 @@ class IndexedField(BaseField):
 
     def generate_fields(
         self,
+        cls,
         parent_field: Optional[BaseField] = None,
+        configuration_model: Optional[Type[Indexed]] = None,
     ) -> list[BaseField]:
-        generated_fields = []
-
         if parent_field:
             self.is_relation_of(parent_field)
+        if configuration_model:
+            self.configuration_model = configuration_model
+
+        generated_fields = []
 
         if self.search:
-            generated_fields += self.generate_search_fields()
+            generated_fields += self.generate_search_fields(cls)
         if self.autocomplete:
-            generated_fields += self.generate_autocomplete_fields()
+            generated_fields += self.generate_autocomplete_fields(cls)
         if self.filter:
-            generated_fields += self.generate_filter_fields()
+            generated_fields += self.generate_filter_fields(cls)
 
         return generated_fields
 
-    def generate_search_fields(self) -> list[SearchField]:
+    def generate_search_fields(self, cls) -> list[SearchField]:
         generated_fields = []
-        for variant_args, variant_kwargs in self.get_search_field_variants():
+        for variant_args, variant_kwargs in self.get_search_field_variants(cls):
             kwargs = self.search_kwargs.copy()
             kwargs.update(variant_kwargs)
-            generated_fields.append(
-                SearchField(
-                    *variant_args,
-                    model_field_name=self.model_field_name,
-                    boost=self.boost,
-                    parent_field=self.parent_field,
-                    configuration_model=self.configuration_model,
-                    **kwargs,
-                )
-            )
+
+            if "model_field_name" not in kwargs:
+                kwargs["model_field_name"] = self.model_field_name
+
+            if "boost" not in kwargs:
+                kwargs["boost"] = self.boost
+
+            if "parent_field" not in kwargs:
+                kwargs["parent_field"] = self.parent_field
+
+            if "configuration_model" not in kwargs:
+                kwargs["configuration_model"] = self.configuration_model
+
+            generated_fields.append(SearchField(*variant_args, **kwargs))
         return generated_fields
 
-    def generate_autocomplete_fields(self) -> list[AutocompleteField]:
+    def generate_autocomplete_fields(self, cls) -> list[AutocompleteField]:
         generated_fields = []
-        for variant_args, variant_kwargs in self.get_autocomplete_field_variants():
+        for variant_args, variant_kwargs in self.get_autocomplete_field_variants(cls):
             kwargs = self.autocomplete_kwargs.copy()
             kwargs.update(variant_kwargs)
-            generated_fields.append(
-                AutocompleteField(
-                    *variant_args,
-                    model_field_name=self.model_field_name,
-                    parent_field=self.parent_field,
-                    configuration_model=self.configuration_model,
-                    **kwargs,
-                )
-            )
+
+            if "model_field_name" not in kwargs:
+                kwargs["model_field_name"] = self.model_field_name
+
+            if "parent_field" not in kwargs:
+                kwargs["parent_field"] = self.parent_field
+
+            if "configuration_model" not in kwargs:
+                kwargs["configuration_model"] = self.configuration_model
+
+            generated_fields.append(AutocompleteField(*variant_args, **kwargs))
         return generated_fields
 
-    def generate_filter_fields(self) -> list[FilterField]:
+    def generate_filter_fields(self, cls) -> list[FilterField]:
         generated_fields = []
-        for variant_args, variant_kwargs in self.get_filter_field_variants():
+        for variant_args, variant_kwargs in self.get_filter_field_variants(cls):
             kwargs = self.filter_kwargs.copy()
             kwargs.update(variant_kwargs)
-            generated_fields.append(
-                FilterField(
-                    *variant_args,
-                    model_field_name=self.model_field_name,
-                    parent_field=self.parent_field,
-                    configuration_model=self.configuration_model,
-                    **kwargs,
-                )
-            )
+
+            if "model_field_name" not in kwargs:
+                kwargs["model_field_name"] = self.model_field_name
+
+            if "parent_field" not in kwargs:
+                kwargs["parent_field"] = self.parent_field
+
+            if "configuration_model" not in kwargs:
+                kwargs["configuration_model"] = self.configuration_model
+
+            generated_fields.append(FilterField(*variant_args, **kwargs))
         return generated_fields
 
-    def get_search_field_variants(self) -> list[tuple[tuple, dict]]:
+    def get_search_field_variants(self, cls) -> list[tuple[tuple, dict]]:
         """
         Override this in order to customise the args and kwargs passed to SearchField on creation or to create more than one, each with different kwargs
         """
@@ -402,7 +555,7 @@ class IndexedField(BaseField):
             ]
         return []
 
-    def get_autocomplete_field_variants(self) -> list[tuple[tuple, dict]]:
+    def get_autocomplete_field_variants(self, cls) -> list[tuple[tuple, dict]]:
         """
         Override this in order to customise the args and kwargs passed to AutocompleteField on creation or to create more than one, each with different kwargs
         """
@@ -412,7 +565,7 @@ class IndexedField(BaseField):
             ]
         return []
 
-    def get_filter_field_variants(self) -> list[tuple[tuple, dict]]:
+    def get_filter_field_variants(self, cls) -> list[tuple[tuple, dict]]:
         """
         Override this in order to customise the args and kwargs passed to FilterField on creation or to create more than one, each with different kwargs
         """
@@ -467,22 +620,31 @@ class MultiQueryIndexedField(IndexedField):
             analyzers.add(AnalysisType.FILTER)
         return analyzers
 
-    def get_search_field_variants(self):
-        from extended_search.settings import extended_search_settings
+    def get_search_field_variants(self, cls):
+        from extended_search import settings as search_settings
 
-        return [
-            (
-                (get_indexed_field_name(self.model_field_name, analyzer),),
-                {
-                    "es_extra": {
-                        "analyzer": extended_search_settings["analyzers"][
-                            analyzer.value
-                        ]["es_analyzer"]
-                    }
+        field_settings_key = search_settings.get_settings_field_key(cls, self)
+        field_boosts = search_settings.extended_search_settings["boost_parts"]["fields"]
+        field_boost = field_boosts.get(field_settings_key)
+
+        search_field_variants = []
+
+        for analyzer in self.get_search_analyzers():
+            variant_args = (get_indexed_field_name(self.model_field_name, analyzer),)
+            variant_kwargs = {
+                "es_extra": {
+                    "analyzer": search_settings.extended_search_settings["analyzers"][
+                        analyzer.value
+                    ]["es_analyzer"]
                 },
-            )
-            for analyzer in self.get_search_analyzers()
-        ]
+            }
+
+            if field_boost is not None:
+                variant_kwargs["boost"] = float(field_boost)
+
+            search_field_variants.append((variant_args, variant_kwargs))
+
+        return search_field_variants
 
 
 #############################

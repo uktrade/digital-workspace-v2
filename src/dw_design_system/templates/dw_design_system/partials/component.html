@@ -1,0 +1,22 @@
+{% load dw_design_system %}
+
+<div class="component-wrapper">
+    <h3 id="{{ component.name|slugify }}">{{ component.name }}</h3>
+    <pre class="component-template">{{ component.template }}</pre>
+    <button>25%</button>
+    <button>33%</button>
+    <button>50%</button>
+    <button>66%</button>
+    <button>75%</button>
+    <button>100%</button>
+    <div class="component-container">{% render_component component.template component.context %}</div>
+    <h4>Context</h4>
+    <textarea class="component-context"
+              name="context"
+              hx-post="{% url 'dwds-template-get' template_type %}"
+              hx-vals='js:{template: "{{ component.template }}", context: getComponentContext(event),}'
+              hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+              hx-target="previous .component-container">{{ component.context_json }}</textarea>
+    {% comment %} <h4>HTML</h4>
+    <pre class="component-html"></pre> {% endcomment %}
+</div>

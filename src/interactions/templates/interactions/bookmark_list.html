@@ -1,0 +1,23 @@
+{% load static wagtailcore_tags %}
+
+{% if bookmarks %}
+    <ul class="bookmark-list">
+        {% for bookmark in bookmarks %}
+            <li>
+                <div>
+                    <a href="{% pageurl bookmark.page %}" data-testid="bookmark-link">{{ bookmark.page }}</a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <div class="empty-bookmark-list">
+        <img src="{% static 'interactions/open-empty-box.webp' %}"
+             alt="An open empty box">
+        <p>No bookmarks yet.</p>
+        <p>
+            <span>{% include 'dwds/elements/icon.html' with use_id='bookmark-icon' %}</span>
+            <span>Click the bookmark icon on pages to bookmark them here</span>
+        </p>
+    </div>
+{% endif %}

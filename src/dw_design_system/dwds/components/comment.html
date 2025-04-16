@@ -1,0 +1,38 @@
+{% load reactions comments %}
+
+<div class="dwds-comment" id="comment-{{ comment.id }}">
+    <div class="content-stack">
+        <div class="content-stack small">
+            {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date edited_timestamp=comment.edited_date %}
+            <div>{{ comment.message }}</div>
+        </div>
+        <div class="dwds-button-group">
+            {% if comment.allow_reactions %}
+                {% reactions_for_comment user comment.id %}
+            {% endif %}
+            {% include "interactions/reply_comment_input.html" with comment=comment cancel_reply=show_reply_form %}
+            {% include "interactions/edit_comment_input.html" with comment=comment %}
+            {% include "news/includes/delete_comment.html" with comment=comment %}
+        </div>
+        {% if comment.show_replies %}
+            {% if show_reply_form %}
+                {% include "interactions/reply_comment_form.html" with comment=comment %}
+            {% endif %}
+            {% if comment.replies %}
+                <div class="content-stack">
+                    <h3>
+                        {{ comment.reply_count }}
+                        {% if comment.reply_count == 1 %}
+                            reply
+                        {% else %}
+                            replies
+                        {% endif %}
+                    </h3>
+                    {% for reply in comment.replies %}
+                        <div class="dwds-inset">{% include "dwds/components/comment.html" with comment=reply %}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>

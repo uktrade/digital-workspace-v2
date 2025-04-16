@@ -1,0 +1,42 @@
+{% load wagtailimages_tags static humanize %}
+
+<div class="dwds-quote {% if highlight %}highlight{% endif %} content-stack">
+    {% include 'dwds/icons/quote.html' with invert=False %}
+    <div class="content-sidebar">
+        {% if source_image %}
+            {% image source_image fill-278x278 as source_image_square %}
+            <div>
+                {% include "dwds/elements/profile_image.html" with profile_image_url=source_image_square.file.url name=source_name %}
+            </div>
+        {% elif source_image_url %}
+            <div>{% include "dwds/elements/profile_image.html" with profile_image_url=source_image_url name=source_name %}</div>
+        {% endif %}
+        <div class="content-stack">
+            <p class="quote-text">{{ quote }}</p>
+            {% if source_name or source_role or source_team %}
+                <p>
+                    {% if source_name %}
+                        {% if source_url %}
+                            <a href="{{ source_url }}">{{ source_name }}</a>
+                        {% else %}
+                            {{ source_name }}
+                        {% endif %}
+                    {% endif %}
+                    {% if source_role %}
+                        {% if source_name %}|{% endif %}
+                        {{ source_role }}
+                    {% endif %}
+                    {% if source_team %}
+                        {% if source_name or source_role %}|{% endif %}
+                        {% if source_team_url %}
+                            <a href="{{ source_team_url }}">{{ source_team }}</a>
+                        {% else %}
+                            {{ source_team }}
+                        {% endif %}
+                    {% endif %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    {% include 'dwds/icons/quote.html' with invert=True %}
+</div>

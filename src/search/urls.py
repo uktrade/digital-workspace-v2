@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import RedirectView
 
-from .views import autocomplete, explore, search
+from .views import autocomplete, explore, export_search, search
 
 
 app_name = "search"
@@ -22,5 +22,6 @@ urlpatterns = [
     path("explore/", explore, name="explore"),
     path("autocomplete/", autocomplete, name="autocomplete"),
     path("<str:category>/", search, name="category"),
+    path("<str:category>/export_search/", export_search, name="export_search"),
     path("", search, name="home"),
 ]

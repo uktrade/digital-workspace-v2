@@ -1,6 +1,91 @@
 // Styles
 @forward "styles/variables";
 @forward "styles/typography";
+@forward "styles/layout-primitives";
+@forward "styles/layout";
+@forward "styles/animations";
+
+// @forward "styles/base";  // Use once we migrate everything to the new approach
+@forward "styles/temporary-base"; // Remove this once we switch to the above base.scss
+
+@forward "utils";
+
+// Form items
+@forward "form-items/input";
+@forward "form-items/radio";
+@forward "form-items/select";
+@forward "form-items/textarea";
 
 // Components
-@forward "components/card";
+@forward "components/accordion";
+@forward "components/author";
+@forward "components/box";
+@forward "components/comment";
+@forward "components/comments";
+@forward "components/content_list";
+@forward "components/copy_text";
+@forward "components/cta";
+@forward "components/cta_button";
+@forward "components/details";
+@forward "components/link_action";
+@forward "components/link_external";
+@forward "components/link_list";
+@forward "components/link_navigate";
+@forward "components/message";
+@forward "components/modal";
+@forward "components/menu_vertical";
+@forward "components/one_up";
+@forward "components/pagination";
+@forward "components/profile_info";
+@forward "components/spotlight";
+@forward "components/quote";
+@forward "components/person_banner";
+
+// Elements
+@forward "elements/button";
+@forward "elements/content_header";
+@forward "elements/content_image";
+@forward "elements/content_icon";
+@forward "elements/content_item";
+@forward "elements/content_main";
+@forward "elements/profile_image";
+@forward "elements/icon";
+@forward "elements/inset";
+@forward "elements/navigational_link";
+@forward "elements/ribbon";
+@forward "elements/sidebar_part";
+@forward "elements/page_counts";
+
+// Icons
+@forward "icons/bookmark";
+@forward "icons/calendar";
+@forward "icons/celebrate";
+@forward "icons/check";
+@forward "icons/comment";
+@forward "icons/copy";
+@forward "icons/cross";
+@forward "icons/dislike";
+@forward "icons/email";
+@forward "icons/feedback";
+@forward "icons/like";
+@forward "icons/love";
+@forward "icons/ms_teams";
+@forward "icons/share";
+@forward "icons/unhappy";
+@forward "icons/quote";
+
+
+// Layouts
+@forward "layouts/content_sidebar";
+@forward "layouts/content_grid";
+@forward "layouts/content_spaced";
+@forward "layouts/content_stack";
+@forward "layouts/content_switcher";
+@forward "layouts/content_item_card";
+@forward "layouts/content_custom_sidebar";
+@forward "layouts/content_cluster";
+@forward "layouts/icon_card";
+
+
+// App specific stylesheets
+@forward "../../interactions/static/interactions/interactions.scss";

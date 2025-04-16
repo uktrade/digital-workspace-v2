@@ -1,34 +1,23 @@
-{% extends 'peoplefinder/page.html' %}
+{% extends "dwds_sidebar.html" %}
 
 {% block libraries %}
     {{ block.super }}
     <script src="//unpkg.com/alpinejs" defer></script>
 {% endblock %}
 
-{% block title %}Edit {{ team.name }}{% endblock %}
+{% block title %}
+    {{ page_title }}
+{% endblock title %}
 
-{% block location %}{{ team.name }}{% endblock %}
-
-{% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            {% if team.abbreviation %}<span class="govuk-caption-l">{{ team.abbreviation }}</span>{% endif %}
-            <h1 class="govuk-heading-l">Edit {{ team.name }}</h1>
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        </div>
-    </div>
-
+{% block primary_content %}
     <form method="post">
         {% csrf_token %}
-
         {% include 'peoplefinder/components/team-form.html' %}
-
         {% include 'peoplefinder/components/team-leaders-ordering.html' %}
-
         <div>
             <button class="govuk-button" type="submit" data-testid="save-team">Save team</button>
             <a class="govuk-button govuk-button--secondary"
                href="{% url 'team-view' team.slug %}">Cancel</a>
         </div>
     </form>
-{% endblock %}
+{% endblock primary_content %}

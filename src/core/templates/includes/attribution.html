@@ -1,6 +1,7 @@
-<div class="ws-content-page__metadata govuk-inset-text">
+{% load wagtailimages_tags static humanize formatting %}
+<div class="dwds-inset font-changes content-stack small">
     {% if is_news_page %}
-        <p class="ws-content-page__metadata-item ws-content-page__metadata-item--highlighted">
+        <p class="text-medium">
             {% if perm_sec_as_author %}
                 {{ settings.PERM_SEC_NAME }}
             {% elif first_publisher_as_author %}
@@ -10,23 +11,23 @@
             {% endif %}
         </p>
     {% endif %}
-    <time class="ws-content-page__metadata-item"
-          datetime="{{ page.first_published_at|date:"c" }}">
-        First published: {{ page.first_published_at|date:"j F Y" }}, {{ page.first_published_at|time:"g:iA"|lower }}
-    </time>
-    <time class="ws-content-page__metadata-item"
-          datetime="{{ page.last_published_at|date:"c" }}">
-        Last updated: {{ page.last_published_at|date:"j F Y" }}, {{ page.last_published_at|time:"g:iA"|lower }}
-    </time>
+    <div>
+        <time datetime="{{ page.first_published_at|date:"c" }}">
+            First published: {{ page.first_published_at|date:'j F Y' }} at {{ page.first_published_at|date:"g:iA"|lower }}
+        </time>
+        <time datetime="{{ page.last_published_at|date:"c" }}">
+            Last updated: {{ page.last_published_at|date:'j F Y' }} at {{ page.last_published_at|date:"g:iA"|lower }}
+        </time>
+    </div>
     {% if page.content_owner or page.content_contact_email %}<br>{% endif %}
     {% if page.content_owner %}
-        <div class="ws-content-page__metadata-item">
+        <div>
             Content owner: <a class="govuk-link"
     href="{% url 'profile-view' page.content_owner.slug %}">{{ page.content_owner }}</a>
         </div>
     {% endif %}
     {% if page.content_contact_email %}
-        <div class="ws-content-page__metadata-item">
+        <div>
             Contact email: <a class="govuk-link" href="mailto:{{ page.content_contact_email }}">{{ page.content_contact_email }}</a>
         </div>
     {% endif %}
