@@ -1,4 +1,29 @@
 repos:
+    - repo: https://github.com/Yelp/detect-secrets
+      rev: v1.5.0
+      hooks:
+          - id: detect-secrets
+            args: ["--baseline", ".secrets.baseline"]
+            exclude: package-lock.json
+    - repo: https://github.com/psf/black-pre-commit-mirror
+      rev: 25.1.0
+      hooks:
+          - id: black
+            language_version: python3.12
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      # Ruff version.
+      rev: v0.11.5
+      hooks:
+          # Run the linter.
+          - id: ruff
+            args: [--fix]
+          # Run the formatter.
+          - id: ruff-format
+    - repo: https://github.com/djlint/djLint
+      rev: v1.36.4
+      hooks:
+          - id: djlint-reformat-django
+          - id: djlint-django
     - repo: https://github.com/uktrade/pii-secret-check-hooks
       rev: 0.0.0.36
       hooks:
@@ -25,28 +50,3 @@ repos:
             name: Checking local hooks against latest release
             verbose: true
             require_serial: true
-    - repo: https://github.com/Yelp/detect-secrets
-      rev: v1.5.0
-      hooks:
-          - id: detect-secrets
-            args: ["--baseline", ".secrets.baseline"]
-            exclude: package-lock.json
-    - repo: https://github.com/psf/black-pre-commit-mirror
-      rev: 25.1.0
-      hooks:
-          - id: black
-            language_version: python3.12
-    - repo: https://github.com/astral-sh/ruff-pre-commit
-      # Ruff version.
-      rev: v0.11.5
-      hooks:
-          # Run the linter.
-          - id: ruff
-            args: [--fix]
-          # Run the formatter.
-          - id: ruff-format
-    - repo: https://github.com/djlint/djLint
-      rev: v1.36.4
-      hooks:
-          - id: djlint-reformat-django
-          - id: djlint-django
