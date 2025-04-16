@@ -6,9 +6,7 @@
         <div>
             <div class="content-stack">
                 {% image page.preview_image fill-465x265 width=None height=None style="border-radius: var(--border-radius);" %}
-                {% for block in page.body %}
-                    {% include_block block %}
-                {% endfor %}
+                {% include "includes/page_body.html" %}
             </div>
         </div>
         <div>
