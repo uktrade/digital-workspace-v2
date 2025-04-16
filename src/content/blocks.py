@@ -6,7 +6,6 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
 from peoplefinder.blocks import PersonChooserBlock
-from peoplefinder.models import Person, Team
 
 
 RICH_TEXT_FEATURES = [
@@ -358,17 +357,13 @@ class QuoteBlock(blocks.StructBlock):
         if value["quote_theme"] == "light":
             context.update(highlight=False)
         if value["source"]:
-            source_url = Person.objects.get(id=value["source"].id).get_absolute_url()
-            source_team_url = Team.objects.get(
-                id=value["source"].teams.first().id
-            ).get_absolute_url()
             context.update(
                 source_name=value["source"].full_name,
+                source_url=value["source"].get_absolute_url(),
                 source_role=value["source"].roles.first().job_title,
                 source_team=value["source"].teams.first().name,
+                source_team_url=value["source"].teams.first().get_absolute_url(),
                 source_image_url=value["source"].photo.url,
-                source_url=source_url,
-                source_team_url=source_team_url,
             )
         else:
             context.update(
