@@ -69,8 +69,6 @@ def comment_to_dict(comment: Comment) -> dict:
         for reply in get_comment_replies(comment):
             replies.append(comment_to_dict(reply))
 
-    in_reply_to = getattr(comment.parent, "id", None)
-
     comment_dict = {
         "id": comment.id,
         "allow_reactions": comment.page.specific.allow_reactions,
@@ -80,7 +78,6 @@ def comment_to_dict(comment: Comment) -> dict:
         "show_replies": include_replies,
         "reply_count": get_comment_reply_count(comment),
         "replies": replies,
-        "in_reply_to": in_reply_to,
         "edit_comment_form_url": reverse(
             "interactions:edit-comment-form",
             kwargs={

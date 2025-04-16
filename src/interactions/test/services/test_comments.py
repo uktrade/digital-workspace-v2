@@ -185,12 +185,6 @@ def test_comment_to_dict(news_page):
     # The replies are returned correctly
     assert comment_dict["replies"] == replies_dict
 
-    # in_reply_to returns the correct parent comment id
-    assert comment_dict["in_reply_to"] == None
-
-    for reply_dict in replies_dict:
-        assert reply_dict["in_reply_to"] == comment.id
-
     # The correct edit_comment_form_url is returned
     assert comment_dict["edit_comment_form_url"] == reverse(
         "interactions:edit-comment-form",

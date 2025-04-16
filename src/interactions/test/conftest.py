@@ -1,6 +1,6 @@
 import pytest
 from about_us.models import AboutUs
-from news.models import NewsPage
+from news.models import NewsHome
 
 from peoplefinder.test.factories import UserWithPersonFactory
 from news.factories import NewsPageFactory
@@ -13,12 +13,8 @@ def user():
 
 @pytest.fixture
 def news_page():
-    return NewsPageFactory()
-    # return NewsPage.objects.create(
-    #     title="News",
-    #     depth=1,
-    #     path="page2",
-    # )
+    news_home_page = NewsHome.objects.get()
+    return NewsPageFactory(parent=news_home_page)
 
 
 @pytest.fixture
