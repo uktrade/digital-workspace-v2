@@ -13,6 +13,7 @@ from peoplefinder.views.manager import (
     ManagerSelect,
     ManagerUpdate,
 )
+from peoplefinder.views.organogram import OrganogramView
 from peoplefinder.views.profile import (
     DeleteConfirmationView,
     ProfileActivateAction,
@@ -36,7 +37,6 @@ from peoplefinder.views.team import (
     TeamEditView,
     TeamTreeView,
 )
-from peoplefinder.views.organogram import OrganogramView
 
 
 people_urlpatterns = [
@@ -60,7 +60,6 @@ people_urlpatterns = [
         OrganogramView.as_view(),
         name="organogram-person",
     ),
-
     # Redirects to profile-edit-section with edit_section=personal
     path(
         "<uuid:profile_slug>/blank-teams-form/",

@@ -1,6 +1,6 @@
+from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import DetailView
-from django.utils.decorators import method_decorator
 
 from peoplefinder.models import Person
 from peoplefinder.services.team import TeamService
