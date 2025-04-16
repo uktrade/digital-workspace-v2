@@ -360,7 +360,7 @@ class QuoteBlock(blocks.StructBlock):
         if value["source"]:
             source_url = Person.objects.get(id=value["source"].id).get_absolute_url()
             source_team_url = Team.objects.get(
-                name=value["source"].teams.first().name
+                id=value["source"].teams.first().id
             ).get_absolute_url()
             context.update(
                 source_name=value["source"].full_name,
