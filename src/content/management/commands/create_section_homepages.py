@@ -1,15 +1,16 @@
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 from wagtail.models import Page
 
 from about_us.models import AboutUsHome
-from content.models import ContentPage, PrivacyPolicyHome
+from content.models import BlogIndex, ContentPage
 from country_fact_sheet.models import CountryFactSheetHome
+from events.models import EventsHome
 from networks.models import NetworksHome
 from news.models import NewsHome
 from tools.models import ToolsHome
-from transition.models import TransitionHome
 from working_at_dit.models import (
     GuidanceHome,
     HowDoIHome,
@@ -48,7 +49,7 @@ class Command(BaseCommand):
             Page.objects.get(slug="news-and-views")
         except Page.DoesNotExist:
             news_home = NewsHome(
-                title="News and views",
+                title="News",
                 slug="news-and-views",
                 live=True,
                 first_published_at=datetime.now(),
@@ -63,22 +64,22 @@ class Command(BaseCommand):
             news_home.save_revision().publish()
 
         try:
-            Page.objects.get(slug="transition-hub")
+            Page.objects.get(slug="events")
         except Page.DoesNotExist:
-            transition = TransitionHome(
-                title="Transition",
-                slug="transition-hub",
+            events_home = EventsHome(
+                title="Events",
+                slug="events",
                 live=True,
                 first_published_at=datetime.now(),
                 show_in_menus=True,
-                depth=2,
-                legacy_path="/transition-hub/",
+                depth=1,
+                legacy_path="/events/",
             )
 
-            home_page.add_child(instance=transition)
+            home_page.add_child(instance=events_home)
             home_page.save()
 
-            transition.save_revision().publish()
+            events_home.save_revision().publish()
 
         try:
             Page.objects.get(slug="working-at-dbt")
@@ -242,24 +243,6 @@ class Command(BaseCommand):
             networks.save_revision().publish()
 
         try:
-            Page.objects.get(slug="privacy-policy")
-        except Page.DoesNotExist:
-            privacy_policy = PrivacyPolicyHome(
-                title="Privacy Policy",
-                slug="privacy-policy",
-                live=True,
-                first_published_at=datetime.now(),
-                show_in_menus=True,
-                depth=7,
-                legacy_path="/working-at-dit/policies-and-guidance/privacy-policies/",
-            )
-
-            home_page.add_child(instance=privacy_policy)
-            home_page.save()
-
-            privacy_policy.save_revision().publish()
-
-        try:
             Page.objects.get(slug="country-fact-sheets")
         except Page.DoesNotExist:
             country_fact_sheet_homepage = CountryFactSheetHome(
@@ -276,3 +259,24 @@ class Command(BaseCommand):
             home_page.save()
 
             country_fact_sheet_homepage.save_revision().publish()
+
+        # Blogs
+        try:
+            Page.objects.get(slug="blogs")
+        except Page.DoesNotExist:
+            self.stdout.write("Creating BlogIndex")
+            blog_index = BlogIndex(
+                title="Blogs",
+                slug="blogs",
+                live=True,
+                first_published_at=timezone.now(),
+                show_in_menus=True,
+                legacy_path=None,
+            )
+
+            home_page.add_child(instance=blog_index)
+            home_page.save()
+
+            blog_index.save_revision().publish()
+        else:
+            self.stdout.write("BlogIndex already found")

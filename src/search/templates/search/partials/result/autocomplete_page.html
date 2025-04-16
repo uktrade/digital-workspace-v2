@@ -1,0 +1,73 @@
+{% load webpack_static from webpack_loader %}
+{% load wagtailcore_tags %}
+
+{% if search_query %}
+    <div style="display:none"
+         hx-on:htmx:load="dataLayer.push({ 'event': 'autocomplete-search', 'autocomplete-search_query': '{{ search_query }}', 'autocomplete_page_count':{{ pages_count }},'autocomplete_people_count':{{ people_count }},'autocomplete_teams_count':{{ teams_count }}});">
+    </div>
+{% endif %}
+
+{% if people %}
+    <div class="govuk-heading-s autocomplete-title">
+        <a class="govuk-link"
+           href="{% url 'search:category' 'people' %}?query={{ search_query }}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result-heading', 'autocomplete-result_selected_url': '{% url 'search:category' 'people' %}?query={{ search_query }}', 'autocomplete_result_selected_type': 'person'})">
+        People results</a>
+    </div>
+{% endif %}
+{% for person in people %}
+    <div class= "autocomplete-choice">
+        <a class="govuk-link"
+           href="{% url 'profile-view' person.slug %}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result', 'autocomplete-result_selected_url': '{% url 'profile-view' person.slug %}', 'autocomplete_result_selected_type': 'person'})">
+            <div class="people">
+                {% if person.photo %}
+                    <img src="{{ person.photo_small.url }}"
+                         alt="Profile image of {{ person.full_name }}"
+                         class="profile-image">
+                {% else %}
+                    <img src="{% webpack_static 'no-photo.png' %}"
+                         alt="No photo"
+                         class="profile-image">
+                {% endif %}
+                <p class="govuk-body autocomplete-text">{{ person.full_name }}</p>
+            </div>
+        </a>
+    </div>
+{% endfor %}
+{% if pages %}
+    <div class="govuk-heading-s autocomplete-title">
+        <a class="govuk-link"
+           href="{% url 'search:category' 'all' %}?query={{ search_query }}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result-heading', 'autocomplete-result_selected_url': '{% url 'search:category' 'all' %}?query={{ search_query }}', 'autocomplete_result_selected_type': 'page'})">Content results</a>
+    </div>
+{% endif %}
+{% for page in pages %}
+    <div class="autocomplete-choice">
+        <a class="govuk-link"
+           href="{% pageurl page %}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result', 'autocomplete-result_selected_url': '{% pageurl page %}', 'autocomplete_result_selected_type': 'all'})">
+            <div>
+                <p class="govuk-body autocomplete-text">{{ page.title }}</p>
+            </div>
+        </a>
+    </div>
+{% endfor %}
+{% if teams %}
+    <div class="govuk-heading-s autocomplete-title">
+        <a class="govuk-link"
+           href="{% url 'search:category' 'teams' %}?query={{ search_query }}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result-heading', 'autocomplete-result_selected_url': '{% url 'search:category' 'teams' %}?query={{ search_query }}', 'autocomplete_result_selected_type': 'teams'})">Teams results</a>
+    </div>
+{% endif %}
+{% for team in teams %}
+    <div class="autocomplete-choice">
+        <a class="govuk-link"
+           href="{% url 'team-view' team.slug %}"
+           onclick="dataLayer.push({ 'event': 'autocomplete-result', 'autocomplete-result_selected_url': '{% url 'team-view' team.slug %}', 'autocomplete_result_selected_type': 'teams'})">
+            <div>
+                <p class="govuk-body autocomplete-text">{{ team.name }}</p>
+            </div>
+        </a>
+    </div>
+{% endfor %}

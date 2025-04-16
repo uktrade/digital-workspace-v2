@@ -22,13 +22,14 @@ def fill_empty_excerpts(apps, schema_editor):
             ...
 
 
-def noop(apps, schema_editor):
-    ...
+def noop(apps, schema_editor): ...
 
 
 class Migration(migrations.Migration):
     dependencies = [
         ("content", "0019_rename_search_excerpt_contentpage_excerpt"),
+        ("working_at_dit", "0007_guidance_content_contact_email_and_more"),
+        ("networks", "0004_network_content_contact_email_network_content_owner"),
     ]
 
     operations = [migrations.RunPython(fill_empty_excerpts, noop)]

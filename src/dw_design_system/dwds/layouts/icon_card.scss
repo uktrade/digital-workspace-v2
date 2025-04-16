@@ -1,0 +1,24 @@
+.dwds-content-item-card.icon-card {
+    --icon-card-bg-color: var(--card-bg-white);
+    --icon-card-padding: var(--s-2);
+
+    background-color: var(--icon-card-bg-color);
+
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-bottom: unset;
+
+    &:active {
+        --icon-card-bounce-height: calc(var(--card-bottom-border-height)/2);
+        transform: translateY(var(--icon-card-bounce-height));
+        box-shadow: unset;
+        box-shadow: 0 var(--icon-card-bounce-height) 0 rgba(0, 0, 0, 0.2);
+    }
+
+    &:hover {
+        background-color: var(--dbt-very-light-grey);
+    }
+
+    .content-icon {
+        margin: var(--icon-card-padding);
+    }
+}

@@ -1,18 +1,14 @@
-{% extends "1_col_content.html" %}
+{% extends "content/content_page.html" %}
 {% load wagtailcore_tags %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
-    {% include "includes/attribution.html" with page=page %}
-    {% for block in page.body %}
-        {% include_block block %}
-    {% endfor %}
+{% block primary_content %}
+    {{ block.super }}
 
     {% if page.hmtc_region_factsheets_collection %}
-        <h2 class="govuk-heading-m">{{ page.hmtc_region_factsheets_heading }}</h2>
+        <h2>{{ page.hmtc_region_factsheets_heading }}</h2>
         {% for doc in hmtc_region_factsheets %}
             <p>
-                <a class="govuk-link" href="{{ doc.url }}">{{ doc.title }}</a>
+                <a href="{{ doc.url }}">{{ doc.title }}</a>
             </p>
         {% empty %}
             <p>There are no factsheets in this collection.</p>
@@ -20,13 +16,13 @@
     {% endif %}
 
     {% if page.group_factsheets_collection %}
-        <h2 class="govuk-heading-m">{{ page.group_factsheets_heading }}</h2>
+        <h2>{{ page.group_factsheets_heading }}</h2>
         {% for doc in group_factsheets %}
             <p>
-                <a class="govuk-link" href="{{ doc.url }}">{{ doc.title }}</a>
+                <a href="{{ doc.url }}">{{ doc.title }}</a>
             </p>
         {% empty %}
             <p>There are no factsheets in this collection.</p>
         {% endfor %}
     {% endif %}
-{% endblock %}
+{% endblock primary_content %}

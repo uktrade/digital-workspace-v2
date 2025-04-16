@@ -32,6 +32,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
             user_john_smith.profile.delete()
 
         call_command("loaddata", "countries.json")
+        call_command("loaddata", "uk_staff_locations.json")
         call_command("create_test_teams")
         call_command("create_user_profiles")
         call_command("create_people_finder_groups")
@@ -40,6 +41,9 @@ def django_db_setup(django_db_setup, django_db_blocker):
         user_john_smith.refresh_from_db()
 
         team_software = Team.objects.get(slug="software")
+
+        user_john_smith.profile.preferred_first_name = "J"
+        user_john_smith.profile.save(update_fields=["preferred_first_name"])
 
         user_john_smith.profile.roles.get_or_create(
             team=team_software,

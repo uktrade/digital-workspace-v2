@@ -1,25 +1,24 @@
 <div class="ws-children-{{ num_cols }}-col">
     {% if children %}
-        {% for child in children %}
-            <div class="ws-col-child">
-                <h3 class="govuk-heading-s">
-                    <a {% if target_blank %}target="_blank"{% endif %}
-                       href="{{ child.url }}">{{ child.title }}</a>
-                </h3>
-                <p class="govuk-body ws-excerpt">{{ child.excerpt }}</p>
-                <p class="govuk-body-s ws-updated-at">Updated {{ child.last_published_at }}</p>
-            </div>
-        {% endfor %}
-    {% else %}
-        {% for child in self.get_children.specific.live.public %}
-            <div class="ws-col-child">
-                <h3 class="govuk-heading-s">
-                    <a {% if target_blank %}target="_blank"{% endif %}
-                       href="{{ child.url }}">{{ child.title }}</a>
-                </h3>
-                <p class="govuk-body ws-excerpt">{{ child.excerpt }}</p>
-                <p class="govuk-body-s ws-updated-at">Updated {{ child.last_published_at }}</p>
-            </div>
-        {% endfor %}
+        {% if display == "basic" %}
+            <ul class="govuk-list">
+                {% for child in children %}
+                    <li>
+                        <a class="govuk-link" href="{{ child.url }}">{{ child.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {% for child in children %}
+                <div class="ws-col-child">
+                    <h3 class="govuk-heading-s">
+                        <a {% if target_blank %}target="_blank"{% endif %}
+                           href="{{ child.url }}">{{ child.title }}</a>
+                    </h3>
+                    <p class="govuk-body ws-excerpt">{{ child.excerpt }}</p>
+                    <p class="govuk-body-s ws-updated-at">Updated {{ child.last_published_at }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
     {% endif %}
 </div>

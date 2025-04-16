@@ -1,0 +1,34 @@
+.content-switcher {
+    --content-switcher-min-width: 36rem;
+    --content-switcher-gap: var(--space);
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--content-switcher-gap);
+
+    > * {
+        flex-grow: 1;
+        flex-basis: calc((var(--content-switcher-min-width) - 100%) * 999);
+    }
+
+    &.small {
+        --content-switcher-min-width: 28rem;
+        --content-switcher-gap: var(--s0);
+    }
+
+    &.max-2 {
+
+        > :nth-last-child(n+ 3),
+        > :nth-last-child(n+ 3) ~ * {
+            flex-basis: 100%;
+        }
+    }
+
+    &.max-3 {
+
+        > :nth-last-child(n+ 4),
+        > :nth-last-child(n+ 4) ~ * {
+            flex-basis: 100%;
+        }
+    }
+}

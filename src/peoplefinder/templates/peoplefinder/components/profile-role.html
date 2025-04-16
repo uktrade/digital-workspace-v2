@@ -1,8 +1,8 @@
-<p class="govuk-body-m" data-testid="role">
+<div data-testid="role">
     {% if role.job_title %}
-        <strong>{{ role.job_title }}</strong> in
+        {{ role.job_title }} in
     {% else %}
         Member of
     {% endif %}
-    <a class="govuk-link" href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a>
-</p>
+    <a href="{% url 'team-view' role.team.slug %}">{{ role.team.name }}</a>
+</div>

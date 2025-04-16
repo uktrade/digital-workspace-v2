@@ -1,15 +1,9 @@
 {% load webpack_static from webpack_loader %}
 
-<div class="pf-team-member-card">
-    <a class="govuk-link" href="{% url 'profile-view' member.person.slug %}">
-        {% if member.person.photo %}
-            <img src="{{ member.person.photo.url }}" width="100%">
-        {% else %}
-            <img src="{% webpack_static 'no-photo-large.png' %}" width="100%">
-        {% endif %}
-    </a>
-    <div class="pf-team-member-card__name">
-        <a class="govuk-link" href="{% url 'profile-view' member.person.slug %}">{{ member.person.full_name }}</a>
-    </div>
-    <div class="pf-team-member-card__job-title govuk-body">{{ member.job_title }}</div>
-</div>
+{% url 'profile-view' member.person.slug as profile_url %}
+
+{% if member.person.photo %}
+    {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=member.person.photo.url name=member.person.full_name title=member.job_title location=member.person.uk_office_location.city profile_url=profile_url %}
+{% else %}
+    {% include "dwds/components/profile_info.html" with show_profile_image=True name=member.person.full_name title=member.job_title location=member.person.uk_office_location.city profile_url=profile_url %}
+{% endif %}

@@ -1,0 +1,32 @@
+.dwds-cta-button {
+    background: var(--color-background);
+    border: unset;
+    text-align: unset;
+    flex-grow: 1;
+
+    :hover {
+        cursor: pointer;
+
+        h3 {
+            text-decoration: underline;
+        }
+    }
+
+    .dwds-cta {
+        h3 {
+            color: var(--color-link);
+        }
+    }
+
+    .content-sidebar {
+        --sidebar-size: 50px;
+        --sidebar-min-size: 66%;
+        --sidebar-gap: 0;
+
+        .cta-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}

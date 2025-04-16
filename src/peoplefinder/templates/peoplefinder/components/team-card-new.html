@@ -1,0 +1,5 @@
+{% load markdown formatting %}
+
+{% url 'team-view' team.slug as team_url %}
+
+{% include "dwds/components/cta_card.html" with title=team.name url=team_url extra_content=team.description|markdown|truncate_magic_html:25 footer_text=profile_completion %}

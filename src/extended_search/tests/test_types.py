@@ -1,7 +1,8 @@
-import pytest
 from enum import Enum
 
-from extended_search.types import SearchQueryType, AnalysisType
+import pytest
+
+from extended_search.types import AnalysisType, SearchQueryType
 
 
 class TestAnalysisType:
@@ -13,15 +14,15 @@ class TestAnalysisType:
         assert AnalysisType("filter") == AnalysisType.FILTER
         assert AnalysisType("explicit") == AnalysisType.EXPLICIT
         assert AnalysisType("keyword") == AnalysisType.KEYWORD
-        assert AnalysisType("proximity") == AnalysisType.PROXIMITY
+        assert AnalysisType("ngram") == AnalysisType.NGRAM
         with pytest.raises(ValueError, match="'ANYTHING' is not a valid AnalysisType"):
-            assert AnalysisType("ANYTHING") == AnalysisType.ANYTHING
+            AnalysisType("ANYTHING")
         assert [t.value for t in AnalysisType] == [
             "tokenized",
             "filter",
             "explicit",
             "keyword",
-            "proximity",
+            "ngram",
         ]
 
 
@@ -37,7 +38,7 @@ class TestSearchQueryType:
         with pytest.raises(
             ValueError, match="'ANYTHING' is not a valid SearchQueryType"
         ):
-            assert SearchQueryType("ANYTHING") == SearchQueryType.ANYTHING
+            SearchQueryType("ANYTHING")
         assert [t.value for t in SearchQueryType] == [
             "phrase",
             "query_and",

@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+// here as examples only
+
+.roboto-light {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-light);
+  font-style: normal;
+}
+
+.roboto-regular {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-normal);
+  font-style: normal;
+}
+
+.roboto-bold {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-bold);
+  font-style: normal;
+}
+
+.roboto-regular-italic {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-normal);
+  font-style: italic;
+}
+
+.text-small {
+    font-size: var(--text-small);
+}
+
+.text-medium {
+  font-size: var(--text-medium) !important;
+}
+
+.text-large {
+  font-size: var(--text-large) !important;
+}

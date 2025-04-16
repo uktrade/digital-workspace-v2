@@ -13,6 +13,7 @@ At the time of writing, the whole process of dropping and copying a database
 for each test adds around 500ms to each test. As we expect the number of e2e
 tests requiring this to be small, this overhead is fine.
 """
+
 import os
 
 import pytest
@@ -158,7 +159,8 @@ def user(django_db_blocker, django_user_model):
     john_user_profile = Person.objects.get(user=user)
     super_user_profile = Person.objects.get(user__username="testsuperuser")
 
+    john_user_profile.preferred_first_name = "J"
     john_user_profile.manager = super_user_profile
-    john_user_profile.save(update_fields=["manager"])
+    john_user_profile.save(update_fields=["preferred_first_name", "manager"])
 
     return user

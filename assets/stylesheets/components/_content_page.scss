@@ -1,15 +1,5 @@
-.ws-content-page__metadata {
-  @include govuk-responsive-margin(6, "bottom");
-}
-
-.ws-content-page__metadata-item {
-  display: block;
-  @include govuk-responsive-margin(1, "bottom");
-
-  @include govuk-font($size: 16);
-  color: govuk-colour("dark-grey");
-}
-
-.ws-content-page__metadata-item--highlighted {
-  @include govuk-font($size: 19, $weight: bold);
+.dwds-content-page {
+  padding: var(--space);
+  background-color: var(--color-background);
+  border-radius: var(--border-radius);
 }

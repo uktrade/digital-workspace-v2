@@ -1,0 +1,41 @@
+.dwds-ribbon {
+    --ribbon-background-blue: var(--dbt-blue);
+    --ribbon-background-red: var(--dbt-red);
+    --ribbon-background: var(--ribbon-background-blue);
+    --ribbon-padding: var(--s-4);
+    --ribbon-padding-right: var(--s-2);
+    --ribbon-left-space: var(--s2);
+    --ribbon-text-colour: var(--color-text-highlight);
+    --ribbon-line-height: var(--font-lineheight-headings);
+    --ribbon-border-radius: var(--border-radius);
+
+    --ribbon-main-height: 0px;
+
+    display: inline-block;
+    font-size: var(--text-small);
+    font-weight: var(--font-weight-bold);
+
+    .ribbon-main {
+        padding: var(--ribbon-padding) var(--ribbon-padding-right) var(--ribbon-padding) var(--ribbon-left-space);
+        margin-left: calc(var(--ribbon-left-space) * -1);
+        border-radius: 0 var(--ribbon-border-radius) var(--ribbon-border-radius) 0;
+        color: var(--ribbon-text-colour);
+        background: var(--ribbon-background);
+        width: fit-content;
+    }
+
+    .ribbon-red {
+        --ribbon-background: var(--ribbon-background-red);
+    }
+
+    ::before {
+        content: '';
+        position: absolute;
+        width: var(--ribbon-left-space);
+        height: var(--ribbon-main-height);
+        background: var(--ribbon-background);
+        border-radius: var(--ribbon-border-radius) 0 0 var(--ribbon-border-radius);
+        margin-top: calc(var(--ribbon-padding) * -1);
+        transform: translateX(calc(var(--ribbon-left-space) * -1));
+    }
+}

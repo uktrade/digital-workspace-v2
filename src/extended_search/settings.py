@@ -1,17 +1,21 @@
+import os
 from collections import ChainMap
 from collections.abc import Mapping
-import environ
-from psycopg2.errors import UndefinedTable
-import os
+from typing import Any, Optional
 
+import environ
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.utils import ProgrammingError
-
-from wagtail.search.index import get_indexed_models, SearchField
+from psycopg2.errors import UndefinedTable
 
 from extended_search import models
-from extended_search.index import RelatedFields
+from extended_search.index import (
+    BaseField,
+    RelatedFields,
+    SearchField,
+    get_indexed_models,
+)
 
 
 env_file_path = os.path.join(
@@ -68,10 +72,6 @@ DEFAULT_SETTINGS = {
             "index_fieldname_suffix": "_keyword",
             "query_types": ["phrase"],
         },
-        "proximity": {  # @TODO think this needs cleanup to work more like Fuzzy - i.e. built into query but analyzed as a FileterField
-            "es_analyzer": "keyword",
-            "index_fieldname_suffix": None,
-        },
     },
 }
 
@@ -87,12 +87,18 @@ class NestedChainMap(ChainMap):
 
     ...
 
-    def __init__(self, *args, prefix=None, nesting_separator=None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        prefix: Optional[str] = None,
+        nesting_separator: Optional[str] = None,
+        **kwargs,
+    ):
         self.prefix = prefix
         self.nesting_separator = nesting_separator or NESTING_SEPARATOR
         return super().__init__(*args, **kwargs)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> Any:
         """
         Handles nested Chainmap functionality
         """
@@ -111,13 +117,13 @@ class NestedChainMap(ChainMap):
 
         return super().__getitem__(key)
 
-    def __missing__(self, key):
+    def __missing__(self, key: str) -> Any:
         # Check if we're using a flat key that wasn't overridden from the dicts
-        if key in self.all_keys:
+        if key in self.all_keys():
             return self._getitem_from_nested_maps_for_prefixed_key(key, self)
         return super().__missing__(key)
 
-    def _get_prefixed_key_name(self, key, prefix):
+    def _get_prefixed_key_name(self, key: str, prefix: Optional[str]) -> str:
         """
         Consistent method for naming leaf-node keys using `__` to separate dict
         levels from the main settings, useful for ENV settings e.g.
@@ -131,7 +137,9 @@ class NestedChainMap(ChainMap):
         """
         return f"{prefix}{self.nesting_separator}{key}" if prefix else key
 
-    def _get_all_prefixed_keys_from_nested_maps(self, dict, prefix):
+    def _get_all_prefixed_keys_from_nested_maps(
+        self, dict: dict | ChainMap, prefix: Optional[str]
+    ):
         """
         Returns a list of flattened keys for each key in the nested dict-like
         objects it's passed
@@ -147,14 +155,15 @@ class NestedChainMap(ChainMap):
                 ]
         return keys
 
-    @property
     def all_keys(self):
         """
         Returns a list of the *flattened* keys for all nested maps in this instance
         """
         return self._get_all_prefixed_keys_from_nested_maps(self, "")
 
-    def _getitem_from_nested_maps_for_prefixed_key(self, key, dict):
+    def _getitem_from_nested_maps_for_prefixed_key(
+        self, key: str, dict: dict | ChainMap
+    ):
         """
         Splits a flattened / prefixed key into parts, and uses those to traverse
         the dict-like ChainMap of settings. Functions as a flattened __getitem__
@@ -214,7 +223,7 @@ class SearchSettings(NestedChainMap):
     def _get_all_indexed_fields(self):
         fields = {}
         for model_cls in get_indexed_models():
-            for search_field in model_cls.search_fields:
+            for search_field in model_cls.get_search_fields():
                 if isinstance(search_field, SearchField) or isinstance(
                     search_field, RelatedFields
                 ):
@@ -224,7 +233,6 @@ class SearchSettings(NestedChainMap):
 
                     if isinstance(search_field, RelatedFields):
                         for ff in search_field.fields:
-                            ff.parent_model_field = search_field.field_name
                             fields[definition_cls].add(ff)
                     else:
                         fields[definition_cls].add(search_field)
@@ -235,18 +243,9 @@ class SearchSettings(NestedChainMap):
         # preserve same linked obj while re-initialising it
         self.fields["boost_parts"]["fields"].clear()
         field_dict = self._get_all_indexed_fields()
-        for model, fields in field_dict.items():
-            model_name_str = f"{model._meta.app_label}.{model._meta.model_name}"
+        for model_class, fields in field_dict.items():
             for search_field in fields:
-                field_name_str = getattr(
-                    search_field, "model_field_name", search_field.field_name
-                )
-                if parent_model_field := getattr(
-                    search_field, "parent_model_field", None
-                ):
-                    field_name_str = f"{parent_model_field}.{field_name_str}"
-                field_key = f"{model_name_str}.{field_name_str}"
-
+                field_key = get_settings_field_key(model_class, search_field)
                 self.fields["boost_parts"]["fields"][field_key] = getattr(
                     search_field, "boost", 1.0
                 )
@@ -254,7 +253,7 @@ class SearchSettings(NestedChainMap):
     def initialise_env_dict(self):
         # preserve same linked obj while re-initialising it
         self.env_vars.clear()
-        for key in self.all_keys:
+        for key in self.all_keys():
             try:
                 # check for a full string concatenated key
                 value = env(f"{SETTINGS_KEY}{self.nesting_separator}{key}")
@@ -290,5 +289,28 @@ class SearchSettings(NestedChainMap):
         except (UndefinedTable, ProgrammingError):
             ...
 
+    def to_dict(self, part: Optional[ChainMap] = None):
+        if part is None:
+            part = self
 
-extended_search_settings = SearchSettings()
+        output = {}
+        for k, v in dict(part).items():
+            if isinstance(v, ChainMap):
+                output[k] = self.to_dict(v)
+            else:
+                output[k] = v
+        return output
+
+
+settings_singleton = SearchSettings()
+
+# NB please don't import this directly, import the module as a whole
+# this is because it can get re-exported after a value is updated
+extended_search_settings = settings_singleton.to_dict()
+
+
+def get_settings_field_key(model_class, field) -> str:
+    full_field_name = field.field_name
+    if isinstance(field, BaseField):
+        full_field_name = field.get_full_model_field_name()
+    return f"{model_class._meta.app_label}.{model_class._meta.model_name}.{full_field_name}"

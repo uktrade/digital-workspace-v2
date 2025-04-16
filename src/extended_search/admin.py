@@ -2,8 +2,8 @@ from django import forms
 from django.contrib import admin
 
 from core.admin import admin_site
+from extended_search import settings
 from extended_search.models import Setting
-from extended_search.settings import extended_search_settings
 
 
 class SettingAdminForm(forms.ModelForm):
@@ -15,7 +15,9 @@ class SettingAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["key"].choices = [(k, k) for k in extended_search_settings.all_keys]
+        self.fields["key"].choices = [
+            (k, k) for k in settings.extended_search_settings.all_keys
+        ]
 
 
 class SettingAdmin(admin.ModelAdmin):

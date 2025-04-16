@@ -1,0 +1,20 @@
+{% load profile %}
+{% load wagtailimages_tags static %}
+{% load webpack_static from webpack_loader %}
+
+{% if profile_url %}<a href="{{ profile_url }}">{% endif %}
+
+    {% if profile_image_url %}
+        <img class="dwds-profile-image {% if small %}small{% endif %}"
+             src="{{ profile_image_url }}"
+             alt="Profile image of {{ name }}"
+             width="278"
+             height="278">
+    {% else %}
+        <img class="dwds-profile-image {% if small %}small{% endif %}"
+             src="{% webpack_static 'no-photo-large.png' %}"
+             alt="No profile image silhouette "
+             width="278"
+             height="278">
+    {% endif %}
+    {% if profile_url %}</a>{% endif %}

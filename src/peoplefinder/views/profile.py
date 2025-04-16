@@ -15,16 +15,21 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.decorators import method_decorator
+from django.utils.decorators import decorator_from_middleware, method_decorator
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormView, UpdateView
+from django_hawk.middleware import HawkResponseMiddleware
+from django_hawk.utils import DjangoHawkAuthenticationFailed, authenticate_request
+from webpack_loader.utils import get_static
 
 from peoplefinder.forms.crispy_helper import RoleFormsetFormHelper
-from peoplefinder.forms.profile import ProfileLeavingDitForm, ProfileUpdateUserForm
+from peoplefinder.forms.profile import ProfileLeavingDbtForm, ProfileUpdateUserForm
 from peoplefinder.forms.profile_edit import (
+    AccountSettingsForm,
     AdminProfileEditForm,
     ContactProfileEditForm,
     LocationProfileEditForm,
@@ -43,6 +48,7 @@ from peoplefinder.types import EditSections, ProfileSections
 
 from .base import HtmxFormView, PeoplefinderView
 
+
 User = get_user_model()
 
 
@@ -54,10 +60,38 @@ class ProfileView(PeoplefinderView):
     def get_queryset(self):
         qs = super().get_queryset()
 
-        if not self.request.user.has_perm("peoplefinder.delete_person"):
+        if not self.request.user.has_perm("peoplefinder.can_view_inactive_profiles"):
             qs = qs.active()
 
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if profile := context.get("profile"):
+            field_statuses = PersonService().profile_completion_field_statuses(profile)
+
+            context.update(
+                missing_profile_completion_fields=[
+                    (
+                        reverse(
+                            "profile-edit-section",
+                            kwargs={
+                                "profile_slug": profile.slug,
+                                "edit_section": PersonService().get_profile_completion_field_edit_section(
+                                    field
+                                ),
+                            },
+                        )
+                        + "#"
+                        + PersonService().get_profile_completion_field_form_id(field),
+                        field.replace("_", " ").capitalize(),
+                    )
+                    for field, field_status in field_statuses.items()
+                    if not field_status
+                ],
+            )
+        return context
 
 
 class ProfileLegacyView(ProfileView):
@@ -76,10 +110,13 @@ class ProfileDetailView(ProfileView, DetailView):
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
 
+        context.update(
+            profile_breadcrumbs=True,
+        )
+
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
 
-        context["is_users_profile"] = bool(self.request.user == profile.user)
         context["roles"] = roles
         context["title"] = profile.full_name
 
@@ -105,29 +142,46 @@ class ProfileDetailView(ProfileView, DetailView):
                 "edited_or_confirmed_at",
             ]
 
-        profile_sections = []
+        profile_section_dicts = []
         for profile_section in ProfileSections:
-            profile_sections.append(
+            profile_url = reverse("profile-view", kwargs={"profile_slug": profile.slug})
+            profile_section_dicts.append(
                 {
+                    "profile_section": profile_section,
                     "title": profile_section.label,
-                    "url": reverse(
-                        "profile-edit-section",
-                        kwargs={
-                            "profile_slug": profile.slug,
-                            "edit_section": (
-                                PersonService().get_profile_section_mapping(
-                                    profile_section
-                                )["edit_section"]
-                            ),
-                        },
-                    ),
-                    "values": PersonService().get_profile_section_values(
-                        profile,
-                        profile_section,
-                    ),
+                    "url": f"{profile_url}?profile_section={profile_section.value}",
                 }
             )
-        context.update(profile_sections=profile_sections)
+
+        current_profile_section = ProfileSections(
+            self.request.GET.get("profile_section", ProfileSections.TEAM_AND_ROLE)
+        )
+
+        current_tab = {
+            "value": current_profile_section.value,
+            "title": current_profile_section.label,
+            "values": PersonService().get_profile_section_values(
+                profile,
+                current_profile_section,
+            ),
+            "empty_text": PersonService().get_profile_section_empty_text(
+                current_profile_section,
+            ),
+        }
+
+        context.update(
+            current_tab=current_tab,
+            profile_section_dicts=profile_section_dicts,
+            show_confirm_my_details=(
+                profile.is_active
+                and profile.is_stale
+                and self.request.user == profile.user
+            ),
+            show_activate_profile=(
+                not profile.is_active
+                and self.request.user.has_perm("peoplefinder.delete_person")
+            ),
+        )
 
         return context
 
@@ -169,6 +223,7 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
         EditSections.TEAMS: TeamsProfileEditForm,
         EditSections.LOCATION: LocationProfileEditForm,
         EditSections.SKILLS: SkillsProfileEditForm,
+        EditSections.ACCOUNT_SETTINGS: AccountSettingsForm,
         EditSections.ADMIN: AdminProfileEditForm,
     }
 
@@ -211,43 +266,33 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
 
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
+        team = None
+        if roles:
+            team = roles[0].team
 
         update_user_form = ProfileUpdateUserForm(
             initial={"username": profile.user and profile.user.username},
             profile=profile,
         )
 
-        field_statuses = PersonService().profile_completion_field_statuses(profile)
-
         edit_sections = [section for section in EditSections]
         if not self.request.user.is_superuser:
             edit_sections.remove(EditSections.ADMIN)
 
+        page_title = f"Edit profile: {self.edit_section.label.lower()}"
+        if self.edit_section == EditSections.ACCOUNT_SETTINGS:
+            page_title = EditSections.ACCOUNT_SETTINGS.label
+
         context.update(
-            page_title=f"Edit profile: {self.edit_section.label}",
+            profile_breadcrumbs=True,
+            extra_breadcrumbs=[(None, "Edit profile")],
+            page_title=page_title,
             current_edit_section=self.edit_section,
             edit_sections=edit_sections,
             profile_slug=profile.slug,
             roles=roles,
+            team=team,
             update_user_form=update_user_form,
-            missing_profile_completion_fields=[
-                (
-                    reverse(
-                        "profile-edit-section",
-                        kwargs={
-                            "profile_slug": profile.slug,
-                            "edit_section": PersonService().get_profile_completion_field_edit_section(
-                                field
-                            ),
-                        },
-                    )
-                    + "#"
-                    + PersonService().get_profile_completion_field_form_id(field),
-                    field.replace("_", " ").capitalize(),
-                )
-                for field, field_status in field_statuses.items()
-                if not field_status
-            ],
         )
 
         if self.edit_section == EditSections.TEAMS:
@@ -261,6 +306,25 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
                 + "?prefix="
                 + self.teams_formset.prefix,
             )
+
+        edit_menu_items = [
+            {
+                "title": section.label,
+                "url": reverse(
+                    "profile-edit-section",
+                    kwargs={
+                        "profile_slug": profile.slug,
+                        "edit_section": section.value,
+                    },
+                ),
+                "active": section == self.edit_section,
+            }
+            for section in edit_sections
+        ]
+
+        context.update(
+            edit_menu_items=edit_menu_items,
+        )
 
         return context
 
@@ -377,9 +441,9 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
         return field_locations
 
 
-class ProfileLeavingDitView(SuccessMessageMixin, ProfileView, FormView):
+class ProfileLeavingDbtView(SuccessMessageMixin, ProfileView, FormView):
     template_name = "peoplefinder/profile-leaving-dit.html"
-    form_class = ProfileLeavingDitForm
+    form_class = ProfileLeavingDbtForm
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -500,10 +564,13 @@ class ProfileActivateAction(
         self.person.save()
 
 
-class ProfileUpdateUserView(SuccessMessageMixin, HtmxFormView):
+class ProfileUpdateUserView(UserPassesTestMixin, SuccessMessageMixin, HtmxFormView):
     template_name = "peoplefinder/components/update-user-form.html"
     form_class = ProfileUpdateUserForm
     success_message = "User has been updated"
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -539,3 +606,26 @@ def get_profile_by_staff_sso_id(request, staff_sso_id):
     person = get_object_or_404(Person, user__legacy_sso_user_id=staff_sso_id)
 
     return redirect(person)
+
+
+@decorator_from_middleware(HawkResponseMiddleware)
+def get_profile_card(request, staff_sso_email_user_id):
+    try:
+        authenticate_request(request=request)
+    except DjangoHawkAuthenticationFailed:
+        return HttpResponse(status=401)
+
+    try:
+        person = Person.objects.filter(user__username=staff_sso_email_user_id).get()
+    except (Person.DoesNotExist, Person.MultipleObjectsReturned):
+        person = None
+
+    return TemplateResponse(
+        request,
+        "peoplefinder/components/profile-card.html",
+        {
+            "profile": person,
+            "profile_url": request.build_absolute_uri(person.get_absolute_url()),
+            "no_photo_url": request.build_absolute_uri(get_static("no-photo.png")),
+        },
+    )

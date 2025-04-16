@@ -33,7 +33,7 @@ class UkStaffLocationService:
         with connections["uk_staff_locations"].cursor() as cursor:
             cursor.execute(
                 """
-                SELECT location_code, location_name, city, organisation
+                SELECT location_code, location_name, city, organisation, building_name
                 FROM dit.uk_staff_locations
                 """
             )
@@ -42,6 +42,7 @@ class UkStaffLocationService:
                 location_name = row[1]
                 city = row[2]
                 organisation = row[3]
+                building_name = row[4]
                 (
                     uk_staff_location,
                     location_created,
@@ -52,6 +53,7 @@ class UkStaffLocationService:
                         "name": location_name,
                         "city": city,
                         "organisation": organisation,
+                        "building_name": building_name,
                     },
                 )
 
@@ -73,3 +75,9 @@ class UkStaffLocationService:
             "updated": updated,
             "deleted": deleted,
         }
+
+    def get_uk_staff_location_cities(self) -> list[str]:
+        return [
+            c["city"]
+            for c in UkStaffLocation.objects.values("city").distinct().order_by("city")
+        ]

@@ -2,10 +2,14 @@
 
 <div class="search-results__all">
     <div class="left-col">
-        <div class="pages">{% search_category category='all_pages' show_heading=True %}</div>
+        <div class="pages">{% search_category category='all_pages' tab_name='all' show_heading=True %}</div>
     </div>
     <div class="right-col">
-        <div class="people">{% search_category category='people' limit=3 show_heading=True %}</div>
-        <div class="teams">{% search_category category='teams' limit=3 show_heading=True %}</div>
+        <div class="people">
+            {% search_category category='people' tab_name='all' limit=3 show_heading=True show_bad_results_message=False %}
+        </div>
+        <div class="teams">
+            {% search_category category='teams' tab_name='all' limit=3 show_heading=True show_bad_results_message=False %}
+        </div>
     </div>
 </div>

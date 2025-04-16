@@ -1,0 +1,81 @@
+{% extends "dwds_page.html" %}
+
+{% block primary_content %}
+    {% if template_type == "icons" %}
+        <div class="content-stack">
+            <h2>Sizes</h2>
+            <h3>Tiny</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" with tiny=True %}
+            <h3>Small</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" with small=True %}
+            <h3>Medium</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" with medium=True %}
+            <h3>Large</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" with large=True %}
+            <h3>Standard</h3>
+            {% include "dwds/icons/arrow-blue-bg.html" %}
+        </div>
+    {% endif %}
+    <div class="content-stack">
+        {% for template in templates %}
+            {% include "dw_design_system/partials/component.html" with component=template new=template.new %}
+        {% endfor %}
+    </div>
+{% endblock primary_content %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% comment %} TODO: Move to a separate CSS file {% endcomment %}
+    <style type="text/css">
+        .component-wrapper {
+            > button {
+                padding: 5px 10px;
+            }
+        }
+        .component-container {
+            resize: horizontal;
+            overflow: auto;
+            padding: 25px;
+            border: 1px dotted #ccc;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .component-context {
+            width: 100%;
+        }
+    </style>
+    <script>
+        function getComponentContext(hx_event) {
+            return hx_event.srcElement.parentElement.getElementsByClassName('component-context')[0].value
+        }
+        function debounce(func, wait) {
+            let timeout;
+
+            return (...args) => {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        document.querySelectorAll('.component-wrapper .component-html').forEach(function(componentHtml) {
+            componentHtml.innerText = componentHtml.parentElement.querySelector('.component-container').innerHTML;
+        });
+        document.querySelectorAll('.component-wrapper > button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var container = this.parentElement.querySelector('.component-container');
+                container.style.width = this.innerText;
+            });
+        });
+        document.querySelectorAll('.component-wrapper .component-context').forEach(function(textarea) {
+            textarea.style.height = "1px";
+            textarea.style.height = textarea.scrollHeight + "px";
+        });
+
+    </script>
+{% endblock scripts %}

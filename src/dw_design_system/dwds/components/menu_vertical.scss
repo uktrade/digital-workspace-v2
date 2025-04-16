@@ -1,0 +1,44 @@
+.dwds-menu-vertical {
+    --menu-vertical-item-vertical-spacing: var(--s-2);
+    --menu-vertical-item-horizontal-spacing: var(--s0);
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: inline-block;
+
+        li {
+            display: inline-block;
+            width: 100%;
+            border-left: var(--s-5) solid transparent;
+
+            &.active {
+                font-weight: var(--font-weight-bold);
+
+                ol.page-toc {
+                    font-weight: var(--font-weight-normal);
+
+                    li {
+                        border-left: unset;
+
+                        a {
+                            padding: var(--s-5) var(--s-2);
+                        }
+                    }
+                }
+            }
+
+            &:hover,
+            &.active {
+                border-left-color: var(--color-menu-active-border);
+            }
+
+            > * {
+                display: inline-block;
+                padding: var(--menu-vertical-item-vertical-spacing) var(--menu-vertical-item-horizontal-spacing);
+                width: 100%;
+            }
+        }
+    }
+}

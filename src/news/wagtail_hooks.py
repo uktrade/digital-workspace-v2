@@ -1,4 +1,4 @@
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
 from news.models import Comment, NewsCategory
 
@@ -7,7 +7,7 @@ class CommentAdmin(ModelAdmin):
     model = Comment
     menu_label = "Comments"  # ditch this to use verbose_name_plural from model
     menu_icon = "doc-empty"  # change as required
-    menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
+    menu_order = 300  # will put in 3rd place (000 being 1st, 100 2nd)
     add_to_settings_menu = False  # or True to add your model to the Settings sub-menu
     exclude_from_explorer = (
         False  # or True to exclude pages of this type from Wagtail's explorer view
@@ -31,7 +31,7 @@ class NewsCategoryAdmin(ModelAdmin):
     model = NewsCategory
     menu_label = "News Categories"  # ditch this to use verbose_name_plural from model
     menu_icon = "tag"  # change as required
-    menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
+    menu_order = 300  # will put in 3rd place (000 being 1st, 100 2nd)
     add_to_settings_menu = False  # or True to add your model to the Settings sub-menu
     exclude_from_explorer = (
         False  # or True to exclude pages of this type from Wagtail's explorer view

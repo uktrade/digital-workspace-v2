@@ -230,41 +230,53 @@ def test_edit_profile_visible(state):
 
 
 def test_edit_team_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            "slug": state.team.slug,
-        },
+    view_url = (
+        reverse(
+            "team-view",
+            kwargs={
+                "slug": state.team.slug,
+            },
+        )
+        + "?sub_view=people"
     )
     check_visible_button(state, view_url, b"Edit team", "change_team")
 
 
 def test_delete_team_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            "slug": state.team.slug,
-        },
+    view_url = (
+        reverse(
+            "team-view",
+            kwargs={
+                "slug": state.team.slug,
+            },
+        )
+        + "?sub_view=people"
     )
     check_visible_button(state, view_url, b"Delete team", "delete_team")
 
 
 def test_create_sub_team_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            "slug": state.team.slug,
-        },
+    view_url = (
+        reverse(
+            "team-view",
+            kwargs={
+                "slug": state.team.slug,
+            },
+        )
+        + "?sub_view=people"
     )
     check_visible_button(state, view_url, b"Add new sub-team", "add_team")
 
 
 def test_team_log_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            "slug": state.team.slug,
-        },
+    view_url = (
+        reverse(
+            "team-view",
+            kwargs={
+                "slug": state.team.slug,
+            },
+        )
+        + "?sub_view=people"
     )
     response = state.client.get(view_url)
     assert response.status_code == 200
@@ -390,7 +402,7 @@ def test_profile_edit_personal_view(state):
 
     form = PersonalProfileEditForm(
         {
-            "first_name": "Jane",
+            "preferred_first_name": "Jane",
             "last_name": "Smith",
             "pronouns": "she/her",
             "name_pronunciation": "Jay-n Smi-th",
@@ -424,13 +436,13 @@ def test_profile_edit_contact_view(state):
     response = state.client.get(view_url)
 
     assert response.status_code == 200
-    assert state.person.contact_email is None
+    assert state.person.contact_email == "jane.smith@test.com"
     assert state.person.primary_phone_number is None
     assert state.person.secondary_phone_number is None
 
     form = ContactProfileEditForm(
         {
-            "contact_email": "jane.smith@test.com",
+            "contact_email": "jane.smith123@test.com",
             "primary_phone_number": "01234567890",
             "secondary_phone_number": "09876543210",
         },
@@ -445,7 +457,7 @@ def test_profile_edit_contact_view(state):
 
     assert response.status_code == 302
     assert response.url == view_url
-    assert state.person.contact_email == "jane.smith@test.com"
+    assert state.person.contact_email == "jane.smith123@test.com"
     assert state.person.primary_phone_number == "01234567890"
     assert state.person.secondary_phone_number == "09876543210"
 
@@ -462,9 +474,9 @@ def test_profile_edit_teams_view(state):
     response = state.client.get(view_url)
 
     assert response.status_code == 200
-    assert state.person.contact_email is None
-    assert state.person.primary_phone_number is None
-    assert state.person.secondary_phone_number is None
+    assert state.person.grade is None
+    assert state.person.manager is None
+    assert state.person.do_not_work_for_dit is False
 
     grade = Grade.objects.all().first()
 
@@ -800,6 +812,13 @@ class TestProfileUpdateUserView:
         )
 
     def test_swap_user(self, normal_user, state):
+        PersonService.update_groups_and_permissions(
+            person=state.person,
+            is_person_admin=False,
+            is_team_admin=False,
+            is_superuser=True,
+        )
+
         john = normal_user
         john_profile = john.profile
         jane = state.user

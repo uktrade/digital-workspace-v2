@@ -1,19 +1,23 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import SuspiciousOperation
-from django.core.paginator import Paginator
-from django.db import transaction
-from django.db.models import Avg, Q, QuerySet
-from django.urls import reverse_lazy
+from django.db import models, transaction
+from django.db.models import QuerySet
+from django.http import HttpRequest
+from django.http.response import HttpResponse as HttpResponse
+from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.functional import cached_property
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from peoplefinder.forms.team import TeamForm
-from peoplefinder.models import Person, Team, TeamMember
+from peoplefinder.models import Team, TeamMember
 from peoplefinder.services.audit_log import AuditLogService
 from peoplefinder.services.team import TeamService
 
 from .base import PeoplefinderView
+
 
 # TODO: Potential to refactor for the common parts.
 
@@ -23,48 +27,110 @@ class TeamDetailView(DetailView, PeoplefinderView):
     context_object_name = "team"
     template_name = "peoplefinder/team.html"
 
+    class SubView(models.TextChoices):
+        SUB_TEAMS = "sub-teams", "Teams"
+        PEOPLE = "people", "People"
+
+    def setup(self, request: HttpRequest, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        sub_view_str = self.request.GET.get("sub_view", None)
+        self.sub_view = None
+        if sub_view_str:
+            self.sub_view = self.SubView(sub_view_str)
+
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        response = super().dispatch(request, *args, **kwargs)
+        if self.sub_view is None:
+            sub_view = self.SubView.PEOPLE
+            if self.available_sub_views:
+                sub_view = self.available_sub_views[0]
+
+            team_detail_path = reverse("team-view", args=[self.object.slug])
+            return redirect(f"{team_detail_path}?sub_view={sub_view}")
+        return response
+
+    @cached_property
+    def parent_teams(self) -> QuerySet[Team]:
+        return TeamService().get_all_parent_teams(self.object)
+
+    @cached_property
+    def sub_teams(self) -> list[Team]:
+        sub_teams = []
+
+        team_service = TeamService()
+        for sub_team in team_service.get_immediate_child_teams(self.object):
+            profile_completion = team_service.profile_completion(sub_team)
+            if profile_completion:
+                profile_completion_percentage = round(
+                    float(profile_completion * 100), 2
+                )
+                sub_team.profile_completion = (
+                    f"{profile_completion_percentage:g}% of profiles complete"
+                )
+            sub_teams.append(sub_team)
+
+        return sub_teams
+
+    @cached_property
+    def leaders(self) -> list[TeamMember]:
+        return list(self.object.leaders)
+
+    @cached_property
+    def members(self) -> list[TeamMember]:
+        return (
+            self.object.members.all()
+            .active()
+            .exclude(id__in=[leader.id for leader in self.leaders])
+            .select_related(
+                "person",
+                "person__uk_office_location",
+            )
+            .order_by("person__first_name", "person__last_name")
+            .distinct("person", "person__first_name", "person__last_name")
+        )
+
+    @cached_property
+    def available_sub_views(self) -> list["TeamDetailView.SubView"]:
+        available_sub_views = []
+        if self.sub_teams:
+            available_sub_views.append(self.SubView.SUB_TEAMS)
+        if self.members:
+            available_sub_views.append(self.SubView.PEOPLE)
+        return available_sub_views
+
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
 
-        team = context["team"]
+        context.update(
+            page_title=self.object.name,
+            team_breadcrumbs=True,
+            parent_teams=self.parent_teams,
+            sub_teams=self.sub_teams,
+            current_sub_view=self.sub_view,
+            sub_views=self.available_sub_views,
+            teams_active=self.sub_view == self.SubView.SUB_TEAMS,
+            leaders=self.leaders,
+            members=self.members,
+        )
+
         team_service = TeamService()
 
-        context["parent_teams"] = team_service.get_all_parent_teams(team)
-        context["sub_teams"] = team_service.get_immediate_child_teams(team)
+        if profile_completion := team_service.profile_completion(self.object):
+            profile_completion_percentage = round(float(profile_completion * 100), 2)
+            context["profile_completion"] = (
+                f"{profile_completion_percentage:g}% of profiles complete"
+            )
 
         if self.request.user.has_perm("peoplefinder.delete_team"):
             (
                 context["can_team_be_deleted"],
                 context["reasons_team_cannot_be_deleted"],
-            ) = team_service.can_team_be_deleted(team)
-
-        # Must be a leaf team.
-        if not context["sub_teams"]:
-            context["members"] = (
-                team.members.all()
-                .active()
-                .order_by("person__first_name", "person__last_name")
-                .distinct("person", "person__first_name", "person__last_name")
-            )
-        else:
-            context["people_outside_subteams_count"] = TeamMember.active.filter(
-                team=team
-            ).count()
-
-            # Warning: Multiple requests per sub-team. This might need optimising in the
-            # future.
-            for sub_team in context["sub_teams"]:
-                sub_team.avg_profile_completion = Person.active.filter(
-                    teams__in=[
-                        sub_team,
-                        *team_service.get_all_child_teams(sub_team),
-                    ]
-                ).aggregate(Avg("profile_completion"))["profile_completion__avg"]
+            ) = team_service.can_team_be_deleted(self.object)
 
         if self.request.user.has_perms(
             ["peoplefinder.change_team", "peoplefinder.view_auditlog"]
         ):
-            context["team_audit_log"] = AuditLogService.get_audit_log(team)
+            context["team_audit_log"] = AuditLogService.get_audit_log(self.object)
 
         direct_members = self.get_direct_team_members(team, context["sub_teams"])
         context["direct_team_members"] = direct_members
@@ -98,20 +164,24 @@ class TeamEditView(PermissionRequiredMixin, UpdateView, PeoplefinderView):
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
 
-        team = context["team"]
+        team = self.object
         team_service = TeamService()
+        page_title = f"Edit {team.name}"
 
-        context["parent_team"] = team_service.get_immediate_parent_team(team)
-        context["is_root_team"] = team_service.get_root_team() == team
-
-        members = [
-            {"pk": member.pk, "name": member.person.full_name}
-            for member in team.leaders
-        ]
-        context["team_leaders_order_component"] = {
-            "ordering": team.leaders_ordering,
-            "members": members,
-        }
+        context.update(
+            page_title=page_title,
+            team_breadcrumbs=True,
+            extra_breadcrumbs=[(None, page_title)],
+            parent_team=team_service.get_immediate_parent_team(team),
+            is_root_team=team_service.get_root_team() == team,
+            team_leaders_order_component={
+                "ordering": team.leaders_ordering,
+                "members": [
+                    {"pk": member.pk, "name": member.person.full_name}
+                    for member in team.leaders
+                ],
+            },
+        )
 
         return context
 
@@ -148,85 +218,16 @@ class TeamTreeView(DetailView, PeoplefinderView):
 
         team = context["team"]
         team_service = TeamService()
+        page_title = f"All sub-teams ({ team.short_name })"
 
-        context["parent_teams"] = team_service.get_all_parent_teams(team)
-
-        return context
-
-
-class TeamPeopleBaseView(DetailView, PeoplefinderView):
-    """A base view for people in a team.
-
-    Below is a list of attributes that subclasses need to provide.
-
-    Attributes:
-        heading ([str]): Page heading
-    """
-
-    model = Team
-    context_object_name = "team"
-    template_name = "peoplefinder/team-people.html"
-
-    # override in subclass
-    heading = ""
-
-    def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
-        """Return the related team members.
-
-        Subclasses must implement this method and return a queryset of team
-        members. The team members will be available at "team_members" in the
-        view's context data.
-
-        Args:
-            team (Team): The given current team
-            sub_teams (QuerySet[Team]): The sub teams of the current team
-
-        Return:
-            (QuerySet[TeamMember]): A queryset of team members
-        """
-        raise NotImplementedError
-
-    def get_context_data(self, **kwargs: dict) -> dict:
-        context = super().get_context_data(**kwargs)
-
-        page = self.request.GET.get("page", 1)
-
-        team = context["team"]
-        team_service = TeamService()
-
-        context["parent_teams"] = team_service.get_all_parent_teams(team)
-        context["sub_teams"] = team_service.get_all_child_teams(team)
-
-        members = self.get_team_members(team, context["sub_teams"])
-        paginator = Paginator(members, 40)
-        context["team_members"] = paginator.page(page)
-        context["page_numbers"] = list(paginator.get_elided_page_range(page))
-
-        context["heading"] = self.heading
-
-        return context
-
-
-class TeamPeopleView(TeamPeopleBaseView):
-    heading = "All people"
-
-    def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
-        return (
-            TeamMember.active.filter(Q(team=team) | Q(team__in=sub_teams))
-            .order_by("person__first_name", "person__last_name")
-            .distinct("person", "person__first_name", "person__last_name")
+        context.update(
+            parent_teams=team_service.get_all_parent_teams(team),
+            team_breadcrumbs=True,
+            extra_breadcrumbs=[(None, page_title)],
+            page_title=page_title,
         )
 
-
-class TeamPeopleOutsideSubteamsView(TeamPeopleBaseView):
-    heading = "People not in a sub-team"
-
-    def get_team_members(self, team: Team, sub_teams: QuerySet) -> QuerySet:
-        return (
-            TeamMember.active.filter(team=team)
-            .order_by("person__first_name", "person__last_name")
-            .distinct("person", "person__first_name", "person__last_name")
-        )
+        return context
 
 
 @method_decorator(transaction.atomic, name="post")
@@ -246,9 +247,15 @@ class TeamAddNewSubteamView(PermissionRequiredMixin, CreateView, PeoplefinderVie
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
+        page_title = "Add new sub-team"
 
-        context["parent_team"] = self.parent_team
-        context["is_root_team"] = False
+        context.update(
+            page_title=page_title,
+            team_breadcrumbs=True,
+            extra_breadcrumbs=[(None, page_title)],
+            team=self.parent_team,
+            is_root_team=False,
+        )
 
         return context
 

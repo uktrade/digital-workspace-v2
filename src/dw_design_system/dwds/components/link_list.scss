@@ -1,0 +1,26 @@
+.dwds-link-list {
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        max-inline-size: 100%;
+        column-width: 25ch;
+
+        li {
+            text-align: start;
+            padding-top: var(--s-2);
+
+            a {
+                color: var(--color-link);
+            }
+
+            a:active {
+                background-color: var(--color-link-background-active);
+            }
+
+            a:visited {
+                color: var(--color-link-visited);
+            }
+        }
+    }
+}

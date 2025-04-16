@@ -1,0 +1,13 @@
+{% extends 'dwds_sidebar.html' %}
+
+{% load render_bundle from webpack_loader %}
+
+{% block stylesheets %}
+    {{ block.super }}
+    {% render_bundle 'peoplefinder' 'css' %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% render_bundle 'peoplefinder' 'js' %}
+{% endblock scripts %}

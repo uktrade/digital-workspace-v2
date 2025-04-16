@@ -3,10 +3,17 @@
       method="get">
     <label for="search-site" class="govuk-visually-hidden">Search Digital Workspace</label>
     <input id="search-site"
+           autocomplete="off"
            class="govuk-input"
            name="query"
            placeholder="{{ placeholder|default:'Search site' }}"
            type="search"
-           value="{{ search_query|default:'' }}" />
+           value="{{ search_query|default:'' }}"
+           hx-trigger="keyup changed delay:300ms"
+           hx-get="{% url 'search:autocomplete' %}"
+           hx-target="#autocomplete-results"
+           onblur="setTimeout(() => {document.getElementById('autocomplete-results').style.display='none'}, 250)"
+           onfocus="document.getElementById('autocomplete-results').style.display='block'">
     <button type="submit">Search</button>
+    <div id="autocomplete-results" class="autocomplete-overlay"></div>
 </form>

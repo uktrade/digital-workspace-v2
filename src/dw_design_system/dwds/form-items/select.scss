@@ -1,0 +1,74 @@
+select {
+    font-weight: 400;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+    box-sizing: border-box;
+    min-width: 11.5em;
+    max-width: 100%;
+    height: 40px;
+    height: 2.5rem;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    color: #0b0c0c;
+    background-color: #fff;
+    border-radius: var(--border-radius);
+}
+
+@media print {
+    select {
+        font-family: sans-serif
+    }
+}
+
+@media(min-width: 40.0625em) {
+    select {
+        font-size: 19px;
+        font-size: 1.1875rem;
+        line-height: 1.25
+    }
+}
+
+@media print {
+    select {
+        font-size: 14pt;
+        line-height: 1.25
+    }
+}
+
+select:focus {
+    outline: 3px solid #fd0;
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 2px
+}
+
+select option:active,
+select option:checked,
+select:focus::-ms-value {
+    color: #fff;
+    background-color: #1d70b8
+}
+
+.select--error {
+    border-color: #d4351c
+}
+
+.select--error:focus {
+    border-color: #0b0c0c
+}
+
+.dwds-select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("/assets/images/dwds/icons/dropdown_chevron.svg");
+    background-repeat: no-repeat;
+    background-position: calc(100% - var(--s-2));
+    padding-left: var(--s-2);
+    padding-right: var(--s3);
+    max-width: fit-content;
+
+    &.width-full {
+        max-width: 100%;
+    }
+}

@@ -1,0 +1,42 @@
+.bookmark-icon {
+    --bookmark-icon-background-border-color: var(--color-icon-light-border);
+    --bookmark-icon-background-outer-color: var(--color-icon-light-backdrop);
+    --bookmark-icon-background-inner-color: var(--color-icon-light-background);
+    --bookmark-icon-foreground-color: var(--color-icon-light-foreground);
+
+    &.dark {
+        --bookmark-icon-background-border-color: var(--color-icon-dark-border);
+        --bookmark-icon-background-outer-color: var(--color-icon-dark-backdrop);
+        --bookmark-icon-background-inner-color: var(--color-icon-dark-background);
+        --bookmark-icon-foreground-color: var(--color-icon-dark-foreground);
+    }
+
+    &.hover-light {
+        &:hover {
+            // These variables should match those from the base definition
+            --bookmark-icon-background-border-color: var(--color-icon-light-border);
+            --bookmark-icon-background-outer-color: var(--color-icon-light-backdrop);
+            --bookmark-icon-background-inner-color: var(--color-icon-light-background);
+            --bookmark-icon-foreground-color: var(--color-icon-light-foreground);
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+            // These variables should match those from .dark
+            --bookmark-icon-background-border-color: var(--color-icon-dark-border);
+            --bookmark-icon-background-outer-color: var(--color-icon-dark-backdrop);
+            --bookmark-icon-background-inner-color: var(--color-icon-dark-background);
+            --bookmark-icon-foreground-color: var(--color-icon-dark-foreground);
+        }
+    }
+
+    .background {
+        fill: var(--bookmark-icon-background-outer-color);
+    }
+
+    .path {
+        fill: var(--bookmark-icon-background-inner-color);
+        stroke: var(--bookmark-icon-background-border-color);
+    }
+}

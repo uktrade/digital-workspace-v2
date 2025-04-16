@@ -24,9 +24,9 @@ class ProfileViewPage(PeoplefinderPage):
 
 
 class ProfileEditPage(PeoplefinderPage):
-    def goto_profile_view_page(self):
-        self.page.get_by_text("Back to profile").click()
-        return ProfileViewPage(self.page)
+    def goto_profile_edit_team_page(self):
+        self.page.get_by_text("Team and role").click()
+        return ProfileEditPage(self.page)
 
     @property
     def first_name(self):
@@ -56,16 +56,14 @@ class ProfileEditPage(PeoplefinderPage):
         self.page.get_by_test_id("add-role").click()
 
         # The new role form should be the last one.
-        form = self.page.get_by_test_id("role-form").last
+        formset = self.page.get_by_test_id("role-formset").last
         # Lets fill out the form.
-        form.get_by_label("Job title").fill(job_title)
+        formset.get_by_test_id("job-title").fill(job_title)
 
         # The head_of_team input should default to false, so we only need to click it if
         # we need to set it to true.
         if head_of_team:
-            form.get_by_label("Head of team").click()
-
-        self.page.get_by_test_id("save-role").click()
+            formset.get_by_label("Head of team").click()
 
     def save_profile(self):
         self.page.get_by_test_id("save-profile").click()

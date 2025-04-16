@@ -1,0 +1,97 @@
+.content-main {
+    --content-main-bg-color: var(--card-bg-white);
+    --content-main-heading-color: var(--color-text);
+    --content-main-link-color: var(--color-link);
+    --content-main-text-color: var(--color-text);
+    --content-main-padding: var(--s0);
+
+    padding: var(--content-main-padding);
+
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    gap: var(--content-main-padding);
+
+    background-color: var(--content-main-bg-color);
+    color: var(--content-main-text-color);
+
+    h1,
+    h2,
+    h3 {
+        color: var(--content-main-heading-color);
+    }
+
+    p {
+        color: var(--content-main-text-color);
+    }
+
+    a:not(.dwds-button) {
+        color: var(--content-main-link-color);
+        text-decoration-color: var(--content-main-link-color);
+
+        &:visited,
+        &:link {
+            color: var(--content-main-link-color);
+            text-decoration-color: var(--content-main-link-color);
+        }
+
+        &:focus {
+            color: var(--color-text);
+            text-decoration-color: var(--color-text);
+        }
+    }
+
+    .content-body.content-body-space-padding {
+        padding: var(--space);
+    }
+
+    .content-body {
+        font-size: var(--text-small);
+        line-height: var(--font-lineheight-body);
+
+        .post-title-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--s-5)
+        }
+
+        .post-title {
+            margin: 0;
+        }
+    }
+
+    .content-footer {
+        margin-top: auto;
+        color: var(--color-text-secondary);
+    }
+
+    .content-footer.content-stack {
+        --content-stack-gap: var(--s-5);
+    }
+}
+
+.content-main.large {
+    --content-main-padding: var(--space);
+}
+
+.content-main.info {
+    --content-main-bg-color: #EEF2F6;
+}
+
+.content-main.content {
+    --content-main-heading-color: var(--color-link);
+}
+
+.content-main.highlight {
+    --content-main-bg-color: var(--card-bg-blue);
+    --content-main-heading-color: var(--color-text-highlight);
+    --content-main-link-color: var(--color-text-highlight);
+    --content-main-text-color: var(--color-text-highlight);
+}
+
+.content-main.warning {
+    --content-main-bg-color: var(--card-bg-red);
+    --content-main-heading-color: var(--color-text-highlight);
+    --content-main-link-color: var(--color-text-highlight);
+    --content-main-text-color: var(--color-text-highlight);
+}

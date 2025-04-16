@@ -1,13 +1,16 @@
+from typing import List
+
 from crispy_forms_gds.helper import FormHelper
 from crispy_forms_gds.layout import HTML, Field, Fieldset, Layout, Size
 from django import forms
-from django.core.validators import ValidationError
+from django.core.validators import ValidationError, validate_email
 from django.template import Context, Template
 
 from peoplefinder.forms.crispy_layout import GovUKDetails
 from peoplefinder.forms.profile import GovUkRadioSelect, GroupedModelChoiceField
 from peoplefinder.forms.role import RoleForm
 from peoplefinder.models import Person, TeamMember, UkStaffLocation
+from peoplefinder.services.person import PersonService
 
 
 class PersonalProfileEditForm(forms.ModelForm):
@@ -15,6 +18,7 @@ class PersonalProfileEditForm(forms.ModelForm):
         model = Person
         fields = [
             "first_name",
+            "preferred_first_name",
             "last_name",
             "pronouns",
             "photo",
@@ -34,6 +38,12 @@ class PersonalProfileEditForm(forms.ModelForm):
 
         first_name_label = self.fields["first_name"].label
         self.fields["first_name"].label = ""
+        self.fields["first_name"].disabled = True
+
+        preferred_first_name_label = (
+            self.fields["preferred_first_name"].label + " (optional)"
+        )
+        self.fields["preferred_first_name"].label = ""
 
         last_name_label = self.fields["last_name"].label
         self.fields["last_name"].label = ""
@@ -53,6 +63,11 @@ class PersonalProfileEditForm(forms.ModelForm):
                 "first_name",
                 legend_size=Size.MEDIUM,
                 legend=first_name_label,
+            ),
+            Fieldset(
+                "preferred_first_name",
+                legend_size=Size.MEDIUM,
+                legend=preferred_first_name_label,
             ),
             Fieldset(
                 "last_name",
@@ -90,6 +105,7 @@ class PersonalProfileEditForm(forms.ModelForm):
                 ),
                 legend_size=Size.MEDIUM,
                 legend="Photo",
+                css_class="govuk-!-margin-bottom-0",
             ),
         )
 
@@ -126,7 +142,6 @@ class ContactProfileEditForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = [
-            "email",
             "contact_email",
             "primary_phone_number",
             "secondary_phone_number",
@@ -136,11 +151,8 @@ class ContactProfileEditForm(forms.ModelForm):
         self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
-        email_label = self.fields["email"].label
-        self.fields["email"].label = ""
-        self.fields["email"].disabled = True
-
         contact_email_label = self.fields["contact_email"].label
+        self.fields["contact_email"].required = True
         self.fields["contact_email"].label = ""
 
         primary_phone_number_label = self.fields["primary_phone_number"].label
@@ -155,11 +167,6 @@ class ContactProfileEditForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Fieldset(
-                "email",
-                legend_size=Size.MEDIUM,
-                legend=email_label,
-            ),
-            Fieldset(
                 "contact_email",
                 legend_size=Size.MEDIUM,
                 legend=contact_email_label,
@@ -173,6 +180,7 @@ class ContactProfileEditForm(forms.ModelForm):
                 "secondary_phone_number",
                 legend_size=Size.MEDIUM,
                 legend=secondary_phone_number_label,
+                css_class="govuk-!-margin-bottom-0",
             ),
         )
 
@@ -225,6 +233,7 @@ class TeamsProfileEditForm(forms.ModelForm):
                 Field("do_not_work_for_dit"),
                 legend_size=Size.MEDIUM,
                 legend="Who is your line manager?",
+                css_class="govuk-!-margin-bottom-0",
             ),
         )
 
@@ -261,6 +270,7 @@ class LocationProfileEditForm(forms.ModelForm):
         fields = [
             "uk_office_location",
             "remote_working",
+            "usual_office_days",
             "location_in_building",
             "international_building",
             "workdays",
@@ -274,8 +284,7 @@ class LocationProfileEditForm(forms.ModelForm):
         queryset=UkStaffLocation.objects.all()
         .filter(
             organisation__in=[
-                "Department for International Trade",
-                "Department for Business, Energy and Industrial Strategy",
+                "Department for Business and Trade",
             ]
         )
         .order_by(
@@ -283,7 +292,7 @@ class LocationProfileEditForm(forms.ModelForm):
             "name",
         ),
         label="What is your office location?",
-        help_text="Your base location as per your contract.",
+        help_text="Your base location as per your contract",
         group_field="city",
         empty_label="Select your office location",
         required=False,
@@ -293,8 +302,13 @@ class LocationProfileEditForm(forms.ModelForm):
         self.request_user = kwargs.pop("request_user", None)
         super().__init__(*args, **kwargs)
 
-        remote_working_choices = self.fields["remote_working"].choices
-        self.fields["remote_working"].choices = remote_working_choices[1:]
+        remote_working_choices = list(self.fields["remote_working"].choices)
+        if remote_working_choices[0][0] == "":
+            remote_working_choices.pop(0)
+        self.fields["remote_working"].choices = remote_working_choices
+
+        usual_office_days_label = self.fields["usual_office_days"].label + " (optional)"
+        self.fields["usual_office_days"].label = ""
 
         uk_office_location_label = self.fields["uk_office_location"].label
         self.fields["uk_office_location"].label = ""
@@ -312,7 +326,7 @@ class LocationProfileEditForm(forms.ModelForm):
         )
         self.fields["international_building"].label = ""
 
-        workdays_label = self.fields["workdays"].label
+        workdays_label = self.fields["workdays"].label + " (optional)"
         self.fields["workdays"].label = ""
 
         self.helper = FormHelper()
@@ -329,6 +343,11 @@ class LocationProfileEditForm(forms.ModelForm):
                 legend=remote_working_label,
             ),
             Fieldset(
+                "usual_office_days",
+                legend_size=Size.MEDIUM,
+                legend=usual_office_days_label,
+            ),
+            Fieldset(
                 "location_in_building",
                 legend_size=Size.MEDIUM,
                 legend=location_in_building_label,
@@ -342,6 +361,7 @@ class LocationProfileEditForm(forms.ModelForm):
                 "workdays",
                 legend_size=Size.MEDIUM,
                 legend=workdays_label,
+                css_class="govuk-!-margin-bottom-0",
             ),
         )
 
@@ -489,8 +509,70 @@ class SkillsProfileEditForm(forms.ModelForm):
                 ),
                 legend_size=Size.MEDIUM,
                 legend="Skills, interests and networks (optional)",
+                css_class="govuk-!-margin-bottom-0",
             )
         )
+
+
+class AccountSettingsForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = [
+            "email",
+        ]
+        widgets = {
+            "email": forms.Select,
+        }
+
+    email = forms.ChoiceField(
+        label=Person._meta.get_field("email").verbose_name,
+        help_text=Person._meta.get_field("email").help_text,
+        required=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.request_user = kwargs.pop("request_user", None)
+        super().__init__(*args, **kwargs)
+
+        email_label = self.fields["email"].label
+        self.fields["email"].label = ""
+        self.fields["email"].choices = [(e, e) for e in self.get_email_choices()]
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Fieldset(
+                Field.select("email"),
+                legend_size=Size.MEDIUM,
+                legend=email_label,
+                css_class="govuk-!-margin-bottom-0",
+            ),
+        )
+
+    def get_email_choices(self) -> List[str]:
+        verified_emails = PersonService.get_verified_emails(self.instance)
+        choices = []
+        if self.instance.email in verified_emails:
+            choices += [self.instance.email]
+        choices += [email for email in verified_emails if email not in choices]
+        if not choices:
+            return [self.instance.email]
+        return choices
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+
+        validate_email(email)
+
+        verified_emails = PersonService.get_verified_emails(self.instance)
+        if verified_emails == []:
+            raise Exception("Could not retrieve valid emails for this user")
+        if email not in verified_emails:
+            raise ValidationError(
+                "Email address must be officially assigned and verified by SSO authentication"
+            )
+
+        return email
 
 
 class AdminProfileEditForm(forms.ModelForm):

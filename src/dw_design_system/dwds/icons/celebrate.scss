@@ -1,0 +1,40 @@
+.celebrate-icon {
+    --celebrate-icon-background-color: var(--color-background-blue);
+    --celebrate-icon-background-shade-color: var(--color-icon-light-background);
+    --celebrate-icon-foreground-color: var(--color-icon-light-foreground);
+
+    &.dark {
+        --celebrate-icon-background-color: var(--color-background-very-light-grey);
+        --celebrate-icon-background-shade-color: var(--color-light-blue);
+        --celebrate-icon-foreground-color: var(--color-light-blue);
+    }
+
+    &.hover-light {
+        &:hover {
+            --celebrate-icon-background-color: var(--color-background-blue);
+            --celebrate-icon-background-shade-color: var(--color-icon-light-background);
+            --celebrate-icon-foreground-color: var(--color-icon-light-foreground);
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+            --celebrate-icon-background-color: var(--color-background-very-light-grey);
+            --celebrate-icon-background-shade-color: var(--color-light-blue);
+            --celebrate-icon-foreground-color: var(--color-light-blue);
+        }
+    }
+
+    .background {
+        fill: var(--celebrate-icon-background-color);
+    }
+
+    .background-shade {
+        fill: var(--celebrate-icon-background-shade-color);
+    }
+
+    .foreground {
+        fill: var(--celebrate-icon-foreground-color);
+    }
+
+}

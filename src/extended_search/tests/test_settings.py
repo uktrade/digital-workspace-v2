@@ -1,17 +1,21 @@
-import pytest
-
+import copy
+from collections import ChainMap
 from types import NoneType
 
-from wagtail.search.index import SearchField
+import pytest
+from wagtail.search import index
 
+from extended_search.index import BaseField, SearchField
 from extended_search.models import Setting
 from extended_search.settings import (
-    extended_search_settings,
     DEFAULT_SETTINGS,
     NESTING_SEPARATOR,
     SETTINGS_KEY,
     NestedChainMap,
     SearchSettings,
+    extended_search_settings,
+    get_settings_field_key,
+    settings_singleton,
 )
 
 
@@ -31,7 +35,6 @@ class TestDefaults:
         assert "tokenized" in DEFAULT_SETTINGS["analyzers"]
         assert "explicit" in DEFAULT_SETTINGS["analyzers"]
         assert "keyword" in DEFAULT_SETTINGS["analyzers"]
-        assert "proximity" in DEFAULT_SETTINGS["analyzers"]
         assert "es_analyzer" in DEFAULT_SETTINGS["analyzers"]["tokenized"]
         assert "index_fieldname_suffix" in DEFAULT_SETTINGS["analyzers"]["tokenized"]
         assert "query_types" in DEFAULT_SETTINGS["analyzers"]["tokenized"]
@@ -41,8 +44,6 @@ class TestDefaults:
         assert "es_analyzer" in DEFAULT_SETTINGS["analyzers"]["keyword"]
         assert "index_fieldname_suffix" in DEFAULT_SETTINGS["analyzers"]["keyword"]
         assert "query_types" in DEFAULT_SETTINGS["analyzers"]["keyword"]
-        assert "es_analyzer" in DEFAULT_SETTINGS["analyzers"]["proximity"]
-        assert "index_fieldname_suffix" in DEFAULT_SETTINGS["analyzers"]["proximity"]
         assert "phrase" in DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]
         assert "query_and" in DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]
         assert "query_or" in DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]
@@ -50,40 +51,53 @@ class TestDefaults:
         assert "query_and" in DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"]
         assert "query_or" in DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"]
         assert "phrase" in DEFAULT_SETTINGS["analyzers"]["keyword"]["query_types"]
-        assert type(DEFAULT_SETTINGS["boost_parts"]["query_types"]["phrase"]) == float
-        assert (
-            type(DEFAULT_SETTINGS["boost_parts"]["query_types"]["query_and"]) == float
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["query_types"]["phrase"], float
         )
-        assert type(DEFAULT_SETTINGS["boost_parts"]["query_types"]["query_or"]) == float
-        assert type(DEFAULT_SETTINGS["boost_parts"]["analyzers"]["explicit"]) == float
-        assert type(DEFAULT_SETTINGS["boost_parts"]["analyzers"]["tokenized"]) == float
-        assert type(DEFAULT_SETTINGS["analyzers"]["tokenized"]["es_analyzer"]) == str
-        assert type(
-            DEFAULT_SETTINGS["analyzers"]["tokenized"]["index_fieldname_suffix"]
-        ) in (str, NoneType)
-        assert type(DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]) == list
-        assert type(DEFAULT_SETTINGS["analyzers"]["explicit"]["es_analyzer"]) == str
-        assert type(
-            DEFAULT_SETTINGS["analyzers"]["explicit"]["index_fieldname_suffix"]
-        ) in (str, NoneType)
-        assert type(DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"]) == list
-        assert type(DEFAULT_SETTINGS["analyzers"]["keyword"]["es_analyzer"]) == str
-        assert type(
-            DEFAULT_SETTINGS["analyzers"]["keyword"]["index_fieldname_suffix"]
-        ) in (str, NoneType)
-        assert type(DEFAULT_SETTINGS["analyzers"]["keyword"]["query_types"]) == list
-        assert type(DEFAULT_SETTINGS["analyzers"]["proximity"]["es_analyzer"]) == str
-        assert type(
-            DEFAULT_SETTINGS["analyzers"]["proximity"]["index_fieldname_suffix"]
-        ) in (str, NoneType)
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["query_types"]["query_and"], float
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["query_types"]["query_or"], float
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["analyzers"]["explicit"], float
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["boost_parts"]["analyzers"]["tokenized"], float
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["tokenized"]["es_analyzer"], str
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["tokenized"]["index_fieldname_suffix"],
+            (str, NoneType),
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"], list
+        )
+        assert isinstance(DEFAULT_SETTINGS["analyzers"]["explicit"]["es_analyzer"], str)
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["explicit"]["index_fieldname_suffix"],
+            (str, NoneType),
+        )
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"], list
+        )
+        assert isinstance(DEFAULT_SETTINGS["analyzers"]["keyword"]["es_analyzer"], str)
+        assert isinstance(
+            DEFAULT_SETTINGS["analyzers"]["keyword"]["index_fieldname_suffix"],
+            (str, NoneType),
+        )
+        assert isinstance(DEFAULT_SETTINGS["analyzers"]["keyword"]["query_types"], list)
         for v in DEFAULT_SETTINGS["analyzers"]["tokenized"]["query_types"]:
-            assert type(v) == str
+            assert isinstance(v, str)
             assert v in ["phrase", "query_and", "query_or"]
         for v in DEFAULT_SETTINGS["analyzers"]["explicit"]["query_types"]:
-            assert type(v) == str
+            assert isinstance(v, str)
             assert v in ["phrase", "query_and", "query_or"]
         for v in DEFAULT_SETTINGS["analyzers"]["keyword"]["query_types"]:
-            assert type(v) == str
+            assert isinstance(v, str)
             assert v in ["phrase", "query_and", "query_or"]
 
 
@@ -141,7 +155,7 @@ class TestNestedChainMap:
         map1 = {"foo": "a", "bar": "b"}
         map2 = {"foo": 2, "foobar": "c"}
         instance = NestedChainMap(map1, map2)
-        assert instance.all_keys == ["a", "b"]
+        assert instance.all_keys() == ["a", "b"]
         with pytest.raises(KeyError):
             instance["baz"]
         mock_getitem.assert_not_called()
@@ -192,7 +206,7 @@ class TestNestedChainMap:
         assert [
             "--one--",
             "--two--",
-        ] == instance.all_keys
+        ] == instance.all_keys()
         mock_all.assert_called_with(instance, "")
 
     def test_get_item_from_nested_maps_for_prefixed_key(self, mocker):
@@ -260,12 +274,12 @@ class TestSearchSettings:
         mock_searchfield_2.get_definition_model.return_value = "--model--"
         mock_searchfield_3 = mocker.MagicMock(spec=SearchField)
         mock_searchfield_3.get_definition_model.return_value = "--second-model--"
-        mock_model_1.search_fields = [
+        mock_model_1.get_search_fields.return_value = [
             mock_searchfield_1,
             mock_searchfield_2,
             mock_searchfield_2,
         ]
-        mock_model_2.search_fields = [
+        mock_model_2.get_search_fields.return_value = [
             mock_searchfield_3,
         ]
         mock_get_models.return_value = [
@@ -287,45 +301,20 @@ class TestSearchSettings:
         } == instance._get_all_indexed_fields()
 
     def test_initialise_field_dict(self, mocker):
+        mocker.patch(
+            "extended_search.settings.get_settings_field_key",
+            return_value="--settings-field-key--",
+        )
         mock_get_fields = mocker.patch(
             "extended_search.settings.SearchSettings._get_all_indexed_fields"
         )
-        mock_model_1 = mocker.MagicMock()
-        mock_model_1._meta.app_label = "--app--"
-        mock_model_1._meta.model_name = "--model--"
-        mock_model_2 = mocker.MagicMock()
-        mock_model_2._meta.app_label = "--second-app--"
-        mock_model_2._meta.model_name = "--second-model--"
-        mock_searchfield_1 = mocker.MagicMock()
-        mock_searchfield_1.model_field_name = "--model-field-name--"
-        mock_searchfield_1.field_name = "--field-name--"
-        mock_searchfield_1.boost = 22
-        mock_searchfield_1.parent_model_field = "--parent-model-field--"
-        mock_searchfield_2 = mocker.MagicMock()
-        del mock_searchfield_2.model_field_name  # to fail hasattr
-        mock_searchfield_2.field_name = "--second-field-name--"
-        mock_searchfield_2.boost = 33
-        mock_searchfield_2.parent_model_field = None
-        mock_searchfield_3 = mocker.MagicMock()
-        mock_searchfield_3.model_field_name = "--third-model-field-name--"
-        mock_searchfield_3.boost = 44
-        mock_searchfield_3.parent_model_field = None
-        mock_searchfield_4 = mocker.MagicMock()
-        mock_searchfield_4.model_field_name = "--4th-model-field-name--"
-        mock_searchfield_4.field_name = "--4th-field-name--"
-        mock_searchfield_4.parent_model_field = None
-        del mock_searchfield_4.boost  # to fail hasattr
+        mock_model = mocker.MagicMock()
+        mock_searchfield = mocker.MagicMock(spec=BaseField)
+        mock_searchfield.boost = 22
         mock_get_fields.return_value = {
-            mock_model_1: set(
+            mock_model: set(
                 [
-                    mock_searchfield_1,
-                    mock_searchfield_2,
-                ]
-            ),
-            mock_model_2: set(
-                [
-                    mock_searchfield_3,
-                    mock_searchfield_4,
+                    mock_searchfield,
                 ]
             ),
         }
@@ -334,10 +323,18 @@ class TestSearchSettings:
         assert {
             "boost_parts": {
                 "fields": {
-                    "--app--.--model--.--parent-model-field--.--model-field-name--": 22,
-                    "--app--.--model--.--second-field-name--": 33,
-                    "--second-app--.--second-model--.--third-model-field-name--": 44,
-                    "--second-app--.--second-model--.--4th-model-field-name--": 1.0,
+                    "--settings-field-key--": 22,
+                }
+            }
+        } == instance.fields
+
+        del mock_searchfield.boost
+        instance = SearchSettings()
+        instance.initialise_field_dict()
+        assert {
+            "boost_parts": {
+                "fields": {
+                    "--settings-field-key--": 1.0,
                 }
             }
         } == instance.fields
@@ -358,6 +355,7 @@ class TestSearchSettings:
             "extended_search.settings.NestedChainMap._get_all_prefixed_keys_from_nested_maps",
             return_value=["top__middle__key", "top__second"],
         )  # for all_keys
+        instance = SearchSettings()
         instance.initialise_env_dict()
         assert mock_env.call_count == 2
         assert instance.env_vars == {
@@ -397,5 +395,96 @@ class TestSearchSettings:
     def test_singleton(self):
         instance = SearchSettings()
         assert isinstance(instance, SearchSettings)
-        assert isinstance(extended_search_settings, SearchSettings)
-        assert instance.defaults == extended_search_settings.defaults
+        assert isinstance(settings_singleton, SearchSettings)
+        assert instance.defaults == settings_singleton.defaults
+        instance["test"] = "foo"
+        assert "test" in instance
+        assert instance["test"] == "foo"
+        assert "test" not in settings_singleton
+        settings_singleton["test"] = "bar"
+        assert "test" in settings_singleton
+        assert settings_singleton["test"] == "bar"
+        from extended_search.settings import settings_singleton as second_import
+
+        assert "test" in second_import
+        assert second_import["test"] == settings_singleton["test"]
+
+    def test_to_dict(self):
+        instance = SearchSettings()
+        assert not isinstance(instance, dict)
+        assert isinstance(instance.to_dict(), dict)
+        assert isinstance(extended_search_settings, dict)
+
+        def test_values(input):
+            output = []
+            if isinstance(input, ChainMap):
+                raise AssertionError(f"{input} is a ChainMap")
+            elif isinstance(input, dict):
+                for v in input.values():
+                    output += test_values(v)
+            elif not isinstance(input, (str, bool, list, int, float)):
+                raise AssertionError(f"{input} is not a base type: {type(input)}")
+            else:
+                raise AssertionError(f"{input} is not recognised")
+
+    def test_updated_settings_affect_exported_dict(self):
+        from extended_search import settings  # 1
+        from extended_search.settings import extended_search_settings  # 2
+
+        original_settings = copy.deepcopy(settings.extended_search_settings)
+        assert original_settings == settings.extended_search_settings  # 1
+        assert original_settings == extended_search_settings  # 2
+
+        # update a setting
+        settings.settings_singleton["boost_parts"]["fields"]["--test--"] = 666.66
+
+        # no exported dicts changed yet
+        assert original_settings == settings.extended_search_settings  # 1
+        assert original_settings == extended_search_settings  # 2
+
+        # update the export
+        assert original_settings != settings.settings_singleton.to_dict()
+        settings.extended_search_settings = settings_singleton.to_dict()
+
+        # exported module dict changed
+        assert (
+            original_settings != settings.extended_search_settings
+        )  # <-- in general use this style import
+        # ... but exported dict still not changed yet :'(
+        assert original_settings == extended_search_settings
+
+        # re-import
+        from extended_search.settings import extended_search_settings
+
+        # all updated now
+        assert original_settings != extended_search_settings
+        assert extended_search_settings == settings.extended_search_settings
+        assert settings_singleton.to_dict() == settings.extended_search_settings
+
+
+class TestGetSettingsFieldKey:
+    def test_get_settings_field_key(self, mocker):
+        mock_model = mocker.MagicMock()
+        mock_model._meta.app_label = "--app-label-1--"
+        mock_model._meta.model_name = "--model-name-1--"
+        mock_searchfield_1 = mocker.MagicMock(spec=index.BaseField)
+        mock_searchfield_1.field_name = "--field-name-1--"
+        mock_searchfield_1.get_full_model_field_name = mocker.MagicMock(
+            return_value="--full-model-field-name-1--"
+        )
+        mock_searchfield_2 = mocker.MagicMock(spec=BaseField)
+        mock_searchfield_2.field_name = "--field-name-2--"
+        mock_searchfield_2.get_full_model_field_name = mocker.MagicMock(
+            return_value="--full-model-field-name-2--"
+        )
+
+        field_key_1 = get_settings_field_key(mock_model, mock_searchfield_1)
+        mock_searchfield_1.get_full_model_field_name.assert_not_called()
+        assert field_key_1 == "--app-label-1--.--model-name-1--.--field-name-1--"
+
+        field_key_2 = get_settings_field_key(mock_model, mock_searchfield_2)
+        mock_searchfield_2.get_full_model_field_name.assert_called_once_with()
+        assert (
+            field_key_2
+            == "--app-label-1--.--model-name-1--.--full-model-field-name-2--"
+        )

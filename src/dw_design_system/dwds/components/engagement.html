@@ -1,0 +1,41 @@
+{% load wagtailimages_tags static humanize formatting %}
+
+<div class="content-item content-custom-sidebar-wrapper">
+    <div class="content-custom-sidebar">
+        {% include "dwds/elements/content_image.html" with content_image=thumbnail rounded=rounded_image %}
+
+        <div class="content-main content">
+            <div class="content-body content-stack">
+                {% if ribbon_text %}
+                    {% include "dwds/elements/ribbon.html" with text=ribbon_text colour="blue" %}
+                {% endif %}
+                <h3>
+                    <a class="no-underline" href="{{ url }}">{{ title }}</a>
+                </h3>
+                {% if post_title %}
+                    <div class="post-title-container">
+                        <h4 class="post-title">{{ post_title }}</h4>
+                    </div>
+                {% endif %}
+                {% if excerpt %}<p>{{ excerpt|truncate_magic:25 }}</p>{% endif %}
+            </div>
+
+            {% if updated_date or created_date or comment_count or reaction_count %}
+                <div class="content-footer content-stack">
+                    {% if updated_date > created_date %}
+                        <time>
+                            Updated: {{ updated_date|date:'j F Y' }} at {{ updated_date|time:'g:iA'|lower }}
+                        </time>
+                    {% elif created_date %}
+                        <time>
+                            Published: {{ created_date|date:'j F Y' }} at {{ created_date|time:'g:iA'|lower }}
+                        </time>
+                    {% endif %}
+                    {% if comment_count or reaction_count %}
+                        {% include "dwds/elements/page_counts.html" %}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

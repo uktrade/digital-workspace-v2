@@ -1,10 +1,12 @@
 {% load render_bundle webpack_static from webpack_loader %}
+
 <div class="people-finder-panel">
     {% if peoplefinder_profile %}
         <a class="profile-link"
-           href="{% url 'profile-view' peoplefinder_profile.slug %}">
+           href="{% url 'profile-view' peoplefinder_profile.slug %}"
+           data-testid="view-profile">
             <div class="profile-details">
-                <span class="salutation">Hi {{ peoplefinder_profile.first_name|truncatechars:25 }}</span>
+                <span class="salutation">Hi {{ peoplefinder_profile.get_first_name_display|truncatechars:25 }}</span>
                 <span class="profile-prompt"><span>View your profile</span>
                 {% if peoplefinder_profile.profile_completion < 100 %}
                     <span>({{ peoplefinder_profile.profile_completion|floatformat:0 }}% complete)</span>
@@ -13,7 +15,7 @@
         </div>
         {% if peoplefinder_profile.photo %}
             <img src="{{ peoplefinder_profile.photo_small.url }}"
-                 alt="Profile image of {{ peoplefinder_profile.get_full_name }}"
+                 alt="Profile image of {{ peoplefinder_profile.full_name }}"
                  class="profile-image">
         {% else %}
             <img src="{% webpack_static 'no-photo.png' %}"

@@ -1,0 +1,38 @@
+<div class="dwds-content-item-card no-shadow">
+    <div class="content-item">
+        <div class="content-main large highlight">
+            <div class="content-body">
+                <form method="get" class="content-stack large">
+                    <div class="content-switcher">
+                        <h1 style="margin:0;">{{ page_title }}</h1>
+                        <div style="display: flex;
+                                    justify-content: flex-end;
+                                    max-width: fit-content">
+                            {% include "dwds/components/link_navigate.html" with previous_url=previous_link previous_text="Previous month" next_url=next_link next_text="Next month" %}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="content-stack large">
+                        <h2>Filter events by</h2>
+                        <div class="content-switcher">
+                            <div class="content-stack">
+                                <label for="id_location">Location</label>
+                                {{ events_filters.form.location }}
+                            </div>
+                            <div class="content-stack">
+                                <label for="id_event_type">Event format</label>
+                                <div class="dwds-radio-group">{{ events_filters.form.event_type }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dwds-button-group">
+                        <input class="dwds-button dwds-button--secondary dwds-button--inline"
+                               type="submit"
+                               value="Apply filters" />
+                        <a href="?">Reset filters</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

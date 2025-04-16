@@ -422,6 +422,10 @@
   }
 }
 
+.pf-secondary-colour {
+  color: $govuk-secondary-text-colour;
+}
+
 .profile-photo {
   --bubble-color: rgba(var(--color-1), var(--color-2), var(--color-3), 0.1);
 
@@ -452,4 +456,54 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+@media screen and (max-width: 640px) {
+  .moj-side-navigation {
+    margin-bottom: 20px;
+  }
+  .moj-side-navigation,
+  .moj-side-navigation__list {
+    display: block;
+  }
+  .moj-side-navigation__item {
+    flex-direction: column;
+  }
+  .moj-side-navigation__item {
+    a,
+    a:link,
+    a:visited {
+      width: 100%;
+      border-bottom: none;
+      padding: 15px;
+      font-size: 19px;
+    }
+  }
+  .moj-side-navigation__item--active {
+    background-color: govuk-colour("light-grey");
+    border-left: 4px solid #1d70b8;
+  }
+  .moj-side-navigation__item--active a:visited {
+    border-color: govuk-colour("light-grey");
+  }
+}
+
+.aspect-ratio-square {
+  padding-bottom: 100%;
+  height: 0px;
+  position: relative;
+  display: block;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: absolute;
+  }
+}
+
+// CropperJS fixes for DWDS compatibility
+.cropper-wrapper > .cropper-container * {
+  max-inline-size: unset !important;
 }

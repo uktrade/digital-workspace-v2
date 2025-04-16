@@ -1,0 +1,80 @@
+.dwds-person-banner-wrapper {
+    container-name: person-banner;
+    container-type: inline-size;
+}
+
+.dwds-person-banner {
+    --person-banner-image-size: 7.5rem;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--dbt-blue);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+
+    > .person-image {
+        display: flex;
+        max-width: var(--person-banner-image-size);
+        padding: var(--s-2);
+
+        img {
+            max-height: var(--person-banner-image-size);
+            max-width: var(--person-banner-image-size);
+        }
+    }
+
+    .person-banner-text {
+        display: flex;
+        flex-grow: 1;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        padding: 0 var(--s-1);
+
+        > h3 {
+            color: var(--color-text-highlight);
+        }
+    }
+
+    > .secondary-image {
+        max-width: var(--person-banner-image-size);
+        min-height: var(--person-banner-image-size);
+
+        .content-image {
+            height: 100%;
+            width: auto;
+        }
+    }
+}
+
+@container person-banner (width < 33rem) {
+    .dwds-person-banner {
+        > .person-image {
+            padding: var(--s0);
+        }
+
+        .person-banner-text {
+            width: 100%;
+            padding: 0 var(--s-1);
+
+            > h3 {
+                font-size: var(--s0);
+            }
+        }
+
+        > .secondary-image {
+            display: none;
+        }
+    }
+}
+
+@container person-banner (width < 20rem) {
+    .dwds-person-banner {
+        > .person-image {
+            display: none;
+        }
+
+        .person-banner-text {
+            padding: 0 var(--s-1);
+        }
+    }
+}

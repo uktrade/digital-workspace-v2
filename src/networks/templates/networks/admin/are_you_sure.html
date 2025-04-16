@@ -1,0 +1,12 @@
+<p>
+    You are about to '{{ operation }}'
+    <br>
+    {% if irreversible %}<strong>This action cannot be undone.</strong>{% endif %}
+    <br>
+    Are you sure?
+</p>
+<form method="post">
+    {% csrf_token %}
+    <input type="submit" value="Yes">
+    <a href="{{ cancel_url }}">No</a>
+</form>

@@ -1,27 +1,30 @@
 import os
 import sys
+from pathlib import Path
+from urllib.parse import urlparse
 
+import dj_database_url
 import environ
 import sentry_sdk
+from dbt_copilot_python.database import database_url_from_env
+from dbt_copilot_python.network import setup_allowed_hosts
+from dbt_copilot_python.utility import is_copilot
 from django.urls import reverse_lazy
+from django_log_formatter_asim import ASIMFormatter
+from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
+
 # Set directories to be used across settings
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+BASE_DIR = Path(__file__).parent.parent.parent
+PROJECT_ROOT_DIR = BASE_DIR.parent
 
 # Read environment variables using `django-environ`, use `.env` if it exists
 env = environ.Env()
-env_file = os.path.join(PROJECT_ROOT_DIR, ".env")
-if os.path.exists(env_file):
-    env.read_env(env_file)
-env.read_env()
-
-VCAP_SERVICES = env.json("VCAP_SERVICES", {})
 
 # Set required configuration from environment
-# Should be one of the following: "local", "test", "dev", "staging", "training", "prod"
+# Should be one of the following: "local", "test", "dev", "staging", "training", "prod", "build"
 APP_ENV = env.str("APP_ENV", "local")
 GIT_COMMIT = env.str("GIT_COMMIT", None)
 
@@ -38,33 +41,33 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 AUTH_USER_MODEL = "user.User"
 
 # AWS
-if "aws-s3-bucket" in VCAP_SERVICES:
-    app_bucket_creds = VCAP_SERVICES["aws-s3-bucket"][0]["credentials"]
-    AWS_REGION = app_bucket_creds["aws_region"]
-    AWS_S3_REGION_NAME = app_bucket_creds["aws_region"]
-    AWS_STORAGE_BUCKET_NAME = app_bucket_creds["bucket_name"]
-else:
-    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_REGION = env("AWS_REGION")
-    AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
-
-# You don't seem to be able to sign S3 URLs with VCAP S3 creds
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-AWS_S3_HOST = "s3-eu-west-2.amazonaws.com"
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_REGION = env("AWS_REGION")
+AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-2")
 
 # Asset path used in parser
 NEW_ASSET_PATH = env("NEW_ASSET_PATH")
-
-# DEFAULT_FILE_STORAGE must be set to 'storages.backends.s3boto3.S3Boto3Storage'
-# or a class than inherits from it if using S3FileUploadHandler for
-# file upload handling
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 FILE_UPLOAD_HANDLERS = (
     "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
     "django_chunk_upload_handlers.s3.S3FileUploadHandler",
 )  # Order is important
+
+# Storage
+# https://docs.djangoproject.com/en/4.2/ref/settings/#storages
+
+STORAGES = {
+    "default": {
+        # BACKEND must be set to 'storages.backends.s3boto3.S3Boto3Storage'
+        # or a class than inherits from it if using S3FileUploadHandler for
+        # file upload handling
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    # WhiteNoise
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 AWS_S3_FILE_OVERWRITE = False
 
@@ -77,38 +80,59 @@ IGNORE_ANTI_VIRUS = env.bool("IGNORE_ANTI_VIRUS", False)
 if env.str("DJANGO_EMAIL_BACKEND", None):
     EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND")
 
+# Sentry
+SENTRY_DSN = env.str("SENTRY_DSN", None)
+SENTRY_BROWSER_TRACES_SAMPLE_RATE = env.float("SENTRY_BROWSER_TRACES_SAMPLE_RATE", 0.0)
+
+
+def filter_transactions(event, hint):
+    url_string = event["request"]["url"]
+    parsed_url = urlparse(url_string)
+
+    if parsed_url.path.startswith("/pingdom"):
+        return None
+
+    return event
+
+
 # Configure Sentry if a DSN is set
-if env.str("SENTRY_DSN", None):
+if SENTRY_DSN:
     sentry_sdk.init(
-        dsn=env("SENTRY_DSN"),
+        dsn=SENTRY_DSN,
         environment=APP_ENV,
         release=GIT_COMMIT,
         integrations=[DjangoIntegration(), RedisIntegration()],
         send_default_pii=True,  # Enable associating exceptions to users
+        enable_tracing=env.bool("SENTRY_ENABLE_TRACING", False),
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
+        before_send_transaction=filter_transactions,
     )
 
 # Allow all hosts
 # (this application will always be run behind a PaaS router or locally)
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = setup_allowed_hosts(["*"])
 
 # Set up Django
 LOCAL_APPS = [
-    "core",
+    "patch",
+    "core.apps.CoreConfig",
     "feedback",
     "home",
     "content",
-    "search",
     "news",
     "working_at_dit",
     "tools",
     "about_us",
-    "transition",
     "networks",
     "country_fact_sheet",
+    "events",
+    "dw_design_system",
+    "dev_tools",
     "user.apps.UserConfig",
     "pingdom.apps.PingdomConfig",
     "peoplefinder.apps.PeoplefinderConfig",
     "countries.apps.CountriesConfig",
+    "interactions.apps.InteractionsConfig",
 ]
 
 THIRD_PARTY_APPS = [
@@ -124,6 +148,10 @@ THIRD_PARTY_APPS = [
     "crispy_forms",
     "crispy_forms_gds",
     "django_feedback_govuk",
+    "generic_chooser",
+    "waffle",
+    "wagtailorderable",
+    "django_cotton",
 ]
 
 WAGTAIL_APPS = [
@@ -143,7 +171,7 @@ WAGTAIL_APPS = [
     "wagtail.admin",
     "wagtail",
     "wagtail.contrib.routable_page",
-    "wagtail.contrib.modeladmin",
+    "wagtail_modeladmin",
     "wagtailmedia",
     "wagtailmenus",
     "wagtail_draftail_anchors",
@@ -167,7 +195,9 @@ INSTALLED_APPS = (
     + WAGTAIL_APPS
     + DJANGO_APPS
     + [
-        "extended_search",  # must be last because it depends on models being loaded into memory
+        # Search apps must be last because it depends on models being loaded into memory
+        "search",
+        "extended_search",
     ]
 )
 
@@ -186,6 +216,8 @@ MIDDLEWARE = [
     "core.middleware.TimezoneMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "django_audit_log_middleware.AuditLogMiddleware",
+    "waffle.middleware.WaffleMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -194,6 +226,9 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
+        "DIRS": [
+            PROJECT_ROOT_DIR / "src" / "dw_design_system",
+        ],
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -202,7 +237,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "wagtailmenus.context_processors.wagtailmenus",
                 "django_settings_export.settings_export",
-                "core.context_processors.page_problem_form",
+                "core.context_processors.global_context",
             ],
             "libraries": {
                 "workspace_navigation": "core.templatetags.workspace_navigation",
@@ -213,16 +248,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-if "postgres" in VCAP_SERVICES:
-    DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
+if is_copilot():
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=database_url_from_env("DATABASE_CREDENTIALS")
+        )
+    }
 else:
     DATABASE_URL = os.getenv("DATABASE_URL")
+    DATABASES = {
+        "default": env.db(),
+    }
 
-DATABASES = {
-    "default": env.db(),
-}
+INGESTED_MODELS_DATABASES = []
+
 if "UK_STAFF_LOCATIONS_DATABASE_URL" in env:
     DATABASES["uk_staff_locations"] = env.db("UK_STAFF_LOCATIONS_DATABASE_URL")
+    INGESTED_MODELS_DATABASES.append("uk_staff_locations")
 
 DATABASE_ROUTERS = ["peoplefinder.routers.IngestedModelsRouter"]
 
@@ -256,9 +298,11 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT_DIR, "assets"),
+    (
+        "dwds",
+        os.path.join(PROJECT_ROOT_DIR, "src", "dw_design_system", "dwds"),
+    ),
 ]
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT_DIR, "static")
 STATIC_URL = "/static/"
@@ -302,10 +346,7 @@ with open(stop_words_file) as stop_words_file:
             continue
         stop_words.append(line.strip())
 
-if "opensearch" in VCAP_SERVICES:
-    OPENSEARCH_URL = VCAP_SERVICES["opensearch"][0]["credentials"]["uri"]
-else:
-    OPENSEARCH_URL = env("OPENSEARCH_URL")
+OPENSEARCH_URL = env("OPENSEARCH_URL")
 
 ELASTICSEARCH_DSL = {
     "default": {
@@ -413,12 +454,9 @@ CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 
 # Redis
-if "redis" in VCAP_SERVICES:
-    credentials = VCAP_SERVICES["redis"][0]["credentials"]
-    CELERY_BROKER_URL = "rediss://:{0}@{1}:{2}/0?ssl_cert_reqs=required".format(
-        credentials["password"],
-        credentials["host"],
-        credentials["port"],
+if is_copilot():
+    CELERY_BROKER_URL = (
+        env("CELERY_BROKER_URL", default=None) + "?ssl_cert_reqs=required"
     )
 else:
     CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
@@ -441,16 +479,6 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
-# Twitter
-TWITTER_ACCESS_TOKEN = env("TWITTER_ACCESS_TOKEN")
-TWITTER_ACCESS_SECRET = env("TWITTER_ACCESS_SECRET")
-
-TWITTER_OAUTH_CONSUMER_KEY = env("TWITTER_OAUTH_CONSUMER_KEY")
-TWITTER_OAUTH_CONSUMER_SECRET = env("TWITTER_OAUTH_CONSUMER_SECRET")
-
-TWITTER_DEPT_USER = env("TWITTER_DEPT_USER")
-TWITTER_PERM_SEC_USER = env("TWITTER_PERM_SEC_USER", default=None)
-
 # Google Tag Manager
 GTM_CODE = env("GTM_CODE", default=None)
 GTM_AUTH = env("GTM_AUTH", default=None)
@@ -464,18 +492,39 @@ SETTINGS_EXPORT = [
     "GTM_CODE",
     "GTM_AUTH",
     "PERM_SEC_NAME",
+    "LEAVING_SERVICE_URL",
+    "GIT_COMMIT",
+    "APP_ENV",
+    "SENTRY_DSN",
+    "SENTRY_BROWSER_TRACES_SAMPLE_RATE",
+    "SERVICE_CONTACT_EMAIL",
+    "USE_SVG_LOGO",
 ]
 
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
+        "asim_formatter": {
+            "()": ASIMFormatter,
+        },
+        "ecs_formatter": {
+            "()": ECSFormatter,
+        },
         "simple": {
             "format": "{asctime} {levelname} {message}",
             "style": "{",
         },
     },
     "handlers": {
+        "ecs": {
+            "class": "logging.StreamHandler",
+            "formatter": "ecs_formatter",
+        },
+        "simple": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
         "stdout": {
             "class": "logging.StreamHandler",
             "stream": sys.stdout,
@@ -489,6 +538,8 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": [
+                "ecs",
+                "simple",
                 "stdout",
             ],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
@@ -503,6 +554,8 @@ LOGGING = {
         },
         "django.server": {
             "handlers": [
+                "ecs",
+                "simple",
                 "stdout",
             ],
             "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "INFO"),
@@ -510,6 +563,8 @@ LOGGING = {
         },
         "django.db.backends": {
             "handlers": [
+                "ecs",
+                "simple",
                 "stdout",
             ],
             "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),
@@ -530,8 +585,22 @@ LOGGING = {
     },
 }
 
+if is_copilot():
+    LOGGING["handlers"]["ecs"]["formatter"] = "asim_formatter"
+
+DLFA_INCLUDE_RAW_LOG = True
+
+# Django Tasks
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks.backends.immediate.ImmediateBackend",
+        "ENQUEUE_ON_COMMIT": False,
+    }
+}
+
 # Remove SSO protection from health check and Hawk authed URLs
 AUTHBROKER_ANONYMOUS_PATHS = (
+    "/ical/all/",
     "/pingdom/ping.xml",
     "/peoplefinder/api/activity-stream/",
     "/peoplefinder/api/person-api/",
@@ -540,7 +609,10 @@ AUTHBROKER_ANONYMOUS_URL_NAMES = (
     "person-api-people-list",
     "person-api-people-detail",
     "team-api-teams-list",
+    "profile-get-card",
 )
+
+AUTHBROKER_INTROSPECTION_TOKEN = env("AUTHBROKER_INTROSPECTION_TOKEN", default="XXX")
 
 # There are some big pages with lots of content that need to send many fields.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
@@ -584,11 +656,6 @@ DJANGO_HAWK = {
 PAGINATION_PAGE_SIZE = env.int("PAGINATION_PAGE_SIZE", 100)
 PAGINATION_MAX_PAGE_SIZE = env.int("PAGINATION_MAX_PAGE_SIZE", 100)
 
-# Person update web hook
-PERSON_UPDATE_HAWK_ID = env("PERSON_UPDATE_HAWK_ID", None)
-PERSON_UPDATE_HAWK_KEY = env("PERSON_UPDATE_HAWK_KEY", None)
-PERSON_UPDATE_WEBHOOK_URL = env("PERSON_UPDATE_WEBHOOK_URL", None)
-
 # Home page
 HIDE_NEWS = env.bool("HIDE_NEWS", False)
 
@@ -596,15 +663,15 @@ HIDE_NEWS = env.bool("HIDE_NEWS", False)
 CRISPY_ALLOWED_TEMPLATE_PACKS = ["gds"]
 CRISPY_TEMPLATE_PACK = "gds"
 
+# Feedback notifications email
+FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID = env("FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID")
+FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS = env.list(
+    "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
+)
+
 # Feedback
 DJANGO_FEEDBACK_GOVUK = {
     "SERVICE_NAME": "the beta experience",
-    "FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID": env(
-        "FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID"
-    ),
-    "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS": env.list(
-        "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
-    ),
     "COPY": {
         "SUBMIT_TITLE": "Providing feedback on your experience will help us improve the service",
         "FIELD_SATISFACTION_LEGEND": "How satisfied are you with Digital Workspace?",
@@ -616,6 +683,14 @@ DJANGO_FEEDBACK_GOVUK = {
             "model": "django_feedback_govuk.models.Feedback",
             "form": "django_feedback_govuk.forms.FeedbackForm",
             "view": "django_feedback_govuk.views.FeedbackView",
+        },
+        "hr-v1": {
+            "model": "feedback.models.HRFeedback",
+            "form": "feedback.forms.HRFeedbackForm",
+            "view": "feedback.views.HRFeedbackFormView",
+            "copy": {
+                "SUBMIT_TITLE": None,
+            },
         },
         "search-v1": {
             "model": "feedback.models.SearchFeedbackV1",
@@ -632,3 +707,52 @@ DJANGO_FEEDBACK_GOVUK = {
         },
     },
 }
+USE_SVG_LOGO = True
+
+SERVICE_CONTACT_EMAIL = env("SERVICE_CONTACT_EMAIL", default=None)
+
+# Leaving Service
+LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
+
+# django-waffle
+# https://waffle.readthedocs.io/en/stable/starting/configuring.html
+WAFFLE_FLAG_MODEL = "core.FeatureFlag"
+
+
+# Search
+
+# Bad search score multipliers
+BAD_SEARCH_SCORE_MULTIPLIERS = {
+    "all_pages": env.int("ALL_PAGES_BAD_SEARCH_SCORE_MULTIPLIER", 1),
+    "people": env.int("PEOPLE_BAD_SEARCH_SCORE_MULTIPLIER", 1),
+    "teams": env.int("TEAMS_BAD_SEARCH_SCORE_MULTIPLIER", 1),
+}
+
+# Cut-off value for lots/few search results
+CUTOFF_SEARCH_RESULTS_VALUE = env.int("CUTOFF_SEARCH_RESULTS_VALUE", 20)
+
+# Profiles made inactive within this number of days will be shown in search results to
+# all users.
+SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS = env.int(
+    "SEARCH_SHOW_INACTIVE_PROFILES_WITHIN_DAYS", 90
+)
+
+# Enable the caching of the generated search query DSLs
+SEARCH_ENABLE_QUERY_CACHE = env.bool("SEARCH_ENABLE_QUERY_CACHE", True)
+
+# Content Security Policy header settings
+CSP_DEFAULT_SRC = ("'none'",)
+CSP_SCRIPT_SRC = ("'none'",)
+CSP_SCRIPT_SRC_ATTR = ("'none'",)
+CSP_SCRIPT_SRC_ELEM = ("'none'",)
+CSP_IMG_SRC = ("'none'",)
+CSP_MEDIA_SRC = ("'none'",)
+CSP_FRAME_SRC = ("'none'",)
+CSP_FONT_SRC = ("'none'",)
+CSP_CONNECT_SRC = ("'none'",)
+
+CSP_REPORT_ONLY = True
+CSP_REPORT_URI = env("CSP_REPORT_URI", default=None)
+
+# Interactions
+INACTIVE_REACTION_TYPES = env.list("INACTIVE_REACTION_TYPES", default=["unhappy"])

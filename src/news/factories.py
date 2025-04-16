@@ -2,9 +2,10 @@ import factory
 import wagtail_factories
 
 from news import models
+from working_at_dit.tests.factories import PageWithTopicsFactory
 
 
-class NewsPageFactory(wagtail_factories.PageFactory):
+class NewsPageFactory(PageWithTopicsFactory, wagtail_factories.PageFactory):
     title = factory.Sequence(lambda n: f"News page {n+1}")
 
     class Meta:

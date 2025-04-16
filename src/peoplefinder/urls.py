@@ -4,6 +4,7 @@ from rest_framework import routers
 from peoplefinder.views.activity_stream import ActivityStreamViewSet
 from peoplefinder.views.api.person import PersonViewSet
 from peoplefinder.views.api.team import TeamView
+from peoplefinder.views.directory import PeopleDirectory, discover
 from peoplefinder.views.home import PeopleHome, TeamHome
 from peoplefinder.views.manager import (
     ManagerCancel,
@@ -19,10 +20,11 @@ from peoplefinder.views.profile import (
     ProfileDeleteView,
     ProfileDetailView,
     ProfileEditView,
-    ProfileLeavingDitView,
+    ProfileLeavingDbtView,
     ProfileLegacyView,
     ProfileUpdateUserView,
     get_profile_by_staff_sso_id,
+    get_profile_card,
     profile_edit_blank_teams_form,
     redirect_to_profile_edit,
 )
@@ -32,14 +34,15 @@ from peoplefinder.views.team import (
     TeamDeleteView,
     TeamDetailView,
     TeamEditView,
-    TeamPeopleOutsideSubteamsView,
-    TeamPeopleView,
     TeamTreeView,
 )
 from peoplefinder.views.organogram import OrganogramView
 
+
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
+    path("directory/", PeopleDirectory.as_view(), name="people-directory"),
+    path("discover/", discover, name="discover"),
     path(
         "delete-confirmation/",
         DeleteConfirmationView.as_view(),
@@ -109,10 +112,10 @@ people_urlpatterns = [
         ProfileEditView.as_view(),
         name="profile-edit-section",
     ),
-    # Leaving DIT
+    # Leaving DBT
     path(
         "<uuid:profile_slug>/leaving-dbt",
-        ProfileLeavingDitView.as_view(),
+        ProfileLeavingDbtView.as_view(),
         name="profile-leaving-dit",
     ),
     path(
@@ -139,6 +142,11 @@ people_urlpatterns = [
         name="profile-update-user",
     ),
     path(
+        "<str:staff_sso_email_user_id>/card",
+        get_profile_card,
+        name="profile-get-card",
+    ),
+    path(
         "get-by-staff-sso-id/<str:staff_sso_id>/",
         get_profile_by_staff_sso_id,
         name="profile-get-by-staff-sso-id",
@@ -151,12 +159,6 @@ teams_urlpatterns = [
     path("<slug>/edit", TeamEditView.as_view(), name="team-edit"),
     path("<slug>/delete", TeamDeleteView.as_view(), name="team-delete"),
     path("<slug>/tree", TeamTreeView.as_view(), name="team-tree"),
-    path("<slug>/people", TeamPeopleView.as_view(), name="team-people"),
-    path(
-        "<slug>/people-outside-subteams",
-        TeamPeopleOutsideSubteamsView.as_view(),
-        name="team-people-outside-subteams",
-    ),
     path(
         "<slug>/add-new-subteam",
         TeamAddNewSubteamView.as_view(),

@@ -10,9 +10,10 @@ $input-size: 40px;
 }
 
 .search-form {
+    position: relative;
     display: flex;
     flex: 0 $input-size;
-    margin: 7px 0;
+    margin: 7px 0 7px 0;
 
     input {
         // overly specific to prevent some overrides from outside
@@ -83,9 +84,9 @@ $input-size: 40px;
         button {
             background-color: $govuk-link-colour;
         }
-            input {
-                border: none;
-            }
+        input {
+          border: none;
+        }
     }
 }
 
@@ -101,12 +102,75 @@ $input-size: 40px;
     .site-search {
         display: none;
     }
-
-    // @TODO [DWPF-454] remove this rule
-    .search-v2-banner {
-
-        .govuk-phase-banner__content {
-            line-height: 1.5;
-        }
-    }
 }
+
+
+.autocomplete-overlay {
+    position: absolute;
+    z-index: 100;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: rgba(11, 12, 12, 0.256863) 0 2px 6px;
+  }
+
+  .profile-image{
+    vertical-align:middle;
+    padding-top: 3px;
+    padding-left: 3px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .autocomplete-choice{
+    width: 100%;
+    display: block;
+    position: relative;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border-bottom: solid #b1b4b6;
+    border-width: 1px 0;
+    list-style-type: none;
+  }
+
+  .autocomplete-choice a{
+    text-decoration: none;
+  }
+
+  .autocomplete-text {
+    @include govuk-font($size: 16);
+    margin-left: 5px;
+    padding-left: 5px;
+    margin: 0;
+    display:block
+  }
+
+  .people .autocomplete-text {
+    @include govuk-font($size: 16);
+    margin-left: 5px;
+    padding-left: 5px;
+    margin: 0;
+    display:inline
+  }
+
+  .autocomplete-title {
+    @include govuk-font($size: 16, $weight: bold);
+    border-top: 2px solid #1d70b8;
+    width: 100%;
+    padding-top: 5px;
+    padding-left: 5px;
+    margin: 0;
+  }
+
+  .autocomplete-title a:hover{
+    text-decoration: underline;
+  }
+
+  .autocomplete-choice:hover {
+    background-color: govuk-colour("light-grey");
+  }
+
+  .autocomplete-choice:hover p{
+    text-decoration: underline;
+  }

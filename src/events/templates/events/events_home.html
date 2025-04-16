@@ -1,0 +1,35 @@
+{% extends "dwds_sidebar.html" %}
+{% load wagtailroutablepage_tags %}
+
+{% block page_title_wrapper %}
+{% endblock page_title_wrapper %}
+
+{% block primary_content_classes %}
+{% endblock primary_content_classes %}
+
+{% block primary_content %}
+    {% routablepageurl page 'month_events' previous_month.year previous_month.month as previous_link %}
+    {% routablepageurl page 'month_events' next_month.year next_month.month as next_link %}
+
+    <div class="content-stack large">
+        {% include "events/includes/listing_header.html" %}
+
+        {% if not upcoming_events and not ongoing_events and not past_events %}
+            <p>There are no events to display.</p>
+        {% endif %}
+
+        {% if upcoming_events %}
+            <h2>Upcoming events</h2>
+            {% include "events/includes/event_listing_section.html" with events=upcoming_events %}
+        {% endif %}
+        {% if ongoing_events %}
+            <h2>Ongoing events</h2>
+            {% include "events/includes/event_listing_section.html" with events=ongoing_events %}
+        {% endif %}
+        {% if past_events %}
+            <h2>Past events</h2>
+            {% include "events/includes/event_listing_section.html" with events=past_events %}
+        {% endif %}
+        {% include "events/includes/listing_footer.html" with middle_text=current_month|date:"F" %}
+    </div>
+{% endblock primary_content %}

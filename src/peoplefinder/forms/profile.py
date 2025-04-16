@@ -56,7 +56,7 @@ class GroupedModelChoiceField(forms.ModelChoiceField):
         self.group_field = group_field
 
 
-class ProfileLeavingDitForm(forms.Form):
+class ProfileLeavingDbtForm(forms.Form):
     comment = forms.CharField(
         label="My comments",
         help_text="for example, leaving date",

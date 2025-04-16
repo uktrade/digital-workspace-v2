@@ -1,0 +1,164 @@
+.dwds {
+
+  // Box
+  // https://every-layout.dev/layouts/box/
+
+  .box {
+    padding: var(--space);
+    border: var(--border-width) solid;
+  }
+
+  .box.invert {
+    color: var(--color-light);
+    background-color: var(--color-dark);
+  }
+
+
+  // Center
+  // https://every-layout.dev/layouts/center/
+
+  .center {
+    box-sizing: content-box;
+    margin-inline: auto;
+    max-inline-size: var(--measure);
+  }
+
+  // Flex-end
+  .flex-end {
+    align-items: flex-end;
+  }
+
+  // Cluster
+  // https://every-layout.dev/layouts/cluster/
+
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space);
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+
+  // Cover
+  // https://every-layout.dev/layouts/cover/
+
+  .cover {
+    display: flex;
+    flex-direction: column;
+    min-block-size: 100vh;
+    padding: var(--space);
+  }
+
+  .cover > * {
+    margin-block: var(--space);
+  }
+
+  .cover > :first-child:not(h1) {
+    margin-block-start: 0;
+  }
+
+  .cover > :last-child:not(h1) {
+    margin-block-end: 0;
+  }
+
+  .cover > h1 {
+    margin-block: auto;
+  }
+
+
+  // Frame
+  // https://every-layout.dev/layouts/frame/
+
+  .frame {
+    --n: 16;
+    --d: 9;
+    aspect-ratio: var(--n) / var(--d);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .frame > img,
+  .frame > video {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+
+
+  // Reel
+  // https://every-layout.dev/layouts/reel/
+
+  .reel {
+    display: flex;
+    block-size: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-color: #fff #000;
+  }
+
+  .reel::-webkit-scrollbar {
+    block-size: 1rem;
+  }
+
+  .reel::-webkit-scrollbar-track {
+    background-color: #000;
+  }
+
+  .reel::-webkit-scrollbar-thumb {
+    background-color: #000;
+    background-image: linear-gradient(#000 0, #000 0.25rem, #fff 0.25rem, #fff 0.75rem, #000 0.75rem);
+  }
+
+  .reel > * {
+    flex: 0 0 auto;
+  }
+
+
+  .reel > img {
+    block-size: 100%;
+    flex-basis: auto;
+    width: auto;
+  }
+
+  .reel > * + * {
+    margin-inline-start: var(--space);
+  }
+
+  .reel.overflowing {
+    padding-block-end: var(--space);
+  }
+
+
+  // Imposter
+  // https://every-layout.dev/layouts/imposter/
+
+  .imposter {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .imposter.contain {
+    --margin: 0px;
+    overflow: auto;
+    max-inline-size: calc(100% - (var(--margin) * 2));
+    max-block-size: calc(100% - (var(--margin) * 2));
+  }
+
+
+
+
+  // Container
+  // https://every-layout.dev/layouts/container/
+
+  .container {
+    container-name: myContainer;
+    container-type: inline-size;
+  }
+
+}

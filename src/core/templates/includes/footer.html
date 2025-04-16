@@ -1,54 +1,67 @@
 {% load wagtailuserbar %}
+{% load webpack_static from webpack_loader %}
+
+<!-- Load dev_tools -->
+{% load dev_tools %}
+<!-- Add the dialog -->
+{% dev_tools_dialog %}
 
 <footer class="govuk-footer " role="contentinfo">
-    <div class="govuk-width-container">
+    <div class="dwds-container">
         <div class="govuk-footer__meta">
             <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-                {% wagtailuserbar %}
-                <h2 class="govuk-visually-hidden">Support links</h2>
-                <ul class="govuk-footer__inline-list">
-                    <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link"
-                           href="https://people.trade.gov.uk/teams/department-for-business-and-trade">Teams</a>
-                    </li>
-                    <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link" href="/networks/">Networks</a>
-                    </li>
-                    <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link"
-                           href="https://people.trade.gov.uk/teams/uk-regions">Regions</a>
-                    </li>
-                    <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link"
-                           href="/working-at-dbt/policies-and-guidance/policies/accessibility-statement-for-digital-workspace/">
-                            Accessibility statement
-                        </a>
-                    </li>
-                    <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link"
-                           href="/working-at-dbt/policies-and-guidance/privacy-policies/">Privacy policies</a>
-                    </li>
-                </ul>
-                <div class="govuk-footer__licence-description-wrapper">
-                    <span class="govuk-footer__licence-description">
-                        Run by the
-                        <a class="govuk-footer__link"
-                           href="https://people.trade.gov.uk/teams/digital-data-and-technology-employee-experience/">Employee Experience team</a>
-                    </span>
-                    <span class="govuk-footer__licence-description">
-                        <a class="govuk-footer__link"
-                           href="https://workspace.trade.gov.uk/working-at-dbt/whats-new/">What's new</a>
-                    </span>
-                    <span class="govuk-footer__licence-description">
-                        <a class="govuk-footer__link"
-                           href="mailto:digitalworkspace@digital.trade.gov.uk">Feedback</a>
-                    </span>
-                </div>
+                {% if USER_IS_AUTHENTICATED %}
+                    {% wagtailuserbar %}
+                    <h2 class="govuk-visually-hidden">Support links</h2>
+                    <ul class="govuk-footer__inline-list">
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link"
+                               href="https://people.trade.gov.uk/teams/department-for-business-and-trade">Teams</a>
+                        </li>
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link" href="/networks/">Networks</a>
+                        </li>
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link"
+                               href="https://people.trade.gov.uk/teams/uk-regions">Regions</a>
+                        </li>
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link"
+                               href="/working-at-dbt/policies-and-guidance/policies/accessibility-statement-for-digital-workspace/">
+                                Accessibility statement
+                            </a>
+                        </li>
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link"
+                               href="/working-at-dbt/policies-and-guidance/privacy-policies/">Privacy policies</a>
+                        </li>
+                    </ul>
+                    <div class="govuk-footer__licence-description-wrapper">
+                        <span class="govuk-footer__licence-description">
+                            Run by the
+                            <a class="govuk-footer__link"
+                               href="https://people.trade.gov.uk/teams/digital-data-and-technology-employee-experience/">Employee Experience team</a>
+                        </span>
+                        <span class="govuk-footer__licence-description">
+                            <a class="govuk-footer__link"
+                               href="https://workspace.trade.gov.uk/working-at-dbt/whats-new/">What's new</a>
+                        </span>
+                        <span class="govuk-footer__licence-description">
+                            <a class="govuk-footer__link"
+                               href="mailto:{{ settings.SERVICE_CONTACT_EMAIL }}">Feedback</a>
+                        </span>
+
+                        <!-- Add a way to open the dialog -->
+                        {% if DEV_TOOLS_ENABLED %}<button onclick="openDevToolsDialog()">Dev tools</button>{% endif %}
+                    </div>
+                {% endif %}
             </div>
             <div class="govuk-footer__meta-item">
-                <a class="govuk-footer__link govuk-footer__copyright-logo"
-                   href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">©
-                Crown copyright</a>
+                <a class="govuk-footer__link content-stack small"
+                   href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">
+                    <img src="{% webpack_static 'govuk-crest.svg' %}" alt="Royal Arms crest">
+                    <span>©Crown copyright</span>
+                </a>
             </div>
         </div>
     </div>

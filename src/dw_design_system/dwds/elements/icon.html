@@ -1,0 +1,5 @@
+{% load static %}
+<svg {% if id %}id="{{ id }}"{% endif %}
+     class="dwds-icon{% if is_filled %} is-filled{% endif %}">
+    {# djlint:off #}<use href="{% static 'icons.svg' %}#{% if use_id %}{{ use_id }}{% else %}{{ id }}{% endif %}" />{# djlint:on #}
+</svg>

@@ -1,0 +1,31 @@
+.dwds-content-list {
+    > .content-main {
+        --content-main-padding: 0;
+    }
+
+    .content-item {
+        .content-custom-sidebar {
+            --sidebar-gap: var(--s1);
+
+            .content-main {
+                --content-main-padding: 0;
+            }
+
+            .content-image > img {
+                border-radius: var(--border-radius);
+            }
+        }
+    }
+}
+
+.dwds-content-list.as-card-grid {
+    .content-item {
+        .content-custom-sidebar {
+            --sidebar-gap: 0;
+
+            .content-main {
+                --content-main-padding: var(--s0);
+            }
+        }
+    }
+}

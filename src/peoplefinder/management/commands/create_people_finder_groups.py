@@ -7,6 +7,7 @@ PERSON_ADMIN_PERMS = [
     "change_person",
     "delete_person",
     "view_auditlog",
+    "can_view_inactive_profiles",
 ]
 
 TEAM_ADMIN_GROUP_NAME = "Team Admin"
@@ -22,11 +23,6 @@ class Command(BaseCommand):
     help = "Create groups with permissions for peoplefinder"
 
     def handle(self, *args, **options):
-        # TODO: Remove once run on all envs.
-        Group.objects.filter(
-            name__in=["Profile Editors", "Person Editors", "Team Editors"]
-        ).delete()
-
         # Person Admin
         person_admin, _ = Group.objects.get_or_create(
             name=PERSON_ADMIN_GROUP_NAME,

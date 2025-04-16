@@ -1,4 +1,6 @@
 import pytest
+from django.conf import settings
+from django.utils import timezone
 
 from peoplefinder.models import Person
 from peoplefinder.services.person import PersonService
@@ -18,6 +20,63 @@ class TestPersonService:
 
         assert normal_user.groups.count() == 2
         assert normal_user.is_superuser is True
+
+    def test_notify_about_changes_debounce_no_delay(self, normal_user, mocker):
+        mock_send_email_notification = mocker.patch(
+            "peoplefinder.services.person.NotificationsAPIClient.send_email_notification"
+        )
+
+        normal_user.profile.edited_or_confirmed_at = timezone.now()
+        normal_user.profile.save()
+
+        PersonService().notify_about_changes_debounce(
+            person_pk=normal_user.profile.pk,
+            personalisation={},
+            countdown=None,
+        )
+        mock_send_email_notification.assert_called_once_with(
+            email_address=normal_user.profile.email,
+            template_id=settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
+            personalisation={},
+        )
+
+    def test_notify_about_changes_debounce_with_delay(
+        self, normal_user, mocker, freezer
+    ):
+        mock_send_email_notification = mocker.patch(
+            "peoplefinder.services.person.NotificationsAPIClient.send_email_notification"
+        )
+        freezer.move_to("2023-08-01 12:00:00")
+
+        normal_user.profile.edited_or_confirmed_at = timezone.now()
+        normal_user.profile.save()
+
+        PersonService().notify_about_changes_debounce(
+            person_pk=normal_user.profile.pk,
+            personalisation={},
+            countdown=300,  # 5 minutes
+        )
+        mock_send_email_notification.assert_not_called()
+
+        freezer.move_to("2023-08-01 12:03:00")
+        PersonService().notify_about_changes_debounce(
+            person_pk=normal_user.profile.pk,
+            personalisation={},
+            countdown=300,  # 5 minutes
+        )
+        mock_send_email_notification.assert_not_called()
+
+        freezer.move_to("2023-08-01 12:05:00")
+        PersonService().notify_about_changes_debounce(
+            person_pk=normal_user.profile.pk,
+            personalisation={},
+            countdown=300,  # 5 minutes
+        )
+        mock_send_email_notification.assert_called_once_with(
+            email_address=normal_user.profile.email,
+            template_id=settings.PROFILE_EDITED_EMAIL_TEMPLATE_ID,
+            personalisation={},
+        )
 
 
 class TestCreateUserProfile:

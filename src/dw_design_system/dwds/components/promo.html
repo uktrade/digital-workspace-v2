@@ -1,0 +1,17 @@
+{% load wagtailimages_tags static humanize %}
+<div class="dwds-promo content-item">
+    <div class="content-grid image-right">
+        {% include "dwds/elements/content_image.html" with content_image=thumbnail fill=True %}
+        <div class="content-main highlight">
+            <div class="content-body content-stack">
+                {% if ribbon_text %}
+                    {% include "dwds/elements/ribbon.html" with text=ribbon_text colour="red" %}
+                {% endif %}
+                {% if description %}<p>{{ description }}</p>{% endif %}
+                {% if link_url and link_text %}
+                    {% include "dwds/components/link_action.html" with link_url=link_url link_text=link_text right=True %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

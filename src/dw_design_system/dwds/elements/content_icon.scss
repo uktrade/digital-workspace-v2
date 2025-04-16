@@ -1,0 +1,67 @@
+.content-icon {
+    height: 3em;
+    height: 4cap;
+    width: 3em;
+    width: 4cap;
+    flex: none;
+
+    &.tiny {
+        height: 1em;
+        height: 1.33cap;
+        width: 1em;
+        width: 1.33cap;
+    }
+
+    &.small {
+        height: 1.5em;
+        height: 2cap;
+        width: 1.5em;
+        width: 2cap;
+    }
+
+    &.medium {
+        height: 2em;
+        height: 2.66cap;
+        width: 2em;
+        width: 2.66cap;
+    }
+
+    &.large {
+        height: 2.5em;
+        height: 3.325cap;
+        width: 2.5em;
+        width: 3.325cap;
+    }
+
+}
+
+.content-with-icon {
+    display: inline-flex;
+    align-items: center;
+
+    &.top-alignment {
+        align-items: flex-start;
+    }
+
+    &.no-gap {
+        > .content-icon {
+            margin-inline-end: 0px;
+        }
+    }
+
+    &.small-gap {
+        > .content-icon {
+            margin-inline-end: var(--s-5);
+        }
+    }
+
+    &.medium-gap {
+        > .content-icon {
+            margin-inline-end: var(--s-2);
+        }
+    }
+}
+
+.content-with-icon > .content-icon {
+    margin-inline-end: var(--space, 0.5em);
+}

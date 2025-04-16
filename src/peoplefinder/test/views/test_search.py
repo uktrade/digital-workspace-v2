@@ -1,7 +1,11 @@
+import datetime
+
 import pytest
 from django.core.management import call_command
 from django.urls import reverse
 from pytest_django.asserts import assertContains, assertNotContains
+
+from peoplefinder.models import UkStaffLocation
 
 
 class TestSearchView:
@@ -38,6 +42,7 @@ class TestSearchView:
         assertContains(r, str(another_normal_user.profile.slug))
 
         another_normal_user.profile.first_name = "Tim"
+        another_normal_user.profile.preferred_first_name = "Tim"
         another_normal_user.profile.email = "tim.smith@example.com"
         another_normal_user.profile.save()
 
@@ -60,16 +65,15 @@ class TestSearchView:
         assertContains(r, "(1)")
 
     # Currently no teams-only search exists
-
     @pytest.mark.opensearch
-    def test_search_for_team(self, another_normal_user):
+    def test_search_for_team(self, normal_user):
         r = self._search("software")
 
         assertContains(r, "pf-person-search-result")
         assertContains(r, "pf-team-card")
 
         # The normal_user is in the Software team.
-        assertContains(r, str(another_normal_user.profile.slug))
+        assertContains(r, str(normal_user.profile.slug))
         assertContains(r, "/teams/software/")
         assertContains(r, "(2)")
 
@@ -90,3 +94,55 @@ class TestSearchView:
         assertContains(r, "/teams/spacex/")
 
         assertContains(r, "(2)")
+
+    @pytest.mark.opensearch
+    def test_search_on_office_location(self, another_normal_user):
+        # Given there is a uk office in Ilfracombe
+        office = UkStaffLocation.objects.create(
+            code="6ab9caa6",
+            name="Ilfracombe",
+            city="North Devon",
+            organisation="Department for Business and Trade",
+        )
+        # And there is a user at that office
+        another_normal_user.profile.uk_office_location = office
+        another_normal_user.profile.save()
+        # And the search index has been updated
+        call_command("update_index")
+        # When I perform a search for people at that office
+        resp = self._search("ilfracombe", teams=False)
+        # Then the user is returned in the search results
+        assert another_normal_user.profile in resp.context["search_results"].object_list
+
+    @pytest.mark.opensearch
+    def test_search_for_recently_inactive_person(self, another_normal_user):
+        profile = another_normal_user.profile
+        ten_days_ago = datetime.datetime.now() - datetime.timedelta(days=10)
+        # Given a user that has recently become inactive
+        profile.is_active = False
+        profile.became_inactive = ten_days_ago
+        profile.save()
+        # And the search index has been updated
+        call_command("update_index")
+        # When I perform a search for that user
+        resp = self._search("jane", teams=False)
+        # Then the user is returned
+        assert another_normal_user.profile in resp.context["search_results"].object_list
+
+    @pytest.mark.opensearch
+    def test_search_for_old_inactive_person(self, another_normal_user):
+        profile = another_normal_user.profile
+        long_time_ago = datetime.datetime.now() - datetime.timedelta(days=120)
+        # Given a user that has been inactive for a long time
+        profile.is_active = False
+        profile.became_inactive = long_time_ago
+        profile.save()
+        # And the search index has been updated
+        call_command("update_index")
+        # When I perform a search for that user
+        resp = self._search("jane", teams=False)
+        # Then the user is not returned
+        assert (
+            another_normal_user.profile
+            not in resp.context["search_results"].object_list
+        )

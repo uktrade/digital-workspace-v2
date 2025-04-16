@@ -1,0 +1,26 @@
+{% extends "content/content_page.html" %}
+{% load wagtailcore_tags %}
+
+{% block secondary_content %}
+    <div class="content-stack large">
+        {{ block.super }}
+        {% if page_topics %}
+            <div class="dwds-content-item-card">
+                <div class="content-item">
+                    <div class="content-main">
+                        <div class="content-body content-stack">
+                            <h2>Related topics</h2>
+                            <ul class="clean">
+                                {% for page_topic in page_topics %}
+                                    <li>
+                                        <a href="{{ page_topic.topic.url }}">{{ page_topic.topic.title }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock secondary_content %}

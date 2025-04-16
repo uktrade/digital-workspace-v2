@@ -1,0 +1,41 @@
+.content-sidebar,
+.content-sidebar-right {
+    --sidebar-gap: var(--space);
+    --sidebar-size: 300px;
+    --sidebar-min-size: 40%;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sidebar-gap);
+
+    &.small {
+        --sidebar-size: 150px;
+        --sidebar-min-size: 66%;
+    }
+}
+
+.content-sidebar {
+    > :first-child {
+        flex-grow: 1;
+        flex-basis: var(--sidebar-size);
+    }
+
+    > :last-child {
+        flex-grow: 999;
+        flex-basis: 0;
+        min-inline-size: var(--sidebar-min-size);
+    }
+}
+
+.content-sidebar-right {
+    > :first-child {
+        flex-grow: 999;
+        flex-basis: 0;
+        min-inline-size: var(--sidebar-min-size);
+    }
+
+    > :last-child {
+        flex-grow: 1;
+        flex-basis: var(--sidebar-size);
+    }
+}

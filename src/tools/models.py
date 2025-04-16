@@ -2,11 +2,11 @@ from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.shortcuts import redirect
-from wagtail.admin.panels import FieldPanel
 
 from content.models import ContentPage
-from extended_search.managers.index import ModelIndexManager
-from extended_search.fields import IndexedField
+from core.models import fields
+from core.panels import FieldPanel
+from extended_search.index import DWIndexedField as IndexedField
 from working_at_dit.models import PageWithTopics
 
 
@@ -71,8 +71,26 @@ class IrapToolData(IrapToolDataAbstract):
         return self.product_name
 
 
-class ToolIndexManager(ModelIndexManager):
-    fields = [
+class Tool(PageWithTopics):
+    template = "content/content_page.html"
+    is_creatable = True
+    irap_tool = models.OneToOneField(
+        IrapToolData,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    redirect_url = fields.URLField(
+        null=True,
+        blank=True,
+    )
+    long_description = models.CharField(
+        null=True,
+        blank=True,
+        max_length=2048,
+    )
+
+    indexed_fields = [
         IndexedField(
             "search_tool_name",
             fuzzy=True,
@@ -83,29 +101,6 @@ class ToolIndexManager(ModelIndexManager):
             boost=10.0,
         ),
     ]
-
-
-class Tool(PageWithTopics):
-    is_creatable = True
-    irap_tool = models.OneToOneField(
-        IrapToolData,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-
-    redirect_url = models.CharField(
-        null=True,
-        blank=True,
-        max_length=2048,
-    )
-    long_description = models.CharField(
-        null=True,
-        blank=True,
-        max_length=2048,
-    )
-
-    search_fields = PageWithTopics.search_fields + ToolIndexManager()
 
     @property
     def search_tool_name(self):
@@ -128,12 +123,14 @@ class Tool(PageWithTopics):
 
 class ToolsHome(ContentPage):
     is_creatable = False
-
     subpage_types = ["tools.Tool"]
+    template = "content/content_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = Tool.objects.live().public().order_by("title")
+        context["num_cols"] = 3
+        context["target_blank"] = True
 
         return context

@@ -1,18 +1,25 @@
 {% extends "base.html" %}
 
 {% block main_content %}
+    {% block pre_content %}
+    {% endblock pre_content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="ws-primary-content">
                 <article>
-                    {% block content %}{% endblock %}
+                    {% block content %}
+                    {% endblock content %}
                 </article>
+                {% include 'includes/tag_set.html' %}
             </div>
+            {% block post_content %}
+            {% endblock post_content %}
         </div>
         <div class="govuk-grid-column-one-third">
             <div class="ws-secondary-content">
-                {% block tertiary_col_content %}{% endblock %}
+                {% block tertiary_col_content %}
+                {% endblock tertiary_col_content %}
             </div>
         </div>
     </div>
-{% endblock %}
+{% endblock main_content %}

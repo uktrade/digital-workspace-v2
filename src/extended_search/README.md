@@ -49,10 +49,6 @@ DEFAULT_SETTINGS = {
             "index_fieldname_suffix": "_keyword",
             "query_types": ["phrase"],
         },
-        "proximity": {  # @TODO think this needs cleanup to work more like Fuzzy - i.e. built into query but analyzed as a FileterField
-            "es_analyzer": "keyword",
-            "index_fieldname_suffix": None,
-        },
     },
 }
 ```

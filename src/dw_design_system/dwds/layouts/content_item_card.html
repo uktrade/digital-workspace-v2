@@ -1,0 +1,11 @@
+<div class="dwds-content-item-card {% if flippable %}flippable{% endif %}">
+    {% if flippable %}
+        <div class="flippable-content">
+            <div>{% include "dwds/elements/content_item.html" %}</div>
+            <div>{% include "dwds/components/cta.html" %}</div>
+        </div>
+
+    {% else %}
+        {% include "dwds/elements/content_item.html" %}
+    {% endif %}
+</div>

@@ -1,0 +1,31 @@
+{% comment %}
+context:
+    profile (Person)
+    profile_url (str)
+    no_photo_url (str)
+{% endcomment %}
+<a href="{{ profile_url }}" target="_blank">
+    <div class="profile-card" data-profile-uuid="{{ profile.slug }}">
+        {% if profile and profile.photo_small %}
+            <img class="profile-photo"
+                 src="{{ profile.photo_small.url }}"
+                 alt="Photo of {{ profile.full_name }}">
+        {% else %}
+            <img class="profile-photo" src="{{ no_photo_url }}" alt="No photo">
+        {% endif %}
+        <ul class="profile-details">
+            {% if profile %}
+                <li class="profile-name">Hi {{ profile.get_first_name_display }}</li>
+                <li class="profile-completion">
+                    View your profile
+                    {% if profile.profile_completion < 100 %}
+                        ({{ profile.profile_completion }}% complete)
+                    {% endif %}
+                </li>
+            {% else %}
+                <li class="profile-not-found">No profile found</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+</a>

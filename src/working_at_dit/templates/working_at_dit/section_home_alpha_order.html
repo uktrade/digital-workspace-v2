@@ -1,21 +1,18 @@
-{% extends "1_col_content.html" %}
+{% extends "dwds_sidebar.html" %}
 {% load wagtailcore_tags %}
 
-{% block content %}
-    <h1 class="govuk-heading-l">{{ page.title }}</h1>
+{% block primary_content %}
     {% for block in page.body %}
         {% include_block block %}
     {% endfor %}
     {% for subpage_group in subpage_groups %}
-        {% for page in subpage_group %}
-            {% if forloop.first %}
-                <h3 class="govuk-heading-m">{{ subpage_group.0.title|first|upper }}</h3>
-                <ul class="govuk-list">
-                {% endif %}
+        <h3>{{ subpage_group.0.title|first|upper }}</h3>
+        <ul>
+            {% for page in subpage_group %}
                 <li>
-                    <a class="govuk-link" href="{% pageurl page %}">{{ page.title }}</a>
+                    <a href="{% pageurl page %}">{{ page.title }}</a>
                 </li>
-                {% if forloop.last %}</ul>{% endif %}
-        {% endfor %}
+            {% endfor %}
+        </ul>
     {% endfor %}
 {% endblock %}

@@ -16,9 +16,6 @@ jobs:
           name: check linting
           command: make check
       - run:
-          name: check requirements are up to date
-          command: make check-requirements
-      - run:
           name: run containers
           command: docker-compose up -d
       - run:
@@ -27,7 +24,7 @@ jobs:
       - run:
           name: build frontend
           command: |
-            nvm install 18
+            nvm install 20
             npm ci
             npm run build
       - run:
@@ -50,7 +47,7 @@ jobs:
       - run:
           name: build frontend
           command: |
-            nvm install 18
+            nvm install 20
             npm ci
             npm run build
       - run:

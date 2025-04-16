@@ -28,9 +28,9 @@ def search_category(context, *, category, limit=None, show_heading=False):
     query = context["search_query"]
     page = context["page"]
 
-    search_vector = SEARCH_VECTORS[category](request, annotate_score=True)
-    search_results = list(search_vector.search(query))
-    count = len(search_results)
+    search_vector = SEARCH_VECTORS[category](request)
+    search_results = search_vector.search(query)
+    count = search_results.count()
 
     search_results_paginator = Paginator(search_results, main_search.PAGE_SIZE)
     search_results = search_results_paginator.page(page)

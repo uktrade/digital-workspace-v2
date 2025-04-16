@@ -1,14 +1,32 @@
 <div class="search-results__category">
+    {% if show_bad_results_message %}
+        <div class="low-score-message-container">
+            {% if is_results_count_low %}
+                <p class="govuk-body-s">
+                    It looks like you didn't get very good {{ result_type_display }} results. You can improve your search results by checking your spelling or trying a different search term.
+                </p>
+            {% else %}
+                <p class="govuk-body-s">
+                    It looks like you didn't get very good {{ result_type_display }} results. You can improve your search results by using fewer keywords and searching for something less specific.
+                </p>
+            {% endif %}
+        </div>
+        <script lang="javascript">
+            document.onload = dataLayer.push({
+                "search_ui": "show-bad-results-message"
+            });
+        </script>
+    {% endif %}
     {% if show_heading %}<h3 class="govuk-heading-s">{{ count }} {{ result_type_display }}</h3>{% endif %}
     {{ page }}
     <div class="search-results__list"
          data-search-category="{{ search_category }}">
-        {% if pinned_results and not search_results.has_previous %}
+        {% if pinned_results %}
             <div class="pinned">
                 <h3 class="govuk-heading-s">Featured {{ result_type_display }}</h3>
 
                 {% for result in pinned_results %}
-                    {% include search_results_item_template with object=result type=search_category section="pinned" number_overall=forloop.counter number_section=forloop.counter only %}
+                    {% include search_results_item_template with object=result type=search_category section="pinned" number_overall=forloop.counter number_section=forloop.counter perms=perms only %}
                 {% endfor %}
             </div>
         {% endif %}
@@ -16,14 +34,18 @@
         {% if search_results %}
             {% for result in search_results %}
                 {% comment %}
-                skip any pinned results that are already rendered above
+                Note: number_overall is the overall number of the result in the entire set of results (including pinned)
                 {% endcomment %}
-                {% if search_results.has_previous or forloop.counter > num_pinned_results|add:"0" %}
-                    {% include search_results_item_template with object=result type=search_category section=search_category number_overall=forloop.counter|add:num_pinned_results number_section=forloop.counter only %}
-                {% endif %}
+                {% include search_results_item_template with object=result type=search_category section=search_category number_overall=forloop.counter|add:num_pinned_results number_section=forloop.counter perms=perms only %}
             {% endfor %}
 
         {% else %}
+            {% if tab_name != 'all' and not tab_override %}
+                <script lang="javascript">
+                        url = "{% url 'search:category' 'all' %}?query={{search_query}}"
+                        document.onload = window.location = url;
+                </script>
+            {% endif %}
             <p class="govuk-body">There are no matching {{ result_type_display }}.</p>
 
             {% if search_category == 'all_pages' %}

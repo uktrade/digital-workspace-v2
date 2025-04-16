@@ -3,11 +3,10 @@ from itertools import groupby
 from django.db import models
 from django.db.models import Q
 from modelcluster.fields import ParentalKey
-from wagtail.admin.panels import FieldPanel, InlinePanel
 
-from content.models import BasePage, ContentPage, Theme
-from extended_search.fields import IndexedField
-from extended_search.managers.index import ModelIndexManager
+from content.models import BasePage, ContentOwnerMixin, ContentPage, Theme
+from core.panels import FieldPanel, InlinePanel
+from extended_search.index import DWIndexedField as IndexedField
 
 
 class WorkingAtDITHome(ContentPage):
@@ -19,6 +18,7 @@ class WorkingAtDITHome(ContentPage):
     subpage_types = [
         "working_at_dit.Topic",
         "working_at_dit.HowDoI",
+        "content.NavigationPage",
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -29,21 +29,23 @@ class WorkingAtDITHome(ContentPage):
         return context
 
 
-class Topic(ContentPage):
+class Topic(ContentOwnerMixin, ContentPage):
     subpage_types = []  # Should not be able to create children
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
+        context["attribution"] = True
+
         context["related_news"] = PageTopic.objects.filter(
-            topic=self.contentpage, page__content_type__app_label="news"
+            topic=self, page__content_type__app_label="news"
         ).order_by("-page__last_published_at")[:5]
 
         context["policies_and_guidance"] = (
             ContentPage.objects.public()
             .live()
             .filter(
-                topics__topic=self.contentpage,
+                page_topics__topic=self,
                 content_type__app_label="working_at_dit",
             )
             .filter(Q(content_type__model="policy") | Q(content_type__model="guidance"))
@@ -51,13 +53,13 @@ class Topic(ContentPage):
         )
 
         tools = PageTopic.objects.filter(
-            topic=self.contentpage, page__content_type__app_label="tools"
+            topic=self, page__content_type__app_label="tools"
         ).order_by("page__last_published_at")
 
         context["tools"] = tools
 
         how_do_is = PageTopic.objects.filter(
-            topic=self.contentpage,
+            topic=self,
             page__content_type__app_label="working_at_dit",
             page__content_type__model="howdoi",
             page__live=True,
@@ -71,14 +73,18 @@ class Topic(ContentPage):
         InlinePanel("topic_themes", label="Themes"),
     ]
 
+    indexed_fields = ContentOwnerMixin.indexed_fields
+
 
 class TopicHome(BasePage):
-    template = "working_at_dit/section_home.html"
+    template = "content/content_page.html"
     subpage_types = ["working_at_dit.Topic"]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["children"] = Topic.objects.live().public().order_by("title")
+        context["display"] = "basic"
+        context["bookmark"] = True
 
         return context
 
@@ -105,71 +111,49 @@ class TopicTheme(models.Model):
         ordering = ["topic__title"]
 
 
-class PageTopicIndexManager(ModelIndexManager):
-    fields = [
-        IndexedField(
-            "topic",
-            tokenized=True,
-            explicit=True,
-        ),
-    ]
-
-
 class PageTopic(models.Model):
     page = ParentalKey(
         "content.ContentPage",
         on_delete=models.CASCADE,
-        related_name="topics",
+        related_name="page_topics",
     )
 
     topic = models.ForeignKey(
         "working_at_dit.Topic",
         on_delete=models.CASCADE,
-        related_name="topic_Pages",
+        related_name="topic_pages",
     )
 
     panels = [
         FieldPanel("topic"),
     ]
 
-    search_fields = ContentPage.search_fields + PageTopicIndexManager()
-
     class Meta:
         unique_together = ("page", "topic")
 
 
-class PageWithTopicsIndexManager(ModelIndexManager):
-    fields = [
+# TODO: Possibly remove this page type in the hierarchy? (lots of work!)
+class PageWithTopics(ContentPage):
+    indexed_fields = [
         IndexedField(
-            "search_topics",
+            "topic_titles",
             tokenized=True,
             explicit=True,
         ),
     ]
 
-
-class PageWithTopics(ContentPage):
-    @property
-    def search_topics(self):
-        return " ".join(self.topics.all().values_list("topic__title", flat=True))
-
-    search_fields = ContentPage.search_fields + PageWithTopicsIndexManager()
-
     content_panels = ContentPage.content_panels + [
-        InlinePanel("topics", label="Topics"),
+        InlinePanel("page_topics", label="Topics"),
     ]
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-
-        context["page_topics"] = PageTopic.objects.filter(
-            page=self,
-        ).order_by("topic__title")
-
+        context["page_topics"] = self.page_topics.order_by("topic__title")
         return context
 
 
-class HowDoI(PageWithTopics):
+class HowDoI(ContentOwnerMixin, PageWithTopics):
+    template = "working_at_dit/content_with_related_topics.html"
     subpage_types = []  # Should not be able to create children
 
     include_link_on_homepage = models.BooleanField(
@@ -180,31 +164,54 @@ class HowDoI(PageWithTopics):
         FieldPanel("include_link_on_homepage"),
     ]
 
+    indexed_fields = ContentOwnerMixin.indexed_fields
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["attribution"] = True
+        return context
+
 
 class HowDoIHome(ContentPage):
-    template = "working_at_dit/section_home.html"
+    template = "content/content_page.html"
     subpage_types = ["working_at_dit.HowDoI"]  # Should not be able to create children
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = HowDoI.objects.live().public().order_by("title")
+        context["display"] = "basic"
+        context["bookmark"] = True
 
         return context
 
 
-class Guidance(PageWithTopics):
-    template = "working_at_dit/policy_guidance.html"
+class Guidance(ContentOwnerMixin, PageWithTopics):
+    template = "working_at_dit/content_with_related_topics.html"
     is_creatable = True
 
     subpage_types = ["working_at_dit.Guidance"]
 
+    indexed_fields = ContentOwnerMixin.indexed_fields
 
-class Policy(PageWithTopics):
-    template = "working_at_dit/policy_guidance.html"
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["attribution"] = True
+        return context
+
+
+class Policy(ContentOwnerMixin, PageWithTopics):
+    template = "working_at_dit/content_with_related_topics.html"
     is_creatable = True
 
     subpage_types = ["working_at_dit.Policy"]
+
+    indexed_fields = ContentOwnerMixin.indexed_fields
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+        context["attribution"] = True
+        return context
 
 
 class PoliciesHome(BasePage):
@@ -244,7 +251,7 @@ class GuidanceHome(BasePage):
 
 
 class PoliciesAndGuidanceHome(BasePage):
-    template = "working_at_dit/section_home.html"
+    template = "content/content_page.html"
     subpage_types = [
         "working_at_dit.PoliciesHome",
         "working_at_dit.GuidanceHome",
@@ -257,5 +264,7 @@ class PoliciesAndGuidanceHome(BasePage):
             PoliciesHome.objects.live().public().first(),
             GuidanceHome.objects.live().public().first(),
         ]
+        context["display"] = "basic"
+        context["bookmark"] = True
 
         return context

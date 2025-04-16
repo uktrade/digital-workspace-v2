@@ -7,14 +7,13 @@ from django.template.response import TemplateResponse
 from django.utils.text import slugify
 from modelcluster.fields import ParentalKey
 from simple_history.models import HistoricalRecords
-from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.snippets.models import register_snippet
 
-from content.models import BasePage, ContentPage
-from core.utils import set_seen_cookie_banner
-from extended_search.fields import IndexedField
-from extended_search.managers.index import ModelIndexManager
+from content.models import BasePage
+from core.panels import FieldPanel, InlinePanel
+from extended_search.index import DWIndexedField as IndexedField
+from extended_search.index import ScoreFunction
 from news.forms import CommentForm
 from working_at_dit.models import PageWithTopics
 
@@ -26,7 +25,9 @@ class Comment(models.Model):
     legacy_id = models.IntegerField(
         null=True,
     )
-    news_page = models.ForeignKey("news.NewsPage", on_delete=models.CASCADE)
+    page = models.ForeignKey(
+        "content.ContentPage", on_delete=models.CASCADE, related_name="comments"
+    )
     author = models.ForeignKey(
         UserModel, null=True, blank=True, on_delete=models.CASCADE
     )
@@ -34,6 +35,12 @@ class Comment(models.Model):
     legacy_author_email = models.EmailField(blank=True, null=True)
     content = models.TextField()
     posted_date = models.DateTimeField(default=datetime.now)
+    edited_date = models.DateTimeField(
+        default=None,
+        null=True,
+        blank=True,
+    )
+    is_visible = models.BooleanField(default=True)
     parent = models.ForeignKey(
         "news.Comment",
         on_delete=models.CASCADE,
@@ -46,19 +53,9 @@ class Comment(models.Model):
         return self.content
 
     panels = [
-        FieldPanel("news_page"),
+        FieldPanel("page"),
         FieldPanel("author"),
         FieldPanel("content"),
-    ]
-
-
-class NewsCategoryIndexManager(ModelIndexManager):
-    fields = [
-        IndexedField(
-            "category",
-            tokenized=True,
-            explicit=True,
-        ),
     ]
 
 
@@ -84,8 +81,6 @@ class NewsCategory(models.Model):
         blank=True,
     )
     history = history = HistoricalRecords()
-
-    search_fields = ContentPage.search_fields + NewsCategoryIndexManager()
 
     def __str__(self):
         return self.category
@@ -121,20 +116,6 @@ class NewsPageNewsCategory(models.Model):
         unique_together = ("news_page", "news_category")
 
 
-class NewsPageIndexManager(ModelIndexManager):
-    fields = [
-        IndexedField(
-            "search_categories",
-            autocomplete=True,
-            tokenized=True,
-        ),
-        IndexedField(
-            "pinned_on_home",
-            filter=True,
-        ),
-    ]
-
-
 class NewsPage(PageWithTopics):
     is_creatable = True
     parent_page_types = ["news.NewsHome"]
@@ -146,26 +127,15 @@ class NewsPage(PageWithTopics):
 
     perm_sec_as_author = models.BooleanField(
         default=False,
+        help_text="To set the author of a page, go to the 'Publishing' tab and select a 'Page author'",
     )
 
     allow_comments = models.BooleanField(
         default=True,
     )
 
-    preview_image = models.ForeignKey(
-        "wagtailimages.Image",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-
-    featured_on_news_home = models.BooleanField(
-        default=False,
-        help_text="If checked, this will cause the page to "
-        "be the featured article on the news homepage. "
-        "Other pages will no longer be marked as the "
-        "featured article.",
+    allow_reactions = models.BooleanField(
+        default=True,
     )
 
     @property
@@ -174,67 +144,63 @@ class NewsPage(PageWithTopics):
             self.news_categories.all().values_list("news_category__category", flat=True)
         )
 
-    search_fields = ContentPage.search_fields + NewsPageIndexManager()
+    indexed_fields = [
+        IndexedField(
+            "search_categories",
+            autocomplete=True,
+            tokenized=True,
+        ),
+        IndexedField(
+            "pinned_on_home",
+            filter=True,
+        ),
+        ScoreFunction(
+            "gauss",
+            field_name="last_published_at",
+            scale="365d",
+            offset="14d",
+            decay=0.3,
+        ),
+    ]
 
     content_panels = PageWithTopics.content_panels + [  # noqa W504
-        FieldPanel("preview_image"),
         InlinePanel("news_categories", label="News categories"),
+    ]
+
+    settings_panels = [
         FieldPanel("allow_comments"),
-        FieldPanel("perm_sec_as_author"),
+        FieldPanel("allow_reactions"),
+        FieldPanel("perm_sec_as_author", read_only=True),
         FieldPanel("pinned_on_home"),
     ]
 
-    promote_panels = [
-        FieldPanel("featured_on_news_home"),
-    ] + PageWithTopics.promote_panels
+    def get_comments(self):
+        from interactions.services.comments import get_page_comments
 
-    def save(self, *args, **kwargs):
-        # If set as featured article, set all other
-        # articles to be not being
-        if self.featured_on_news_home:
-            NewsPage.objects.exclude(
-                slug=self.slug,
-            ).update(featured_on_news_home=False)
-
-        return super().save(*args, **kwargs)
+        return get_page_comments(self)
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
-        comments = Comment.objects.filter(
-            news_page=self,
-            parent_id=None,
-        ).order_by("-posted_date")
-
-        context["comments"] = comments
-        context["comment_count"] = Comment.objects.filter(
-            news_page=self,
-        ).count()
-
-        categories = NewsCategory.objects.all().order_by("category")
-        context["categories"] = categories
+        context["page"] = (
+            NewsPage.objects.annotate_with_comment_count()
+            .annotate_with_reaction_count()
+            .get(pk=self.pk)
+        )
+        context["attribution"] = True
+        context["attribution__is_news_page"] = True
+        context["attribution__first_publisher_as_author"] = True
+        context["comments"] = self.get_comments()
+        context["categories"] = NewsCategory.objects.all().order_by("category")
 
         return context
 
     def serve(self, request, *args, **kwargs):
-        # Add comment before calling get_context, so it's included
-        if "comment" in request.POST:
-            comment = request.POST["comment"]
-            in_reply_to = request.POST.get("in_reply_to", None)
-            Comment.objects.create(
-                content=comment,
-                author=request.user,
-                news_page=self,
-                parent_id=in_reply_to,
-            )
-
         context = self.get_context(request, **kwargs)
         context["comment_form"] = CommentForm()
+        context["reply_comment_form"] = CommentForm(auto_id="reply_%s")
 
-        response = TemplateResponse(request, self.template, context)
-        set_seen_cookie_banner(request, response)
-
-        return response
+        return TemplateResponse(request, self.template, context)
 
 
 class NewsHome(RoutablePageMixin, BasePage):
@@ -248,19 +214,11 @@ class NewsHome(RoutablePageMixin, BasePage):
         request.is_preview = getattr(request, "is_preview", False)
         context = self.get_context(request)
 
-        featured_page = NewsPage.objects.filter(
-            featured_on_news_home=True,
-        ).first()
-
-        if featured_page:
-            context["featured_page"] = featured_page
-
         response = TemplateResponse(
             request,
             self.get_template(request),
             context,
         )
-        set_seen_cookie_banner(request, response)
 
         return response
 
@@ -274,7 +232,6 @@ class NewsHome(RoutablePageMixin, BasePage):
             self.get_template(request),
             context,
         )
-        set_seen_cookie_banner(request, response)
 
         return response
 
@@ -286,24 +243,19 @@ class NewsHome(RoutablePageMixin, BasePage):
         categories = NewsCategory.objects.all().order_by("category")
         context["categories"] = categories
 
+        news_items = NewsPage.objects.live().public()
+
         # Check for category
         if "category" in kwargs:
             category = NewsCategory.objects.filter(
                 slug=kwargs["category"],
             ).first()
-            news_items = (
-                NewsPage.objects.filter(
-                    news_categories__news_category_id__in=[
-                        category.pk,
-                    ],
-                )
-                .live()
-                .public()
-                .order_by(
-                    "-pinned_on_home",
-                    "home_news_order_pages__order",
-                    "-first_published_at",
-                )
+            context["category"] = category
+
+            news_items = news_items.filter(
+                news_categories__news_category_id__in=[
+                    category.pk,
+                ],
             )
 
             if category.lead_story:
@@ -311,27 +263,14 @@ class NewsHome(RoutablePageMixin, BasePage):
                     pk=category.lead_story.pk,
                 )
 
-            context["category"] = category
-        else:
-            # Get all posts
-            news_items = (
-                NewsPage.objects.live()
-                .public()
-                .order_by(
-                    "-pinned_on_home",
-                    "home_news_order_pages__order",
-                    "-first_published_at",
-                )
+        # Add comment counts
+        news_items = (
+            news_items.annotate_with_comment_count()
+            .annotate_with_reaction_count()
+            .order_by(
+                "-first_published_at",
             )
-
-            featured_page = NewsPage.objects.filter(
-                featured_on_news_home=True,
-            ).first()
-
-            if featured_page:
-                news_items = news_items.exclude(
-                    pk=featured_page.pk,
-                )
+        )
 
         # Paginate all posts by 2 per page
         paginator = Paginator(news_items, 9)
@@ -346,23 +285,6 @@ class NewsHome(RoutablePageMixin, BasePage):
             # Then return the last page
             posts = paginator.page(paginator.num_pages)
 
-        start = 1
-        total_shown = 10
-
-        if paginator.num_pages < total_shown:
-            total_shown = paginator.num_pages
-
-        if page > 9:
-            start = page - 7
-            total_shown = 10
-
-            if (page + 2) > paginator.num_pages:
-                start = paginator.num_pages - 9
-
-        context["pagination_range"] = range(start, (start + total_shown))
-
-        # "posts" will have child pages; you'll need to use .specific in the templates
-        # in order to access child properties, such as youtube_video_id and subtitle
         context["posts"] = posts
 
         return context

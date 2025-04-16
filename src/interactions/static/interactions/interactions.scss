@@ -1,0 +1,47 @@
+.empty-bookmark-list {
+    img {
+        width: 4rem;
+    }
+
+    p:nth-of-type(2) {
+        display: flex;
+        gap: var(--s-2);
+    }
+}
+
+.bookmark-page-input {
+    all: unset;
+
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+
+    color: var(--dbt-blue);
+
+    /* i.e. it's a response from the server and not from the initial template load */
+    &[data-is-htmx="true"] .icon {
+        animation: boing 0.3s ease;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+
+}
+
+.bookmark-index-list {
+    padding: 0;
+
+    > li {
+        display: grid;
+        grid-template-columns: 1fr max-content;
+        align-items: center;
+        gap: var(--space);
+
+        padding: var(--s0);
+        margin-bottom: var(--s0);
+
+        background-color: var(--card-bg-white);
+        border-radius: var(--border-radius);
+    }
+}
