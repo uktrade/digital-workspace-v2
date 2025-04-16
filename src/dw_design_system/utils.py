@@ -167,14 +167,14 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 },
             },
             {
-                "name": "Quotes Component",
+                "name": "Quote Component",
                 "template": "dwds/components/quote.html",
                 "context": {
                     "highlight": True,
                     "quote": "It makes you happy that you provided several kilowatts to the power sector, and it means that someone will turn their lights on today. That motivates me, that’s your work really impacts the wellbeing of the country.",
                     "source_name": "John Doe",
                     "source_url": "https://www.gov.uk",
-                    "source_image": thumbnail_url,
+                    "source_image": thumbnail_file,
                     "source_role": "Trade policy and Healthcare Adviser",
                     "source_team": "Ukraine",
                     "source_team_url": "https://www.gov.uk",
@@ -186,7 +186,7 @@ def get_dwds_templates(template_type, request: HttpRequest):
                 "context": {
                     "person_name": "John Doe",
                     "person_role": "Trade policy and Healthcare Adviser",
-                    "person_image": thumbnail_url,
+                    "person_image": thumbnail_file,
                     "secondary_image": thumbnail_file,
                 },
             },
