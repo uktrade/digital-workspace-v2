@@ -2,15 +2,9 @@ from unittest import mock
 import pytest
 from django.test.client import Client
 from django.urls import reverse
-from core.models import FeatureFlag
 from news.factories import CommentFactory
 from news.models import Comment
-from django.http import HttpResponseRedirect
 from waffle.testutils import override_flag
-
-# from waffle.models import cache_flag
-# from waffle.models import Flag
-# from django.test import override_settings
 
 pytestmark = pytest.mark.django_db
 
@@ -34,7 +28,6 @@ def test_hide_comment_view(mocker, user):
     assert not response.content
 
 
-# @override_settings(WAFFLE_CACHE=False)
 def test_comment_on_page_view(mocker, news_page, user):
     client = Client()
     client.force_login(user)
