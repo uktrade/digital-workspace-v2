@@ -1,14 +1,7 @@
-
-{% load markdown %}
+{% load git_info markdown workspace_navigation static wagtailcore_tags %}
 {% load webpack_static from webpack_loader %}
-
-
-{% load workspace_navigation static %}
 {% load render_bundle webpack_static from webpack_loader %}
-{% load static wagtailcore_tags %}
-{% load cookie_banner %}
-{% load site_alert %}
-{% load git_info %}
+
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
     <head>
@@ -42,12 +35,6 @@
                   id="main-content"
                   role="main"
                   tabindex="1">
-
-
-
-
-
-
                 <div style="display:flex; justify-content:center">
                     {% if manager %}
                         <div class="pf-team-card" style="max-width:33%">
@@ -136,14 +123,6 @@
                     </div>
                     <div style="clear:both">&nbsp;</div>
                 {% endif %}
-
-
-
-
-
-
-
-
             </main>
         </div>
         {% render_bundle 'main' 'js' %}

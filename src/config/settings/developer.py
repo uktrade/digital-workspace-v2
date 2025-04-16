@@ -64,3 +64,7 @@ if DEV_TOOLS_ENABLED:
         "dev_tools.context_processors.dev_tools"
     )
     MIDDLEWARE.append("dev_tools.middleware.DevToolsLoginRequiredMiddleware")
+
+# Changes for the Organogram POC
+X_FRAME_OPTIONS = "ALLOW"
+CSP_FRAME_SRC = ("'localhost'",)
