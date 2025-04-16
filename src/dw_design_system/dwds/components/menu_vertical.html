@@ -1,0 +1,22 @@
+<nav class="dwds-menu-vertical">
+    <ul class="content-stack no-gap">
+        {% if current_page %}
+            <li class="active">
+                <span>{{ current_page.title }}</span>
+                {% if enable_current_page_menu %}
+                    <ol class="page-toc">
+                    </ol>
+                {% endif %}
+            </li>
+        {% endif %}
+        {% for item in items %}
+            <li {% if item.active %}class="active"{% endif %}>
+                {% if not item.active %}
+                    <a href="{{ item.url }}">{{ item.title }}</a>
+                {% else %}
+                    <span>{{ item.title }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</nav>

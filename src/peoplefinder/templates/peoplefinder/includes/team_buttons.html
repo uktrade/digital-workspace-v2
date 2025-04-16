@@ -1,0 +1,8 @@
+<div class="dwds-button-group">
+    <a class="dwds-button dwds-button--navigation {% if teams_active %}active{% endif %}"
+       href="{% url 'team-view' team.slug %}?sub_view=sub-teams">Teams</a>
+    <a class="dwds-button dwds-button--navigation {% if people_active %}active{% endif %}"
+       href="{% url 'people-directory' %}?team={{ team.pk }}">People</a>
+    <a class="dwds-button dwds-button--navigation {% if sub_teams_active %}active{% endif %}"
+       href="{% url 'team-tree' team.slug %}">Sub-teams</a>
+</div>

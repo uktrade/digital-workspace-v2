@@ -1,0 +1,52 @@
+.dwds-quote {
+    --quote-background-colour: #EEF2F6;
+    --quote-foreground-colour: var(--color-text);
+    background-color: var(--quote-background-colour);
+    padding: var(--s0);
+    border-radius: var(--border-radius);
+    color: var(--quote-foreground-colour);
+
+    &.highlight {
+        --quote-background-colour: var(--dbt-blue);
+        --quote-foreground-colour: var(--color-text-highlight);
+
+        > svg > * {
+            fill: var(--quote-foreground-colour);
+        }
+
+        a:not(.dwds-button) {
+            color: var(--quote-foreground-colour);
+            text-decoration-color: var(--quote-foreground-colour);
+
+            &:visited,
+            &:link {
+                color: var(--quote-foreground-colour);
+                text-decoration-color: var(--quote-foreground-colour);
+            }
+
+            &:focus {
+                color: var(--color-text);
+                text-decoration-color: var(--color-text);
+            }
+        }
+    }
+
+    .quote-icon {
+        height: var(--s1);
+        width: fit-content;
+    }
+
+    .quote-text {
+        font-weight: var(--font-weight-bold);
+    }
+
+    > .content-sidebar {
+        --sidebar-size: 160px;
+        padding: 0 var(--s4);
+    }
+
+    > :last-child {
+        align-self: flex-end;
+    }
+
+}

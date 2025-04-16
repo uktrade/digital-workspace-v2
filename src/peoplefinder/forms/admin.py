@@ -20,7 +20,7 @@ class TeamModelForm(forms.ModelForm):
         *args: tuple,
         initial: Dict[str, Any] = None,
         instance: Team = None,
-        **kwargs: dict
+        **kwargs: dict,
     ) -> None:
         """Initialise the form with the correct parent team."""
         if not initial:

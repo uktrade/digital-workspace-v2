@@ -48,6 +48,7 @@ from peoplefinder.types import EditSections, ProfileSections
 
 from .base import HtmxFormView, PeoplefinderView
 
+
 User = get_user_model()
 
 
@@ -109,10 +110,13 @@ class ProfileDetailView(ProfileView, DetailView):
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
 
+        context.update(
+            profile_breadcrumbs=True,
+        )
+
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
 
-        context["is_users_profile"] = bool(self.request.user == profile.user)
         context["roles"] = roles
         context["title"] = profile.full_name
 
@@ -138,33 +142,45 @@ class ProfileDetailView(ProfileView, DetailView):
                 "edited_or_confirmed_at",
             ]
 
-        profile_sections = []
+        profile_section_dicts = []
         for profile_section in ProfileSections:
-            profile_sections.append(
+            profile_url = reverse("profile-view", kwargs={"profile_slug": profile.slug})
+            profile_section_dicts.append(
                 {
+                    "profile_section": profile_section,
                     "title": profile_section.label,
-                    "url": reverse(
-                        "profile-edit-section",
-                        kwargs={
-                            "profile_slug": profile.slug,
-                            "edit_section": (
-                                PersonService().get_profile_section_mapping(
-                                    profile_section
-                                )["edit_section"]
-                            ),
-                        },
-                    ),
-                    "values": PersonService().get_profile_section_values(
-                        profile,
-                        profile_section,
-                    ),
-                    "empty_text": PersonService().get_profile_section_empty_text(
-                        profile_section
-                    ),
+                    "url": f"{profile_url}?profile_section={profile_section.value}",
                 }
             )
+
+        current_profile_section = ProfileSections(
+            self.request.GET.get("profile_section", ProfileSections.TEAM_AND_ROLE)
+        )
+
+        current_tab = {
+            "value": current_profile_section.value,
+            "title": current_profile_section.label,
+            "values": PersonService().get_profile_section_values(
+                profile,
+                current_profile_section,
+            ),
+            "empty_text": PersonService().get_profile_section_empty_text(
+                current_profile_section,
+            ),
+        }
+
         context.update(
-            profile_sections=profile_sections,
+            current_tab=current_tab,
+            profile_section_dicts=profile_section_dicts,
+            show_confirm_my_details=(
+                profile.is_active
+                and profile.is_stale
+                and self.request.user == profile.user
+            ),
+            show_activate_profile=(
+                not profile.is_active
+                and self.request.user.has_perm("peoplefinder.delete_person")
+            ),
         )
 
         return context
@@ -250,6 +266,9 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
 
         profile = context["profile"]
         roles = profile.roles.select_related("team").all()
+        team = None
+        if roles:
+            team = roles[0].team
 
         update_user_form = ProfileUpdateUserForm(
             initial={"username": profile.user and profile.user.username},
@@ -265,11 +284,14 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
             page_title = EditSections.ACCOUNT_SETTINGS.label
 
         context.update(
+            profile_breadcrumbs=True,
+            extra_breadcrumbs=[(None, "Edit profile")],
             page_title=page_title,
             current_edit_section=self.edit_section,
             edit_sections=edit_sections,
             profile_slug=profile.slug,
             roles=roles,
+            team=team,
             update_user_form=update_user_form,
         )
 
@@ -284,6 +306,25 @@ class ProfileEditView(SuccessMessageMixin, ProfileView, UpdateView):
                 + "?prefix="
                 + self.teams_formset.prefix,
             )
+
+        edit_menu_items = [
+            {
+                "title": section.label,
+                "url": reverse(
+                    "profile-edit-section",
+                    kwargs={
+                        "profile_slug": profile.slug,
+                        "edit_section": section.value,
+                    },
+                ),
+                "active": section == self.edit_section,
+            }
+            for section in edit_sections
+        ]
+
+        context.update(
+            edit_menu_items=edit_menu_items,
+        )
 
         return context
 

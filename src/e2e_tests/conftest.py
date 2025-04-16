@@ -13,6 +13,7 @@ At the time of writing, the whole process of dropping and copying a database
 for each test adds around 500ms to each test. As we expect the number of e2e
 tests requiring this to be small, this overhead is fine.
 """
+
 import os
 
 import pytest
@@ -29,6 +30,7 @@ from .db_utils import (
     drop_dbs,
     recreate_db,
 )
+
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 

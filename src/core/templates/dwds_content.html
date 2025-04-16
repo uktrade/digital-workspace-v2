@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% load sidebar %}
+
+{% block body_classes %}
+    dwds-body
+{% endblock body_classes %}
+
+{% block main_content %}
+    <div class="dwds" style="margin-bottom: var(--s2)">
+        <div class="content-stack large">
+            {% block pre_content %}
+            {% endblock pre_content %}
+
+            {% block page_content %}
+            {% endblock page_content %}
+
+            {% block post_content %}
+            {% endblock post_content %}
+        </div>
+    </div>
+{% endblock main_content %}

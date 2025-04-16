@@ -1,0 +1,5 @@
+- [ ] JIRA ticket referenced in title
+- [ ] Title is clear and concise
+- [ ] Description gives any relevant detail
+- [ ] Tests are up to date
+- [ ] Documentation is up to date

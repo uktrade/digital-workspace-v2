@@ -1,0 +1,27 @@
+.dwds-modal {
+    dialog {
+        border: unset;
+        border-radius: var(--border-radius);
+        padding: var(--s3);
+
+        &::backdrop {
+            background: var(--modal-backdrop-color);
+            backdrop-filter: blur(0.3rem);
+        }
+
+        h2 {
+            margin: unset;
+        }
+
+        form[method="dialog"].modal-header {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+    }
+
+    &.width-third {
+        dialog {
+            min-width: 33%;
+        }
+    }
+}

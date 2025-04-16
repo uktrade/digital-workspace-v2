@@ -1,10 +1,12 @@
-from content.models import ContentPage
 from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.shortcuts import redirect
+
+from content.models import ContentPage
+from core.models import fields
+from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
-from wagtail.admin.panels import FieldPanel
 from working_at_dit.models import PageWithTopics
 
 
@@ -70,6 +72,7 @@ class IrapToolData(IrapToolDataAbstract):
 
 
 class Tool(PageWithTopics):
+    template = "content/content_page.html"
     is_creatable = True
     irap_tool = models.OneToOneField(
         IrapToolData,
@@ -77,11 +80,9 @@ class Tool(PageWithTopics):
         null=True,
         blank=True,
     )
-
-    redirect_url = models.CharField(
+    redirect_url = fields.URLField(
         null=True,
         blank=True,
-        max_length=2048,
     )
     long_description = models.CharField(
         null=True,
@@ -122,12 +123,14 @@ class Tool(PageWithTopics):
 
 class ToolsHome(ContentPage):
     is_creatable = False
-
     subpage_types = ["tools.Tool"]
+    template = "content/content_page.html"
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
 
         context["children"] = Tool.objects.live().public().order_by("title")
+        context["num_cols"] = 3
+        context["target_blank"] = True
 
         return context

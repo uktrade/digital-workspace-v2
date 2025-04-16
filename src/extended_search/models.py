@@ -20,7 +20,10 @@ class Setting(models.Model):
     )
 
     class Meta:
-        permissions = (("view_explore", "View the global search explore page"),)
+        permissions = (
+            ("view_explore", "View the global search explore page"),
+            ("export_search", "Export the search result as csv"),
+        )
 
     def __str__(self):
         return self.key

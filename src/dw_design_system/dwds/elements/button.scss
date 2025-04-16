@@ -1,0 +1,241 @@
+a.dwds-button,
+.dwds-button {
+    box-sizing: border-box;
+    display: inline-block;
+    color: var(--color-button-primary-text);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-small);
+    font-family: var(--font-family-primary);
+    line-height: var(--font-lineheight-body);
+    background-color: var(--color-button-primary);
+    padding: var(--padding-button);
+    text-decoration: none;
+    border: solid var(--button-border-width) var(--color-button-primary);
+    border-bottom: solid var(--button-border-width-bottom) var(--color-button-bottom-border);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    width: fit-content;
+
+    &:hover {
+        background-color: var(--color-button-hover);
+        border-bottom-color: var(--color-button-border-hover);
+    }
+
+    &:active {
+        top: 2px;
+        position: relative;
+        border-bottom: solid var(--button-border-width-bottom);
+        background-color: var(--color-button-primary);
+    }
+
+
+    &--link,
+    &--clear-icon,
+    &--clear {
+        // Unset the default button styling
+        border: none;
+        background: none;
+        // Reset styling
+        padding: unset;
+        color: unset;
+        background-color: unset;
+        font-weight: unset;
+        text-align: left;
+
+        &:hover {
+            background-color: unset;
+            border-bottom-color: unset;
+        }
+
+        &:focus {
+            border: unset;
+        }
+    }
+
+    &--clear-icon {
+        padding: unset;
+        border-radius: var(--border-radius);
+
+        &:hover {
+            background-color: var(--dbt-very-light-grey);
+        }
+    }
+
+    &--warning {
+        color: var(--color-button-warning-text);
+        background-color: var(--color-button-warning);
+        border: var(--button-border-width) solid var(--color-button-warning);
+        border-bottom: solid var(--button-border-width-bottom) var(--color-button-warning-border);
+
+        &:hover {
+            background-color: var(--color-button-warning-hover);
+        }
+
+        &:active {
+            background-color: var(--color-button-warning-hover);
+        }
+    }
+
+    &--transactional {
+        color: var(--color-button-transactional-text);
+        background-color: var(--color-button-transactional);
+        border: var(--button-border-width) solid var(--color-button-transactional);
+        border-bottom: solid var(--button-border-width-bottom) var(--color-button-transactional-border);
+
+        &:hover {
+            background-color: var(--color-button-transactional-hover);
+        }
+
+        &:active {
+            background-color: var(--color-button-transactional-hover);
+        }
+    }
+
+    &--secondary {
+        color: var(--color-button-secondary-text);
+        background-color: var(--color-button-secondary);
+        border: var(--button-border-width) solid var(--color-button-secondary-border);
+        border-bottom: var(--button-border-width-bottom) solid var(--color-button-secondary-border);
+
+        &:hover {
+            color: var(--color-button-hover);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-hover);
+        }
+
+        &:active {
+            color: var(--color-button-hover);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-hover);
+        }
+    }
+
+    &--secondary-dark {
+        color: var(--color-button-secondary-dark-text);
+        background-color: var(--color-button-secondary);
+        border: var(--button-border-width) solid var(--color-button-secondary-dark-border);
+        border-bottom: var(--button-border-width-bottom) solid var(--color-button-secondary-dark-border);
+
+        &:hover {
+            color: var(--color-button-secondary-text);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-secondary-text);
+        }
+
+        &:active {
+            color: var(--color-button-secondary-text);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-secondary-text);
+        }
+    }
+
+    &--inline {
+        padding: var(--padding-button-inline);
+    }
+
+    &--link {
+        color: var(--color-link);
+        text-decoration: underline var(--text-underline);
+
+        &.no-underline {
+            text-decoration: none;
+        }
+
+        &.no-underline:focus,
+        &.no-underline:active,
+        &:focus,
+        &:active {
+            text-decoration: underline var(--text-underline-hover);
+            background-color: var(--color-link-background-active);
+            color: var(--color-text);
+        }
+
+        &.no-underline:focus-visible,
+        &:focus-visible {
+            outline: none;
+        }
+
+        &.no-underline:hover,
+        &:hover {
+            text-decoration: underline var(--text-underline-hover);
+        }
+    }
+
+    &--navigation {
+        padding: var(--padding-button-inline);
+        color: var(--color-button-secondary-dark-text);
+        background-color: var(--color-button-secondary);
+        border: var(--button-border-width) solid var(--color-button-secondary-dark-border);
+        border-bottom: var(--button-border-width-bottom) solid var(--color-button-secondary-dark-border);
+        border-radius: var(--s2);
+
+        &:active,
+        &:hover {
+            color: var(--color-button-secondary-text);
+            background-color: var(--color-button-secondary);
+            border-color: var(--color-button-secondary-text);
+        }
+    }
+
+    &--navigation.active {
+        color: var(--color-button-primary-text);
+        background-color: var(--color-button-navigation-background-active);
+        border-color: var(--color-button-navigation-background-active);
+
+        &:hover {
+            border-color: var(--color-button-navigation-background-active);
+        }
+
+        &:active {
+            top: 0;
+        }
+
+        &:visited {
+            color: var(--color-button-primary-text);
+        }
+    }
+
+    &:active:before {
+        top: -4px;
+    }
+
+    &:focus {
+        color: var(--color-button-text-focus);
+        background-color: var(--color-button-background-focus);
+        border-color: var(--color-button-border-focus);
+    }
+
+    &:focus-visible {
+        color: var(--color-button-text-focus);
+        background-color: var(--color-button-background-focus);
+        border-color: var(--color-button-border-focus);
+        outline: none;
+    }
+}
+
+// When we use <a> as a button we don't want to inherit 'link behaviour' on different states.
+a.dwds-button,
+a.dwds-button:hover,
+a.dwds-button:active,
+a.dwds-button:focus,
+a.dwds-button:focus-visible {
+    text-decoration: none;
+}
+
+.dwds-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--s0);
+
+    > :first-child.separator {
+        display: none;
+    }
+
+    > .separator {
+        height: 1.5rem;
+        margin: 0 var(--s-3);
+        border-left: 1px solid var(--color-border);
+    }
+}

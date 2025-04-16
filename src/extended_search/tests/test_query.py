@@ -1,27 +1,30 @@
 import pytest
+from wagtail.search.query import PlainText
 
 from extended_search.query import Filtered, Nested, OnlyFields
-from wagtail.search.query import PlainText
 
 
 class TestOnlyFields:
     def test_init_sets_attributes(self):
-        with pytest.raises(TypeError, match=r".* missing 2 required positional .*"):
+        with pytest.raises(TypeError, match=r".* missing 3 required positional .*"):
             of = OnlyFields()
-        with pytest.raises(TypeError, match=r".* missing 1 required positional .*"):
+        with pytest.raises(TypeError, match=r".* missing 2 required positional .*"):
             of = OnlyFields("foo")
+        with pytest.raises(TypeError, match=r".* missing 1 required positional .*"):
+            of = OnlyFields("foo", only_model="fuzz")
         with pytest.raises(
             TypeError, match="The `subquery` parameter must be of type SearchQuery"
         ):
-            of = OnlyFields("foo", "bar")
+            of = OnlyFields("foo", "bar", only_model="fuzz")
         with pytest.raises(TypeError, match="The `fields` parameter must be a list"):
-            of = OnlyFields(PlainText("foo"), "bar")
+            of = OnlyFields(PlainText("foo"), "bar", only_model="fuzz")
 
         of = OnlyFields(
             PlainText("foo"),
             [
                 "bar",
             ],
+            only_model="fuzz",
         )
 
         assert repr(of.subquery) == repr(PlainText("foo"))
@@ -37,6 +40,7 @@ class TestOnlyFields:
                     [
                         "bar",
                     ],
+                    only_model="fuzz",
                 )
             )
             == f"<OnlyFields {repr(PlainText('foo'))} fields=['bar']>"
@@ -49,6 +53,7 @@ class TestOnlyFields:
                         "bar",
                         "baz",
                     ],
+                    only_model="fuzz",
                 )
             )
             == f"<OnlyFields {repr(PlainText('foo'))} fields=['bar', 'baz']>"

@@ -4,7 +4,6 @@ from wagtailmenus.models import MainMenu, Site
 from about_us.models import AboutUsHome
 from news.models import NewsHome
 from tools.models import ToolsHome
-from transition.models import TransitionHome
 from working_at_dit.models import WorkingAtDITHome
 
 
@@ -25,13 +24,11 @@ class Command(BaseCommand):
 
         # if main_menu.get_base_page_queryset().count() < 5:
         news_home = NewsHome.objects.all()
-        transition_home = TransitionHome.objects.all()
         working_at_dit_home = WorkingAtDITHome.objects.all()
         about_us_home = AboutUsHome.objects.all()
         tools_home = ToolsHome.objects.all()
 
         main_menu.add_menu_items_for_pages(news_home)
-        main_menu.add_menu_items_for_pages(transition_home)
         main_menu.add_menu_items_for_pages(working_at_dit_home)
         main_menu.add_menu_items_for_pages(about_us_home)
         main_menu.add_menu_items_for_pages(tools_home)

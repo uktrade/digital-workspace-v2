@@ -1,17 +1,18 @@
 import inspect
 from unittest.mock import call
 
-from wagtail.search.backends.elasticsearch5 import Elasticsearch5SearchQueryCompiler
-from wagtail.search.backends.elasticsearch6 import Field
-from wagtail.search.backends.elasticsearch7 import Elasticsearch7SearchQueryCompiler
+from wagtail.search.backends.elasticsearch7 import (
+    Elasticsearch7SearchQueryCompiler,
+    Field,
+)
 from wagtail.search.index import RelatedFields, SearchField
 from wagtail.search.query import (
     MATCH_NONE,
     Fuzzy,
-    Phrase,
-    PlainText,
     MatchAll,
     Not,
+    Phrase,
+    PlainText,
     SearchQuery,
 )
 
@@ -36,26 +37,31 @@ class TestExtendedSearchQueryCompiler:
     def test_remap_fields_works_the_same_as_parent_init(self):
         query = PlainText("quid")
         compiler = ExtendedSearchQueryCompiler(ContentPage.objects.all(), query)
-        assert compiler._remap_fields(None) is None
-        es5_compiler = Elasticsearch5SearchQueryCompiler(
+        es7_compiler = Elasticsearch7SearchQueryCompiler(
             ContentPage.objects.all(), query
         )
-        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        assert [rf.field_name for rf in es7_compiler.remapped_fields] == [
+            rf.field_name for rf in compiler._remap_fields(compiler.fields)
+        ]
 
         compiler = ExtendedSearchQueryCompiler(Person.objects.all(), query)
-        es5_compiler = Elasticsearch5SearchQueryCompiler(Person.objects.all(), query)
-        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es7_compiler = Elasticsearch7SearchQueryCompiler(Person.objects.all(), query)
+        assert [rf.field_name for rf in es7_compiler.remapped_fields] == [
+            rf.field_name for rf in compiler._remap_fields(compiler.fields)
+        ]
 
         compiler = ExtendedSearchQueryCompiler(Team.objects.all(), query)
-        es5_compiler = Elasticsearch5SearchQueryCompiler(Team.objects.all(), query)
-        assert es5_compiler.remapped_fields == compiler._remap_fields(compiler.fields)
+        es7_compiler = Elasticsearch7SearchQueryCompiler(Team.objects.all(), query)
+        assert [rf.field_name for rf in es7_compiler.remapped_fields] == [
+            rf.field_name for rf in compiler._remap_fields(compiler.fields)
+        ]
 
     def test_remap_fields_handles_parent_relations(self, mocker):
         field1 = mocker.Mock(field_name="--field-1--")
         field2 = mocker.Mock(field_name="--field-2--")
         field3 = mocker.Mock(field_name="--field-3--")
         mocker.patch(
-            "extended_search.backends.backend.ExtendedSearchQueryCompiler.get_searchable_fields",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler.get_searchable_fields",
             return_value=[
                 field1,
                 field2,
@@ -71,16 +77,12 @@ class TestExtendedSearchQueryCompiler:
 
         results = compiler._remap_fields(
             [
-                "--field-a--",
-                "--field-b--",
                 "--field-1--.--related-field--",
                 "--field-3--.--some-other-field--.--another-relation--",
             ]
         )
         mock_get_column_name.assert_has_calls([call(field1), call(field3)])
         assert [f.field_name for f in results] == [
-            "--field-a--",
-            "--field-b--",
             "--column-name--.--related-field--",
             "--column-name--.--some-other-field--.--another-relation--",
         ]
@@ -115,25 +117,25 @@ class TestExtendedSearchQueryCompiler:
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._compile_plaintext_query",
         )
         mock_compile_plaintext_es7 = mocker.patch(
-            "wagtail.search.backends.elasticsearch6.Elasticsearch6SearchQueryCompiler._compile_plaintext_query",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler._compile_plaintext_query",
         )
         mock_compile_phrase = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._compile_phrase_query",
         )
         mock_compile_phrase_es7 = mocker.patch(
-            "wagtail.search.backends.elasticsearch6.Elasticsearch6SearchQueryCompiler._compile_phrase_query",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler._compile_phrase_query",
         )
         mock_compile_fuzzy = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._compile_fuzzy_query",
         )
         mock_compile_fuzzy_es7 = mocker.patch(
-            "wagtail.search.backends.elasticsearch6.Elasticsearch6SearchQueryCompiler._compile_fuzzy_query",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler._compile_fuzzy_query",
         )
         mock_compile = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._compile_query",
         )
         mock_compile_es7 = mocker.patch(
-            "wagtail.search.backends.elasticsearch6.Elasticsearch6SearchQueryCompiler._compile_query",
+            "wagtail.search.backends.elasticsearch7.Elasticsearch7SearchQueryCompiler._compile_query",
         )
         mock_join_and_compile = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._join_and_compile_queries",
@@ -279,7 +281,7 @@ class TestOnlyFieldSearchQueryCompiler:
         mock_parent.assert_called_once_with(query, field, 3.5)
 
         mock_parent.reset_mock()
-        query = OnlyFields(PlainText("quid"), fields=["foo"])
+        query = OnlyFields(PlainText("quid"), fields=["foo"], only_model=ContentPage)
         compiler = OnlyFieldSearchQueryCompiler(ContentPage.objects.all(), query)
         compiler._compile_query(query, Field("bar"), 3.5)
         assert call(query, "bar", 3.5) not in mock_parent.calls()
@@ -288,15 +290,23 @@ class TestOnlyFieldSearchQueryCompiler:
         mock_remap = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._remap_fields"
         )
-        query = OnlyFields(PlainText("quid"), fields=["foo"])
+        query = OnlyFields(
+            PlainText("quid"),
+            fields=["foo"],
+            only_model=ContentPage,
+        )
         compiler = OnlyFieldSearchQueryCompiler(ContentPage.objects.all(), query)
         compiler._compile_query(query, Field("bar"), 3.5)
-        mock_remap.assert_called_once_with(["foo"])
+        assert (
+            call(["foo"], get_searchable_fields__kwargs={"only_model": ContentPage})
+            in mock_remap.call_args_list
+        )
 
     def test_compile_query_onlyfields_logic(self, mocker):
+        remapped_field = mocker.Mock(field_name="baz")
         mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._remap_fields",
-            return_value=["baz"],
+            return_value=[remapped_field],
         )
         mock_parent = mocker.patch(
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._compile_query"
@@ -305,16 +315,16 @@ class TestOnlyFieldSearchQueryCompiler:
             "extended_search.backends.backend.ExtendedSearchQueryCompiler._join_and_compile_queries"
         )
         subquery = PlainText("quid")
-        query = OnlyFields(subquery, fields=["foo"])
+        query = OnlyFields(subquery, fields=["foo"], only_model=ContentPage)
         compiler = OnlyFieldSearchQueryCompiler(ContentPage.objects.all(), query)
         field = Field(compiler.mapping.all_field_name)
         compiler._compile_query(query, field, 8.3)
-        mock_join_and_compile.assert_called_once_with(subquery, ["baz"], 8.3)
+        mock_join_and_compile.assert_called_once_with(subquery, [remapped_field], 8.3)
         mock_parent.assert_not_called()
 
         mock_parent.reset_mock()
         mock_join_and_compile.reset_mock()
-        field = Field("baz")
+        field = Field("foo")
         compiler._compile_query(query, field, 8.3)
         mock_join_and_compile.assert_not_called()
         mock_parent.assert_called_once_with(subquery, field, 8.3)
@@ -422,7 +432,7 @@ class TestNestedSearchQueryCompiler:
         assert "nested" in result
         assert result["nested"]["path"] == query.path
         assert result["nested"]["query"] == parent_compiler._compile_query(
-            query.subquery, [field]
+            query.subquery, field
         )
 
 
@@ -460,7 +470,7 @@ class TestFilteredSearchQueryCompiler:
         assert "bool" in result
         assert result["bool"]["filter"] == "foobar"
         assert result["bool"]["must"] == parent_compiler._compile_query(
-            query.subquery, [field]
+            query.subquery, field
         )
         query = Filtered(
             Phrase("quid"),

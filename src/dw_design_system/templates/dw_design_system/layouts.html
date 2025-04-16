@@ -1,0 +1,8 @@
+{% extends "dwds_sidebar.html" %}
+
+{% block primary_content %}
+    {% for layout in layouts %}
+        <h2>{{ layout.name }}</h2>
+        {% include layout.template with content_items=layout.content_items %}
+    {% endfor %}
+{% endblock primary_content %}

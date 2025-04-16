@@ -1,0 +1,80 @@
+.new-home {
+  margin-top: 0;
+
+  .main-news-item {
+    .frame {
+      //   aspect-ratio: 21/9;
+
+      img {
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  .ws-news-grid-items {
+    .home-news-item {
+      display: flex;
+      flex-flow: row nowrap;
+      gap: 10px;
+
+      .frame {
+        flex: none none 30%;
+      }
+
+      .home-news-item-text-content {
+        flex: none none 70%;
+
+        h4.govuk-heading-s {
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
+
+  .ws-whats-popular {
+    column-count: unset;
+
+    li.ws-whats-popular-item {
+      margin-bottom: 20px;
+
+      img {
+        width: 300px;
+        height: 100px;
+      }
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    .ws-news-grid-items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+}
+
+.new-home {
+
+  article,
+  section {
+    display: inline;
+  }
+
+  .govuk-phase-banner__text {
+    color: var(--color-text-highlight);
+
+    a {
+      color: var(--color-link);
+    }
+  }
+}
+
+.ws-secondary-content {
+  .new-home {
+    li {
+      margin-bottom: 10px;
+    }
+  }
+}

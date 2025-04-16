@@ -1,0 +1,5 @@
+<div class="dwds-link-navigate">
+    {% include "dwds/components/link_action.html" with link_url=previous_url link_text=previous_text|default:'Previous' left=True %}
+    {% if previous_url and next_url %}<span></span>{% endif %}
+    {% include "dwds/components/link_action.html" with link_url=next_url link_text=next_text|default:'Next' right=True %}
+</div>

@@ -1,7 +1,7 @@
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_delete, post_save
 
-from extended_search.models import Setting
 from extended_search import settings
+from extended_search.models import Setting
 
 
 def update_searchsetting_queryset(sender, **kwargs):

@@ -1,6 +1,7 @@
 from typing import Iterator, Optional, TypedDict
 
 from django.contrib.postgres.aggregates import ArrayAgg
+from django.core.cache import cache
 from django.db import connection, transaction
 from django.db.models import (
     Case,
@@ -16,7 +17,7 @@ from django.db.models import (
 from django.db.models.functions import Concat
 from django.utils.text import slugify
 
-from peoplefinder.models import AuditLog, Team, TeamMember, TeamTree
+from peoplefinder.models import AuditLog, Person, Team, TeamMember, TeamTree
 from peoplefinder.services.audit_log import (
     AuditLogSerializer,
     AuditLogService,
@@ -111,7 +112,7 @@ class TeamService:
                 [team.id, parent.id],
             )
 
-    def get_all_child_teams(self, parent: Team) -> QuerySet:
+    def get_all_child_teams(self, parent: Team) -> QuerySet[Team]:
         """Return all child teams of the given parent team.
 
         Args:
@@ -261,14 +262,10 @@ class TeamService:
         reasons = []
 
         sub_teams = self.get_all_child_teams(team)
-
         if sub_teams:
             reasons.append("sub-teams")
 
-        has_members = TeamMember.active.filter(
-            Q(team=team) | Q(team__in=sub_teams)
-        ).exists()
-
+        has_members = self.get_team_members(team).exists()
         if has_members:
             reasons.append("members")
 
@@ -309,6 +306,48 @@ class TeamService:
             deleted_by: Who deleted the team.
         """
         AuditLogService.log(AuditLog.Action.DELETE, deleted_by, team)
+
+    def get_team_members(self, team: Team) -> QuerySet[TeamMember]:
+        sub_teams = self.get_all_child_teams(team)
+
+        return TeamMember.active.filter(Q(team=team) | Q(team__in=sub_teams))
+
+    def get_profile_completion_cache_key(self, team_pk: int) -> str:
+        return f"team_{team_pk}__profile_completion"
+
+    def clear_profile_completion_cache(self, team_pk: int):
+        cache.delete(self.get_profile_completion_cache_key(team_pk))
+
+    def profile_completion(self, team: Team) -> float | None:
+        """
+        Calculate the percentage of users in the team with 100% profile
+        completion.
+
+        Returns:
+            float: A percentage
+        """
+        cache_key = self.get_profile_completion_cache_key(team.pk)
+        if cached_value := cache.get(cache_key, None):
+            return cached_value
+
+        # Get all people from all teams
+        people = Person.objects.filter(
+            id__in=Subquery(self.get_team_members(team).values("person_id"))
+        )
+        completed_profiles = people.filter(profile_completion__gte=100)
+
+        total_members = len(people)
+        total_completed_profiles = len(completed_profiles)
+
+        if total_members == 0:
+            return None
+
+        completed_profile_percent = total_completed_profiles / total_members
+
+        # Cache the result for an hour.
+        timeout = 60 * 60
+        cache.set(cache_key, completed_profile_percent, timeout)
+        return completed_profile_percent
 
 
 class TeamAuditLogSerializer(AuditLogSerializer):

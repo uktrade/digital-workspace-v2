@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from search import search as search_vectors
 from search.templatetags import search as main_search
 
+
 register = template.Library()
 
 

@@ -2,8 +2,8 @@ from django import forms
 from django.contrib import admin
 
 from core.admin import admin_site
-from extended_search.models import Setting
 from extended_search import settings
+from extended_search.models import Setting
 
 
 class SettingAdminForm(forms.ModelForm):

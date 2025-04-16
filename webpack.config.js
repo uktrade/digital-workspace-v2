@@ -7,6 +7,7 @@ module.exports = {
   mode: 'production',
   context: __dirname,
   entry: {
+    init: ['./assets/js/init.js'],
     main: ['./assets/js/application.js', './assets/stylesheets/application.scss'],
     peoplefinder: ['./assets/js/peoplefinder.js'],
   },
@@ -31,7 +32,7 @@ module.exports = {
 
       // Copy all images and fonts to the output directory ignoring moj assets
       {
-        test: /\.(png|jpe?g|gif|woff2?|svg|ico)$/i,
+        test: /\.(png|jpe?g|gif|woff2?|svg|ico|webp)$/i,
         exclude: /@ministryofjustice\/frontend\/moj\/assets\/.*\.(png|jpe?g|gif|svg)$/i,
         type: 'asset/resource',
         generator: {
@@ -41,7 +42,7 @@ module.exports = {
 
       // Copy MOJ assets into a custom output directory
       {
-        test: /@ministryofjustice\/frontend\/moj\/assets\/.*\.(png|jpe?g|gif|svg)$/i,
+        test: /@ministryofjustice\/frontend\/moj\/assets\/.*\.(png|jpe?g|gif|svg|webp)$/i,
         type: 'asset/resource',
         generator: {
           filename: 'moj/[name][ext]',

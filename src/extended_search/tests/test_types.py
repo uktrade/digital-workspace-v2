@@ -1,7 +1,8 @@
-import pytest
 from enum import Enum
 
-from extended_search.types import SearchQueryType, AnalysisType
+import pytest
+
+from extended_search.types import AnalysisType, SearchQueryType
 
 
 class TestAnalysisType:

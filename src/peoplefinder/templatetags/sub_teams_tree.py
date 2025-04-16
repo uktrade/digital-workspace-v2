@@ -100,4 +100,4 @@ def sub_teams_tree(team: Team) -> str:
 
     output.append("</ul>")
 
-    return mark_safe("\n".join(output))
+    return mark_safe("\n".join(output))  # noqa

@@ -5,70 +5,82 @@ description = ""
 authors = ["Live Services <live.services@digital.trade.gov.uk>"]
 license = "MIT"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 # Django
-django = "4.1.13"
-django-crispy-forms = "^1.14.0"
+django = "^5.1"
 django-environ = "^0.10.0"
-# django_redis = "^5.2.0"
 django-settings-export = "^1.2.1"
-# TODO: Set django-simple-history to the next release after 3.4.0 (when released)
-django-simple-history = { git = "https://github.com/uktrade/django-simple-history.git", rev = "29108a5" }
+django-simple-history = "^3.4.0"
 django-storages = "^1.13.2"
-django-webpack-loader = "^1.8.1"
-djangorestframework = "^3.14.0"
+django-webpack-loader = "^3.0"
+djangorestframework = "^3.15.2"
+crispy-forms-gds = "^0.2.6"
 # DIT Django
 django-audit-log-middleware = "^0.0.4"
 django-hawk-drf = "^1.1.0"
-django-chunk-upload-handlers = "^0.0.13"
-django-feedback-govuk = "^0.2.5"
+django-chunk-upload-handlers = "^0.0.15"
+django-feedback-govuk = "^0.2.10"
 django_log_formatter_ecs = "^0.0.5"
-django-staff-sso-client = "^4.1.1"
-notifications-python-client = "^8.0.0"
+django-staff-sso-client = "^4.2"
+notifications-python-client = "^8.2"
 # Wagtail
-wagtail = "^5.2"
+wagtail = "^6.4"
 wagtailmedia = "^0.14.2"
 wagtailmenus = "^3.1.8"
 wagtail-draftail-anchors = "^0.6.0"
-wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag = "v0.3.0" }
+wagtail-adminsortable = { git = "https://github.com/uktrade/wagtail-admin-sortable.git", tag = "v0.4.0" }
 # OpenSearch
 elasticsearch = "<7.14.0"         # highest version for OpenSearch support
 elasticsearch-dsl = "^7.4.0"
-django-elasticsearch-dsl = "^7.3"
+django-elasticsearch-dsl = "^7.4"
+# The current versions of opensearch dsl/py breaks when numpy 2+ is installed
+numpy = "<2"
 # Peoplefinder
 markdown = "^3.5.1"
 requests-hawk = "^1.1.1"
+pillow = "^10.2.0"
 # Operational
-waitress = "^2.1.2"
-sentry-sdk = "^1.20.0"
+sentry-sdk = "^2.8.0"
 psycopg2 = "^2.9.6"
 whitenoise = "^6.4.0"
 celery = "^5.2.7"
 redis = "^4.5.4"
-tweepy = "^4.13.0"
 atoma = "^0.0.17"
 bleach = "^6.0.0"
 elastic-apm = "^6.15.1"
-requests = "^2.28.2"
 boto3 = "^1.26.115"
 pyjwt = { extras = ["crypto"], version = "^2.6.0" }
-django-taggit = "^3.1.0"
-django-celery-beat = "^2.5.0"
-dbt-copilot-python = "^0.1.3"
-dj-database-url = "^2.1.0"
-pillow = "10.0.1"
 wagtail-generic-chooser = "^0.6"
+wagtail-modeladmin = "^2.0.0"
+dj-database-url = "^2.1.0"
+django-celery-beat = "^2.5.0"
 django-waffle = "^4.0.0"
-aws-xray-sdk = "^2.12.1"
+django-log-formatter-asim = "^0.0.6"
+dbt-copilot-python = "^0.1.3"
+opentelemetry-distro = "^0.43b0"
+opentelemetry-exporter-otlp = "^1.22.0"
+opentelemetry-instrumentation-wsgi = "^0.43b0"
+opentelemetry-propagator-aws-xray = "^1.0.1"
+opentelemetry-sdk-extension-aws = "^2.0.1"
+wagtail-orderable = "^1.2.0"
+django-filter = "^24.3"
+django-csp = "^3.8"
+icalendar = "^6.0.1"
+granian = "^1.6.3"
+django-cotton = "^2.0.3"
+
+[tool.poetry.group.dev]
+optional = true
 
 [tool.poetry.group.dev.dependencies]
-poetry = "^1.4.2"
+dbt-platform-helper = "13.4.1"
 # Linters
-black = "^23.3.0"
-djlint = "^1.23.2"
-ruff = "^0.0.262"
+black = "*"
+djlint = "*"
+ruff = "*"
 # Testing
 pytest = "^7.3.1"
 pytest-django = "^4.5.2"
@@ -80,13 +92,18 @@ wagtail-factories = "^4.0.0"
 # Util
 bpython = "^0.24"
 django-extensions = "^3.2.1"
-werkzeug = "^3.0.1"
+django-silk = "^5.0.4"
+django-debug-toolbar = "^4.4.6"
+werkzeug = "^3.0.6"
 blessings = "^1.7"
 pytest-mock = "^3.11.1"
 pytest-freezer = "^0.4.8"
 playwright = "^1.36"
-django-silk = "^5.0.4"
 snakeviz = "^2.2.0"
+debugpy = "*"
+
+[tool.poetry.group.docs]
+optional = true
 
 [tool.poetry.group.loadtests]
 optional = true
@@ -100,8 +117,6 @@ mkdocs-material = "^9.1.5"
 mkdocs-minify-plugin = "^0.6.4"
 mkdocs-redirects = "^1.2.0"
 mkdocstrings-python = "^0.9.0"
-pillow = "^10.0.1"
-cairosvg = "^2.7.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -121,8 +136,9 @@ markers = [
 omit = ["*/migrations/*", "*/test/*", "e2e_tests/*"]
 
 [tool.ruff]
-extend-select = ["B", "S"]
-ignore = ["B904", "E501", "N818", "S101"]
+src = ["src"]
+lint.extend-select = ["B", "S", "I"]
+lint.ignore = ["B904", "E501", "N818", "S101"]
 extend-exclude = [
     "manage.py",
     "*/migrations/*",
@@ -138,7 +154,7 @@ extend-exclude = [
     ".pythonrc.py",
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 lines-after-imports = 2
 
 [tool.djlint]
@@ -147,3 +163,5 @@ profile = "django"
 ignore = "T002,H006,H017,H023"
 preserve_blank_lines = true
 extend_exclude = "htmlcov,staticfiles,static,node_modules"
+custom_blocks = "flag"
+custom_html = "page-react-button,c-\\w+"

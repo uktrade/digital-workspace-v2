@@ -13,14 +13,15 @@ from django.db.models.functions import Concat
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
 from extended_search.index import DWIndexedField as IndexedField
-from extended_search.index import Indexed, RelatedFields
+from extended_search.index import Indexed, RelatedFields, ScoreFunction
+
 
 # United Kingdom
 DEFAULT_COUNTRY_PK = "CTHMTC00260"
@@ -181,6 +182,7 @@ class UkStaffLocation(IngestedModel):
     name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     organisation = models.CharField(max_length=255)
+    building_name = models.CharField(max_length=255, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -212,11 +214,6 @@ class PersonQuerySet(SearchableQuerySetMixin, models.QuerySet):
                     ),
                 ),
                 filter=Q(roles__isnull=False),
-                distinct=True,
-            ),
-            formatted_buildings=StringAgg(
-                "buildings__name",
-                delimiter=", ",
                 distinct=True,
             ),
             formatted_networks=StringAgg(
@@ -276,7 +273,7 @@ class Person(Indexed, models.Model):
         "user.User", models.CASCADE, null=True, blank=True, related_name="profile"
     )
     manager = models.ForeignKey(
-        "Person", models.SET_NULL, null=True, blank=True, related_name="+"
+        "Person", models.SET_NULL, null=True, blank=True, related_name="direct_reports"
     )
     country = models.ForeignKey(
         "countries.Country",
@@ -448,16 +445,14 @@ class Person(Indexed, models.Model):
         blank=True,
         help_text="For example, London",
     )
+    town_city_or_region.system_check_deprecated_details = {
+        "msg": ("Person.town_city_or_region been deprecated."),
+        "hint": "Use Person.uk_office_location",
+        "id": "peoplefinder.Person.E001",
+    }
     regional_building = models.CharField(
         "UK regional building or location",
         max_length=130,
-        null=True,
-        blank=True,
-    )
-    usual_office_days = models.CharField(
-        "What days do you usually come in to the office?",
-        help_text=("For example: I usually come in on Mondays and Wednesdays"),
-        max_length=200,
         null=True,
         blank=True,
     )
@@ -466,6 +461,13 @@ class Person(Indexed, models.Model):
         "hint": "Use Person.uk_office_location and Person.remote_working instead.",
         "id": "peoplefinder.Person.E001",
     }
+    usual_office_days = models.CharField(
+        "What days do you usually come in to the office?",
+        help_text=("For example: I usually come in on Mondays and Wednesdays"),
+        max_length=200,
+        null=True,
+        blank=True,
+    )
     international_building = models.CharField(
         "International location",
         max_length=110,
@@ -540,6 +542,12 @@ class Person(Indexed, models.Model):
     )
     login_count = models.IntegerField(default=0)
     profile_completion = models.IntegerField(default=0)
+    ical_token = models.CharField(
+        verbose_name="Individual token for iCal feeds",
+        blank=True,
+        null=True,
+        max_length=80,
+    )
 
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
@@ -627,6 +635,12 @@ class Person(Indexed, models.Model):
                 ),
             ],
         ),
+        IndexedField(
+            "other_key_skills",
+            tokenized=True,
+            explicit=True,
+            boost=0.8,
+        ),
         RelatedFields(
             "learning_interests",
             [
@@ -683,10 +697,13 @@ class Person(Indexed, models.Model):
             proximity=True,
             boost=1.5,
         ),
-        IndexedField(
-            "profile_completion",
-            proximity=True,
-            boost=2.0,
+        ScoreFunction(
+            "linear",
+            field_name="profile_completion",
+            origin=100,
+            offset=5,
+            scale=50,
+            decay=0.95,
         ),
         IndexedField(
             "is_active",
@@ -751,6 +768,10 @@ class Person(Indexed, models.Model):
         return self.contact_email or self.email
 
     @property
+    def is_line_manager(self) -> bool:
+        return self.direct_reports.exists()
+
+    @property
     def all_languages(self) -> str:
         return ", ".join(
             filter(None, [self.fluent_languages, self.intermediate_languages])
@@ -759,6 +780,10 @@ class Person(Indexed, models.Model):
     @property
     def has_photo(self) -> bool:
         return bool(self.photo)
+
+    def days_since_account_creation(self) -> int:
+        period = timezone.now() - self.created_at
+        return period.days
 
     @property
     def search_teams(self):
@@ -812,15 +837,25 @@ class Person(Indexed, models.Model):
         # "Monday, Tuesday, Wednesday, ..."
         return ", ".join(map(str, workdays))
 
-    def get_office_location_display(self) -> Optional[str]:
+    def get_office_location_display(self) -> str:
         if self.international_building:
             return self.international_building
+
+        location_parts = []
+
+        if self.location_in_building:
+            location_parts.append(escape(strip_tags(self.location_in_building)))
+
         if self.uk_office_location:
-            location_display = self.uk_office_location.name
-            if self.location_in_building:
-                location_display += "<br>" + strip_tags(self.location_in_building)
-            return mark_safe(location_display)  # noqa: S308
-        return None
+            if self.uk_office_location.building_name:
+                location_parts.append(self.uk_office_location.building_name)
+                location_parts.append(self.uk_office_location.city)
+            else:
+                for location_part in self.uk_office_location.name.split(","):
+                    if clean_location_part := location_part.strip():
+                        location_parts.append(clean_location_part)
+
+        return mark_safe("<br>".join(location_parts))  # noqa: S308
 
     def get_manager_display(self) -> Optional[str]:
         if self.manager:
@@ -1042,6 +1077,10 @@ class Team(Indexed, models.Model):
         return self.abbreviation or self.name
 
     @property
+    def leader_count(self) -> int:
+        return self.members.active().filter(head_of_team=True).count()
+
+    @property
     def leaders(self):
         order_by = []
 
@@ -1050,7 +1089,15 @@ class Team(Indexed, models.Model):
 
         order_by += ["person__last_name", "person__first_name"]
 
-        yield from self.members.active().filter(head_of_team=True).order_by(*order_by)
+        yield from (
+            self.members.active()
+            .select_related(
+                "person",
+                "person__uk_office_location",
+            )
+            .filter(head_of_team=True)
+            .order_by(*order_by)
+        )
 
     @property
     def roles_in_team(self) -> list[str]:

@@ -1,0 +1,21 @@
+{% load wagtailimages_tags static humanize formatting %}
+
+<div class="dwds-author content-cluster">
+    <div>
+        {% include "dwds/elements/profile_image.html" with small=True profile_image_url=profile_image_url name=name profile_url=profile_url %}
+    </div>
+    <div class="content-stack no-gap">
+        {% if profile_url %}
+            <a href="{{ profile_url }}">{{ name }}</a>
+        {% else %}
+            {{ name }}
+        {% endif %}
+        {% if published_timestamp %}
+            <div>Published: {{ published_timestamp|date:'j F Y' }} at {{ published_timestamp|date:"g:iA"|lower }}</div>
+        {% endif %}
+        {% if updated_timestamp and updated_timestamp != published_timestamp %}
+            <div>Updated: {{ updated_timestamp|date:'j F Y' }} at {{ updated_timestamp|date:"g:iA"|lower }}</div>
+        {% endif %}
+        {% if timestamp %}<div>{{ timestamp|date:'j F Y' }} at {{ timestamp|date:"g:iA"|lower }}</div>{% endif %}
+    </div>
+</div>

@@ -230,41 +230,53 @@ def test_edit_profile_visible(state):
 
 
 def test_edit_team_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            "slug": state.team.slug,
-        },
+    view_url = (
+        reverse(
+            "team-view",
+            kwargs={
+                "slug": state.team.slug,
+            },
+        )
+        + "?sub_view=people"
     )
     check_visible_button(state, view_url, b"Edit team", "change_team")
 
 
 def test_delete_team_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            "slug": state.team.slug,
-        },
+    view_url = (
+        reverse(
+            "team-view",
+            kwargs={
+                "slug": state.team.slug,
+            },
+        )
+        + "?sub_view=people"
     )
     check_visible_button(state, view_url, b"Delete team", "delete_team")
 
 
 def test_create_sub_team_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            "slug": state.team.slug,
-        },
+    view_url = (
+        reverse(
+            "team-view",
+            kwargs={
+                "slug": state.team.slug,
+            },
+        )
+        + "?sub_view=people"
     )
     check_visible_button(state, view_url, b"Add new sub-team", "add_team")
 
 
 def test_team_log_visible_permission(state):
-    view_url = reverse(
-        "team-view",
-        kwargs={
-            "slug": state.team.slug,
-        },
+    view_url = (
+        reverse(
+            "team-view",
+            kwargs={
+                "slug": state.team.slug,
+            },
+        )
+        + "?sub_view=people"
     )
     response = state.client.get(view_url)
     assert response.status_code == 200

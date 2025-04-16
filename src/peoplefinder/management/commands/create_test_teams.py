@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from peoplefinder.models import Team
 from peoplefinder.services.team import TeamService
 
+
 TREE_HELP = """Team tree:
 .
 └── SpaceX

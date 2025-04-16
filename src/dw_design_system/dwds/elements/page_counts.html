@@ -1,0 +1,20 @@
+{% load static %}
+
+<div class="dwds-page-counts content-cluster no-gap">
+    {% if allow_comments and comment_count > 0 %}
+        <div class="content-with-icon small-gap">
+            <img class="content-icon tiny"
+                 src="{% static '/images/dwds/icons/comment_icon.svg' %}"
+                 alt="Comment bubble icon.">
+            {{ comment_count }} comment{{ comment_count|pluralize }}
+        </div>
+    {% endif %}
+    {% if allow_reactions and reaction_count > 0 %}
+        <div class="content-with-icon small-gap">
+            <img class="content-icon tiny"
+                 src="{% static '/images/dwds/icons/heart.svg' %}"
+                 alt="Reaction icon.">
+            {{ reaction_count }} reaction{{ reaction_count|pluralize }}
+        </div>
+    {% endif %}
+</div>

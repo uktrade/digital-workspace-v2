@@ -1,0 +1,15 @@
+.dwds-link-external {
+    &::after {
+        content: attr(data-external-link-text);
+        color: var(--color-text-secondary);
+    }
+
+    &:active,
+    &:hover,
+    &:focus {
+        &::after {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+        }
+    }
+}

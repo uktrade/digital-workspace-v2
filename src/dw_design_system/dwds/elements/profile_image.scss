@@ -1,0 +1,11 @@
+.dwds-profile-image {
+    border-radius: 50%;
+    height: fit-content;
+    aspect-ratio: 1 / 1;
+    inline-size: 100%;
+    
+    &.small {
+        inline-size: 80%;
+
+    }
+}

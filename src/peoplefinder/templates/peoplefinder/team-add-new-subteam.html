@@ -1,27 +1,23 @@
-{% extends 'peoplefinder/page.html' %}
+{% extends 'dwds_sidebar.html' %}
 
-{% block title %}Add new sub-team{% endblock %}
+{% block title %}
+{% endblock title %}
 
-{% block location %}Add new sub-team{% endblock %}
+{% block page_title_wrapper %}
+{% endblock page_title_wrapper %}
 
-{% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <span class="govuk-caption-l">{{ parent_team.short_name }}</span>
-            <h1 class="govuk-heading-l">Add new sub-team</h1>
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        </div>
-    </div>
+{% block primary_content %}
+    <h1>Add new sub-team to {{ team.short_name }}</h1>
 
     <form method="post">
         {% csrf_token %}
 
         {% include 'peoplefinder/components/team-form.html' %}
 
-        <div>
-            <button class="govuk-button" type="submit">Save team</button>
-            <a class="govuk-button govuk-button--secondary"
-               href="{% url 'team-view' parent_team.slug %}">Cancel</a>
+        <div class="dwds-button-group">
+            <button class="dwds-button" type="submit">Save team</button>
+            <a class="dwds-button dwds-button--secondary"
+               href="{% url 'team-view' team.slug %}">Cancel</a>
         </div>
     </form>
-{% endblock %}
+{% endblock primary_content %}

@@ -1,6 +1,7 @@
 from django.conf import settings
+from wagtail.search.query import Phrase
 
-from content.models import ContentPage
+from content.models import BasePage
 from extended_search.query_builder import CustomQueryBuilder
 from news.models import NewsPage
 from peoplefinder.models import Person, Team
@@ -43,6 +44,10 @@ class ModelSearchVector(SearchVector):
         return self.model.objects.all()
 
     def build_query(self, query_str, *args, **kwargs):
+        if query_str.startswith("EXACT_SEARCH "):
+            if new_query_str := query_str[13:]:
+                # A query beginning with `EXACT_SEARCH ` we search for an exact match.
+                return Phrase(new_query_str)
         return CustomQueryBuilder.get_search_query(self.model, query_str)
 
     def search(self, query_str, *args, **kwargs):
@@ -53,7 +58,7 @@ class ModelSearchVector(SearchVector):
 
 class PagesSearchVector(ModelSearchVector):
     def get_queryset(self):
-        return super().get_queryset().public_or_login().live()
+        return super().get_queryset().public_or_login().live().specific()
 
     def pinned(self, query_str):
         return self.get_queryset().pinned(query_str)
@@ -69,11 +74,11 @@ class PagesSearchVector(ModelSearchVector):
 
 
 class AllPagesSearchVector(PagesSearchVector):
-    model = ContentPage
+    model = BasePage
 
 
 class GuidanceSearchVector(PagesSearchVector):
-    model = ContentPage
+    model = BasePage
 
     def get_queryset(self):
         policies_and_guidance_home = PoliciesAndGuidanceHome.objects.first()

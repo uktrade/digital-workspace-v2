@@ -6,6 +6,7 @@ from webpack_loader import utils as webpack_utils
 
 from peoplefinder.models import Person
 
+
 register = template.Library()
 
 

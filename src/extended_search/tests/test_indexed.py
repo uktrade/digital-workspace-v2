@@ -1,21 +1,59 @@
+import json
+
+from wagtail.documents.models import Document
+from wagtail.images.models import Image
+from wagtail.models import Page
+from wagtailmedia.models import Media
+
+from about_us.models import AboutUs, AboutUsHome
+from content.models import BasePage, BlogIndex, BlogPost, ContentPage, NavigationPage
+from core.models.tags import Tag
+from country_fact_sheet.models import CountryFactSheetHome
+from events.models import EventPage, EventsHome
 from extended_search.index import DWIndexedField, class_is_indexed, get_indexed_models
+from extended_search.management.commands.create_index_fields_json import (
+    JSON_FILE,
+    get_indexed_models_and_fields_dict,
+)
+from home.models import HomePage
+from networks.models import Network, NetworkContentPage, NetworksHome
+from news.models import NewsHome, NewsPage
+from peoplefinder.models import Person, Team
 from testapp.models import (
     AbstractIndexedModel,
     AbstractModel,
+    ChildModel,
     IndexedModel,
     InheritedStandardIndexedModel,
     InheritedStandardIndexedModelWithChanges,
+    InheritedStandardIndexedModelWithChangesWithScoreFunction,
     Model,
     StandardIndexedModel,
+    StandardIndexedModelWithScoreFunction,
+    StandardIndexedModelWithScoreFunctionOriginFifty,
+)
+from tools.models import Tool, ToolsHome
+from working_at_dit.models import (
+    Guidance,
+    GuidanceHome,
+    HowDoI,
+    HowDoIHome,
+    PageWithTopics,
+    PoliciesAndGuidanceHome,
+    PoliciesHome,
+    Policy,
+    Topic,
+    TopicHome,
+    WorkingAtDITHome,
 )
 
 
 class TestIndexed:
     def test_get_indexed_fields(self):
         indexed_fields = StandardIndexedModel.get_indexed_fields()
-        assert type(indexed_fields) == list
+        assert isinstance(indexed_fields, list)
         assert len(indexed_fields) == 1
-        assert type(indexed_fields[0]) == DWIndexedField
+        assert isinstance(indexed_fields[0], DWIndexedField)
         assert indexed_fields[0].autocomplete is False
         assert indexed_fields[0].autocomplete_kwargs == {}
         assert indexed_fields[0].boost == 5.0
@@ -32,9 +70,9 @@ class TestIndexed:
         assert indexed_fields[0].tokenized
 
         indexed_fields = InheritedStandardIndexedModelWithChanges.get_indexed_fields()
-        assert type(indexed_fields) == list
+        assert isinstance(indexed_fields, list)
         assert len(indexed_fields) == 1
-        assert type(indexed_fields[0]) == DWIndexedField
+        assert isinstance(indexed_fields[0], DWIndexedField)
         assert indexed_fields[0].autocomplete is False
         assert indexed_fields[0].autocomplete_kwargs == {}
         assert indexed_fields[0].boost == 50.0
@@ -52,10 +90,10 @@ class TestIndexed:
 
     def test_get_indexed_fields_as_dict(self):
         indexed_fields = StandardIndexedModel.get_indexed_fields(as_dict=True)
-        assert type(indexed_fields) == dict
+        assert isinstance(indexed_fields, dict)
         assert "title" in indexed_fields
         assert len(indexed_fields["title"]) == 1
-        assert type(indexed_fields["title"][0]) == DWIndexedField
+        assert isinstance(indexed_fields["title"][0], DWIndexedField)
         assert indexed_fields["title"][0].autocomplete is False
         assert indexed_fields["title"][0].autocomplete_kwargs == {}
         assert indexed_fields["title"][0].boost == 5.0
@@ -74,10 +112,10 @@ class TestIndexed:
         indexed_fields = InheritedStandardIndexedModelWithChanges.get_indexed_fields(
             as_dict=True
         )
-        assert type(indexed_fields) == dict
+        assert isinstance(indexed_fields, dict)
         assert "title" in indexed_fields
         assert len(indexed_fields["title"]) == 1
-        assert type(indexed_fields["title"][0]) == DWIndexedField
+        assert isinstance(indexed_fields["title"][0], DWIndexedField)
         assert indexed_fields["title"][0].autocomplete is False
         assert indexed_fields["title"][0].autocomplete_kwargs == {}
         assert indexed_fields["title"][0].boost == 50.0
@@ -95,7 +133,7 @@ class TestIndexed:
 
     def test_generate_from_indexed_fields(self):
         processed_index_fields = StandardIndexedModel.generate_from_indexed_fields()
-        assert type(processed_index_fields) == dict
+        assert isinstance(processed_index_fields, dict)
         assert "title" in processed_index_fields
         assert len(processed_index_fields["title"]) == 2
         processed_index_field_names = [
@@ -107,7 +145,7 @@ class TestIndexed:
         processed_index_fields = (
             InheritedStandardIndexedModelWithChanges.generate_from_indexed_fields()
         )
-        assert type(processed_index_fields) == dict
+        assert isinstance(processed_index_fields, dict)
         assert "title" in processed_index_fields
         assert len(processed_index_fields["title"]) == 1
         processed_index_field_names = [
@@ -118,7 +156,7 @@ class TestIndexed:
 
     def test_get_search_fields(self):
         search_fields = StandardIndexedModel.get_search_fields(ignore_cache=True)
-        assert type(search_fields) == list
+        assert isinstance(search_fields, list)
         assert len(search_fields) == 2
         search_fields_field_names = [f.field_name for f in search_fields]
         assert "title" in search_fields_field_names
@@ -127,7 +165,7 @@ class TestIndexed:
         search_fields = InheritedStandardIndexedModelWithChanges.get_search_fields(
             ignore_cache=True
         )
-        assert type(search_fields) == list
+        assert isinstance(search_fields, list)
         assert len(search_fields) == 1
         search_fields_field_names = [f.field_name for f in search_fields]
         assert "title" in search_fields_field_names
@@ -190,3 +228,65 @@ class TestModuleFunctions:
         assert not class_is_indexed(AbstractModel)
         assert class_is_indexed(IndexedModel)
         assert not class_is_indexed(AbstractIndexedModel)
+
+
+class TestProject:
+    def test_indexed_models(self):
+        assert set(get_indexed_models()) == {
+            IndexedModel,
+            ChildModel,
+            StandardIndexedModel,
+            InheritedStandardIndexedModel,
+            InheritedStandardIndexedModelWithChanges,
+            StandardIndexedModelWithScoreFunction,
+            StandardIndexedModelWithScoreFunctionOriginFifty,
+            InheritedStandardIndexedModelWithChangesWithScoreFunction,
+            HomePage,
+            BasePage,
+            ContentPage,
+            NavigationPage,
+            EventsHome,
+            EventPage,
+            NewsPage,
+            NewsHome,
+            WorkingAtDITHome,
+            Topic,
+            TopicHome,
+            PageWithTopics,
+            HowDoI,
+            HowDoIHome,
+            Guidance,
+            Policy,
+            PoliciesHome,
+            GuidanceHome,
+            PoliciesAndGuidanceHome,
+            Tool,
+            ToolsHome,
+            AboutUs,
+            AboutUsHome,
+            NetworksHome,
+            Network,
+            NetworkContentPage,
+            CountryFactSheetHome,
+            BlogIndex,
+            BlogPost,
+            Tag,
+            Person,
+            Team,
+            Document,
+            Image,
+            Page,
+            Media,
+        }, "Indexed models have changed, please update this test if this was intentional."
+
+    def test_indexed_models_and_fields(test):
+        with open(JSON_FILE, "r") as f:
+            expected_indexed_models_and_fields = json.load(f)
+            assert (
+                get_indexed_models_and_fields_dict()
+                == expected_indexed_models_and_fields
+            ), (
+                "Indexed models and fields have changed."
+                " If this was intentional, please update the JSON file by running the"
+                " `create_index_fields_json` management command."
+            )

@@ -502,3 +502,8 @@
     position: absolute;
   }
 }
+
+// CropperJS fixes for DWDS compatibility
+.cropper-wrapper > .cropper-container * {
+  max-inline-size: unset !important;
+}

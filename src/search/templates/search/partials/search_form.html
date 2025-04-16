@@ -9,7 +9,7 @@
            placeholder="{{ placeholder|default:'Search site' }}"
            type="search"
            value="{{ search_query|default:'' }}"
-           hx-trigger="input keyup changed delay:150ms"
+           hx-trigger="keyup changed delay:300ms"
            hx-get="{% url 'search:autocomplete' %}"
            hx-target="#autocomplete-results"
            onblur="setTimeout(() => {document.getElementById('autocomplete-results').style.display='none'}, 250)"

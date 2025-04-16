@@ -1,117 +1,75 @@
-{% extends "base.html" %}
+{% extends "dwds_sidebar.html" %}
+
 {% load static %}
 {% load wagtailcore_tags %}
 {% load wagtailimages_tags %}
-{% load twitter_tags %}
+{% load cards %}
 
-{% block main_content %}
-    <article class="ws-home-wrapper">
-        <h1 class="ws-hide">Digital Workspace</h1>
-        <section aria-labelledby="home-news-items">
-            <h2 id="home-news-items" class="ws-hide">News items</h2>
-            <ul class="ws-home-grid-items">
-                <li class="quick-links-wrapper" aria-hidden="true">
-                    <nav aria-labelledby="quick-link-menu" class="quick-links">
-                        <h3 class="govuk-heading-m" id="quick-link-menu">Quick links</h3>
-                        <ul>
-                            {% for quick_link in quick_links %}
-                                <li>
-                                    <a class="govuk-link" href="{% pageurl quick_link.link_to %}">{{ quick_link.title }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </nav>
-                </li>
-                {% for news_item in news_items %}
-                    <li class="news-item news-item-{{ forloop.counter }}"
-                        data-testid="home-news-item">
-                        {% include "home/includes/news_item.html" with news_item=news_item %}
-                    </li>
-                {% endfor %}
-            </ul>
-            <a class="govuk-link" href="/news-and-views/">View all news</a>
-        </section>
+{% block body_classes %}
+    {{ block.super }} homepage new-home
+{% endblock body_classes %}
+
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+
+{% block pre_content %}
+{% endblock pre_content %}
+
+{% block page_title_wrapper %}
+{% endblock page_title_wrapper %}
+
+{% block primary_content_classes %}
+{% endblock primary_content_classes %}
+
+{% block primary_content %}
+    <article>
         <section>
-            {% comment %} used to be known as "What's popular?"" {% endcomment %}
-            <h2 class="govuk-heading-m">Popular on Digital Workspace</h2>
-            <ul class="ws-home-grid-items">
-                {% for whats_popular_item in whats_popular_items %}
-                    <li class="ws-whats-popular-item">
-                        {% image whats_popular_item.preview_image fill-900x585 %}
-                        <p>
-                            {% if whats_popular_item.link_to %}
-                                <a class="govuk-link" href="{% pageurl whats_popular_item.link_to %}">{{ whats_popular_item.title }}</a>
-                            {% else %}
-                                <a class="govuk-link" href="{{ whats_popular_item.external_url }}">{{ whats_popular_item.title }}</a>
-                            {% endif %}
-                        </p>
-                    </li>
-                {% endfor %}
-            </ul>
-        </section>
-
-        <section>
-            <h2 class="govuk-heading-m">How do I?</h2>
-            <ul class="how-do-i">
-                {% for how_do_i_item in how_do_i_items %}
-                    <li>
-                        <a class="govuk-link" href="{% pageurl how_do_i_item %}">{{ how_do_i_item }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-            <p class="ws-all-how-to">
-                <a class="govuk-link" href="/working-at-dbt/how-do-i/">View all "How do I?" guides</a>
-            </p>
-        </section>
-
-        {% if not hide_news %}
-            <section>
-                <h2 class="govuk-heading-m">DBT news from GOV.UK</h2>
-                <ul class="govuk-news">
-                    {% for govuk_news_item in govuk_feed %}
-                        <li>
-                            <p>
-                                <a class="govuk-link" href="{{ govuk_news_item.links.0.href }}">{{ govuk_news_item.title.value }}</a>
-                            </p>
-                            <p class="govuk-body-s">{{ govuk_news_item.updated }}</p>
-                        </li>
+            <div class="content-stack large">
+                <!-- User selected top priority page cards -->
+                {% if not is_empty %}
+                    {% for pages in pages_by_news_layout %}
+                        {% if pages %}
+                            <div class="content-switcher max-3">
+                                {% for page in pages %}
+                                    <div class="dwds-content-item-card">
+                                        {% if pages|length == 1 %}
+                                            {% page_to_one_up page %}
+                                        {% else %}
+                                            {% page_to_engagement page %}
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     {% endfor %}
-                </ul>
-            </section>
+                {% endif %}
 
-            {% if tweets|length > 0 %}
-                <section>
-                    <h2 class="govuk-heading-m">Latest tweets</h2>
-                    <ul class="tweets">
-                        {% for tweet in tweets %}
-                            <li>
-                                <div class="img-wrapper">
-                                    <img alt="Profile image for {{ tweet.user.name }} account"
-                                         src="{{ tweet.user.profile_image_url }}">
-                                </div>
-                                <div class="details">
-                                    {% if tweet.user.name == "Department for International Trade" %}
-                                        <p class="govuk-body-s">
-                                            <strong>DIT</strong>
-                                        </p>
-                                    {% else %}
-                                        <p class="govuk-body-s">
-                                            <strong>{{ tweet.user.name }}</strong>
-                                        </p>
-                                    {% endif %}
-                                    <p class="govuk-body-s">
-                                        <a class="govuk-link"
-                                           target="_blank"
-                                           href="https://twitter.com/{{ tweet.user.screen_name }}">@{{ tweet.user.screen_name }}</a>
-                                    </p>
-                                    <p class="govuk-body-s created">{{ tweet.created_at }}</p>
-                                    <p class="govuk-body-s">{{ tweet.text|add_twitter_link }}</p>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </section>
-            {% endif %}
-        {% endif %}
+                {% if page.promo_enabled %}
+                    <div class="dwds-content-item-card">
+                        {% include 'dwds/components/promo.html' with ribbon_text=page.promo_ribbon_text description=page.promo_description link_url=page.promo_link_url link_text=page.promo_link_text thumbnail=page.promo_image %}
+                    </div>
+                {% endif %}
+
+                {% if news_items %}
+                    <div class="dwds-content-item-card no-shadow">
+                        {% include "dwds/components/content_list.html" with title="More DBT news" content_items=news_items link_url="/news-and-views/" link_text="View all news" %}
+                    </div>
+                {% endif %}
+
+                {% if events %}
+                    <div class="dwds-content-item-card no-shadow">
+                        {% include "dwds/components/content_list.html" with as_card_grid=True highlight=True title="Events" content_items=events link_url="/events/" link_text="View all events" %}
+                    </div>
+                {% endif %}
+
+                {% if not hide_news %}
+                    <div class="dwds-content-item-card">
+                        <div class="content-item">
+                            {% include "dwds/components/link_list.html" with title="DBT news from GOV.UK" list=govuk_feed %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
     </article>
-{% endblock main_content %}
+{% endblock primary_content %}

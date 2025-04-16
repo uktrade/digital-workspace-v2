@@ -1,7 +1,7 @@
 FROM digital_workspace/wagtail:latest
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-ENV NODE_MAJOR=18
+ENV NODE_MAJOR=20
 
 RUN adduser pwuser
 

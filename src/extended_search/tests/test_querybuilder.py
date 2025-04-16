@@ -1,9 +1,9 @@
 from unittest.mock import call
 
 import pytest
+from django.test import override_settings
 from wagtail.search.query import And, Boost, Fuzzy, Not, Or, Phrase, PlainText
 
-from content.models import ContentPage
 from extended_search import settings
 from extended_search.index import IndexedField, RelatedFields, SearchField
 from extended_search.query import Filtered, Nested, OnlyFields
@@ -184,6 +184,7 @@ class TestCustomQueryBuilder:
         with pytest.raises(ValueError):
             Variable("search_query", "anything").output("search query")
 
+    @override_settings(SEARCH_ENABLE_QUERY_CACHE=False)
     def test_build_search_query(self, mocker):
         class ModelClass:
             class Meta:
@@ -252,22 +253,11 @@ class TestQueryBuilder:
             "extended_search.query_builder.QueryBuilder._get_boost_for_analysistype",
             return_value=125,
         )
-        mock_boost_f = mocker.patch(
-            "extended_search.query_builder.QueryBuilder._get_boost_for_field",
-            return_value=33.3,
-        )
-        field = mocker.Mock()
-        model = mocker.Mock()
         assert self.query_builder_class._get_boost_for_field_querytype_analysistype(
-            model, SearchQueryType.FUZZY, AnalysisType.EXPLICIT, field
-        ) == (
-            mock_boost_qt.return_value
-            * mock_boost_at.return_value
-            * mock_boost_f.return_value
-        )
+            SearchQueryType.FUZZY, AnalysisType.EXPLICIT
+        ) == (mock_boost_qt.return_value * mock_boost_at.return_value)
         mock_boost_qt.assert_called_once_with(SearchQueryType.FUZZY)
         mock_boost_at.assert_called_once_with(AnalysisType.EXPLICIT)
-        mock_boost_f.assert_called_once_with(model, field)
 
     def test_get_boost_for_field(self, mocker):
         mock_get_key = mocker.patch(
@@ -349,9 +339,13 @@ class TestQueryBuilder:
 
     def test__get_search_query(self, mocker):
         model = mocker.Mock()
+        model._meta.app_label = "mock_app"
+        model.__name__ = "model"
+
         indexed_field = mocker.Mock(spec=IndexedField)
         indexed_field.model_field_name = "indexed"
         related_fields = mocker.Mock(spec=RelatedFields)
+        related_fields.configuration_model = model
         related_fields.model_field_name = "related"
         search_field = mocker.Mock(spec=SearchField)
         search_field.model_field_name = "search"
@@ -376,7 +370,7 @@ class TestQueryBuilder:
             self.query_builder_class._build_search_query(model, indexed_field)
             == "index-query"
         )
-        mock_build_query_indexfield.assert_called_once_with(indexed_field, model, None)
+        mock_build_query_indexfield.assert_called_once_with(model, indexed_field, None)
         mock_build_query_searchfield.assert_not_called()
         mock_combine_queries.assert_not_called()
         mock_infer_analyzer.assert_not_called()
@@ -388,7 +382,7 @@ class TestQueryBuilder:
         )
         mock_build_query_indexfield.assert_not_called()
         mock_build_query_searchfield.assert_called_once_with(
-            search_field, model, None, mock_infer_analyzer.return_value
+            model, search_field, None, mock_infer_analyzer.return_value
         )
         mock_combine_queries.assert_not_called()
         mock_infer_analyzer.assert_called_once_with(search_field)
@@ -413,7 +407,7 @@ class TestQueryBuilder:
                 else:
                     assert isinstance(called[0], Nested)
                     assert called[0].subquery == query
-                    assert called[0].path == "related"
+                    assert called[0].path == "mock_app_model__related"
                     assert called[1] is None
                     count += 1
         assert count == 3
@@ -460,7 +454,7 @@ class TestQueryBuilder:
 
         assert (
             self.query_builder_class._build_search_query_for_indexfield(
-                field, model, "bar"
+                model, field, "bar"
             )
             == "bar"
         )
@@ -468,12 +462,12 @@ class TestQueryBuilder:
         field.search = True
         assert (
             self.query_builder_class._build_search_query_for_indexfield(
-                field, model, "bar"
+                model, field, "bar"
             )
             == mock_build_for_searchfield.return_value
         )
         mock_build_for_searchfield.assert_called_once_with(
-            field, model, "bar", "--analyzer-1--"
+            model, field, "bar", "--analyzer-1--"
         )
         mock_combine_queries.assert_not_called()
 
@@ -482,16 +476,16 @@ class TestQueryBuilder:
         field.get_search_analyzers.return_value = ["--analyzer-1--", "--analyzer-2--"]
         assert (
             self.query_builder_class._build_search_query_for_indexfield(
-                field, model, "bar"
+                model, field, "bar"
             )
             == mock_build_for_searchfield.return_value
         )
         assert len(mock_build_for_searchfield.call_args_list) == 2
         mock_build_for_searchfield.assert_any_call(
-            field, model, "bar", "--analyzer-1--"
+            model, field, "bar", "--analyzer-1--"
         )
         mock_build_for_searchfield.assert_any_call(
-            field, model, mock_build_for_searchfield.return_value, "--analyzer-2--"
+            model, field, mock_build_for_searchfield.return_value, "--analyzer-2--"
         )
         assert len(mock_combine_queries.call_args_list) == 0
 
@@ -501,13 +495,13 @@ class TestQueryBuilder:
         field.fuzzy = True
         assert (
             self.query_builder_class._build_search_query_for_indexfield(
-                field, model, "bar"
+                model, field, "bar"
             )
             == mock_combine_queries.return_value
         )
         assert len(mock_build_for_searchfield.call_args_list) == 1
         mock_build_for_searchfield.assert_any_call(
-            field, model, "bar", "--analyzer-1--"
+            model, field, "bar", "--analyzer-1--"
         )
         assert len(mock_combine_queries.call_args_list) == 1
         mock_combine_queries.assert_any_call(
@@ -541,7 +535,7 @@ class TestQueryBuilder:
         )
         assert (
             self.query_builder_class._build_search_query_for_searchfield(
-                field, model, "sub-query", AnalysisType.TOKENIZED
+                model, field, "sub-query", AnalysisType.TOKENIZED
             )
             == mock_combine_queries.return_value
         )
@@ -588,11 +582,12 @@ class TestQueryBuilder:
             "extended_search.query_builder.get_indexed_field_name",
             return_value="foobar",
         )
+        model = mocker.Mock()
         field = mocker.Mock()
         field.get_full_model_field_name.return_value = "-model-field-name-"
         mock_boost.return_value = 333.33
         result = self.query_builder_class._build_searchquery_for_query_field_querytype_analysistype(
-            ContentPage,
+            model,
             "title",
             SearchQueryType.PHRASE,
             AnalysisType.EXPLICIT,
@@ -606,13 +601,11 @@ class TestQueryBuilder:
         assert isinstance(subquery, Boost)
         assert subquery.boost == 333.33
         subquery = subquery.subquery
-        mock_boost.assert_called_with(
-            ContentPage, SearchQueryType.PHRASE, AnalysisType.EXPLICIT, field
-        )
+        mock_boost.assert_called_with(SearchQueryType.PHRASE, AnalysisType.EXPLICIT)
         field = mocker.Mock(spec=SearchField)
         field.get_full_model_field_name.return_value = "-model-field-name-"
         result = self.query_builder_class._build_searchquery_for_query_field_querytype_analysistype(
-            ContentPage,
+            model,
             "title",
             SearchQueryType.PHRASE,
             AnalysisType.EXPLICIT,

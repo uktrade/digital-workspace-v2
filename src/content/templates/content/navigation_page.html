@@ -1,0 +1,42 @@
+{% extends "dwds_sidebar.html" %}
+{% load wagtailcore_tags %}
+
+{% block primary_content_classes %}
+    content-stack large
+{% endblock primary_content_classes %}
+
+{% block page_title %}
+    <div class="content-sidebar-right">
+        <h1>{{ page.title }}</h1>
+        <div class="dwds-title-question">
+            {% include "feedback.html" with form_id="hr-v1" classes="" prefix="navigation-page" custom_submit_data_function="navigationFeedbackData" %}
+        </div>
+    </div>
+{% endblock page_title %}
+
+{% block primary_content %}
+    <div class="content-stack">
+        <div class="content-grid grid-cards">
+            {% for block in page.primary_elements %}
+                <div class="dwds-content-item-card">{% include_block block %}</div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock primary_content %}
+
+{% block secondary_content %}
+    <div class="content-stack">
+        {% for block in page.secondary_elements %}
+            <div class="dwds-content-item-card no-shadow">{% include_block block %}</div>
+        {% endfor %}
+        {{ block.super }}
+    </div>
+{% endblock secondary_content %}
+
+{% block scripts %}
+    <script>
+    function navigationFeedbackData(formData) {
+        formData.set('page_url','{{page.url}}');
+    }
+    </script>
+{% endblock scripts %}

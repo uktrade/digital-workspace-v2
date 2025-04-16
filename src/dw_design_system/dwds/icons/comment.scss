@@ -1,0 +1,50 @@
+.comment-icon {
+    --comment-icon-background-border-color: var(--color-icon-light-border);
+    --comment-icon-background-outer-color: var(--color-icon-light-backdrop);
+    --comment-icon-background-inner-color: var(--color-icon-light-background);
+    --comment-icon-foreground-color: var(--color-icon-light-foreground);
+    
+    &.dark {
+        --comment-icon-background-border-color: var(--color-icon-dark-border);
+        --comment-icon-background-outer-color: var(--color-icon-dark-backdrop);
+        --comment-icon-background-inner-color: var(--color-icon-dark-background);
+        --comment-icon-foreground-color: var(--color-icon-dark-foreground);
+    }
+
+    &.hover-light {
+        &:hover {
+            // These variables should match those from the base definition
+            --comment-icon-background-border-color: var(--color-icon-light-border);
+            --comment-icon-background-outer-color: var(--color-icon-light-backdrop);
+            --comment-icon-background-inner-color: var(--color-icon-light-background);
+            --comment-icon-foreground-color: var(--color-icon-light-foreground);
+        }
+    }
+
+    &.hover-dark {
+        &:hover {
+            // These variables should match those from .dark
+            --comment-icon-background-border-color: var(--color-icon-dark-border);
+            --comment-icon-background-outer-color: var(--color-icon-dark-backdrop);
+            --comment-icon-background-inner-color: var(--color-icon-dark-background);
+            --comment-icon-foreground-color: var(--color-icon-dark-foreground);
+        }
+    }
+    
+    .background-border {
+        stroke: var(--comment-icon-background-border-color);
+    }
+
+    .background-outer {
+        fill: var(--comment-icon-background-outer-color);
+    }
+
+    .background-inner {
+        fill: var(--comment-icon-background-inner-color);
+    }
+
+    .stroke {
+        stroke: var(--comment-icon-foreground-color);
+    }
+
+}

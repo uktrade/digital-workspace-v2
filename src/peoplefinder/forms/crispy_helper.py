@@ -40,7 +40,7 @@ class RoleFormsetFormHelper(RoleFormHelper):
                     "remove",
                     "Remove role",
                     size=Size.SMALL,
-                    css_class="govuk-button--secondary",
+                    css_class="dwds-button--secondary",
                     data_formset_remove="",
                 ),
                 HTML(

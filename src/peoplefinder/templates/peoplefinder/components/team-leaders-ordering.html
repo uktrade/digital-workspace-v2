@@ -75,7 +75,7 @@
                                 @click="up(index)"
                                 :disabled="!isCustomOrdering">Move up</button>
                     </template>
- 
+
                     <template x-if="index !== count - 1">
                         <button class="govuk-button govuk-button--secondary mb-0"
                                 type="button"
@@ -85,7 +85,7 @@
                 </div>
             </div>
         </template>
- 
+
         <input type="hidden" name="leaders_positions" x-model="order">
     </fieldset>
 </div>

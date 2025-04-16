@@ -1,18 +1,18 @@
 {% load wagtailcore_tags %}
 
-{% if ancestors %}
+{% if breadcrumbs %}
     <nav class="govuk-breadcrumbs" role="navigation" aria-label="Breadcrumbs">
         <ol class="govuk-breadcrumbs__list">
-            {% for ancestor in ancestors %}
+            {% for breadcrumb in breadcrumbs %}
                 {% if forloop.last %}
                     <li class="govuk-breadcrumbs__list-item"
                         aria-current="page"
-                        aria-level="{{ ancestors|length }}">{{ ancestor }}</li>
+                        aria-level="{{ breadcrumbs|length }}">{{ breadcrumb.1 }}</li>
                 {% else %}
                     <li class="govuk-breadcrumbs__list-item">
                         <a class="govuk-breadcrumbs__link"
-                           href="{% pageurl ancestor %}"
-                           aria-level="{% cycle 1 2 3 4 5 %}">{{ ancestor }}</a>
+                           href="{{ breadcrumb.0 }}"
+                           aria-level="{% cycle 1 2 3 4 5 %}">{{ breadcrumb.1 }}</a>
                     </li>
                 {% endif %}
             {% endfor %}

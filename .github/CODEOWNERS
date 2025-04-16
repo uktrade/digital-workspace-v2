@@ -1,5 +1,9 @@
-# Uses CodeOwners to ensure the relevant Tech Lead sees any relevant PRs
-#
+# This repo is maintained by the Employee Experience team
+*       @uktrade/employee-experience
+# ... more specifically, the Boomslangs squad
+*       @uktrade/boomslangs
+
+# ensure the relevant Tech Lead sees any relevant PRs
 
 # Search: Marcel
 /src/extended_search/ @marcelkornblum

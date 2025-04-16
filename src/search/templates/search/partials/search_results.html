@@ -2,18 +2,9 @@
 
 <div class="search-results" id="search-results">
     {% if search_query %}
-        <div id="search-feedback"">
-            <h1 class="govuk-heading-m">Search results for “{{ search_query }}”</h1>
-            <div class="search-feedback-header govuk-!-padding-1 govuk-!-padding-left-2 govuk-!-margin-bottom-4">
-                <div class="govuk-body-s govuk-body--inverse govuk-!-margin-bottom-0 govuk-!-margin-right-2">
-                    Are these results useful?
-                </div>
-                <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-left-1"
-                        onclick="pageWasUseful();">Yes</button>
-                <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-left-1"
-                        onclick="pageWasNotUseful();">No</button>
-            </div>
-        </div>
+        {% with 'Search results for "'|add:search_query|add:'"' as feedback_title %}
+            {% include "feedback.html" with form_id="search-v2" prefix="search" title=feedback_title question="Are these results useful?" custom_submit_data_function="searchFeedbackData" initial=search_feedback_initial %}
+        {% endwith %}
     {% else %}
         <h1 class="govuk-heading-m">Start typing to search</h1>
     {% endif %}
@@ -27,80 +18,22 @@
     {% endif %}
 </div>
 
-<dialog id="search-feedback-dialog">
-    {% feedback_submit form_id="search-v2" initial=search_feedback_initial %}
-    <script>
-        const dialog = document.querySelector("#search-feedback-dialog");
-        const form = dialog.querySelector("form");
-        const search_header = document.querySelector("#search-feedback .search-feedback-header");
+{% if perms.extended_search.export_search %}
+    <a class="govuk-link"
+       href="{% url 'search:export_search' search_category %}?query={{ search_query }}">Download search results</a>
+{% endif %}
 
-        function pageWasUseful() {
-            // Clear all form fields except the hidden ones
-            clearSearchFeedbackForm();
-            // Mark the `useful` hidden field to `true`
-            form.querySelector("#id_useful").value = "true";
-            // Submit the form
-            submitSearchFeedbackForm();
+<script>
+    function searchFeedbackData(formData) {
+        const searchData = JSON.parse(formData.get("search_data") || {});
+        const hits = {};
+        for (const categoryEl of document.querySelectorAll("[data-search-category-name]")) {
+            const category = categoryEl.dataset.searchCategoryName;
+            const category_hits = categoryEl.dataset.searchCategoryHits;
+            hits[category] = parseInt(category_hits);
         }
 
-        function pageWasNotUseful() {
-            // Clear all form fields except the hidden ones
-            clearSearchFeedbackForm();
-            // Mark the `useful` hidden field to `false`
-            form.querySelector("#id_useful").value = "false";
-            // Show the feedback form
-            openSearchFeedbackDialog();
-        }
-
-        function openSearchFeedbackDialog() {
-            document.querySelector("#search-feedback-dialog").showModal();
-        }
-
-        function showThankYouMessage() {
-            // Update text to say thanks.
-            search_header.innerHTML = '<div class="govuk-body-s govuk-body--inverse govuk-!-margin-bottom-0">Thanks for your feedback.</div>';
-        }
-
-        form.addEventListener("submit", (event) => {
-            if (event.submitter.id == "submit-id-submit") {
-                event.preventDefault();
-                submitSearchFeedbackForm();
-            }
-        });
-
-        function clearSearchFeedbackForm() {
-            form.reset();
-        }
-
-        function submitSearchFeedbackForm() {
-            const formData = new FormData(form);
-
-            const searchData = JSON.parse(formData.get("search_data") || {});
-
-            const hits = {};
-            for (const categoryEl of document.querySelectorAll("[data-search-category-name]")) {
-                const category = categoryEl.dataset.searchCategoryName;
-                const category_hits = categoryEl.dataset.searchCategoryHits;
-                hits[category] = parseInt(category_hits);
-            }
-
-            searchData["hits"] = hits;
-            formData.set("search_data", JSON.stringify(searchData));
-
-            fetch(form.action, {
-                method: "POST",
-                body: formData,
-            }).then((response) => {
-                if (!response.ok) {
-                    throw new Error("There was an issue submitting your feedback.");
-                }
-
-                dialog.close();
-                showThankYouMessage();
-            }).catch((error) => {
-                alert(error.message);
-                dialog.close();
-            });
-        }
-    </script>
-</dialog>
+        searchData["hits"] = hits;
+        formData.set("search_data", JSON.stringify(searchData));
+    }
+</script>

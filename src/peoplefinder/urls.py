@@ -4,6 +4,7 @@ from rest_framework import routers
 from peoplefinder.views.activity_stream import ActivityStreamViewSet
 from peoplefinder.views.api.person import PersonViewSet
 from peoplefinder.views.api.team import TeamView
+from peoplefinder.views.directory import PeopleDirectory, discover
 from peoplefinder.views.home import PeopleHome, TeamHome
 from peoplefinder.views.manager import (
     ManagerCancel,
@@ -33,13 +34,14 @@ from peoplefinder.views.team import (
     TeamDeleteView,
     TeamDetailView,
     TeamEditView,
-    TeamPeopleOutsideSubteamsView,
-    TeamPeopleView,
     TeamTreeView,
 )
 
+
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
+    path("directory/", PeopleDirectory.as_view(), name="people-directory"),
+    path("discover/", discover, name="discover"),
     path(
         "delete-confirmation/",
         DeleteConfirmationView.as_view(),
@@ -149,12 +151,6 @@ teams_urlpatterns = [
     path("<slug>/edit", TeamEditView.as_view(), name="team-edit"),
     path("<slug>/delete", TeamDeleteView.as_view(), name="team-delete"),
     path("<slug>/tree", TeamTreeView.as_view(), name="team-tree"),
-    path("<slug>/people", TeamPeopleView.as_view(), name="team-people"),
-    path(
-        "<slug>/people-outside-subteams",
-        TeamPeopleOutsideSubteamsView.as_view(),
-        name="team-people-outside-subteams",
-    ),
     path(
         "<slug>/add-new-subteam",
         TeamAddNewSubteamView.as_view(),

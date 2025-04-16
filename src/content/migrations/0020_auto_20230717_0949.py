@@ -22,8 +22,7 @@ def fill_empty_excerpts(apps, schema_editor):
             ...
 
 
-def noop(apps, schema_editor):
-    ...
+def noop(apps, schema_editor): ...
 
 
 class Migration(migrations.Migration):

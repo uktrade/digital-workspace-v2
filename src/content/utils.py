@@ -1,5 +1,10 @@
 from django.contrib.contenttypes.models import ContentType
+from django.utils.html import strip_tags
 from django.utils.text import Truncator
+from wagtail import blocks
+from wagtail.blocks.struct_block import StructValue
+
+from content import blocks as content_blocks
 
 
 def remove_orphan_keyword_and_phrases():
@@ -120,10 +125,77 @@ def manage_excluded(obj, excluded_phrases_string):
     remove_orphan_keyword_and_phrases()
 
 
-def truncate_words_and_chars(text, words, chars, truncate=None):
+def truncate_on_newline(text):
+    newline_replace_chars = ["\n"]
+
+    # Find the last newline character.
+    newline_index = {}
+    for newline_char in newline_replace_chars:
+        newline_index[newline_char] = text.find(newline_char)
+
+    last_newline_index = max(newline_index.values())
+
+    if last_newline_index < 0:
+        return text
+
+    # Set everything before the last newline character (excluding the
+    # character itself)
+    return text[:last_newline_index]
+
+
+def truncate_words_and_chars(
+    text,
+    words=40,
+    chars=700,
+    truncate=None,
+    html=False,
+):
     """
     Truncates the given text to the _minimum_ value of both words and chars,
     at a word ending
     """
-    result = Truncator(text).chars(chars, "")
-    return Truncator(result).words(words, truncate)
+    chars_result = Truncator(text).chars(num=chars, truncate="", html=html)
+    newline_result = truncate_on_newline(chars_result)
+    words_result = Truncator(newline_result).words(
+        num=words, truncate=truncate, html=html
+    )
+    return words_result
+
+
+def get_search_content_for_block(
+    block: blocks.Block, value: StructValue
+) -> tuple[list[str], list[str]]:
+    search_headings = []
+    search_content = []
+
+    if isinstance(block, content_blocks.HeadingBlock):
+        search_headings.append(
+            strip_tags(" ".join(block.get_searchable_content(value)))
+        )
+
+    elif isinstance(block, blocks.StructBlock):
+        block_headings = ""
+        if hasattr(block, "get_searchable_heading"):
+            block_headings = block.get_searchable_heading(value)
+
+        for child_block in block.child_blocks.values():
+            child_value = value[child_block.name]
+            child_headings, child_content = get_search_content_for_block(
+                child_block, child_value
+            )
+            search_content += child_content
+
+            if not block_headings:
+                block_headings = " ".join(child_headings)
+
+        search_headings.append(block_headings)
+
+    else:
+        if hasattr(block, "get_searchable_content"):
+            search_content.append(
+                strip_tags(" ".join(block.get_searchable_content(value)))
+            )
+        else:
+            search_content.append(strip_tags(str(block.value)))
+
+    return search_headings, search_content
