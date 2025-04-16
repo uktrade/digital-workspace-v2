@@ -1,0 +1,16 @@
+name: Run lighthouse tests
+on: push
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env
+      - run: make setup
+      - run: make test-lighthouse-all
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: ./lighthouse-results/
+          retention-days: 5
