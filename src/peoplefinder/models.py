@@ -16,6 +16,7 @@ from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
+from modelcluster.models import ClusterableModel
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
@@ -256,7 +257,7 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
-class Person(Indexed, models.Model):
+class Person(ClusterableModel, Indexed, models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -990,7 +991,7 @@ You can update this description, by [updating your team information](https://wor
 """
 
 
-class Team(Indexed, models.Model):
+class Team(ClusterableModel, Indexed, models.Model):
     class LeadersOrdering(models.TextChoices):
         ALPHABETICAL = "alphabetical", "Alphabetical"
         CUSTOM = "custom", "Custom"

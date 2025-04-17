@@ -64,7 +64,7 @@ class TaggedPage(TaggedItem):
 
 
 class TaggedPerson(TaggedItem):
-    person_object = ParentalKey(
+    content_object = ParentalKey(
         to="peoplefinder.Person",
         on_delete=models.CASCADE,
         related_name="tagged_people",
@@ -72,7 +72,7 @@ class TaggedPerson(TaggedItem):
 
 
 class TaggedTeam(TaggedItem):
-    team_object = ParentalKey(
+    content_object = ParentalKey(
         to="peoplefinder.Team",
         on_delete=models.CASCADE,
         related_name="tagged_teams",
