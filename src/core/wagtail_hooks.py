@@ -3,7 +3,12 @@ from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
-from wagtail.admin.panels import FieldPanel, ObjectList, TabbedInterface
+from wagtail.admin.panels import (
+    FieldPanel,
+    MultipleChooserPanel,
+    ObjectList,
+    TabbedInterface,
+)
 from wagtail.admin.ui.tables import Column
 from wagtail.admin.widgets import PageListingButton
 from wagtail.snippets.models import register_snippet
@@ -12,6 +17,7 @@ from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
 from core.models import SiteAlertBanner, Tag
 from core.models.external_links import ExternalLinkSetting
+from core.panels import InlinePanel
 
 
 class SiteAlertBannerAdmin(ModelAdmin):
@@ -35,14 +41,19 @@ def global_admin_css():
 
 
 class TagsSnippetViewSet(SnippetViewSet):
+    model = Tag
     panels = [
         FieldPanel("name"),
+        MultipleChooserPanel(
+            "taggedpage_set",
+            label="Tagged pages",
+            chooser_field_name="content_object",
+        ),
+        InlinePanel("taggedperson_set", label="Tagged people"),
+        InlinePanel("taggedteam_set", label="Tagged teams"),
     ]
-    model = Tag
     icon = "tag"
-    add_to_admin_menu = True
     menu_label = "Tags"
-    menu_order = 300
     list_display = ["name", Column("tagged_page_count"), "link"]
     search_fields = ("name",)
 

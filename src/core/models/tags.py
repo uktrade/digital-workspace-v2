@@ -2,13 +2,14 @@ from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
 from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
 from taggit.models import ItemBase, TagBase
 
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed
 
 
-class Tag(Indexed, TagBase):
+class Tag(ClusterableModel, Indexed, TagBase):
     free_tagging = False
 
     indexed_fields = [
@@ -46,12 +47,15 @@ class TaggedItem(ItemBase):
         # `django-modelcluster` but for now this will have to do.
         unique_together = ("tag", "content_object")
 
-    tag = models.ForeignKey(
+    tag = ParentalKey(
         to=Tag,
         on_delete=models.CASCADE,
         # e.g. taggedpage_set
         related_name="%(class)s_set",
     )
+
+    def __str__(self):
+        return str(self.content_object)
 
 
 # Through model

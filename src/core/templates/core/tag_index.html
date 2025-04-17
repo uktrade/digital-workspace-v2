@@ -1,14 +1,48 @@
 {% extends "dwds_sidebar.html" %}
+{% load wagtailcore_tags cards %}
 
-{% load wagtailcore_tags %}
+{% block primary_content_classes %}
+{% endblock primary_content_classes %}
 
 {% block primary_content %}
-    <p>Pages tagged with "{{ tag.name }}":</p>
-    <ul>
-        {% for obj in tagged_pages %}
-            <li>
-                <a href="{% pageurl obj.content_object %}">{{ obj }}</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="content-stack large">
+        <h2>Teams</h2>
+        <div class="content-grid grid-cards-auto-fill">
+            {% for obj in tagged_teams %}
+                <c-dwds-card>
+                    <c-slot name="card_content">
+                        <div class="box">
+                            <a href="{{ obj.get_absolute_url }}">{{ obj }}</a>
+                        </div>
+                    </c-slot>
+                </c-dwds-card>
+            {% endfor %}
+        </div>
+
+        <h2>People</h2>
+
+        <div class="content-grid grid-cards-auto-fill">
+            {% for obj in tagged_teams %}
+                <c-dwds-card>
+                    <c-slot name="card_content">
+                        <div class="box">
+                            <a href="{{ obj.get_absolute_url }}">{{ obj }}</a>
+                        </div>
+                    </c-slot>
+                </c-dwds-card>
+            {% endfor %}
+        </div>
+
+        <h2>Pages</h2>
+
+        <div class="content-grid grid-cards-auto-fill">
+            {% for obj in tagged_pages %}
+                <c-dwds-card>
+                    <c-slot name="card_content">
+                        {% page_to_engagement obj.content_object %}
+                    </c-slot>
+                </c-dwds-card>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock primary_content %}

@@ -2,12 +2,14 @@
 
 from django.db import migrations
 
+
 def create_simplify_campaign_tag(apps, schema_editor):
     Campaign = apps.get_model("core", "Campaign")
     Campaign.objects.get_or_create(
         name="Simplify",
         slug="simplify",
     )
+
 
 class Migration(migrations.Migration):
 

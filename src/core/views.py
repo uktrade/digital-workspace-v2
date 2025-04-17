@@ -19,6 +19,7 @@ from wagtail.search.backends import get_search_backend
 from content.models import BasePage, ContentOwnerMixin
 from core.forms import PageProblemFoundForm
 from core.models import Tag, TaggedPage
+from core.models.tags import TaggedPerson, TaggedTeam
 from user.models import User
 
 
@@ -162,10 +163,16 @@ def content_owners_report(request: HttpRequest, *args, **kwargs) -> HttpResponse
 @require_GET
 def tag_index(request: HttpRequest, slug: str, *args, **kwargs) -> HttpResponse:
     tag = get_object_or_404(Tag, slug=slug)
+    tagged_teams = TaggedTeam.objects.select_related("content_object").filter(tag=tag)
+    tagged_people = TaggedPerson.objects.select_related("content_object").filter(
+        tag=tag
+    )
     tagged_pages = TaggedPage.objects.select_related("content_object").filter(tag=tag)
     context = {
         "page_title": f"{tag.name}",
         "tag": tag,
+        "tagged_teams": tagged_teams,
+        "tagged_people": tagged_people,
         "tagged_pages": tagged_pages,
     }
     return TemplateResponse(request, "core/tag_index.html", context=context)

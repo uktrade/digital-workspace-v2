@@ -12,7 +12,7 @@ urlpatterns = [
         views.content_owners_report,
         name="report_content_owners",
     ),
-    path("tag/<slug:slug>", views.tag_index, name="tag_index"),
+    path("tag/<slug:slug>/", views.tag_index, name="tag_index"),
     path(
         "page-info/<int:page_id>/",
         views.AdminInfoView.as_view(),
