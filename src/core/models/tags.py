@@ -32,7 +32,7 @@ class TagGroup(Tag):
         abstract = True
 
     def __str__(self):
-        return f"{self.__name__}: {self.name}"
+        return f"{self.__class__.__name__}: {self.name}"
 
 
 class Campaign(TagGroup): ...

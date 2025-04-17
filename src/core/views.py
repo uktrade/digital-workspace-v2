@@ -164,6 +164,7 @@ def tag_index(request: HttpRequest, slug: str, *args, **kwargs) -> HttpResponse:
     tag = get_object_or_404(Tag, slug=slug)
     tagged_pages = TaggedPage.objects.select_related("content_object").filter(tag=tag)
     context = {
+        "page_title": f"{tag.name}",
         "tag": tag,
         "tagged_pages": tagged_pages,
     }

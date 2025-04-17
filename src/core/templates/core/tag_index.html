@@ -1,19 +1,14 @@
-{% extends '1_col_content.html' %}
+{% extends "dwds_sidebar.html" %}
 
 {% load wagtailcore_tags %}
 
-{% block title %}{{ tag.name }} - Tag{% endblock %}
-
-{% block content %}
-    <span class="govuk-caption-l">Tag</span>
-    <h1 class="govuk-heading-l">{{ tag.name }}</h1>
-
-    <p class="govuk-body">Pages tagged with "{{ tag.name }}":</p>
-    <ul class="govuk-list">
+{% block primary_content %}
+    <p>Pages tagged with "{{ tag.name }}":</p>
+    <ul>
         {% for obj in tagged_pages %}
             <li>
-                <a class="govuk-link" href="{% pageurl obj.content_object %}">{{ obj }}</a>
+                <a href="{% pageurl obj.content_object %}">{{ obj }}</a>
             </li>
         {% endfor %}
     </ul>
-{% endblock %}
+{% endblock primary_content %}
