@@ -1,4 +1,4 @@
-{% load menu_tags waffle_tags %}
+{% load menu_tags waffle_tags nav_proto %}
 {% load render_bundle webpack_static from webpack_loader %}
 
 <header class="govuk-header govuk-header--ws search-v2"
@@ -34,7 +34,11 @@
                     hidden>Menu</button>
             {% if USER_IS_AUTHENTICATED %}
                 <nav aria-label="Top Level Navigation" class="govuk-header__navigation">
-                    {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+                    {% if FEATURE_FLAGS.navigation_prototype %}
+                        {% nav_proto %}
+                    {% else %}
+                        {% main_menu max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+                    {% endif %}
                 </nav>
             {% endif %}
         </div>
