@@ -2,6 +2,8 @@
     --icon-card-bg-color: var(--card-bg-white);
     --icon-card-padding: var(--s-2);
 
+    min-inline-size: unset;
+
     background-color: var(--icon-card-bg-color);
 
     border: 1px solid rgba(0, 0, 0, 0.2);

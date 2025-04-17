@@ -7,6 +7,8 @@
     border-radius: var(--content-item-card-radius);
     overflow: hidden;
 
+    min-inline-size: var(--card-min-width);
+
     > div {
         flex-grow: 1;
     }
@@ -34,7 +36,7 @@
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
         }
-        
+
         > div {
             position: absolute;
             width: 100%;
@@ -52,7 +54,7 @@
         }
     }
 
-    &:hover .flippable-content{
+    &:hover .flippable-content {
         transform: perspective(300px) rotateY(180deg);
     }
 }
