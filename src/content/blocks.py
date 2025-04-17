@@ -357,13 +357,13 @@ class QuoteBlock(blocks.StructBlock):
         if value["quote_theme"] == "light":
             context.update(highlight=False)
         if value["source"]:
-            source_team = value["source"].teams.first()
+            source_role = value["source"].roles.first()
             context.update(
                 source_name=value["source"].full_name,
                 source_url=value["source"].get_absolute_url(),
-                source_role=value["source"].roles.first().job_title,
-                source_team_name=source_team.name,
-                source_team_url=source_team.get_absolute_url(),
+                source_role=source_role.job_title,
+                source_team_name=source_role.team.name,
+                source_team_url=source_role.team.get_absolute_url(),
                 source_image_url=value["source"].photo.url,
             )
         else:
