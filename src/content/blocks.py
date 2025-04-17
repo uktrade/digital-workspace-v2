@@ -307,9 +307,12 @@ class PersonBanner(blocks.StructBlock):
         if value["person"]:
             context.update(
                 person_name=value["person"].full_name,
-                person_role=value["person"].roles.first().job_title,
-                person_image_url=value["person"].photo.url,
+                person_image_url=(
+                    value["person"].photo.url if value["person"].photo else None
+                ),
             )
+            if person_role := value["person"].roles.first():
+                context.update(person_role=person_role.job_title)
         else:
             context.update(
                 person_name=value["person_name"],
@@ -357,15 +360,19 @@ class QuoteBlock(blocks.StructBlock):
         if value["quote_theme"] == "light":
             context.update(highlight=False)
         if value["source"]:
-            source_role = value["source"].roles.first()
             context.update(
                 source_name=value["source"].full_name,
                 source_url=value["source"].get_absolute_url(),
-                source_role=source_role.job_title,
-                source_team_name=source_role.team.name,
-                source_team_url=source_role.team.get_absolute_url(),
-                source_image_url=value["source"].photo.url,
+                source_image_url=(
+                    value["source"].photo.url if value["source"].photo else None
+                ),
             )
+            if source_role := value["source"].roles.first():
+                context.update(
+                    source_role=source_role.job_title,
+                    source_team_name=source_role.team.name,
+                    source_team_url=source_role.team.get_absolute_url(),
+                )
         else:
             context.update(
                 source_name=value["source_name"],
