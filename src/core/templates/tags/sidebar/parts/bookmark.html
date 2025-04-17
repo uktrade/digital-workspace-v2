@@ -1,1 +1,5 @@
-<div class="dwds-content-item-card icon-card">{% include "interactions/bookmark_page_input.html" %}</div>
+<c-dwds-card icon-card="true">
+    <c-slot name="card_content">
+        {% include "interactions/bookmark_page_input.html" %}
+    </c-slot>
+</c-dwds-card>
