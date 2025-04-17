@@ -14,10 +14,10 @@
 
         {% include 'peoplefinder/components/team-form.html' %}
 
-        <div class="dwds-button-group">
+        <c-dwds-button-group>
             <button class="dwds-button" type="submit">Save team</button>
             <a class="dwds-button dwds-button--secondary"
                href="{% url 'team-view' team.slug %}">Cancel</a>
-        </div>
+        </c-dwds-button-group>
     </form>
 {% endblock primary_content %}

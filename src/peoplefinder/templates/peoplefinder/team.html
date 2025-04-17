@@ -17,53 +17,52 @@
         {% if sub_teams %}
             {% include "peoplefinder/includes/team_buttons.html" with team=team teams_active=teams_active %}
         {% endif %}
-        <div class="dwds-content-item-card no-shadow">
-            <div class="dwds-content-list content-item">
-                <div class="content-main">
-                    <div class="content-body content-body-space-padding content-stack">
-                        <h1>
-                            <span data-testid="name">{{ page_title }}</span>
-                            {% if team.abbreviation %}(<span data-testid="abbreviation">{{ team.abbreviation }}</span>){% endif %}
-                        </h1>
-                        <div data-testid="description">{{ team.description|markdown }}</div>
-                        {% if profile_completion %}<p class="text-small">{{ profile_completion }}</p>{% endif %}
-                        <div class="dwds-button-group">
-                            {% if perms.peoplefinder.change_team %}
-                                <a class="dwds-button dwds-button--secondary dwds-button--inline"
-                                   href="{% url 'team-edit' team.slug %}"
-                                   data-testid="edit-team">Edit team</a>
-                            {% endif %}
-                            {% if perms.peoplefinder.add_team %}
-                                <a class="dwds-button dwds-button--secondary dwds-button--inline"
-                                   href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
-                            {% endif %}
-                            {% if perms.peoplefinder.delete_team %}
-                                {% if can_team_be_deleted %}
-                                    <a class="dwds-button dwds-button--warning dwds-button--inline"
-                                       href="{% url 'team-delete' team.slug %}">Delete team</a>
-                                {% endif %}
-                            {% endif %}
-                        </div>
+        <c-dwds-card no-shadow="true">
+            <c-slot name="card_content">
+                <c-dwds-content-list>
+                    <h1>
+                        <span data-testid="name">{{ page_title }}</span>
+                        {% if team.abbreviation %}(<span data-testid="abbreviation">{{ team.abbreviation }}</span>){% endif %}
+                    </h1>
+                    <div data-testid="description">{{ team.description|markdown }}</div>
+                    {% if profile_completion %}<p class="text-small">{{ profile_completion }}</p>{% endif %}
+                    <c-dwds-button-group>
+                        {% if perms.peoplefinder.change_team %}
+                            <a class="dwds-button dwds-button--secondary dwds-button--inline"
+                               href="{% url 'team-edit' team.slug %}"
+                               data-testid="edit-team">Edit team</a>
+                        {% endif %}
+                        {% if perms.peoplefinder.add_team %}
+                            <a class="dwds-button dwds-button--secondary dwds-button--inline"
+                               href="{% url 'team-add-new-subteam' team.slug %}">Add new sub-team</a>
+                        {% endif %}
                         {% if perms.peoplefinder.delete_team %}
-                            {% if not can_team_be_deleted %}
-                                <div class="text-small">
-                                    {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
-                                </div>
+                            {% if can_team_be_deleted %}
+                                <a class="dwds-button dwds-button--warning dwds-button--inline"
+                                   href="{% url 'team-delete' team.slug %}">Delete team</a>
                             {% endif %}
                         {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
+                    </c-dwds-button-group>
+                    {% if perms.peoplefinder.delete_team %}
+                        {% if not can_team_be_deleted %}
+                            <div class="text-small">
+                                {% include 'peoplefinder/components/bullet-list.html' with introduction='This team cannot be deleted because it has' list=reasons_team_cannot_be_deleted %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </c-dwds-content-list>
+            </c-slot>
+        </c-dwds-card>
 
         {% if leaders %}
             <h2>Team leader{{ leaders|length|pluralize }}</h2>
             <div class="content-grid grid-cards-auto-fill">
                 {% for member in leaders %}
-                    <div class="dwds-content-item-card">
-                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
-                    </div>
+                    <c-dwds-card>
+                        <c-slot name="card_content">
+                            {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                        </c-slot>
+                    </c-dwds-card>
                 {% endfor %}
             </div>
         {% endif %}
@@ -72,9 +71,11 @@
             <h2>Teams within {{ team.short_name }}</h2>
             <div class="content-grid grid-cards-auto-fill">
                 {% for team in sub_teams %}
-                    <div class="dwds-content-item-card">
-                        {% include 'peoplefinder/components/team-card-new.html' with team=team profile_completion=team.profile_completion %}
-                    </div>
+                    <c-dwds-card>
+                        <c-slot name="card_content">
+                            {% include 'peoplefinder/components/team-card-new.html' with team=team profile_completion=team.profile_completion %}
+                        </c-slot>
+                    </c-dwds-card>
                 {% endfor %}
             </div>
         {% endif %}
@@ -83,9 +84,11 @@
             <h2>People in {{ team.short_name }}</h2>
             <div class="content-grid grid-cards-auto-fill">
                 {% for member in members %}
-                    <div class="dwds-content-item-card">
-                        {% include 'peoplefinder/components/team-member-card.html' with member=member %}
-                    </div>
+                    <c-dwds-card>
+                        <c-slot name="card_content">
+                            {% include 'peoplefinder/components/team-member-card.html' with member=member %}
+                        </c-slot>
+                    </c-dwds-card>
                 {% endfor %}
             </div>
         {% endif %}

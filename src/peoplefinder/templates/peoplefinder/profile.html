@@ -15,153 +15,152 @@
 
 {% block primary_content %}
     <div class="content-stack large">
-        <div class="dwds-content-item-card no-shadow">
-            <div class="dwds-content-list content-item">
-                <div class="content-main">
-                    <div class="content-body content-body-space-padding content-stack">
-                        <div class="content-sidebar small">
-                            <div>
-                                {% if profile.photo %}
-                                    {% include "dwds/elements/profile_image.html" with profile_image_url=profile.photo.url name=profile.full_name profile=profile %}
-                                {% else %}
-                                    {% include "dwds/elements/profile_image.html" with name=profile.full_name profile=profile %}
-                                {% endif %}
-                            </div>
-                            <div class="content-stack">
-                                <div class="content-stack no-gap">
-                                    <div class="content-cluster small">
-                                        <h1 class="text-large" data-testid="full-name">{{ profile.full_name }}</h1>
-                                        {% if profile.pronouns %}({{ profile.pronouns }}){% endif %}
-                                    </div>
-                                    <div>
-                                        {% if profile.name_pronunciation %}(Pronounced {{ profile.name_pronunciation }}){% endif %}
-                                    </div>
+        <c-dwds-card no-shadow="true">
+            <c-slot name="card_content">
+                <c-dwds-content-list>
+                    <div class="content-sidebar small">
+                        <div>
+                            {% if profile.photo %}
+                                {% include "dwds/elements/profile_image.html" with profile_image_url=profile.photo.url name=profile.full_name profile=profile %}
+                            {% else %}
+                                {% include "dwds/elements/profile_image.html" with name=profile.full_name profile=profile %}
+                            {% endif %}
+                        </div>
+                        <div class="content-stack">
+                            <div class="content-stack no-gap">
+                                <div class="content-cluster small">
+                                    <h1 class="text-large" data-testid="full-name">{{ profile.full_name }}</h1>
+                                    {% if profile.pronouns %}({{ profile.pronouns }}){% endif %}
                                 </div>
-                                {% for role in roles %}
-                                    <div class="content-with-icon small-gap">
-                                        {% include "dwds/icons/briefcase.html" with small=True %}
-                                        {% include "peoplefinder/components/profile-role.html" with role=role %}
-                                    </div>
+                                <div>
+                                    {% if profile.name_pronunciation %}(Pronounced {{ profile.name_pronunciation }}){% endif %}
+                                </div>
+                            </div>
+                            {% for role in roles %}
+                                <div class="content-with-icon small-gap">
+                                    {% include "dwds/icons/briefcase.html" with small=True %}
+                                    {% include "peoplefinder/components/profile-role.html" with role=role %}
+                                </div>
+                            {% endfor %}
+
+                            {% if profile.contact_email %}
+                                <div class="content-with-icon small-gap">
+                                    {% include "dwds/icons/email.html" with small=True %}
+                                    <a class="dwds-email-wrap"
+                                       href="mailto:{{ profile.contact_email }}"
+                                       data-testid="preferred-email">{{ profile.contact_email }}</a>
+                                </div>
+                            {% else %}
+                                <div class="content-with-icon small-gap">
+                                    {% include "dwds/icons/email.html" with small=True %}
+                                    <a class="dwds-email-wrap"
+                                       href="mailto:{{ profile.email }}"
+                                       data-testid="preferred-email">{{ profile.email }}</a>
+                                </div>
+                            {% endif %}
+
+                            {% if profile.primary_phone_number %}
+                                <div class="content-with-icon small-gap">
+                                    {% include "dwds/icons/phone.html" with small=True %}
+                                    <a href="tel:{{ profile.primary_phone_number }}">{{ profile.primary_phone_number }}</a>
+                                </div>
+                            {% endif %}
+
+                            {% if profile.uk_office_location.city %}
+                                <div class="content-with-icon small-gap">
+                                    {% include "dwds/icons/marker.html" with small=True %}
+                                    {{ profile.uk_office_location.city }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="content-stack">
+                        {% if profile.is_active %}
+                            {% if request.user == profile.user %}
+                                <p>
+                                    Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.
+                                </p>
+                            {% else %}
+                                <p>
+                                    Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.
+                                </p>
+                            {% endif %}
+                        {% else %}
+                            <p>This profile is inactive since {{ profile.became_inactive|naturaltime }}.</p>
+                        {% endif %}
+                    </div>
+
+                    <c-dwds-button-group>
+                        {% if profile.is_active %}
+                            <a class="dwds-button dwds-button--inline dwds-button--secondary"
+                               href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
+                        {% endif %}
+
+                        {% if show_confirm_my_details %}
+                            <button class="dwds-button dwds-button--inline dwds-button--transactional"
+                                    hx-post="{% url 'profile-confirm-details' profile.slug %}"
+                                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                                Confirm my details are still correct
+                            </button>
+                        {% endif %}
+
+                        {% if show_activate_profile %}
+                            <button class="dwds-button dwds-button--inline dwds-button--transactional"
+                                    hx-post="{% url 'profile-activate' profile.slug %}"
+                                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                    hx-confirm="Are you sure you want to activate this profile?">
+                                Activate profile
+                            </button>
+                        {% endif %}
+
+                        {% if profile.is_active and perms.peoplefinder.delete_person and request.user != profile.user %}
+                            <form action="{% url 'profile-delete' profile.slug %}"
+                                  style="display: contents"
+                                  method="post"
+                                  onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
+                                {% csrf_token %}
+                                <input class="dwds-button dwds-button--inline dwds-button--warning"
+                                       type="submit"
+                                       id="delete-profile"
+                                       value="Delete profile" />
+                            </form>
+                        {% endif %}
+                    </c-dwds-button-group>
+                </c-dwds-content-list>
+            </c-slot>
+        </c-dwds-card>
+        <c-dwds-card no-shadow="true">
+            <c-slot name="card_content">
+                <div class="dwds-content-list content-item">
+                    <div class="content-main">
+                        <div class="content-body content-body-space-padding content-stack">
+                            <c-dwds-button-group>
+                                {% for profile_section_dict in profile_section_dicts %}
+                                    <a class="dwds-button dwds-button--navigation {% if current_tab.value == profile_section_dict.profile_section.value %}active{% endif %}"
+                                       href="{{ profile_section_dict.url }}">{{ profile_section_dict.title }}</a>
                                 {% endfor %}
-
-                                {% if profile.contact_email %}
-                                    <div class="content-with-icon small-gap">
-                                        {% include "dwds/icons/email.html" with small=True %}
-                                        <a class="dwds-email-wrap"
-                                           href="mailto:{{ profile.contact_email }}"
-                                           data-testid="preferred-email">{{ profile.contact_email }}</a>
-                                    </div>
+                            </c-dwds-button-group>
+                            <div class="content-stack">
+                                <h2>{{ current_tab.title }}</h2>
+                                {% if current_tab.values %}
+                                    <dl>
+                                        {% for value in current_tab.values %}
+                                            <dt>{{ value.1 }}</dt>
+                                            <dd>
+                                                {{ value.2 }}
+                                            </dd>
+                                        {% endfor %}
+                                    </dl>
                                 {% else %}
-                                    <div class="content-with-icon small-gap">
-                                        {% include "dwds/icons/email.html" with small=True %}
-                                        <a class="dwds-email-wrap"
-                                           href="mailto:{{ profile.email }}"
-                                           data-testid="preferred-email">{{ profile.email }}</a>
-                                    </div>
-                                {% endif %}
-
-                                {% if profile.primary_phone_number %}
-                                    <div class="content-with-icon small-gap">
-                                        {% include "dwds/icons/phone.html" with small=True %}
-                                        <a href="tel:{{ profile.primary_phone_number }}">{{ profile.primary_phone_number }}</a>
-                                    </div>
-                                {% endif %}
-
-                                {% if profile.uk_office_location.city %}
-                                    <div class="content-with-icon small-gap">
-                                        {% include "dwds/icons/marker.html" with small=True %}
-                                        {{ profile.uk_office_location.city }}
-                                    </div>
+                                    <p>{{ profile.first_name }} hasn't listed any {{ current_tab.title|lower }}.</p>
                                 {% endif %}
                             </div>
                         </div>
-
-                        <div class="content-stack">
-                            {% if profile.is_active %}
-                                {% if request.user == profile.user %}
-                                    <p>
-                                        Let us know if you are <a href="{% url 'profile-leaving-dit' profile.slug %}">leaving DBT</a>.
-                                    </p>
-                                {% else %}
-                                    <p>
-                                        Let us know if {{ profile.full_name }} has <a href="{% url 'profile-leaving-dit' profile.slug %}">left DBT</a>.
-                                    </p>
-                                {% endif %}
-                            {% else %}
-                                <p>This profile is inactive since {{ profile.became_inactive|naturaltime }}.</p>
-                            {% endif %}
-                        </div>
-
-
-                        <div class="dwds-button-group">
-                            {% if profile.is_active %}
-                                <a class="dwds-button dwds-button--inline dwds-button--secondary"
-                                   href="{% url 'profile-edit' profile.slug %}">Edit profile</a>
-                            {% endif %}
-
-                            {% if show_confirm_my_details %}
-                                <button class="dwds-button dwds-button--inline dwds-button--transactional"
-                                        hx-post="{% url 'profile-confirm-details' profile.slug %}"
-                                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-                                    Confirm my details are still correct
-                                </button>
-                            {% endif %}
-
-                            {% if show_activate_profile %}
-                                <button class="dwds-button dwds-button--inline dwds-button--transactional"
-                                        hx-post="{% url 'profile-activate' profile.slug %}"
-                                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                                        hx-confirm="Are you sure you want to activate this profile?">
-                                    Activate profile
-                                </button>
-                            {% endif %}
-
-                            {% if profile.is_active and perms.peoplefinder.delete_person and request.user != profile.user %}
-                                <form action="{% url 'profile-delete' profile.slug %}"
-                                      style="display: contents"
-                                      method="post"
-                                      onsubmit="javascript:return confirm('Are you sure? This cannot be undone.')">
-                                    {% csrf_token %}
-                                    <input class="dwds-button dwds-button--inline dwds-button--warning"
-                                           type="submit"
-                                           id="delete-profile"
-                                           value="Delete profile" />
-                                </form>
-                            {% endif %}
-                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="dwds-content-item-card no-shadow">
-            <div class="dwds-content-list content-item">
-                <div class="content-main">
-                    <div class="content-body content-body-space-padding content-stack">
-                        <div class="dwds-button-group">
-                            {% for profile_section_dict in profile_section_dicts %}
-                                <a class="dwds-button dwds-button--navigation {% if current_tab.value == profile_section_dict.profile_section.value %}active{% endif %}"
-                                   href="{{ profile_section_dict.url }}">{{ profile_section_dict.title }}</a>
-                            {% endfor %}
-                        </div>
-                        <div class="content-stack">
-                            <h2>{{ current_tab.title }}</h2>
-                            {% if current_tab.values %}
-                                <dl>
-                                    {% for value in current_tab.values %}
-                                        <dt>{{ value.1 }}</dt>
-                                        <dd>
-                                            {{ value.2 }}
-                                        </dd>
-                                    {% endfor %}
-                                </dl>
-                            {% else %}
-                                <p>{{ profile.first_name }} hasn't listed any {{ current_tab.title|lower }}.</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </c-slot>
+        </c-dwds-card>
         {% if perms.peoplefinder.view_auditlog %}
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">

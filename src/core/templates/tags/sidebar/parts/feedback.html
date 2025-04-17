@@ -1,13 +1,15 @@
-<div class="dwds-content-item-card">
-    <script type="text/javascript">
-        function giveFeedback() {
-            event.preventDefault();
-            const feedbackElement = document.querySelector('.feedback-section details');
-            const feedbackInput = feedbackElement.querySelector('#id_trying_to');
-            feedbackElement.scrollIntoView({behavior: 'smooth'});
-            feedbackElement.open = true;
-            feedbackInput.focus();
-        }
-    </script>
-    {% include "dwds/components/cta_button.html" with data_testid="give-feedback-button" button_func="giveFeedback()" title=title url=team_url description=description icon="dwds/icons/feedback.html" %}
-</div>
+<script type="text/javascript">
+    function giveFeedback() {
+        event.preventDefault();
+        const feedbackElement = document.querySelector('.feedback-section details');
+        const feedbackInput = feedbackElement.querySelector('#id_trying_to');
+        feedbackElement.scrollIntoView({behavior: 'smooth'});
+        feedbackElement.open = true;
+        feedbackInput.focus();
+    }
+</script>
+<c-dwds-card>
+    <c-slot name="card_content">
+        {% include "dwds/components/cta_button.html" with data_testid="give-feedback-button" button_func="giveFeedback()" title=title url=team_url description=description icon="dwds/icons/feedback.html" %}
+    </c-slot>
+</c-dwds-card>
