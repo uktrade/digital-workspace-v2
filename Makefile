@@ -246,3 +246,11 @@ local-test-data: # Add all test data for local development
 
 serve-docs: # Serve mkdocs on port 8002
 	poetry run mkdocs serve -a localhost:8002
+
+loadtest:
+	poetry install --with loadtests
+	poetry run locust
+
+loadtest-local:
+	poetry install --with loadtests
+	poetry run locust --headless --users 10 --spawn-rate 1 -H http://localhost:8000/
