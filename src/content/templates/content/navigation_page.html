@@ -18,7 +18,11 @@
     <div class="content-stack">
         <div class="content-grid grid-cards">
             {% for block in page.primary_elements %}
-                <div class="dwds-content-item-card">{% include_block block %}</div>
+                <c-dwds-card>
+                    <c-slot name="card_content">
+                        {% include_block block %}
+                    </c-slot>
+                </c-dwds-card>
             {% endfor %}
         </div>
     </div>
@@ -27,7 +31,11 @@
 {% block secondary_content %}
     <div class="content-stack">
         {% for block in page.secondary_elements %}
-            <div class="dwds-content-item-card no-shadow">{% include_block block %}</div>
+            <c-dwds-card no-shadow="true">
+                <c-slot name="card_content">
+                    {% include_block block %}
+                </c-slot>
+            </c-dwds-card>
         {% endfor %}
         {{ block.super }}
     </div>

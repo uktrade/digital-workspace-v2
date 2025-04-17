@@ -20,17 +20,19 @@ Context:
                value="{{ manager.slug }}">
     </div>
 
-    <div class="dwds-button-group" hx-target="this" hx-swap="outerHTML">
-        <button class="dwds-button dwds-button--secondary"
-                hx-get="{% url 'profile-edit-manager-update' profile.slug %}"
-                data-testid="update-manager">Update manager</button>
-        {% if manager %}
-            <button class="dwds-button dwds-button--warning"
-                    hx-get="{% url 'profile-edit-manager-clear' profile.slug %}"
-                    hx-target="#manager-component"
-                    hx-swap="outerHTML"
-                    data-testid="clear-manager">Clear manager</button>
-        {% endif %}
+    <div hx-target="this" hx-swap="outerHTML">
+        <c-dwds-button-group>
+            <button class="dwds-button dwds-button--secondary"
+                    hx-get="{% url 'profile-edit-manager-update' profile.slug %}"
+                    data-testid="update-manager">Update manager</button>
+            {% if manager %}
+                <button class="dwds-button dwds-button--warning"
+                        hx-get="{% url 'profile-edit-manager-clear' profile.slug %}"
+                        hx-target="#manager-component"
+                        hx-swap="outerHTML"
+                        data-testid="clear-manager">Clear manager</button>
+            {% endif %}
+        </c-dwds-button-group>
     </div>
 </div>
 <br>

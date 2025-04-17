@@ -1,10 +1,23 @@
-<div class="dwds-content-item-card {% if flippable %}flippable{% endif %}">
+<div class="dwds-content-item-card {% if flippable %}flippable{% endif %} {% if no_shadow %}no-shadow{% endif %} {% if icon_card %}icon-card {{ icon_card_classes }}{% endif %}">
     {% if flippable %}
         <div class="flippable-content">
-            <div>{% include "dwds/elements/content_item.html" %}</div>
-            <div>{% include "dwds/components/cta.html" %}</div>
+            <div>
+                {% if card_content %}
+                    {{ card_content }}
+                {% else %}
+                    {% include "dwds/elements/content_item.html" %}
+                {% endif %}
+            </div>
+            <div>
+                {% if card_content_back %}
+                    {{ card_content_back }}
+                {% else %}
+                    {% include "dwds/components/cta.html" %}
+                {% endif %}
+            </div>
         </div>
-
+    {% elif card_content %}
+        {{ card_content }}
     {% else %}
         {% include "dwds/elements/content_item.html" %}
     {% endif %}
