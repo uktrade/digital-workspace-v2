@@ -1,16 +1,16 @@
 {% if page.allow_comments %}
-    <script type="text/javascript">
-        function scrollAndFocus(event, inputId) {
-            event.preventDefault();
-            const input = document.getElementById(inputId);
-            if (input) {
-                input.scrollIntoView({behavior: 'smooth'});
-                input.focus();
-            }
-        }
-    </script>
     <c-dwds-card icon-card="true">
         <c-slot name="card_content">
+            <script type="text/javascript">
+                function scrollAndFocus(event, inputId) {
+                    event.preventDefault();
+                    const input = document.getElementById(inputId);
+                    if (input) {
+                        input.scrollIntoView({behavior: 'smooth'});
+                        input.focus();
+                    }
+                }
+            </script>
             <button class="dwds-button dwds-button--clear-icon content-with-icon no-gap"
                     onClick="scrollAndFocus(event, 'id_comment')"
                     title="Comment section">{% include 'dwds/icons/comment.html' %}</button>
