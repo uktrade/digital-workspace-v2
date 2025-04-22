@@ -34,4 +34,14 @@ urlpatterns = [
         views.get_comment,
         name="get-comment",
     ),
+    path(
+        "comment/<int:tag_pk>/",
+        views.subscribe,
+        name="subscribe-to-tag",
+    ),
+    path(
+        "comment/<int:tag_pk>/",
+        views.unsubscribe,
+        name="unsubscribe-from-tag",
+    ),
 ]

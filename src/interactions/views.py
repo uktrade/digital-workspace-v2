@@ -13,11 +13,13 @@ from waffle import flag_is_active
 from wagtail.models import Page
 
 from core import flags
+from core.models.tags import Tag
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
 from interactions.services import comment_reactions as comment_reactions_service
 from interactions.services import comments as comments_service
 from interactions.services import page_reactions as page_reactions_service
+from interactions.services import tag_subscriptions as tag_subscriptions_service
 from news.forms import CommentForm
 from news.models import Comment
 
@@ -210,3 +212,19 @@ def hide_comment(request: HttpRequest, pk: int) -> HttpResponse:
     comments_service.hide_comment(comment)
 
     return comments_service.get_page_comments_response(request, comment.page)
+
+
+@require_http_methods(["POST"])
+def subscribe(request, *, tag_pk: int):
+    user = request.user
+    tag = Tag.objects.get(pk=tag_pk)
+    tag_subscriptions_service.subscribe(tag=tag, user=user)
+    return HttpResponse()
+
+
+@require_http_methods(["DELETE"])
+def unsubscribe(request, *, tag_pk: int):
+    user = request.user
+    tag = Tag.objects.get(pk=tag_pk)
+    tag_subscriptions_service.unsubscribe(tag=tag, user=user)
+    return HttpResponse()
