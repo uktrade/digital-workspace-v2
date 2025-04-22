@@ -11,6 +11,10 @@
         margin-block-start: var(--s0);
     }
 
+    > a {
+        max-width: max-content;
+    }
+
     &.no-gap {
         > * + * {
             margin-block-start: 0;
