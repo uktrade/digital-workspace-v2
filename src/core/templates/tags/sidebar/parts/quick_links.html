@@ -1,5 +1,7 @@
 {% if quick_links %}
-    <div class="dwds-content-item-card">
-        {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
-    </div>
+    <c-dwds-card>
+        <c-slot name="card_content">
+            {% include "dwds/components/link_list.html" with title="Quick links" list=quick_links %}
+        </c-slot>
+    </c-dwds-card>
 {% endif %}

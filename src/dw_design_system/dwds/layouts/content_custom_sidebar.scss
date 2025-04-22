@@ -15,6 +15,7 @@
 
     > .content-image {
         flex-basis: 0;
+
         img {
             width: 100%;
             height: auto;
@@ -26,7 +27,7 @@
     }
 }
 
-@container custom-sidebar (width > 600px) {
+@container custom-sidebar (width > 687px) {
     .content-custom-sidebar {
         flex-direction: row;
 
