@@ -7,14 +7,6 @@ from news.models import NewsHome
 
 from peoplefinder.test.factories import UserWithPersonFactory
 from news.factories import NewsPageFactory
-from django.core.management import call_command
-
-
-@pytest.fixture(scope="package")
-def django_db_setup(django_db_setup, django_db_blocker):
-    with django_db_blocker.unblock():
-        call_command("create_section_homepages")
-        call_command("loaddata", "countries.json")
 
 
 @pytest.fixture
