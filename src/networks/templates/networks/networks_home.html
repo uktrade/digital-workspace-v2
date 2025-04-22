@@ -14,7 +14,11 @@
     {% endif %}
     <div class="content-grid grid-cards-auto-fill">
         {% for network in networks %}
-            <div class="dwds-content-item-card">{% page_to_engagement network %}</div>
+            <c-dwds-card>
+                <c-slot name="card_content">
+                    {% page_to_engagement network %}
+                </c-slot>
+            </c-dwds-card>
         {% empty %}
             <p>There are no networks to display.</p>
         {% endfor %}
