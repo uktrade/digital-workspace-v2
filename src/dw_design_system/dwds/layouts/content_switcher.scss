@@ -17,6 +17,7 @@
     }
 
     &.max-2 {
+        --content-switcher-min-width: calc(calc(var(--card-min-width) * 2) + calc(var(--content-switcher-gap) * 1));
 
         > :nth-last-child(n+ 3),
         > :nth-last-child(n+ 3) ~ * {
@@ -25,6 +26,7 @@
     }
 
     &.max-3 {
+        --content-switcher-min-width: calc(calc(var(--card-min-width) * 3) + calc(var(--content-switcher-gap) * 2));
 
         > :nth-last-child(n+ 4),
         > :nth-last-child(n+ 4) ~ * {
