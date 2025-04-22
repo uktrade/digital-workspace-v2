@@ -17,7 +17,7 @@
 html,
 
 html.no-scroll {
-	overflow: hidden;
+    overflow: hidden;
 }
 
 body {
@@ -78,7 +78,6 @@ body {
 
     a {
         color: var(--color-link);
-        width: fit-content;
     }
 
     a.no-underline {

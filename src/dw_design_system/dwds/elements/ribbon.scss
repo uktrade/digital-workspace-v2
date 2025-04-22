@@ -18,7 +18,7 @@
     .ribbon-main {
         padding: var(--ribbon-padding) var(--ribbon-padding-right) var(--ribbon-padding) var(--ribbon-left-space);
         margin-left: calc(var(--ribbon-left-space) * -1);
-        border-radius: 0 var(--ribbon-border-radius) var(--ribbon-border-radius) 0;
+        border-radius: var(--ribbon-border-radius);
         color: var(--ribbon-text-colour);
         background: var(--ribbon-background);
         width: fit-content;

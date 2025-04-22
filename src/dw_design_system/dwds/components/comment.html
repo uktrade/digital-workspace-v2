@@ -3,7 +3,7 @@
 <div class="dwds-comment" id="comment-{{ comment.id }}">
     <div class="content-stack">
         <div class="content-stack small">
-            {% include "dwds/components/author.html" with name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date edited_timestamp=comment.edited_date %}
+            {% include "dwds/components/author.html" with always_show_profile_image=True name=comment.author_name profile_image_url=comment.author_image_url profile_url=comment.author_url timestamp=comment.posted_date edited_timestamp=comment.edited_date %}
             <div>{{ comment.message }}</div>
         </div>
         <c-dwds-button-group>
