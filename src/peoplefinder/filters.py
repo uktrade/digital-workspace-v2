@@ -12,11 +12,20 @@ class DiscoverFilters(django_filters.FilterSet):
         expression = field_name if value == "ascending" else f"-{field_name}"
         return queryset.order_by(expression)
 
-    order_by_first_name = django_filters.ChoiceFilter(
+    sort_by_first_name = django_filters.ChoiceFilter(
         field_name="first_name",
-        label="order_by_name",
+        label="sort_by_first_name",
         choices=ORDER_CHOICES,
         method="filter_by_order",
+    )
+    sort_by_grade = django_filters.ChoiceFilter(
+        field_name="grade",
+        label="sort_by_grade",
+        choices=ORDER_CHOICES,
+        method="filter_by_order",
+    )
+    sort_by = django_filters.OrderingFilter(
+        fields=(("first_name", "first_name"), ("grade", "grade")),
     )
 
     city = django_filters.ChoiceFilter(
