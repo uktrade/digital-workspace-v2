@@ -5,8 +5,10 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from taggit.models import ItemBase, TagBase
 
+from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed
+from peoplefinder.widgets import PersonChooser
 
 
 class Tag(ClusterableModel, Indexed, TagBase):
@@ -66,6 +68,10 @@ class TaggedPage(TaggedItem):
         related_name="tagged_items",
     )
 
+    panels = [
+        FieldPanel("content_object"),
+    ]
+
 
 class TaggedPerson(TaggedItem):
     content_object = ParentalKey(
@@ -73,6 +79,10 @@ class TaggedPerson(TaggedItem):
         on_delete=models.CASCADE,
         related_name="tagged_people",
     )
+
+    panels = [
+        FieldPanel("content_object", widget=PersonChooser),
+    ]
 
 
 class TaggedTeam(TaggedItem):
