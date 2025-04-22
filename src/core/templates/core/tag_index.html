@@ -11,9 +11,7 @@
             {% for obj in tagged_teams %}
                 <c-dwds-card>
                     <c-slot name="card_content">
-                        <div class="box">
-                            <a href="{{ obj.get_absolute_url }}">{{ obj }}</a>
-                        </div>
+                        {% include 'peoplefinder/components/team-card-new.html' with team=obj.content_object profile_completion=obj.content_object.profile_completion %}
                     </c-slot>
                 </c-dwds-card>
             {% endfor %}
@@ -22,12 +20,15 @@
         <h2>People</h2>
 
         <div class="content-grid grid-cards-auto-fill">
-            {% for obj in tagged_teams %}
+            {% for obj in tagged_people %}
                 <c-dwds-card>
                     <c-slot name="card_content">
-                        <div class="box">
-                            <a href="{{ obj.get_absolute_url }}">{{ obj }}</a>
-                        </div>
+                        {% url 'profile-view' obj.content_object.slug as profile_url %}
+                        {% if obj.content_object.photo %}
+                            {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=obj.content_object.photo.url name=obj.content_object.full_name title=obj.content_object.job_title location=obj.content_object.uk_office_location.city profile_url=profile_url %}
+                        {% else %}
+                            {% include "dwds/components/profile_info.html" with show_profile_image=True name=obj.content_object.full_name title=obj.content_object.job_title location=obj.content_object.uk_office_location.city profile_url=profile_url %}
+                        {% endif %}
                     </c-slot>
                 </c-dwds-card>
             {% endfor %}
