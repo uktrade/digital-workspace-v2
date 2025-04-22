@@ -84,7 +84,7 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     if not flag_is_active(request, flags.PF_DISCOVER):
         return redirect("people-directory")
 
-    people_set = directory_service.get_people(request.user)
+    people_set = directory_service.get_people(request.user).order_by("first_name")
     discover_filters = DiscoverFilters(request.GET, queryset=people_set)
     people = discover_filters.qs
     context = {
