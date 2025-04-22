@@ -35,12 +35,12 @@ urlpatterns = [
         name="get-comment",
     ),
     path(
-        "comment/<int:tag_pk>/",
+        "tag/<int:tag_pk>/subscribe/",
         views.subscribe,
         name="subscribe-to-tag",
     ),
     path(
-        "comment/<int:tag_pk>/",
+        "tag/<int:tag_pk>/unsubscribe/",
         views.unsubscribe,
         name="unsubscribe-from-tag",
     ),
