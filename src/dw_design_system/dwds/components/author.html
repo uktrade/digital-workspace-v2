@@ -1,9 +1,11 @@
 {% load wagtailimages_tags static humanize formatting %}
 
 <div class="dwds-author content-cluster">
-    <div>
-        {% include "dwds/elements/profile_image.html" with small=True profile_image_url=profile_image_url name=name profile_url=profile_url %}
-    </div>
+    {% if always_show_profile_image or profile_image_url %}
+        <div>
+            {% include "dwds/elements/profile_image.html" with small=True profile_image_url=profile_image_url name=name profile_url=profile_url %}
+        </div>
+    {% endif %}
     <div class="content-stack no-gap">
         {% if profile_url %}
             <a href="{{ profile_url }}">{{ name }}</a>
