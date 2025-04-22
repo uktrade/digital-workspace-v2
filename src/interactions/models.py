@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from wagtail.models import Page
 
+from core.models.tags import Tag
 from news.models import Comment
 
 
@@ -51,6 +52,22 @@ class UserComment(UserObject):
     )
 
 
+class UserTag(UserObject):
+    class Meta(UserObject.Meta):
+        abstract = True
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "tag"], name="unique_%(app_label)s_%(class)s"
+            )
+        ]
+
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)ss",
+    )
+
+
 class Bookmark(UserPage):
     pass
 
@@ -83,3 +100,7 @@ class CommentReaction(UserComment):
         verbose_name="Reaction Type",
         help_text="Select the type of reaction (e.g., Like or Dislike).",
     )
+
+
+class TagSubscription(UserTag):
+    pass

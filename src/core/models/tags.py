@@ -69,6 +69,7 @@ class TaggedPage(TaggedItem):
     )
 
     panels = [
+        FieldPanel("tag"),
         FieldPanel("content_object"),
     ]
 
@@ -81,6 +82,7 @@ class TaggedPerson(TaggedItem):
     )
 
     panels = [
+        FieldPanel("tag"),
         FieldPanel("content_object", widget=PersonChooser),
     ]
 
@@ -91,3 +93,8 @@ class TaggedTeam(TaggedItem):
         on_delete=models.CASCADE,
         related_name="tagged_teams",
     )
+
+    panels = [
+        FieldPanel("tag"),
+        FieldPanel("content_object"),
+    ]
