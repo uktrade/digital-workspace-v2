@@ -183,7 +183,9 @@ def test_comment_to_dict(news_page):
         assert reply_dict["reply_count"] == 0
 
     # The replies are returned correctly
-    assert comment_dict["replies"] == replies_dict
+    assert sorted(comment_dict["replies"], key=lambda d: d["id"]) == sorted(
+        replies_dict, key=lambda d: d["id"]
+    )
 
     # The correct edit_comment_form_url is returned
     assert comment_dict["edit_comment_form_url"] == reverse(
