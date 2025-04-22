@@ -6,7 +6,7 @@ from news.models import NewsHome
 
 
 from peoplefinder.test.factories import UserWithPersonFactory
-from news.factories import NewsPageFactory, NewsHomeFactory
+from news.factories import NewsPageFactory
 from django.core.management import call_command
 
 
