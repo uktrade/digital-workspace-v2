@@ -94,8 +94,7 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     try:
         paginator_page = pr.page(page)
     except paginator.EmptyPage:
-        # would be nice to have some sort of mnessage with this
-        return redirect("people-discover")
+        paginator_page = None
 
     context = {
         "page_title": "Discover",
