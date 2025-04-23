@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Search
 
 ## How search works
