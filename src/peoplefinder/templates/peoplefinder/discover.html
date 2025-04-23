@@ -18,9 +18,9 @@
 {% endblock primary_content_classes %}
 
 {% block primary_content %}
-    {% if people %}
+    {% if pages.object_list %}
         <div class="content-grid grid-cards-auto-fill">
-            {% for person in people %}
+            {% for person in pages.object_list %}
                 <c-dwds-card>
                     <c-slot name="card_content">
                         {% url 'profile-view' person.slug as profile_url %}
@@ -33,7 +33,9 @@
                 </c-dwds-card>
             {% endfor %}
         </div>
+
+        {% include "dwds/components/pagination.html" %}
     {% else %}
-        <p>There's no team members to show.</p>
+        <p>No colleagues match your selected filters</p>
     {% endif %}
 {% endblock primary_content %}

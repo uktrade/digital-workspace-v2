@@ -41,7 +41,7 @@ from peoplefinder.views.team import (
 people_urlpatterns = [
     path("", PeopleHome.as_view(), name="people-home"),
     path("directory/", PeopleDirectory.as_view(), name="people-directory"),
-    path("discover/", discover, name="discover"),
+    path("discover/", discover, name="people-discover"),
     path(
         "delete-confirmation/",
         DeleteConfirmationView.as_view(),
