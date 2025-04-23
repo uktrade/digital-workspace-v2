@@ -1,54 +1,46 @@
-<div class="dwds-content-item-card no-shadow">
-    <div class="content-item">
-        <div class="content-main large highlight">
-            <div class="content-body">
-                <form method="get" class="content-stack large">
-                    <h1>Discover DBT staff</h1>
-                    <hr>
-                    <div class="content-stack large">
-                        <div class="content-switcher">
-                            <div class="content-stack">
-                                <label for="id_city">Filter by city</label>
-                                {{ discover_filters.form.city }}
-                            </div>
-                            <div class="content-stack">
-                                <label for="id_building_name">Filter by building name</label>
-                                <div class="small">{{ discover_filters.form.building_name }}</div>
-                            </div>
-                            <div class="content-stack">
-                                <label for="id_grade">Filter by grade</label>
-                                {{ discover_filters.form.grade }}
-                            </div>
-                            <div class="content-stack">
-                                <label for="id_professions">Filter by profession</label>
-                                {{ discover_filters.form.professions }}
-                            </div>
-                            <div class="content-stack">
-                                <label for="id_key_skills">Filter by key skills</label>
-                                {{ discover_filters.form.key_skills }}
-                            </div>
-                            <div class="content-stack">
-                                <label for="id_learning_interests">Filter by learning interests</label>
-                                {{ discover_filters.form.learning_interests }}
-                            </div>
-                            <div class="content-stack">
-                                <label for="id_networks">Filter by networks</label>
-                                {{ discover_filters.form.networks }}
-                            </div>
-                            <div class="content-stack">
-                                <label for="id_additional_roles">Filter by additional roles</label>
-                                {{ discover_filters.form.additional_roles }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dwds-button-group">
-                        <input class="dwds-button dwds-button--secondary dwds-button--inline"
-                               type="submit"
-                               value="Apply filters" />
-                        <a href="?">Reset filters</a>
-                    </div>
-                </form>
+<form method="get" class="content-stack large">
+    <h3>Sort and filter</h3>
+    <div class="content-stack large">
+        <div class="content-switcher">
+            <div class="content-stack">
+                <label for="id_city">Filter by city</label>
+                {{ discover_filters.form.city }}
+            </div>
+            <div class="content-stack">
+                <label for="id_building_name">Filter by building name</label>
+                {{ discover_filters.form.building_name }}
+            </div>
+            <div class="content-stack">
+                <label for="id_grade">Filter by grade</label>
+                {{ discover_filters.form.grade }}
+            </div>
+            <div class="content-stack">
+                <label for="id_professions">Filter by profession</label>
+                {{ discover_filters.form.professions }}
+            </div>
+            <div class="content-stack">
+                <label for="id_key_skills">Filter by key skills</label>
+                {{ discover_filters.form.key_skills }}
+            </div>
+            <div class="content-stack">
+                <label for="id_learning_interests">Filter by learning interests</label>
+                {{ discover_filters.form.learning_interests }}
+            </div>
+            <div class="content-stack">
+                <label for="id_networks">Filter by networks</label>
+                {{ discover_filters.form.networks }}
+            </div>
+            <div class="content-stack">
+                <label for="id_additional_roles">Filter by additional roles</label>
+                {{ discover_filters.form.additional_roles }}
             </div>
         </div>
     </div>
-</div>
+    <div class="dwds-button-group">
+        <input class="dwds-button dwds-button--secondary dwds-button--inline"
+               type="submit"
+               value="Apply filters" />
+        <a href="?">Reset filters</a>
+    </div>
+
+</form>
