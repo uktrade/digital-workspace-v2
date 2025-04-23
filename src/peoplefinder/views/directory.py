@@ -89,18 +89,17 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     discover_filters = DiscoverFilters(request.GET, queryset=people_set)
     people = discover_filters.qs
 
-    page = request.GET.get("page", default=1)
+    pagin8tor = paginator.Paginator(people, per_page=30)
+    page: int = int(request.GET.get("page", default=1))
     try:
-        pages = paginator.Paginator(people, 30)
+        paginator_page = pagin8tor.page(page)
     except paginator.EmptyPage:
-        return redirect(
-            "people-discover", page=1
-        )  # would be nice to have some sort of mnessage with this
+        # would be nice to have some sort of mnessage with this
+        return redirect("people-discover")
 
     context = {
         "page_title": "Discover",
-        "pages": pages.page(page),
-        "people": pages.page(page).object_list,
+        "pages": paginator_page,
         "extra_breadcrumbs": [
             (None, "Discover"),
         ],
