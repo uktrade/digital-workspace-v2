@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.cache import cache
 from django.db.models import QuerySet
 
 from peoplefinder.models import (
@@ -12,7 +13,6 @@ from peoplefinder.models import (
     UkStaffLocation,
 )
 from user.models import User
-from django.core.cache import cache
 
 
 def get_people(user: User) -> QuerySet[Person]:
@@ -29,8 +29,8 @@ def get_people(user: User) -> QuerySet[Person]:
 
 
 def get_uk_city_locations() -> list[tuple[str]]:
-    cache_key="peoplefinder.services.directory.get_uk_city_locations"
-    
+    cache_key = "peoplefinder.services.directory.get_uk_city_locations"
+
     if not (formatted_cities := cache.get(key=cache_key)):
         cities = (
             UkStaffLocation.objects.order_by("city")
@@ -38,8 +38,8 @@ def get_uk_city_locations() -> list[tuple[str]]:
             .distinct()
         )
         formatted_cities = [(city, city) for city in cities]
-        cache.set(key=cache_key, value=formatted_cities, timeout=60*60)
-        
+        cache.set(key=cache_key, value=formatted_cities, timeout=60 * 60)
+
     return formatted_cities
 
 
