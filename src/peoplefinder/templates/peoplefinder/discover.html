@@ -33,7 +33,9 @@
                 </c-dwds-card>
             {% endfor %}
         </div>
+
+        {% include "dwds/components/pagination.html" %}
     {% else %}
-        <p>There's no team members to show.</p>
+        <p>No colleagues match your selected filters</p>
     {% endif %}
 {% endblock primary_content %}

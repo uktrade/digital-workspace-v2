@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.conf import settings
+from django.core import paginator
 from django.db.models import OuterRef, Subquery
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -87,9 +88,17 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     people_set = directory_service.get_people(request.user)
     discover_filters = DiscoverFilters(request.GET, queryset=people_set)
     people = discover_filters.qs
+
+    page = request.GET.get("page", default=1)
+    try:
+        pages = paginator.Paginator(people, 1)
+    except paginator.EmptyPage:
+        return redirect('people-discover', page=1)  # would be nice to have some sort of mnessage with this
+
     context = {
         "page_title": "Discover",
-        "people": people,
+        "pages": pages.page(page),
+        "people": pages.page(page).object_list,
         "extra_breadcrumbs": [
             (None, "Discover"),
         ],
