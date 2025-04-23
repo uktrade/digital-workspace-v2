@@ -1,0 +1,24 @@
+{% extends "dwds_sidebar.html" %}
+{% load wagtailcore_tags cards %}
+
+{% block primary_content_classes %}
+    content-stack large
+{% endblock primary_content_classes %}
+
+{% block primary_content %}
+    <div class="content-stack large">
+        {% for date, pages in grouped_content.items %}
+            {% if pages %}
+                <h3>{{ date }}</h3>
+                {% pages_to_engagement pages as engagement_cards %}
+                {% for engagement_card in engagement_cards %}
+                    <c-dwds-card>
+                        <c-slot name="card_content">
+                            {{ engagement_card }}
+                        </c-slot>
+                    </c-dwds-card>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock primary_content %}

@@ -164,11 +164,9 @@ def content_owners_report(request: HttpRequest, *args, **kwargs) -> HttpResponse
 @require_GET
 def tag_index(request: HttpRequest, slug: str, *args, **kwargs) -> HttpResponse:
     tag = get_object_or_404(Tag, slug=slug)
-    tagged_teams = TaggedTeam.objects.select_related("content_object").filter(tag=tag)
-    tagged_people = TaggedPerson.objects.select_related("content_object").filter(
-        tag=tag
+    tagged_teams, tagged_people, tagged_pages = tag_sub_service.get_tagged_content(
+        tags=[tag]
     )
-    tagged_pages = TaggedPage.objects.select_related("content_object").filter(tag=tag)
     context = {
         "page_title": f"{tag.name}",
         "tag": tag,
@@ -227,3 +225,12 @@ class AdminInfoView(WagtailAdminTemplateMixin, View):
             opensearch_document=opensearch_document,
         )
         return context
+
+
+def personal_feed(request: HttpRequest) -> HttpResponse:
+    context = {"page_title": "Your feed"}
+    subscribed_tags = tag_sub_service.get_subscribed_tags(user=request.user)
+    context.update(
+        grouped_content=tag_sub_service.get_activity(tags=subscribed_tags),
+    )
+    return TemplateResponse(request, "core/personal_feed.html", context)

@@ -18,4 +18,9 @@ urlpatterns = [
         views.AdminInfoView.as_view(),
         name="admin-page-info",
     ),
+    path(
+        "feed/",
+        views.personal_feed,
+        name="personal-feed",
+    ),
 ]
