@@ -56,10 +56,11 @@ class Grade(models.Model):
             models.UniqueConstraint(fields=["code"], name="unique_grade_code"),
             models.UniqueConstraint(fields=["name"], name="unique_grade_name"),
         ]
-        ordering = ["name"]
+        ordering = ["-ordering"]
 
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=50)
+    ordering = models.IntegerField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name
