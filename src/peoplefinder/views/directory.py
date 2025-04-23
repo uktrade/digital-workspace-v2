@@ -89,10 +89,10 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     discover_filters = DiscoverFilters(request.GET, queryset=people_set)
     people = discover_filters.qs
 
-    pagin8tor = paginator.Paginator(people, per_page=30)
+    pr = paginator.Paginator(people, per_page=30)
     page: int = int(request.GET.get("page", default=1))
     try:
-        paginator_page = pagin8tor.page(page)
+        paginator_page = pr.page(page)
     except paginator.EmptyPage:
         # would be nice to have some sort of mnessage with this
         return redirect("people-discover")
