@@ -15,18 +15,16 @@
 {% block primary_content %}
     <div class="content-stack large">
         {% include "peoplefinder/includes/team_buttons.html" with team=team sub_teams_active=True %}
-        <div class="dwds-content-item-card no-shadow">
-            <div class="dwds-content-list content-item">
-                <div class="content-main">
-                    <div class="content-body content-body-space-padding content-stack">
-                        <h1>
-                            {{ page_title }}
-                            {% if team.abbreviation %}({{ team.abbreviation }}){% endif %}
-                        </h1>
-                        {% sub_teams_tree team %}
-                    </div>
-                </div>
-            </div>
-        </div>
+        <c-dwds-card no-shadow="true">
+            <c-slot name="card_content">
+                <c-dwds-content-list>
+                    <h1>
+                        {{ page_title }}
+                        {% if team.abbreviation %}({{ team.abbreviation }}){% endif %}
+                    </h1>
+                    {% sub_teams_tree team %}
+                </c-dwds-content-list>
+            </c-slot>
+        </c-dwds-card>
     </div>
 {% endblock primary_content %}
