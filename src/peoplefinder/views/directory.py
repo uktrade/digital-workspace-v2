@@ -96,9 +96,14 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     except paginator.EmptyPage:
         paginator_page = None
 
+    page_title = "All colleagues"
+    if discover_filters.has_filters_applied():
+        page_title = "Filtered colleagues"
+
     context = {
-        "page_title": "Discover",
+        "page_title": page_title,
         "pages": paginator_page,
+        "result_count": people.count(),
         "extra_breadcrumbs": [
             (None, "Discover"),
         ],

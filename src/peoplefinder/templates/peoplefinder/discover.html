@@ -19,6 +19,7 @@
 
 {% block primary_content %}
     {% if pages.object_list %}
+        <p>Showing {{ pages.start_index }} to {{ pages.end_index}} of {{ result_count }} profiles</p>
         <div class="content-grid grid-cards-auto-fill">
             {% for person in pages.object_list %}
                 <c-dwds-card>
