@@ -11,7 +11,7 @@ pytestmark = pytest.mark.django_db
 
 def test_discover_with_flag_inactive(normal_user):
     client = Client()
-    url = reverse("discover")
+    url = reverse("people-discover")
 
     # Request discover page as normal_user when the flag is inactive
     client.force_login(normal_user)
@@ -29,7 +29,7 @@ def test_discover_with_flag_active(normal_user, another_normal_user):
     jane_profile = Person.objects.get(user=another_normal_user)
 
     client = Client()
-    url = reverse("discover")
+    url = reverse("people-discover")
 
     # Request discover page as normal_user when the flag is active
     client.force_login(normal_user)
