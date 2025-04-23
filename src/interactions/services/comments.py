@@ -70,7 +70,7 @@ def comment_to_dict(comment: Comment) -> dict:
             replies.append(comment_to_dict(reply))
 
     comment_dict = {
-        "id": comment.id,
+        "id": comment.pk,
         "allow_reactions": comment.page.specific.allow_reactions,
         "posted_date": comment.posted_date,
         "edited_date": comment.edited_date,
@@ -81,20 +81,20 @@ def comment_to_dict(comment: Comment) -> dict:
         "edit_comment_form_url": reverse(
             "interactions:edit-comment-form",
             kwargs={
-                "comment_id": comment.id,
+                "comment_id": comment.pk,
             },
         ),
         "edit_comment_cancel_url": reverse(
             "interactions:get-comment",
             kwargs={
-                "comment_id": comment.id,
+                "comment_id": comment.pk,
             },
         ),
         "reply_comment_form_url": (
             reverse(
                 "interactions:get-comment",
                 kwargs={
-                    "comment_id": comment.id,
+                    "comment_id": comment.pk,
                 },
             )
             + "?show_reply_form=True"
@@ -102,13 +102,13 @@ def comment_to_dict(comment: Comment) -> dict:
         "reply_comment_url": reverse(
             "interactions:reply-comment",
             kwargs={
-                "comment_id": comment.id,
+                "comment_id": comment.pk,
             },
         ),
         "reply_comment_cancel_url": reverse(
             "interactions:get-comment",
             kwargs={
-                "comment_id": comment.id,
+                "comment_id": comment.pk,
             },
         ),
     }

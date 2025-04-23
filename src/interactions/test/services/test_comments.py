@@ -119,13 +119,16 @@ def test_get_comment_replies():
     replies = CommentFactory.create_batch(3, page=comment.page, parent=comment)
 
     # Hidden replies are not retrieved
-    CommentFactory.create_batch(3, page=comment.page, parent=comment, is_visible=False)
+    hidden_replies = CommentFactory.create_batch(
+        3, page=comment.page, parent=comment, is_visible=False
+    )
 
     comment_replies = comments_service.get_comment_replies(comment)
 
-    for reply in replies:
+    for comment_reply in comment_replies:
         # The replies are returned for the requested comment
-        assert reply in comment_replies
+        assert comment_reply in replies
+        assert comment_reply not in hidden_replies
 
 
 def test_get_comment_reply_count():
@@ -155,7 +158,7 @@ def test_comment_to_dict(news_page):
     ]
 
     # The correct id is returned
-    assert comment_dict["id"] == comment.id
+    assert comment_dict["id"] == comment.pk
 
     # The correct author_name is returned
     assert comment_dict["author_name"] == comment_author_profile.full_name
@@ -191,7 +194,7 @@ def test_comment_to_dict(news_page):
     assert comment_dict["edit_comment_form_url"] == reverse(
         "interactions:edit-comment-form",
         kwargs={
-            "comment_id": comment.id,
+            "comment_id": comment.pk,
         },
     )
 
@@ -199,7 +202,7 @@ def test_comment_to_dict(news_page):
     assert comment_dict["edit_comment_cancel_url"] == reverse(
         "interactions:get-comment",
         kwargs={
-            "comment_id": comment.id,
+            "comment_id": comment.pk,
         },
     )
 
@@ -209,7 +212,7 @@ def test_comment_to_dict(news_page):
         == reverse(
             "interactions:get-comment",
             kwargs={
-                "comment_id": comment.id,
+                "comment_id": comment.pk,
             },
         )
         + "?show_reply_form=True"
@@ -219,7 +222,7 @@ def test_comment_to_dict(news_page):
     assert comment_dict["reply_comment_url"] == reverse(
         "interactions:reply-comment",
         kwargs={
-            "comment_id": comment.id,
+            "comment_id": comment.pk,
         },
     )
 
@@ -227,7 +230,7 @@ def test_comment_to_dict(news_page):
     assert comment_dict["reply_comment_cancel_url"] == reverse(
         "interactions:get-comment",
         kwargs={
-            "comment_id": comment.id,
+            "comment_id": comment.pk,
         },
     )
 
@@ -270,7 +273,6 @@ def test_can_reply_comment():
         comments_service.can_reply_comment(user, 123456)
 
 
-# @pytest.mark.skip(reason="TODO, create mock request")
 @override_settings(USE_TZ=False)
 def test_get_page_comments_response(user, news_page):
     comments = CommentFactory.create_batch(5, page=news_page)
@@ -295,13 +297,12 @@ def test_get_page_comments_response(user, news_page):
     assert template_response.context_data["request"] == request
 
 
-@pytest.mark.skip(reason="TODO, create mock request")
-def test_get_comment_response(user, news_page):
+def test_get_comment_response(user):
     comment = CommentFactory()
     comment_dict = comments_service.comment_to_dict(comment)
-
     request = RequestFactory().get(path="/")
-    template_response = comments_service.get_comment_response(request, comment_dict)
+    request.user = user
+    template_response = comments_service.get_comment_response(request, comment)
 
     # Test response template contains the expected context
     assert template_response.template_name == "dwds/components/comment.html"

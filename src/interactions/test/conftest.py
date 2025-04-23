@@ -16,7 +16,7 @@ def user():
 
 @pytest.fixture
 def news_page():
-    news_home_page = NewsHome.objects.first()
+    news_home_page = NewsHome.objects.get()
     return NewsPageFactory(parent=news_home_page)
 
 
