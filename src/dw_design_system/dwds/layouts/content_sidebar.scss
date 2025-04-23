@@ -23,7 +23,7 @@
     > :last-child {
         flex-grow: 999;
         flex-basis: 0;
-        min-inline-size: var(--sidebar-min-size);
+        min-inline-size: min(var(--sidebar-min-size), 100%);
     }
 }
 
@@ -31,7 +31,7 @@
     > :first-child {
         flex-grow: 999;
         flex-basis: 0;
-        min-inline-size: var(--sidebar-min-size);
+        min-inline-size: min(var(--sidebar-min-size), 100%);
     }
 
     > :last-child {
