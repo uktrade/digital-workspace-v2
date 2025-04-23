@@ -1,3 +1,5 @@
 .dwds-promo {
-    .content-image {}
+    .content-image.fill img {
+        width: 100%;
+    }
 }
