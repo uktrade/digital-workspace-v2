@@ -10,3 +10,6 @@ class DiscoverFilters(django_filters.FilterSet):
         choices=get_uk_city_locations,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
     )
+    sort_by = django_filters.OrderingFilter(
+        fields=(("first_name", "first_name"),),
+    )
