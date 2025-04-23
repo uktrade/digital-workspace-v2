@@ -139,7 +139,7 @@ def test_get_comment_reply_count():
     replies = CommentFactory.create_batch(3, page=comment.page, parent=comment)
 
     # Hidden replies are not counted
-    CommentFactory.create_batch(3, page=comment.page, parent=comment, is_visible=False)
+    CommentFactory.create_batch(5, page=comment.page, parent=comment, is_visible=False)
 
     # The correct number of replies are returned for the requested comment
     assert comments_service.get_comment_reply_count(comment) == len(replies)
