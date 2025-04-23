@@ -3,7 +3,7 @@
 {% load comments %}
 
 {% block pre_page_body %}
-    {% image page.preview_image fill-800x450 width=None height=None style="border-radius: var(--border-radius);" %}
+    {% include "dwds/elements/content_image.html" with content_image=page.preview_image use_original_image=True rounded=True %}
 {% endblock pre_page_body %}
 
 {% block post_primary_content %}
