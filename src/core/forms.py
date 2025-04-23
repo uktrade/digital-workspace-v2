@@ -12,7 +12,7 @@ class PageProblemFoundForm(forms.Form):
         max_length=500,
         widget=forms.Textarea(
             attrs={
-                "class": "govuk-textarea",
+                "class": "dwds-textarea width-full",
             }
         ),
     )
@@ -21,7 +21,7 @@ class PageProblemFoundForm(forms.Form):
         max_length=500,
         widget=forms.Textarea(
             attrs={
-                "class": "govuk-textarea",
+                "class": "dwds-textarea width-full",
             }
         ),
     )
