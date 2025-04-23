@@ -20,6 +20,7 @@ from content.models import BasePage, ContentOwnerMixin
 from core.forms import PageProblemFoundForm
 from core.models import Tag, TaggedPage
 from core.models.tags import TaggedPerson, TaggedTeam
+from interactions.services import tag_subscriptions as tag_sub_service
 from user.models import User
 
 
@@ -174,6 +175,7 @@ def tag_index(request: HttpRequest, slug: str, *args, **kwargs) -> HttpResponse:
         "tagged_teams": tagged_teams,
         "tagged_people": tagged_people,
         "tagged_pages": tagged_pages,
+        "user_follows_tag": tag_sub_service.is_subscribed(tag=tag, user=request.user),
     }
     return TemplateResponse(request, "core/tag_index.html", context=context)
 

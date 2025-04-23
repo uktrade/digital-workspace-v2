@@ -14,5 +14,9 @@ def unsubscribe(*, tag: Tag, user: User) -> None:
     TagSubscription.objects.filter(user=user, tag=tag).delete()
 
 
+def is_subscribed(*, tag: Tag, user: User) -> bool:
+    return TagSubscription.objects.filter(user=user, tag=tag).exists()
+
+
 def get_subscribed_tags(*, user: User) -> QuerySet[Tag]:
     return Tag.objects.filter(interactions_tagsubscriptions__user=user)

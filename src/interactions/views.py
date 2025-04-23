@@ -3,6 +3,8 @@ from django.http import (
     HttpRequest,
     HttpResponse,
     HttpResponseForbidden,
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, redirect
@@ -215,16 +217,16 @@ def hide_comment(request: HttpRequest, pk: int) -> HttpResponse:
 
 
 @require_http_methods(["POST"])
-def subscribe(request, *, tag_pk: int):
+def subscribe(request, *, tag_pk: int) -> HttpResponse:
     user = request.user
     tag = Tag.objects.get(pk=tag_pk)
     tag_subscriptions_service.subscribe(tag=tag, user=user)
-    return HttpResponse()
+    return redirect(reverse("tag_index", kwargs={"slug": tag.slug}))
 
 
-@require_http_methods(["DELETE"])
-def unsubscribe(request, *, tag_pk: int):
+@require_http_methods(["POST"])
+def unsubscribe(request, *, tag_pk: int) -> HttpResponse:
     user = request.user
     tag = Tag.objects.get(pk=tag_pk)
     tag_subscriptions_service.unsubscribe(tag=tag, user=user)
-    return HttpResponse()
+    return redirect(reverse("tag_index", kwargs={"slug": tag.slug}))

@@ -27,6 +27,17 @@ def test_unsubscribe(user):
 
     tag_subscriptions.unsubscribe(tag=tag, user=user)
     assert not TagSubscription.objects.filter(tag=tag, user=user).exists()
+@pytest.mark.django_db
+def test_is_subscribed(user):
+    tag = Tag.objects.create(
+        name="Test tag 1",
+        slug="test-tag-1",
+    )
+
+    assert not tag_subscriptions.is_subscribed(tag=tag, user=user)
+
+    TagSubscription.objects.create(tag=tag, user=user)
+    assert tag_subscriptions.is_subscribed(tag=tag, user=user)
 
 
 @pytest.mark.django_db
