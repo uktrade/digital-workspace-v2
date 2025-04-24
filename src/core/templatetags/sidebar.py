@@ -354,7 +354,7 @@ class DiscoverPage(SidebarPart):
 
         context.update(
             banner_text="New 'discover people' page is available!",
-            banner_link=reverse("discover"),
+            banner_link=reverse("people-discover"),
         )
         return context
 

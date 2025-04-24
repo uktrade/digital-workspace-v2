@@ -1,6 +1,7 @@
 import django_filters
 from django import forms
 
+from core.filters import FilterSet
 from peoplefinder.services.reference import (
     get_additional_roles,
     get_grades,
@@ -13,7 +14,7 @@ from peoplefinder.services.reference import (
 )
 
 
-class DiscoverFilters(django_filters.FilterSet):
+class DiscoverFilters(FilterSet):
     city = django_filters.ChoiceFilter(
         field_name="uk_office_location__city",
         choices=get_uk_city_locations,
@@ -53,4 +54,7 @@ class DiscoverFilters(django_filters.FilterSet):
         field_name="additional_roles__name",
         choices=get_additional_roles,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+    )
+    sort_by = django_filters.OrderingFilter(
+        fields=(("first_name", "first_name"),),
     )

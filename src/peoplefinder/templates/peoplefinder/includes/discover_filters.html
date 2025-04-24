@@ -33,6 +33,8 @@
             <div class="content-stack">
                 <label for="id_additional_roles">Filter by additional roles</label>
                 {{ discover_filters.form.additional_roles }}
+                <label for="sort_by">Sort by</label>
+                <div class="small">{{ discover_filters.form.sort_by }}</div>
             </div>
         </div>
     </div>
@@ -42,5 +44,4 @@
                value="Apply filters" />
         <a href="?">Reset filters</a>
     </div>
-
 </form>

@@ -1,22 +1,28 @@
 .content-image {
+    --content-image-max-height: 350px;
+
     margin: 0;
     display: flex;
     flex-direction: column;
 
     img {
         // Fill the available space, but don't crop or stretch the image
-        height: fit-content;
-        width: 100%;
+        // height: 100%;
+        max-height: var(--content-image-max-height);
+        width: fit-content;
         object-position: center;
+        object-fit: contain;
     }
 
     &.rounded > img {
         border-radius: var(--border-radius);
+        overflow: hidden;
     }
 
     &.fill > img {
         height: 100%;
         object-fit: cover;
+        width: auto;
     }
 
 }
