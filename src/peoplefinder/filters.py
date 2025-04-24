@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
 
-from peoplefinder.services.directory import (
+from peoplefinder.services.reference import (
     get_additional_roles,
     get_grades,
     get_key_skills,
