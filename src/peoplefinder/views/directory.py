@@ -103,7 +103,6 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     context = {
         "page_title": page_title,
         "pages": paginator_page,
-        "result_count": people.count(),
         "extra_breadcrumbs": [
             (None, "Discover"),
         ],

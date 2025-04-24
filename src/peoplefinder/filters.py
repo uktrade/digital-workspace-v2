@@ -2,7 +2,6 @@ import django_filters
 from django import forms
 
 from core.filters import FilterSet
-
 from peoplefinder.utils import get_uk_city_locations
 
 
