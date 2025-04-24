@@ -15,17 +15,22 @@ def insert_grade_ordering_data(apps, schema_editor):
     Grade.objects.filter(code="non_graded_contractor").update(ordering=0)
     Grade.objects.filter(code="non_graded_secondee").update(ordering=0)
     Grade.objects.filter(code="non_graded_post").update(ordering=0)
-    Grade.objects.filter(code="admin_assistant").update(ordering=2)
-    Grade.objects.filter(code="admin_officer").update(ordering=3)
-    Grade.objects.filter(code="executive_officer").update(ordering=4)
-    Grade.objects.filter(code="higher_executive_officer").update(ordering=5)
-    Grade.objects.filter(code="senior_executive_officer").update(ordering=6)
-    Grade.objects.filter(code="grade_7").update(ordering=7)
-    Grade.objects.filter(code="grade_6").update(ordering=8)
-    Grade.objects.filter(code="scs_1").update(ordering=9)
-    Grade.objects.filter(code="scs_2").update(ordering=10)
-    Grade.objects.filter(code="scs_3").update(ordering=11)
-    Grade.objects.filter(code="scs_4").update(ordering=12)
+    Grade.objects.filter(code="admin_assistant").update(ordering=1)
+    Grade.objects.filter(code="admin_officer").update(ordering=2)
+    Grade.objects.filter(code="executive_officer").update(ordering=3)
+    Grade.objects.filter(code="higher_executive_officer").update(ordering=4)
+    Grade.objects.filter(code="senior_executive_officer").update(ordering=5)
+    Grade.objects.filter(code="grade_7").update(ordering=6)
+    Grade.objects.filter(code="grade_6").update(ordering=7)
+    Grade.objects.filter(code="scs_1").update(ordering=8)
+    Grade.objects.filter(code="scs_2").update(ordering=9)
+    Grade.objects.filter(code="scs_3").update(ordering=10)
+    Grade.objects.filter(code="scs_4").update(ordering=11)
+
+
+def reverse_insert_grade_ordering_data(apps, schema_editor):
+    Grade = apps.get_model("peoplefinder", "Grade")
+    Grade.objects.all().update(ordering=None)
 
 
 class Migration(migrations.Migration):
@@ -34,4 +39,9 @@ class Migration(migrations.Migration):
         ("peoplefinder", "0125_alter_grade_options_grade_ordering"),
     ]
 
-    operations = [migrations.RunPython(insert_grade_ordering_data)]
+    operations = [
+        migrations.RunPython(
+            code=insert_grade_ordering_data,
+            reverse_code=reverse_insert_grade_ordering_data,
+        )
+    ]

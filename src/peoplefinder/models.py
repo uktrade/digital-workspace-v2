@@ -267,6 +267,7 @@ class Person(Indexed, models.Model):
         permissions = [
             ("can_view_inactive_profiles", "Can view inactive profiles"),
         ]
+        ordering = ["grade", "first_name", "last_name"]
 
     is_active = models.BooleanField(default=True)
     became_inactive = models.DateTimeField(null=True, blank=True)
