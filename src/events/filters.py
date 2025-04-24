@@ -1,6 +1,7 @@
 import django_filters
 from django import forms
 
+from core.filters import FilterSet
 from events import types
 from peoplefinder.services.uk_staff_locations import UkStaffLocationService
 
@@ -13,7 +14,7 @@ EVENT_TYPE_CHOICES = [
 ]
 
 
-class EventsFilters(django_filters.FilterSet):
+class EventsFilters(FilterSet):
     event_type = django_filters.ChoiceFilter(
         method="event_format_filter",
         choices=EVENT_TYPE_CHOICES,
