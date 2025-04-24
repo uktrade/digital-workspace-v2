@@ -15,6 +15,7 @@ def get_people(user: User) -> QuerySet[Person]:
         .order_by(
             "grade",
             "first_name",
+            "last_name",
         )
     )
 
