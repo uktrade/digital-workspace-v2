@@ -2,6 +2,7 @@ import django_filters
 from django import forms
 from django.db.models import QuerySet
 
+from core.filters import FilterSet
 from peoplefinder.models import Person
 from peoplefinder.utils import get_uk_city_locations
 
@@ -22,7 +23,7 @@ ORDER_CHOICES = {
 }
 
 
-class DiscoverFilters(django_filters.FilterSet):
+class DiscoverFilters(FilterSet):
     city = django_filters.ChoiceFilter(
         field_name="uk_office_location__city",
         choices=get_uk_city_locations,
