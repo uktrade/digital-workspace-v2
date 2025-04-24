@@ -1,24 +1,25 @@
 {% load wagtailimages_tags %}
 
-
-{% if image_position == "left" %}
-    <div class="content-sidebar">
-        <div class="content-stack">
-            {% include "dwds/elements/content_image.html" with content_image=image caption=image_description alt=image_alt %}
+<div class="dwds-image-with-text">
+    {% if image_position == "left" %}
+        <div class="content-sidebar">
+            <div>
+                {% include "dwds/elements/content_image.html" with content_image=image caption=image_description alt=image_alt rounded=True %}
+            </div>
+            <div class="content-stack">
+                <h3>{{ heading }}</h3>
+                {{ text }}
+            </div>
         </div>
-        <div class="content-stack">
-            <h3>{{ heading }}</h3>
-            {{ text }}
+    {% else %}
+        <div class="content-sidebar-right">
+            <div class="content-stack">
+                <h3>{{ heading }}</h3>
+                {{ text }}
+            </div>
+            <div>
+                {% include "dwds/elements/content_image.html" with content_image=image caption=image_description alt=image_alt rounded=True %}
+            </div>
         </div>
-    </div>
-{% else %}
-    <div class="content-sidebar-right">
-        <div class="content-stack">
-            <h3>{{ heading }}</h3>
-            {{ text }}
-        </div>
-        <div class="content-stack">
-            {% include "dwds/elements/content_image.html" with content_image=image caption=image_description alt=image_alt %}
-        </div>
-    </div>
-{% endif %}
+    {% endif %}
+</div>
