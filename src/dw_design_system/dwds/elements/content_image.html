@@ -4,9 +4,17 @@
         role="group">
     {% if content_image %}
         {% if use_original_image %}
-            {% image content_image width-800 alt=alt %}
+            {% if alt %}
+                {% image content_image width-800 alt=alt %}
+            {% else %}
+                {% image content_image width-800 %}
+            {% endif %}
         {% else %}
-            {% image content_image fill-800x450 alt=alt %}
+            {% if alt %}
+                {% image content_image fill-800x450 alt=alt %}
+            {% else %}
+                {% image content_image fill-800x450 %}
+            {% endif %}
         {% endif %}
     {% else %}
         <img src="{% static '/images/dwds/fallback_image_card.png' %}"
