@@ -5,10 +5,13 @@
     display: flex;
     flex-direction: column;
 
+    max-width: 100%;
+
     img {
         // Fill the available space, but don't crop or stretch the image
-        // height: 100%;
         max-height: var(--content-image-max-height);
+        max-width: 100%;
+        height: fit-content;
         width: fit-content;
         object-position: center;
         object-fit: contain;
