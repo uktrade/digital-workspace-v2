@@ -10,7 +10,7 @@ from waffle import flag_is_active
 
 from core import flags
 from peoplefinder.filters import DiscoverFilters
-from peoplefinder.models import Grade, Person, Team, TeamMember
+from peoplefinder.models import Person, Team, TeamMember
 from peoplefinder.services import directory as directory_service
 from peoplefinder.services.team import TeamService
 
@@ -87,7 +87,6 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     people_set = directory_service.get_people(request.user)
     discover_filters = DiscoverFilters(request.GET, queryset=people_set)
     people = discover_filters.qs
-    grades = Grade.objects.all()
     context = {
         "page_title": "Discover",
         "people": people,
@@ -95,6 +94,5 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
             (None, "Discover"),
         ],
         "discover_filters": discover_filters,
-        "grades": grades,
     }
     return render(request, "peoplefinder/discover.html", context)
