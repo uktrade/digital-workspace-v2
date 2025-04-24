@@ -1,19 +1,19 @@
+{% load wagtailcore_tags %}
+
 {% if USER_IS_AUTHENTICATED %}
-    <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">Is there anything wrong with this page?</span>
-        </summary>
-        <div class="govuk-details__text">
-            <fieldset class="govuk-fieldset">
-                <form action="{% url "page_problem_found" %}" novalidate method='post'>
-                    {% csrf_token %}
-                    {% include "includes/govt_uk_form.html" with form=PAGE_PROBLEM_FORM %}
-                    <input type="submit"
-                           value="Submit"
-                           class="govuk-button govuk-button"
-                           data-module="govuk-button" />
-                </form>
-            </fieldset>
-        </div>
-    </details>
+    <div class="dwds">
+        <c-dwds-details summary_text="Is there anything wrong with this page?">
+            <form class="content-stack"
+                  action="{% url "page_problem_found" %}"
+                  novalidate
+                  method='post'>
+                {% if PAGE_PROBLEM_FORM_CONTENT %}{{ PAGE_PROBLEM_FORM_CONTENT.content|richtext }}{% endif %}
+                {% csrf_token %}
+                {{ PAGE_PROBLEM_FORM }}
+                <input type="submit"
+                       value="Submit"
+                       class="dwds-button dwds-button--transactional" />
+            </form>
+        </c-dwds-details>
+    </div>
 {% endif %}
