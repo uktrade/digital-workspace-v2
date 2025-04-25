@@ -18,6 +18,7 @@ from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from wagtail.search.queryset import SearchableQuerySetMixin
 
+from core import field_models
 from core.models import IngestedModel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields, ScoreFunction
@@ -41,8 +42,8 @@ class Workday(models.Model):
             models.UniqueConstraint(fields=["name"], name="unique_workday_name"),
         ]
 
-    code = models.CharField(max_length=3)
-    name = models.CharField(max_length=9)
+    code = field_models.CharField(max_length=3)
+    name = field_models.CharField(max_length=9)
 
     objects = WorkdayQuerySet.as_manager()
 
@@ -58,8 +59,8 @@ class Grade(models.Model):
         ]
         ordering = ["-ordering"]
 
-    code = models.CharField(max_length=30)
-    name = models.CharField(max_length=50)
+    code = field_models.CharField(max_length=30)
+    name = field_models.CharField(max_length=50)
     ordering = models.IntegerField(null=True, blank=True)
 
     def __str__(self) -> str:
@@ -74,8 +75,8 @@ class KeySkill(models.Model):
         ]
         ordering = ["name"]
 
-    code = models.CharField(max_length=30)
-    name = models.CharField(max_length=50)
+    code = field_models.CharField(max_length=30)
+    name = field_models.CharField(max_length=50)
 
     def __str__(self) -> str:
         return self.name
@@ -93,8 +94,8 @@ class LearningInterest(models.Model):
         ]
         ordering = ["name"]
 
-    code = models.CharField(max_length=30)
-    name = models.CharField(max_length=50)
+    code = field_models.CharField(max_length=30)
+    name = field_models.CharField(max_length=50)
 
     def __str__(self) -> str:
         return self.name
@@ -108,8 +109,8 @@ class Network(models.Model):
         ]
         ordering = ["name"]
 
-    code = models.CharField(max_length=30)
-    name = models.CharField(max_length=50)
+    code = field_models.CharField(max_length=30)
+    name = field_models.CharField(max_length=50)
 
     def __str__(self) -> str:
         return self.name
@@ -131,8 +132,8 @@ class Profession(models.Model):
         ]
         ordering = ["name"]
 
-    code = models.CharField(max_length=30)
-    name = models.CharField(max_length=60)
+    code = field_models.CharField(max_length=30)
+    name = field_models.CharField(max_length=60)
 
     def __str__(self) -> str:
         return self.name
@@ -150,8 +151,8 @@ class AdditionalRole(models.Model):
         ]
         ordering = ["name"]
 
-    code = models.CharField(max_length=40)
-    name = models.CharField(max_length=50)
+    code = field_models.CharField(max_length=40)
+    name = field_models.CharField(max_length=50)
 
     def __str__(self) -> str:
         return self.name
@@ -165,8 +166,8 @@ class Building(models.Model):
         ]
         ordering = ["name"]
 
-    code = models.CharField(max_length=30)
-    name = models.CharField(max_length=40)
+    code = field_models.CharField(max_length=30)
+    name = field_models.CharField(max_length=40)
 
     def __str__(self) -> str:
         return self.name
@@ -179,11 +180,11 @@ class UkStaffLocation(IngestedModel):
         ]
         ordering = ["name"]
 
-    code = models.CharField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
-    organisation = models.CharField(max_length=255)
-    building_name = models.CharField(max_length=255, blank=True)
+    code = field_models.CharField(max_length=255, unique=True)
+    name = field_models.CharField(max_length=255)
+    city = field_models.CharField(max_length=255)
+    organisation = field_models.CharField(max_length=255)
+    building_name = field_models.CharField(max_length=255, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -362,7 +363,7 @@ class Person(Indexed, models.Model):
             "I split my time between home and the office",
         )
 
-    remote_working = models.CharField(
+    remote_working = field_models.CharField(
         verbose_name="Where do you usually work?",
         blank=True,
         null=True,
@@ -371,23 +372,25 @@ class Person(Indexed, models.Model):
     )
 
     slug = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    legacy_slug = models.CharField(
+    legacy_slug = field_models.CharField(
         unique=True, max_length=80, null=True, editable=False
     )
     # Used for matching new users with existing profiles.
-    legacy_sso_user_id = models.CharField(max_length=255, null=True, editable=False)
+    legacy_sso_user_id = field_models.CharField(
+        max_length=255, null=True, editable=False
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     edited_or_confirmed_at = models.DateTimeField(default=timezone.now)
 
-    first_name = models.CharField(
+    first_name = field_models.CharField(
         max_length=200,
         help_text=(
             "If you enter a preferred name below, this name will be hidden to others"
         ),
     )
-    preferred_first_name = models.CharField(
+    preferred_first_name = field_models.CharField(
         max_length=200,
         help_text=(
             "This name appears on your profile. Colleagues can search for you"
@@ -396,15 +399,15 @@ class Person(Indexed, models.Model):
         null=True,
         blank=True,
     )
-    last_name = models.CharField(
+    last_name = field_models.CharField(
         max_length=200,
     )
     email = models.EmailField(
         "How we contact you",
         help_text="We will send Digital Workspace notifications to this email",
     )
-    pronouns = models.CharField(max_length=40, null=True, blank=True)
-    name_pronunciation = models.CharField(
+    pronouns = field_models.CharField(max_length=40, null=True, blank=True)
+    name_pronunciation = field_models.CharField(
         "How to pronounce your full name",
         help_text=mark_safe(  # noqa: S308
             "A phonetic representation of your name<br><a class='govuk-link' href='/news-and-views/say-my-name/' target='_blank' rel='noreferrer'>"
@@ -420,7 +423,7 @@ class Person(Indexed, models.Model):
         blank=True,
         help_text="The work email you want people to contact you on",
     )
-    primary_phone_number = models.CharField(
+    primary_phone_number = field_models.CharField(
         "Phone number",
         max_length=42,
         null=True,
@@ -430,7 +433,7 @@ class Person(Indexed, models.Model):
             " UK's dialling code is +44."
         ),
     )
-    secondary_phone_number = models.CharField(
+    secondary_phone_number = field_models.CharField(
         "Alternative phone number",
         max_length=160,
         null=True,
@@ -440,7 +443,7 @@ class Person(Indexed, models.Model):
             " UK's dialling code is +44."
         ),
     )
-    town_city_or_region = models.CharField(
+    town_city_or_region = field_models.CharField(
         "Town, city or region",
         max_length=78,
         null=True,
@@ -452,7 +455,7 @@ class Person(Indexed, models.Model):
         "hint": "Use Person.uk_office_location",
         "id": "peoplefinder.Person.E001",
     }
-    regional_building = models.CharField(
+    regional_building = field_models.CharField(
         "UK regional building or location",
         max_length=130,
         null=True,
@@ -463,21 +466,21 @@ class Person(Indexed, models.Model):
         "hint": "Use Person.uk_office_location and Person.remote_working instead.",
         "id": "peoplefinder.Person.E001",
     }
-    usual_office_days = models.CharField(
+    usual_office_days = field_models.CharField(
         "What days do you usually come in to the office?",
         help_text=("For example: I usually come in on Mondays and Wednesdays"),
         max_length=200,
         null=True,
         blank=True,
     )
-    international_building = models.CharField(
+    international_building = field_models.CharField(
         "International location",
         max_length=110,
         null=True,
         blank=True,
         help_text="Complete if you work outside the UK",
     )
-    location_in_building = models.CharField(
+    location_in_building = field_models.CharField(
         "Location in the building",
         max_length=130,
         null=True,
@@ -487,42 +490,42 @@ class Person(Indexed, models.Model):
     do_not_work_for_dit = models.BooleanField(
         "My manager is not listed because I do not work for DBT", default=False
     )
-    other_key_skills = models.CharField(
+    other_key_skills = field_models.CharField(
         "What other skills do you have?",
         max_length=700,
         null=True,
         blank=True,
         help_text="Enter your skills. Use a comma to separate them.",
     )
-    fluent_languages = models.CharField(
+    fluent_languages = field_models.CharField(
         "Which languages are you fluent in?",
         max_length=200,
         null=True,
         blank=True,
         help_text="Use a comma to separate the languages. For example: French, Polish, Ukrainian",
     )
-    intermediate_languages = models.CharField(
+    intermediate_languages = field_models.CharField(
         "Which other languages do you speak?",
         max_length=200,
         null=True,
         blank=True,
         help_text="These are languages you speak and write but are not fluent in",
     )
-    other_learning_interests = models.CharField(
+    other_learning_interests = field_models.CharField(
         "What other learning and development interests do you have?",
         max_length=255,
         null=True,
         blank=True,
         help_text="Enter your interests. Use a comma to separate them.",
     )
-    other_additional_roles = models.CharField(
+    other_additional_roles = field_models.CharField(
         "What other additional roles or responsibilities do you have?",
         max_length=400,
         null=True,
         blank=True,
         help_text="Enter your roles or responsibilities. Use a comma to separate them.",
     )
-    previous_experience = models.TextField(
+    previous_experience = field_models.TextField(
         "Previous positions I have held",
         null=True,
         blank=True,
@@ -544,7 +547,7 @@ class Person(Indexed, models.Model):
     )
     login_count = models.IntegerField(default=0)
     profile_completion = models.IntegerField(default=0)
-    ical_token = models.CharField(
+    ical_token = field_models.CharField(
         verbose_name="Individual token for iCal feeds",
         blank=True,
         null=True,
@@ -1001,12 +1004,12 @@ class Team(Indexed, models.Model):
         "Person", through="TeamMember", related_name="teams"
     )
 
-    name = models.CharField(
+    name = field_models.CharField(
         "Team name (required)",
         max_length=255,
         help_text="The full name of this team (e.g. Digital, Data and Technology)",
     )
-    abbreviation = models.CharField(
+    abbreviation = field_models.CharField(
         "Team acronym or initials",
         max_length=20,
         null=True,
@@ -1014,14 +1017,14 @@ class Team(Indexed, models.Model):
         help_text="A short form of the team name, up to 10 characters. For example DDaT.",
     )
     slug = models.SlugField(max_length=130, unique=True, editable=True)
-    description = models.TextField(
+    description = field_models.TextField(
         "Team description",
         null=False,
         blank=False,
         default=DEFAULT_TEAM_DESCRIPTION,
         help_text="What does this team do? Use Markdown to add lists and links. Enter up to 1500 characters.",
     )
-    leaders_ordering = models.CharField(
+    leaders_ordering = field_models.CharField(
         max_length=12,
         choices=LeadersOrdering.choices,
         default=LeadersOrdering.ALPHABETICAL,
@@ -1130,7 +1133,7 @@ class TeamMember(models.Model):
     person = models.ForeignKey("Person", models.CASCADE, related_name="roles")
     team = models.ForeignKey("Team", models.CASCADE, related_name="members")
 
-    job_title = models.CharField(
+    job_title = field_models.CharField(
         max_length=255, help_text="Enter your role in this team"
     )
     head_of_team = models.BooleanField(default=False)
@@ -1178,7 +1181,7 @@ class AuditLog(models.Model):
         UPDATE = "update"
         DELETE = "delete"
 
-    action = models.CharField(max_length=6, choices=Action.choices)
+    action = field_models.CharField(max_length=6, choices=Action.choices)
     timestamp = models.DateTimeField(auto_now_add=True)
     object_repr = models.JSONField(encoder=DjangoJSONEncoder)
     diff = models.JSONField(encoder=DjangoJSONEncoder)
@@ -1204,11 +1207,11 @@ class LegacyAuditLog(models.Model):
         UPDATE = "update"
         DELETE = "delete"
 
-    action = models.CharField(max_length=6, choices=Action.choices)
+    action = field_models.CharField(max_length=6, choices=Action.choices)
     automated = models.BooleanField()
     timestamp = models.DateTimeField()
-    object = models.TextField(null=True)
-    object_changes = models.TextField(null=True)
+    object = field_models.TextField(null=True)
+    object_changes = field_models.TextField(null=True)
 
     def save(self, *args, **kwargs):
         return

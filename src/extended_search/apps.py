@@ -7,6 +7,7 @@ class ExtendedSearchConfig(AppConfig):
 
     def ready(self):
         import extended_search.signals  # noqa
+        from core.signals import add_validators
         from extended_search import query_builder, settings
 
         settings.settings_singleton.initialise_field_dict()
@@ -15,3 +16,5 @@ class ExtendedSearchConfig(AppConfig):
             settings.settings_singleton.initialise_db_dict()
         settings.extended_search_settings = settings.settings_singleton.to_dict()
         query_builder.extended_search_settings = settings.extended_search_settings
+
+        add_validators(self)

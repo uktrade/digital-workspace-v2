@@ -19,6 +19,7 @@ from wagtail_adminsortable.models import AdminSortable
 from wagtailorderable.models import Orderable
 
 from content.models import BasePage, ContentPage
+from core import field_models
 from core.models import fields
 from core.panels import FieldPanel, InlinePanel, PageSelectorPanel
 from events.models import EventPage
@@ -84,7 +85,7 @@ class HomePriorityPage(Orderable):
         validators=[validate_home_priority_pages],
     )
 
-    ribbon_text = models.CharField(
+    ribbon_text = field_models.CharField(
         max_length=30,
         blank=True,
         null=True,
@@ -103,7 +104,7 @@ class HomePriorityPage(Orderable):
 
 @register_snippet
 class QuickLink(models.Model):
-    title = models.CharField(max_length=255)
+    title = field_models.CharField(max_length=255)
     link_to = ParentalKey(
         "content.ContentPage",
         on_delete=models.CASCADE,
@@ -126,7 +127,7 @@ class QuickLink(models.Model):
 
 @register_snippet
 class WhatsPopular(models.Model):
-    title = models.CharField(max_length=255)
+    title = field_models.CharField(max_length=255)
     link_to = ParentalKey(
         "content.ContentPage",
         on_delete=models.CASCADE,
@@ -213,21 +214,21 @@ class HomePage(BasePage):
             """
             return [int(x) for x in self.value.removeprefix("L").split("_")]
 
-    priority_pages_layout = models.CharField(
+    priority_pages_layout = field_models.CharField(
         max_length=4,
         choices=PriorityPagesLayout.choices,
         default=PriorityPagesLayout.L1_3,
     )
 
     promo_enabled = models.BooleanField("Enable promotion banner", default=False)
-    promo_ribbon_text = models.CharField(
+    promo_ribbon_text = field_models.CharField(
         "Promotion banner ribbon text",
         max_length=30,
         null=True,
         blank=True,
         help_text="The text to be display on the ribbon. If empty, the ribbon will be hidden.",
     )
-    promo_description = models.TextField(
+    promo_description = field_models.TextField(
         "Promotion banner description",
         max_length=200,
         null=True,
@@ -238,7 +239,7 @@ class HomePage(BasePage):
         null=True,
         blank=True,
     )
-    promo_link_text = models.CharField(
+    promo_link_text = field_models.CharField(
         "Promotion banner link text",
         max_length=50,
         null=True,

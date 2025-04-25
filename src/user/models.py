@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from simple_history import register
 
+from core import field_models
+
 
 class User(AbstractUser):
     class Meta:
@@ -15,7 +17,7 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
-    legacy_sso_user_id = models.CharField(
+    legacy_sso_user_id = field_models.CharField(
         max_length=255,
         null=True,
         blank=True,

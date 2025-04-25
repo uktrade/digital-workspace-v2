@@ -1,11 +1,13 @@
 from django.db import models
 
+from core import field_models
+
 
 class ExternalLinkSetting(models.Model):
     class Meta:
         unique_together = (("domain", "exclude"),)
 
-    domain = models.CharField(
+    domain = field_models.CharField(
         max_length=255,
         help_text="The domain to match for this setting (example: gov.uk).",
     )
@@ -13,7 +15,7 @@ class ExternalLinkSetting(models.Model):
         default=False,
         help_text="Don't show the external link text for this domain.",
     )
-    external_link_text = models.CharField(
+    external_link_text = field_models.CharField(
         max_length=255,
         help_text="The text to show for this domain (example: GOV UK).",
         blank=True,

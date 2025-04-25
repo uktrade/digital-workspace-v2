@@ -6,11 +6,13 @@ from waffle.models import AbstractUserFlag
 from wagtail.documents.models import Document
 from wagtail.snippets.models import register_snippet
 
+from core import field_models
+
 
 @register_snippet
 class SiteAlertBanner(models.Model):
-    banner_text = models.CharField(max_length=255)
-    banner_link = models.CharField(
+    banner_text = field_models.CharField(max_length=255)
+    banner_link = field_models.CharField(
         max_length=255,
         blank=True,
         null=True,

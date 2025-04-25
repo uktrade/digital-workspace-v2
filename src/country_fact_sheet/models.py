@@ -6,6 +6,7 @@ from wagtail.admin.panels import MultiFieldPanel
 from wagtail.documents.models import Document
 
 from content.models import ContentPage
+from core import field_models
 from core.panels import FieldPanel
 
 
@@ -39,13 +40,13 @@ class CountryFactSheetHome(ContentPage):
         verbose_name="Group factsheets collection",
     )
 
-    hmtc_region_factsheets_heading = models.CharField(
+    hmtc_region_factsheets_heading = field_models.CharField(
         max_length=50,
         null=True,
         blank=True,
         verbose_name="HMTC region factsheets heading",
     )
-    group_factsheets_heading = models.CharField(
+    group_factsheets_heading = field_models.CharField(
         max_length=50,
         null=True,
         blank=True,

@@ -4,6 +4,7 @@ from django.db import models
 from django.shortcuts import redirect
 
 from content.models import ContentPage
+from core import field_models
 from core.models import fields
 from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
@@ -13,12 +14,12 @@ from working_at_dit.models import PageWithTopics
 class IrapToolDataAbstract(models.Model):
     # This abstract class matches the data imported from Data workspace
     product_irap_reference_number = models.IntegerField(primary_key=True)
-    product_name = models.CharField(
+    product_name = field_models.CharField(
         max_length=2048,
         null=True,
         blank=True,
     )
-    functionality = models.CharField(
+    functionality = field_models.CharField(
         max_length=2048,
         null=True,
         blank=True,
@@ -56,7 +57,7 @@ class IrapToolData(IrapToolDataAbstract):
         UNDELETED = "undeleted", "Undeleted"
         REVIEWED = "reviewed", "Reviewed"
 
-    after_import_status = models.CharField(
+    after_import_status = field_models.CharField(
         max_length=9, choices=AfterImportStatus.choices, default=AfterImportStatus.NEW
     )
     review_date = models.DateTimeField(null=True, blank=True)
@@ -84,7 +85,7 @@ class Tool(PageWithTopics):
         null=True,
         blank=True,
     )
-    long_description = models.CharField(
+    long_description = field_models.CharField(
         null=True,
         blank=True,
         max_length=2048,

@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 
 
-class ContentConfig(AppConfig):
-    name = "content"
+class FeedbackConfig(AppConfig):
+    name = "feedback"
 
     def ready(self):
         from core.signals import add_validators

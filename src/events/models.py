@@ -10,6 +10,7 @@ from wagtail.admin.panels import FieldRowPanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 
 from content.models import BasePage, ContentPage
+from core import field_models
 from core.models import fields
 from core.panels import FieldPanel
 from events import types
@@ -139,11 +140,11 @@ class EventPage(ContentPage):
         verbose_name="View event recording link",
         help_text="Optional link to a page for others to view the recorded event.",
     )
-    event_type = models.CharField(
+    event_type = field_models.CharField(
         choices=types.EventType.choices,
         default=types.EventType.ONLINE,
     )
-    audience = models.CharField(
+    audience = field_models.CharField(
         choices=types.EventAudience.choices,
         blank=True,
         null=True,
@@ -155,7 +156,7 @@ class EventPage(ContentPage):
         null=True,
         help_text="If you don't select a location the page will show 'Location: To be confirmed'",
     )
-    room = models.CharField(
+    room = field_models.CharField(
         blank=True,
         null=True,
     )

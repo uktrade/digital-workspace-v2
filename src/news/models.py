@@ -11,6 +11,7 @@ from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.snippets.models import register_snippet
 
 from content.models import BasePage
+from core import field_models
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import ScoreFunction
@@ -31,9 +32,9 @@ class Comment(models.Model):
     author = models.ForeignKey(
         UserModel, null=True, blank=True, on_delete=models.CASCADE
     )
-    legacy_author_name = models.CharField(max_length=255, blank=True, null=True)
+    legacy_author_name = field_models.CharField(max_length=255, blank=True, null=True)
     legacy_author_email = models.EmailField(blank=True, null=True)
-    content = models.TextField()
+    content = field_models.TextField()
     posted_date = models.DateTimeField(default=datetime.now)
     edited_date = models.DateTimeField(
         default=None,
@@ -68,7 +69,7 @@ class NewsCategory(models.Model):
         max_length=255,
         unique=True,
     )
-    category = models.CharField(
+    category = field_models.CharField(
         max_length=255,
         unique=True,
     )

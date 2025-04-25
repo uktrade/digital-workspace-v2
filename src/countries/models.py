@@ -1,5 +1,7 @@
 from django.db import models
 
+from core import field_models
+
 
 class Country(models.Model):
     """Country model for use with the Data Workspace country dataset.
@@ -20,13 +22,15 @@ class Country(models.Model):
         COUNTRY = "country", "Country"
         TERRITORY = "territory", "Territory"
 
-    reference_id = models.CharField("Reference ID", primary_key=True, max_length=11)
-    name = models.CharField(max_length=50, unique=True)
-    type = models.CharField(max_length=9, choices=Type.choices)
-    iso_1_code = models.CharField("ISO 1 Code", max_length=3, unique=True)
-    iso_2_code = models.CharField("ISO 2 Code", max_length=2, unique=True)
-    iso_3_code = models.CharField("ISO 3 Code", max_length=3, unique=True)
-    overseas_region = models.CharField(max_length=40, null=True)
+    reference_id = field_models.CharField(
+        "Reference ID", primary_key=True, max_length=11
+    )
+    name = field_models.CharField(max_length=50, unique=True)
+    type = field_models.CharField(max_length=9, choices=Type.choices)
+    iso_1_code = field_models.CharField("ISO 1 Code", max_length=3, unique=True)
+    iso_2_code = field_models.CharField("ISO 2 Code", max_length=2, unique=True)
+    iso_3_code = field_models.CharField("ISO 3 Code", max_length=3, unique=True)
+    overseas_region = field_models.CharField(max_length=40, null=True)
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
 
