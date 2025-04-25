@@ -2,37 +2,15 @@
     <h3>Sort and filter</h3>
     <div class="content-stack large">
         <div class="content-switcher">
+            {% for filter in discover_filters.form %}
+                {% if filter.label != "Ordering"  %}
+                <div class="content-stack">
+                    <label>Filter by {{ filter.label }}</label>
+                    {{ filter }}
+                </div>
+                {% endif %}
+            {% endfor %}
             <div class="content-stack">
-                <label for="id_city">Filter by city</label>
-                {{ discover_filters.form.city }}
-            </div>
-            <div class="content-stack">
-                <label for="id_building_name">Filter by building name</label>
-                {{ discover_filters.form.building_name }}
-            </div>
-            <div class="content-stack">
-                <label for="id_grade">Filter by grade</label>
-                {{ discover_filters.form.grade }}
-            </div>
-            <div class="content-stack">
-                <label for="id_professions">Filter by profession</label>
-                {{ discover_filters.form.professions }}
-            </div>
-            <div class="content-stack">
-                <label for="id_key_skills">Filter by key skills</label>
-                {{ discover_filters.form.key_skills }}
-            </div>
-            <div class="content-stack">
-                <label for="id_learning_interests">Filter by learning interests</label>
-                {{ discover_filters.form.learning_interests }}
-            </div>
-            <div class="content-stack">
-                <label for="id_networks">Filter by networks</label>
-                {{ discover_filters.form.networks }}
-            </div>
-            <div class="content-stack">
-                <label for="id_additional_roles">Filter by additional roles</label>
-                {{ discover_filters.form.additional_roles }}
                 <label for="sort_by">Sort by</label>
                 <div class="small">{{ discover_filters.form.sort_by }}</div>
             </div>

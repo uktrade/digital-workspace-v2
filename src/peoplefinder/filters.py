@@ -19,42 +19,50 @@ class DiscoverFilters(FilterSet):
         field_name="uk_office_location__city",
         choices=get_uk_city_locations,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        label="city",
     )
     building_name = django_filters.ChoiceFilter(
         field_name="uk_office_location__building_name",
         choices=get_uk_buildings,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        label="office location",
     )
     grade = django_filters.ChoiceFilter(
         field_name="grade__name",
         choices=get_grades,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        label="grade",
     )
     professions = django_filters.ChoiceFilter(
         field_name="professions__name",
         choices=get_professions,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        label="profession",
     )
     key_skills = django_filters.ChoiceFilter(
         field_name="key_skills__name",
         choices=get_key_skills,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        label="key skills",
     )
     learning_interests = django_filters.ChoiceFilter(
         field_name="learning_interests__name",
         choices=get_learning_interests,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        label="learning interests",
     )
     networks = django_filters.ChoiceFilter(
         field_name="networks__name",
         choices=get_networks,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        label="networks",
     )
     additional_roles = django_filters.ChoiceFilter(
         field_name="additional_roles__name",
         choices=get_additional_roles,
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        label="additional roles",
     )
     sort_by = django_filters.OrderingFilter(
-        fields=(("first_name", "first_name"),),
+        fields=(("first_name", "first_name"),)
     )
