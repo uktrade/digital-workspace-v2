@@ -105,6 +105,12 @@ debugpy = "*"
 [tool.poetry.group.docs]
 optional = true
 
+[tool.poetry.group.loadtests]
+optional = true
+
+[tool.poetry.group.loadtests.dependencies]
+locust = "^2.20.0"
+
 [tool.poetry.group.docs.dependencies]
 mkdocs-awesome-pages-plugin = "^2.8.0"
 mkdocs-material = "^9.1.5"
