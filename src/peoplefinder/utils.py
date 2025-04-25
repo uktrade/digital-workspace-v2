@@ -1,5 +1,4 @@
 from functools import wraps
-from typing import Any
 
 from django.core.cache import cache
 
@@ -22,10 +21,3 @@ def cache_for_one_hour(func):
         return uncached_response
 
     return wrapper
-
-
-def get_filter_data(*, model: Any, field_name: str) -> list[tuple[str]]:
-    data = (
-        model.objects.order_by(field_name).values_list(field_name, flat=True).distinct()
-    )
-    return [(value, value) for value in data]
