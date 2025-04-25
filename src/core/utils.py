@@ -101,9 +101,12 @@ def get_external_link_settings(request: HttpRequest) -> dict:
     return external_link_settings
 
 
-def get_data(*, model: models.Model, field_name: str) -> list[tuple[str, str]]:
+def get_data_for_django_filters(
+    *, model: models.Model, field_name: str
+) -> list[tuple[str, str]]:
     """
-    Returns values as a list[tuple[value, value]] for a given model and the field name
+    Returns a list[tuple[value, value]] for a given model and field name,
+    as django_filters expects choices to be in a list of tuple.
     """
     data = (
         model.objects.order_by(field_name).values_list(field_name, flat=True).distinct()
