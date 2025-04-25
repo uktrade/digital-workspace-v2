@@ -21,7 +21,7 @@ def get_people(user: User) -> QuerySet[Person]:
 
 def get_people_with_filters(
     *,
-    filter_options: list[tuple[str]],
+    filter_options: dict,
     queryset: QuerySet[Person],
 ) -> QuerySet[Person]:
     return DiscoverFilters(data=filter_options, queryset=queryset)
