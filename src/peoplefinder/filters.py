@@ -3,6 +3,7 @@ from django import forms
 from django.db.models import QuerySet
 
 from core.filters import FilterSet
+from peoplefinder.models import Person
 from peoplefinder.services.reference import (
     get_additional_roles,
     get_grades,
@@ -13,7 +14,6 @@ from peoplefinder.services.reference import (
     get_uk_buildings,
     get_uk_city_locations,
 )
-from peoplefinder.models import Person
 
 
 ORDER_CHOICES = {

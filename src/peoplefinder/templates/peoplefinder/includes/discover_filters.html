@@ -3,11 +3,11 @@
     <div class="content-stack large">
         <div class="content-switcher">
             {% for filter in discover_filters.form %}
-                {% if filter.label != "Ordering"  %}
-                <div class="content-stack">
-                    <label>Filter by {{ filter.label }}</label>
-                    {{ filter }}
-                </div>
+                {% if filter.label != "Ordering" %}
+                    <div class="content-stack">
+                        <label>Filter by {{ filter.label }}</label>
+                        {{ filter }}
+                    </div>
                 {% endif %}
             {% endfor %}
             <div class="content-stack">
