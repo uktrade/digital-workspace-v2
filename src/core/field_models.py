@@ -10,6 +10,6 @@ class CharField(models.CharField):
 # JSONField Need to test rich text and plain text in streamfields
 
 
-class TextField(models.CharField):
+class TextField(models.TextField):
     def clean(self, value, model_instance):
         return strip_tags(super().clean(value, model_instance))
