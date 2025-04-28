@@ -2,6 +2,7 @@ from datetime import time
 from functools import wraps
 
 from django.core.cache import cache
+from django.db import models
 from django.http import HttpRequest
 from waffle import flag_is_active
 
@@ -98,3 +99,16 @@ def get_external_link_settings(request: HttpRequest) -> dict:
     external_link_settings["exclude_domains"] = exclude_domains
     external_link_settings["domain_mapping"] = domain_mapping
     return external_link_settings
+
+
+def get_data_for_django_filters_choices(
+    *, model: models.Model, field_name: str
+) -> list[tuple[str, str]]:
+    """
+    Returns a list[tuple[value, value]] for a given model and field name,
+    as django_filters expects choices to be in a list of tuple.
+    """
+    data = (
+        model.objects.order_by(field_name).values_list(field_name, flat=True).distinct()
+    )
+    return [(value, value) for value in data]

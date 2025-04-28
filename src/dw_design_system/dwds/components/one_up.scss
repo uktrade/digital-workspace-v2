@@ -7,6 +7,8 @@
         }
 
         > .content-image {
+            --content-image-max-height: 400px;
+
             background-color: var(--card-bg-white);
             height: 100%;
 

@@ -41,8 +41,14 @@
     }
 
     > .content-sidebar {
-        --sidebar-size: 160px;
+        --sidebar-size: 130px;
+        --sidebar-min-size: 200px;
         padding: 0 var(--s4);
+
+        > :first-child > .dwds-profile-image {
+            max-width: var(--sidebar-size);
+            max-height: var(--sidebar-size);
+        }
     }
 
     > :last-child {

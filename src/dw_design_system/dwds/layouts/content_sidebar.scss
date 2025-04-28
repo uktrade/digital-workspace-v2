@@ -1,8 +1,8 @@
 .content-sidebar,
 .content-sidebar-right {
     --sidebar-gap: var(--space);
-    --sidebar-size: calc(var(--card-min-width) + calc(var(--space) * 2));
-    --sidebar-min-size: var(--sidebar-size);
+    --sidebar-size: calc(var(--card-min-width) + calc(var(--space)*2));
+    --sidebar-min-size: calc(var(--card-min-width) * 2);
 
     display: flex;
     flex-wrap: wrap;
@@ -23,7 +23,7 @@
     > :last-child {
         flex-grow: 999;
         flex-basis: 0;
-        min-inline-size: var(--sidebar-min-size);
+        min-inline-size: min(var(--sidebar-min-size), 100%);
     }
 }
 
@@ -31,7 +31,7 @@
     > :first-child {
         flex-grow: 999;
         flex-basis: 0;
-        min-inline-size: var(--sidebar-min-size);
+        min-inline-size: min(var(--sidebar-min-size), 100%);
     }
 
     > :last-child {

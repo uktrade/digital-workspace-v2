@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.conf import settings
+from django.core import paginator
 from django.db.models import OuterRef, Subquery
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -9,7 +10,6 @@ from django.views.generic import ListView
 from waffle import flag_is_active
 
 from core import flags
-from peoplefinder.filters import DiscoverFilters
 from peoplefinder.models import Person, Team, TeamMember
 from peoplefinder.services import directory as directory_service
 from peoplefinder.services.team import TeamService
@@ -84,12 +84,26 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     if not flag_is_active(request, flags.PF_DISCOVER):
         return redirect("people-directory")
 
-    people_set = directory_service.get_people(request.user)
-    discover_filters = DiscoverFilters(request.GET, queryset=people_set)
+    discover_filters = directory_service.get_people_with_filters(
+        filter_options=request.GET,
+        queryset=directory_service.get_people(request.user),
+    )
     people = discover_filters.qs
+
+    pr = paginator.Paginator(people, per_page=30)
+    page: int = int(request.GET.get("page", default=1))
+    try:
+        paginator_page = pr.page(page)
+    except paginator.EmptyPage:
+        paginator_page = None
+
+    page_title = "All colleagues"
+    if discover_filters.has_filters_applied():
+        page_title = "Filtered colleagues"
+
     context = {
-        "page_title": "Discover",
-        "people": people,
+        "page_title": page_title,
+        "pages": paginator_page,
         "extra_breadcrumbs": [
             (None, "Discover"),
         ],
