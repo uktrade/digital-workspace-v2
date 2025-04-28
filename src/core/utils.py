@@ -101,7 +101,7 @@ def get_external_link_settings(request: HttpRequest) -> dict:
     return external_link_settings
 
 
-def get_data_for_django_filters(
+def get_data_for_django_filters_choices(
     *, model: models.Model, field_name: str
 ) -> list[tuple[str, str]]:
     """
