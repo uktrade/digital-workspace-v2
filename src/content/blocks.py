@@ -336,6 +336,7 @@ class QuoteBlock(blocks.StructBlock):
         help_text="Colour of the background. This can either be light grey or dark blue",
     )
     source = PersonChooserBlock(required=False)
+    source_role_id = blocks.ChoiceBlock(choices=[], required=False)
     source_name = blocks.CharBlock(required=False)
     source_role = blocks.CharBlock(required=False)
     source_team = blocks.CharBlock(required=False)
@@ -358,6 +359,11 @@ class QuoteBlock(blocks.StructBlock):
             raise ValidationError(
                 "Either choose a source or enter the details manually."
             )
+        if value["source"] and value["source"].roles.exists():
+            if not value["source_role_id"]:
+                raise ValidationError(
+                    "A source role should always be provided."
+                )
         return super().clean(value)
 
     def get_context(self, value, parent_context=None):
