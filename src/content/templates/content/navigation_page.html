@@ -29,7 +29,8 @@
 {% endblock primary_content %}
 
 {% block secondary_content %}
-    <div class="content-stack">
+    <div class="content-stack large">
+        {{ block.super }}
         {% for block in page.secondary_elements %}
             <c-dwds-card no-shadow="true">
                 <c-slot name="card_content">
@@ -37,7 +38,6 @@
                 </c-slot>
             </c-dwds-card>
         {% endfor %}
-        {{ block.super }}
     </div>
 {% endblock secondary_content %}
 
