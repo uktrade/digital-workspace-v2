@@ -1,15 +1,15 @@
 window.addEventListener('DOMContentLoaded', (event) => {
     // Get the event type drop down
-    var event_type_field = document.getElementById("id_event_type")
+    const event_type_field = document.getElementById("id_event_type")
 
     if (!event_type_field) {
         return
     }
 
     // Get the in_person wrapper
-    var in_person_section = document.getElementById("panel-child-content-in_person_details-section")
+    const in_person_section = document.getElementById("panel-child-content-in_person_details-section")
     // Get the online wrapper
-    var online_section = document.getElementById("panel-child-content-online_details-section")
+    const online_section = document.getElementById("panel-child-content-online_details-section")
 
     if (!in_person_section || !online_section) {
         return
