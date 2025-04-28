@@ -20,8 +20,7 @@ from wagtail.search.backends import get_search_backend
 from content.models import BasePage, ContentOwnerMixin
 from core import flags
 from core.forms import PageProblemFoundForm
-from core.models import Tag, TaggedPage
-from core.models.tags import TaggedPerson, TaggedTeam
+from core.models import Tag
 from interactions.services import tag_subscriptions as tag_sub_service
 from user.models import User
 
