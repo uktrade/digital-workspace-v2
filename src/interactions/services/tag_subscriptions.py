@@ -47,14 +47,14 @@ def get_tagged_content(
 def get_activity(
     *,
     tags: Iterable[Tag],
-    date_from: date | None = None,
-    date_to: date | None = None,
+    date_from: datetime | None = None,
+    date_to: datetime | None = None,
 ) -> dict[date, BaseManager[ContentPage]]:
-    batch_content_count = 10
+    batch_content_count = 50
     current_content_count = 0
 
     if not date_from:
-        date_from = timezone.now().date()
+        date_from = timezone.now()
     if not date_to:
         date_to = date_from - timezone.timedelta(days=3)
 
@@ -62,14 +62,14 @@ def get_activity(
     # team_ids = tagged_teams.values_list("content_object_id", flat=True)
     # person_ids = tagged_people.values_list("content_object_id", flat=True)
 
-    content_date = date_from
+    content_datetime = date_from
     grouped_content: dict[date, BaseManager[ContentPage]] = {}
-    while content_date >= date_to or current_content_count > batch_content_count:
-        grouped_content[content_date] = (
+    while content_datetime >= date_to or current_content_count > batch_content_count:
+        content_pages = (
             ContentPage.objects.filter(
                 id__in=Subquery(tagged_pages.values("content_object_id")),
-                latest_revision_created_at__lte=content_date,
-                latest_revision_created_at__gt=content_date
+                latest_revision_created_at__lte=content_datetime,
+                latest_revision_created_at__gt=content_datetime
                 - timezone.timedelta(days=1),
             )
             .annotate_with_comment_count()
@@ -77,7 +77,9 @@ def get_activity(
             .specific()
             .order_by("latest_revision_created_at")
         )
-        current_content_count += grouped_content[content_date].count()
-        content_date -= timezone.timedelta(days=1)
+        if content_pages.exists():
+            grouped_content[content_datetime.date()] = content_pages
+            current_content_count += content_pages.count()
+        content_datetime -= timezone.timedelta(days=1)
 
     return grouped_content

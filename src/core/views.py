@@ -175,9 +175,9 @@ def tag_index(request: HttpRequest, slug: str, *args, **kwargs) -> HttpResponse:
     context = {
         "page_title": f"{tag.name}",
         "tag": tag,
-        "tagged_teams": tagged_teams,
-        "tagged_people": tagged_people,
-        "tagged_pages": tagged_pages,
+        "tagged_teams": tagged_teams[:6],
+        "tagged_people": tagged_people[:6],
+        "tagged_pages": tagged_pages[:6],
         "user_follows_tag": tag_sub_service.is_subscribed(tag=tag, user=request.user),
     }
     return TemplateResponse(request, "core/tag_index.html", context=context)
@@ -233,7 +233,7 @@ class AdminInfoView(WagtailAdminTemplateMixin, View):
 
 
 def personal_feed(request: HttpRequest) -> HttpResponse:
-    context = {"page_title": "Your feed"}
+    context: dict[str, str] = {"page_title": "Your feed"}
     subscribed_tags = tag_sub_service.get_subscribed_tags(user=request.user)
     context.update(
         grouped_content=tag_sub_service.get_activity(tags=subscribed_tags),
