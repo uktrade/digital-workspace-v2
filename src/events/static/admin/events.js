@@ -16,22 +16,21 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
 
     function event_type_section_toggle(value) {
-        // If the event type is in person, show the in person wrapper
-        if (value == "in_person") {
-            in_person_section.style.display = "block"
-            online_section.style.display = "none"
-        }
-
-        // If the event type is online, show the online wrapper
-        else if (value == "online") {
-            in_person_section.style.display = "none"
-            online_section.style.display = "block"
-        }
-
-        // If the event type is hybrid, show both
-        else if (value == "hybrid") {
-            in_person_section.style.display = "block"
-            online_section.style.display = "block"
+        switch (value) {
+            case "in_person":
+                // If the event type is in person, show the in person wrapper
+                in_person_section.style.display = "block"
+                online_section.style.display = "none"
+                break;
+            case "online":
+                // If the event type is online, show the online wrapper
+                in_person_section.style.display = "none"
+                online_section.style.display = "block"
+                break;
+            default:
+                // If the event type is hybrid (not in_person or online), show both
+                in_person_section.style.display = "block"
+                online_section.style.display = "block"
         }
     }
 
