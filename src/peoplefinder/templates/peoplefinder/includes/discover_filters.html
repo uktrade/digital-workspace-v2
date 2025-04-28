@@ -1,21 +1,23 @@
-<form method="get" class="content-stack large">
+<form method="get">
     <h3>Sort and filter</h3>
-    <div class="content-stack large">
-        <div class="content-switcher">
-            <div class="content-stack">
-                <label for="id_city">Filter by city</label>
-                {{ discover_filters.form.city }}
-            </div>
-            <div class="content-stack">
-                <label for="sort_by">Sort by</label>
-                <div class="small">{{ discover_filters.form.sort_by }}</div>
-            </div>
+    <div class="content-stack">
+        <div class="content-stack">
+            <label for="sort_by">Sort by</label>
+            <div class="small">{{ discover_filters.form.sort_by }}</div>
         </div>
-    </div>
-    <div class="dwds-button-group">
-        <input class="dwds-button dwds-button--secondary dwds-button--inline"
-               type="submit"
-               value="Apply filters" />
-        <a href="?">Reset filters</a>
+        {% for filter in discover_filters.form %}
+            {% if filter.name != "sort_by" %}
+                <div class="content-stack" style="width: 250px;">
+                    <label>Filter by {{ filter.label }}</label>
+                    {{ filter }}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="dwds-button-group">
+            <input class="dwds-button dwds-button--secondary dwds-button--inline"
+                   type="submit"
+                   value="Apply filters" />
+            <a href="?">Reset filters</a>
+        </div>
     </div>
 </form>
