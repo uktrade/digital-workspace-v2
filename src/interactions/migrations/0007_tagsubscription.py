@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("core", "0011_alter_taggedpage_tag_alter_taggedperson_tag_and_more"),
+        ("core", "0012_alter_taggedpage_tag_alter_taggedperson_tag_and_more"),
         ("interactions", "0006_rename_reaction_pagereaction_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]

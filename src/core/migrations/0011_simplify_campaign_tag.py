@@ -14,7 +14,7 @@ def create_simplify_campaign_tag(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("core", "0009_campaign_taggedperson_taggedteam"),
+        ("core", "0010_campaign_taggedperson_taggedteam"),
     ]
 
     operations = [

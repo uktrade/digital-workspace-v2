@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("core", "0008_externallinksetting"),
+        ("core", "0009_pageproblemformsettings"),
         ("peoplefinder", "0124_update_profile_completion"),
     ]
 
