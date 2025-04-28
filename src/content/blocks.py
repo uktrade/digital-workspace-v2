@@ -7,6 +7,7 @@ from wagtailmedia.blocks import AbstractMediaChooserBlock
 
 from peoplefinder.blocks import PersonChooserBlock
 
+
 RICH_TEXT_FEATURES = [
     "ol",
     "ul",
@@ -301,9 +302,7 @@ class PersonBanner(blocks.StructBlock):
             )
         if value["person"] and value["person"].roles.exists():
             if not value["person_role_id"]:
-                raise ValidationError(
-                    "A person role should always be provided."
-                )
+                raise ValidationError("A person role should always be provided.")
 
         return super().clean(value)
 
@@ -361,9 +360,7 @@ class QuoteBlock(blocks.StructBlock):
             )
         if value["source"] and value["source"].roles.exists():
             if not value["source_role_id"]:
-                raise ValidationError(
-                    "A source role should always be provided."
-                )
+                raise ValidationError("A source role should always be provided.")
         return super().clean(value)
 
     def get_context(self, value, parent_context=None):
