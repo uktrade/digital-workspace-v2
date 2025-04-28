@@ -57,10 +57,11 @@ class Grade(models.Model):
             models.UniqueConstraint(fields=["code"], name="unique_grade_code"),
             models.UniqueConstraint(fields=["name"], name="unique_grade_name"),
         ]
-        ordering = ["name"]
+        ordering = ["-ordering"]
 
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=50)
+    ordering = models.IntegerField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -267,6 +268,7 @@ class Person(ClusterableModel, Indexed, models.Model):
         permissions = [
             ("can_view_inactive_profiles", "Can view inactive profiles"),
         ]
+        ordering = ["grade", "first_name", "last_name"]
 
     is_active = models.BooleanField(default=True)
     became_inactive = models.DateTimeField(null=True, blank=True)
