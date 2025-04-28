@@ -4,7 +4,7 @@ import logging
 from django.conf import settings
 from django.contrib.postgres.aggregates import StringAgg
 from django.core.exceptions import PermissionDenied
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
@@ -12,11 +12,13 @@ from django.views.decorators.http import require_GET
 from django.views.generic.base import View
 from notifications_python_client.notifications import NotificationsAPIClient
 from sentry_sdk import capture_exception
+from waffle import flag_is_active
 from wagtail.admin.views.generic.base import WagtailAdminTemplateMixin
 from wagtail.models import Page
 from wagtail.search.backends import get_search_backend
 
 from content.models import BasePage, ContentOwnerMixin
+from core import flags
 from core.forms import PageProblemFoundForm
 from core.models import Tag, TaggedPage
 from core.models.tags import TaggedPerson, TaggedTeam
@@ -163,6 +165,9 @@ def content_owners_report(request: HttpRequest, *args, **kwargs) -> HttpResponse
 
 @require_GET
 def tag_index(request: HttpRequest, slug: str, *args, **kwargs) -> HttpResponse:
+    if not flag_is_active(request, flags.TAG_INDEX):
+        return HttpResponseForbidden()
+
     tag = get_object_or_404(Tag, slug=slug)
     tagged_teams, tagged_people, tagged_pages = tag_sub_service.get_tagged_content(
         tags=[tag]
