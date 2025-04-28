@@ -7,7 +7,6 @@ from wagtailmedia.blocks import AbstractMediaChooserBlock
 
 from peoplefinder.blocks import PersonChooserBlock
 
-
 RICH_TEXT_FEATURES = [
     "ol",
     "ul",
@@ -280,6 +279,7 @@ class PageUpdate(blocks.StructBlock):
 
 class PersonBanner(blocks.StructBlock):
     person = PersonChooserBlock(required=False)
+    person_role_id = blocks.ChoiceBlock(choices=[], required=False)
     person_name = blocks.CharBlock(required=False)
     person_role = blocks.CharBlock(required=False)
     person_image = ImageChooserBlock(
@@ -299,6 +299,12 @@ class PersonBanner(blocks.StructBlock):
             raise ValidationError(
                 "Either choose a person or enter the details manually."
             )
+        if value["person"] and value["person"].roles.exists():
+            if not value["person_role_id"]:
+                raise ValidationError(
+                    "A person role should always be provided."
+                )
+
         return super().clean(value)
 
     def get_context(self, value, parent_context=None):
