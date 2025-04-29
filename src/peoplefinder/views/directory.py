@@ -87,6 +87,14 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     discover_filters = directory_service.get_people_with_filters(
         filter_options=request.GET,
         queryset=directory_service.get_people(request.user),
+        # .prefetch_related(
+        #     "key_skills",
+        #     "workdays",
+        #     "learning_interests",
+        #     "networks",
+        #     "professions",
+        #     "additional_roles",
+        # ),
     )
     people = discover_filters.qs
 

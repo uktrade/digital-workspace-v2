@@ -1,11 +1,22 @@
 import factory
+import factory.fuzzy
 
-from peoplefinder.models import Person, Team
+from peoplefinder.models import Person, Team, UkStaffLocation
+from user.test.factories import UserFactory
 
 
 class PersonFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Person
+
+    legacy_sso_user_id = factory.Sequence(lambda n: f"legacy_sso_{n}")
+
+    is_active = True
+    user = factory.SubFactory(UserFactory)
+    uk_office_location = factory.Iterator(UkStaffLocation.objects.all())
+    first_name = factory.fuzzy.FuzzyText(length=12)
+    preferred_first_name = factory.fuzzy.FuzzyText(length=12)
+    last_name = factory.fuzzy.FuzzyText(length=12)
 
 
 class TeamFactory(factory.django.DjangoModelFactory):
