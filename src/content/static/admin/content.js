@@ -1,4 +1,4 @@
-function getParentContentPathEl(el) {
+const getParentContentPathEl = (el) => {
     /*
     Get the first parent element with a `data-contentpath` attribute
     */
@@ -10,8 +10,9 @@ function getParentContentPathEl(el) {
         return getParentContentPathEl(el.parentElement);
     }
     return el.parentElement;
-}
-function getParentContentPath(el) {
+};
+
+const getParentContentPath = (el) => {
     /*
     Get the first parent element with a `data-contentpath` attribute and return
     the value.
@@ -21,9 +22,9 @@ function getParentContentPath(el) {
         return null;
     }
     return contentPathEl.getAttribute("data-contentpath");
-}
+};
 
-function getStreamfieldChildIndex(container, contentPath) {
+const getStreamfieldChildIndex = (container, contentPath) => {
     /*
     Get's the index by looking for the input with the name `body-N-type` and
     returning `n`.
@@ -49,23 +50,36 @@ function getStreamfieldChildIndex(container, contentPath) {
         return orderInputNameSplit[1];
     }
     return null;
-}
+};
 
-function hideRoleSelector(roleSelectorEl) {
+const hideRoleSelector = (roleSelectorEl) => {
     const parentContentPathEl = getParentContentPathEl(roleSelectorEl);
     parentContentPathEl.style.display = "none";
-}
-function showRoleSelector(roleSelectorEl) {
+};
+
+const showRoleSelector = (roleSelectorEl) => {
     const parentContentPathEl = getParentContentPathEl(roleSelectorEl);
     parentContentPathEl.style.display = "block";
-}
+};
 
-function initialiseRoleSelector(
+const addOptionsToSelect = (selectElement, optionsArray) => {
+    for (const option of optionsArray) {
+        let optionElement = document.createElement("option");
+        optionElement.setAttribute("value", option);
+
+        let optionText = document.createTextNode(option);
+        optionElement.appendChild(optionText);
+
+        selectElement.appendChild(optionElement);
+    }
+};
+
+const initialiseRoleSelector = (
     streamfieldChild,
     streamfieldType,
     contentPath,
     containerChildIndex,
-) {
+) => {
     if (streamfieldChild.dataset.roleSelector) {
         return;
     }
@@ -102,8 +116,8 @@ function initialiseRoleSelector(
     }
 
     // When the value of the selected person changes, make a request to get roles using the currently selected person ID
-    const observer = new MutationObserver((mutationList, observer) => {
-        for (const mutation of mutationList) {
+    const observer = new MutationObserver((mutations, observer) => {
+        for (const mutation of mutations) {
             if (
                 mutation.type === "attributes" &&
                 mutation.attributeName === "value"
@@ -113,6 +127,14 @@ function initialiseRoleSelector(
                         hideRoleSelector(personRoleSelect);
                         break;
                     default:
+                        fetch(`/content/get-user-roles/${personInput.value}/`)
+                            .then((response) => response.json())
+                            .then((data) =>
+                                addOptionsToSelect(
+                                    personRoleSelect,
+                                    data.person_roles,
+                                ),
+                            );
                         // Make a request to get the list of roles for the new person ID
                         // Then update the "person role id" field with the values from the request
                         // "${contentPath}-${containerChildIndex}-value-source_role_id
@@ -123,9 +145,9 @@ function initialiseRoleSelector(
         }
     });
     observer.observe(personInput, { attributes: true });
-}
+};
 
-function initialiseStreamfieldChild(streamfieldChild, contentPath) {
+const initialiseStreamfieldChild = (streamfieldChild, contentPath) => {
     const containerChildIndex = getStreamfieldChildIndex(
         streamfieldChild,
         contentPath,
@@ -141,21 +163,19 @@ function initialiseStreamfieldChild(streamfieldChild, contentPath) {
         contentPath,
         containerChildIndex,
     );
-}
+};
 
 const streamfieldContainerObserver = new MutationObserver(
-    (mutationList, observer) => {
-        for (const mutation of mutationList) {
+    (mutations, observer) => {
+        for (const mutation of mutations) {
             if (mutation.type === "childList") {
-                console.log(mutation);
-                console.log(mutation.target);
                 initialiseStreamfields();
             }
         }
     },
 );
 
-function initialiseStreamfields() {
+const initialiseStreamfields = () => {
     const streamfieldContainers = document.querySelectorAll(
         "[data-streamfield-stream-container]",
     );
@@ -181,7 +201,7 @@ function initialiseStreamfields() {
             });
         }
     });
-}
+};
 
 window.addEventListener("DOMContentLoaded", (event) => {
     initialiseStreamfields();
