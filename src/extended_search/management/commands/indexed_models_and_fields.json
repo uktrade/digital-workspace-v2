@@ -818,7 +818,9 @@
         "<SearchField: search_teams>",
         "<SearchField: search_teams_explicit>",
         "<SearchField: secondary_phone_number>",
-        "<SearchField: secondary_phone_number_keyword>"
+        "<SearchField: secondary_phone_number_keyword>",
+        "<SearchField: search_job_titles>",
+        "<SearchField: search_job_titles_explicit>"
     ],
     "<class 'peoplefinder.models.Team'>": [
         "<AutocompleteField: name>",
