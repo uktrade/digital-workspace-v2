@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import call
+
+import pytest
 from django.test import override_settings
 from django_feedback_govuk.models import BaseFeedback
 
@@ -56,7 +57,7 @@ def test_send_feedback_notification_with_no_email_recipients():
 
 @override_settings(
     GOVUK_NOTIFY_API_KEY="this-is-my-really-long-api-key-because-gov-uk-notify-expects-it-to-be-long-when-you-create-a-service",
-    FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=["test@email.com"],
+    FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=["test@email.com"],  # /PS-IGNORE
     FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID="test-template-id",
     WAGTAILADMIN_BASE_URL="https://test.example.com/",
 )
@@ -67,7 +68,7 @@ def test_send_feedback_notification_with_valid_settings(mocker):
     )
     send_feedback_notification()
     mock_send_email_notification.assert_called_once_with(
-        email_address="test@email.com",
+        email_address="test@email.com",  # /PS-IGNORE
         template_id="test-template-id",
         personalisation={
             "feedback_url": "https://test.example.com/feedback/submitted/"
@@ -77,7 +78,10 @@ def test_send_feedback_notification_with_valid_settings(mocker):
 
 @override_settings(
     GOVUK_NOTIFY_API_KEY="this-is-my-really-long-api-key-because-gov-uk-notify-expects-it-to-be-long-when-you-create-a-service",
-    FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=["test1@email.com", "test2@email.com"],
+    FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS=[
+        "test1@email.com",  # /PS-IGNORE
+        "test2@email.com",  # /PS-IGNORE
+    ],
     FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID="test-template-id",
     WAGTAILADMIN_BASE_URL="https://test.example.com/",
 )
@@ -88,14 +92,14 @@ def test_send_feedback_notification_with_multiple_emails(mocker):
     )
     expected_calls = [
         call(
-            email_address="test1@email.com",
+            email_address="test1@email.com",  # /PS-IGNORE
             template_id="test-template-id",
             personalisation={
                 "feedback_url": "https://test.example.com/feedback/submitted/"
             },
         ),
         call(
-            email_address="test2@email.com",
+            email_address="test2@email.com",  # /PS-IGNORE
             template_id="test-template-id",
             personalisation={
                 "feedback_url": "https://test.example.com/feedback/submitted/"

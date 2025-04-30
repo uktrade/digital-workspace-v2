@@ -2,7 +2,7 @@
 name = "digital-workspace-v2"
 version = "1.0.0"
 description = ""
-authors = ["Live Services <live.services@digital.trade.gov.uk>"]
+authors = ["Live Services <live.services@digital.trade.gov.uk>"] # /PS-IGNORE
 license = "MIT"
 readme = "README.md"
 package-mode = false

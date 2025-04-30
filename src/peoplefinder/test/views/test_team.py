@@ -21,18 +21,18 @@ class TestTeamEditView:
         red_leader = UserFactory(
             first_name="Red",
             last_name="Leader",
-            email="red.leader@example.com",
+            email="red.leader@example.com",  # /PS-IGNORE
             legacy_sso_user_id=None,
             username="red-leader",
-            sso_contact_email="red.leader@example.com",
+            sso_contact_email="red.leader@example.com",  # /PS-IGNORE
         )
         gold_leader = UserFactory(
             first_name="Gold",
             last_name="Leader",
-            email="gold.leader@example.com",
+            email="gold.leader@example.com",  # /PS-IGNORE
             legacy_sso_user_id=None,
             username="gold-leader",
-            sso_contact_email="gold.leader@example.com",
+            sso_contact_email="gold.leader@example.com",  # /PS-IGNORE
         )
 
         call_command("create_user_profiles")

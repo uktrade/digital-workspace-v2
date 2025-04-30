@@ -391,7 +391,7 @@ class Person(Indexed, models.Model):
         max_length=200,
         help_text=(
             "This name appears on your profile. Colleagues can search for you"
-            " using either of your first names"
+            " using either of your first names"  # /PS-IGNORE
         ),
         null=True,
         blank=True,

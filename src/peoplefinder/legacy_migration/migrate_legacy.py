@@ -242,11 +242,11 @@ def person_migrator():
         if legacy_person.ditsso_user_id:
             person.legacy_sso_user_id = legacy_person.ditsso_user_id
 
-        # first name
+        # first name /PS-IGNORE
         if legacy_person.given_name:
             person.first_name = legacy_person.given_name
 
-        # last name
+        # last name /PS-IGNORE
         if legacy_person.surname:
             person.last_name = legacy_person.surname
 

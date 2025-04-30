@@ -64,7 +64,7 @@ for person in Person.objects.all().reverse():
             f"{person.first_name.lower()}.{person.last_name.lower()}@{email_parts[1]}"
         )
     person.user.username = (
-        f"{person.first_name.lower()}.{person.last_name.lower()}-123456@id.trade.gov.uk"
+        f"{person.first_name.lower()}.{person.last_name.lower()}-123456@id.trade.gov.uk"  # /PS-IGNORE
     )
     person.user.email = person.email
     if person.user.sso_contact_email is not None:
