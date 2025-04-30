@@ -619,7 +619,7 @@ class Person(Indexed, models.Model):
             "search_job_titles",
             tokenized=True,
             explicit=True,
-            boost=2.0,
+            boost=3.0,
         ),
         RelatedFields(
             "roles",
@@ -810,9 +810,7 @@ class Person(Indexed, models.Model):
         """
         Indexable string of job titles and abbreviations
         """
-        job_titles = TeamMember.objects.filter(person=self).values_list(
-            "job_title", flat=True
-        )
+        job_titles = self.roles.all().values_list("job_title", flat=True)
         return " ".join(job_titles)
 
     @property
