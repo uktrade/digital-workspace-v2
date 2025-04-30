@@ -615,6 +615,12 @@ class Person(Indexed, models.Model):
             "search_buildings",
             tokenized=True,
         ),
+        IndexedField(
+            "search_job_titles",
+            tokenized=True,
+            explicit=True,
+            boost=3.0,
+        ),
         RelatedFields(
             "roles",
             [
@@ -798,6 +804,14 @@ class Person(Indexed, models.Model):
         abbrs = teams.values_list("team__abbreviation", flat=True)
         abbrs_str = " ".join(list([a or "" for a in abbrs]))
         return f"{names_str} {abbrs_str}"
+
+    @property
+    def search_job_titles(self):
+        """
+        Indexable string of job titles
+        """
+        job_titles = self.roles.all().values_list("job_title", flat=True)
+        return " ".join(job_titles)
 
     @property
     def search_buildings(self):

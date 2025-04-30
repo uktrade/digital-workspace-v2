@@ -2,7 +2,9 @@ import factory
 import factory.fuzzy
 
 from peoplefinder.models import Person, Team, UkStaffLocation
+from user.models import User
 from user.test.factories import UserFactory
+from django.core.management import call_command
 
 
 class PersonFactory(factory.django.DjangoModelFactory):
@@ -17,6 +19,13 @@ class PersonFactory(factory.django.DjangoModelFactory):
     first_name = factory.fuzzy.FuzzyText(length=12)
     preferred_first_name = factory.fuzzy.FuzzyText(length=12)
     last_name = factory.fuzzy.FuzzyText(length=12)
+
+
+class UserWithPersonFactory(UserFactory):
+    @factory.post_generation
+    def create_profile(self, create, extracted, **kwargs):
+        if not getattr(self, "profile", None):
+            PersonFactory(user=self)
 
 
 class TeamFactory(factory.django.DjangoModelFactory):
