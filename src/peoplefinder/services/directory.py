@@ -12,11 +12,17 @@ def get_people(user: User) -> QuerySet[Person]:
     """
     queryset = (
         Person.objects.all()
-        .get_annotated()
         .order_by(
             "grade",
             "first_name",
             "last_name",
+        )
+        .select_related(
+            "uk_office_location",
+        )
+        .prefetch_related(
+            "roles",
+            "roles__team",
         )
     )
 
@@ -30,6 +36,7 @@ def get_people(user: User) -> QuerySet[Person]:
 def get_people_with_filters(
     *,
     filter_options: dict,
-    queryset: QuerySet[Person],
-) -> QuerySet[Person]:
-    return DiscoverFilters(data=filter_options, queryset=queryset)
+    user: User,
+) -> DiscoverFilters:
+
+    return DiscoverFilters(data=filter_options, queryset=get_people(user=user))
