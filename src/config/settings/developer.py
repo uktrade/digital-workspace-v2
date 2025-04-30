@@ -30,7 +30,7 @@ if DDT_ENABLED:
         "127.0.0.1",
     ]
     DEBUG_TOOLBAR_CONFIG = {
-        'SHOW_TOOLBAR_CALLBACK': lambda x: True,
+        "SHOW_TOOLBAR_CALLBACK": lambda x: True,
     }
 
 SILK_ENABLED = env.bool("SILK_ENABLED", False)  # noqa F405

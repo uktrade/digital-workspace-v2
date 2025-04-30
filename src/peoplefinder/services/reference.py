@@ -1,4 +1,4 @@
-from core.utils import get_data_for_django_filters_choices
+from core.utils import cache_for, get_data_for_django_filters_choices
 from peoplefinder.models import (
     AdditionalRole,
     Grade,
@@ -8,7 +8,6 @@ from peoplefinder.models import (
     Profession,
     UkStaffLocation,
 )
-from peoplefinder.utils import cache_for
 
 
 @cache_for(hours=1)
