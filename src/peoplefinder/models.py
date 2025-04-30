@@ -808,7 +808,7 @@ class Person(Indexed, models.Model):
     @property
     def search_job_titles(self):
         """
-        Indexable string of job titles and abbreviations
+        Indexable string of job titles
         """
         job_titles = self.roles.all().values_list("job_title", flat=True)
         return " ".join(job_titles)
