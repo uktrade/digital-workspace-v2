@@ -1,0 +1,12 @@
+.dwds-image-with-text {
+
+    > .content-sidebar,
+    > .content-sidebar-right {
+        --sidebar-min-size: var(--sidebar-size);
+
+        > div > .content-image img {
+            width: 100%;
+            height: auto;
+        }
+    }
+}

@@ -1,0 +1,10 @@
+.dwds-engagement {
+    > .content-custom-sidebar > .content-image {
+        --content-image-max-height: 400px;
+        max-width: unset;
+
+        > img {
+            max-width: unset;
+        }
+    }
+}

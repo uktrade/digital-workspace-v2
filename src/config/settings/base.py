@@ -157,6 +157,7 @@ THIRD_PARTY_APPS = [
 WAGTAIL_APPS = [
     "modelcluster",
     "taggit",
+    "wagtail.contrib.settings",
     "wagtail.contrib.search_promotions",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",

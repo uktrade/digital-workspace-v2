@@ -56,10 +56,11 @@ class Grade(models.Model):
             models.UniqueConstraint(fields=["code"], name="unique_grade_code"),
             models.UniqueConstraint(fields=["name"], name="unique_grade_name"),
         ]
-        ordering = ["name"]
+        ordering = ["-ordering"]
 
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=50)
+    ordering = models.IntegerField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -266,6 +267,7 @@ class Person(Indexed, models.Model):
         permissions = [
             ("can_view_inactive_profiles", "Can view inactive profiles"),
         ]
+        ordering = ["grade", "first_name", "last_name"]
 
     is_active = models.BooleanField(default=True)
     became_inactive = models.DateTimeField(null=True, blank=True)
@@ -613,6 +615,12 @@ class Person(Indexed, models.Model):
             "search_buildings",
             tokenized=True,
         ),
+        IndexedField(
+            "search_job_titles",
+            tokenized=True,
+            explicit=True,
+            boost=3.0,
+        ),
         RelatedFields(
             "roles",
             [
@@ -796,6 +804,14 @@ class Person(Indexed, models.Model):
         abbrs = teams.values_list("team__abbreviation", flat=True)
         abbrs_str = " ".join(list([a or "" for a in abbrs]))
         return f"{names_str} {abbrs_str}"
+
+    @property
+    def search_job_titles(self):
+        """
+        Indexable string of job titles
+        """
+        job_titles = self.roles.all().values_list("job_title", flat=True)
+        return " ".join(job_titles)
 
     @property
     def search_buildings(self):
