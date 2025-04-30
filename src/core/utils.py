@@ -32,7 +32,7 @@ def get_all_feature_flags(request) -> dict[str, bool]:
     return all_flags
 
 
-def flag_is_active(request, flag_name:str) -> bool | None:
+def flag_is_active(request, flag_name: str) -> bool | None:
     """Replicates waffle functionality but uses cached results"""
     all_flags: dict[str, bool] = get_all_feature_flags(request)
     try:
