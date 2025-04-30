@@ -108,7 +108,7 @@ def test_get_page_comment_count(news_page):
     comments = CommentFactory.create_batch(3, page=news_page)
 
     # Hidden comments are not included in the comment count
-    CommentFactory.create_batch(3, page=news_page, is_visible=False)
+    CommentFactory.create_batch(5, page=news_page, is_visible=False)
 
     # The comment count is returned for the requested page
     assert comments_service.get_page_comment_count(news_page) == len(comments)
