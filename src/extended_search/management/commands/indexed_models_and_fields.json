@@ -3,6 +3,10 @@
         "<AutocompleteField: name>",
         "<SearchField: name>"
     ],
+    "<class 'core.models.tags.Campaign'>": [
+        "<AutocompleteField: name>",
+        "<SearchField: name>"
+    ],
     "<class 'home.models.HomePage'>": [
         "<AutocompleteField: title>",
         "<FilterField: content_type>",

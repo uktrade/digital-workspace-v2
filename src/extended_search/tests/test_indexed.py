@@ -7,7 +7,7 @@ from wagtailmedia.models import Media
 
 from about_us.models import AboutUs, AboutUsHome
 from content.models import BasePage, BlogIndex, BlogPost, ContentPage, NavigationPage
-from core.models.tags import Tag
+from core.models.tags import Campaign, Tag
 from country_fact_sheet.models import CountryFactSheetHome
 from events.models import EventPage, EventsHome
 from extended_search.index import DWIndexedField, class_is_indexed, get_indexed_models
@@ -271,13 +271,16 @@ class TestProject:
             BlogIndex,
             BlogPost,
             Tag,
+            Campaign,
             Person,
             Team,
             Document,
             Image,
             Page,
             Media,
-        }, "Indexed models have changed, please update this test if this was intentional."
+        }, (
+            "Indexed models have changed, please update this test if this was intentional."
+        )
 
     def test_indexed_models_and_fields(test):
         with open(JSON_FILE, "r") as f:
