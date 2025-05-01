@@ -88,6 +88,7 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         filter_options=request.GET,
         queryset=directory_service.get_people(request.user),
     )
+
     people = discover_filters.qs
 
     pr = paginator.Paginator(people, per_page=30)
@@ -108,5 +109,8 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
             (None, "Discover"),
         ],
         "discover_filters": discover_filters,
+        "can_see_inactive_users": request.user.has_perm(
+            "peoplefinder.can_view_inactive_profiles"
+        ),
     }
     return render(request, "peoplefinder/discover.html", context)
