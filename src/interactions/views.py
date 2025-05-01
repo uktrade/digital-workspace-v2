@@ -25,7 +25,7 @@ from news.models import Comment
 
 
 @require_http_methods(["POST"])
-def bookmark(request):
+def bookmark(request: HttpRequest):
     user = request.user
 
     if request.method == "POST":
@@ -51,13 +51,13 @@ def bookmark(request):
 
 
 @require_http_methods(["DELETE"])
-def remove_bookmark(request, *, pk):
+def remove_bookmark(request: HttpRequest, *, pk):
     bookmarks_service.remove_bookmark(pk, request.user)
     return HttpResponse()
 
 
 @require_http_methods(["GET"])
-def bookmark_index(request):
+def bookmark_index(request: HttpRequest):
     return TemplateResponse(
         request,
         "interactions/bookmark_index.html",
@@ -69,7 +69,7 @@ def bookmark_index(request):
 
 
 @require_http_methods(["POST"])
-def react_to_page(request, *, pk):
+def react_to_page(request: HttpRequest, *, pk):
     page = get_object_or_404(Page, id=pk)
     user = request.user
 
@@ -89,7 +89,7 @@ def react_to_page(request, *, pk):
 
 
 @require_http_methods(["POST"])
-def edit_comment(request, *, comment_id):
+def edit_comment(request: HttpRequest, *, comment_id):
     if not comments_service.can_edit_comment(request.user, comment_id):
         return HttpResponse(status=403)
 
@@ -103,21 +103,21 @@ def edit_comment(request, *, comment_id):
 
 
 @require_http_methods(["GET"])
-def get_page_comments(request, *, pk):
+def get_page_comments(request: HttpRequest, *, pk):
     page = get_object_or_404(Page, id=pk).specific
 
     return comments_service.get_page_comments_response(request, page)
 
 
 @require_http_methods(["GET"])
-def get_comment(request, *, comment_id):
+def get_comment(request: HttpRequest, *, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
 
     return comments_service.get_comment_response(request, comment)
 
 
 @require_http_methods(["GET"])
-def edit_comment_form(request, *, comment_id):
+def edit_comment_form(request: HttpRequest, *, comment_id):
     if not comments_service.can_edit_comment(request.user, comment_id):
         return HttpResponse(status=403)
 
@@ -150,7 +150,10 @@ def edit_comment_form(request, *, comment_id):
 
 
 @require_http_methods(["POST"])
-def reply_to_comment(request, *, comment_id):
+def reply_to_comment(request: HttpRequest, *, comment_id):
+    if not comments_service.can_reply_comment(request.user, comment_id):
+        return HttpResponse(status=403)
+
     comment = get_object_or_404(Comment, id=comment_id)
     user = request.user
 
@@ -164,7 +167,7 @@ def reply_to_comment(request, *, comment_id):
     return comments_service.get_comment_response(request, comment)
 
 
-def react_to_comment(request, *, pk):
+def react_to_comment(request: HttpRequest, *, pk):
     comment = get_object_or_404(Comment, id=pk)
     user = request.user
 
@@ -186,7 +189,7 @@ def react_to_comment(request, *, pk):
 
 
 @require_http_methods(["POST"])
-def comment_on_page(request, *, pk):
+def comment_on_page(request: HttpRequest, *, pk):
     page = get_object_or_404(Page, id=pk).specific
     user = request.user
 
