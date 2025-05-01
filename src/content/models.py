@@ -295,23 +295,6 @@ class BasePage(Page, Indexed):
                 }
             )
 
-            # raise ValidationError(
-            #     error_list=[
-            #         ValidationError(
-            #             f"Remove additional 'on_behalf_of' fields to use '${selected_field}'"
-            #         )
-            #         for selected_field in on_behalf_of_selected
-            #     ],
-            #     message="Only one 'on_behalf_of' field may be set.",
-            # )
-            # raise ValidationError(
-            #     "Only one 'on_behalf_of' field may be set."
-            # )
-            # for selected_field in on_behalf_of_selected:
-            #     raise ValidationError(
-            #         f"Remove additional 'on_behalf_of' fields to use '${selected_field}'",
-            #     )
-
     @cached_classmethod
     def get_edit_handler(cls):
         return TabbedInterface(
