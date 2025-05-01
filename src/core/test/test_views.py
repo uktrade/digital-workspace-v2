@@ -7,22 +7,13 @@ from django.test import TestCase
 from django.urls import reverse
 
 from peoplefinder.services.person import PersonService
+from peoplefinder.test.factories import UserWithPersonFactory
 
 
 @pytest.mark.django_db
 class ReportPageProblemTest(TestCase):
     def setUp(self):
-        self.test_user_email = "test@test.com"
-        self.test_password = "test_password"
-
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            username="test_user",
-            email=self.test_user_email,
-        )
-        self.test_user.set_password(self.test_password)
-        self.test_user.save()
-        call_command("loaddata", "countries.json")
-        PersonService().create_user_profile(self.test_user)
+        self.test_user = UserWithPersonFactory()
         self.client.force_login(self.test_user)
 
     @mock.patch("core.views.NotificationsAPIClient.send_email_notification")
