@@ -7,7 +7,6 @@ from wagtailmedia.blocks import AbstractMediaChooserBlock
 
 from content.utils import team_members
 from peoplefinder.blocks import PersonChooserBlock
-from peoplefinder.models import TeamMember
 
 
 RICH_TEXT_FEATURES = [
