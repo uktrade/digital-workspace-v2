@@ -13,6 +13,9 @@ def get_people(user: User) -> QuerySet[Person]:
     queryset = (
         Person.objects.all()
         .get_annotated()
+        .select_related(
+            "uk_office_location",
+        )
         .order_by(
             "grade",
             "first_name",
