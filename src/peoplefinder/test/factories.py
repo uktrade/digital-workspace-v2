@@ -1,4 +1,3 @@
-import uuid
 import factory
 
 from peoplefinder.models import (
