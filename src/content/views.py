@@ -11,7 +11,10 @@ def get_user_roles(request, person_id) -> JsonResponse:
     person_roles_qs = person.roles.all().select_related("team")
     response = {
         "person_roles": [
-            f"{person_role.job_title},{person_role.team.name}"
+            {
+                "pk": person_role.pk,
+                "label": f"{person_role.job_title} - {person_role.team.name}",
+            }
             for person_role in person_roles_qs
         ]
     }

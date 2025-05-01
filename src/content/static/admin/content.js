@@ -62,16 +62,39 @@ const showRoleSelector = (roleSelectorEl) => {
     parentContentPathEl.style.display = "block";
 };
 
-const addOptionsToSelect = (selectElement, optionsArray) => {
-    for (const option of optionsArray) {
-        let optionElement = document.createElement("option");
-        optionElement.setAttribute("value", option);
+const setSelectOptions = (selectElement, personInput) => {
+    const selectedRole = selectElement.value;
+    fetch(`/content/get-user-roles/${personInput.value}/`)
+        .then((response) => response.json())
+        .then((data) => {
+            selectElement.innerHTML = "";
+            let optionElement = document.createElement("option");
+            optionElement.setAttribute("value", "");
 
-        let optionText = document.createTextNode(option);
-        optionElement.appendChild(optionText);
+            let optionText = document.createTextNode("Hide role");
+            optionElement.appendChild(optionText);
 
-        selectElement.appendChild(optionElement);
-    }
+            selectElement.appendChild(optionElement);
+            data.person_roles.forEach((option) => {
+                let optionElement = document.createElement("option");
+                optionElement.setAttribute("value", option.pk);
+
+                let optionText = document.createTextNode(option.label);
+                optionElement.appendChild(optionText);
+
+                selectElement.appendChild(optionElement);
+            });
+        })
+        .then(() => {
+            const availableOptions = Array.from(selectElement.options).map(
+                (option) => option.value,
+            );
+            if (selectedRole && availableOptions.includes(selectedRole)) {
+                selectElement.value = selectedRole;
+            } else {
+                selectElement.value = "";
+            }
+        });
 };
 
 const initialiseRoleSelector = (
@@ -111,8 +134,11 @@ const initialiseRoleSelector = (
     const personRoleSelect = document.querySelector(
         `select[name='${contentPath}-${containerChildIndex}-value-${personRoleFieldName}']`,
     );
+
     if (!personInput.value) {
         hideRoleSelector(personRoleSelect);
+    } else {
+        setSelectOptions(personRoleSelect, personInput);
     }
 
     // When the value of the selected person changes, make a request to get roles using the currently selected person ID
@@ -127,18 +153,7 @@ const initialiseRoleSelector = (
                         hideRoleSelector(personRoleSelect);
                         break;
                     default:
-                        fetch(`/content/get-user-roles/${personInput.value}/`)
-                            .then((response) => response.json())
-                            .then((data) =>
-                                addOptionsToSelect(
-                                    personRoleSelect,
-                                    data.person_roles,
-                                ),
-                            );
-                        // Make a request to get the list of roles for the new person ID
-                        // Then update the "person role id" field with the values from the request
-                        // "${contentPath}-${containerChildIndex}-value-source_role_id
-                        // "${contentPath}-${containerChildIndex}-value-person_role_id
+                        setSelectOptions(personRoleSelect, personInput);
                         showRoleSelector(personRoleSelect);
                 }
             }

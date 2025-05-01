@@ -6,6 +6,7 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
 from peoplefinder.blocks import PersonChooserBlock
+from peoplefinder.models import TeamMember
 
 
 RICH_TEXT_FEATURES = [
@@ -280,18 +281,49 @@ class PageUpdate(blocks.StructBlock):
 
 class PersonBanner(blocks.StructBlock):
     person = PersonChooserBlock(required=False)
-    person_role_id = blocks.ChoiceBlock(choices=[], required=False)
+    person_role_id = blocks.ChoiceBlock(
+        choices=[(tm["pk"], tm["pk"]) for tm in TeamMember.objects.all().values("pk")],
+        required=False,
+        label="Person role",
+        help_text="Choose the person's job role. If you do not want to show a job role, choose 'Hide role'.",
+    )
     person_name = blocks.CharBlock(required=False)
     person_role = blocks.CharBlock(required=False)
     person_image = ImageChooserBlock(
-        required=False, help_text="This image should be square"
+        required=False, help_text="This image should be square."
     )
-    secondary_image = ImageChooserBlock(required=False)
+    person_image_alt_text = blocks.CharBlock(
+        required=False,
+        label="Alt text for person image",
+        help_text="""
+        Read out by screen readers or displayed if an image does not load
+        or if images have been switched off.
+
+        Unless this is a decorative image, it MUST have alt text that
+        tells people what information the image provides, describes its
+        content and function, and is specific, meaningful and concise.
+        """,
+    )
+    secondary_image = ImageChooserBlock(
+        required=False, label="Secondary image (decorative)"
+    )
+    secondary_image_alt_text = blocks.CharBlock(
+        required=False,
+        label="Alt text for secondary image",
+        help_text="""
+        Read out by screen readers or displayed if an image does not load
+        or if images have been switched off.
+
+        Unless this is a decorative image, it MUST have alt text that
+        tells people what information the image provides, describes its
+        content and function, and is specific, meaningful and concise.
+        """,
+    )
 
     class Meta:
         template = "dwds/components/person_banner.html"
         icon = "user"
-        label = "Person Banner"
+        label = "Person banner"
 
     def clean(self, value):
         if value["person"] and (
@@ -300,9 +332,6 @@ class PersonBanner(blocks.StructBlock):
             raise ValidationError(
                 "Either choose a person or enter the details manually."
             )
-        if value["person"] and value["person"].roles.exists():
-            if not value["person_role_id"]:
-                raise ValidationError("A person role should always be provided.")
 
         return super().clean(value)
 
@@ -328,19 +357,42 @@ class PersonBanner(blocks.StructBlock):
 
 
 class QuoteBlock(blocks.StructBlock):
-    quote = blocks.CharBlock()
+    quote = blocks.CharBlock(help_text="Enter quote text")
     quote_theme = blocks.ChoiceBlock(
-        choices=[("light", "Light"), ("dark", "Dark")],
+        choices=[("light", "Light grey"), ("dark", "Dark blue")],
         default="true",
-        help_text="Colour of the background. This can either be light grey or dark blue",
+        label="Choose background colour",
     )
-    source = PersonChooserBlock(required=False)
-    source_role_id = blocks.ChoiceBlock(choices=[], required=False)
-    source_name = blocks.CharBlock(required=False)
-    source_role = blocks.CharBlock(required=False)
-    source_team = blocks.CharBlock(required=False)
+    source = PersonChooserBlock(
+        required=False,
+        label="Quote source",
+        help_text="If the quote source is a DBT person, use the 'Choose a person' option and leave all other fields blank (including the 'Source image' option). If they are external to DBT, enter the person's details manually. Add an image, if you have one.",
+    )
+    source_role_id = blocks.ChoiceBlock(
+        choices=[(tm["pk"], tm["pk"]) for tm in TeamMember.objects.all().values("pk")],
+        required=False,
+        label="Source role",
+        help_text="Choose the person's job role. If you do not want to show a job role, choose 'Hide role'.",
+    )
+    source_name = blocks.CharBlock(required=False, label="Quote source name")
+    source_role = blocks.CharBlock(required=False, label="Quote source role")
+    source_team = blocks.CharBlock(required=False, label="Quote source team")
     source_image = ImageChooserBlock(
-        required=False, help_text="This image should be square"
+        required=False,
+        help_text="This image should be square",
+        label="Quote source image",
+    )
+    source_image_alt_text = blocks.CharBlock(
+        required=False,
+        label="Alt text",
+        help_text="""
+        Read out by screen readers or displayed if an image does not load
+        or if images have been switched off.
+
+        Unless this is a decorative image, it MUST have alt text that
+        tells people what information the image provides, describes its
+        content and function, and is specific, meaningful and concise.
+        """,
     )
 
     class Meta:
@@ -356,11 +408,8 @@ class QuoteBlock(blocks.StructBlock):
             or value["source_image"]
         ):
             raise ValidationError(
-                "Either choose a source or enter the details manually."
+                "Either choose a quote source or enter the details manually."
             )
-        if value["source"] and value["source"].roles.exists():
-            if not value["source_role_id"]:
-                raise ValidationError("A source role should always be provided.")
         return super().clean(value)
 
     def get_context(self, value, parent_context=None):
