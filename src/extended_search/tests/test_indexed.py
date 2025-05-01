@@ -278,9 +278,7 @@ class TestProject:
             Image,
             Page,
             Media,
-        }, (
-            "Indexed models have changed, please update this test if this was intentional."
-        )
+        }, "Indexed models have changed, please update this test if this was intentional."
 
     def test_indexed_models_and_fields(test):
         with open(JSON_FILE, "r") as f:

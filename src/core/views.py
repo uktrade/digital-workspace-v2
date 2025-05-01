@@ -4,6 +4,7 @@ import logging
 from django.conf import settings
 from django.contrib.postgres.aggregates import StringAgg
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
@@ -24,7 +25,7 @@ from core.forms import PageProblemFoundForm
 from core.models import Tag
 from interactions.services import tag_subscriptions as tag_sub_service
 from user.models import User
-from django.core.paginator import EmptyPage, Paginator
+
 
 logger = logging.getLogger(__name__)
 
