@@ -326,7 +326,10 @@ class BasePage(Page, Indexed):
                 pass
 
         if self.owner:
-            return self.owner.profile
+            try:
+                return self.owner.profile
+            except User.profile.RelatedObjectDoesNotExist:
+                pass
 
         return None
 

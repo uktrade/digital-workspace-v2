@@ -1,5 +1,4 @@
 import uuid
-
 import factory
 
 from user.models import User
