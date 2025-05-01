@@ -279,21 +279,18 @@ class BasePage(Page, Indexed):
         super().full_clean(*args, **kwargs)
 
         on_behalf_of_fields = [
-            ("on_behalf_of_person", bool(self.on_behalf_of_person)),
-            ("on_behalf_of_external", bool(self.on_behalf_of_external)),
-            ("on_behalf_of_team", bool(self.on_behalf_of_team)),
-            ("on_behalf_of_network", bool(self.on_behalf_of_network)),
+            "on_behalf_of_person",
+            "on_behalf_of_external",
+            "on_behalf_of_team",
+            "on_behalf_of_network",
         ]
-
-        on_behalf_of_selected = [name for name, is_set in on_behalf_of_fields if is_set]
-
-        if len(on_behalf_of_selected) > 1:
-            raise ValidationError(
-                {
-                    selected_field: "Only one 'on_behalf_of' field may be set."
-                    for selected_field in on_behalf_of_selected
-                }
-            )
+        on_behalf_of_errors = {
+            field_name: "Only one 'On Behalf of' field may be set."
+            for field_name in on_behalf_of_fields
+            if getattr(self, field_name, False)
+        }
+        if len(on_behalf_of_errors) > 1:
+            raise ValidationError(on_behalf_of_errors)
 
     @cached_classmethod
     def get_edit_handler(cls):
