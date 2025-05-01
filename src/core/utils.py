@@ -1,6 +1,7 @@
 from datetime import time
 from functools import wraps
 
+from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from django.http import HttpRequest
@@ -21,14 +22,17 @@ EXTENDED_LINKS_SETTINGS_CACHE = {
 
 def get_all_feature_flags(request) -> dict[str, bool]:
     if all_flags := request.session.get("all_feature_flags", False):
-        return all_flags
+        # caching override for testing purposes
+        if settings.CACHE_FLAGS_IN_SESSION:
+            return all_flags
 
     all_flags = {
         flag.name: waffle_flag_is_active(request, flag.name)
         for flag in FeatureFlag.objects.all()
     }
     # This small amount of DB-backed data is accessed multiple times per request, so session storage makes sense
-    request.session["all_feature_flags"] = all_flags
+    if settings.CACHE_FLAGS_IN_SESSION:
+        request.session["all_feature_flags"] = all_flags
     return all_flags
 
 
