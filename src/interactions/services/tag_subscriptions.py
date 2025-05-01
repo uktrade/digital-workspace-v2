@@ -29,19 +29,32 @@ def get_subscribed_tags(*, user: User) -> QuerySet[Tag]:
     return Tag.objects.filter(interactions_tagsubscriptions__user=user)
 
 
+def get_tagged_teams(*, tags: Iterable[Tag]) -> BaseManager[TaggedTeam]:
+    return TaggedTeam.objects.select_related("content_object").filter(
+        tag__in=tags,
+    )
+
+
+def get_tagged_people(*, tags: Iterable[Tag]) -> BaseManager[TaggedPerson]:
+    return TaggedPerson.objects.select_related("content_object").filter(
+        tag__in=tags,
+    )
+
+
+def get_tagged_pages(*, tags: Iterable[Tag]) -> BaseManager[TaggedPage]:
+    return TaggedPage.objects.select_related("content_object").filter(
+        tag__in=tags,
+    )
+
+
 def get_tagged_content(
     *, tags: Iterable[Tag]
 ) -> tuple[BaseManager[TaggedTeam], BaseManager[TaggedPerson], BaseManager[TaggedPage]]:
-    tagged_teams = TaggedTeam.objects.select_related("content_object").filter(
-        tag__in=tags,
+    return (
+        get_tagged_teams(tags=tags),
+        get_tagged_people(tags=tags),
+        get_tagged_pages(tags=tags),
     )
-    tagged_people = TaggedPerson.objects.select_related("content_object").filter(
-        tag__in=tags,
-    )
-    tagged_pages = TaggedPage.objects.select_related("content_object").filter(
-        tag__in=tags,
-    )
-    return tagged_teams, tagged_people, tagged_pages
 
 
 def get_activity(

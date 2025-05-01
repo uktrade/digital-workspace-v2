@@ -1,36 +1,12 @@
-{% extends "dwds_sidebar.html" %}
+{% extends "core/tag_page_base.html" %}
 {% load wagtailcore_tags cards %}
-
-{% block primary_content_classes %}
-    content-stack large
-{% endblock primary_content_classes %}
-
-{% block page_title_wrapper %}
-    <div class="content-spaced">
-        {{ block.super }}
-        {% if user_follows_tag %}
-            <form method="post"
-                  action="{% url 'interactions:unsubscribe-from-tag' tag.pk %}">
-                {% csrf_token %}
-                <button class="dwds-button dwds-button--inline" type="submit">
-                    Unfollow <span class="dwds-sr-only">{{ tag.name }} content</span>
-                </button>
-            </form>
-        {% else %}
-            <form method="post"
-                  action="{% url 'interactions:subscribe-to-tag' tag.pk %}">
-                {% csrf_token %}
-                <button class="dwds-button dwds-button--inline dwds-button--secondary"
-                        type="submit">
-                    Follow <span class="dwds-sr-only">{{ tag.name }} content</span>
-                </button>
-            </form>
-        {% endif %}
-    </div>
-{% endblock page_title_wrapper %}
 
 {% block primary_content %}
     <div class="content-stack large">
+        {% if can_edit_tag %}
+            <a class="dwds-button dwds-button--secondary dwds-button--inline"
+               href="{% url 'wagtailsnippets_core_tag:edit' tag.pk %}">Edit</a>
+        {% endif %}
         {% if tagged_teams %}
             <h2>Teams</h2>
             <div class="content-grid grid-cards-auto-fill">
@@ -42,6 +18,7 @@
                     </c-dwds-card>
                 {% endfor %}
             </div>
+            {% include "dwds/components/link_action.html" with link_url=view_all_teams_url link_text=view_all_teams_text right=True %}
         {% endif %}
 
         {% if tagged_people %}
@@ -60,6 +37,7 @@
                     </c-dwds-card>
                 {% endfor %}
             </div>
+            {% include "dwds/components/link_action.html" with link_url=view_all_people_url link_text=view_all_people_text right=True %}
         {% endif %}
 
         {% if tagged_pages %}
@@ -73,6 +51,7 @@
                     </c-dwds-card>
                 {% endfor %}
             </div>
+            {% include "dwds/components/link_action.html" with link_url=view_all_pages_url link_text=view_all_pages_text right=True %}
         {% endif %}
     </div>
 {% endblock primary_content %}

@@ -4,9 +4,10 @@ import logging
 from django.conf import settings
 from django.contrib.postgres.aggregates import StringAgg
 from django.core.exceptions import PermissionDenied
-from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
 from django.views.generic.base import View
@@ -23,7 +24,7 @@ from core.forms import PageProblemFoundForm
 from core.models import Tag
 from interactions.services import tag_subscriptions as tag_sub_service
 from user.models import User
-
+from django.core.paginator import EmptyPage, Paginator
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +164,7 @@ def content_owners_report(request: HttpRequest, *args, **kwargs) -> HttpResponse
 
 
 @require_GET
-def tag_index(request: HttpRequest, slug: str, *args, **kwargs) -> HttpResponse:
+def tag_index(request: HttpRequest, slug: str) -> HttpResponse:
     if not flag_is_active(request, flags.TAG_INDEX):
         return HttpResponseForbidden()
 
@@ -175,11 +176,65 @@ def tag_index(request: HttpRequest, slug: str, *args, **kwargs) -> HttpResponse:
         "page_title": f"{tag.name}",
         "tag": tag,
         "tagged_teams": tagged_teams[:6],
+        "view_all_teams_url": reverse(
+            "tag_content_index", kwargs={"slug": slug, "content_type": "teams"}
+        ),
+        "view_all_teams_text": f"View all '{tag.name}'teams",
         "tagged_people": tagged_people[:6],
+        "view_all_people_url": reverse(
+            "tag_content_index", kwargs={"slug": slug, "content_type": "people"}
+        ),
+        "view_all_people_text": f"View all '{tag.name}' people",
         "tagged_pages": tagged_pages[:6],
+        "view_all_pages_url": reverse(
+            "tag_content_index", kwargs={"slug": slug, "content_type": "pages"}
+        ),
+        "view_all_pages_text": f"View all '{tag.name}' pages",
         "user_follows_tag": tag_sub_service.is_subscribed(tag=tag, user=request.user),
+        "can_edit_tag": request.user.has_perm("core.change_tag"),
     }
     return TemplateResponse(request, "core/tag_index.html", context=context)
+
+
+@require_GET
+def tag_content_index(
+    request: HttpRequest, slug: str, content_type: str
+) -> HttpResponse:
+    if not flag_is_active(request, flags.TAG_INDEX):
+        return HttpResponseForbidden()
+
+    if content_type not in ["people", "teams", "pages"]:
+        raise Http404
+
+    tag = get_object_or_404(Tag, slug=slug)
+    match content_type:
+        case "people":
+            content_queryset = tag_sub_service.get_tagged_people(tags=[tag])
+        case "teams":
+            content_queryset = tag_sub_service.get_tagged_teams(tags=[tag])
+        case "pages":
+            content_queryset = tag_sub_service.get_tagged_pages(tags=[tag])
+        case _:
+            raise ValueError(f"Unable to get queryset for '{content_type}'")
+
+    paginator = Paginator(content_queryset, 15)
+    page = int(request.GET.get("page", 1))
+
+    try:
+        content_page = paginator.page(page)
+    except EmptyPage:
+        content_page = paginator.page(paginator.num_pages)
+
+    context = {
+        "page_title": f"{tag.name} {content_type}",
+        "content_type": content_type,
+        "tag": tag,
+        "user_follows_tag": tag_sub_service.is_subscribed(tag=tag, user=request.user),
+        "can_edit_tag": request.user.has_perm("core.change_tag"),
+        "content_page": content_page,
+        "tag_index_url": reverse("tag_index", kwargs={"slug": slug}),
+    }
+    return TemplateResponse(request, "core/tag_content_listing.html", context=context)
 
 
 class AdminInfoView(WagtailAdminTemplateMixin, View):

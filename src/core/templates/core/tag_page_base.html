@@ -1,0 +1,30 @@
+{% extends "dwds_sidebar.html" %}
+{% load wagtailcore_tags cards %}
+
+{% block primary_content_classes %}
+    content-stack large
+{% endblock primary_content_classes %}
+
+{% block page_title_wrapper %}
+    <div class="content-spaced">
+        {{ block.super }}
+        {% if user_follows_tag %}
+            <form method="post"
+                  action="{% url 'interactions:unsubscribe-from-tag' tag.pk %}">
+                {% csrf_token %}
+                <button class="dwds-button dwds-button--inline dwds-button--secondary"
+                        type="submit">
+                    Unfollow <span class="dwds-sr-only">{{ tag.name }} content</span>
+                </button>
+            </form>
+        {% else %}
+            <form method="post"
+                  action="{% url 'interactions:subscribe-to-tag' tag.pk %}">
+                {% csrf_token %}
+                <button class="dwds-button dwds-button--inline" type="submit">
+                    Follow <span class="dwds-sr-only">{{ tag.name }} content</span>
+                </button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock page_title_wrapper %}
