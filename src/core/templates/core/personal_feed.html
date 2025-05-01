@@ -19,6 +19,8 @@
                     </c-dwds-card>
                 {% endfor %}
             {% endif %}
+        {% empty %}
+            There's currently nothing to show you, please check back in the future!
         {% endfor %}
     </div>
 {% endblock primary_content %}
