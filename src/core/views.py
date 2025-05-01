@@ -288,6 +288,9 @@ class AdminInfoView(WagtailAdminTemplateMixin, View):
 
 
 def personal_feed(request: HttpRequest) -> HttpResponse:
+    if not flag_is_active(request, flags.PERSONAL_FEED):
+        return HttpResponseForbidden()
+
     context: dict[str, str] = {"page_title": "Your feed"}
     subscribed_tags = tag_sub_service.get_subscribed_tags(user=request.user)
     context.update(
