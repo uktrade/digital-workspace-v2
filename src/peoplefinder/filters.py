@@ -33,6 +33,13 @@ ORDER_CHOICES = {
 
 
 class DiscoverFilters(FilterSet):
+    is_civil_servant = django_filters.ChoiceFilter(
+        field_name="grade__name",
+        choices=[("Civil servants only", "Civil servants only")],
+        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        label="civil servants only",
+        method="filter_non_civil_servants",
+    )
     city = django_filters.ChoiceFilter(
         field_name="uk_office_location__city",
         choices=get_uk_city_locations,
@@ -92,3 +99,8 @@ class DiscoverFilters(FilterSet):
     def apply_ordering(self, queryset, name, value) -> QuerySet[Person]:
         order_fields = ORDER_CHOICES[value[0]]["ordering"]
         return queryset.order_by(*order_fields)
+
+    def filter_non_civil_servants(self, queryset, name, value) -> QuerySet[Person]:
+        if value == "Civil servants only":
+            return queryset.exclude(grade__code="non_graded_contractor")
+        return queryset
