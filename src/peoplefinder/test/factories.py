@@ -1,9 +1,10 @@
 import factory
 
-from peoplefinder.models import Person, Team
-from user.models import User
+from peoplefinder.models import (
+    Person,
+    Team,
+)
 from user.test.factories import UserFactory
-from django.core.management import call_command
 
 
 class PersonFactory(factory.django.DjangoModelFactory):
