@@ -35,13 +35,13 @@ ORDER_CHOICES = {
 class DiscoverFilters(FilterSet):
 
     is_active = django_filters.ChoiceFilter(
+        field_name = "is_active",
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
         choices=[
-            ("active", "Active"),
-            ("inactive", "Inactive"),
+            (True, "Active"),
+            (False, "Inactive"),
         ],
-        label="profile status",
-        method="apply_active_users",
+        label="profile status"
     )
     city = django_filters.ChoiceFilter(
         field_name="uk_office_location__city",
@@ -101,15 +101,6 @@ class DiscoverFilters(FilterSet):
 
     custom_sorters = ["sort_by"]
     custom_filters = ["is_active"]
-
-    def apply_active_users(self, queryset, name, value) -> QuerySet[Person]:
-        match value:
-            case "active":
-                return queryset.filter(is_active=True)
-            case "inactive":
-                return queryset.filter(is_active=False)
-            case "_":
-                return queryset
 
     def apply_ordering(self, queryset, name, value) -> QuerySet[Person]:
         order_fields = ORDER_CHOICES[value[0]]["ordering"]
