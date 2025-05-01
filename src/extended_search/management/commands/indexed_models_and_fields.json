@@ -777,6 +777,10 @@
         "<SearchField: search_title_explicit>",
         "<SearchField: title>"
     ],
+    "<class 'peoplefinder.models.Network'>": [
+        "<SearchField: name>",
+        "<SearchField: name_explicit>"
+    ],
     "<class 'peoplefinder.models.Person'>": [
         "<AutocompleteField: first_name>",
         "<AutocompleteField: full_name>",
