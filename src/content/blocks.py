@@ -5,6 +5,7 @@ from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
+from content.utils import team_members
 from peoplefinder.blocks import PersonChooserBlock
 from peoplefinder.models import TeamMember
 
@@ -282,7 +283,7 @@ class PageUpdate(blocks.StructBlock):
 class PersonBanner(blocks.StructBlock):
     person = PersonChooserBlock(required=False)
     person_role_id = blocks.ChoiceBlock(
-        choices=[(tm["pk"], tm["pk"]) for tm in TeamMember.objects.all().values("pk")],
+        choices=team_members,
         required=False,
         label="Person role",
         help_text="Choose the person's job role. If you do not want to show a job role, choose 'Hide role'.",
@@ -369,7 +370,7 @@ class QuoteBlock(blocks.StructBlock):
         help_text="If the quote source is a DBT person, use the 'Choose a person' option and leave all other fields blank (including the 'Source image' option). If they are external to DBT, enter the person's details manually. Add an image, if you have one.",
     )
     source_role_id = blocks.ChoiceBlock(
-        choices=[(tm["pk"], tm["pk"]) for tm in TeamMember.objects.all().values("pk")],
+        choices=team_members,
         required=False,
         label="Source role",
         help_text="Choose the person's job role. If you do not want to show a job role, choose 'Hide role'.",
