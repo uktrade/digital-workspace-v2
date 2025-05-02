@@ -202,5 +202,5 @@ def get_search_content_for_block(
     return search_headings, search_content
 
 
-def team_members():
+def team_members() -> list[tuple[int, int]]:
     return [(tm["pk"], tm["pk"]) for tm in TeamMember.objects.all().values("pk")]
