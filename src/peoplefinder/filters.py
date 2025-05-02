@@ -33,11 +33,9 @@ ORDER_CHOICES = {
 
 
 class DiscoverFilters(FilterSet):
-    is_civil_servant = django_filters.ChoiceFilter(
-        field_name="grade__name",
-        choices=[("Civil servants only", "Civil servants only")],
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
-        label="civil servants only",
+    display_civil_servants = django_filters.BooleanFilter(
+        widget=forms.CheckboxInput,
+        label="Display civil servants only",
         method="filter_non_civil_servants",
     )
     is_active = django_filters.ChoiceFilter(
@@ -107,12 +105,13 @@ class DiscoverFilters(FilterSet):
 
     custom_sorters = ["sort_by"]
     custom_filters = ["is_active"]
+    checkbox_filters = ["display_civil_servants"]
 
     def apply_ordering(self, queryset, name, value) -> QuerySet[Person]:
         order_fields = ORDER_CHOICES[value[0]]["ordering"]
         return queryset.order_by(*order_fields)
 
     def filter_non_civil_servants(self, queryset, name, value) -> QuerySet[Person]:
-        if value == "Civil servants only":
+        if value:
             return queryset.exclude(grade__code="non_graded_contractor")
         return queryset
