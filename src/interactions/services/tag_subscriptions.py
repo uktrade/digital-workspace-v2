@@ -53,7 +53,7 @@ def get_tagged_content(
     return (
         get_tagged_teams(tags=tags),
         get_tagged_people(tags=tags),
-        get_tagged_pages(tags=tags),
+        get_tagged_pages(tags=tags).order_by("-content_object__last_published_at"),
     )
 
 
