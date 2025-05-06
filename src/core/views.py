@@ -297,3 +297,14 @@ def personal_feed(request: HttpRequest) -> HttpResponse:
         grouped_content=tag_sub_service.get_activity(tags=subscribed_tags),
     )
     return TemplateResponse(request, "core/personal_feed.html", context)
+
+
+def following(request: HttpRequest) -> HttpResponse:
+    if not flag_is_active(request, flags.TAG_FOLLOWING):
+        return HttpResponseForbidden()
+
+    context: dict[str, str] = {"page_title": "Following"}
+    context.update(
+        subscribed_tags=tag_sub_service.get_subscribed_tags(user=request.user),
+    )
+    return TemplateResponse(request, "core/following.html", context)
