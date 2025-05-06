@@ -6,6 +6,7 @@ from .base import *  # noqa
 APP_ENV = "test"
 DEBUG = True
 TEMPLATE_DEBUG = True
+CACHE_FLAGS_IN_SESSION = False
 
 # Required for tests to bypass SSO.
 MIDDLEWARE.remove("authbroker_client.middleware.ProtectAllViewsMiddleware")  # noqa
