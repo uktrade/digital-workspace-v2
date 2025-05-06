@@ -895,6 +895,19 @@ class Person(ClusterableModel, Indexed, models.Model):
             )
         return mark_safe(output)  # noqa: S308
 
+    def roles_str(self):
+        output = ""
+        for role in self.roles.select_related("team").all():
+            if len(output) > 0:
+                output += ", "
+
+            if role.job_title:
+                output += f"{role.job_title} in"
+            else:
+                output += "Member of"
+            output += f" {role.team.name}"
+        return output
+
     def get_grade_display(self) -> Optional[str]:
         if self.grade:
             return self.grade.name

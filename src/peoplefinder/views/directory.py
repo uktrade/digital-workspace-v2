@@ -7,9 +7,9 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.views.generic import ListView
-from waffle import flag_is_active
 
 from core import flags
+from core.utils import flag_is_active
 from peoplefinder.models import Person, Team, TeamMember
 from peoplefinder.services import directory as directory_service
 from peoplefinder.services.team import TeamService
@@ -85,25 +85,18 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         return redirect("people-directory")
 
     discover_filters = directory_service.get_people_with_filters(
-        filter_options=request.GET,
-        queryset=directory_service.get_people(request.user),
+        filter_options=request.GET, user=request.user
     )
 
-    people = discover_filters.qs
-
-    pr = paginator.Paginator(people, per_page=30)
+    pr = paginator.Paginator(discover_filters.qs, per_page=30)
     page: int = int(request.GET.get("page", default=1))
     try:
         paginator_page = pr.page(page)
     except paginator.EmptyPage:
         paginator_page = None
 
-    page_title = "All colleagues"
-    if discover_filters.has_filters_applied():
-        page_title = "Filtered colleagues"
-
     context = {
-        "page_title": page_title,
+        "page_title": "Find colleagues",
         "pages": paginator_page,
         "extra_breadcrumbs": [
             (None, "Discover"),
