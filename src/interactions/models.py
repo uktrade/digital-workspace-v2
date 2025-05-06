@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from wagtail.models import Page
 
+from core import field_models
 from news.models import Comment
 
 
@@ -68,7 +69,7 @@ class ReactionType(models.TextChoices):
 
 
 class PageReaction(UserPage):
-    type = models.CharField(
+    type = field_models.CharField(
         max_length=10,
         choices=ReactionType.choices,
         verbose_name="Reaction Type",
@@ -77,7 +78,7 @@ class PageReaction(UserPage):
 
 
 class CommentReaction(UserComment):
-    type = models.CharField(
+    type = field_models.CharField(
         max_length=10,
         choices=ReactionType.choices,
         verbose_name="Reaction Type",

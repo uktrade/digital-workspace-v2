@@ -7,7 +7,7 @@ from wagtail.models import Page
 
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
-from core import flags
+from core import field_models, flags
 from core.panels import FieldPanel, PageChooserPanel
 from core.utils import flag_is_active
 from extended_search.index import DWIndexedField as IndexedField
@@ -152,7 +152,7 @@ class Network(ContentOwnerMixin, ContentPage):
         SOCIAL_AND_SPORTS = "social_and_sports", "Social and sports"
         VOLUNTEERING = "volunteering", "Volunteering"
 
-    network_type = models.CharField(
+    network_type = field_models.CharField(
         max_length=50,
         choices=NetworkTypes.choices,
         blank=True,

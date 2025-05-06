@@ -29,6 +29,7 @@ from content.utils import (
     truncate_words_and_chars,
 )
 from content.validators import validate_description_word_count
+from core import field_models
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
@@ -49,9 +50,9 @@ def strip_tags_with_newlines(string: str) -> str:
 
 @register_snippet
 class Theme(models.Model):
-    title = models.CharField(max_length=255)
+    title = field_models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
-    summary = models.CharField(max_length=255)
+    summary = field_models.CharField(max_length=255)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -152,7 +153,7 @@ class BasePage(Page, Indexed):
 
     objects = PageManager.from_queryset(BasePageQuerySet)()
 
-    legacy_path = models.CharField(
+    legacy_path = field_models.CharField(
         max_length=500,
         blank=True,
         null=True,
@@ -174,7 +175,7 @@ class BasePage(Page, Indexed):
         blank=True,
         help_text="If the 'page author' field is empty, we will fall back to the owner of this page.",
     )
-    page_author_name = models.CharField(
+    page_author_name = field_models.CharField(
         null=True,
         blank=True,
         help_text="Use this to show the name of the author when there isn't an active Person to show",
@@ -418,14 +419,14 @@ class SearchFieldsMixin(models.Model):
 
     search_stream_fields: list[str] = []
 
-    search_title = models.CharField(
+    search_title = field_models.CharField(
         max_length=255,
     )
-    search_headings = models.TextField(
+    search_headings = field_models.TextField(
         blank=True,
         null=True,
     )
-    search_content = models.TextField(
+    search_content = field_models.TextField(
         blank=True,
         null=True,
     )
@@ -477,15 +478,15 @@ class ContentPage(SearchFieldsMixin, BasePage):
     show_in_menus = True
     search_stream_fields = ["body"]
 
-    legacy_guid = models.CharField(
+    legacy_guid = field_models.CharField(
         blank=True, null=True, max_length=255, help_text="""Wordpress GUID"""
     )
 
-    legacy_content = models.TextField(
+    legacy_content = field_models.TextField(
         blank=True, null=True, help_text="""Legacy content, pre-conversion"""
     )
 
-    description = models.TextField(
+    description = field_models.TextField(
         blank=True,
         null=True,
         help_text="This should not be more than 30 words.",
@@ -537,7 +538,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
         use_json_field=True,
     )
 
-    excerpt = models.CharField(
+    excerpt = field_models.CharField(
         max_length=700,
         blank=True,
         null=True,
@@ -547,7 +548,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
         ),
     )
 
-    pinned_phrases = models.CharField(
+    pinned_phrases = field_models.CharField(
         blank=True,
         null=True,
         max_length=1000,
@@ -556,7 +557,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
         "to the first page of search results for these terms.",
     )
 
-    excluded_phrases = models.CharField(
+    excluded_phrases = field_models.CharField(
         blank=True,
         null=True,
         max_length=1000,
@@ -678,7 +679,7 @@ class ContentPage(SearchFieldsMixin, BasePage):
 
 
 class SearchKeywordOrPhrase(models.Model):
-    keyword_or_phrase = models.CharField(max_length=1000)
+    keyword_or_phrase = field_models.CharField(max_length=1000)
     # TODO: Remove historical records.
     history = HistoricalRecords()
 

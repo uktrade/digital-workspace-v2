@@ -14,6 +14,9 @@ class CoreConfig(AppConfig):
     name = "core"
 
     def ready(self):
+        from core.signals import add_validators
+
+        add_validators(self)
         post_save.connect(
             clear_external_link_settings_cache, sender="core.ExternalLinkSetting"
         )

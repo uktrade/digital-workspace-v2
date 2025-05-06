@@ -1,12 +1,13 @@
 from django.db import models
 from wagtail.search.queryset import SearchableQuerySetMixin
 
+from core import field_models
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, ScoreFunction
 
 
 class Model(models.Model):
-    title = models.CharField(max_length=225)
+    title = field_models.CharField(max_length=225)
     age = models.IntegerField()
 
 

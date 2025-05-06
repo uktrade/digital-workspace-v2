@@ -1,5 +1,7 @@
 from django.db import models
 
+from core import field_models
+
 
 class Setting(models.Model):
     """
@@ -7,12 +9,12 @@ class Setting(models.Model):
     able to supersede field definitions, ENV vars, configs etc)
     """
 
-    key = models.CharField(
+    key = field_models.CharField(
         max_length=200,
         help_text="'Flat key' of the setting",
         unique=True,
     )
-    value = models.CharField(
+    value = field_models.CharField(
         max_length=200,
         null=True,
         blank=True,
