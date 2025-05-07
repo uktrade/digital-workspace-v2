@@ -18,7 +18,6 @@ from extended_search.management.commands.create_index_fields_json import (
 from home.models import HomePage
 from networks.models import Network, NetworkContentPage, NetworksHome
 from news.models import NewsHome, NewsPage
-from peoplefinder.models import Network as PeopleFinderNetwork
 from peoplefinder.models import Person, Team
 from testapp.models import (
     AbstractIndexedModel,
@@ -274,12 +273,13 @@ class TestProject:
             Tag,
             Person,
             Team,
-            PeopleFinderNetwork,
             Document,
             Image,
             Page,
             Media,
-        }, "Indexed models have changed, please update this test if this was intentional."
+        }, (
+            "Indexed models have changed, please update this test if this was intentional."
+        )
 
     def test_indexed_models_and_fields(test):
         with open(JSON_FILE, "r") as f:

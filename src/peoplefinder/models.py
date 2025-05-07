@@ -100,7 +100,7 @@ class LearningInterest(models.Model):
         return self.name
 
 
-class Network(Indexed, models.Model):
+class Network(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["code"], name="unique_network_code"),
@@ -110,15 +110,6 @@ class Network(Indexed, models.Model):
 
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=50)
-
-    indexed_fields = [
-        IndexedField(
-            "name",
-            tokenized=True,
-            explicit=True,
-            fuzzy=True,
-        ),
-    ]
 
     def __str__(self) -> str:
         return self.name
