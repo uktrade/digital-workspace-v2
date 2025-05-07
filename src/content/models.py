@@ -38,8 +38,9 @@ from content.validators import validate_description_word_count
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
+from networks.widgets import NetworkChooser
 from peoplefinder.models import Person
-from peoplefinder.widgets import NetworkChooser, PersonChooser, TeamChooser
+from peoplefinder.widgets import PersonChooser, TeamChooser
 from user.models import User as UserModel
 
 

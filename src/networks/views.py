@@ -1,7 +1,9 @@
 from django.forms import Form
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
+from generic_chooser.views import ModelChooserViewSet
 from wagtail.models import Page
 
 from networks.models import Network, NetworkContentPage
@@ -70,3 +72,11 @@ class ConvertNetworkContentPageToNetworkPageView(ConvertPageView):
         network_content_page: NetworkContentPage = self.page.specific
         convert_network_content_page_to_network(network_content_page)
         return super().form_valid(form)
+
+
+class NetworkChooserViewSet(ModelChooserViewSet):
+    icon = "globe"
+    model = Network
+    page_title = _("Choose a network")
+    per_page = 10
+    order_by = "title"

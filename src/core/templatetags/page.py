@@ -5,6 +5,9 @@ from django.http import HttpRequest
 from django.urls import reverse
 from wagtail.models import Page
 
+from networks.models import Network
+from peoplefinder.models import Person, Team
+
 
 register = template.Library()
 
@@ -36,10 +39,10 @@ def page_author(page: Page):
             profile_url=reverse("profile-view", args=[author.slug]),
         )
 
-    on_behalf_of_person = getattr(page, "on_behalf_of_person", None)
-    on_behalf_of_team = getattr(page, "on_behalf_of_team", None)
-    on_behalf_of_external = getattr(page, "on_behalf_of_external", None)
-    on_behalf_of_network = getattr(page, "on_behalf_of_network", None)
+    on_behalf_of_person: Person | None = getattr(page, "on_behalf_of_person", None)
+    on_behalf_of_team: Team | None = getattr(page, "on_behalf_of_team", None)
+    on_behalf_of_external: str | None = getattr(page, "on_behalf_of_external", None)
+    on_behalf_of_network: Network | None = getattr(page, "on_behalf_of_network", None)
 
     if any(
         [
@@ -69,7 +72,7 @@ def page_author(page: Page):
         elif on_behalf_of_network:
             context.update(
                 on_behalf_of=on_behalf_of_network.title,
-                on_behalf_of_url=on_behalf_of_network.get_absolute_url(),
+                on_behalf_of_url=on_behalf_of_network.get_full_url(),
             )
 
     return context

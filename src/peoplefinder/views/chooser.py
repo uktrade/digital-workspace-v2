@@ -24,11 +24,3 @@ class TeamChooserViewSet(ModelChooserViewSet):
     page_title = _("Choose a team")
     per_page = 10
     order_by = "name"
-
-
-class NetworkChooserViewSet(ModelChooserViewSet):
-    icon = "globe"
-    model = Network
-    page_title = _("Choose a network")
-    per_page = 10
-    order_by = "name"
