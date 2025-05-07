@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 related_name="on_behalf_of",
-                to="peoplefinder.network",
+                to="networks.network",
             ),
         ),
         migrations.AddField(

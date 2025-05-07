@@ -200,7 +200,7 @@ class BasePage(Page, Indexed):
     )
 
     on_behalf_of_network = models.ForeignKey(
-        "peoplefinder.Network",
+        "networks.Network",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
