@@ -248,6 +248,22 @@ class BasePage(Page, Indexed):
         ("publishing_panels", "Publishing"),
     ]
 
+    def fill_page_author(self) -> None:
+        if first_publisher := self.get_first_publisher():
+            try:
+                self.page_author = first_publisher.profile
+                return None
+            except User.profile.RelatedObjectDoesNotExist:
+                pass
+
+        if self.owner:
+            try:
+                self.page_author = self.owner.profile
+                return None
+            except User.profile.RelatedObjectDoesNotExist:
+                pass
+        return None
+
     def fill_page_author_name(self) -> None:
         author = self.get_author()
 
@@ -276,6 +292,7 @@ class BasePage(Page, Indexed):
         return None
 
     def full_clean(self, *args, **kwargs):
+        self.fill_page_author()
         self.fill_page_author_name()
         self.sort_page_updates()
         super().full_clean(*args, **kwargs)
