@@ -13,7 +13,7 @@ register = template.Library()
 
 
 @register.inclusion_tag("dwds/components/author.html")
-def page_author(page: Page):
+def page_author(page: Page, request: HttpRequest):
     page = page.specific
 
     context = {
@@ -72,7 +72,7 @@ def page_author(page: Page):
         elif on_behalf_of_network:
             context.update(
                 on_behalf_of=on_behalf_of_network.title,
-                on_behalf_of_url=on_behalf_of_network.get_full_url(),
+                on_behalf_of_url=on_behalf_of_network.get_full_url(request),
             )
 
     return context
