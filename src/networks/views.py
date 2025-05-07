@@ -72,11 +72,3 @@ class ConvertNetworkContentPageToNetworkPageView(ConvertPageView):
         network_content_page: NetworkContentPage = self.page.specific
         convert_network_content_page_to_network(network_content_page)
         return super().form_valid(form)
-
-
-class NetworkChooserViewSet(ModelChooserViewSet):
-    icon = "globe"
-    model = Network
-    page_title = _("Choose a network")
-    per_page = 10
-    order_by = "title"

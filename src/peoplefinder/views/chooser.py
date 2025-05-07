@@ -1,7 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 from generic_chooser.views import ChooserListingTabMixin, ModelChooserViewSet
 
-from peoplefinder.models import Network, Person, Team
+from peoplefinder.models import Person, Team
 
 
 class PersonChooserListingTabMixin(ChooserListingTabMixin):

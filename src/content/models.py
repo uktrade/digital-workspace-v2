@@ -38,7 +38,6 @@ from content.validators import validate_description_word_count
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
-from networks.widgets import NetworkChooser
 from peoplefinder.models import Person
 from peoplefinder.widgets import PersonChooser, TeamChooser
 from user.models import User as UserModel
@@ -226,13 +225,12 @@ class BasePage(Page, Indexed):
     ]
     publishing_panels = [
         FieldPanel("page_author", widget=PersonChooser),
-        # FieldPanel("page_author_name", read_only=True),
         MultiFieldPanel(
             [
                 FieldPanel("on_behalf_of_person", widget=PersonChooser),
                 FieldPanel("on_behalf_of_external"),
                 FieldPanel("on_behalf_of_team", widget=TeamChooser),
-                FieldPanel("on_behalf_of_network", widget=NetworkChooser),
+                FieldPanel("on_behalf_of_network"),
             ],
             heading="On Behalf Of",
             help_text=(
