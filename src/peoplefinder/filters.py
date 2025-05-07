@@ -94,7 +94,7 @@ class DiscoverFilters(FilterSet):
     )
 
     teams = django_filters.MultipleChoiceFilter(
-        field_name="roles__team",
+        field_name="roles__team__name",
         choices=get_teams,
         widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
         label="teams",
