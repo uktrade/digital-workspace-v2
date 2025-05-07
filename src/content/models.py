@@ -225,7 +225,7 @@ class BasePage(Page, Indexed):
     ]
     publishing_panels = [
         FieldPanel("page_author", widget=PersonChooser),
-        FieldPanel("page_author_name", read_only=True),
+        # FieldPanel("page_author_name", read_only=True),
         MultiFieldPanel(
             [
                 FieldPanel("on_behalf_of_person", widget=PersonChooser),
@@ -234,7 +234,10 @@ class BasePage(Page, Indexed):
                 FieldPanel("on_behalf_of_network", widget=NetworkChooser),
             ],
             heading="On Behalf Of",
-            help_text="Author is posting on behalf of",
+            help_text=(
+                "Provide a value for one of the following fields if the author"
+                " of this page is posting on behalf of someone else."
+            ),
         ),
         FieldPanel("page_updates"),
     ]
