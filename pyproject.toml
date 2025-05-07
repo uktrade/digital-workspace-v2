@@ -41,10 +41,9 @@ numpy = "<2"
 # Peoplefinder
 markdown = "^3.5.1"
 requests-hawk = "^1.1.1"
-pillow = "^10.2.0"
 # Operational
 sentry-sdk = "^2.8.0"
-psycopg2 = "^2.9.6"
+psycopg2 = "^2.9"
 whitenoise = "^6.4.0"
 celery = "^5.2.7"
 redis = "^4.5.4"
