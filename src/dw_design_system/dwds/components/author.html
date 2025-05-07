@@ -7,11 +7,21 @@
         </div>
     {% endif %}
     <div class="content-stack no-gap">
-        {% if profile_url %}
-            <a href="{{ profile_url }}">{{ name }}</a>
-        {% else %}
-            {{ name }}
-        {% endif %}
+        <span>
+            {% if profile_url %}
+                <a href="{{ profile_url }}">{{ name }}</a>
+            {% else %}
+                {{ name }}
+            {% endif %}
+            {% if on_behalf_of %}
+                on behalf of
+                {% if on_behalf_of_url %}
+                    <a href="{{ on_behalf_of_url }}">{{ on_behalf_of }}</a>
+                {% else %}
+                    {{ on_behalf_of }}
+                {% endif %}
+            {% endif %}
+        </span>
         {% if published_timestamp %}
             <div>Published: {{ published_timestamp|date:'j F Y' }} at {{ published_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}

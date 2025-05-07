@@ -36,6 +36,42 @@ def page_author(page: Page):
             profile_url=reverse("profile-view", args=[author.slug]),
         )
 
+    on_behalf_of_person = getattr(page, "on_behalf_of_person", None)
+    on_behalf_of_team = getattr(page, "on_behalf_of_team", None)
+    on_behalf_of_external = getattr(page, "on_behalf_of_external", None)
+    on_behalf_of_network = getattr(page, "on_behalf_of_network", None)
+
+    if any(
+        [
+            on_behalf_of_person,
+            on_behalf_of_team,
+            on_behalf_of_external,
+            on_behalf_of_network,
+        ]
+    ):
+        if on_behalf_of_external:
+            context.update(on_behalf_of=on_behalf_of_external)
+        elif on_behalf_of_person:
+            context.update(
+                on_behalf_of=on_behalf_of_person.full_name,
+            )
+            if on_behalf_of_person.is_active:
+                context.update(
+                    on_behalf_of_url=reverse(
+                        "profile-view", args=[on_behalf_of_person.slug]
+                    ),
+                )
+        elif on_behalf_of_team:
+            context.update(
+                on_behalf_of=on_behalf_of_team.name,
+                on_behalf_of_url=reverse("team-view", args=[on_behalf_of_team.slug]),
+            )
+        elif on_behalf_of_network:
+            context.update(
+                on_behalf_of=on_behalf_of_network.title,
+                on_behalf_of_url=on_behalf_of_network.get_absolute_url(),
+            )
+
     return context
 
 
