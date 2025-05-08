@@ -2,9 +2,7 @@
 {% load wagtailcore_tags %}
 
 {% block primary_content %}
-    {% for block in page.body %}
-        {% include_block block %}
-    {% endfor %}
+    {% include "includes/page_body.html" %}
     {% for subpage_group in subpage_groups %}
         <h3>{{ subpage_group.0.title|first|upper }}</h3>
         <ul>
