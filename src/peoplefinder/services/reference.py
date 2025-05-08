@@ -6,6 +6,7 @@ from peoplefinder.models import (
     LearningInterest,
     Network,
     Profession,
+    Team,
     UkStaffLocation,
 )
 
@@ -52,3 +53,8 @@ def get_networks() -> list[tuple[str, str]]:
 @cache_for(hours=1)
 def get_additional_roles() -> list[tuple[str, str]]:
     return get_data_for_django_filters_choices(model=AdditionalRole, field_name="name")
+
+
+@cache_for(hours=1)
+def get_teams() -> list[tuple[str, str]]:
+    return get_data_for_django_filters_choices(model=Team, field_name="name")
