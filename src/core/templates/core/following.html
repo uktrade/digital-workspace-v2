@@ -1,0 +1,50 @@
+{% extends "dwds_sidebar.html" %}
+{% load wagtailcore_tags cards %}
+
+{% block primary_content_classes %}
+    content-stack large
+{% endblock primary_content_classes %}
+
+{% block primary_content %}
+    <div class="content-stack large">
+        <h2>Tags you follow</h2>
+        {% if FEATURE_FLAGS.tag_following %}
+            {% for subscribed_tag in subscribed_tags %}
+                {{ subscribed_tag.name }}
+                <form method="post"
+                      action="{% url 'interactions:unsubscribe-from-tag' subscribed_tag.pk %}?next={% url 'following' %}">
+                    {% csrf_token %}
+                    <button class="dwds-button dwds-button--inline dwds-button--secondary"
+                            type="submit">
+                        Unfollow <span class="dwds-sr-only">{{ subscribed_tag.name }} content</span>
+                    </button>
+                </form>
+            {% empty %}
+                <p>You don't follow any tags yet.</p>
+            {% endfor %}
+        {% else %}
+            <p>Following tags isn't available yet, please check back later.</p>
+        {% endif %}
+
+        <h2>People you follow</h2>
+        {% if FEATURE_FLAGS.person_following %}
+            <p>You don't follow any people yet.</p>
+        {% else %}
+            <p>Following people isn't available yet, please check back later.</p>
+        {% endif %}
+
+        <h2>Teams you follow</h2>
+        {% if FEATURE_FLAGS.team_following %}
+            <p>You don't follow any teams yet.</p>
+        {% else %}
+            <p>Following teams isn't available yet, please check back later.</p>
+        {% endif %}
+
+        <h2>Networks you follow</h2>
+        {% if FEATURE_FLAGS.network_following %}
+            <p>You don't follow any networks yet.</p>
+        {% else %}
+            <p>Following networks isn't available yet, please check back later.</p>
+        {% endif %}
+    </div>
+{% endblock primary_content %}

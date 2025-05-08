@@ -4,6 +4,7 @@
 {% load l10n %}
 {% block bodyclass %}{% endblock %}
 {% block breadcrumbs %}{% endblock %}
+
 {% block content %}
     {% comment %} {% get_comments_enabled as comments_enabled %}
     {% page_permissions page as page_perms %} {% endcomment %}
@@ -39,8 +40,5 @@
                 </tr>
             {% endfor %}
         </table>
-
     </div>
-
-
-{% endblock %}
+{% endblock content %}
