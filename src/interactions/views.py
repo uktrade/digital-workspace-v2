@@ -5,14 +5,12 @@ from django.http import (
     HttpResponseForbidden,
     JsonResponse,
 )
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from wagtail.models import Page
 
-from core import flags
-from core.utils import flag_is_active
 from interactions.models import ReactionType
 from interactions.services import bookmarks as bookmarks_service
 from interactions.services import comment_reactions as comment_reactions_service
