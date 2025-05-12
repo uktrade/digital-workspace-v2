@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db import models
 from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -68,10 +69,8 @@ def comment_to_dict(comment: Comment) -> dict:
         for reply in get_comment_replies(comment):
             replies.append(comment_to_dict(reply))
 
-    in_reply_to = comment.pk
-
     comment_dict = {
-        "id": comment.id,
+        "id": comment.pk,
         "allow_reactions": comment.page.specific.allow_reactions,
         "posted_date": comment.posted_date,
         "edited_date": comment.edited_date,
@@ -79,24 +78,23 @@ def comment_to_dict(comment: Comment) -> dict:
         "show_replies": include_replies,
         "reply_count": get_comment_reply_count(comment),
         "replies": replies,
-        "in_reply_to": in_reply_to,
         "edit_comment_form_url": reverse(
             "interactions:edit-comment-form",
             kwargs={
-                "comment_id": comment.id,
+                "comment_id": comment.pk,
             },
         ),
         "edit_comment_cancel_url": reverse(
             "interactions:get-comment",
             kwargs={
-                "comment_id": comment.id,
+                "comment_id": comment.pk,
             },
         ),
         "reply_comment_form_url": (
             reverse(
                 "interactions:get-comment",
                 kwargs={
-                    "comment_id": comment.id,
+                    "comment_id": comment.pk,
                 },
             )
             + "?show_reply_form=True"
@@ -104,13 +102,13 @@ def comment_to_dict(comment: Comment) -> dict:
         "reply_comment_url": reverse(
             "interactions:reply-comment",
             kwargs={
-                "comment_id": comment.id,
+                "comment_id": comment.pk,
             },
         ),
         "reply_comment_cancel_url": reverse(
             "interactions:get-comment",
             kwargs={
-                "comment_id": comment.id,
+                "comment_id": comment.pk,
             },
         ),
     }
@@ -151,26 +149,31 @@ def hide_comment(comment: Comment) -> None:
 def can_hide_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
         comment = Comment.objects.get(id=comment)
+
+    assert isinstance(comment, Comment)
     return user == comment.author
 
 
 def can_edit_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
         comment = Comment.objects.get(id=comment)
+
+    assert isinstance(comment, Comment)
     return user == comment.author
 
 
 def can_reply_comment(user: User, comment: Comment | int) -> bool:
     if isinstance(comment, int):
-        try:
-            comment = Comment.objects.get(id=comment)
-        except Comment.DoesNotExist:
-            return False
+        comment = Comment.objects.get(id=comment)
 
-    return bool(not comment.parent)
+    assert isinstance(comment, Comment)
+    return not bool(comment.parent)
 
 
-def get_page_comments_response(request, page: Page) -> TemplateResponse:
+def get_page_comments_response(request: HttpRequest, page: Page) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
     comments = [
         comments_service.comment_to_dict(page_comment)
         for page_comment in comments_service.get_page_comments(page)
@@ -190,7 +193,10 @@ def get_page_comments_response(request, page: Page) -> TemplateResponse:
     )
 
 
-def get_comment_response(request, comment: Comment | int) -> TemplateResponse:
+def get_comment_response(request: HttpRequest, comment: Comment | int) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
     if isinstance(comment, int):
         comment = get_object_or_404(Comment, id=comment)
 

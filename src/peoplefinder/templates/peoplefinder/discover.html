@@ -27,9 +27,9 @@
                     <c-slot name="card_content">
                         {% url 'profile-view' person.slug as profile_url %}
                         {% if person.photo %}
-                            {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=person.photo.url name=person.full_name title=person.formatted_roles|join:", " location=person.uk_office_location.city profile_url=profile_url %}
+                            {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=person.photo.url name=person.full_name title=person.roles_str location=person.uk_office_location.city profile_url=profile_url %}
                         {% else %}
-                            {% include "dwds/components/profile_info.html" with show_profile_image=True name=person.full_name title=person.formatted_roles|join:", " location=person.uk_office_location.city profile_url=profile_url %}
+                            {% include "dwds/components/profile_info.html" with show_profile_image=True name=person.full_name title=person.roles_str location=person.uk_office_location.city profile_url=profile_url %}
                         {% endif %}
                     </c-slot>
                 </c-dwds-card>

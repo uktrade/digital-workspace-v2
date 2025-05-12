@@ -1,12 +1,20 @@
 <form method="get">
-    <h3>Sort and filter</h3>
     <div class="content-stack">
+        <h3>Sort and filter</h3>
         <div class="content-stack">
             <label for="sort_by">Sort by</label>
             <div class="small">{{ discover_filters.form.sort_by }}</div>
         </div>
+
+        {% if can_see_inactive_users %}
+            <div class="content-stack" style="width: 250px;">
+                <label>Filter by {{ discover_filters.form.is_active.label }}</label>
+                {{ discover_filters.form.is_active }}
+            </div>
+        {% endif %}
+
         {% for filter in discover_filters.form %}
-            {% if filter.name != "sort_by" %}
+            {% if filter.name not in discover_filters.custom_sorters and filter.name not in discover_filters.custom_filters %}
                 <div class="content-stack" style="width: 250px;">
                     <label>Filter by {{ filter.label }}</label>
                     {{ filter }}

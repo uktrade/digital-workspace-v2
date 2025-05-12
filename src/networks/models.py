@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
-from waffle import flag_is_active
 from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.models import Page
 
@@ -10,6 +9,7 @@ import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
 from core import flags
 from core.panels import FieldPanel, PageChooserPanel
+from core.utils import flag_is_active
 from extended_search.index import DWIndexedField as IndexedField
 from networks.panels import NetworkTypesFlaggedFieldPanel
 
