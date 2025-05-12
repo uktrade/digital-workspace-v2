@@ -21,4 +21,4 @@ def is_subscribed(*, person: Person, user: User) -> bool:
 
 
 def get_subscribed_people(*, user: User) -> QuerySet[Person]:
-    return Person.objects.filter(personsubscriptions__user=user)
+    return Person.objects.filter(interactions_personsubscriptions__user=user)
