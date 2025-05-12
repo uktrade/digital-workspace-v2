@@ -1,26 +1,61 @@
 <form method="get">
-    <div class="content-stack">
+    <div class="content-stack" style="width:250px;">
         <h3>Sort and filter</h3>
-        <div class="content-stack">
+        <div class="content-stack" style="width:250px;">
             <label for="sort_by">Sort by</label>
             <div class="small">{{ discover_filters.form.sort_by }}</div>
         </div>
-
-        {% if can_see_inactive_users %}
-            <div class="content-stack" style="width: 250px;">
-                <label>Filter by {{ discover_filters.form.is_active.label }}</label>
-                {{ discover_filters.form.is_active }}
+        <h3>Filter</h3>
+        <div class="content-stack" style="width:250px;">
+            <h4>Profession and Job Roles</h4>
+            <div class="content-stack">
+                <label>{{ discover_filters.form.key_skills.label }}</label>
+                {{ discover_filters.form.key_skills }}
             </div>
-        {% endif %}
-
-        {% for filter in discover_filters.form %}
-            {% if filter.name not in discover_filters.custom_sorters and filter.name not in discover_filters.custom_filters %}
-                <div class="content-stack" style="width: 250px;">
-                    <label>Filter by {{ filter.label }}</label>
-                    {{ filter }}
+            <div class="content-stack">
+                <label>{{ discover_filters.form.professions.label }}</label>
+                {{ discover_filters.form.professions }}
+            </div>
+            <div class="content-stack">
+                <label>{{ discover_filters.form.additional_roles.label }}</label>
+                {{ discover_filters.form.additional_roles }}
+            </div>
+            <div class="content-stack">
+                <label>{{ discover_filters.form.grade.label }}</label>
+                {{ discover_filters.form.grade }}
+            </div>
+            <div class="content-stack">
+                <label>{{ discover_filters.form.teams.label }}</label>
+                {{ discover_filters.form.teams }}
+            </div>
+        </div>
+        <div class="content-stack" style="width:250px;">
+            <h4>Location</h4>
+            <div class="content-stack">
+                <label>{{ discover_filters.form.building_name.label }}</label>
+                {{ discover_filters.form.building_name }}
+            </div>
+        </div>
+        <div class="content-stack" style="width:250px;">
+            <h4>Networks and intresets</h4>
+            <div class="content-stack">
+                <label>{{ discover_filters.form.networks.label }}</label>
+                {{ discover_filters.form.networks }}
+            </div>
+            <div class="content-stack">
+                <label>{{ discover_filters.form.learning_interests.label }}</label>
+                {{ discover_filters.form.learning_interests }}
+            </div>
+        </div>
+        <div class="content-stack" style="width:250px;">
+            <h4>Refine</h4>
+            {% if can_see_inactive_users %}
+                <div class="content-stack">
+                    <label>Filter by {{ discover_filters.form.is_active.label }}</label>
+                    {{ discover_filters.form.is_active }}
                 </div>
             {% endif %}
-        {% endfor %}
+        </div>
         <div class="dwds-button-group">
             <input class="dwds-button dwds-button--secondary dwds-button--inline"
                    type="submit"
