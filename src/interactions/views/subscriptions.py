@@ -7,7 +7,14 @@ from interactions.services import tag_subscriptions as tag_sub_service
 
 
 def manage_subscriptions(request: HttpRequest) -> HttpResponse:
-    if not flag_is_active(request, flags.TAG_FOLLOWING):
+    if not any(
+        [
+            flag_is_active(request, flags.TAG_FOLLOWING),
+            flag_is_active(request, flags.TEAM_FOLLOWING),
+            flag_is_active(request, flags.NETWORK_FOLLOWING),
+            flag_is_active(request, flags.PERSON_FOLLOWING),
+        ]
+    ):
         return HttpResponseForbidden()
 
     context: dict[str, str] = {"page_title": "Subscriptions"}

@@ -23,6 +23,7 @@ from content.models import BasePage, ContentOwnerMixin
 from core import flags
 from core.forms import PageProblemFoundForm
 from core.models import Tag
+from core.services import tags as tags_service
 from interactions.services import tag_subscriptions as tag_sub_service
 from user.models import User
 
@@ -170,7 +171,7 @@ def tag_index(request: HttpRequest, slug: str) -> HttpResponse:
         return HttpResponseForbidden()
 
     tag = get_object_or_404(Tag, slug=slug)
-    tagged_teams, tagged_people, tagged_pages = tag_sub_service.get_tagged_content(
+    tagged_teams, tagged_people, tagged_pages = tags_service.get_tagged_content(
         tags=[tag]
     )
     context = {
@@ -212,11 +213,11 @@ def tag_content_index(
     tag = get_object_or_404(Tag, slug=slug)
     match content_type:
         case "people":
-            content_queryset = tag_sub_service.get_tagged_people(tags=[tag])
+            content_queryset = tags_service.get_tagged_people(tags=[tag])
         case "teams":
-            content_queryset = tag_sub_service.get_tagged_teams(tags=[tag])
+            content_queryset = tags_service.get_tagged_teams(tags=[tag])
         case "pages":
-            content_queryset = tag_sub_service.get_tagged_pages(tags=[tag])
+            content_queryset = tags_service.get_tagged_pages(tags=[tag])
         case _:
             raise ValueError(f"Unable to get queryset for '{content_type}'")
 
@@ -298,6 +299,6 @@ def personal_feed(request: HttpRequest) -> HttpResponse:
     context: dict[str, str] = {"page_title": "Your feed"}
     subscribed_tags = tag_sub_service.get_subscribed_tags(user=request.user)
     context.update(
-        grouped_content=tag_sub_service.get_activity(tags=subscribed_tags),
+        grouped_content=tags_service.get_activity(tags=subscribed_tags),
     )
     return TemplateResponse(request, "core/personal_feed.html", context)
