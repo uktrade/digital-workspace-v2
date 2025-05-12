@@ -28,9 +28,4 @@ urlpatterns = [
         views.personal_feed,
         name="personal-feed",
     ),
-    path(
-        "following/",
-        views.following,
-        name="following",
-    ),
 ]

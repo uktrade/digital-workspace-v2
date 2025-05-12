@@ -5,6 +5,7 @@ from interactions.views import (
     comment_reactions,
     comments,
     page_reactions,
+    subscriptions,
     tag_subscriptions,
 )
 
@@ -55,5 +56,10 @@ urlpatterns = [
         "tag/<int:tag_pk>/unsubscribe/",
         tag_subscriptions.unsubscribe,
         name="unsubscribe-from-tag",
+    ),
+    path(
+        "manage-subscriptions/",
+        subscriptions.manage_subscriptions,
+        name="manage_subscriptions",
     ),
 ]

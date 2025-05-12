@@ -1,0 +1,50 @@
+{% extends "dwds_sidebar.html" %}
+{% load wagtailcore_tags cards %}
+
+{% block primary_content_classes %}
+    content-stack large
+{% endblock primary_content_classes %}
+
+{% block primary_content %}
+    <div class="content-stack large">
+        <h2>Tags you're subscribed to</h2>
+        {% if FEATURE_FLAGS.tag_subscribing %}
+            {% for subscribed_tag in subscribed_tags %}
+                {{ subscribed_tag.name }}
+                <form method="post"
+                      action="{% url 'interactions:unsubscribe-from-tag' subscribed_tag.pk %}?next={% url 'interactions:manage_subscriptions' %}">
+                    {% csrf_token %}
+                    <button class="dwds-button dwds-button--inline dwds-button--secondary"
+                            type="submit">
+                        Unsubscribe <span class="dwds-sr-only">from {{ subscribed_tag.name }} content</span>
+                    </button>
+                </form>
+            {% empty %}
+                <p>You aren't subscribed to any tags yet.</p>
+            {% endfor %}
+        {% else %}
+            <p>Subscribing to tags isn't available yet, please check back later.</p>
+        {% endif %}
+
+        <h2>People you're subscribed to</h2>
+        {% if FEATURE_FLAGS.person_subscribing %}
+            <p>You aren't subscribed to any people yet.</p>
+        {% else %}
+            <p>Subscribing to people isn't available yet, please check back later.</p>
+        {% endif %}
+
+        <h2>Teams you're subscribed to</h2>
+        {% if FEATURE_FLAGS.team_subscribing %}
+            <p>You aren't subscribed to any teams yet.</p>
+        {% else %}
+            <p>Subscribing to teams isn't available yet, please check back later.</p>
+        {% endif %}
+
+        <h2>Networks you're subscribed to</h2>
+        {% if FEATURE_FLAGS.network_subscribing %}
+            <p>You aren't subscribed to any networks yet.</p>
+        {% else %}
+            <p>Subscribing to networks isn't available yet, please check back later.</p>
+        {% endif %}
+    </div>
+{% endblock primary_content %}

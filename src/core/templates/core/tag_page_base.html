@@ -8,14 +8,14 @@
 {% block page_title_wrapper %}
     <div class="content-spaced">
         {{ block.super }}
-        {% if FEATURE_FLAGS.tag_following %}
-            {% if user_follows_tag %}
+        {% if FEATURE_FLAGS.tag_subscribing %}
+            {% if is_subscribed_to_tag %}
                 <form method="post"
                       action="{% url 'interactions:unsubscribe-from-tag' tag.pk %}">
                     {% csrf_token %}
                     <button class="dwds-button dwds-button--inline dwds-button--secondary"
                             type="submit">
-                        Unfollow <span class="dwds-sr-only">{{ tag.name }} content</span>
+                        Unsubscribe <span class="dwds-sr-only">from {{ tag.name }} content</span>
                     </button>
                 </form>
             {% else %}
@@ -23,7 +23,7 @@
                       action="{% url 'interactions:subscribe-to-tag' tag.pk %}">
                     {% csrf_token %}
                     <button class="dwds-button dwds-button--inline" type="submit">
-                        Follow <span class="dwds-sr-only">{{ tag.name }} content</span>
+                        Subscribe <span class="dwds-sr-only">to {{ tag.name }} content</span>
                     </button>
                 </form>
             {% endif %}
