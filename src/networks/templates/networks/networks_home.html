@@ -9,9 +9,7 @@
 {% endblock page_title_wrapper %}
 
 {% block primary_content %}
-    {% if FEATURE_FLAGS.network_types %}
-        {% include "networks/includes/networks_filters.html" %}
-    {% endif %}
+    {% include "networks/includes/networks_filters.html" %}
     <div class="content-grid grid-cards-auto-fill">
         {% for network in networks %}
             <c-dwds-card>
