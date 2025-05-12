@@ -1,3 +1,5 @@
+from django.templatetags.static import static
+from django.utils.safestring import mark_safe
 from wagtail import hooks
 from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
@@ -26,3 +28,9 @@ def remove_submit_to_moderator_option(menu_items, request, context):
     # TODO - remove delete page item
 
     menu_items[:] = [item for item in menu_items if item.name != "action-submit"]
+
+
+@hooks.register("insert_editor_js")
+def editor_js():
+    content_admin_js_path = static("admin/content.js")
+    return mark_safe(f"<script src='{content_admin_js_path}'></script>")  # noqa: S308

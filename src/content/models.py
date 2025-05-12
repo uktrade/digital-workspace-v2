@@ -6,13 +6,19 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import F, Func, OuterRef, Q, Subquery
 from django.forms import widgets
 from django.utils import timezone
 from django.utils.html import strip_tags
 from simple_history.models import HistoricalRecords
-from wagtail.admin.panels import ObjectList, TabbedInterface, TitleFieldPanel
+from wagtail.admin.panels import (
+    MultiFieldPanel,
+    ObjectList,
+    TabbedInterface,
+    TitleFieldPanel,
+)
 from wagtail.admin.widgets.slug import SlugInput
 from wagtail.blocks.stream_block import StreamValue
 from wagtail.fields import StreamField
@@ -34,7 +40,7 @@ from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
 from peoplefinder.models import Person
-from peoplefinder.widgets import PersonChooser
+from peoplefinder.widgets import PersonChooser, TeamChooser
 from user.models import User as UserModel
 
 
@@ -168,6 +174,7 @@ class BasePage(Page, Indexed):
         use_json_field=True,
         help_text="Tell readers about page important page changes.",
     )
+
     page_author = models.ForeignKey(
         "peoplefinder.Person",
         on_delete=models.SET_NULL,
@@ -175,6 +182,38 @@ class BasePage(Page, Indexed):
         blank=True,
         help_text="If the 'page author' field is empty, we will fall back to the owner of this page.",
     )
+
+    on_behalf_of_person = models.ForeignKey(
+        "peoplefinder.Person",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="on_behalf_of",
+        help_text="Select someone with a profile on the Intranet",
+    )
+
+    on_behalf_of_team = models.ForeignKey(
+        "peoplefinder.Team",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="on_behalf_of",
+    )
+
+    on_behalf_of_network = models.ForeignKey(
+        "networks.Network",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="on_behalf_of",
+    )
+
+    on_behalf_of_external = models.CharField(
+        blank=True,
+        null=True,
+        help_text="Enter the name of someone without an Intranet profile",
+    )
+
     page_author_name = models.CharField(
         null=True,
         blank=True,
@@ -187,7 +226,19 @@ class BasePage(Page, Indexed):
     ]
     publishing_panels = [
         FieldPanel("page_author", widget=PersonChooser),
-        FieldPanel("page_author_name", read_only=True),
+        MultiFieldPanel(
+            [
+                FieldPanel("on_behalf_of_person", widget=PersonChooser),
+                FieldPanel("on_behalf_of_external"),
+                FieldPanel("on_behalf_of_team", widget=TeamChooser),
+                FieldPanel("on_behalf_of_network"),
+            ],
+            heading="On Behalf Of",
+            help_text=(
+                "Provide a value for one of the following fields if the author"
+                " of this page is posting on behalf of someone else."
+            ),
+        ),
         FieldPanel("page_updates"),
     ]
 
@@ -230,6 +281,20 @@ class BasePage(Page, Indexed):
         self.sort_page_updates()
         super().full_clean(*args, **kwargs)
 
+        on_behalf_of_fields = [
+            "on_behalf_of_person",
+            "on_behalf_of_external",
+            "on_behalf_of_team",
+            "on_behalf_of_network",
+        ]
+        on_behalf_of_errors = {
+            field_name: "Only one 'On Behalf of' field may be set."
+            for field_name in on_behalf_of_fields
+            if getattr(self, field_name, False)
+        }
+        if len(on_behalf_of_errors) > 1:
+            raise ValidationError(on_behalf_of_errors)
+
     @cached_classmethod
     def get_edit_handler(cls):
         return TabbedInterface(
@@ -261,7 +326,10 @@ class BasePage(Page, Indexed):
                 pass
 
         if self.owner:
-            return self.owner.profile
+            try:
+                return self.owner.profile
+            except User.profile.RelatedObjectDoesNotExist:
+                pass
 
         return None
 

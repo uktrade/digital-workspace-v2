@@ -4,7 +4,7 @@
 {% block primary_content %}
     {% if attribution %}
         {% if attribution__is_news_page and FEATURE_FLAGS.new_news_author %}
-            {% page_author self %}
+            {% page_author self request %}
         {% else %}
             {% include "includes/attribution.html" with page=page is_news_page=attribution__is_news_page perm_sec_as_author=self.perm_sec_as_author first_publisher_as_author=attribution__first_publisher_as_author %}
         {% endif %}

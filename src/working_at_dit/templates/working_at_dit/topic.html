@@ -29,6 +29,7 @@
 {% endblock primary_content %}
 
 {% block secondary_content %}
+    {{ block.super }}
     {% if tools %}
         <h2 class="govuk-heading-m">Tools</h2>
         <ul class="govuk-list">
@@ -50,5 +51,4 @@
             {% endfor %}
         </ul>
     {% endif %}
-    {{ block.super }}
 {% endblock secondary_content %}

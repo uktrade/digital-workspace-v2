@@ -56,7 +56,7 @@ class Grade(models.Model):
             models.UniqueConstraint(fields=["code"], name="unique_grade_code"),
             models.UniqueConstraint(fields=["name"], name="unique_grade_name"),
         ]
-        ordering = ["-ordering"]
+        ordering = ["ordering"]
 
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=50)
@@ -615,6 +615,12 @@ class Person(Indexed, models.Model):
             "search_buildings",
             tokenized=True,
         ),
+        IndexedField(
+            "search_job_titles",
+            tokenized=True,
+            explicit=True,
+            boost=3.0,
+        ),
         RelatedFields(
             "roles",
             [
@@ -800,6 +806,14 @@ class Person(Indexed, models.Model):
         return f"{names_str} {abbrs_str}"
 
     @property
+    def search_job_titles(self):
+        """
+        Indexable string of job titles
+        """
+        job_titles = self.roles.all().values_list("job_title", flat=True)
+        return " ".join(job_titles)
+
+    @property
     def search_buildings(self):
         return ", ".join(self.buildings.all().values_list("name", flat=True))
 
@@ -879,6 +893,19 @@ class Person(Indexed, models.Model):
                 "peoplefinder/components/profile-role.html", {"role": role}
             )
         return mark_safe(output)  # noqa: S308
+
+    def roles_str(self):
+        output = ""
+        for role in self.roles.select_related("team").all():
+            if len(output) > 0:
+                output += ", "
+
+            if role.job_title:
+                output += f"{role.job_title} in"
+            else:
+                output += "Member of"
+            output += f" {role.team.name}"
+        return output
 
     def get_grade_display(self) -> Optional[str]:
         if self.grade:

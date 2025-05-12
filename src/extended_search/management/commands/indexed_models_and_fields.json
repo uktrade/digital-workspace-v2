@@ -814,6 +814,8 @@
         "<SearchField: primary_phone_number_keyword>",
         "<SearchField: search_buildings>",
         "<SearchField: search_grade_explicit>",
+        "<SearchField: search_job_titles>",
+        "<SearchField: search_job_titles_explicit>",
         "<SearchField: search_location>",
         "<SearchField: search_teams>",
         "<SearchField: search_teams_explicit>",
