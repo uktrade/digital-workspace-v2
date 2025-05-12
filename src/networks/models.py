@@ -7,9 +7,7 @@ from wagtail.models import Page
 
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
-from core import flags
 from core.panels import FieldPanel, PageChooserPanel
-from core.utils import flag_is_active
 from extended_search.index import DWIndexedField as IndexedField
 
 
