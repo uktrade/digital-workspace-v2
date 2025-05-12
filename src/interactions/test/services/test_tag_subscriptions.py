@@ -1,4 +1,5 @@
 import pytest
+from core.factories import TagFactory
 from interactions.services import tag_subscriptions
 from interactions.models import TagSubscription
 
@@ -7,10 +8,7 @@ from core.models.tags import Tag
 
 @pytest.mark.django_db
 def test_subscribe(user):
-    tag = Tag.objects.create(
-        name="Test tag 1",
-        slug="test-tag-1",
-    )
+    tag = TagFactory()
     assert not TagSubscription.objects.filter(tag=tag, user=user).exists()
 
     tag_subscriptions.subscribe(tag=tag, user=user)
@@ -19,10 +17,7 @@ def test_subscribe(user):
 
 @pytest.mark.django_db
 def test_unsubscribe(user):
-    tag = Tag.objects.create(
-        name="Test tag 1",
-        slug="test-tag-1",
-    )
+    tag = TagFactory()
     TagSubscription.objects.create(tag=tag, user=user)
 
     tag_subscriptions.unsubscribe(tag=tag, user=user)
@@ -31,10 +26,7 @@ def test_unsubscribe(user):
 
 @pytest.mark.django_db
 def test_is_subscribed(user):
-    tag = Tag.objects.create(
-        name="Test tag 1",
-        slug="test-tag-1",
-    )
+    tag = TagFactory()
 
     assert not tag_subscriptions.is_subscribed(tag=tag, user=user)
 
@@ -44,18 +36,9 @@ def test_is_subscribed(user):
 
 @pytest.mark.django_db
 def test_get_subscribed_tags(user):
-    tag1 = Tag.objects.create(
-        name="Test tag 1",
-        slug="test-tag-1",
-    )
-    tag2 = Tag.objects.create(
-        name="Test tag 2",
-        slug="test-tag-2",
-    )
-    tag3 = Tag.objects.create(
-        name="Test tag 3",
-        slug="test-tag-3",
-    )
+    tag1 = TagFactory()
+    tag2 = TagFactory()
+    tag3 = TagFactory()
 
     subscribed_tags = list(tag_subscriptions.get_subscribed_tags(user=user))
     assert tag1 not in subscribed_tags
