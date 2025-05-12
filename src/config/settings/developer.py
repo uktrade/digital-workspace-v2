@@ -7,6 +7,7 @@ CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
 INSTALLED_APPS += [  # noqa F405
     "django_extensions",
+    "wagtail.contrib.styleguide",
 ]
 
 MEDIA_URL = "/media/"

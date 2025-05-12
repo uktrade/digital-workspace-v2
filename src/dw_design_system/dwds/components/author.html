@@ -7,15 +7,25 @@
         </div>
     {% endif %}
     <div class="content-stack no-gap">
-        {% if profile_url %}
-            <a href="{{ profile_url }}">{{ name }}</a>
-        {% else %}
-            {{ name }}
-        {% endif %}
-        {% if published_timestamp %}
+        <span>
+            {% if profile_url %}
+                <a href="{{ profile_url }}">{{ name }}</a>
+            {% else %}
+                {{ name }}
+            {% endif %}
+            {% if on_behalf_of %}
+                on behalf of
+                {% if on_behalf_of_url %}
+                    <a href="{{ on_behalf_of_url }}">{{ on_behalf_of }}</a>
+                {% else %}
+                    {{ on_behalf_of }}
+                {% endif %}
+            {% endif %}
+        </span>
+        {% if published_timestamp and not updated_timestamp %}
             <div>Published: {{ published_timestamp|date:'j F Y' }} at {{ published_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}
-        {% if updated_timestamp and updated_timestamp != published_timestamp %}
+        {% if updated_timestamp %}
             <div>Updated: {{ updated_timestamp|date:'j F Y' }} at {{ updated_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}
         {% if timestamp %}<div>{{ timestamp|date:'j F Y' }} at {{ timestamp|date:"g:iA"|lower }}</div>{% endif %}
