@@ -11,7 +11,6 @@ from core import flags
 from core.panels import FieldPanel, PageChooserPanel
 from core.utils import flag_is_active
 from extended_search.index import DWIndexedField as IndexedField
-from networks.panels import NetworkTypesFlaggedFieldPanel
 
 
 class NetworksHome(ContentPage):
@@ -160,7 +159,7 @@ class Network(ContentOwnerMixin, ContentPage):
     )
 
     content_panels = ContentPage.content_panels + [
-        NetworkTypesFlaggedFieldPanel("network_type"),
+        FieldPanel("network_type"),
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]
