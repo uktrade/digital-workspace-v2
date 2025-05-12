@@ -22,10 +22,10 @@
                 {% endif %}
             {% endif %}
         </span>
-        {% if published_timestamp %}
+        {% if published_timestamp and not updated_timestamp %}
             <div>Published: {{ published_timestamp|date:'j F Y' }} at {{ published_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}
-        {% if updated_timestamp and updated_timestamp != published_timestamp %}
+        {% if updated_timestamp %}
             <div>Updated: {{ updated_timestamp|date:'j F Y' }} at {{ updated_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}
         {% if timestamp %}<div>{{ timestamp|date:'j F Y' }} at {{ timestamp|date:"g:iA"|lower }}</div>{% endif %}
