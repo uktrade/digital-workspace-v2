@@ -995,7 +995,7 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
             With the default `parent_field`:
             >>> team = Team.objects.with_parents().get(slug="software")
             >>> team.ancestry
-            [1, 3, 4]
+            [7, 9, 10]
 
             With a specified `parent_field`:
             >>> team = Team.objects.with_parents(parent_field="slug").get(slug="software")
