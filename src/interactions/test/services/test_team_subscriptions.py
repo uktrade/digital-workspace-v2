@@ -4,7 +4,6 @@ from interactions.models import TeamSubscription
 from peoplefinder.test.factories import TeamFactory
 
 
-
 @pytest.mark.django_db
 def test_subscribe(user):
     team = TeamFactory()
