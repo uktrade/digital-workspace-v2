@@ -10,8 +10,8 @@
 {% endblock breadcrumbs %}
 
 {% block secondary_content %}
-    {% sidebar %}
     {% include "peoplefinder/includes/discover_filters.html" %}
+    {% sidebar %}
 {% endblock secondary_content %}
 
 {% block primary_content_classes %}
@@ -20,7 +20,13 @@
 
 {% block primary_content %}
     {% if pages.object_list %}
-        <p>Showing {{ pages.start_index }} to {{ pages.end_index }} of {{ pages.paginator.count }} profiles</p>
+        <div class="dwds-button-group"
+             style="width: 100%;
+                    display: flex;
+                    justify-content: space-between">
+            <p>Showing {{ pages.start_index }} to {{ pages.end_index }} of {{ pages.paginator.count }} profiles</p>
+            <label for="sort_by">Sort by {{ discover_filters.form.sort_by }}</label>
+        </div>
         <div class="content-grid grid-cards-auto-fill">
             {% for person in pages.object_list %}
                 <c-dwds-card>
