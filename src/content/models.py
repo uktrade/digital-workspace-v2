@@ -197,6 +197,7 @@ class BasePage(Page, Indexed):
     )
     page_author_show_team = models.BooleanField(
         default=False,
+        help_text="Use this to show/hide the team for the selected role",
     )
 
     on_behalf_of_person = models.ForeignKey(

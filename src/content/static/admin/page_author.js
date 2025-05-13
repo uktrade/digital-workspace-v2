@@ -1,27 +1,3 @@
-const getPageAuthorInput = () => {
-    return document.querySelector(
-        `input[name='page_author']`,
-    );
-};
-
-const getPageAuthorRoleElement = () => {
-    return document.querySelector(
-        `section[id='panel-child-publishing-page_author_role-section']`,
-    );
-};
-
-const getPageAuthorRoleSelect = () => {
-    return document.querySelector(
-        `select[name='page_author_role']`,
-    );
-};
-
-const getPageAuthorShowTeamElement = () => {
-    return document.querySelector(
-        `section[id='panel-child-publishing-page_author_show_team-section']`,
-    );
-};
-
 const hideElement = (element) => {
     element.style.display = "none";
 };
@@ -92,10 +68,18 @@ const updatePageAuthorVisibility = (
 };
 
 const initialisePageAuthor = () => {
-    const pageAuthorInput = getPageAuthorInput();
-    const pageAuthorRoleElement = getPageAuthorRoleElement();
-    const pageAuthorRoleSelect = getPageAuthorRoleSelect();
-    const pageAuthorShowTeamElement = getPageAuthorShowTeamElement();
+    const pageAuthorInput = document.querySelector(
+        `input[name='page_author']`
+    );
+    const pageAuthorRoleElement = document.querySelector(
+        `section[id='panel-child-publishing-page_author_role-section']`,
+    );
+    const pageAuthorRoleSelect = document.querySelector(
+        `select[name='page_author_role']`,
+    );
+    const pageAuthorShowTeamElement = document.querySelector(
+        `section[id='panel-child-publishing-page_author_show_team-section']`,
+    );
 
     updatePageAuthorVisibility(
         pageAuthorInput,
