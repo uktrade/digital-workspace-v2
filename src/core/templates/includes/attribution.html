@@ -13,7 +13,7 @@
     {% endif %}
     <div>
         {% if page.page_author_role %}
-            <div>Role: {{ page.page_author_role }}</div>
+            <div>Role: {{ page.page_author_role.job_title }}</div>
             {% if page.page_author_show_team %}
                 <div>
                     Team: <a href="{{ page.page_author_role.team.get_absolute_url }}">{{ page.page_author_role.team.name }}</a>
