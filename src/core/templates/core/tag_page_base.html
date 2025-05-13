@@ -1,0 +1,32 @@
+{% extends "dwds_sidebar.html" %}
+{% load wagtailcore_tags cards %}
+
+{% block primary_content_classes %}
+    content-stack large
+{% endblock primary_content_classes %}
+
+{% block page_title_wrapper %}
+    <div class="content-spaced">
+        {{ block.super }}
+        {% if FEATURE_FLAGS.tag_subscribing %}
+            {% if is_subscribed_to_tag %}
+                <form method="post"
+                      action="{% url 'interactions:unsubscribe-from-tag' tag.pk %}">
+                    {% csrf_token %}
+                    <button class="dwds-button dwds-button--inline dwds-button--secondary"
+                            type="submit">
+                        Unsubscribe <span class="dwds-sr-only">from {{ tag.name }} content</span>
+                    </button>
+                </form>
+            {% else %}
+                <form method="post"
+                      action="{% url 'interactions:subscribe-to-tag' tag.pk %}">
+                    {% csrf_token %}
+                    <button class="dwds-button dwds-button--inline" type="submit">
+                        Subscribe <span class="dwds-sr-only">to {{ tag.name }} content</span>
+                    </button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock page_title_wrapper %}

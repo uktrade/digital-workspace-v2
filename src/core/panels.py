@@ -1,4 +1,8 @@
-from wagtail.admin.panels import FieldPanel, InlinePanel, PageChooserPanel
+from wagtail.admin.panels import (
+    FieldPanel,
+    InlinePanel,
+    PageChooserPanel,
+)
 
 from core.widgets import ReadOnlyPageInput
 

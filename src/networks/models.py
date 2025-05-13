@@ -7,52 +7,42 @@ from wagtail.models import Page
 
 import peoplefinder.models as pf_models
 from content.models import ContentOwnerMixin, ContentPage
-from core import flags
 from core.panels import FieldPanel, PageChooserPanel
-from core.utils import flag_is_active
 from extended_search.index import DWIndexedField as IndexedField
-from networks.panels import NetworkTypesFlaggedFieldPanel
 
 
 class NetworksHome(ContentPage):
     is_creatable = False
     subpage_types = ["networks.Network", "networks.NetworkContentPage"]
-    template = "content/content_page.html"
+    template = "networks/networks_home.html"
 
     promote_panels = ContentPage.promote_panels + [
         FieldPanel("useful_links"),
         PageChooserPanel("spotlight_page"),
     ]
 
-    def get_template(self, request, *args, **kwargs):
-        if flag_is_active(request, flags.NETWORKS_HUB):
-            return "networks/networks_home.html"
-        return super().get_template(request, *args, **kwargs)
-
     def get_context(self, request, *args, **kwargs):
         from networks.filters import NetworksFilters
 
         context = super().get_context(request, *args, **kwargs)
 
-        networks = Network.objects.live().public().order_by("title")
-        if flag_is_active(request, flags.NETWORKS_HUB):
-            # Filtering networks by network type
-            networks_filters = NetworksFilters(request.GET, queryset=networks)
-            networks = networks_filters.qs
+        # Filtering networks by network type
+        networks_filters = NetworksFilters(
+            request.GET,
+            queryset=Network.objects.live().public().order_by("title"),
+        )
+        networks = networks_filters.qs
 
-            paginator = Paginator(networks, 15)
-            page = int(request.GET.get("page", 1))
+        paginator = Paginator(networks, 15)
+        page = int(request.GET.get("page", 1))
 
-            try:
-                networks = paginator.page(page)
-            except EmptyPage:
-                networks = paginator.page(paginator.num_pages)
+        try:
+            networks = paginator.page(page)
+        except EmptyPage:
+            networks = paginator.page(paginator.num_pages)
 
-            context["networks_filters"] = networks_filters
-            context["networks"] = networks
-        else:
-            networks = networks.child_of(self)
-            context["children"] = networks
+        context["networks_filters"] = networks_filters
+        context["networks"] = networks
 
         context["attribution"] = False
         context["num_cols"] = 3
@@ -160,7 +150,7 @@ class Network(ContentOwnerMixin, ContentPage):
     )
 
     content_panels = ContentPage.content_panels + [
-        NetworkTypesFlaggedFieldPanel("network_type"),
+        FieldPanel("network_type"),
         FieldPanel("is_peoplefinder_network"),
         FieldPanel("peoplefinder_network"),
     ]
@@ -181,10 +171,7 @@ class Network(ContentOwnerMixin, ContentPage):
     ] + ContentOwnerMixin.indexed_fields
 
     def get_template(self, request, *args, **kwargs):
-        if (
-            flag_is_active(request, flags.NETWORKS_HUB)
-            and Network.objects.live().public().child_of(self).exists()
-        ):
+        if Network.objects.live().public().child_of(self).exists():
             self.template = "networks/group_network.html"
         return super().get_template(request, *args, **kwargs)
 
