@@ -55,6 +55,10 @@
                     {{ discover_filters.form.is_active }}
                 </div>
             {% endif %}
+            <div class="content-stack">
+                <label>{{ discover_filters.form.profile_completion.label|capfirst }}</label>
+                {{ discover_filters.form.profile_completion }}
+            </div>
         </div>
         <div class="dwds-button-group">
             <input class="dwds-button dwds-button--secondary dwds-button--inline"
