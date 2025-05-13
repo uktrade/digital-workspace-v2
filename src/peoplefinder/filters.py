@@ -47,56 +47,74 @@ class DiscoverFilters(FilterSet):
     city = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__city",
         choices=get_uk_city_locations,
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="city",
     )
     building_name = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__building_name",
         choices=get_uk_buildings,
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="office location",
     )
     grade = django_filters.MultipleChoiceFilter(
         field_name="grade__name",
         choices=get_grades,
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="grade",
     )
     professions = django_filters.MultipleChoiceFilter(
         field_name="professions__name",
         choices=get_professions,
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="professions",
     )
     key_skills = django_filters.MultipleChoiceFilter(
         field_name="key_skills__name",
         choices=get_key_skills,
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="key skills",
     )
     learning_interests = django_filters.MultipleChoiceFilter(
         field_name="learning_interests__name",
         choices=get_learning_interests,
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="learning interests",
     )
     networks = django_filters.MultipleChoiceFilter(
         field_name="networks__name",
         choices=get_networks,
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="networks",
     )
     additional_roles = django_filters.MultipleChoiceFilter(
         field_name="additional_roles__name",
         choices=get_additional_roles,
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="additional roles",
     )
 
     teams = django_filters.MultipleChoiceFilter(
         field_name="roles__team__name",
         choices=get_teams,
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="teams",
     )
 
