@@ -12,6 +12,15 @@
         </p>
     {% endif %}
     <div>
+        {% if page.page_author_role %}
+            <div>Role: {{ page.page_author_role }}</div>
+            {% if page.page_author_show_team %}
+                <div>
+                    Team: <a href="{{ page.page_author_role.team.get_absolute_url }}">{{ page.page_author_role.team.name }}</a>
+                </div>
+            {% endif %}
+        {% endif %}
+
         <time datetime="{{ page.first_published_at|date:"c" }}">
             First published: {{ page.first_published_at|date:'j F Y' }} at {{ page.first_published_at|date:"g:iA"|lower }}
         </time>
