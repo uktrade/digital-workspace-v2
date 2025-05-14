@@ -8,6 +8,10 @@
             <a href="?">Reset filters</a>
         </div>
         <div class="content-stack" style="width:250px;">
+            <label for="sort_by">Sort by</label>
+            <div class="small">{{ discover_filters.form.sort_by }}</div>
+        </div>
+        <div class="content-stack" style="width:250px;">
             <h4>Profession and Job Roles</h4>
             <div class="content-stack">
                 <label>{{ discover_filters.form.key_skills.label|capfirst }}</label>
@@ -61,6 +65,9 @@
                 </div>
             {% endif %}
             <div class="content-stack">
+                <div>{{ discover_filters.form.display_civil_servants.label }} {{ discover_filters.form.display_civil_servants }}</div>
+            </div>
+            <div>
                 <label>{{ discover_filters.form.profile_completion.label|capfirst }}</label>
                 {{ discover_filters.form.profile_completion }}
             </div>
