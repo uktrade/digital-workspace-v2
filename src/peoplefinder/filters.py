@@ -34,7 +34,11 @@ ORDER_CHOICES = {
 
 
 class DiscoverFilters(FilterSet):
-
+    display_civil_servants = django_filters.BooleanFilter(
+        widget=forms.CheckboxInput,
+        label="Display civil servants only",
+        method="filter_non_civil_servants",
+    )
     is_active = django_filters.ChoiceFilter(
         field_name="is_active",
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
@@ -138,10 +142,16 @@ class DiscoverFilters(FilterSet):
 
     custom_sorters = ["sort_by"]
     custom_filters = ["is_active"]
+    checkbox_filters = ["display_civil_servants"]
 
     def apply_ordering(self, queryset, name, value) -> QuerySet[Person]:
         order_fields = ORDER_CHOICES[value[0]]["ordering"]
         return queryset.order_by(*order_fields)
+
+    def filter_non_civil_servants(self, queryset, name, value) -> QuerySet[Person]:
+        if value:
+            return queryset.exclude(grade__code="non_graded_contractor")
+        return queryset
 
     def filter_profile_completion(self, queryset, name, value) -> QuerySet[Person]:
         if value == "full":
