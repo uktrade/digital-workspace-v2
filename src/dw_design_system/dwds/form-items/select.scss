@@ -71,19 +71,3 @@ select:focus::-ms-value {
         max-width: 100%;
     }
 }
-
-// Temp added styling to multiselect to match dwds, will probably be depreciated onces we settle on a component design for multi select lists.
-.dwds-multiselect {
-    // -moz-appearance: none;
-    // -webkit-appearance: none;
-    // appearance: none;
-    padding-left: var(--s-2);
-    padding-right: var(--s3);
-    max-width: fit-content;
-    height: fit-content;
-    overflow-y:auto;
-
-    option{
-        text-wrap: auto;
-    }
-}

@@ -52,80 +52,56 @@ class DiscoverFilters(FilterSet):
         field_name="uk_office_location__city",
         choices=get_uk_city_locations,
         null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(
-            # Temp disabled styles for demo
-            # attrs={"class": "dwds-multiselect"}
-        ),
+        widget=forms.widgets.CheckboxSelectMultiple(),
         label="city",
     )
     building_name = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__building_name",
         choices=get_uk_buildings,
         null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(
-            # Temp disabled styles for demo
-            # attrs={"class": "dwds-multiselect"}
-        ),
+        widget=forms.widgets.CheckboxSelectMultiple(),
         label="office",
     )
     grade = django_filters.MultipleChoiceFilter(
         field_name="grade__name",
         choices=get_grades,
         null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(
-            # Temp disabled styles for demo
-            # attrs={"class": "dwds-multiselect"}
-        ),
+        widget=forms.widgets.CheckboxSelectMultiple(),
         label="grade",
     )
     professions = django_filters.MultipleChoiceFilter(
         field_name="professions__name",
         choices=get_professions,
         null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(
-            # Temp disabled styles for demo
-            # attrs={"class": "dwds-multiselect"}
-        ),
+        widget=forms.widgets.CheckboxSelectMultiple(),
         label="profession",
     )
     key_skills = django_filters.MultipleChoiceFilter(
         field_name="key_skills__name",
         choices=get_key_skills,
         null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(
-            # Temp disabled styles for demo
-            # attrs={"class": "dwds-multiselect"}
-        ),
+        widget=forms.widgets.CheckboxSelectMultiple(),
         label="key skill",
     )
     learning_interests = django_filters.MultipleChoiceFilter(
         field_name="learning_interests__name",
         choices=get_learning_interests,
         null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(
-            # Temp disabled styles for demo
-            # attrs={"class": "dwds-multiselect"}
-        ),
+        widget=forms.widgets.CheckboxSelectMultiple(),
         label="learning interest",
     )
     networks = django_filters.MultipleChoiceFilter(
         field_name="networks__name",
         choices=get_networks,
         null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(
-            # Temp disabled styles for demo
-            # attrs={"class": "dwds-multiselect"}
-        ),
+        widget=forms.widgets.CheckboxSelectMultiple(),
         label="network",
     )
     additional_roles = django_filters.MultipleChoiceFilter(
         field_name="additional_roles__name",
         choices=get_additional_roles,
         null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(
-            # Temp disabled styles for demo
-            # attrs={"class": "dwds-multiselect"}
-        ),
+        widget=forms.widgets.CheckboxSelectMultiple(),
         label="additional role",
     )
     profile_completion = django_filters.ChoiceFilter(
@@ -143,10 +119,7 @@ class DiscoverFilters(FilterSet):
         field_name="roles__team__name",
         choices=get_teams,
         null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(
-            # Temp disabled styles for demo
-            # attrs={"class": "dwds-multiselect"}
-        ),
+        widget=forms.widgets.CheckboxSelectMultiple(),
         label="team",
     )
 
