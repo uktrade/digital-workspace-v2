@@ -68,7 +68,7 @@ def page_to_engagement(
 
 @register.simple_tag
 def pages_to_engagement(pages: list[NewsPage | EventPage]) -> list[RenderableComponent]:
-    return [page_to_engagement(page) for page in pages]
+    return [page_to_engagement(page=page) for page in pages]
 
 
 @register.simple_tag

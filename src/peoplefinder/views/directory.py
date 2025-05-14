@@ -6,6 +6,7 @@ from django.db.models import OuterRef, Subquery
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views.generic import ListView
 
 from core import flags
@@ -105,5 +106,6 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         "can_see_inactive_users": request.user.has_perm(
             "peoplefinder.can_view_inactive_profiles"
         ),
+        "search_url": reverse("search:category", kwargs={"category": "people"}),
     }
     return render(request, "peoplefinder/discover.html", context)

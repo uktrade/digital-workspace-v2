@@ -1,0 +1,31 @@
+{% extends "core/tag_page_base.html" %}
+{% load wagtailcore_tags cards %}
+
+{% block primary_content %}
+    {% include "dwds/components/link_action.html" with link_url=tag_index_url link_text="Back" left=True %}
+    <div class="content-grid grid-cards-auto-fill">
+        {% for obj in content_page %}
+            <c-dwds-card>
+                <c-slot name="card_content">
+                    {% if content_type == "teams" %}
+                        {% include 'peoplefinder/components/team-card-new.html' with team=obj.content_object profile_completion=obj.content_object.profile_completion %}
+                    {% elif content_type == "people" %}
+                        {% url 'profile-view' obj.content_object.slug as profile_url %}
+                        {% if obj.content_object.photo %}
+                            {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=obj.content_object.photo.url name=obj.content_object.full_name title=obj.content_object.job_title location=obj.content_object.uk_office_location.city profile_url=profile_url %}
+                        {% else %}
+                            {% include "dwds/components/profile_info.html" with show_profile_image=True name=obj.content_object.full_name title=obj.content_object.job_title location=obj.content_object.uk_office_location.city profile_url=profile_url %}
+                        {% endif %}
+                    {% elif content_type == "pages" %}
+                        {% page_to_engagement obj.content_object %}
+                    {% endif %}
+                </c-slot>
+            </c-dwds-card>
+        {% empty %}
+            <p>There are no {{ content_type }} to display.</p>
+        {% endfor %}
+    </div>
+    {% if content_page.paginator.num_pages > 1 %}
+        {% include "dwds/components/pagination.html" with pages=content_page %}
+    {% endif %}
+{% endblock primary_content %}
