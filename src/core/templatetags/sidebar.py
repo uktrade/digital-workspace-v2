@@ -5,12 +5,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.safestring import SafeString
-from waffle import flag_is_active
 from wagtail.models import Page
 
 from core import flags
 from core.models.models import SiteAlertBanner
-from core.utils import get_all_feature_flags
+from core.utils import flag_is_active, get_all_feature_flags
 from events.models import EventsHome
 from home.models import HomePage, QuickLink
 from interactions.services import bookmarks as bookmarks_service
@@ -269,9 +268,6 @@ class UsefulLinks(SidebarPart):
             )
 
     def is_visible(self) -> bool:
-        if not flag_is_active(self.request, flags.NETWORKS_HUB):
-            return False
-
         page = self.context.get("self")
         if not isinstance(page, Page):
             return False
@@ -309,9 +305,6 @@ class SpotlightPage(SidebarPart):
     template_name = "tags/sidebar/parts/spotlight.html"
 
     def is_visible(self) -> bool:
-        if not flag_is_active(self.request, flags.NETWORKS_HUB):
-            return False
-
         page = self.context.get("self")
         if not isinstance(page, Page):
             return False

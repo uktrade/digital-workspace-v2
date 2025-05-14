@@ -7,6 +7,7 @@ CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
 INSTALLED_APPS += [  # noqa F405
     "django_extensions",
+    "wagtail.contrib.styleguide",
 ]
 
 MEDIA_URL = "/media/"
@@ -29,6 +30,9 @@ if DDT_ENABLED:
     INTERNAL_IPS = [
         "127.0.0.1",
     ]
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda x: True,
+    }
 
 SILK_ENABLED = env.bool("SILK_ENABLED", False)  # noqa F405
 if SILK_ENABLED:
@@ -49,6 +53,7 @@ if SILK_ENABLED:
     )
     SILKY_META = True
 
+CACHE_FLAGS_IN_SESSION = False
 
 DEV_TOOLS_ENABLED = env.bool("DEV_TOOLS_ENABLED", True)  # noqa F405
 

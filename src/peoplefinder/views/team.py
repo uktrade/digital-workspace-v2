@@ -208,7 +208,7 @@ class TeamTreeView(DetailView, PeoplefinderView):
 
         team = context["team"]
         team_service = TeamService()
-        page_title = f"All sub-teams ({ team.short_name })"
+        page_title = f"All sub-teams ({team.short_name})"
 
         context.update(
             parent_teams=team_service.get_all_parent_teams(team),
@@ -233,7 +233,7 @@ class TeamAddNewSubteamView(PermissionRequiredMixin, CreateView, PeoplefinderVie
         self.parent_team = Team.objects.get(slug=self.kwargs["slug"])
 
     def get_initial(self):
-        return {"parent_team": self.parent_team}
+        return {"parent_team": self.parent_team.pk}
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -243,7 +243,7 @@ class TeamAddNewSubteamView(PermissionRequiredMixin, CreateView, PeoplefinderVie
             page_title=page_title,
             team_breadcrumbs=True,
             extra_breadcrumbs=[(None, page_title)],
-            team=self.parent_team,
+            parent_team=self.parent_team,
             is_root_team=False,
         )
 

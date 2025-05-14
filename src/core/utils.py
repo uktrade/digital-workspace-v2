@@ -1,10 +1,11 @@
 from datetime import time
 from functools import wraps
 
+from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from django.http import HttpRequest
-from waffle import flag_is_active
+from waffle import flag_is_active as waffle_flag_is_active
 
 from core import flags
 from core.models import ExternalLinkSetting, FeatureFlag
@@ -19,11 +20,29 @@ EXTENDED_LINKS_SETTINGS_CACHE = {
 }
 
 
-def get_all_feature_flags(request):
-    return {
-        flag.name: flag_is_active(request, flag.name)
+def get_all_feature_flags(request) -> dict[str, bool]:
+    if all_flags := request.session.get("all_feature_flags", False):
+        # caching override for testing purposes
+        if settings.CACHE_FLAGS_IN_SESSION:
+            return all_flags
+
+    all_flags = {
+        flag.name: waffle_flag_is_active(request, flag.name)
         for flag in FeatureFlag.objects.all()
     }
+    # This small amount of DB-backed data is accessed multiple times per request, so session storage makes sense
+    if settings.CACHE_FLAGS_IN_SESSION:
+        request.session["all_feature_flags"] = all_flags
+    return all_flags
+
+
+def flag_is_active(request, flag_name: str) -> bool | None:
+    """Replicates waffle functionality but uses cached results"""
+    all_flags: dict[str, bool] = get_all_feature_flags(request)
+    try:
+        return all_flags[flag_name]
+    except KeyError:
+        return None
 
 
 def format_time(time_obj: time) -> str:
@@ -58,6 +77,48 @@ def cache_lock(cache_key: str, cache_time: int = 60 * 60 * 3):
         return wrapper
 
     return decorator
+
+
+def cache_for(
+    days: int | None = None,
+    hours: int | None = None,
+    minutes: int | None = None,
+    seconds: int | None = None,
+):
+    """
+    A decorator that caches the output of a function for the specified number of minutes.
+    """
+    if days is None and hours is None and minutes is None and seconds is None:
+        raise ValueError("No cache time specified")
+
+    cache_time: int = 0
+    if seconds is not None:
+        cache_time += seconds
+
+    if minutes is not None:
+        cache_time += minutes * 60
+
+    if hours is not None:
+        cache_time += hours * 60 * 60
+
+    if days is not None:
+        cache_time += days * 24 * 60 * 60
+
+    def cache_for_specified_minutes(func):
+        cache_key = f"{func.__module__}.{func.__name__}"
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if cached_response := cache.get(cache_key):
+                return cached_response
+
+            uncached_response = func(*args, **kwargs)
+            cache.add(cache_key, uncached_response, cache_time)
+            return uncached_response
+
+        return wrapper
+
+    return cache_for_specified_minutes
 
 
 def get_external_link_settings(request: HttpRequest) -> dict:

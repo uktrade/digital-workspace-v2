@@ -1,19 +1,59 @@
-{% extends '1_col_content.html' %}
+{% extends "core/tag_page_base.html" %}
+{% load wagtailcore_tags cards %}
 
-{% load wagtailcore_tags %}
+{% block primary_content %}
+    <div class="content-stack large">
+        {% if can_edit_tag %}
+            <a class="dwds-button dwds-button--secondary dwds-button--inline"
+               href="{% url 'wagtailsnippets_core_tag:edit' tag.pk %}">Edit</a>
+        {% endif %}
 
-{% block title %}{{ tag.name }} - Tag{% endblock %}
+        {% if tagged_pages %}
+            <h2>Pages</h2>
+            <div class="content-grid grid-cards-auto-fill">
+                {% for obj in tagged_pages %}
+                    <c-dwds-card>
+                        <c-slot name="card_content">
+                            {% page_to_engagement obj.content_object %}
+                        </c-slot>
+                    </c-dwds-card>
+                {% endfor %}
+            </div>
+            {% include "dwds/components/link_action.html" with link_url=view_all_pages_url link_text=view_all_pages_text right=True %}
+        {% endif %}
 
-{% block content %}
-    <span class="govuk-caption-l">Tag</span>
-    <h1 class="govuk-heading-l">{{ tag.name }}</h1>
+        {% if tagged_teams %}
+            <h2>Teams</h2>
+            <div class="content-grid grid-cards-auto-fill">
+                {% for obj in tagged_teams %}
+                    <c-dwds-card>
+                        <c-slot name="card_content">
+                            {% include 'peoplefinder/components/team-card-new.html' with team=obj.content_object profile_completion=obj.content_object.profile_completion %}
+                        </c-slot>
+                    </c-dwds-card>
+                {% endfor %}
+            </div>
+            {% include "dwds/components/link_action.html" with link_url=view_all_teams_url link_text=view_all_teams_text right=True %}
+        {% endif %}
 
-    <p class="govuk-body">Pages tagged with "{{ tag.name }}":</p>
-    <ul class="govuk-list">
-        {% for obj in tagged_pages %}
-            <li>
-                <a class="govuk-link" href="{% pageurl obj.content_object %}">{{ obj }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-{% endblock %}
+        {% if tagged_people %}
+            <h2>People</h2>
+            <div class="content-grid grid-cards-auto-fill">
+                {% for obj in tagged_people %}
+                    <c-dwds-card>
+                        <c-slot name="card_content">
+                            {% url 'profile-view' obj.content_object.slug as profile_url %}
+                            {% if obj.content_object.photo %}
+                                {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=obj.content_object.photo.url name=obj.content_object.full_name title=obj.content_object.job_title location=obj.content_object.uk_office_location.city profile_url=profile_url %}
+                            {% else %}
+                                {% include "dwds/components/profile_info.html" with show_profile_image=True name=obj.content_object.full_name title=obj.content_object.job_title location=obj.content_object.uk_office_location.city profile_url=profile_url %}
+                            {% endif %}
+                        </c-slot>
+                    </c-dwds-card>
+                {% endfor %}
+            </div>
+            {% include "dwds/components/link_action.html" with link_url=view_all_people_url link_text=view_all_people_text right=True %}
+        {% endif %}
+
+    </div>
+{% endblock primary_content %}

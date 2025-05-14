@@ -11,6 +11,7 @@ from peoplefinder.services.reference import (
     get_learning_interests,
     get_networks,
     get_professions,
+    get_teams,
     get_uk_buildings,
     get_uk_city_locations,
 )
@@ -47,54 +48,62 @@ class DiscoverFilters(FilterSet):
         ],
         label="profile status",
     )
-    city = django_filters.ChoiceFilter(
+    city = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__city",
         choices=get_uk_city_locations,
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
         label="city",
     )
-    building_name = django_filters.ChoiceFilter(
+    building_name = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__building_name",
         choices=get_uk_buildings,
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
         label="office location",
     )
-    grade = django_filters.ChoiceFilter(
+    grade = django_filters.MultipleChoiceFilter(
         field_name="grade__name",
         choices=get_grades,
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
         label="grade",
     )
-    professions = django_filters.ChoiceFilter(
+    professions = django_filters.MultipleChoiceFilter(
         field_name="professions__name",
         choices=get_professions,
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
-        label="profession",
+        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        label="professions",
     )
-    key_skills = django_filters.ChoiceFilter(
+    key_skills = django_filters.MultipleChoiceFilter(
         field_name="key_skills__name",
         choices=get_key_skills,
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
         label="key skills",
     )
-    learning_interests = django_filters.ChoiceFilter(
+    learning_interests = django_filters.MultipleChoiceFilter(
         field_name="learning_interests__name",
         choices=get_learning_interests,
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
         label="learning interests",
     )
-    networks = django_filters.ChoiceFilter(
+    networks = django_filters.MultipleChoiceFilter(
         field_name="networks__name",
         choices=get_networks,
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
         label="networks",
     )
-    additional_roles = django_filters.ChoiceFilter(
+    additional_roles = django_filters.MultipleChoiceFilter(
         field_name="additional_roles__name",
         choices=get_additional_roles,
-        widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
         label="additional roles",
     )
+
+    teams = django_filters.MultipleChoiceFilter(
+        field_name="roles__team__name",
+        choices=get_teams,
+        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        label="teams",
+    )
+
     sort_by = django_filters.OrderingFilter(
         choices=[
             (choice_key, choice_value["label"])
