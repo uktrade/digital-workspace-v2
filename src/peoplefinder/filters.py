@@ -34,7 +34,11 @@ ORDER_CHOICES = {
 
 
 class DiscoverFilters(FilterSet):
-
+    display_civil_servants = django_filters.BooleanFilter(
+        widget=forms.CheckboxInput,
+        label="Display civil servants only",
+        method="filter_non_civil_servants",
+    )
     is_active = django_filters.ChoiceFilter(
         field_name="is_active",
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
@@ -49,7 +53,8 @@ class DiscoverFilters(FilterSet):
         choices=get_uk_city_locations,
         null_label="Not set",
         widget=forms.widgets.CheckboxSelectMultiple(
-            attrs={"class": "dwds-multiselect"}
+            # Temp disabled styles for demo
+            # attrs={"class": "dwds-multiselect"}
         ),
         label="city",
     )
@@ -58,7 +63,8 @@ class DiscoverFilters(FilterSet):
         choices=get_uk_buildings,
         null_label="Not set",
         widget=forms.widgets.CheckboxSelectMultiple(
-            attrs={"class": "dwds-multiselect"}
+            # Temp disabled styles for demo
+            # attrs={"class": "dwds-multiselect"}
         ),
         label="office",
     )
@@ -67,7 +73,8 @@ class DiscoverFilters(FilterSet):
         choices=get_grades,
         null_label="Not set",
         widget=forms.widgets.CheckboxSelectMultiple(
-            attrs={"class": "dwds-multiselect"}
+            # Temp disabled styles for demo
+            # attrs={"class": "dwds-multiselect"}
         ),
         label="grade",
     )
@@ -76,7 +83,8 @@ class DiscoverFilters(FilterSet):
         choices=get_professions,
         null_label="Not set",
         widget=forms.widgets.CheckboxSelectMultiple(
-            attrs={"class": "dwds-multiselect"}
+            # Temp disabled styles for demo
+            # attrs={"class": "dwds-multiselect"}
         ),
         label="profession",
     )
@@ -85,7 +93,8 @@ class DiscoverFilters(FilterSet):
         choices=get_key_skills,
         null_label="Not set",
         widget=forms.widgets.CheckboxSelectMultiple(
-            attrs={"class": "dwds-multiselect"}
+            # Temp disabled styles for demo
+            # attrs={"class": "dwds-multiselect"}
         ),
         label="key skill",
     )
@@ -94,7 +103,8 @@ class DiscoverFilters(FilterSet):
         choices=get_learning_interests,
         null_label="Not set",
         widget=forms.widgets.CheckboxSelectMultiple(
-            attrs={"class": "dwds-multiselect"}
+            # Temp disabled styles for demo
+            # attrs={"class": "dwds-multiselect"}
         ),
         label="learning interest",
     )
@@ -103,7 +113,8 @@ class DiscoverFilters(FilterSet):
         choices=get_networks,
         null_label="Not set",
         widget=forms.widgets.CheckboxSelectMultiple(
-            attrs={"class": "dwds-multiselect"}
+            # Temp disabled styles for demo
+            # attrs={"class": "dwds-multiselect"}
         ),
         label="network",
     )
@@ -112,7 +123,8 @@ class DiscoverFilters(FilterSet):
         choices=get_additional_roles,
         null_label="Not set",
         widget=forms.widgets.CheckboxSelectMultiple(
-            attrs={"class": "dwds-multiselect"}
+            # Temp disabled styles for demo
+            # attrs={"class": "dwds-multiselect"}
         ),
         label="additional role",
     )
@@ -132,7 +144,8 @@ class DiscoverFilters(FilterSet):
         choices=get_teams,
         null_label="Not set",
         widget=forms.widgets.CheckboxSelectMultiple(
-            attrs={"class": "dwds-multiselect"}
+            # Temp disabled styles for demo
+            # attrs={"class": "dwds-multiselect"}
         ),
         label="team",
     )
@@ -147,10 +160,16 @@ class DiscoverFilters(FilterSet):
 
     custom_sorters = ["sort_by"]
     custom_filters = ["is_active"]
+    checkbox_filters = ["display_civil_servants"]
 
     def apply_ordering(self, queryset, name, value) -> QuerySet[Person]:
         order_fields = ORDER_CHOICES[value[0]]["ordering"]
         return queryset.order_by(*order_fields)
+
+    def filter_non_civil_servants(self, queryset, name, value) -> QuerySet[Person]:
+        if value:
+            return queryset.exclude(grade__code="non_graded_contractor")
+        return queryset
 
     def filter_profile_completion(self, queryset, name, value) -> QuerySet[Person]:
         if value == "full":
