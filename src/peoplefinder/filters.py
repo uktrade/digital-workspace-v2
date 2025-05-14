@@ -96,6 +96,16 @@ class DiscoverFilters(FilterSet):
         widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
         label="additional roles",
     )
+    profile_completion = django_filters.ChoiceFilter(
+        field_name="profile_completion",
+        # widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        choices=[
+            ("full", "Complete"),
+            ("partial", "Incomplete"),
+        ],
+        label="profile completion",
+        method="filter_profile_completion",
+    )
 
     teams = django_filters.MultipleChoiceFilter(
         field_name="roles__team__name",
@@ -124,3 +134,9 @@ class DiscoverFilters(FilterSet):
         if value:
             return queryset.exclude(grade__code="non_graded_contractor")
         return queryset
+
+    def filter_profile_completion(self, queryset, name, value) -> QuerySet[Person]:
+        if value == "full":
+            return queryset.filter(profile_completion__gte=100)
+
+        return queryset.filter(profile_completion__lt=100)

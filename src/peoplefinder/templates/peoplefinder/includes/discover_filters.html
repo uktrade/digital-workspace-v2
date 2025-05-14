@@ -64,6 +64,16 @@
             <div class="content-stack">
                 <div>{{ discover_filters.form.display_civil_servants.label }} {{ discover_filters.form.display_civil_servants }}</div>
             </div>
+            <div>
+                <label>{{ discover_filters.form.profile_completion.label|capfirst }}</label>
+                {{ discover_filters.form.profile_completion }}
+            </div>
+        </div>
+        <div class="dwds-button-group">
+            <input class="dwds-button dwds-button--secondary dwds-button--inline"
+                   type="submit"
+                   value="Apply filters" />
+            <a href="?">Reset filters</a>
         </div>
     </div>
 </form>
