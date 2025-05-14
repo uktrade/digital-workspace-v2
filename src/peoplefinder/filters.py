@@ -48,64 +48,92 @@ class DiscoverFilters(FilterSet):
         field_name="uk_office_location__city",
         choices=get_uk_city_locations,
         null_label="Not set",
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="city",
     )
     building_name = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__building_name",
         choices=get_uk_buildings,
         null_label="Not set",
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="office",
     )
     grade = django_filters.MultipleChoiceFilter(
         field_name="grade__name",
         choices=get_grades,
         null_label="Not set",
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="grade",
     )
     professions = django_filters.MultipleChoiceFilter(
         field_name="professions__name",
         choices=get_professions,
         null_label="Not set",
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="profession",
     )
     key_skills = django_filters.MultipleChoiceFilter(
         field_name="key_skills__name",
         choices=get_key_skills,
         null_label="Not set",
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="key skill",
     )
     learning_interests = django_filters.MultipleChoiceFilter(
         field_name="learning_interests__name",
         choices=get_learning_interests,
         null_label="Not set",
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="learning interest",
     )
     networks = django_filters.MultipleChoiceFilter(
         field_name="networks__name",
         choices=get_networks,
         null_label="Not set",
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="network",
     )
     additional_roles = django_filters.MultipleChoiceFilter(
         field_name="additional_roles__name",
         choices=get_additional_roles,
         null_label="Not set",
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="additional role",
+    )
+    profile_completion = django_filters.ChoiceFilter(
+        field_name="profile_completion",
+        # widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        choices=[
+            ("full", "Complete"),
+            ("partial", "Incomplete"),
+        ],
+        label="profile completion",
+        method="filter_profile_completion",
     )
 
     teams = django_filters.MultipleChoiceFilter(
         field_name="roles__team__name",
         choices=get_teams,
         null_label="Not set",
-        widget=forms.widgets.SelectMultiple(attrs={"class": "dwds-multiselect"}),
+        widget=forms.widgets.CheckboxSelectMultiple(
+            attrs={"class": "dwds-multiselect"}
+        ),
         label="team",
     )
 
@@ -123,3 +151,9 @@ class DiscoverFilters(FilterSet):
     def apply_ordering(self, queryset, name, value) -> QuerySet[Person]:
         order_fields = ORDER_CHOICES[value[0]]["ordering"]
         return queryset.order_by(*order_fields)
+
+    def filter_profile_completion(self, queryset, name, value) -> QuerySet[Person]:
+        if value == "full":
+            return queryset.filter(profile_completion__gte=100)
+
+        return queryset.filter(profile_completion__lt=100)
