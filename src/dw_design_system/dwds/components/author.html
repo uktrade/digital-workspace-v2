@@ -22,6 +22,16 @@
                 {% endif %}
             {% endif %}
         </span>
+        {% if role %}<div>Role: {{ role }}</div>{% endif %}
+        {% if team_name %}
+            {% if team_url %}
+                <div>
+                    Team: <a href="{{ team_url }}">{{ team_name }}</a>
+                </div>
+            {% else %}
+                <div>Team: {{ team_name }}</div>
+            {% endif %}
+        {% endif %}
         {% if published_timestamp and not updated_timestamp %}
             <div>Published: {{ published_timestamp|date:'j F Y' }} at {{ published_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}

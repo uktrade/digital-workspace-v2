@@ -1,5 +1,5 @@
 from django.templatetags.static import static
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html_join
 from wagtail import hooks
 from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
@@ -32,5 +32,12 @@ def remove_submit_to_moderator_option(menu_items, request, context):
 
 @hooks.register("insert_editor_js")
 def editor_js():
-    content_admin_js_path = static("admin/content.js")
-    return mark_safe(f"<script src='{content_admin_js_path}'></script>")  # noqa: S308
+    js_files = [
+        "admin/content.js",
+        "admin/page_author.js",
+    ]
+    return format_html_join(
+        "\n",
+        '<script src="{}"></script>',
+        ((static(filename),) for filename in js_files),
+    )
