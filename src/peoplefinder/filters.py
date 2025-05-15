@@ -20,7 +20,7 @@ from peoplefinder.services.reference import (
 ORDER_CHOICES = {
     "grade": {
         "label": "Grade",
-        "ordering": ("grade", "first_name", "last_name"),
+        "ordering": ("grade", "last_name", "first_name"),
     },
     "first_name": {
         "label": "First name",
