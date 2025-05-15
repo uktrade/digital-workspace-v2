@@ -11,6 +11,11 @@ from peoplefinder.models import (
 )
 
 
+def add_null_option(choices, label="Not set"):
+    nullable_choices = choices + [("null", label)]
+    return nullable_choices
+
+
 @cache_for(hours=1)
 def get_uk_city_locations() -> list[tuple[str, str]]:
     return get_data_for_django_filters_choices(model=UkStaffLocation, field_name="city")
@@ -57,4 +62,5 @@ def get_additional_roles() -> list[tuple[str, str]]:
 
 @cache_for(hours=1)
 def get_teams() -> list[tuple[str, str]]:
-    return get_data_for_django_filters_choices(model=Team, field_name="name")
+    data = Team.objects.order_by("name").distinct()
+    return [(value.pk, value.name) for value in data]

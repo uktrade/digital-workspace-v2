@@ -5,11 +5,12 @@ from django.db.models import QuerySet
 from core.filters import FilterSet
 from peoplefinder.models import Person
 from peoplefinder.services.reference import (
+    add_null_option,
     get_additional_roles,
     get_grades,
     get_key_skills,
-    get_learning_interests,
-    get_networks,
+    # get_learning_interests,
+    # get_networks,
     get_professions,
     get_teams,
     get_uk_buildings,
@@ -50,63 +51,42 @@ class DiscoverFilters(FilterSet):
     )
     city = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__city",
-        choices=get_uk_city_locations,
-        null_label="Not set",
+        choices=add_null_option(choices=get_uk_city_locations()),
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="city",
     )
     building_name = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__building_name",
-        choices=get_uk_buildings,
-        null_label="Not set",
+        choices=add_null_option(choices=get_uk_buildings()),
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="office",
     )
     grade = django_filters.MultipleChoiceFilter(
         field_name="grade__name",
-        choices=get_grades,
-        null_label="Not set",
+        choices=add_null_option(choices=get_grades()),
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="grade",
     )
     professions = django_filters.MultipleChoiceFilter(
         field_name="professions__name",
-        choices=get_professions,
-        null_label="Not set",
+        choices=add_null_option(choices=get_professions()),
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="profession",
     )
     key_skills = django_filters.MultipleChoiceFilter(
         field_name="key_skills__name",
-        choices=get_key_skills,
-        null_label="Not set",
+        choices=add_null_option(choices=get_key_skills()),
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="key skill",
     )
-    learning_interests = django_filters.MultipleChoiceFilter(
-        field_name="learning_interests__name",
-        choices=get_learning_interests,
-        null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(),
-        label="learning interest",
-    )
-    networks = django_filters.MultipleChoiceFilter(
-        field_name="networks__name",
-        choices=get_networks,
-        null_label="Not set",
-        widget=forms.widgets.CheckboxSelectMultiple(),
-        label="network",
-    )
     additional_roles = django_filters.MultipleChoiceFilter(
         field_name="additional_roles__name",
-        choices=get_additional_roles,
-        null_label="Not set",
+        choices=add_null_option(choices=get_additional_roles()),
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="additional role",
     )
     profile_completion = django_filters.ChoiceFilter(
         field_name="profile_completion",
-        # widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
         choices=[
             ("full", "Complete"),
             ("partial", "Incomplete"),
@@ -114,13 +94,12 @@ class DiscoverFilters(FilterSet):
         label="profile completion",
         method="filter_profile_completion",
     )
-
     teams = django_filters.MultipleChoiceFilter(
-        field_name="roles__team__name",
-        choices=get_teams,
-        null_label="Not set",
+        # field_name="roles__team__pk",
+        choices=add_null_option(choices=get_teams()),
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="team",
+        method="filter_team_membership_and_subteams",
     )
 
     sort_by = django_filters.OrderingFilter(
@@ -149,3 +128,6 @@ class DiscoverFilters(FilterSet):
             return queryset.filter(profile_completion__gte=100)
 
         return queryset.filter(profile_completion__lt=100)
+
+    def filter_team_membership_and_subteams(self, queryset, name, value):
+        return queryset.filter(roles__team__children__parent__in=value)
