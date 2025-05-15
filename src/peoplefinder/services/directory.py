@@ -10,8 +10,15 @@ def get_people(user: User) -> QuerySet[Person]:
     """
     Returns all the people that the given user has permission to see
     """
+    queryset = Person.objects.active_or_inactive_within(days=90)
+
+    if user.has_perm(
+            "peoplefinder.can_view_inactive_profiles"
+        ):
+        queryset = Person.objects.all()
+
     queryset = (
-        Person.objects.all()
+        queryset
         .order_by(
             "grade",
             "first_name",

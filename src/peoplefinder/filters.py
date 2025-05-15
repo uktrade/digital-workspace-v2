@@ -34,20 +34,34 @@ ORDER_CHOICES = {
 
 
 class DiscoverFilters(FilterSet):
-    display_civil_servants = django_filters.BooleanFilter(
-        widget=forms.CheckboxInput,
-        label="Display civil servants only",
-        method="filter_non_civil_servants",
-    )
     is_active = django_filters.ChoiceFilter(
         field_name="is_active",
         widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
         choices=[
             (True, "Active"),
             (False, "Inactive"),
+            (None, "All"),
         ],
+        empty_label=None,
         label="profile status",
     )
+    display_civil_servants = django_filters.BooleanFilter(
+        widget=forms.CheckboxInput,
+        label="Display civil servants only",
+        method="filter_non_civil_servants",
+    )
+    profile_completion = django_filters.ChoiceFilter(
+        field_name="profile_completion",
+        # widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
+        choices=[
+            ("full", "Complete"),
+            ("partial", "Incomplete"),
+        ],
+        label="profile completion",
+        empty_label="All",
+        method="filter_profile_completion",
+    )
+
     city = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__city",
         choices=get_uk_city_locations,
@@ -104,17 +118,6 @@ class DiscoverFilters(FilterSet):
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="additional role",
     )
-    profile_completion = django_filters.ChoiceFilter(
-        field_name="profile_completion",
-        # widget=forms.widgets.Select(attrs={"class": "dwds-select"}),
-        choices=[
-            ("full", "Complete"),
-            ("partial", "Incomplete"),
-        ],
-        label="profile completion",
-        method="filter_profile_completion",
-    )
-
     teams = django_filters.MultipleChoiceFilter(
         field_name="roles__team__name",
         choices=get_teams,
@@ -128,6 +131,7 @@ class DiscoverFilters(FilterSet):
             (choice_key, choice_value["label"])
             for choice_key, choice_value in ORDER_CHOICES.items()
         ],
+        empty_label=None,
         method="apply_ordering",
     )
 
