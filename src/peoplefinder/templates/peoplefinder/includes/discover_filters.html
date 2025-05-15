@@ -1,6 +1,16 @@
 <form method="get">
     <div class="content-stack" style="width:250px;">
-        <h3>Filters</h3>
+        <h2>Filters</h2>
+        {% if discover_filters.applied_filters %}
+            <h3>Selected filters</h3>
+            {% for filter, values in discover_filters.applied_filters.items %}
+                <h4>{{filter|capfirst}}</h4>
+                    {% for value in values %}
+                        <div>{{value}}</div>
+                    {% endfor %}
+
+            {% endfor %}
+        {% endif %}
         <div class="dwds-button-group">
             <input class="dwds-button dwds-button--secondary dwds-button--inline"
                    type="submit"

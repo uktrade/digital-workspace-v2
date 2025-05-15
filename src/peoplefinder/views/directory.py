@@ -88,6 +88,11 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     discover_filters = directory_service.get_people_with_filters(
         filter_options=request.GET, user=request.user
     )
+    print("-------", discover_filters.data)
+    print(discover_filters.applied_filters())
+    for filter in discover_filters.applied_filters().keys():
+        print(filter, [v for v in discover_filters.applied_filters()[filter]])
+
 
     pr = paginator.Paginator(discover_filters.qs, per_page=30)
     page: int = int(request.GET.get("page", default=1))
