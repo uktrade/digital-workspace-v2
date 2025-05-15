@@ -197,7 +197,7 @@ class BasePage(Page, Indexed):
     )
     page_author_show_team = models.BooleanField(
         default=False,
-        help_text="Tick this box to show the team for the selected role",
+        help_text="Choose this option to show the team for the selected role",
     )
 
     on_behalf_of_person = models.ForeignKey(
