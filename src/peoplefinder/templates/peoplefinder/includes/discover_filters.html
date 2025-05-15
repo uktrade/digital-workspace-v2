@@ -3,12 +3,11 @@
         <h2>Filters</h2>
         {% if discover_filters.applied_filters %}
             <h3>Selected filters</h3>
-            {% for filter, values in discover_filters.applied_filters.items %}
-                <h4>{{filter|capfirst}}</h4>
-                    {% for value in values %}
-                        <div>{{value}}</div>
-                    {% endfor %}
-
+            {% for filter_obj in selected_filters.values %}
+                <h4>{{filter_obj.label|capfirst}}</h4>
+                {% for value in filter_obj.values %}
+                    <div><a href="{{value.url}}">{{value.label}} X</a></div>
+                {% endfor %}
             {% endfor %}
         {% endif %}
         <div class="dwds-button-group">
