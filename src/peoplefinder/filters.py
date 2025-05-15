@@ -9,8 +9,6 @@ from peoplefinder.services.reference import (
     get_additional_roles,
     get_grades,
     get_key_skills,
-    # get_learning_interests,
-    # get_networks,
     get_professions,
     get_teams,
     get_uk_buildings,

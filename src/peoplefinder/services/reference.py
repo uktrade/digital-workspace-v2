@@ -60,7 +60,7 @@ def get_additional_roles() -> list[tuple[str, str]]:
     return get_data_for_django_filters_choices(model=AdditionalRole, field_name="name")
 
 
-# @cache_for(hours=1)
+@cache_for(hours=1)
 def get_teams() -> list[tuple[str, str]]:
     qs = Team.objects.prefetch_related("parents").order_by("parents__depth")
     ids = []
