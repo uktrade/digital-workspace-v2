@@ -40,9 +40,8 @@ class DiscoverFilters(FilterSet):
         choices=[
             (True, "Active"),
             (False, "Inactive"),
-            (None, "All"),
         ],
-        empty_label=None,
+        empty_label="All",
         label="profile status",
     )
     display_civil_servants = django_filters.BooleanFilter(
