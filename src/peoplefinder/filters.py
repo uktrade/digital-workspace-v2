@@ -95,7 +95,6 @@ class DiscoverFilters(FilterSet):
         method="filter_profile_completion",
     )
     teams = django_filters.MultipleChoiceFilter(
-        # field_name="roles__team__pk",
         choices=add_null_option(choices=get_teams()),
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="team",

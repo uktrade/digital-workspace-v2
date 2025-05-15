@@ -60,7 +60,21 @@ def get_additional_roles() -> list[tuple[str, str]]:
     return get_data_for_django_filters_choices(model=AdditionalRole, field_name="name")
 
 
-@cache_for(hours=1)
+# @cache_for(hours=1)
 def get_teams() -> list[tuple[str, str]]:
-    data = Team.objects.order_by("name").distinct()
-    return [(value.pk, value.name) for value in data]
+    qs = Team.objects.prefetch_related("parents").order_by("parents__depth")
+    ids = []
+    data = []
+    for team in qs[0].parents.all():
+        if team.pk not in ids:
+            ids.append(team.pk)
+            data.append(
+                (
+                    team.child.pk,
+                    team.child.name.rjust(
+                        len(team.child.name) + team.depth,
+                        " ",  # Medium Mathematical Space (MMSP) U+205F
+                    ),
+                )
+            )
+    return data
