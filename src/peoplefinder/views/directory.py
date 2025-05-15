@@ -75,6 +75,7 @@ class PeopleDirectory(ListView):
 
 # Identity Service - discovery
 
+
 def get_url_for_removed_filter(request, field, value):
     get_vars = request.GET.copy()
     current_field_values = get_vars.pop(field)
@@ -99,10 +100,13 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     selected_filters = {
         field_name: {
             "label": discover_filters.form.fields[field_name].label,
-            "values": [{
-                "label": value,
-                "url": get_url_for_removed_filter(request, field_name, value),
-            } for value in values]
+            "values": [
+                {
+                    "label": value,
+                    "url": get_url_for_removed_filter(request, field_name, value),
+                }
+                for value in values
+            ],
         }
         for field_name, values in discover_filters.applied_filters().items()
     }

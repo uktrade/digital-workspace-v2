@@ -9,5 +9,9 @@ class FilterSet(django_filters.FilterSet):
         return {
             field_name: values
             for field_name, values in self.form.data.lists()
-            if self.form.data.getlist(field_name) not in [[], [""],]
+            if self.form.data.getlist(field_name)
+            not in [
+                [],
+                [""],
+            ]
         }
