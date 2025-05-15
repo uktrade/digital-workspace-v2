@@ -4,14 +4,12 @@ from django.http import (
     HttpResponse,
     HttpResponseForbidden,
 )
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from wagtail.models import Page
 
-from core import flags
-from core.utils import flag_is_active
 from interactions.services import comments as comments_service
 from news.forms import CommentForm
 from news.models import Comment
@@ -101,15 +99,12 @@ def comment_on_page(request: HttpRequest, *, pk):
     page = get_object_or_404(Page, id=pk).specific
     user = request.user
 
-    comment = comments_service.add_page_comment(
+    comments_service.add_page_comment(
         page,
         user,
         request.POST["comment"],
         request.POST.get("in_reply_to", None),
     )
-
-    if not flag_is_active(request, flags.NEW_COMMENTS):
-        return redirect(page.url + f"#comment-{comment.id}")
 
     return comments_service.get_page_comments_response(request, page)
 
