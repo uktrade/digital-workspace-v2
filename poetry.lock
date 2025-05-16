@@ -1920,14 +1920,14 @@ requests = ">=2.31.0,<3.0.0"
 
 [[package]]
 name = "dbt-platform-helper"
-version = "14.2.0"
+version = "15.1.0"
 description = "Set of tools to help transfer applications/services from GOV.UK PaaS to DBT PaaS augmenting AWS Copilot."
 optional = false
 python-versions = "!=2.7.*,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,!=3.7.*,!=3.8.*,>=3.9"
 groups = ["dev"]
 files = [
-    {file = "dbt_platform_helper-14.2.0-py3-none-any.whl", hash = "sha256:9e8ae028b76d98a64f3123d997510ee96ac7df1c96799c3b324ea89b82924999"},
-    {file = "dbt_platform_helper-14.2.0.tar.gz", hash = "sha256:8ab6840f649faa76cc7baf9d7c19537a7d3a5552cff9a3d3a4bc7abacd3c8cc1"},
+    {file = "dbt_platform_helper-15.1.0-py3-none-any.whl", hash = "sha256:953e8d1ada2ce08c80e1f7ed4f29ed19d615c75a7266b4c641959c15a64f90c9"},
+    {file = "dbt_platform_helper-15.1.0.tar.gz", hash = "sha256:85e7ab37ac4ffb2d3f055aa26b063f0ce9e528173d20062b8024f089e867629f"},
 ]
 
 [package.dependencies]
@@ -2064,14 +2064,14 @@ typing-extensions = ">=3.10.0.0"
 
 [[package]]
 name = "django"
-version = "5.1.8"
+version = "5.1.9"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.10"
 groups = ["main", "dev"]
 files = [
-    {file = "Django-5.1.8-py3-none-any.whl", hash = "sha256:11b28fa4b00e59d0def004e9ee012fefbb1065a5beb39ee838983fd24493ad4f"},
-    {file = "Django-5.1.8.tar.gz", hash = "sha256:42e92a1dd2810072bcc40a39a212b693f94406d0ba0749e68eb642f31dc770b4"},
+    {file = "django-5.1.9-py3-none-any.whl", hash = "sha256:2fd1d4a0a66a5ba702699eb692e75b0d828b73cc2f4e1fc4b6a854a918967411"},
+    {file = "django-5.1.9.tar.gz", hash = "sha256:565881bdd0eb67da36442e9ac788bda90275386b549070d70aee86327781a4fc"},
 ]
 
 [package.dependencies]
@@ -5396,10 +5396,7 @@ files = [
 [package.dependencies]
 annotated-types = ">=0.6.0"
 pydantic-core = "2.23.4"
-typing-extensions = [
-    {version = ">=4.12.2", markers = "python_version >= \"3.13\""},
-    {version = ">=4.6.1", markers = "python_version < \"3.13\""},
-]
+typing-extensions = {version = ">=4.12.2", markers = "python_version >= \"3.13\""}
 
 [package.extras]
 email = ["email-validator (>=2.0.0)"]
@@ -7284,5 +7281,5 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.12"
-content-hash = "e86c71a8663111fd36946376220f0828adfd0143e02b6cf4d098d17b35fff9ec"
+python-versions = "^3.13"
+content-hash = "71909fa364db220113251f53a37a1c66326fe9172e278d0ae09d1d28cbc8fe95"

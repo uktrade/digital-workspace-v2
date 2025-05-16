@@ -480,6 +480,7 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
+
 # Google Tag Manager
 GTM_CODE = env("GTM_CODE", default=None)
 GTM_AUTH = env("GTM_AUTH", default=None)
@@ -718,6 +719,7 @@ LEAVING_SERVICE_URL = env("LEAVING_SERVICE_URL", default=None)
 # django-waffle
 # https://waffle.readthedocs.io/en/stable/starting/configuring.html
 WAFFLE_FLAG_MODEL = "core.FeatureFlag"
+CACHE_FLAGS_IN_SESSION = True
 
 
 # Search

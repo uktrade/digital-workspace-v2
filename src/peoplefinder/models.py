@@ -16,6 +16,7 @@ from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.safestring import mark_safe  # noqa: S308
 from django_chunk_upload_handlers.clam_av import validate_virus_check_result
+from modelcluster.models import ClusterableModel
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel
@@ -56,7 +57,7 @@ class Grade(models.Model):
             models.UniqueConstraint(fields=["code"], name="unique_grade_code"),
             models.UniqueConstraint(fields=["name"], name="unique_grade_name"),
         ]
-        ordering = ["-ordering"]
+        ordering = ["ordering"]
 
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=50)
@@ -257,7 +258,7 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
-class Person(Indexed, models.Model):
+class Person(ClusterableModel, Indexed, models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -615,6 +616,12 @@ class Person(Indexed, models.Model):
             "search_buildings",
             tokenized=True,
         ),
+        IndexedField(
+            "search_job_titles",
+            tokenized=True,
+            explicit=True,
+            boost=3.0,
+        ),
         RelatedFields(
             "roles",
             [
@@ -800,6 +807,14 @@ class Person(Indexed, models.Model):
         return f"{names_str} {abbrs_str}"
 
     @property
+    def search_job_titles(self):
+        """
+        Indexable string of job titles
+        """
+        job_titles = self.roles.all().values_list("job_title", flat=True)
+        return " ".join(job_titles)
+
+    @property
     def search_buildings(self):
         return ", ".join(self.buildings.all().values_list("name", flat=True))
 
@@ -879,6 +894,19 @@ class Person(Indexed, models.Model):
                 "peoplefinder/components/profile-role.html", {"role": role}
             )
         return mark_safe(output)  # noqa: S308
+
+    def roles_str(self):
+        output = ""
+        for role in self.roles.select_related("team").all():
+            if len(output) > 0:
+                output += ", "
+
+            if role.job_title:
+                output += f"{role.job_title} in"
+            else:
+                output += "Member of"
+            output += f" {role.team.name}"
+        return output
 
     def get_grade_display(self) -> Optional[str]:
         if self.grade:
@@ -967,7 +995,7 @@ class TeamQuerySet(SearchableQuerySetMixin, models.QuerySet):
             With the default `parent_field`:
             >>> team = Team.objects.with_parents().get(slug="software")
             >>> team.ancestry
-            [1, 3, 4]
+            [7, 9, 10]
 
             With a specified `parent_field`:
             >>> team = Team.objects.with_parents(parent_field="slug").get(slug="software")
@@ -992,7 +1020,7 @@ You can update this description, by [updating your team information](https://wor
 """
 
 
-class Team(Indexed, models.Model):
+class Team(ClusterableModel, Indexed, models.Model):
     class LeadersOrdering(models.TextChoices):
         ALPHABETICAL = "alphabetical", "Alphabetical"
         CUSTOM = "custom", "Custom"

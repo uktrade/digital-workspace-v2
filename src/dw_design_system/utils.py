@@ -50,6 +50,8 @@ def get_dwds_templates(template_type, request: HttpRequest):
     page = NewsPage.objects.last()
     pages = paginator.Paginator(NewsPage.objects.all(), 2).page(1)
 
+    now = timezone.now()
+
     dwds_templates = {
         "content": [
             {
@@ -159,11 +161,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "title": "This is engaging content for GOV.UK with a really long title to show what a long title looks like",
                     "excerpt": "This is an excerpt for the engaging content. This excerpt is longer than it should be for test data.",
                     "author": "John Doe",
-                    "date": timezone.now(),
+                    "date": now,
                     "thumbnail": thumbnail_file,
                     "comment_count": 10,
-                    "created_date": timezone.now(),
-                    "updated_date": timezone.now(),
+                    "created_date": now,
+                    "updated_date": now,
                 },
             },
             {
@@ -212,11 +214,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "title": "Speak Up Week 2025",
                     "excerpt": "At DBT, we want everyone to feel respected, included and empowered to speak up if something doesn't feel right",
                     "author": "John Doe",
-                    "date": timezone.now(),
+                    "date": now,
                     "thumbnail": thumbnail_file,
                     "comment_count": 10,
-                    "created_date": timezone.now(),
-                    "updated_date": timezone.now(),
+                    "created_date": now,
+                    "updated_date": now,
                 },
             },
             {
@@ -226,11 +228,11 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "url": INTERNAL_URL,
                     "title": "One Up",
                     "excerpt": "This is an excerpt for the one up content",
-                    "date": timezone.now(),
+                    "date": now,
                     "thumbnail": thumbnail_file,
                     "comment_count": 10,
-                    "created_date": timezone.now(),
-                    "updated_date": timezone.now(),
+                    "created_date": now,
+                    "updated_date": now,
                 },
             },
             {
@@ -353,8 +355,13 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "name": "John Doe",
                     "profile_image_url": thumbnail_url,
                     "profile_url": INTERNAL_URL,
-                    "published_timestamp": timezone.now(),
-                    "updated_timestamp": timezone.now(),
+                    "published_timestamp": now,
+                    "updated_timestamp": now,
+                    "on_behalf_of": "Test",
+                    "on_behalf_of_url": INTERNAL_URL,
+                    "role": "Test Role",
+                    "team_name": "Test Team",
+                    "team_url": INTERNAL_URL,
                 },
             },
             {

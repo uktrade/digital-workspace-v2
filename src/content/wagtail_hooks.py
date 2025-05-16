@@ -1,3 +1,5 @@
+from django.templatetags.static import static
+from django.utils.html import format_html_join
 from wagtail import hooks
 from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
@@ -26,3 +28,16 @@ def remove_submit_to_moderator_option(menu_items, request, context):
     # TODO - remove delete page item
 
     menu_items[:] = [item for item in menu_items if item.name != "action-submit"]
+
+
+@hooks.register("insert_editor_js")
+def editor_js():
+    js_files = [
+        "admin/content.js",
+        "admin/page_author.js",
+    ]
+    return format_html_join(
+        "\n",
+        '<script src="{}"></script>',
+        ((static(filename),) for filename in js_files),
+    )

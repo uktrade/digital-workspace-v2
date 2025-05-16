@@ -7,15 +7,35 @@
         </div>
     {% endif %}
     <div class="content-stack no-gap">
-        {% if profile_url %}
-            <a href="{{ profile_url }}">{{ name }}</a>
-        {% else %}
-            {{ name }}
+        <span>
+            {% if profile_url %}
+                <a href="{{ profile_url }}">{{ name }}</a>
+            {% else %}
+                {{ name }}
+            {% endif %}
+            {% if on_behalf_of %}
+                on behalf of
+                {% if on_behalf_of_url %}
+                    <a href="{{ on_behalf_of_url }}">{{ on_behalf_of }}</a>
+                {% else %}
+                    {{ on_behalf_of }}
+                {% endif %}
+            {% endif %}
+        </span>
+        {% if role %}<div>Role: {{ role }}</div>{% endif %}
+        {% if team_name %}
+            {% if team_url %}
+                <div>
+                    Team: <a href="{{ team_url }}">{{ team_name }}</a>
+                </div>
+            {% else %}
+                <div>Team: {{ team_name }}</div>
+            {% endif %}
         {% endif %}
-        {% if published_timestamp %}
+        {% if published_timestamp and not updated_timestamp %}
             <div>Published: {{ published_timestamp|date:'j F Y' }} at {{ published_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}
-        {% if updated_timestamp and updated_timestamp != published_timestamp %}
+        {% if updated_timestamp %}
             <div>Updated: {{ updated_timestamp|date:'j F Y' }} at {{ updated_timestamp|date:"g:iA"|lower }}</div>
         {% endif %}
         {% if timestamp %}<div>{{ timestamp|date:'j F Y' }} at {{ timestamp|date:"g:iA"|lower }}</div>{% endif %}
