@@ -1,5 +1,6 @@
 from datetime import time
 from functools import wraps
+from typing import Any
 
 from django.conf import settings
 from django.core.cache import cache
@@ -162,6 +163,11 @@ def get_external_link_settings(request: HttpRequest) -> dict:
     return external_link_settings
 
 
+def add_null_option(choices, label="Not set"):
+    nullable_choices = choices + [("null", label)]
+    return nullable_choices
+
+
 def get_data_for_django_filters_choices(
     *, model: models.Model, field_name: str
 ) -> list[tuple[str, str]]:
@@ -172,4 +178,6 @@ def get_data_for_django_filters_choices(
     data = (
         model.objects.order_by(field_name).values_list(field_name, flat=True).distinct()
     )
-    return [(value, value) for value in data]
+    choices: list[tuple[Any, Any]] = [(value, value) for value in data]
+    choices = add_null_option(choices=choices)
+    return choices
