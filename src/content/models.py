@@ -179,7 +179,25 @@ class BasePage(Page, Indexed):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        help_text="If the 'page author' field is empty, we will fall back to the owner of this page.",
+        help_text="If no page author is selected, the page owner will be shown instead",
+    )
+
+    page_author_name = models.CharField(
+        null=True,
+        blank=True,
+        help_text="If the person doesn't have an active profile on the intranet, you can manually enter their name here",
+    )
+
+    page_author_role = models.ForeignKey(
+        "peoplefinder.TeamMember",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Choose the page author's job role. If you do not want to show a job role, choose 'Hide role'.",
+    )
+    page_author_show_team = models.BooleanField(
+        default=False,
+        help_text="Choose this option to show the team for the selected role",
     )
 
     on_behalf_of_person = models.ForeignKey(
@@ -213,18 +231,14 @@ class BasePage(Page, Indexed):
         help_text="Enter the name of someone without an Intranet profile",
     )
 
-    page_author_name = models.CharField(
-        null=True,
-        blank=True,
-        help_text="Use this to show the name of the author when there isn't an active Person to show",
-    )
-
     promote_panels = []
     content_panels = [
         TitleFieldPanel("title"),
     ]
     publishing_panels = [
         FieldPanel("page_author", widget=PersonChooser),
+        FieldPanel("page_author_role"),
+        FieldPanel("page_author_show_team"),
         MultiFieldPanel(
             [
                 FieldPanel("on_behalf_of_person", widget=PersonChooser),
