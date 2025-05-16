@@ -268,7 +268,7 @@ class Person(ClusterableModel, Indexed, models.Model):
         permissions = [
             ("can_view_inactive_profiles", "Can view inactive profiles"),
         ]
-        ordering = ["grade", "first_name", "last_name"]
+        ordering = ["grade", "last_name", "first_name"]
 
     is_active = models.BooleanField(default=True)
     became_inactive = models.DateTimeField(null=True, blank=True)
