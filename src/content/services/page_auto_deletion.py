@@ -52,22 +52,20 @@ CUTOFF = now() - timedelta(days=365)
 # eg cutoff_date=None -> if cutoff_date is None: cutoff_date = now() - timedelta(days=365)
 def get_pages_to_update() -> QuerySet[BasePage]:
     return BasePage.objects.not_exact_type(*PAGES_TO_EXCLUDE).filter(
-        Q(confirmation_page_needed_at__lte=CUTOFF)
-        | Q(confirmation_page_needed_at__isnull=True),
+        Q(confirmed_needed_at__lte=CUTOFF) | Q(confirmed_needed_at__isnull=True),
         last_published_at__lte=CUTOFF,
     )
 
 
-def confirm_page_still_needed(page: BasePage) -> None:
-    page.confirmation_page_needed_at = now()
-    page.save(update_fields=["confirmation_page_needed_at"])
+def update_confirm_needed_at(page: BasePage) -> None:
+    page.confirmed_needed_at = now()
+    page.save(update_fields=["confirmed_needed_at"])
 
 
 def get_pages_to_archive() -> QuerySet[BasePage]:
     return BasePage.objects.not_exact_type(*PAGES_TO_EXCLUDE).filter(
-        Q(confirmation_page_needed_at_isnull=True)
-        | Q(confirmation_page_needed_at__lte=CUTOFF),
-        page_update_notified_at=now() - timedelta(days=30),
+        Q(confirmed_needed_at_isnull=True) | Q(confirmed_needed_at__lte=CUTOFF),
+        archive_notification_sent_at__lte=now() - timedelta(days=30),
         last_published_at__lte=CUTOFF,
     )
 
