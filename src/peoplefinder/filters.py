@@ -5,7 +5,6 @@ from django.db.models import QuerySet
 from core.filters import FilterSet
 from peoplefinder.models import Person
 from peoplefinder.services.reference import (
-    add_null_option,
     get_additional_roles,
     get_grades,
     get_key_skills,
@@ -33,6 +32,7 @@ ORDER_CHOICES = {
 
 
 class DiscoverFilters(FilterSet):
+
     display_civil_servants = django_filters.BooleanFilter(
         widget=forms.CheckboxInput,
         label="Display civil servants only",
@@ -49,37 +49,37 @@ class DiscoverFilters(FilterSet):
     )
     city = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__city",
-        choices=add_null_option(choices=get_uk_city_locations()),
+        choices=get_uk_city_locations,
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="city",
     )
     building_name = django_filters.MultipleChoiceFilter(
         field_name="uk_office_location__building_name",
-        choices=add_null_option(choices=get_uk_buildings()),
+        choices=get_uk_buildings,
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="office",
     )
     grade = django_filters.MultipleChoiceFilter(
         field_name="grade__name",
-        choices=add_null_option(choices=get_grades()),
+        choices=get_grades,
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="grade",
     )
     professions = django_filters.MultipleChoiceFilter(
         field_name="professions__name",
-        choices=add_null_option(choices=get_professions()),
+        choices=get_professions,
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="profession",
     )
     key_skills = django_filters.MultipleChoiceFilter(
         field_name="key_skills__name",
-        choices=add_null_option(choices=get_key_skills()),
+        choices=get_key_skills,
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="key skill",
     )
     additional_roles = django_filters.MultipleChoiceFilter(
         field_name="additional_roles__name",
-        choices=add_null_option(choices=get_additional_roles()),
+        choices=get_additional_roles,
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="additional role",
     )
@@ -93,7 +93,7 @@ class DiscoverFilters(FilterSet):
         method="filter_profile_completion",
     )
     teams = django_filters.MultipleChoiceFilter(
-        choices=add_null_option(choices=get_teams()),
+        choices=get_teams,
         widget=forms.widgets.CheckboxSelectMultiple(),
         label="team",
         method="filter_team_membership_and_subteams",
