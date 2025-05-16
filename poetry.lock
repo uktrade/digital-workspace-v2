@@ -2537,7 +2537,7 @@ name = "django-tasks"
 version = "0.7.0"
 description = "An implementation and backport of background workers and tasks in Django"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main", "dev"]
 files = [
     {file = "django_tasks-0.7.0-py3-none-any.whl", hash = "sha256:8a8d64f2dc6e29ac2f45092d90e2dd82dc1dca100dfe3a4f2ce1209db99f3527"},
@@ -7283,4 +7283,4 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "71909fa364db220113251f53a37a1c66326fe9172e278d0ae09d1d28cbc8fe95"
+content-hash = "d5b1599b9a4cc1726e9ca8c878d5a6987b8009dc1dce7c1a810c93e82c2ab549"
