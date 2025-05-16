@@ -432,12 +432,17 @@ class QuoteBlock(blocks.StructBlock):
                     value["source"].photo.url if value["source"].photo else None
                 ),
             )
-            if source_role := value["source"].roles.first():
-                context.update(
-                    source_role=source_role.job_title,
-                    source_team_name=source_role.team.name,
-                    source_team_url=source_role.team.get_absolute_url(),
-                )
+            if source_role_id := value["source_role_id"]:
+                try:
+                    source_role = TeamMember.objects.get(pk=source_role_id)
+                except TeamMember.DoesNotExist:
+                    pass
+                else:
+                    context.update(
+                        source_role=source_role.job_title,
+                        source_team_name=source_role.team.name,
+                        source_team_url=source_role.team.get_absolute_url(),
+                    )
         else:
             context.update(
                 source_name=value["source_name"],
