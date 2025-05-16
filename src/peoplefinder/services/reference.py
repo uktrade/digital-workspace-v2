@@ -1,4 +1,4 @@
-from core.utils import cache_for, get_data_for_django_filters_choices
+from core.utils import add_null_option, cache_for, get_data_for_django_filters_choices
 from peoplefinder.models import (
     AdditionalRole,
     Grade,
@@ -57,4 +57,19 @@ def get_additional_roles() -> list[tuple[str, str]]:
 
 @cache_for(hours=1)
 def get_teams() -> list[tuple[str, str]]:
-    return get_data_for_django_filters_choices(model=Team, field_name="name")
+    qs = Team.objects.prefetch_related("parents").order_by("parents__depth")
+    ids = []
+    data = []
+    for team in qs[0].parents.all():
+        if team.pk not in ids:
+            ids.append(team.pk)
+            data.append(
+                (
+                    team.child.pk,
+                    team.child.name.rjust(
+                        len(team.child.name) + team.depth,
+                        " ",  # Medium Mathematical Space (MMSP) U+205F
+                    ),
+                )
+            )
+    return add_null_option(choices=data)
