@@ -1,6 +1,17 @@
 <form method="get">
     <div class="content-stack" style="width:250px;">
-        <h3>Filters</h3>
+        <h2>Filters</h2>
+        {% if discover_filters.applied_filters %}
+            <h3>Selected filters</h3>
+            {% for filter_obj in selected_filters.values %}
+                <h4>{{ filter_obj.label|capfirst }}</h4>
+                {% for value in filter_obj.values %}
+                    <div>
+                        <a href="{{ value.url }}">{{ value.label }} X</a>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
         <div class="dwds-button-group">
             <input class="dwds-button dwds-button--secondary dwds-button--inline"
                    type="submit"
