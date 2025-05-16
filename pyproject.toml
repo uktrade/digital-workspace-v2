@@ -27,7 +27,7 @@ django_log_formatter_ecs = "^0.0.5"
 django-staff-sso-client = "^4.2"
 notifications-python-client = "^8.2"
 # Wagtail
-wagtail = "^6.4"
+wagtail = "^7.0"
 wagtailmedia = "^0.14.2"
 wagtailmenus = "^3.1.8"
 wagtail-draftail-anchors = "^0.6.0"
