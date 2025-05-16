@@ -10,8 +10,8 @@ from events.models import EventsHome
 from home.models import HomePage
 from networks.models import NetworksHome
 from news.models import NewsHome
+from peoplefinder.models import Person
 from tools.models import Tool, ToolsHome
-from user.models import User
 from working_at_dit.models import (
     GuidanceHome,
     HowDoIHome,
@@ -70,4 +70,23 @@ def get_pages_to_archive() -> QuerySet[BasePage]:
     )
 
 
-def get_users_to_contact(page: BasePage) -> QuerySet[User]: ...
+def get_people_to_contact(page: BasePage) -> list[Person]:
+    """
+    Returns a unique list of people related to page in order of importance.
+    """
+    people = []
+    if content_owner := getattr(page, "content_owner", None):
+        content_owner not in people and people.append(content_owner)
+
+    if page.page_author:
+        page.page_author not in people and people.append(page.page_author)
+
+    if page.get_latest_publisher():
+        page.get_latest_publisher().profile not in people and people.append(
+            page.get_latest_publisher().profile
+        )
+
+    if page.owner:
+        page.owner not in people and people.append(page.owner.profile)
+
+    return people
