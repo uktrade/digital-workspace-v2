@@ -645,9 +645,6 @@ PROFILE_DELETED_EMAIL_TEMPLATE_ID = env("PROFILE_DELETED_EMAIL_TEMPLATE_ID")
 #  Simple history prevent revert
 SIMPLE_HISTORY_REVERT_DISABLED = True
 
-# Set a custom user edit form in Wagtail admin
-WAGTAIL_USER_EDIT_FORM = "core.forms.WagtailUserEditForm"
-
 # Hawk authentication
 DJANGO_HAWK = {
     "HAWK_INCOMING_ACCESS_KEY": env("HAWK_INCOMING_ACCESS_KEY"),

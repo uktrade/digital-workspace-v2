@@ -25,10 +25,3 @@ class PageProblemFoundForm(forms.Form):
             }
         ),
     )
-
-
-class WagtailUserEditForm(UserEditForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if "is_superuser" in self.fields:
-            del self.fields["is_superuser"]
