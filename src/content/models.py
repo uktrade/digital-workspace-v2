@@ -363,6 +363,14 @@ class BasePage(Page, Indexed):
 
         return None
 
+    def get_latest_publisher(self) -> Optional[UserModel]:
+        """Return the latest publisher of the page or None."""
+        last_revision_with_user = (
+            self.revisions.exclude(user=None).latest("created_at")
+        )
+
+        return last_revision_with_user.user if last_revision_with_user else None
+
     @property
     def days_since_last_published(self):
         if self.last_published_at:
