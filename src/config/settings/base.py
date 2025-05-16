@@ -169,6 +169,8 @@ WAGTAIL_APPS = [
     "wagtail.documents",
     "wagtail.images",
     "wagtail.search",
+    "wagtail_content_import",
+    "wagtail_content_import.pickers.local",
     "wagtail.admin",
     "wagtail",
     "wagtail.contrib.routable_page",
@@ -670,6 +672,9 @@ FEEDBACK_NOTIFICATION_EMAIL_TEMPLATE_ID = env("FEEDBACK_NOTIFICATION_EMAIL_TEMPL
 FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS = env.list(
     "FEEDBACK_NOTIFICATION_EMAIL_RECIPIENTS", default=[]
 )
+
+# Wagtail Content Import
+WAGTAILCONTENTIMPORT_DOCX_PARSER = "content.imports.parsers.DocxParser"
 
 # Feedback
 DJANGO_FEEDBACK_GOVUK = {
