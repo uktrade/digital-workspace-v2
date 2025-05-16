@@ -1,6 +1,6 @@
 import django_filters
 from django import forms
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 
 from core.filters import FilterSet
 from peoplefinder.models import Person
@@ -127,4 +127,13 @@ class DiscoverFilters(FilterSet):
         return queryset.filter(profile_completion__lt=100)
 
     def filter_team_membership_and_subteams(self, queryset, name, value):
-        return queryset.filter(roles__team__children__parent__in=value)
+        if "null" not in value:
+            return queryset.filter(roles__team__children__parent__in=value)
+
+        if "null" in value and len(value) == 1:
+            return queryset.filter(roles__isnull=True)
+
+        value.remove("null")
+        no_team_selected = Q(roles__isnull=True)
+        other_teams_selected = Q(roles__team__children__parent__in=value)
+        return queryset.filter(no_team_selected | other_teams_selected)
