@@ -164,6 +164,12 @@ class BasePage(Page, Indexed):
         null=True,
     )
 
+    confirmed_needed_at = models.DateTimeField(default=None, null=True, blank=True)
+
+    archive_notification_sent_at = models.DateTimeField(
+        default=None, null=True, blank=True
+    )
+
     page_updates = StreamField(
         [
             ("page_update", content_blocks.PageUpdate()),
