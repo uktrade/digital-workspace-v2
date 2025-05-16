@@ -7,6 +7,7 @@ from wagtailmedia.blocks import AbstractMediaChooserBlock
 
 from content.utils import team_members
 from peoplefinder.blocks import PersonChooserBlock
+from peoplefinder.models import TeamMember
 
 
 RICH_TEXT_FEATURES = [
@@ -345,8 +346,14 @@ class PersonBanner(blocks.StructBlock):
                     value["person"].photo.url if value["person"].photo else None
                 ),
             )
-            if person_role := value["person"].roles.first():
-                context.update(person_role=person_role.job_title)
+
+            if person_role_id := value["person_role_id"]:
+                try:
+                    person_role = TeamMember.objects.get(pk=person_role_id)
+                except TeamMember.DoesNotExist:
+                    pass
+                else:
+                    context.update(person_role=person_role.job_title)
         else:
             context.update(
                 person_name=value["person_name"],
@@ -425,12 +432,17 @@ class QuoteBlock(blocks.StructBlock):
                     value["source"].photo.url if value["source"].photo else None
                 ),
             )
-            if source_role := value["source"].roles.first():
-                context.update(
-                    source_role=source_role.job_title,
-                    source_team_name=source_role.team.name,
-                    source_team_url=source_role.team.get_absolute_url(),
-                )
+            if source_role_id := value["source_role_id"]:
+                try:
+                    source_role = TeamMember.objects.get(pk=source_role_id)
+                except TeamMember.DoesNotExist:
+                    pass
+                else:
+                    context.update(
+                        source_role=source_role.job_title,
+                        source_team_name=source_role.team.name,
+                        source_team_url=source_role.team.get_absolute_url(),
+                    )
         else:
             context.update(
                 source_name=value["source_name"],
