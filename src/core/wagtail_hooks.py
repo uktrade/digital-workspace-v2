@@ -17,7 +17,6 @@ from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
 from core.models import SiteAlertBanner, Tag
 from core.models.external_links import ExternalLinkSetting
-from core.panels import InlinePanel
 
 
 class SiteAlertBannerAdmin(ModelAdmin):

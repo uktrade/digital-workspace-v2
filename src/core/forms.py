@@ -1,5 +1,4 @@
 from django import forms
-from wagtail.users.forms import UserEditForm
 
 
 class PageProblemFoundForm(forms.Form):
