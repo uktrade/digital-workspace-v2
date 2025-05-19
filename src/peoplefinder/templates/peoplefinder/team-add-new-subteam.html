@@ -1,13 +1,10 @@
 {% extends 'dwds_sidebar.html' %}
 
-{% block title %}
-{% endblock title %}
-
 {% block page_title_wrapper %}
 {% endblock page_title_wrapper %}
 
 {% block primary_content %}
-    <h1>Add new sub-team to {{ team.short_name }}</h1>
+    <h1>Add new sub-team to {{ parent_team.short_name }}</h1>
 
     <form method="post">
         {% csrf_token %}
@@ -17,7 +14,7 @@
         <c-dwds-button-group>
             <button class="dwds-button" type="submit">Save team</button>
             <a class="dwds-button dwds-button--secondary"
-               href="{% url 'team-view' team.slug %}">Cancel</a>
+               href="{% url 'team-view' parent_team.slug %}">Cancel</a>
         </c-dwds-button-group>
     </form>
 {% endblock primary_content %}

@@ -53,6 +53,7 @@ if SILK_ENABLED:
     )
     SILKY_META = True
 
+CACHE_FLAGS_IN_SESSION = False
 
 DEV_TOOLS_ENABLED = env.bool("DEV_TOOLS_ENABLED", True)  # noqa F405
 

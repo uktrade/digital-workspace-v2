@@ -6,6 +6,7 @@ from django.db.models import OuterRef, Subquery
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views.generic import ListView
 
 from core import flags
@@ -75,6 +76,15 @@ class PeopleDirectory(ListView):
 # Identity Service - discovery
 
 
+def get_url_for_removed_filter(request, field, value):
+    get_vars = request.GET.copy()
+    current_field_values = get_vars.pop(field)
+    current_field_values.remove(value)
+    for val in current_field_values:
+        get_vars.update({field: val})
+    return request.build_absolute_uri(f"{request.path}?{get_vars.urlencode()}")
+
+
 def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     """
     If the pf_discover flag is enabled, returns the discover page with all the people
@@ -87,6 +97,19 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     discover_filters = directory_service.get_people_with_filters(
         filter_options=request.GET, user=request.user
     )
+    selected_filters = {
+        field_name: {
+            "label": discover_filters.form.fields[field_name].label,
+            "values": [
+                {
+                    "label": value,
+                    "url": get_url_for_removed_filter(request, field_name, value),
+                }
+                for value in values
+            ],
+        }
+        for field_name, values in discover_filters.applied_filters().items()
+    }
 
     pr = paginator.Paginator(discover_filters.qs, per_page=30)
     page: int = int(request.GET.get("page", default=1))
@@ -102,8 +125,10 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
             (None, "Discover"),
         ],
         "discover_filters": discover_filters,
+        "selected_filters": selected_filters,
         "can_see_inactive_users": request.user.has_perm(
             "peoplefinder.can_view_inactive_profiles"
         ),
+        "search_url": reverse("search:category", kwargs={"category": "people"}),
     }
     return render(request, "peoplefinder/discover.html", context)

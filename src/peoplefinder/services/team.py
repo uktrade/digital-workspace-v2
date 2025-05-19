@@ -353,7 +353,7 @@ class TeamService:
 class TeamAuditLogSerializer(AuditLogSerializer):
     model = Team
 
-    assert len(Team._meta.get_fields()) == 14, (
+    assert len(Team._meta.get_fields()) == 16, (
         "It looks like you have updated the `Team` model. Please make sure you have"
         " updated `TeamAuditLogSerializer.serialize` to reflect any field changes."
     )
