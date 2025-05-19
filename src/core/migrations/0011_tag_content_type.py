@@ -4,6 +4,13 @@ import core.models.tags
 from django.db import migrations, models
 
 
+def get_default_tag_content_type_id():
+    from django.contrib.contenttypes.models import ContentType
+    from core.models.tags import Tag
+
+    return ContentType.objects.get_for_model(Tag).id
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -16,7 +23,7 @@ class Migration(migrations.Migration):
             model_name="tag",
             name="content_type",
             field=models.ForeignKey(
-                default=core.models.tags.get_default_tag_content_type_id,
+                default=get_default_tag_content_type_id,
                 on_delete=models.SET(core.models.tags.get_default_tag_content_type),
                 related_name="tags",
                 to="contenttypes.contenttype",

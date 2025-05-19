@@ -18,10 +18,6 @@ def get_default_tag_content_type():
     return ContentType.objects.get_for_model(Tag)
 
 
-def get_default_tag_content_type_id():
-    return get_default_tag_content_type().id
-
-
 class Tag(SpecificMixin, ClusterableModel, Indexed, TagBase):
     free_tagging = False
 
@@ -30,7 +26,6 @@ class Tag(SpecificMixin, ClusterableModel, Indexed, TagBase):
         verbose_name=_("content type"),
         related_name="tags",
         on_delete=models.SET(get_default_tag_content_type),
-        default=get_default_tag_content_type_id,
     )
 
     indexed_fields = [
