@@ -1,4 +1,3 @@
-from django.db.models import Count
 from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -9,7 +8,6 @@ from wagtail.admin.panels import (
     ObjectList,
     TabbedInterface,
 )
-from wagtail.admin.ui.tables import Column
 from wagtail.admin.widgets import PageListingButton
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import IndexView, SnippetViewSet
