@@ -6818,21 +6818,6 @@ docs = ["sphinx (>=1.4.0)"]
 test = ["coverage (==6.0)", "flake8 (==4.0.0)", "flake8-blind-except (==0.1.1)", "flake8-debugger (==4.1.2)", "isort (==5.10.0)", "psycopg2 (>=2.3.1)", "pytest (==6.2.5)", "pytest-cov (==3.0.0)", "pytest-django (==4.5.0)", "pytest-pythonpath (==0.7.3)"]
 
 [[package]]
-name = "wagtail-generic-chooser"
-version = "0.6.1"
-description = "A toolkit for custom chooser popups in Wagtail"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "wagtail-generic-chooser-0.6.1.tar.gz", hash = "sha256:a9962c8cbf5b65d05fe6d7feea15ab5a169a2046f7344f31bbb5851714a29267"},
-    {file = "wagtail_generic_chooser-0.6.1-py3-none-any.whl", hash = "sha256:ec7b080e006d5560d4f0d26f351e7bf732d31645247157af427ccda3d4a75ab5"},
-]
-
-[package.dependencies]
-requests = ">=2.11.1,<3.0"
-
-[[package]]
 name = "wagtail-modeladmin"
 version = "2.0.0"
 description = "Add any model in your project to the Wagtail admin. Formerly wagtail.contrib.modeladmin."
@@ -7286,4 +7271,4 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "d5b1599b9a4cc1726e9ca8c878d5a6987b8009dc1dce7c1a810c93e82c2ab549"
+content-hash = "ceb525fe9a713d622b8c47efa8fa4cfdd2001de9e43ef5e06cb5545ddc6705ad"

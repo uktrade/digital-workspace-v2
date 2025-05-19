@@ -148,7 +148,6 @@ THIRD_PARTY_APPS = [
     "crispy_forms",
     "crispy_forms_gds",
     "django_feedback_govuk",
-    "generic_chooser",
     "waffle",
     "wagtailorderable",
     "django_cotton",

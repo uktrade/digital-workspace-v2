@@ -52,7 +52,6 @@ bleach = "^6.0.0"
 elastic-apm = "^6.15.1"
 boto3 = "^1.26.115"
 pyjwt = { extras = ["crypto"], version = "^2.6.0" }
-wagtail-generic-chooser = "^0.6"
 wagtail-modeladmin = "^2.0.0"
 dj-database-url = "^2.1.0"
 django-celery-beat = "^2.5.0"
