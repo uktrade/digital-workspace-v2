@@ -4,7 +4,9 @@
     <div class="content-main content-stack center">
         {% if show_profile_image %}
             <div>
-                {% include "dwds/elements/profile_image.html" with small=True profile_image_url=profile_image_url name=name profile_url=profile_url %}
+                {% include "dwds/elements/profile_image.html" with small=True
+                profile_image_url=profile_image_url name=name
+                profile_url=profile_url %}
             </div>
         {% endif %}
         <div class="content-stack">
@@ -12,24 +14,31 @@
                 <a class="no-underline" href="{{ profile_url }}">{{ name }}</a>
             </h3>
             {% if title %}<p>{{ title|truncatewords:20 }}</p>{% endif %}
+
+            {% if not_active %}<strong class="govuk-tag govuk-tag--orange">Inactive</strong>{% endif %}
         </div>
         {% if location %}
             <div class="content-with-icon center align-center small-gap">
                 {% include "dwds/icons/marker.html" with small=True %}
-                {{ location }}
+                {{ location
+                }}
             </div>
         {% endif %}
+
         {% if show_icons %}
             <div class="content-footer">
                 {% spaceless %}
+
                     {% if email_address %}
                         <a class="content-with-icon" href="mailto:{{ email_address }}">
                             {% include "dwds/icons/email.html" with small=True %}
                         </a>
                     {% endif %}
+
                     {% if phone_number %}
                         <a class="content-with-icon" href="tel:{{ phone_number }}">{% include "dwds/icons/phone.html" with small=True %}</a>
                     {% endif %}
+
                 {% endspaceless %}
             </div>
         {% endif %}

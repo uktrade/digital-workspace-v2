@@ -15,6 +15,12 @@ register = template.Library()
 @register.inclusion_tag("dwds/components/author.html")
 def page_author(page: Page, request: HttpRequest):
     page = page.specific
+    page_author_role = page.page_author_role
+    role = page_author_role.job_title if page_author_role else None
+    team_name = (
+        page_author_role.team.name if (role and page.page_author_show_team) else None
+    )
+    team_url = page_author_role.team.get_absolute_url() if team_name else None
 
     context = {
         "name": "",
@@ -22,6 +28,9 @@ def page_author(page: Page, request: HttpRequest):
         "profile_url": None,
         "published_timestamp": page.first_published_at,
         "updated_timestamp": page.last_published_at,
+        "role": role,
+        "team_name": team_name,
+        "team_url": team_url,
     }
 
     author = page.get_author()

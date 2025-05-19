@@ -38,21 +38,15 @@ def test_comment_on_page_view(mocker, news_page, user):
     }
 
     url = reverse("interactions:comment-on-page", args=[news_page.pk])
-    with override_flag("new_comments", active=False):
-        response = client.post(path=url, data=data)
-        assert response.status_code == 302
-
     # Test view contains new comment within the response template
-    with override_flag("new_comments", active=True):
-        response = client.post(path=url, data=data)
-        assert response.status_code == 200
-        assert comment_content in response.content.decode()
+    response = client.post(path=url, data=data)
+    assert response.status_code == 200
+    assert comment_content in response.content.decode()
 
     # Test 404 is returned for an invalid page id
     url = reverse("interactions:comment-on-page", args=[123456])
-    with override_flag("new_comments", active=True):
-        response = client.post(path=url, data=data)
-        assert response.status_code == 404
+    response = client.post(path=url, data=data)
+    assert response.status_code == 404
 
 
 @mock.patch("interactions.services.comments.can_edit_comment", return_value=True)

@@ -9,11 +9,7 @@
 {% block post_primary_content %}
     {{ block.super }}
     {% if self.allow_comments %}
-        {% if FEATURE_FLAGS.new_comments %}
-            {% page_comments self %}
-        {% else %}
-            {% include "news/includes/news_comments.html" %}
-        {% endif %}
+        {% page_comments self %}
     {% endif %}
 {% endblock post_primary_content %}
 
