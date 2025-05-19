@@ -8,7 +8,7 @@ from taggit.models import ItemBase, TagBase
 from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed
-from peoplefinder.widgets import PersonChooser
+from peoplefinder.widgets import PersonChooser, TeamChooser
 
 
 class Tag(ClusterableModel, Indexed, TagBase):
@@ -56,6 +56,10 @@ class TaggedItem(ItemBase):
         related_name="%(class)s_set",
     )
 
+    panels = [
+        FieldPanel("tag"),
+    ]
+
     def __str__(self):
         return str(self.content_object)
 
@@ -68,8 +72,7 @@ class TaggedPage(TaggedItem):
         related_name="tagged_items",
     )
 
-    panels = [
-        FieldPanel("tag"),
+    panels = TaggedItem.panels + [
         FieldPanel("content_object"),
     ]
 
@@ -81,8 +84,7 @@ class TaggedPerson(TaggedItem):
         related_name="tagged_people",
     )
 
-    panels = [
-        FieldPanel("tag"),
+    panels = TaggedItem.panels + [
         FieldPanel("content_object", widget=PersonChooser),
     ]
 
@@ -94,7 +96,6 @@ class TaggedTeam(TaggedItem):
         related_name="tagged_teams",
     )
 
-    panels = [
-        FieldPanel("tag"),
-        FieldPanel("content_object"),
+    panels = TaggedItem.panels + [
+        FieldPanel("content_object", widget=TeamChooser),
     ]

@@ -44,7 +44,11 @@ class TagsSnippetViewSet(SnippetViewSet):
     model = Tag
     panels = [
         FieldPanel("name"),
-        InlinePanel("taggedteam_set", label="Tagged teams"),
+        MultipleChooserPanel(
+            "taggedteam_set",
+            label="Tagged teams",
+            chooser_field_name="content_object",
+        ),
         MultipleChooserPanel(
             "taggedperson_set",
             label="Tagged people",
