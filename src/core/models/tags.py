@@ -1,9 +1,12 @@
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from taggit.models import ItemBase, TagBase
+from wagtail.models.specific import SpecificMixin
 
 from core.panels import FieldPanel
 from extended_search.index import DWIndexedField as IndexedField
@@ -11,8 +14,24 @@ from extended_search.index import Indexed
 from peoplefinder.widgets import PersonChooser, TeamChooser
 
 
-class Tag(ClusterableModel, Indexed, TagBase):
+def get_default_tag_content_type():
+    return ContentType.objects.get_for_model(Tag)
+
+
+def get_default_tag_content_type_id():
+    return get_default_tag_content_type().id
+
+
+class Tag(SpecificMixin, ClusterableModel, Indexed, TagBase):
     free_tagging = False
+
+    content_type = models.ForeignKey(
+        ContentType,
+        verbose_name=_("content type"),
+        related_name="tags",
+        on_delete=models.SET(get_default_tag_content_type),
+        default=get_default_tag_content_type_id,
+    )
 
     indexed_fields = [
         IndexedField(
@@ -22,12 +41,25 @@ class Tag(ClusterableModel, Indexed, TagBase):
         ),
     ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.id:
+            # this model is being newly created
+            # rather than retrieved from the db;
+            if not self.content_type_id:
+                # set content type to correctly represent the model class
+                # that this was created as
+                self.content_type = ContentType.objects.get_for_model(self)
+
     @property
     def link(self):
         return format_html('<a href="{}">view</a>', self.get_absolute_url())
 
     def get_absolute_url(self):
         return reverse("tag_index", kwargs={"slug": self.slug})
+
+    def get_edit_url(self):
+        raise NotImplementedError
 
 
 class TagGroup(Tag):
@@ -38,7 +70,9 @@ class TagGroup(Tag):
         return f"{self.__class__.__name__}: {self.name}"
 
 
-class Campaign(TagGroup): ...
+class Campaign(TagGroup):
+    def get_edit_url(self):
+        return reverse("wagtailsnippets_core_campaign:edit", kwargs={"pk": self.pk})
 
 
 class TaggedItem(ItemBase):

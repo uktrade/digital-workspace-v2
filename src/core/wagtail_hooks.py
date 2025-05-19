@@ -17,6 +17,7 @@ from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
 from core.models import SiteAlertBanner, Tag
 from core.models.external_links import ExternalLinkSetting
+from core.models.tags import Campaign
 
 
 class SiteAlertBannerAdmin(ModelAdmin):
@@ -41,6 +42,7 @@ def global_admin_css():
 
 class TagsSnippetViewSet(SnippetViewSet):
     model = Tag
+    menu_label = "Tags"
     panels = [
         FieldPanel("name"),
         MultipleChooserPanel(
@@ -60,15 +62,20 @@ class TagsSnippetViewSet(SnippetViewSet):
         ),
     ]
     icon = "tag"
-    menu_label = "Tags"
-    list_display = ["name", Column("tagged_page_count"), "link"]
+    list_display = ["name", "link"]
     search_fields = ("name",)
-
-    def get_queryset(self, request):
-        return self.model.objects.annotate(tagged_page_count=Count("taggedpage_set"))
 
 
 register_snippet(TagsSnippetViewSet)
+
+
+class CampaignTagsSnippetViewSet(TagsSnippetViewSet):
+    model = Campaign
+    menu_label = "Campaigns"
+    add_to_admin_menu = True
+
+
+register_snippet(CampaignTagsSnippetViewSet)
 
 
 class PageInfoAdminButton(PageListingButton):

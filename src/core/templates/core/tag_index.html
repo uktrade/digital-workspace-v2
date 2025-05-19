@@ -3,9 +3,9 @@
 
 {% block primary_content %}
     <div class="content-stack large">
-        {% if can_edit_tag %}
+        {% if can_edit_tag and edit_url %}
             <a class="dwds-button dwds-button--secondary dwds-button--inline"
-               href="{% url 'wagtailsnippets_core_tag:edit' tag.pk %}">Edit</a>
+               href="{{ edit_url }}">Edit</a>
         {% endif %}
 
         {% if tagged_pages %}
