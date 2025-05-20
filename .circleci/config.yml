@@ -38,14 +38,14 @@ jobs:
       - run:
           name: Docker compose healthchecks
           command: |
-          unhealthy=$(docker ps --format '{{.ID}} {{.Names}} {{.Status}}' | grep -v '(healthy)' || true)
-          if [ -n "$unhealthy" ]; then
-            echo "Unhealthy containers detected:"
-            echo "$unhealthy"
-            exit 1
-          else
-            echo "All containers are healthy"
-          fi
+            unhealthy=$(docker ps --format '{{.ID}} {{.Names}} {{.Status}}' | grep -v '(healthy)' || true)
+            if [ -n "$unhealthy" ]; then
+              echo "Unhealthy containers detected:"
+              echo "$unhealthy"
+              exit 1
+            else
+              echo "All containers are healthy"
+            fi
   e2e-tests:
     machine:
       image: ubuntu-2204:2023.04.2
