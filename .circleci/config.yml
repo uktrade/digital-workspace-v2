@@ -17,7 +17,7 @@ jobs:
           command: make check
       - run:
           name: run containers
-          command: docker-compose up -d
+          command: docker compose up -d
       - run:
           name: check for missing migrations
           command: make checkmigrations
@@ -36,7 +36,7 @@ jobs:
             wget -O codecov.sh https://codecov.io/bash
             bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
       - run:
-          name: Docker compose healthchecks
+          name: Docker healthchecks
           command: |
             unhealthy=$(docker ps --format '{{.ID}} {{.Names}} {{.Status}}' | grep -v '(healthy)' || true)
             if [ -n "$unhealthy" ]; then
