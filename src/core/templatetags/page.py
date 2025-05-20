@@ -35,6 +35,9 @@ def page_author(page: Page, request: HttpRequest):
 
     author = page.get_author()
 
+    if not author:
+        return context
+
     if isinstance(author, str):
         context["name"] = author
         return context
