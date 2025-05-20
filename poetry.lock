@@ -2535,14 +2535,14 @@ Django = ">=4.1"
 
 [[package]]
 name = "django-tasks"
-version = "0.6.1"
+version = "0.7.0"
 description = "An implementation and backport of background workers and tasks in Django"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main", "dev"]
 files = [
-    {file = "django_tasks-0.6.1-py3-none-any.whl", hash = "sha256:b3648e28bdcda809cb7831f3aff98aa46c327025447c462b8943cce9dfbb0281"},
-    {file = "django_tasks-0.6.1.tar.gz", hash = "sha256:4086e7eb9e965f79c4ac76f5c3690ec3bf41c461585237b71b4bde729ced9826"},
+    {file = "django_tasks-0.7.0-py3-none-any.whl", hash = "sha256:8a8d64f2dc6e29ac2f45092d90e2dd82dc1dca100dfe3a4f2ce1209db99f3527"},
+    {file = "django_tasks-0.7.0.tar.gz", hash = "sha256:499f80d1a051566443cfa88a300d8b03435af7fc5708cad4d8da6d285614f739"},
 ]
 
 [package.dependencies]
@@ -2551,9 +2551,10 @@ django-stubs-ext = "*"
 typing_extensions = "*"
 
 [package.extras]
-dev = ["coverage", "dj-database-url", "django-stubs[compatible-mypy]", "ruff"]
+dev = ["coverage", "dj-database-url", "django-stubs[compatible-mypy]", "django-tasks[rq]", "fakeredis", "ruff"]
 mysql = ["mysqlclient"]
 postgres = ["psycopg[binary]"]
+rq = ["django-rq", "rq_scheduler"]
 
 [[package]]
 name = "django-timezone-field"
@@ -6734,38 +6735,38 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 
 [[package]]
 name = "wagtail"
-version = "6.4.1"
+version = "7.0"
 description = "A Django content management system."
 optional = false
 python-versions = ">=3.9"
 groups = ["main", "dev"]
 files = [
-    {file = "wagtail-6.4.1-py3-none-any.whl", hash = "sha256:85206f86b04876d5596190e042d30de0430fdb5cdd71b6005748c8a0d45066ec"},
-    {file = "wagtail-6.4.1.tar.gz", hash = "sha256:cec3e6d4920a6d178fa1eb6f4af80b370fdd5570ed924b979104e157f10ca097"},
+    {file = "wagtail-7.0-py3-none-any.whl", hash = "sha256:6a254ef84a740689dd844aabc5254828ecb62840257721e639929cb0e1a2b3c1"},
+    {file = "wagtail-7.0.tar.gz", hash = "sha256:7c267ead43da3aa9469f233b111624aa1a508a5840f1ddda72d104957fdb3426"},
 ]
 
 [package.dependencies]
 anyascii = ">=0.1.5"
 beautifulsoup4 = ">=4.8,<5"
-Django = ">=4.2,<6.0"
+Django = ">=4.2"
 django-filter = ">=23.3"
 django-modelcluster = ">=6.2.1,<7.0"
 django-permissionedforms = ">=0.1,<1.0"
 django-taggit = ">=5.0,<7"
-django-tasks = ">=0.6.1,<0.7"
+django-tasks = ">=0.7,<0.8"
 django-treebeard = ">=4.5.1,<5.0"
 djangorestframework = ">=3.15.1,<4.0"
-draftjs-exporter = ">=2.1.5,<6.0"
+draftjs_exporter = ">=2.1.5,<6.0"
 laces = ">=0.1,<0.2"
 openpyxl = ">=3.0.10,<4.0"
 Pillow = ">=9.1.0,<12.0.0"
 requests = ">=2.11.1,<3.0"
 telepath = ">=0.3.1,<1"
-Willow = {version = ">=1.8.0,<2", extras = ["heif"]}
+Willow = {version = ">=1.10.0,<2", extras = ["heif"]}
 
 [package.extras]
-docs = ["Sphinx (>=7.3)", "myst-parser (==2.0.0)", "pyenchant (>=3.1.1,<4)", "sphinx-autobuild (>=0.6.0)", "sphinx-wagtail-theme (==6.5.0)", "sphinxcontrib-spelling (>=7,<8)"]
-testing = ["Jinja2 (>=3.0,<3.2)", "azure-mgmt-cdn (>=12.0,<13.0)", "azure-mgmt-frontdoor (>=1.0,<1.1)", "boto3 (>=1.28,<2)", "coverage (>=3.7.0)", "curlylint (==0.13.1)", "django-pattern-library (>=0.7)", "djhtml (==3.0.6)", "doc8 (==0.8.1)", "factory-boy (>=3.2)", "freezegun (>=0.3.8)", "polib (>=1.1,<2.0)", "python-dateutil (>=2.7)", "ruff (==0.1.5)", "semgrep (==1.40.0)", "tblib (>=2.0,<3.0)"]
+docs = ["Sphinx (>=7.3)", "myst_parser (==2.0.0)", "pyenchant (>=3.1.1,<4)", "sphinx-autobuild (>=0.6.0)", "sphinx-wagtail-theme (==6.5.0)", "sphinxcontrib-spelling (>=7,<8)"]
+testing = ["Jinja2 (>=3.0,<3.2)", "azure-mgmt-cdn (>=12.0,<13.0)", "azure-mgmt-frontdoor (>=1.0,<1.1)", "boto3 (>=1.28,<2)", "coverage (>=3.7.0)", "curlylint (==0.13.1)", "django-pattern-library (>=0.7)", "djhtml (==3.0.6)", "doc8 (==1.1.2)", "factory-boy (>=3.2)", "freezegun (>=0.3.8)", "polib (>=1.1,<2.0)", "python-dateutil (>=2.7)", "ruff (==0.9.6)", "semgrep (==1.40.0)", "tblib (>=2.0,<3.0)"]
 
 [[package]]
 name = "wagtail_adminsortable"
@@ -6822,37 +6823,22 @@ docs = ["sphinx (>=1.4.0)"]
 test = ["coverage (==6.0)", "flake8 (==4.0.0)", "flake8-blind-except (==0.1.1)", "flake8-debugger (==4.1.2)", "isort (==5.10.0)", "psycopg2 (>=2.3.1)", "pytest (==6.2.5)", "pytest-cov (==3.0.0)", "pytest-django (==4.5.0)", "pytest-pythonpath (==0.7.3)"]
 
 [[package]]
-name = "wagtail-generic-chooser"
-version = "0.6.1"
-description = "A toolkit for custom chooser popups in Wagtail"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "wagtail-generic-chooser-0.6.1.tar.gz", hash = "sha256:a9962c8cbf5b65d05fe6d7feea15ab5a169a2046f7344f31bbb5851714a29267"},
-    {file = "wagtail_generic_chooser-0.6.1-py3-none-any.whl", hash = "sha256:ec7b080e006d5560d4f0d26f351e7bf732d31645247157af427ccda3d4a75ab5"},
-]
-
-[package.dependencies]
-requests = ">=2.11.1,<3.0"
-
-[[package]]
 name = "wagtail-modeladmin"
-version = "2.0.0"
+version = "2.2.0"
 description = "Add any model in your project to the Wagtail admin. Formerly wagtail.contrib.modeladmin."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "wagtail_modeladmin-2.0.0-py3-none-any.whl", hash = "sha256:36931ce4b2c2bb56d0367317b29786eb001344b7c9a1cd4f719d7f11efeae71b"},
-    {file = "wagtail_modeladmin-2.0.0.tar.gz", hash = "sha256:3794c854b86d69ad1b2ec4f3ee5e6852ff8cb0505bd9151186ef26e0a88d84bc"},
+    {file = "wagtail_modeladmin-2.2.0-py3-none-any.whl", hash = "sha256:60ea08b128761b5b6a1cbfe3c8ab828fba13e41ff3d7563a0b8c62c8fe36c4ce"},
+    {file = "wagtail_modeladmin-2.2.0.tar.gz", hash = "sha256:41e12f9a79f8c1595fce73bd6b51007422f258089564f9df8e09a82246a8e133"},
 ]
 
 [package.dependencies]
 Wagtail = ">=5.2"
 
 [package.extras]
-docs = ["Sphinx (>=6.0)", "myst_parser (>=0.18.1,<1.0)", "pyenchant (>=3.1.1,<4)", "sphinx-autobuild (>=0.6.0)", "sphinx-wagtail-theme (==6.2.0)", "sphinx_copybutton (>=0.5)", "sphinxcontrib-spelling (>=8.0,<9.0)"]
+docs = ["Sphinx (>=6.0)", "myst_parser (>=0.18.1,<1.0)", "pyenchant (>=3.1.1,<4)", "sphinx-autobuild (>=0.6.0)", "sphinx-wagtail-theme (==6.3.0)", "sphinx_copybutton (>=0.5)", "sphinxcontrib-spelling (>=8.0,<9.0)"]
 testing = ["dj-database-url (>=2.0.0)", "pre-commit (<3.0)"]
 
 [[package]]
@@ -7290,4 +7276,4 @@ test = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-it
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "71909fa364db220113251f53a37a1c66326fe9172e278d0ae09d1d28cbc8fe95"
+content-hash = "ceb525fe9a713d622b8c47efa8fa4cfdd2001de9e43ef5e06cb5545ddc6705ad"

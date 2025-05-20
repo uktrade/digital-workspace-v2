@@ -1,16 +1,16 @@
 from wagtail import hooks
 
 from peoplefinder.views.chooser import (
-    PersonChooserViewSet,
-    TeamChooserViewSet,
+    person_chooser_viewset,
+    team_chooser_viewset,
 )
 
 
 @hooks.register("register_admin_viewset")
 def register_person_chooser_viewset():
-    return PersonChooserViewSet("person_chooser", url_prefix="person-chooser")
+    return person_chooser_viewset
 
 
 @hooks.register("register_admin_viewset")
 def register_team_chooser_viewset():
-    return TeamChooserViewSet("team_chooser", url_prefix="team-chooser")
+    return team_chooser_viewset

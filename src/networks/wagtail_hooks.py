@@ -6,7 +6,7 @@ from networks.models import Network, NetworkContentPage
 
 
 @hooks.register("register_page_listing_more_buttons")
-def page_listing_more_buttons(page, page_perms, is_parent=False):
+def page_listing_more_buttons(page, user, next_url=None):
     if isinstance(page, Network):
         yield wagtailadmin_widgets.PageListingButton(
             "Convert to Network Content Page",

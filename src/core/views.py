@@ -196,6 +196,7 @@ def tag_index(request: HttpRequest, slug: str) -> HttpResponse:
             tag=tag, user=request.user
         ),
         "can_edit_tag": request.user.has_perm("core.change_tag"),
+        "edit_url": tag.specific.get_edit_url(),
     }
     return TemplateResponse(request, "core/tag_index.html", context=context)
 

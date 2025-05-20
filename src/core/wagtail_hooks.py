@@ -1,4 +1,3 @@
-from django.db.models import Count
 from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -9,7 +8,6 @@ from wagtail.admin.panels import (
     ObjectList,
     TabbedInterface,
 )
-from wagtail.admin.ui.tables import Column
 from wagtail.admin.widgets import PageListingButton
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import IndexView, SnippetViewSet
@@ -17,7 +15,7 @@ from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
 
 from core.models import SiteAlertBanner, Tag
 from core.models.external_links import ExternalLinkSetting
-from core.panels import InlinePanel
+from core.models.tags import Campaign
 
 
 class SiteAlertBannerAdmin(ModelAdmin):
@@ -42,9 +40,14 @@ def global_admin_css():
 
 class TagsSnippetViewSet(SnippetViewSet):
     model = Tag
+    menu_label = "Tags"
     panels = [
         FieldPanel("name"),
-        InlinePanel("taggedteam_set", label="Tagged teams"),
+        MultipleChooserPanel(
+            "taggedteam_set",
+            label="Tagged teams",
+            chooser_field_name="content_object",
+        ),
         MultipleChooserPanel(
             "taggedperson_set",
             label="Tagged people",
@@ -57,15 +60,20 @@ class TagsSnippetViewSet(SnippetViewSet):
         ),
     ]
     icon = "tag"
-    menu_label = "Tags"
-    list_display = ["name", Column("tagged_page_count"), "link"]
+    list_display = ["name", "link"]
     search_fields = ("name",)
-
-    def get_queryset(self, request):
-        return self.model.objects.annotate(tagged_page_count=Count("taggedpage_set"))
 
 
 register_snippet(TagsSnippetViewSet)
+
+
+class CampaignTagsSnippetViewSet(TagsSnippetViewSet):
+    model = Campaign
+    menu_label = "Campaigns"
+    add_to_admin_menu = True
+
+
+register_snippet(CampaignTagsSnippetViewSet)
 
 
 class PageInfoAdminButton(PageListingButton):
