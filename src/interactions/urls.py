@@ -18,10 +18,21 @@ urlpatterns = [
         comment_reactions.react_to_comment,
         name="comment-reactions",
     ),
+    # path("comment-reactions/<int:pk>/users", comment_reactions.get_comment_reaction_users, name="comment-reactions-users"),
     path("bookmark", bookmarks.bookmark, name="bookmark"),
     path("bookmark/<int:pk>/remove", bookmarks.remove_bookmark, name="bookmark-remove"),
     path("bookmarks", bookmarks.bookmark_index, name="bookmark-index"),
     path("page/<int:pk>/react", page_reactions.react_to_page, name="page-reactions"),
+    path(
+        "page/<int:pk>/page-reaction-users",
+        page_reactions.get_page_reaction_users,
+        name="page-reaction-users",
+    ),
+    path(
+        "comment/<int:pk>/comment-reaction-users",
+        comment_reactions.get_comment_reaction_users,
+        name="comment-reaction-users",
+    ),
     path(
         "page/<int:pk>/comments", comments.get_page_comments, name="get-page-comments"
     ),
