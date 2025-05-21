@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("content", "0057_basepage_page_author_role_and_more"),
+        ("content", "0056_basepage_on_behalf_of_external_and_more"),
     ]
 
     operations = [
