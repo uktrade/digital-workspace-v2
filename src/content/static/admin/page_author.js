@@ -47,8 +47,8 @@ const updatePageAuthorVisibility = (
     pageAuthorRoleSelect,
     pageAuthorShowTeamElement,
 ) => {
-    /* 
-    When the value of the selected author changes, 
+    /*
+    When the value of the selected author changes,
     show/hide the role and team elements depending on their values
     */
     if (!pageAuthorInput.value) {
@@ -81,15 +81,24 @@ const initialisePageAuthor = () => {
         `section[id='panel-child-publishing-page_author_show_team-section']`,
     );
 
-    updatePageAuthorVisibility(
-        pageAuthorInput,
-        pageAuthorRoleElement,
-        pageAuthorRoleSelect,
-        pageAuthorShowTeamElement,
-    );
 
-    /*  
-    When the value of the selected person changes, 
+    if (!pageAuthorInput.value) {
+        hideElement(pageAuthorRoleElement);
+        hideElement(pageAuthorShowTeamElement);
+    }
+    else {
+        setRoleSelectOptions(pageAuthorRoleSelect, pageAuthorInput);
+        showElement(pageAuthorRoleElement);
+        if (pageAuthorRoleSelect.value) {
+            showElement(pageAuthorShowTeamElement);
+        }
+        else {
+            hideElement(pageAuthorShowTeamElement);
+        }
+    }
+
+    /*
+    When the value of the selected person changes,
     make a request to get roles using the currently selected person ID
     */
     const pageAuthorObserver = new MutationObserver((mutations, observer) => {
@@ -98,27 +107,38 @@ const initialisePageAuthor = () => {
                 mutation.type === "attributes" &&
                 mutation.attributeName === "value"
             ) {
-                updatePageAuthorVisibility(
-                    pageAuthorInput,
-                    pageAuthorRoleElement,
-                    pageAuthorRoleSelect,
-                    pageAuthorShowTeamElement,
-                );
-                /* 
-                When the value of the selected role changes, 
-                show/hide the show team checkbox depending on the value 
-                */
-                pageAuthorRoleSelect.addEventListener('change', () => {
-                    if (!pageAuthorRoleSelect.value) {
+                switch (pageAuthorInput.value) {
+                    case "":
+                        hideElement(pageAuthorRoleElement);
                         hideElement(pageAuthorShowTeamElement);
-                    } else {
-                        showElement(pageAuthorShowTeamElement);
-                    }
-                });
+                        break;
+                    default:
+                        setRoleSelectOptions(pageAuthorRoleSelect, pageAuthorInput);
+                        showElement(pageAuthorRoleElement);
+                        if (pageAuthorRoleSelect.value) {
+                            showElement(pageAuthorShowTeamElement);
+                        }
+                        else {
+                            hideElement(pageAuthorShowTeamElement);
+                        }
+                }
             }
         }
     });
     pageAuthorObserver.observe(pageAuthorInput, { attributes: true });
+
+    /*
+    When the value of the selected role changes,
+    show/hide the show team checkbox depending on the value
+    */
+    pageAuthorRoleSelect.addEventListener('change', () => {
+        if (!pageAuthorRoleSelect.value) {
+            hideElement(pageAuthorShowTeamElement);
+        } else {
+            showElement(pageAuthorShowTeamElement);
+        }
+    });
+
 };
 
 window.addEventListener("DOMContentLoaded", (event) => {
