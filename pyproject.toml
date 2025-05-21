@@ -70,6 +70,7 @@ django-csp = "^3.8"
 icalendar = "^6.0.1"
 granian = "^1.6.3"
 django-cotton = "^2.0.3"
+wagtail-content-import = "^0.12.1"
 
 [tool.poetry.group.dev]
 optional = true

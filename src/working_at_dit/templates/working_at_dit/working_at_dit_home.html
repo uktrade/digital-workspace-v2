@@ -2,10 +2,7 @@
 {% load wagtailcore_tags %}
 
 {% block primary_content %}
-    {% for block in page.body %}
-        {% include_block block %}
-    {% endfor %}
-
+    {% include "includes/page_body.html" %}
     <div class="govuk-accordion"
          data-module="govuk-accordion"
          id="accordion-default">

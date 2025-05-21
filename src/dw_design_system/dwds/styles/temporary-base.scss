@@ -113,6 +113,11 @@ body {
         color: var(--color-hr);
     }
 
+    ul,
+    ol {
+        margin: unset;
+    }
+
     ul.clean {
         list-style-type: none;
         padding: 0;
