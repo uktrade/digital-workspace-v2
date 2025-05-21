@@ -358,10 +358,6 @@ def get_dwds_templates(template_type, request: HttpRequest):
                     "published_timestamp": now,
                     "updated_timestamp": now,
                     "on_behalf_of": "Test",
-                    "on_behalf_of_url": INTERNAL_URL,
-                    "role": "Test Role",
-                    "team_name": "Test Team",
-                    "team_url": INTERNAL_URL,
                 },
             },
             {
