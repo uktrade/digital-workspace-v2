@@ -24,6 +24,16 @@ def react_to_comment(
     return reaction
 
 
+def get_comment_reactions(comment: Comment) -> dict | None:
+
+    reactions = CommentReaction.objects.filter(comment=comment)
+
+    if reactions:
+        return reactions
+
+    return None
+
+
 def get_comment_reaction_count(
     comment: Comment, reaction_type: ReactionType | None
 ) -> int | None:

@@ -23,6 +23,16 @@ urlpatterns = [
     path("bookmarks", bookmarks.bookmark_index, name="bookmark-index"),
     path("page/<int:pk>/react", page_reactions.react_to_page, name="page-reactions"),
     path(
+        "page/<int:pk>/page-reaction-users",
+        page_reactions.get_page_reaction_users,
+        name="page-reaction-users",
+    ),
+    path(
+        "comment/<int:pk>/comment-reaction-users",
+        comment_reactions.get_comment_reaction_users,
+        name="comment-reaction-users",
+    ),
+    path(
         "page/<int:pk>/comments", comments.get_page_comments, name="get-page-comments"
     ),
     path("page/<int:pk>/comment", comments.comment_on_page, name="comment-on-page"),
