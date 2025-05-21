@@ -1,0 +1,12 @@
+from django.core.management.base import BaseCommand
+
+from peoplefinder.ingest.utils import DBTSectorsS3Ingest
+
+
+class Command(BaseCommand):
+    help = "Ingest the DBT Sectors"
+
+    def handle(self, *args, **options):
+        DBTSectorsS3Ingest()
+
+        self.stdout.write(self.style.SUCCESS("Successfully ingested DBT Sectors\n"))

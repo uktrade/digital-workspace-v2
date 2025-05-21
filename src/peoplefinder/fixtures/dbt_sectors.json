@@ -1,0 +1,111 @@
+[
+    {
+      "model": "peoplefinder.dbtsector",
+      "pk": 1,
+      "fields": {
+        "created": "2023-11-13T13:42:12.478Z",
+        "modified": "2023-11-13T13:59:47.581Z",
+        "exists_in_last_import": true,
+        "sector_id": "SC0001",
+        "full_sector_name": "Sector 1",
+        "sector_cluster_name_april_2023_onwards": "Sector 1__april_2023",
+        "sector_cluster_name_before_april_2023": "",
+        "sector_name": "Sector 1",
+        "sub_sector_name": "field_05",
+        "sub_sub_sector_name": "",
+        "start_date": null,
+        "end_date": null
+      }
+    },
+    {
+      "model": "peoplefinder.dbtsector",
+      "pk": 2,
+      "fields": {
+        "created": "2023-11-13T13:42:12.478Z",
+        "modified": "2023-11-13T13:59:47.581Z",
+        "exists_in_last_import": true,
+        "sector_id": "SC0002",
+        "full_sector_name": "Sector 2",
+        "sector_cluster_name_april_2023_onwards": "Sector 2__april_2023",
+        "sector_cluster_name_before_april_2023": "",
+        "sector_name": "Sector 2",
+        "sub_sector_name": "field_05",
+        "sub_sub_sector_name": "",
+        "start_date": null,
+        "end_date": null
+      }
+    },
+    {
+      "model": "peoplefinder.dbtsector",
+      "pk": 3,
+      "fields": {
+        "created": "2023-11-13T13:42:12.478Z",
+        "modified": "2023-11-13T13:59:47.581Z",
+        "exists_in_last_import": true,
+        "sector_id": "SC0003",
+        "full_sector_name": "Sector 3",
+        "sector_cluster_name_april_2023_onwards": "Sector 3__april_2023",
+        "sector_cluster_name_before_april_2023": "",
+        "sector_name": "Sector 3",
+        "sub_sector_name": "field_05",
+        "sub_sub_sector_name": "",
+        "start_date": null,
+        "end_date": null
+      }
+    },
+    {
+      "model": "peoplefinder.dbtsector",
+      "pk": 4,
+      "fields": {
+        "created": "2023-11-13T13:42:12.478Z",
+        "modified": "2023-11-13T13:59:47.581Z",
+        "exists_in_last_import": true,
+        "sector_id": "SC0004",
+        "full_sector_name": "Sector 4",
+        "sector_cluster_name_april_2023_onwards": "Sector 4__april_2023",
+        "sector_cluster_name_before_april_2023": "",
+        "sector_name": "Sector 4",
+        "sub_sector_name": "field_05",
+        "sub_sub_sector_name": "",
+        "start_date": null,
+        "end_date": null
+      }
+    },
+    {
+      "model": "peoplefinder.dbtsector",
+      "pk": 5,
+      "fields": {
+        "created": "2023-11-13T13:42:12.478Z",
+        "modified": "2023-11-13T13:59:47.581Z",
+        "exists_in_last_import": true,
+        "sector_id": "SC0005",
+        "full_sector_name": "Sector 5",
+        "sector_cluster_name_april_2023_onwards": "Sector 5__april_2023",
+        "sector_cluster_name_before_april_2023": "",
+        "sector_name": "Sector 5",
+        "sub_sector_name": "field_05",
+        "sub_sub_sector_name": "",
+        "start_date": null,
+        "end_date": null
+      }
+    },
+    {
+      "model": "peoplefinder.dbtsector",
+      "pk": 6,
+      "fields": {
+        "created": "2023-11-13T13:42:12.478Z",
+        "modified": "2023-11-13T13:59:47.581Z",
+        "exists_in_last_import": true,
+        "sector_id": "SC0006",
+        "full_sector_name": "full sector name",
+        "sector_cluster_name_april_2023_onwards": "after april 2023 sector name",
+        "sector_cluster_name_before_april_2023": "before april 2023 sector cluster name",
+        "sector_name": "Sector 6",
+        "sub_sector_name": "sub sector",
+        "sub_sub_sector_name": "sub sub sector",
+        "start_date": null,
+        "end_date": null
+      }
+    }
+  ]
+  

@@ -70,6 +70,7 @@ django-csp = "^3.8"
 icalendar = "^6.0.1"
 granian = "^1.6.3"
 django-cotton = "^2.0.3"
+data-flow-s3-import = "^0.0.2"
 
 [tool.poetry.group.dev]
 optional = true
