@@ -18,7 +18,6 @@ urlpatterns = [
         comment_reactions.react_to_comment,
         name="comment-reactions",
     ),
-    # path("comment-reactions/<int:pk>/users", comment_reactions.get_comment_reaction_users, name="comment-reactions-users"),
     path("bookmark", bookmarks.bookmark, name="bookmark"),
     path("bookmark/<int:pk>/remove", bookmarks.remove_bookmark, name="bookmark-remove"),
     path("bookmarks", bookmarks.bookmark_index, name="bookmark-index"),

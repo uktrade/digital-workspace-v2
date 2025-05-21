@@ -35,7 +35,10 @@ def get_page_reactions(page: Page) -> dict | None:
 
     reactions = PageReaction.objects.filter(page=page)
 
-    return reactions
+    if reactions:
+        return reactions
+
+    return None
 
 
 def get_page_reaction_count(
