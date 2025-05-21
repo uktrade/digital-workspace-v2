@@ -23,7 +23,8 @@
         "dev": "webpack --config webpack.config.js --watch",
         "build": "npm run assets:moj && webpack --config webpack.config.js",
         "heroku-postbuild": "npm run build",
-        "clean": "rm -f ./assets/webpack_bundles/*"
+        "clean": "rm -f ./assets/webpack_bundles/*",
+        "lighthouse": "npx lighthouse"
     },
     "browserslist": [
         "last 3 chrome versions",
@@ -36,6 +37,7 @@
         "node": ">20.0.0"
     },
     "devDependencies": {
-        "prettier": "3.2.5"
+        "prettier": "3.2.5",
+        "lighthouse": "^12.5.1"
     }
 }
