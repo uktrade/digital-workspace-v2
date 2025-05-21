@@ -1,0 +1,80 @@
+[
+  {
+    "model": "peoplefinder.ukofficelocation",
+    "pk": 1,
+    "fields": {
+      "created": "2023-11-13T13:42:12.478Z",
+      "modified": "2023-11-13T13:59:47.581Z",
+      "exists_in_last_import": true,
+      "code": "123",
+      "name": "Test Location 1, London",
+      "city": "London",
+      "organisation": "Department for Business and Trade"
+    }
+  },
+  {
+    "model": "peoplefinder.ukofficelocation",
+    "pk": 2,
+    "fields": {
+      "created": "2023-11-13T13:42:12.495Z",
+      "modified": "2023-11-13T13:59:47.583Z",
+      "exists_in_last_import": true,
+      "code": "456",
+      "name": "Test Location 2, London",
+      "city": "London",
+      "organisation": "Department for Business and Trade"
+    }
+  },
+  {
+    "model": "peoplefinder.ukofficelocation",
+    "pk": 3,
+    "fields": {
+      "created": "2023-11-13T13:42:12.497Z",
+      "modified": "2023-11-13T13:59:47.585Z",
+      "exists_in_last_import": true,
+      "code": "789",
+      "name": "Test Location 3, London",
+      "city": "London",
+      "organisation": "Department for Business and Trade"
+    }
+  },
+  {
+    "model": "peoplefinder.ukofficelocation",
+    "pk": 4,
+    "fields": {
+      "created": "2023-11-13T13:42:12.500Z",
+      "modified": "2023-11-13T13:59:47.587Z",
+      "exists_in_last_import": true,
+      "code": "987",
+      "name": "Test Location 4, Darlington",
+      "city": "Darlington",
+      "organisation": "Department for Business and Trade"
+    }
+  },
+  {
+    "model": "peoplefinder.ukofficelocation",
+    "pk": 5,
+    "fields": {
+      "created": "2023-11-13T13:42:12.502Z",
+      "modified": "2023-11-13T13:59:47.578Z",
+      "exists_in_last_import": true,
+      "code": "645",
+      "name": "Test Location 5, Cardiff",
+      "city": "Cardiff",
+      "organisation": "Department for Business, Energy and Industrial Strategy"
+    }
+  },
+  {
+    "model": "peoplefinder.ukofficelocation",
+    "pk": 6,
+    "fields": {
+      "created": "2023-11-13T13:42:12.504Z",
+      "modified": "2023-11-13T13:59:47.589Z",
+      "exists_in_last_import": true,
+      "code": "321",
+      "name": "Test Location 6, Cardiff",
+      "city": "Cardiff",
+      "organisation": "Department for Business and Trade"
+    }
+  }
+]
