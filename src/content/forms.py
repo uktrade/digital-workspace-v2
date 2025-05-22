@@ -8,4 +8,4 @@ class BasePageForm(WagtailAdminPageForm):
         super().__init__(*args, **kwargs)
 
         if page_author := self.data.get("page_author"):
-            self.fields["page_author_role"].queryset = get_roles(page_author)
+            self.fields["page_author_role"].queryset = get_roles(person_pk=page_author)

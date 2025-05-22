@@ -20,7 +20,7 @@ def get_person_roles(request, person_id) -> JsonResponse:
                 "pk": person_role.pk,
                 "label": f"{person_role.job_title} - {person_role.team.name}",
             }
-            for person_role in get_roles(person)
+            for person_role in get_roles(person=person)
         ]
     }
     return JsonResponse(response)
