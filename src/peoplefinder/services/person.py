@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Case, F, Q, Value, When
 from django.db.models.functions import Concat
+from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
@@ -685,3 +686,7 @@ class PersonAuditLogSerializer(AuditLogSerializer):
         del person["login_count"]
 
         return person
+
+
+def get_roles(person: Person) -> QuerySet[Person]:
+    return person.roles.all().select_related("team")

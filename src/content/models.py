@@ -28,6 +28,7 @@ from wagtail.utils.decorators import cached_classmethod
 
 import dw_design_system.dwds.components as dwds_blocks
 from content import blocks as content_blocks
+from content.forms import BasePageForm
 from content.utils import (
     get_search_content_for_block,
     manage_excluded,
@@ -38,7 +39,7 @@ from content.validators import validate_description_word_count
 from core.panels import FieldPanel, InlinePanel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields
-from peoplefinder.models import Person
+from peoplefinder.models import Person, TeamMember
 from peoplefinder.widgets import PersonChooser, TeamChooser
 from user.models import User as UserModel
 
@@ -157,6 +158,7 @@ class BasePage(Page, Indexed):
         ]
 
     objects = PageManager.from_queryset(BasePageQuerySet)()
+    base_form_class = BasePageForm
 
     legacy_path = models.CharField(
         max_length=500,
