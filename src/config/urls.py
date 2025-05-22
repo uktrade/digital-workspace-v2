@@ -9,7 +9,6 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
-from content.urls import urlpatterns as content_urlpatterns
 from core.admin import admin_site
 from core.urls import urlpatterns as core_urlpatterns
 from dw_design_system.urls import urlpatterns as dwds_urlpatterns
@@ -55,8 +54,6 @@ urlpatterns = [
     path("networks/", include("networks.urls")),
     # DW Design System
     path("dwds/", include(dwds_urlpatterns)),
-    # Content
-    path("content/", include(content_urlpatterns)),
     # iCal feed for testing
     path("ical/", ical_links, name="ical_links"),
     path("ical/all/", ical_feed, name="ical_feed"),

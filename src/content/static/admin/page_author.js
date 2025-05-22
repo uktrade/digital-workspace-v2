@@ -8,7 +8,7 @@ const showElement = (element) => {
 
 const setRoleSelectOptions = (selectElement, personInput) => {
     const selectedRole = selectElement.value;
-    fetch(`/content/get-user-roles/${personInput.value}/`)
+    fetch(`/people/get-person-roles/${personInput.value}/`)
         .then((response) => response.json())
         .then((data) => {
             selectElement.innerHTML = "";
@@ -54,23 +54,19 @@ const updatePageAuthorVisibility = (
     if (!pageAuthorInput.value) {
         hideElement(pageAuthorRoleElement);
         hideElement(pageAuthorShowTeamElement);
-    }
-    else {
+    } else {
         setRoleSelectOptions(pageAuthorRoleSelect, pageAuthorInput);
         showElement(pageAuthorRoleElement);
         if (pageAuthorRoleSelect.value) {
             showElement(pageAuthorShowTeamElement);
-        }
-        else {
+        } else {
             hideElement(pageAuthorShowTeamElement);
         }
     }
 };
 
 const initialisePageAuthor = () => {
-    const pageAuthorInput = document.querySelector(
-        `input[name='page_author']`
-    );
+    const pageAuthorInput = document.querySelector(`input[name='page_author']`);
     const pageAuthorRoleElement = document.querySelector(
         `section[id='panel-child-publishing-page_author_role-section']`,
     );
@@ -108,7 +104,7 @@ const initialisePageAuthor = () => {
                 When the value of the selected role changes, 
                 show/hide the show team checkbox depending on the value 
                 */
-                pageAuthorRoleSelect.addEventListener('change', () => {
+                pageAuthorRoleSelect.addEventListener("change", () => {
                     if (!pageAuthorRoleSelect.value) {
                         hideElement(pageAuthorShowTeamElement);
                     } else {
