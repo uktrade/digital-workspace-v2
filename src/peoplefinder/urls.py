@@ -28,7 +28,7 @@ from peoplefinder.views.profile import (
     profile_edit_blank_teams_form,
     redirect_to_profile_edit,
 )
-from peoplefinder.views.role import TeamSelectView
+from peoplefinder.views.role import TeamSelectView, get_person_roles
 from peoplefinder.views.team import (
     TeamAddNewSubteamView,
     TeamDeleteView,
@@ -142,6 +142,9 @@ people_urlpatterns = [
         "get-by-staff-sso-id/<str:staff_sso_id>/",
         get_profile_by_staff_sso_id,
         name="profile-get-by-staff-sso-id",
+    ),
+    path(
+        "get-person-roles/<int:person_id>/", get_person_roles, name="get-person-roles"
     ),
 ]
 

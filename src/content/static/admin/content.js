@@ -64,7 +64,7 @@ const showRoleSelector = (roleSelectorEl) => {
 
 const setSelectOptions = (selectElement, personInput) => {
     const selectedRole = selectElement.value;
-    fetch(`/content/get-user-roles/${personInput.value}/`)
+    fetch(`/people/get-person-roles/${personInput.value}/`)
         .then((response) => response.json())
         .then((data) => {
             selectElement.innerHTML = "";
