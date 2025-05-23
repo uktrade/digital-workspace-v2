@@ -5,6 +5,16 @@ from peoplefinder.services.person import get_roles
 
 
 class BasePageForm(WagtailAdminPageForm):
+    """
+    Override the default Wagtail edit form to remove the inefficient `TeamMember`
+    DB call.
+
+    We use JS to supply the functionality, so the initial `page_author_role`
+    select options can be empty.
+
+    See: content/static/admin/page_author.js
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

@@ -282,6 +282,8 @@ class PageUpdate(blocks.StructBlock):
 
 class PersonBanner(blocks.StructBlock):
     person = PersonChooserBlock(required=False)
+    # Note: We hide this field from the user in the admin, and present them with
+    # a select input using JS
     person_role_id = blocks.CharBlock(
         required=False,
         label="Person role",
@@ -386,6 +388,8 @@ class QuoteBlock(blocks.StructBlock):
         label="Quote source",
         help_text="If the quote source is a DBT person, use the 'Choose a person' option and leave all other fields blank (including the 'Source image' option). If they are external to DBT, enter the person's details manually. Add an image, if you have one.",
     )
+    # Note: We hide this field from the user in the admin, and present them with
+    # a select input using JS
     source_role_id = blocks.CharBlock(
         required=False,
         label="Source role",
