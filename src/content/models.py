@@ -203,6 +203,7 @@ class BasePage(Page, Indexed):
         blank=True,
         help_text="Choose the page author's job role. If you do not want to show a job role, choose 'Hide role'.",
     )
+
     page_author_show_team = models.BooleanField(
         default=False,
         help_text="Choose this option to show the team for the selected role",
