@@ -1,4 +1,3 @@
-from django import forms
 from django.core.exceptions import ValidationError
 from wagtail import blocks
 from wagtail.contrib.table_block.blocks import TableBlock
@@ -6,7 +5,6 @@ from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
-from content.utils import team_members
 from peoplefinder.blocks import PersonChooserBlock
 from peoplefinder.models import TeamMember
 from peoplefinder.services.person import get_roles
