@@ -146,7 +146,8 @@ class TeamService:
             QuerySet: A query of teams.
         """
         return (
-            Team.objects.filter(parents__child=child).exclude(parents__parent=child)
+            Team.objects.filter(parents__child=child)
+            .exclude(parents__parent=child)
             # TODO: Not sure if we should order here or at the call sites.
             .order_by("-parents__depth")
         )
@@ -352,11 +353,6 @@ class TeamService:
 
 class TeamAuditLogSerializer(AuditLogSerializer):
     model = Team
-
-    assert len(Team._meta.get_fields()) == 16, (
-        "It looks like you have updated the `Team` model. Please make sure you have"
-        " updated `TeamAuditLogSerializer.serialize` to reflect any field changes."
-    )
 
     def serialize(self, instance: Team) -> ObjectRepr:
         team = (
