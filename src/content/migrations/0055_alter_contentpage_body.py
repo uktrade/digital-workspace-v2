@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
                         "wagtail.blocks.ChoiceBlock",
                         [],
                         {
-                            "choices": content.utils.team_members,
+                            "choices": [],
                             "help_text": "Choose the person's job role. If you do not want to show a job role, choose 'Hide role'.",
                             "label": "Source role",
                             "required": False,
@@ -220,7 +220,7 @@ class Migration(migrations.Migration):
                         "wagtail.blocks.ChoiceBlock",
                         [],
                         {
-                            "choices": content.utils.team_members,
+                            "choices": [],
                             "help_text": "Choose the person's job role. If you do not want to show a job role, choose 'Hide role'.",
                             "label": "Person role",
                             "required": False,
