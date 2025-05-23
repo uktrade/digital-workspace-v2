@@ -133,6 +133,11 @@ superuser: # Create a superuser
 su-all: # Makes all users a superuser
 	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.all().update(is_superuser=True, is_staff=True)"
 
+cleanup-profiling:
+	rm -rf ./profiler_results
+	mkdir ./profiler_results
+	touch ./profiler_results/.gitkeep
+
 #
 # Django
 #
