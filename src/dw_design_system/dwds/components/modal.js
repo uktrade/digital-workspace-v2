@@ -4,17 +4,16 @@ function initialiseModal(modalElement) {
     }
     modalElement.dataset.dwdsModal = true;
     const dialog = modalElement.querySelector("dialog");
-    const openElement = modalElement.querySelector(
-        "button.dwds-modal-open",
-    );
+    const openElement = modalElement.querySelector("button.dwds-modal-open");
     const closeElements = modalElement.querySelectorAll(
         "button.dwds-modal-close",
     );
 
-    openElement.addEventListener("click", function () {
-        dialog.showModal();
-        document.documentElement.classList.add("no-scroll");
-    });
+    openElement &&
+        openElement.addEventListener("click", function () {
+            dialog.showModal();
+            document.documentElement.classList.add("no-scroll");
+        });
     closeElements.forEach((element) => {
         element.addEventListener("click", function () {
             dialog.close();
@@ -47,4 +46,3 @@ export function initialiseModals() {
         reInitialiseModals();
     });
 }
-
