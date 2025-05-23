@@ -1,0 +1,16 @@
+<section>
+    {% if self.sector_title %} 
+        <h2>{{ self.sector_title }}</h2> 
+    {% endif %}
+    <div class="content-stack">
+        <div class="content-grid grid-cards">
+            {% for block in self.sector_elements %}
+                <c-dwds-card>
+                    <c-slot name="card_content">
+                        {% include_block block %}
+                    </c-slot>
+                </c-dwds-card>
+            {% endfor %}
+        </div>
+    </div>
+</section>
