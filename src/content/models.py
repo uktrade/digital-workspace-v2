@@ -821,6 +821,7 @@ class NavigationPage(SearchFieldsMixin, BasePage):
         self._generate_search_field_content()
         super().full_clean(*args, **kwargs)
 
+
 class SectorPage(SearchFieldsMixin, BasePage):
     template = "content/sector_page.html"
 
@@ -828,30 +829,30 @@ class SectorPage(SearchFieldsMixin, BasePage):
 
     # description = models.CharField(max_length=255, help_text="Optional textarea under the heading")
     # Primary elements should have the following
-    # 
-    # * Title: rendered same as navigation_page for now - mandatory, 
-    #   this will just be the title, not sure about being able to set the image yet. 
+    #
+    # * Title: rendered same as navigation_page for now - mandatory,
+    #   this will just be the title, not sure about being able to set the image yet.
     #   Can be directly done in template and passed to a new component?
-    # 
-    # * Description: textblock for now, potentially use message component, 
+    #
+    # * Description: textblock for now, potentially use message component,
     #   if so a new MessageBlock is needed to accomodate flexible ordering
-    # 
+    #
     # * Sector block:
     #   - sector title
     #   - sector elements
     #       - navigation card
-    # 
-    # * Navigation card: standalone navigation card if no section heading is needed, 
+    #
+    # * Navigation card: standalone navigation card if no section heading is needed,
     #   (should help with backwards compatibility for navigation_page)
-    # 
-    # * Footer component: 
-    #     maybe just create new component that uses message component but changes the header sizing? 
-    #     Or use as is and apply styling to the template within the footer div. 
+    #
+    # * Footer component:
+    #     maybe just create new component that uses message component but changes the header sizing?
+    #     Or use as is and apply styling to the template within the footer div.
     #     Can we force only a single instance of this? (Validate in full_clean?)
-    # 
-    # Note: for ordering to remain flexible, any new components will have to be rendered in blocks 
+    #
+    # Note: for ordering to remain flexible, any new components will have to be rendered in blocks
     #     to allow the editor to determine the order
-    # 
+    #
     primary_elements = StreamField(
         [
             ("description", content_blocks.TextBlock()),
@@ -862,7 +863,7 @@ class SectorPage(SearchFieldsMixin, BasePage):
         blank=True,
     )
 
-    # This section should mostly remain the same as navigation_page, 
+    # This section should mostly remain the same as navigation_page,
     # confirm after looking at updated example in figma document
     secondary_elements = StreamField(
         [

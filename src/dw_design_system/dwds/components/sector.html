@@ -1,7 +1,7 @@
+{% load wagtailcore_tags %}
+
 <section>
-    {% if self.sector_title %} 
-        <h2>{{ self.sector_title }}</h2> 
-    {% endif %}
+    {% if self.sector_title %}<h2>{{ self.sector_title }}</h2>{% endif %}
     <div class="content-stack">
         <div class="content-grid grid-cards">
             {% for block in self.sector_elements %}
