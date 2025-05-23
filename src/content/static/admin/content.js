@@ -212,7 +212,6 @@ const initialiseStreamfields = () => {
             container.dataset.contentJavascriptInitialised = true;
             streamfieldContainerObserver.observe(container, {
                 childList: true,
-                // subtree: true,
             });
         }
     });
