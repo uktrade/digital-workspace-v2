@@ -679,5 +679,13 @@ class PersonAuditLogSerializer(AuditLogSerializer):
         return person
 
 
-def get_roles(person: Person) -> QuerySet[Person]:
+def get_roles(
+    person: Person | None = None, person_pk: int | None = None
+) -> QuerySet[Person]:
+    if (person and person_pk) or (person is None and person_pk is None):
+        raise ValueError("Provide one of 'person' or 'person_pk'")
+
+    if not person and person_pk:
+        person = Person.objects.get(pk=person_pk)
+
     return person.roles.all().select_related("team")

@@ -148,6 +148,7 @@ const initialiseRoleSelector = (
 
     if (!personInput.value) {
         hideRoleSelector(personRoleSelect);
+        personRoleField.value = '';
     } else {
         setSelectOptions(personRoleField, personRoleSelect, personInput);
     }
@@ -162,6 +163,7 @@ const initialiseRoleSelector = (
                 switch (personInput.value) {
                     case "":
                         hideRoleSelector(personRoleSelect);
+                        personRoleField.value = '';
                         break;
                     default:
                         setSelectOptions(personRoleField, personRoleSelect, personInput);
