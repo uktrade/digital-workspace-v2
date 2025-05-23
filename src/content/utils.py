@@ -5,7 +5,6 @@ from wagtail import blocks
 from wagtail.blocks.struct_block import StructValue
 
 from content import blocks as content_blocks
-from peoplefinder.models import TeamMember
 
 
 def remove_orphan_keyword_and_phrases():
