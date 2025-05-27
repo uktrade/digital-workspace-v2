@@ -822,68 +822,27 @@ class NavigationPage(SearchFieldsMixin, BasePage):
         super().full_clean(*args, **kwargs)
 
 
-class SectorPage(SearchFieldsMixin, BasePage):
+class SectorPage(ContentPage):
     template = "content/sector_page.html"
 
-    search_stream_fields: list[str] = ["primary_elements", "secondary_elements"]
+    search_stream_fields: list[str] = [
+        "sectors",
+    ]
 
-    # description = models.CharField(max_length=255, help_text="Optional textarea under the heading")
-    # Primary elements should have the following
-    #
-    # * Title: rendered same as navigation_page for now - mandatory,
-    #   this will just be the title, not sure about being able to set the image yet.
-    #   Can be directly done in template and passed to a new component?
-    #
-    # * Description: textblock for now, potentially use message component,
-    #   if so a new MessageBlock is needed to accomodate flexible ordering
-    #
-    # * Sector block:
-    #   - sector title
-    #   - sector elements
-    #       - navigation card
-    #
-    # * Navigation card: standalone navigation card if no section heading is needed,
-    #   (should help with backwards compatibility for navigation_page)
-    #
-    # * Footer component:
-    #     maybe just create new component that uses message component but changes the header sizing?
-    #     Or use as is and apply styling to the template within the footer div.
-    #     Can we force only a single instance of this? (Validate in full_clean?)
-    #
-    # Note: for ordering to remain flexible, any new components will have to be rendered in blocks
-    #     to allow the editor to determine the order
-    #
-    primary_elements = StreamField(
+    sectors = StreamField(
         [
-            ("description", content_blocks.TextBlock()),
             ("dw_sector_card", dwds_blocks.SectorCardBlock()),
-            ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),
-            ("footer", content_blocks.TextBlock()),
-        ],
-        blank=True,
-    )
-
-    # This section should mostly remain the same as navigation_page,
-    # confirm after looking at updated example in figma document
-    secondary_elements = StreamField(
-        [
-            ("dw_curated_page_links", dwds_blocks.CustomPageLinkListBlock()),
-            ("dw_tagged_page_list", dwds_blocks.TaggedPageListBlock()),
-            ("dw_cta", dwds_blocks.CTACardBlock()),
-            ("dw_engagement_card", dwds_blocks.EngagementCardBlock()),
-            ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),
         ],
         blank=True,
     )
 
     content_panels = BasePage.content_panels + [
-        FieldPanel("primary_elements"),
-        FieldPanel("secondary_elements"),
+        FieldPanel("body"),
+        FieldPanel("sectors"),
     ]
 
     indexed_fields = SearchFieldsMixin.indexed_fields + [
-        IndexedField("primary_elements"),
-        IndexedField("secondary_elements"),
+        IndexedField("sectors"),
     ]
 
     def get_template(self, request, *args, **kwargs):

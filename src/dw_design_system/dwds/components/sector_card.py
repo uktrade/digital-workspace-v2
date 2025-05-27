@@ -7,7 +7,7 @@ from content import blocks as content_blocks
 class SectorCardBlock(blocks.StructBlock):
     """Sector section"""
 
-    sector_title = content_blocks.HeadingBlock(required=True, max_length=30)
+    sector_title = content_blocks.HeadingBlock(required=False, max_length=30)
     sector_elements = blocks.StreamBlock(
         [
             ("dw_navigation_card", dwds_blocks.NavigationCardBlock()),

@@ -18,30 +18,18 @@
 {% endblock page_title_wrapper %}
 
 {% block primary_content %}
+    {% for block in page.body %}
+        {% include_block block %}
+    {% endfor %}
     <div class="content-stack">
-        <div class="content-grid grid-cards">
-            {% for block in page.primary_elements %}
-                <c-dwds-card>
-                    <c-slot name="card_content">
-                        {% include_block block %}
-                    </c-slot>
-                </c-dwds-card>
-            {% endfor %}
-        </div>
+        {% for block in page.sectors %}
+            {% include_block block %}
+        {% endfor %}
     </div>
 {% endblock primary_content %}
 
 {% block secondary_content %}
-    <div class="content-stack large">
-        {{ block.super }}
-        {% for block in page.secondary_elements %}
-            <c-dwds-card no-shadow="true">
-                <c-slot name="card_content">
-                    {% include_block block %}
-                </c-slot>
-            </c-dwds-card>
-        {% endfor %}
-    </div>
+    <div class="content-stack large">{{ block.super }}</div>
 {% endblock secondary_content %}
 
 {% block scripts %}
