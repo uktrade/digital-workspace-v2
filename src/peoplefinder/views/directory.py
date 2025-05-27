@@ -77,7 +77,9 @@ class PeopleDirectory(ListView):
 # Identity Service - discovery
 
 
-def get_url_for_removed_filter(request:HttpRequest, field:str|None = None, value:Any|None = None) -> str:
+def get_url_for_removed_filter(
+    request: HttpRequest, field: str | None = None, value: Any | None = None
+) -> str:
     get_vars: QueryDict = request.GET.copy()
 
     # changing filters always means going back to page 1
@@ -85,14 +87,14 @@ def get_url_for_removed_filter(request:HttpRequest, field:str|None = None, value
         get_vars.pop("page")
 
     if field is not None:
-        current_field_values:list = get_vars.pop(field)
+        current_field_values: list = get_vars.pop(field)
         current_field_values.remove(str(value))
         for val in current_field_values:
             get_vars.update({field: val})
     return request.build_absolute_uri(f"{request.path}?{get_vars.urlencode()}")
 
 
-def get_display_label_value(field_name:str, field:Field, value:str):
+def get_display_label_value(field_name: str, field: Field, value: str):
     if value == "null":
         return "Not set"
 
@@ -141,7 +143,7 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
                     "label": get_display_label_value(
                         field_name=field_name,
                         field=discover_filters.form.fields[field_name],
-                        value=value
+                        value=value,
                     ),
                     "url": get_url_for_removed_filter(request, field_name, value),
                 }
