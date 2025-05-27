@@ -6,7 +6,14 @@ from wagtail.models import Page
 from wagtailmedia.models import Media
 
 from about_us.models import AboutUs, AboutUsHome
-from content.models import BasePage, BlogIndex, BlogPost, ContentPage, NavigationPage
+from content.models import (
+    BasePage,
+    BlogIndex,
+    BlogPost,
+    ContentPage,
+    NavigationPage,
+    SectorPage,
+)
 from core.models.tags import Campaign, Tag
 from country_fact_sheet.models import CountryFactSheetHome
 from events.models import EventPage, EventsHome
@@ -245,6 +252,7 @@ class TestProject:
             BasePage,
             ContentPage,
             NavigationPage,
+            SectorPage,
             EventsHome,
             EventPage,
             NewsPage,
