@@ -31,7 +31,18 @@
 {% endblock primary_content %}
 
 {% block secondary_content %}
-    <div class="content-stack large">{{ block.super }}</div>
+    <div class="content-stack large">
+        {{ block.super }}
+        {% comment %}
+            {% for block in page.page_links %}
+                <c-dwds-card no-shadow="true">
+                    <c-slot name="card_content">
+                        {% include_block block %}
+                    </c-slot>
+                </c-dwds-card>
+            {% endfor %}
+        {% endcomment %}
+    </div>
 {% endblock secondary_content %}
 
 {% block scripts %}

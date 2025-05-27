@@ -878,9 +878,17 @@ class SectorPage(SearchFieldsMixin, BasePage):
         blank=True,
     )
 
+    # page_links = StreamField(
+    #     [
+    #         ("dw_sector_card", dwds_blocks.CustomPageLinkListBlock()),
+    #     ],
+    #     blank=True,
+    # )
+
     content_panels = BasePage.content_panels + [
         FieldPanel("body"),
         FieldPanel("sectors"),
+        # FieldPanel("page_links"),
     ]
 
     indexed_fields = SearchFieldsMixin.indexed_fields + [
