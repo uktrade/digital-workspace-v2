@@ -26,7 +26,7 @@
                     justify-content: space-between">
             <p>Showing {{ pages.start_index }} to {{ pages.end_index }} of {{ pages.paginator.count }} profiles</p>
             <form method="get">
-                <label for="sort_by">Sort by {{ discover_filters.form.sort_by }}</label>
+                <label>Sort by {{ discover_filters.form.sort_by }}</label>
                 <script>
                     const sort_by = document.getElementById("id_sort_by");
                     sort_by.addEventListener("change", (evt) => {
