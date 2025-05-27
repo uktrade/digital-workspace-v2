@@ -28,6 +28,7 @@ from wagtail.utils.decorators import cached_classmethod
 
 import dw_design_system.dwds.components as dwds_blocks
 from content import blocks as content_blocks
+from content.forms import BasePageForm
 from content.utils import (
     get_search_content_for_block,
     manage_excluded,
@@ -157,6 +158,7 @@ class BasePage(Page, Indexed):
         ]
 
     objects = PageManager.from_queryset(BasePageQuerySet)()
+    base_form_class = BasePageForm
 
     legacy_path = models.CharField(
         max_length=500,
@@ -201,6 +203,7 @@ class BasePage(Page, Indexed):
         blank=True,
         help_text="Choose the page author's job role. If you do not want to show a job role, choose 'Hide role'.",
     )
+
     page_author_show_team = models.BooleanField(
         default=False,
         help_text="Choose this option to show the team for the selected role",
