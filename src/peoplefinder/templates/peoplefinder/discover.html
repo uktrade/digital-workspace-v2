@@ -1,4 +1,4 @@
-{% extends "dwds_sidebar_left.html" %}
+{% extends "dwds_content.html" %}
 {% load static %}
 {% load sidebar %}
 
@@ -9,49 +9,71 @@
 {% block breadcrumbs %}
 {% endblock breadcrumbs %}
 
-{% block secondary_content %}
-    {% include "peoplefinder/includes/discover_filters.html" %}
-    {% sidebar %}
-{% endblock secondary_content %}
 
-{% block primary_content_classes %}
-    content-stack large
-{% endblock primary_content_classes %}
 
-{% block primary_content %}
-    {% if pages.object_list %}
-        <div class="dwds-button-group"
-             style="width: 100%;
-                    display: flex;
-                    justify-content: space-between">
-            <p>Showing {{ pages.start_index }} to {{ pages.end_index }} of {{ pages.paginator.count }} profiles</p>
-            <form method="get">
-                <label>Sort by {{ discover_filters.form.sort_by }}</label>
-                <script>
-                    const sort_by = document.getElementById("id_sort_by");
-                    sort_by.addEventListener("change", (evt) => {
-                        evt.target.form.submit();
-                    });
-                </script>
-            </form>
+{% block page_content %}
+    <form method="get">
+        <div class="content-sidebar">
+            <div class="secondary-content">
+                {% block pre_secondary_content %}
+                {% endblock pre_secondary_content %}
+                {% block secondary_content %}
+                    {% include "peoplefinder/includes/discover_filters.html" %}
+                    {% sidebar %}
+                {% endblock secondary_content %}
+                {% block post_secondary_content %}
+                {% endblock post_secondary_content %}
+            </div>
+            <div class="primary-content {% block primary_content_classes %}content-stack large{% endblock primary_content_classes %}">
+                {% block page_title_wrapper %}
+                    <div class="page-title content-stack">
+                        {% block page_title %}
+                            <h1>{% firstof page_title page.title %}</h1>
+                            {% if page.description %}<p class="text-medium">{{ page.description }}</p>{% endif %}
+                        {% endblock page_title %}
+                    </div>
+                {% endblock page_title_wrapper %}
+                {% block pre_primary_content %}
+                {% endblock pre_primary_content %}
+                {% block primary_content %}
+                    {% if pages.object_list %}
+                        <div class="dwds-button-group"
+                            style="width: 100%;
+                                    display: flex;
+                                    justify-content: space-between">
+                            <p>Showing {{ pages.start_index }} to {{ pages.end_index }} of {{ pages.paginator.count }} profiles</p>
+                            <label>Sort by {{ discover_filters.form.sort_by }}</label>
+                            <script>
+                                const sort_by = document.getElementById("id_sort_by");
+                                sort_by.addEventListener("change", (evt) => {
+                                    evt.target.form.submit();
+                                });
+                            </script>
+                        </div>
+                        <div class="content-grid grid-cards-auto-fill">
+                            {% for person in pages.object_list %}
+                                <c-dwds-card>
+                                    <c-slot name="card_content">
+                                        {% url 'profile-view' person.slug as profile_url %}
+                                        {% if person.photo %}
+                                            {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=person.photo.url name=person.full_name title=person.roles_str location=person.uk_office_location.city profile_url=profile_url not_active=person.is_active|add:"-1" %}
+                                        {% else %}
+                                            {% include "dwds/components/profile_info.html" with show_profile_image=True name=person.full_name title=person.roles_str location=person.uk_office_location.city profile_url=profile_url not_active=person.is_active|add:"-1" %}
+                                        {% endif %}
+                                    </c-slot>
+                                </c-dwds-card>
+                            {% endfor %}
+                        </div>
+
+                        {% include "dwds/components/pagination.html" %}
+                    {% else %}
+                        <p>No colleagues match your selected filters</p>
+                    {% endif %}
+                {% endblock primary_content %}
+                {% block post_primary_content %}
+                    {% include 'includes/tag_set.html' %}
+                {% endblock post_primary_content %}
+            </div>
         </div>
-        <div class="content-grid grid-cards-auto-fill">
-            {% for person in pages.object_list %}
-                <c-dwds-card>
-                    <c-slot name="card_content">
-                        {% url 'profile-view' person.slug as profile_url %}
-                        {% if person.photo %}
-                            {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=person.photo.url name=person.full_name title=person.roles_str location=person.uk_office_location.city profile_url=profile_url not_active=person.is_active|add:"-1" %}
-                        {% else %}
-                            {% include "dwds/components/profile_info.html" with show_profile_image=True name=person.full_name title=person.roles_str location=person.uk_office_location.city profile_url=profile_url not_active=person.is_active|add:"-1" %}
-                        {% endif %}
-                    </c-slot>
-                </c-dwds-card>
-            {% endfor %}
-        </div>
-
-        {% include "dwds/components/pagination.html" %}
-    {% else %}
-        <p>No colleagues match your selected filters</p>
-    {% endif %}
-{% endblock primary_content %}
+    </form>
+{% endblock page_content %}
