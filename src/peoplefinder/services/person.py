@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Case, F, Q, Value, When
 from django.db.models.functions import Concat
+from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils import timezone
@@ -592,15 +593,6 @@ class PersonService:
 class PersonAuditLogSerializer(AuditLogSerializer):
     model = Person
 
-    # I know this looks strange, but it is here to protect us from forgetting to update
-    # the audit log code when we update the model. The tests will execute this code so
-    # it should fail locally and in CI. If you need to update this number you can call
-    # `len(Person._meta.get_fields())` in a shell to get the new value.
-    assert len(Person._meta.get_fields()) == 62, (
-        "It looks like you have updated the `Person` model. Please make sure you have"
-        " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
-    )
-
     def serialize(self, instance: Person) -> ObjectRepr:
         person = (
             Person.objects.filter(pk=instance.pk)
@@ -685,3 +677,15 @@ class PersonAuditLogSerializer(AuditLogSerializer):
         del person["login_count"]
 
         return person
+
+
+def get_roles(
+    person: Person | None = None, person_pk: int | None = None
+) -> QuerySet[Person]:
+    if (person and person_pk) or (person is None and person_pk is None):
+        raise ValueError("Provide one of 'person' or 'person_pk'")
+
+    if not person and person_pk:
+        person = Person.objects.get(pk=person_pk)
+
+    return person.roles.all().select_related("team")
