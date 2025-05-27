@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import zoneinfo
 from typing import Iterator, Optional
 
 from django.conf import settings
@@ -256,6 +257,9 @@ def person_photo_path(instance, filename):
 
 def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
+
+
+TIMEZONE_CHOICES = [(tz, tz) for tz in zoneinfo.available_timezones()]
 
 
 class Person(ClusterableModel, Indexed, models.Model):
@@ -551,6 +555,19 @@ class Person(ClusterableModel, Indexed, models.Model):
         null=True,
         max_length=80,
     )
+    role_description = models.TextField(null=True, blank=True)
+    core_responsibilities = models.TextField(null=True, blank=True)
+    contact_for = models.TextField(null=True, blank=True)
+    start_date = models.DateField(default=datetime.datetime.now())
+    based_overseas = models.BooleanField(null=True, blank=True)
+    timezone = models.CharField(
+        default=settings.LOCAL_TIME_ZONE, choices=TIMEZONE_CHOICES
+    )
+    absence_start = models.DateField(null=True, blank=True)
+    absence_end = models.DateField(null=True, blank=True)
+    absence_contact = models.ForeignKey(
+        "Person", models.SET_NULL, null=True, blank=True, related_name="direct_queries"
+    )
 
     objects = models.Manager.from_queryset(PersonQuerySet)()
     active = ActivePeopleManager.from_queryset(PersonQuerySet)()
@@ -833,6 +850,9 @@ class Person(ClusterableModel, Indexed, models.Model):
     def save(self, *args, **kwargs):
         from peoplefinder.services.person import PersonService
 
+        self.start_date = self.created_at.date()
+        if self.uk_office_location:
+            self.based_overseas = False
         self.profile_completion = PersonService().get_profile_completion(person=self)
         return super().save(*args, **kwargs)
 
