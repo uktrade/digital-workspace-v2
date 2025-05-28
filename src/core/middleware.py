@@ -1,5 +1,3 @@
-import zoneinfo
-
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import resolve
@@ -50,13 +48,5 @@ class TimezoneMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.user.is_authenticated:
-            try:
-                profile = request.user.profile
-            except Person.DoesNotExist:
-                timezone.activate(settings.LOCAL_TIME_ZONE)
-            else:
-                timezone.activate(zoneinfo.ZoneInfo(profile.timezone))
-        else:
-            timezone.activate(settings.LOCAL_TIME_ZONE)
+        timezone.activate(settings.LOCAL_TIME_ZONE)
         return self.get_response(request)
