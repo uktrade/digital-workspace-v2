@@ -88,9 +88,10 @@
            data-module="govuk-skip-link"
            class="govuk-skip-link">Skip to main content</a>
         {% flag pf_discover %}
-            {% if request.session.section == "people" %}
+            {% include "includes/section_menu.html" %}
+            {% if SECTION == "people" %}
                 {% include "includes/header_people.html" %}
-            {% elif request.session.section == "working_here" %}
+            {% elif SECTION == "working_here" %}
                 {% include "includes/header_working_here.html" %}
             {% else %}
                 {% include "includes/header_main.html" %}
