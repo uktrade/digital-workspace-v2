@@ -2,10 +2,10 @@ from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import EmptyPage, Paginator
 from django.db import models
-from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.models import Page
 
 import peoplefinder.models as pf_models
+from content.forms import BasePageForm
 from content.models import ContentOwnerMixin, ContentPage
 from core.panels import FieldPanel, PageChooserPanel
 from extended_search.index import DWIndexedField as IndexedField
@@ -57,7 +57,7 @@ def peoplefinder_network_choices():
         yield (network.pk, str(network))
 
 
-class NetworkForm(WagtailAdminPageForm):
+class NetworkForm(BasePageForm):
     is_peoplefinder_network = forms.BooleanField(
         required=False,
         label="Is a People Finder network",

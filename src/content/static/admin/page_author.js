@@ -6,9 +6,17 @@ const showElement = (element) => {
     element.style.display = "block";
 };
 
+const showHideElement = (element, check) => {
+    if (check) {
+        showElement(element)
+    } else {
+        hideElement(element)
+    }
+};
+
 const setRoleSelectOptions = (selectElement, personInput) => {
     const selectedRole = selectElement.value;
-    fetch(`/content/get-user-roles/${personInput.value}/`)
+    fetch(`/content/get-person-roles/${personInput.value}/`)
         .then((response) => response.json())
         .then((data) => {
             selectElement.innerHTML = "";
@@ -47,8 +55,8 @@ const updatePageAuthorVisibility = (
     pageAuthorRoleSelect,
     pageAuthorShowTeamElement,
 ) => {
-    /* 
-    When the value of the selected author changes, 
+    /*
+    When the value of the selected author changes,
     show/hide the role and team elements depending on their values
     */
     if (!pageAuthorInput.value) {
@@ -58,12 +66,7 @@ const updatePageAuthorVisibility = (
     else {
         setRoleSelectOptions(pageAuthorRoleSelect, pageAuthorInput);
         showElement(pageAuthorRoleElement);
-        if (pageAuthorRoleSelect.value) {
-            showElement(pageAuthorShowTeamElement);
-        }
-        else {
-            hideElement(pageAuthorShowTeamElement);
-        }
+        showHideElement(pageAuthorShowTeamElement, pageAuthorRoleSelect.value)
     }
 };
 
@@ -86,10 +89,10 @@ const initialisePageAuthor = () => {
         pageAuthorRoleElement,
         pageAuthorRoleSelect,
         pageAuthorShowTeamElement,
-    );
+    )
 
-    /*  
-    When the value of the selected person changes, 
+    /*
+    When the value of the selected person changes,
     make a request to get roles using the currently selected person ID
     */
     const pageAuthorObserver = new MutationObserver((mutations, observer) => {
@@ -103,22 +106,20 @@ const initialisePageAuthor = () => {
                     pageAuthorRoleElement,
                     pageAuthorRoleSelect,
                     pageAuthorShowTeamElement,
-                );
-                /* 
-                When the value of the selected role changes, 
-                show/hide the show team checkbox depending on the value 
-                */
-                pageAuthorRoleSelect.addEventListener('change', () => {
-                    if (!pageAuthorRoleSelect.value) {
-                        hideElement(pageAuthorShowTeamElement);
-                    } else {
-                        showElement(pageAuthorShowTeamElement);
-                    }
-                });
+                )
             }
         }
     });
     pageAuthorObserver.observe(pageAuthorInput, { attributes: true });
+
+    /*
+    When the value of the selected role changes,
+    show/hide the show team checkbox depending on the value
+    */
+    pageAuthorRoleSelect.addEventListener('change', () => {
+        showHideElement(pageAuthorShowTeamElement, pageAuthorRoleSelect.value)
+    });
+
 };
 
 window.addEventListener("DOMContentLoaded", (event) => {

@@ -4,7 +4,8 @@ from django.conf import settings
 from django.core import paginator
 from django.db.models import OuterRef, Subquery
 from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.forms import Field
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, QueryDict
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import ListView
@@ -76,13 +77,42 @@ class PeopleDirectory(ListView):
 # Identity Service - discovery
 
 
-def get_url_for_removed_filter(request, field, value):
-    get_vars = request.GET.copy()
-    current_field_values = get_vars.pop(field)
-    current_field_values.remove(value)
-    for val in current_field_values:
-        get_vars.update({field: val})
+def get_url_for_removed_filter(
+    request: HttpRequest, field: str | None = None, value: Any | None = None
+) -> str:
+    get_vars: QueryDict = request.GET.copy()
+
+    # changing filters always means going back to page 1
+    if "page" in get_vars.keys():
+        get_vars.pop("page")
+
+    if field is not None:
+        current_field_values: list = get_vars.pop(field)
+        current_field_values.remove(str(value))
+        for val in current_field_values:
+            get_vars.update({field: val})
     return request.build_absolute_uri(f"{request.path}?{get_vars.urlencode()}")
+
+
+def get_display_label_value(field_name: str, field: Field, value: str):
+    if value == "null":
+        return "Not set"
+
+    if field_name == "profile_completion":
+        if value == "full":
+            return "Complete"
+        return "Incomplete"
+
+    if field_name == "is_active":
+        if value == "True":
+            return "Active"
+        return "Inactive"
+
+    if field_name == "teams":
+        for option in field.choices:
+            if str(option[0]) == value:
+                return option[1]
+    return value
 
 
 def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
@@ -97,19 +127,6 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     discover_filters = directory_service.get_people_with_filters(
         filter_options=request.GET, user=request.user
     )
-    selected_filters = {
-        field_name: {
-            "label": discover_filters.form.fields[field_name].label,
-            "values": [
-                {
-                    "label": value,
-                    "url": get_url_for_removed_filter(request, field_name, value),
-                }
-                for value in values
-            ],
-        }
-        for field_name, values in discover_filters.applied_filters().items()
-    }
 
     pr = paginator.Paginator(discover_filters.qs, per_page=30)
     page: int = int(request.GET.get("page", default=1))
@@ -117,6 +134,25 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         paginator_page = pr.page(page)
     except paginator.EmptyPage:
         paginator_page = None
+
+    selected_filters = {
+        field_name: {
+            "label": discover_filters.form.fields[field_name].label,
+            "values": [
+                {
+                    "label": get_display_label_value(
+                        field_name=field_name,
+                        field=discover_filters.form.fields[field_name],
+                        value=value,
+                    ),
+                    "url": get_url_for_removed_filter(request, field_name, value),
+                }
+                for value in values
+            ],
+        }
+        for field_name, values in discover_filters.applied_filters().items()
+        if field_name != "sort_by"
+    }
 
     context = {
         "page_title": "Find colleagues",
