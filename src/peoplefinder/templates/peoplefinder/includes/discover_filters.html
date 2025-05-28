@@ -7,7 +7,8 @@
             <h4>{{ filter_obj.label|capfirst }}</h4>
             {% for value in filter_obj.values %}
                 <div>
-                    <a href="{{ value.url }}">{{ value.label }} X</a>
+                    <a class="dwds-button dwds-button--secondary dwds-button--inline dwds-button--link content-with-icon small-gap" href="{{ value.url }}">
+                        {% include 'dwds/icons/cross.html' with small=True %} {{ value.label }}</a>
                 </div>
             {% endfor %}
         {% endfor %}
