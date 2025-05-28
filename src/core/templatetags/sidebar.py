@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils.safestring import SafeString
 from wagtail.models import Page
 
+from content.models import SectionPage
 from core import flags
 from core.models.models import SiteAlertBanner
 from core.utils import flag_is_active, get_all_feature_flags
@@ -254,7 +255,7 @@ class UsefulLinks(SidebarPart):
         self.page = self.context.get("self")
         self.useful_links = getattr(self.page, "useful_links", [])
         self.child_pages = []
-        if isinstance(self.page, (Network, NetworksHome)):
+        if isinstance(self.page, (Network, NetworksHome, SectionPage)):
             self.child_pages = (
                 self.page.get_children()
                 .live()
@@ -263,6 +264,7 @@ class UsefulLinks(SidebarPart):
                     content_type__in=[
                         ContentType.objects.get_for_model(model=NetworksHome),
                         ContentType.objects.get_for_model(model=Network),
+                        ContentType.objects.get_for_model(model=SectionPage),
                     ]
                 )
             )

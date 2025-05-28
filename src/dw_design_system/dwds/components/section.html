@@ -1,9 +1,9 @@
 {% load wagtailcore_tags %}
 
 <div class="content-stack">
-    {% if sector_title %}<h2>{{ sector_title }}</h2>{% endif %}
+    {% if section_title %}<h2>{{ section_title }}</h2>{% endif %}
     <div class="content-grid grid-cards">
-        {% for block in sector_elements %}
+        {% for block in section_elements %}
             <c-dwds-card>
                 <c-slot name="card_content">
                     {% include_block block %}
