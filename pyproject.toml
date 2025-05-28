@@ -92,7 +92,7 @@ wagtail-factories = "^4.0.0"
 # Util
 bpython = "^0.24"
 django-extensions = "^3.2.1"
-django-silk = "^5.0.4"
+django-silk = "^5.3.2"
 django-debug-toolbar = "^4.4.6"
 werkzeug = "^3.0.6"
 blessings = "^1.7"

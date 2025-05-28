@@ -28,6 +28,7 @@ from wagtail.utils.decorators import cached_classmethod
 
 import dw_design_system.dwds.components as dwds_blocks
 from content import blocks as content_blocks
+from content.forms import BasePageForm
 from content.utils import (
     get_search_content_for_block,
     manage_excluded,
@@ -157,6 +158,7 @@ class BasePage(Page, Indexed):
         ]
 
     objects = PageManager.from_queryset(BasePageQuerySet)()
+    base_form_class = BasePageForm
 
     legacy_path = models.CharField(
         max_length=500,
@@ -201,6 +203,7 @@ class BasePage(Page, Indexed):
         blank=True,
         help_text="Choose the page author's job role. If you do not want to show a job role, choose 'Hide role'.",
     )
+
     page_author_show_team = models.BooleanField(
         default=False,
         help_text="Choose this option to show the team for the selected role",
@@ -807,6 +810,89 @@ class NavigationPage(SearchFieldsMixin, BasePage):
     indexed_fields = SearchFieldsMixin.indexed_fields + [
         IndexedField("primary_elements"),
         IndexedField("secondary_elements"),
+    ]
+
+    def get_template(self, request, *args, **kwargs):
+        return self.template
+
+    def get_context(self, request, *args, **kwargs):
+        context = super().get_context(request, *args, **kwargs)
+
+        return context
+
+    def full_clean(self, *args, **kwargs):
+        self._generate_search_field_content()
+        super().full_clean(*args, **kwargs)
+
+
+class SectorPage(SearchFieldsMixin, BasePage):
+    template = "content/sector_page.html"
+
+    search_stream_fields: list[str] = [
+        "sectors",
+    ]
+
+    body = StreamField(
+        [
+            ("heading2", content_blocks.Heading2Block()),
+            ("heading3", content_blocks.Heading3Block()),
+            ("heading4", content_blocks.Heading4Block()),
+            ("heading5", content_blocks.Heading5Block()),
+            (
+                "text_section",
+                content_blocks.TextBlock(
+                    blank=True,
+                    help_text="""Some text to describe what this section is about (will be displayed above the list of child pages)""",
+                ),
+            ),
+            ("image", content_blocks.ImageBlock()),
+            ("image_with_text", content_blocks.ImageWithTextBlock()),
+            ("quote", content_blocks.QuoteBlock()),
+            (
+                "embed_video",
+                content_blocks.EmbedVideoBlock(help_text="""Embed a video"""),
+            ),
+            (
+                "media",
+                content_blocks.InternalMediaBlock(
+                    help_text="""Link to a media block"""
+                ),
+            ),
+            (
+                "data_table",
+                content_blocks.DataTableBlock(
+                    help_text="""ONLY USE THIS FOR TABLULAR DATA, NOT FOR FORMATTING"""
+                ),
+            ),
+            ("person_banner", content_blocks.PersonBanner()),
+        ],
+        use_json_field=True,
+        blank=True,
+        null=True,
+    )
+
+    sectors = StreamField(
+        [
+            ("dw_sector_card", dwds_blocks.SectorCardBlock()),
+        ],
+        blank=True,
+    )
+
+    # page_links = StreamField(
+    #     [
+    #         ("dw_sector_card", dwds_blocks.CustomPageLinkListBlock()),
+    #     ],
+    #     blank=True,
+    # )
+
+    content_panels = BasePage.content_panels + [
+        FieldPanel("body"),
+        FieldPanel("sectors"),
+        # FieldPanel("page_links"),
+    ]
+
+    indexed_fields = SearchFieldsMixin.indexed_fields + [
+        IndexedField("sectors"),
     ]
 
     def get_template(self, request, *args, **kwargs):
