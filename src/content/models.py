@@ -357,22 +357,21 @@ class BasePage(Page, Indexed):
 
     def get_first_publisher(self) -> Optional[UserModel]:
         """Return the first publisher of the page or None."""
-        first_revision_with_user = (
+        if first_revision_with_user := (
             self.revisions.exclude(user=None).order_by("created_at", "id").first()
-        )
-
-        if first_revision_with_user:
+        ):
             return first_revision_with_user.user
 
         return None
 
     def get_latest_publisher(self) -> Optional[UserModel]:
         """Return the latest publisher of the page or None."""
-        latest_revision_with_user = (
+        if latest_revision_with_user := (
             self.revisions.exclude(user=None).order_by("created_at", "id").last()
-        )
-
-        return latest_revision_with_user.user if latest_revision_with_user else None
+        ):
+            return latest_revision_with_user.user
+    
+        return None
 
     @property
     def days_since_last_published(self):
