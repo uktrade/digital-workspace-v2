@@ -1,8 +1,9 @@
 from django.core.exceptions import ValidationError
-from wagtail.admin.forms import WagtailAdminPageForm
+
+from content.forms import BasePageForm
 
 
-class HomePageForm(WagtailAdminPageForm):
+class HomePageForm(BasePageForm):
     def clean(self):
         cleaned_data = super().clean()
 
