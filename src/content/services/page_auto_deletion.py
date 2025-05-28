@@ -67,13 +67,14 @@ def get_pages(
         cutoff = now() - timedelta(days=365)
 
     pages_qs = BasePage.objects.not_exact_type(*PAGES_TO_EXCLUDE).filter(
-        Q(confirmed_needed_at__lte=cutoff) | Q(confirmed_needed_at__isnull=True),
-        last_published_at__lte=cutoff,
+        Q(confirmed_needed_at__lt=cutoff) | Q(confirmed_needed_at__isnull=True),
+        last_published_at__lt=cutoff,
+        archive_notification_sent_at__gte=now() - timedelta(days=30)
     )
 
     if archive:
         pages_qs = pages_qs.filter(
-            archive_notification_sent_at__lte=now() - timedelta(days=30)
+            archive_notification_sent_at__lt=now() - timedelta(days=30)
         )
 
     return pages_qs
