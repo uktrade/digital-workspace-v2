@@ -4,45 +4,24 @@ from typing import Optional
 from django.db.models import Q, QuerySet
 from django.utils.timezone import now
 
-from about_us.models import AboutUsHome
-from content.models import BasePage, BlogIndex, NavigationPage
-from country_fact_sheet.models import CountryFactSheetHome
-from events.models import EventsHome
-from home.models import HomePage
-from networks.models import NetworksHome
-from news.models import NewsHome
+from content.models import BasePage, BlogPost
+from networks.models import NetworkContentPage
+from news.models import NewsPage
 from peoplefinder.models import Person
-from tools.models import Tool, ToolsHome
 from working_at_dit.models import (
-    GuidanceHome,
-    HowDoIHome,
-    PoliciesAndGuidanceHome,
-    PoliciesHome,
-    Topic,
-    TopicHome,
-    WorkingAtDITHome,
+    Guidance,
+    HowDoI,
+    Policy,
 )
 
 
-# This list will need to be discussed with the wider team
-PAGES_TO_EXCLUDE = [
-    AboutUsHome,
-    BlogIndex,
-    CountryFactSheetHome,
-    EventsHome,
-    GuidanceHome,
-    HomePage,
-    HowDoIHome,
-    NavigationPage,
-    NetworksHome,
-    NewsHome,
-    PoliciesAndGuidanceHome,
-    PoliciesHome,
-    Tool,
-    ToolsHome,
-    Topic,
-    TopicHome,
-    WorkingAtDITHome,
+PAGES_TO_INCLUDE = [
+    BlogPost,
+    Guidance,
+    HowDoI,
+    NetworkContentPage,
+    NewsPage,
+    Policy,
 ]
 
 
@@ -66,7 +45,7 @@ def get_pages(
     if cutoff is None:
         cutoff = now() - timedelta(days=365)
 
-    pages_qs = BasePage.objects.not_exact_type(*PAGES_TO_EXCLUDE).filter(
+    pages_qs = BasePage.objects.exact_type(*PAGES_TO_INCLUDE).filter(
         Q(confirmed_needed_at__lt=cutoff) | Q(confirmed_needed_at__isnull=True),
         last_published_at__lt=cutoff,
         archive_notification_sent_at__gte=now() - timedelta(days=30),

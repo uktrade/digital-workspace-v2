@@ -370,7 +370,7 @@ class BasePage(Page, Indexed):
             self.revisions.exclude(user=None).order_by("created_at", "id").last()
         ):
             return latest_revision_with_user.user
-    
+
         return None
 
     @property
