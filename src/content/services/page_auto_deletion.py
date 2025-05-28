@@ -1,4 +1,5 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
+from typing import Optional
 
 from django.db.models import Q, QuerySet
 from django.utils.timezone import now
@@ -48,26 +49,39 @@ PAGES_TO_EXCLUDE = [
 CUTOFF = now() - timedelta(days=365)
 
 
-# ask if this function is fine or if we want to pass a cutoff date a parameter to make it more flexible
-# eg cutoff_date=None -> if cutoff_date is None: cutoff_date = now() - timedelta(days=365)
-def get_pages_to_update() -> QuerySet[BasePage]:
-    return BasePage.objects.not_exact_type(*PAGES_TO_EXCLUDE).filter(
-        Q(confirmed_needed_at__lte=CUTOFF) | Q(confirmed_needed_at__isnull=True),
-        last_published_at__lte=CUTOFF,
+def get_pages(
+    cutoff: Optional[datetime] = None, archive: bool = False
+) -> QuerySet[BasePage]:
+    """
+    Returns a queryset of pages that may need to be archived.
+
+    Pages are included if their `confirmed_needed_at` is older than the cutoff
+    and their `last_published_at` is also older than the cutoff.
+    By default, the cutoff is 1 year ago.
+
+    If `archive` is True, the results are further filtered to include only
+    pages for which an archive notification was sent 30 or more days ago —
+    indicating the page has not been updated since the notification was sent.
+    """
+    if cutoff is None:
+        cutoff = now() - timedelta(days=365)
+
+    pages_qs = BasePage.objects.not_exact_type(*PAGES_TO_EXCLUDE).filter(
+        Q(confirmed_needed_at__lte=cutoff) | Q(confirmed_needed_at__isnull=True),
+        last_published_at__lte=cutoff,
     )
 
+    if archive:
+        pages_qs = pages_qs.filter(
+            archive_notification_sent_at__lte=now() - timedelta(days=30)
+        )
 
-def update_confirm_needed_at(page: BasePage) -> None:
+    return pages_qs
+
+
+def confirm_needed(page: BasePage) -> None:
     page.confirmed_needed_at = now()
     page.save(update_fields=["confirmed_needed_at"])
-
-
-def get_pages_to_archive() -> QuerySet[BasePage]:
-    return BasePage.objects.not_exact_type(*PAGES_TO_EXCLUDE).filter(
-        Q(confirmed_needed_at_isnull=True) | Q(confirmed_needed_at__lte=CUTOFF),
-        archive_notification_sent_at__lte=now() - timedelta(days=30),
-        last_published_at__lte=CUTOFF,
-    )
 
 
 def get_people_to_contact(page: BasePage) -> list[Person]:
@@ -75,18 +89,19 @@ def get_people_to_contact(page: BasePage) -> list[Person]:
     Returns a unique list of people related to page in order of importance.
     """
     people = []
-    if content_owner := getattr(page, "content_owner", None):
-        content_owner not in people and people.append(content_owner)
 
-    if page.page_author:
-        page.page_author not in people and people.append(page.page_author)
+    content_owner = getattr(page, "content_owner", None)
+    if content_owner and content_owner not in people:
+        people.append(content_owner)
 
-    if page.get_latest_publisher():
-        page.get_latest_publisher().profile not in people and people.append(
-            page.get_latest_publisher().profile
-        )
+    if page.page_author and page.page_author not in people:
+        people.append(page.page_author)
 
-    if page.owner:
-        page.owner not in people and people.append(page.owner.profile)
+    latest_publisher = page.get_latest_publisher()
+    if latest_publisher and latest_publisher.profile not in people:
+        people.append(latest_publisher.profile)
+
+    if page.owner and page.owner not in people:
+        people.append(page.owner.profile)
 
     return people
