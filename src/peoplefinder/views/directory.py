@@ -128,7 +128,7 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         filter_options=request.GET, user=request.user
     )
 
-    pr = paginator.Paginator(discover_filters.qs, per_page=1)
+    pr = paginator.Paginator(discover_filters.qs, per_page=30)
     page: int = int(request.GET.get("page", default=1))
     try:
         paginator_page = pr.page(page)
