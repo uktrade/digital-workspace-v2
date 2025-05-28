@@ -69,7 +69,7 @@ def get_pages(
     pages_qs = BasePage.objects.not_exact_type(*PAGES_TO_EXCLUDE).filter(
         Q(confirmed_needed_at__lt=cutoff) | Q(confirmed_needed_at__isnull=True),
         last_published_at__lt=cutoff,
-        archive_notification_sent_at__gte=now() - timedelta(days=30)
+        archive_notification_sent_at__gte=now() - timedelta(days=30),
     )
 
     if archive:
