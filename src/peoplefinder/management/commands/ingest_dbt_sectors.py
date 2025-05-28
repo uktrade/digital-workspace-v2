@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
-
-from peoplefinder.ingest.utils import DBTSectorsS3Ingest
+from src.peoplefinder.ingest import DBTSectorsS3Ingest
 
 
 class Command(BaseCommand):

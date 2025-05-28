@@ -1,9 +1,9 @@
 from django.core.management import call_command
+from src.peoplefinder.ingest import DBTSectorsS3Ingest, UkOfficeLocationsS3Ingest
 
 from config.celery import celery_app
 from core.utils import cache_lock
 from feedback import utils
-from peoplefinder.ingest.utils import DBTSectorsS3Ingest, UkOfficeLocationsS3Ingest
 from peoplefinder.services.uk_staff_locations import UkStaffLocationService
 
 

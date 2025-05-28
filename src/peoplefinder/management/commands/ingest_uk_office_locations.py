@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
-
-from peoplefinder.ingest.utils import UkOfficeLocationsS3Ingest
+from src.peoplefinder.ingest import UkOfficeLocationsS3Ingest
 
 
 class Command(BaseCommand):
