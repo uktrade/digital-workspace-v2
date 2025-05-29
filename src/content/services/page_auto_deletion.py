@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
+from django.conf import settings
 from django.db.models import Q, QuerySet
 from django.utils.timezone import now
 
@@ -50,10 +51,10 @@ def get_pages(
     indicating the page has not been updated since the notification was sent.
     """
     if pre_notification_cutoff is None:
-        pre_notification_cutoff = now() - timedelta(days=365)
+        pre_notification_cutoff = now() - timedelta(days=settings.PAGE_AUTODELETION_PRE_NOTIFICATION_CUTOFF)
 
     if post_notification_cutoff is None:
-        post_notification_cutoff = now() - timedelta(days=30)
+        post_notification_cutoff = now() - timedelta(days=settings.PAGE_AUTODELETION_POST_NOTIFICATION_CUTOFF)
 
     pages_qs = BasePage.objects.exact_type(*PAGES_TO_INCLUDE).filter(
         Q(confirmed_needed_at__lt=pre_notification_cutoff)
