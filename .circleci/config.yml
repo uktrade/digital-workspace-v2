@@ -1,79 +1,76 @@
 version: 2
 jobs:
-  build-and-test:
-    machine:
-      image: ubuntu-2204:2023.04.2
-      docker_layer_caching: true
-    steps:
-      - checkout
-      - run:
-          name: Copy env file
-          command: cp .env.ci .env
-      - run:
-          name: build containers
-          command: make build
-      - run:
-          name: Ruff version
-          command: ruff --version
-      - run:
-          name: check linting
-          command: make check
-      - run:
-          name: run containers
-          command: docker-compose up -d
-      - run:
-          name: check for missing migrations
-          command: make checkmigrations
-      - run:
-          name: build frontend
-          command: |
-            nvm install 20
-            npm ci
-            npm run build
-      - run:
-          name: run unit tests
-          command: make test
-      - run:
-          name: Publish unit test coverage
-          command: |
-            wget -O codecov.sh https://codecov.io/bash
-            bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
-  e2e-tests:
-    machine:
-      image: ubuntu-2204:2023.04.2
-      docker_layer_caching: true
-    steps:
-      - checkout
-      - run:
-          name: Copy env file
-          command: cp .env.ci .env
-      - run:
-          name: build frontend
-          command: |
-            nvm install 20
-            npm ci
-            npm run build
-      - run:
-          name: build containers
-          command: make build-all
-      - run:
-          name: run e2e tests (playwright)
-          command: make test-e2e
-      - run:
-          name: Publish e2e test coverage
-          command: |
-            wget -O codecov.sh https://codecov.io/bash
-            bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
+    build-and-test:
+        machine:
+            image: ubuntu-2204:2023.04.2
+            docker_layer_caching: true
+        steps:
+            - checkout
+            - run:
+                  name: Copy env file
+                  command: cp .env.ci .env
+            - run:
+                  name: build containers
+                  command: make build
+            - run:
+                  name: check linting
+                  command: make check
+            - run:
+                  name: run containers
+                  command: docker-compose up -d
+            - run:
+                  name: check for missing migrations
+                  command: make checkmigrations
+            - run:
+                  name: build frontend
+                  command: |
+                      nvm install 20
+                      npm ci
+                      npm run build
+            - run:
+                  name: run unit tests
+                  command: make test
+            - run:
+                  name: Publish unit test coverage
+                  command: |
+                      wget -O codecov.sh https://codecov.io/bash
+                      bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
+    e2e-tests:
+        machine:
+            image: ubuntu-2204:2023.04.2
+            docker_layer_caching: true
+        steps:
+            - checkout
+            - run:
+                  name: Copy env file
+                  command: cp .env.ci .env
+            - run:
+                  name: build frontend
+                  command: |
+                      nvm install 20
+                      npm ci
+                      npm run build
+            - run:
+                  name: build containers
+                  command: make build-all
+            - run:
+                  name: run e2e tests (playwright)
+                  command: make test-e2e
+            - run:
+                  name: Publish e2e test coverage
+                  command: |
+                      wget -O codecov.sh https://codecov.io/bash
+                      bash ./codecov.sh -t ${CODECOV_TOKEN} -s test-reports -f "*.xml"
 
 workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build-and-test
-      - e2e-tests:
-          filters:
-            branches:
-              only:
-                - main
-                - master
-                - /.*e2e.*/ # run on any branch containing "e2e" in the name
+    version: 2
+    build_and_test:
+        jobs:
+            - build-and-test
+            - e2e-tests:
+                  filters:
+                      branches:
+                          only:
+                              - main
+                              - master
+                              - /.*e2e.*/ # run on any branch containing "e2e" in the name

@@ -1,9 +1,9 @@
 import json
 
-from django.conf import settings
-
 from data_flow_s3_import.ingest import DataFlowS3IngestToModel
 from data_flow_s3_import.types import PrimaryKey
+from django.conf import settings
+
 from peoplefinder.models import DBTSector, UKOfficeLocation
 
 
