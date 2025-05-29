@@ -5,23 +5,24 @@
         <a class="profile-link"
            href="{% url 'profile-view' peoplefinder_profile.slug %}"
            data-testid="view-profile">
-            <div class="profile-details">
-                <span class="salutation">Hi {{ peoplefinder_profile.get_first_name_display|truncatechars:25 }}</span>
-                <span class="profile-prompt"><span>View your profile</span>
-                {% if peoplefinder_profile.profile_completion < 100 %}
-                    <span>({{ peoplefinder_profile.profile_completion|floatformat:0 }}% complete)</span>
-                {% endif %}
-            </span>
-        </div>
-        {% if peoplefinder_profile.photo %}
-            <img src="{{ peoplefinder_profile.photo_small.url }}"
-                 alt="Profile image of {{ peoplefinder_profile.full_name }}"
-                 class="profile-image">
-        {% else %}
-            <img src="{% webpack_static 'no-photo.png' %}"
-                 alt="No photo"
-                 class="profile-image">
-        {% endif %}
-    </a>
-{% endif %}
+            {% if not minimal %}
+                <div class="profile-details">
+                    <span class="salutation">Hi {{ peoplefinder_profile.get_first_name_display|truncatechars:25 }}</span>
+                    <span class="profile-prompt">View your profile</span>
+                    {% if peoplefinder_profile.profile_completion < 100 %}
+                        <span>({{ peoplefinder_profile.profile_completion|floatformat:0 }}% complete)</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if peoplefinder_profile.photo %}
+                <img src="{{ peoplefinder_profile.photo_small.url }}"
+                    alt="Profile image of {{ peoplefinder_profile.full_name }}"
+                    class="profile-image">
+            {% else %}
+                <img src="{% webpack_static 'no-photo.png' %}"
+                    alt="No photo"
+                    class="profile-image">
+            {% endif %}
+        </a>
+    {% endif %}
 </div>

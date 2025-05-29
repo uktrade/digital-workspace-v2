@@ -1,0 +1,39 @@
+<nav id="section-nav">
+    <a href="/">home</a>
+    <a href="/working-at-dbt">working here</a>
+    <a href="/people">find people</a>
+</nav>
+
+<style>
+    #section-nav {
+        position: fixed;
+        top: 0;
+        gap: 2rem;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        background-color: var(--color-background);
+
+        a {
+            text-transform: uppercase;
+            text-decoration: none;
+            font-weight: 700;
+        }
+    }
+    #section-nav-hamburger {
+        display: none;
+    }
+    @media (max-width: 1250px) {
+        #section-nav {
+            display: none;
+        }
+        #section-nav.active {
+            display: flex;
+        }
+        #section-nav-hamburger {
+            display: inherit;
+        }
+    }
+</style>

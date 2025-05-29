@@ -1,0 +1,26 @@
+{% load menu_tags %}
+{% load render_bundle webpack_static from webpack_loader %}
+
+<header role="banner">
+    <div class="dwds-container dwds-stack">
+        <div class="content-cluster" style="justify-content: space-between; align-items: center;">
+            <div class="content-cluster">
+                <a href="#" id="section-nav-hamburger">=</a>
+                <a href="/" class="logo">
+                    <img aria-hidden="true"
+                        src="{% webpack_static 'dbt-logo-inline.svg' %}"
+                        alt="Department for Business & Trade logo" />
+                        <span class="hidden">Department for Business &amp; Trade</span>
+                    </span>
+                </a>
+                <a href="/people">Find people</a>
+            </div>
+            <div class="cluster">
+                {% include 'includes/profile_panel.html' with minimal=True %}
+            </div>
+        </div>
+        <nav>
+            {% flat_menu "people" max_levels=1 template="menus/main_menu.html" apply_active_classes=True %}
+        </nav>
+    </div>
+</header>

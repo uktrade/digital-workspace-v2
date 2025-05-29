@@ -87,7 +87,18 @@
         <a href="#main-content"
            data-module="govuk-skip-link"
            class="govuk-skip-link">Skip to main content</a>
-        {% include "includes/header.html" %}
+        {% flag pf_discover %}
+            {% include "includes/section_menu.html" %}
+            {% if SECTION == "people" %}
+                {% include "includes/header_people.html" %}
+            {% elif SECTION == "working_here" %}
+                {% include "includes/header_working_here.html" %}
+            {% else %}
+                {% include "includes/header_main.html" %}
+            {% endif %}
+        {% else %}
+            {% include "includes/header.html" %}
+        {% endflag %}
         {% block pre_main %}
             <div class="dwds-container">
             {% endblock pre_main %}
