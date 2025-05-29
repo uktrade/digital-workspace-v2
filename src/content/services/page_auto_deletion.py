@@ -51,10 +51,14 @@ def get_pages(
     indicating the page has not been updated since the notification was sent.
     """
     if pre_notification_cutoff is None:
-        pre_notification_cutoff = now() - timedelta(days=settings.PAGE_AUTODELETION_PRE_NOTIFICATION_CUTOFF)
+        pre_notification_cutoff = now() - timedelta(
+            days=settings.PAGE_AUTODELETION_PRE_NOTIFICATION_CUTOFF
+        )
 
     if post_notification_cutoff is None:
-        post_notification_cutoff = now() - timedelta(days=settings.PAGE_AUTODELETION_POST_NOTIFICATION_CUTOFF)
+        post_notification_cutoff = now() - timedelta(
+            days=settings.PAGE_AUTODELETION_POST_NOTIFICATION_CUTOFF
+        )
 
     pages_qs = BasePage.objects.exact_type(*PAGES_TO_INCLUDE).filter(
         Q(confirmed_needed_at__lt=pre_notification_cutoff)
