@@ -6,12 +6,13 @@ class FilterSet(django_filters.FilterSet):
         return any(self.form.changed_data)
 
     def applied_filters(self) -> dict[str, list[str]]:
-        return {
-            field_name: values
-            for field_name, values in self.form.data.lists()
-            if self.form.data.getlist(field_name)
-            not in [
-                [],
-                [""],
-            ]
-        }
+        try:
+            k_v_pairs = self.form.data.lists()
+        except AttributeError:
+            k_v_pairs = self.form.data.items()
+
+        output = {}
+        for key, values in k_v_pairs:
+            if key in self.form.fields.keys() and values not in [[], [""]]:
+                output[key] = values
+        return output
