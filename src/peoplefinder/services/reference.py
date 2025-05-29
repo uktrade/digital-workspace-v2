@@ -1,5 +1,3 @@
-from ast import Or
-from typing import OrderedDict
 from core.utils import add_null_option, cache_for, get_data_for_django_filters_choices
 from peoplefinder.models import (
     AdditionalRole,
@@ -62,6 +60,7 @@ def get_teams() -> list[tuple[str, str]]:
     """
     Starting with TeamTree for hierarchical ordering, we then recurse down to ensure children are under their parent item
     """
+
     def get_children_of(team, qs):
         return [r.child for r in qs.filter(parent__pk=team.pk)]
 
@@ -70,7 +69,11 @@ def get_teams() -> list[tuple[str, str]]:
         for child in get_children_of(team, qs):
             add_to_dict(qs, data_dict, child)
 
-    qs = TeamTree.objects.prefetch_related("parent", "child").order_by("parent", "child").filter(depth=1)
+    qs = (
+        TeamTree.objects.prefetch_related("parent", "child")
+        .order_by("parent", "child")
+        .filter(depth=1)
+    )
     data: dict = {}
     for relation in qs:
         if relation.parent.pk not in data.keys():
