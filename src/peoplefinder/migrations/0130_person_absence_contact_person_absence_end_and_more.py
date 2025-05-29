@@ -5,6 +5,15 @@ import django.utils.timezone
 from django.db import migrations, models
 
 
+def insert_data_to_new_fields(apps, schema_editor):
+    Person = apps.get_model("peoplefinder", "Person")
+    for person in Person.objects.all():
+        if person.uk_office_location:
+            person.based_overseas = False
+        person.start_date = person.created_at
+        person.save(update_fields=["start_date", "based_overseas"])
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -680,5 +689,8 @@ class Migration(migrations.Migration):
                 ],
                 default="Europe/London",
             ),
+        ),
+        migrations.RunPython(
+            code=insert_data_to_new_fields,
         ),
     ]
