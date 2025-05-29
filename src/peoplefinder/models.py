@@ -1,7 +1,9 @@
 import datetime
 import uuid
+import zoneinfo
 from typing import Iterator, Optional
 
+from data_flow_s3_import.models import IngestedModel
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -19,7 +21,7 @@ from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 from modelcluster.models import ClusterableModel
 from wagtail.search.queryset import SearchableQuerySetMixin
 
-from core.models import IngestedModel
+from core.models import IngestedModel as OldIngestedModel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields, ScoreFunction
 
@@ -173,7 +175,8 @@ class Building(models.Model):
         return self.name
 
 
-class UkStaffLocation(IngestedModel):
+# Original UKStaffLocation model, using the 'is_active' flag
+class UkStaffLocation(OldIngestedModel):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["code"], name="unique_location_code"),
@@ -188,6 +191,51 @@ class UkStaffLocation(IngestedModel):
 
     def __str__(self) -> str:
         return self.name
+
+
+# New Office location model, using the 'exists_in_last_import' flag
+class UKOfficeLocation(IngestedModel):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["code"], name="unique_office_location_code"
+            ),
+        ]
+        ordering = ["name"]
+
+    code = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    organisation = models.CharField(max_length=255)
+    building_name = models.CharField(max_length=255, blank=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class DBTSector(IngestedModel):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["sector_id"], name="unique_sector_id"),
+        ]
+        ordering = ["sector_id"]
+
+    sector_id = models.CharField(max_length=255, unique=True)
+    full_sector_name = models.CharField(max_length=255, blank=True, null=True)
+    sector_cluster_name_april_2023_onwards = models.CharField(
+        max_length=255, blank=True, null=True
+    )
+    sector_cluster_name_before_april_2023 = models.CharField(
+        max_length=255, blank=True, null=True
+    )
+    sector_name = models.CharField(max_length=255, blank=True, null=True)
+    sub_sector_name = models.CharField(max_length=255, blank=True, null=True)
+    sub_sub_sector_name = models.CharField(max_length=255, blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return self.full_sector_name
 
 
 class ActivePeopleManager(models.Manager):
@@ -256,6 +304,9 @@ def person_photo_path(instance, filename):
 
 def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
+
+
+TIMEZONE_CHOICES = sorted(((tz, tz)) for tz in zoneinfo.available_timezones())
 
 
 class Person(ClusterableModel, Indexed, models.Model):
@@ -341,6 +392,16 @@ class Person(ClusterableModel, Indexed, models.Model):
     }
     uk_office_location = models.ForeignKey(
         "UkStaffLocation",
+        verbose_name="What is your office location?",
+        help_text="Your base location as per your contract",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    new_uk_office_location = models.ForeignKey(
+        "UkOfficeLocation",
         verbose_name="What is your office location?",
         help_text="Your base location as per your contract",
         on_delete=models.SET_NULL,
@@ -550,6 +611,20 @@ class Person(ClusterableModel, Indexed, models.Model):
         blank=True,
         null=True,
         max_length=80,
+    )
+    role_description = models.TextField(null=True, blank=True)
+    core_responsibilities = models.TextField(null=True, blank=True)
+    contact_for = models.TextField(null=True, blank=True)
+    start_date = models.DateField(auto_now_add=True)
+    based_overseas = models.BooleanField(null=True, blank=True)
+    timezone = models.CharField(
+        choices=TIMEZONE_CHOICES,
+        default=settings.LOCAL_TIME_ZONE,
+    )
+    absence_start = models.DateField(null=True, blank=True)
+    absence_end = models.DateField(null=True, blank=True)
+    absence_contact = models.ForeignKey(
+        "Person", models.SET_NULL, null=True, blank=True, related_name="direct_queries"
     )
 
     objects = models.Manager.from_queryset(PersonQuerySet)()
