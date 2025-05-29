@@ -949,6 +949,10 @@ class Person(ClusterableModel, Indexed, models.Model):
 
         return mark_safe("<br>".join(location_parts))  # noqa: S308
 
+    def get_location_summary_display(self) -> Optional[str]:
+        if self.uk_office_location:
+            return self.uk_office_location.city
+
     def get_manager_display(self) -> Optional[str]:
         if self.manager:
             return mark_safe(  # noqa: S308
