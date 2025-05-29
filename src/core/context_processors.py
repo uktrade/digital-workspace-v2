@@ -7,7 +7,7 @@ def global_context(request):
     section = "main"
     if "working-at-dbt" in request.path:
         section = "working_here"
-    if "peoplefinder" in request.path:
+    if "people" in request.path:
         section = "people"
     return {
         "SECTION": section,
