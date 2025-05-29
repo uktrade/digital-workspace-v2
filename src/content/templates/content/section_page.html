@@ -18,12 +18,18 @@
 {% endblock page_title_wrapper %}
 
 {% block primary_content %}
-    <div class="primary-content dwds-content-page content-stack small">
-        {% for block in page.body %}
-            {% include_block block %}
-        {% endfor %}
-    </div>
-    <div class="content-stack">
+
+
+    <c-dwds-card no-shadow="true">
+        <c-slot name="card_content">
+            <div class="content-item content-main">
+                {% for block in page.body %}
+                    {% include_block block %}
+                {% endfor %}
+            </div>
+        </c-slot>
+    </c-dwds-card>
+    <div class="content-stack large">
         {% for block in page.sections %}
             {% include_block block %}
         {% endfor %}
