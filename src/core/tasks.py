@@ -1,4 +1,5 @@
 from django.core.management import call_command
+from src.peoplefinder.ingest import DBTSectorsS3Ingest, UkOfficeLocationsS3Ingest
 
 from config.celery import celery_app
 from core.utils import cache_lock
@@ -25,6 +26,16 @@ def ingest_uk_staff_locations(self):
         f"Updated: {updated}\n"
         f"Deleted: {deleted}\n"
     )
+
+
+@celery_app.task(bind=True)
+def ingest_uk_office_locations(self):
+    UkOfficeLocationsS3Ingest()
+
+
+@celery_app.task(bind=True)
+def ingest_dbt_sectors(self):
+    DBTSectorsS3Ingest()
 
 
 @celery_app.task(bind=True)
