@@ -2,7 +2,6 @@ import datetime
 import uuid
 import zoneinfo
 from typing import Iterator, Optional
-from data_flow_s3_import.models import IngestedModel
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -22,6 +21,7 @@ from modelcluster.models import ClusterableModel
 from wagtail.search.queryset import SearchableQuerySetMixin
 
 from core.models import IngestedModel as OldIngestedModel
+from data_flow_s3_import.models import IngestedModel
 from extended_search.index import DWIndexedField as IndexedField
 from extended_search.index import Indexed, RelatedFields, ScoreFunction
 
