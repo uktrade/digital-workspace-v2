@@ -1,3 +1,5 @@
+from ast import Or
+from typing import OrderedDict
 from core.utils import add_null_option, cache_for, get_data_for_django_filters_choices
 from peoplefinder.models import (
     AdditionalRole,
@@ -6,7 +8,7 @@ from peoplefinder.models import (
     LearningInterest,
     Network,
     Profession,
-    Team,
+    TeamTree,
     UkStaffLocation,
 )
 
@@ -57,19 +59,21 @@ def get_additional_roles() -> list[tuple[str, str]]:
 
 @cache_for(hours=1)
 def get_teams() -> list[tuple[str, str]]:
-    qs = Team.objects.prefetch_related("parents").order_by("parents__depth")
-    ids = []
-    data = []
-    for team in qs[0].parents.all():
-        if team.pk not in ids:
-            ids.append(team.pk)
-            data.append(
-                (
-                    team.child.pk,
-                    team.child.name.rjust(
-                        len(team.child.name) + team.depth,
-                        " ",  # Medium Mathematical Space (MMSP) U+205F
-                    ),
-                )
-            )
-    return add_null_option(choices=data)
+    """
+    Starting with TeamTree for hierarchical ordering, we then recurse down to ensure children are under their parent item
+    """
+    def get_children_of(team, qs):
+        return [r.child for r in qs.filter(parent__pk=team.pk)]
+
+    def add_to_dict(qs, data_dict, team):
+        data_dict[team.pk] = (team.pk, team.name)
+        for child in get_children_of(team, qs):
+            add_to_dict(qs, data_dict, child)
+
+    qs = TeamTree.objects.prefetch_related("parent", "child").order_by("parent", "child").filter(depth=1)
+    data: dict = {}
+    for relation in qs:
+        if relation.parent.pk not in data.keys():
+            add_to_dict(qs, data, relation.parent)
+
+    return add_null_option(choices=list(data.values()))
