@@ -6,7 +6,8 @@ from django.db.models import OuterRef, Subquery
 from django.db.models.query import QuerySet
 from django.forms import Field
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, QueryDict
-from django.shortcuts import redirect, render
+from django.template.response import TemplateResponse
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import ListView
 
@@ -167,4 +168,5 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         ),
         "search_url": reverse("search:category", kwargs={"category": "people"}),
     }
-    return render(request, "peoplefinder/discover.html", context)
+
+    return TemplateResponse(request=request, template="peoplefinder/discover.html", context=context)
