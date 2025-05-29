@@ -14,7 +14,7 @@ jobs:
           command: make build
       - run:
           name: Ruff version
-          command: docker compose exec wagtail ruff --version
+          command: ruff --version
       - run:
           name: check linting
           command: make check
