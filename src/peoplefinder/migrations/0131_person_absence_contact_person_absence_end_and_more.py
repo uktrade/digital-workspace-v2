@@ -13,6 +13,7 @@ def insert_data_to_new_fields(apps, schema_editor):
         person.start_date = person.created_at
         person.save(update_fields=["start_date", "based_overseas"])
 
+
 def reverse_insert_data_to_new_fields(apps, schema_editor):
     Person = apps.get_model("peoplefinder", "Person")
     Person.objects.all().update(based_overseas=None)
