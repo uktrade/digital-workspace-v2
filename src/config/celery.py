@@ -23,4 +23,12 @@ celery_app.conf.beat_schedule = {
         "task": "core.tasks.schedule_feedback_email_notification",
         "schedule": crontab(hour=6, minute=0),
     },
+    "ingest_uk_office_locations": {
+        "task": "core.tasks.ingest_uk_office_locations",
+        "schedule": crontab(hour=6, minute=10),
+    },
+    "ingest_dbt_sectors": {
+        "task": "core.tasks.ingest_dbt_sectors",
+        "schedule": crontab(hour=6, minute=20),
+    },
 }

@@ -33,6 +33,8 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
         call_command("loaddata", "countries.json")
         call_command("loaddata", "uk_staff_locations.json")
+        call_command("loaddata", "uk_office_locations.json")
+        call_command("loaddata", "dbt_sectors.json")
         call_command("create_test_teams")
         call_command("create_user_profiles")
         call_command("create_people_finder_groups")

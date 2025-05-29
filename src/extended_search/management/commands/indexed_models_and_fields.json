@@ -96,7 +96,7 @@
         "<SearchField: search_title_explicit>",
         "<SearchField: title>"
     ],
-    "<class 'content.models.SectorPage'>": [
+    "<class 'content.models.SectionPage'>": [
         "<AutocompleteField: title>",
         "<FilterField: content_type>",
         "<FilterField: depth>",
@@ -112,6 +112,8 @@
         "<FilterField: show_in_menus>",
         "<FilterField: title>",
         "<FilterField: translation_key>",
+        "<SearchField: excerpt>",
+        "<SearchField: excerpt_explicit>",
         "<SearchField: search_content>",
         "<SearchField: search_content_explicit>",
         "<SearchField: search_headings>",

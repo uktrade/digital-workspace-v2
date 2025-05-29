@@ -9,7 +9,7 @@
     <div class="content-sidebar-right">
         <h1>{{ page.title }}</h1>
         <div class="dwds-title-question">
-            {% include "feedback.html" with form_id="hr-v1" classes="" prefix="navigation-page" custom_submit_data_function="sectorFeedbackData" %}
+            {% include "feedback.html" with form_id="hr-v1" classes="" prefix="navigation-page" custom_submit_data_function="sectionFeedbackData" %}
         </div>
     </div>
 {% endblock pre_content %}
@@ -18,13 +18,19 @@
 {% endblock page_title_wrapper %}
 
 {% block primary_content %}
-    <div class="primary-content dwds-content-page content-stack small">
-        {% for block in page.body %}
-            {% include_block block %}
-        {% endfor %}
-    </div>
-    <div class="content-stack">
-        {% for block in page.sectors %}
+
+
+    <c-dwds-card no-shadow="true">
+        <c-slot name="card_content">
+            <div class="content-item content-main">
+                {% for block in page.body %}
+                    {% include_block block %}
+                {% endfor %}
+            </div>
+        </c-slot>
+    </c-dwds-card>
+    <div class="content-stack large">
+        {% for block in page.sections %}
             {% include_block block %}
         {% endfor %}
     </div>
@@ -47,7 +53,7 @@
 
 {% block scripts %}
     <script>
-    function sectorFeedbackData(formData) {
+    function sectionFeedbackData(formData) {
         formData.set('page_url','{{page.url}}');
     }
     </script>

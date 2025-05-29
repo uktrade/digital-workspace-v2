@@ -19,7 +19,7 @@ class WorkingAtDITHome(ContentPage):
         "working_at_dit.Topic",
         "working_at_dit.HowDoI",
         "content.NavigationPage",
-        "content.SectorPage",
+        "content.SectionPage",
     ]
 
     def get_context(self, request, *args, **kwargs):

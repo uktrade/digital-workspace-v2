@@ -12,7 +12,7 @@ from content.models import (
     BlogPost,
     ContentPage,
     NavigationPage,
-    SectorPage,
+    SectionPage,
 )
 from core.models.tags import Campaign, Tag
 from country_fact_sheet.models import CountryFactSheetHome
@@ -252,7 +252,7 @@ class TestProject:
             BasePage,
             ContentPage,
             NavigationPage,
-            SectorPage,
+            SectionPage,
             EventsHome,
             EventPage,
             NewsPage,
