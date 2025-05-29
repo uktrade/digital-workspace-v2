@@ -26,14 +26,6 @@ PAGES_TO_INCLUDE = [
 ]
 
 
-CUTOFF = now() - timedelta(days=365)
-
-# do we need a env var if the cutoff is passed as a parameter?
-# introduce another cutoff parameter for when the notification is sent (similar to the first one)?
-# one for 365 days
-# one for 30 days
-
-
 def get_pages(
     pre_notification_cutoff: Optional[datetime] = None,
     post_notification_cutoff: Optional[datetime] = None,
