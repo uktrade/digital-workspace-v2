@@ -27,9 +27,16 @@ PAGES_TO_INCLUDE = [
 
 CUTOFF = now() - timedelta(days=365)
 
+# do we need a env var if the cutoff is passed as a parameter?
+# introduce another cutoff parameter for when the notification is sent (similar to the first one)?
+# one for 365 days
+# one for 30 days
+
 
 def get_pages(
-    cutoff: Optional[datetime] = None, archive: bool = False
+    pre_notification_cutoff: Optional[datetime] = None,
+    post_notification_cutoff: Optional[datetime] = None,
+    archive: bool = False,
 ) -> QuerySet[BasePage]:
     """
     Returns a queryset of pages that may need to be archived.
@@ -42,18 +49,22 @@ def get_pages(
     pages for which an archive notification was sent 30 or more days ago —
     indicating the page has not been updated since the notification was sent.
     """
-    if cutoff is None:
-        cutoff = now() - timedelta(days=365)
+    if pre_notification_cutoff is None:
+        pre_notification_cutoff = now() - timedelta(days=365)
+
+    if post_notification_cutoff is None:
+        post_notification_cutoff = now() - timedelta(days=30)
 
     pages_qs = BasePage.objects.exact_type(*PAGES_TO_INCLUDE).filter(
-        Q(confirmed_needed_at__lt=cutoff) | Q(confirmed_needed_at__isnull=True),
-        last_published_at__lt=cutoff,
-        archive_notification_sent_at__gte=now() - timedelta(days=30),
+        Q(confirmed_needed_at__lt=pre_notification_cutoff)
+        | Q(confirmed_needed_at__isnull=True),
+        last_published_at__lt=pre_notification_cutoff,
+        archive_notification_sent_at__gte=post_notification_cutoff,
     )
 
     if archive:
         pages_qs = pages_qs.filter(
-            archive_notification_sent_at__lt=now() - timedelta(days=30)
+            archive_notification_sent_at__lt=post_notification_cutoff
         )
 
     return pages_qs
