@@ -7,6 +7,10 @@
     }
 }
 
+.content-grid.min-height > .dwds-content-item-card {
+    min-height: var(--min-card-height);
+}
+
 .content-grid.image-left,
 .content-grid.image-right {
     grid-gap: 0;
