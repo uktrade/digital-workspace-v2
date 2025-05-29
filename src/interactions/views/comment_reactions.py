@@ -8,7 +8,6 @@ from django.views.decorators.http import require_http_methods
 from interactions.models import ReactionType
 from interactions.services import comment_reactions as comment_reactions_service
 from news.models import Comment
-from user.models import User
 
 
 def react_to_comment(request: HttpRequest, *, pk):
@@ -41,7 +40,7 @@ def get_comment_reaction_users(request: HttpRequest, *, pk):
 
     for comment_reaction in comment_reactions:
         reaction_type = comment_reaction.type
-        user = User.objects.get(pk=comment_reaction.user.pk)
+        user = comment_reaction.user
         reactions.setdefault(reaction_type, []).append(user.get_full_name())
 
     return JsonResponse({"reactions": reactions})

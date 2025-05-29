@@ -33,12 +33,7 @@ def get_page_reactions(page: Page) -> dict | None:
     if not isinstance(page, NewsPage):
         return None
 
-    reactions = PageReaction.objects.filter(page=page)
-
-    if reactions:
-        return reactions
-
-    return None
+    return PageReaction.objects.filter(page=page).select_related("user")
 
 
 def get_page_reaction_count(

@@ -25,13 +25,7 @@ def react_to_comment(
 
 
 def get_comment_reactions(comment: Comment) -> dict | None:
-
-    reactions = CommentReaction.objects.filter(comment=comment)
-
-    if reactions:
-        return reactions
-
-    return None
+    return CommentReaction.objects.filter(comment=comment).select_related("user")
 
 
 def get_comment_reaction_count(

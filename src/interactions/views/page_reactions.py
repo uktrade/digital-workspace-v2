@@ -8,7 +8,6 @@ from wagtail.models import Page
 
 from interactions.models import ReactionType
 from interactions.services import page_reactions as page_reactions_service
-from user.models import User
 
 
 @require_http_methods(["POST"])
@@ -40,7 +39,7 @@ def get_page_reaction_users(request: HttpRequest, *, pk):
 
     for page_reaction in page_reactions:
         reaction_type = page_reaction.type
-        user = User.objects.get(pk=page_reaction.user.pk)
+        user = page_reaction.user
         reactions.setdefault(reaction_type, []).append(user.get_full_name())
 
     return JsonResponse({"reactions": reactions})
