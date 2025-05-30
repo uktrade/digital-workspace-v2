@@ -28,3 +28,18 @@ def react_to_page(request: HttpRequest, *, pk):
             "reactions": page_reactions_service.get_page_reaction_counts(page),
         }
     )
+
+
+@require_http_methods(["GET"])
+def get_page_reaction_users(request: HttpRequest, *, pk):
+    page = get_object_or_404(Page, id=pk)
+    page_reactions = page_reactions_service.get_page_reactions(page)
+
+    reactions = {}
+
+    for page_reaction in page_reactions:
+        reaction_type = page_reaction.type
+        user = page_reaction.user
+        reactions.setdefault(reaction_type, []).append(user.get_full_name())
+
+    return JsonResponse({"reactions": reactions})
