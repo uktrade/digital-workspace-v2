@@ -9,7 +9,7 @@ def test_doctests(db):
 
 
 def test_person_field_count():
-    assert len(peoplefinder.models.Person._meta.get_fields()) == 63, (
+    assert len(peoplefinder.models.Person._meta.get_fields()) == 73, (
         "It looks like you have updated the `Person` model. Please make sure you have"
         " updated `PersonAuditLogSerializer.serialize` to reflect any field changes."
     )

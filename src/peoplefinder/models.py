@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import zoneinfo
 from typing import Iterator, Optional
 
 from data_flow_s3_import.models import IngestedModel
@@ -305,6 +306,9 @@ def person_photo_small_path(instance, filename):
     return f"peoplefinder/person/{instance.slug}/photo/small_{filename}"
 
 
+TIMEZONE_CHOICES = sorted(((tz, tz)) for tz in zoneinfo.available_timezones())
+
+
 class Person(ClusterableModel, Indexed, models.Model):
     class Meta:
         constraints = [
@@ -607,6 +611,20 @@ class Person(ClusterableModel, Indexed, models.Model):
         blank=True,
         null=True,
         max_length=80,
+    )
+    role_description = models.TextField(null=True, blank=True)
+    core_responsibilities = models.TextField(null=True, blank=True)
+    contact_for = models.TextField(null=True, blank=True)
+    start_date = models.DateField(auto_now_add=True)
+    based_overseas = models.BooleanField(null=True, blank=True)
+    timezone = models.CharField(
+        choices=TIMEZONE_CHOICES,
+        default=settings.LOCAL_TIME_ZONE,
+    )
+    absence_start = models.DateField(null=True, blank=True)
+    absence_end = models.DateField(null=True, blank=True)
+    absence_contact = models.ForeignKey(
+        "Person", models.SET_NULL, null=True, blank=True, related_name="direct_queries"
     )
 
     objects = models.Manager.from_queryset(PersonQuerySet)()
