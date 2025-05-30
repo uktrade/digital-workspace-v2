@@ -2,31 +2,19 @@
     .content-main {
         display: flex;
         flex-direction: row;
+
+        .content-stack > :nth-last-child(2) {
+            margin-block-end: auto;
+        }
+
+        .content-stack > :last-child {
+            .content-icon {
+                font-size: var(--s2);
+            }
+        }
     }
 
     #photo-container {
         width: 40%;
     }
-    // text-align: center;
-
-    // > .content-stack {
-    //     margin-block-start: 0;
-    // }
-
-    // h3 {
-    //     margin: 0;
-    // }
-
-    // p {
-    //     margin-top: var(--s-5);
-    // }
-
-    // .content-footer .with-icon {
-    //     padding: var(--s-5);
-
-    //     .content-icon {
-    //         font-size: var(--s4);
-    //         margin-inline-end: unset;
-    //     }
-    // }
 }

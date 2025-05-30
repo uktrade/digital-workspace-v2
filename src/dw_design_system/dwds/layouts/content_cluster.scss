@@ -16,4 +16,8 @@
     &.no-gap {
         gap: 0;
     }
+
+    &.spread {
+        justify-content: space-between;
+    }
 }

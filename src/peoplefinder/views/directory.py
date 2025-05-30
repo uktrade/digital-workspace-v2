@@ -156,7 +156,7 @@ def discover(request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
     }
 
     context = {
-        "page_title": "Find colleagues",
+        "page_title": "Find people",
         "pages": paginator_page,
         "extra_breadcrumbs": [
             (None, "Discover"),
