@@ -28,6 +28,14 @@ def react_to_page(
     return reaction
 
 
+def get_page_reactions(page: Page) -> dict | None:
+    page = page.specific
+    if not isinstance(page, NewsPage):
+        return None
+
+    return PageReaction.objects.filter(page=page).select_related("user")
+
+
 def get_page_reaction_count(
     page: Page, reaction_type: ReactionType | None
 ) -> int | None:

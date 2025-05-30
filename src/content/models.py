@@ -345,13 +345,13 @@ class BasePage(Page, Indexed):
             try:
                 return first_publisher.profile
             except User.profile.RelatedObjectDoesNotExist:
-                pass
+                return first_publisher.get_full_name()
 
         if self.owner:
             try:
                 return self.owner.profile
             except User.profile.RelatedObjectDoesNotExist:
-                pass
+                return self.owner.get_full_name()
 
         return None
 
