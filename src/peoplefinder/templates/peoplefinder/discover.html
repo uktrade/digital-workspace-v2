@@ -13,67 +13,88 @@
 
 {% block page_content %}
     <form method="get">
-        <div class="content-sidebar">
-            <div class="secondary-content">
-                {% block pre_secondary_content %}
-                {% endblock pre_secondary_content %}
-                {% block secondary_content %}
-                    {% include "peoplefinder/includes/discover_filters.html" %}
-                    {% sidebar %}
-                {% endblock secondary_content %}
-                {% block post_secondary_content %}
-                {% endblock post_secondary_content %}
-            </div>
-            <div class="primary-content {% block primary_content_classes %}content-stack large{% endblock primary_content_classes %}">
-                {% block page_title_wrapper %}
-                    <div class="page-title content-stack">
-                        {% block page_title %}
-                            <h1>{% firstof page_title page.title %}</h1>
-                            {% if page.description %}<p class="text-medium">{{ page.description }}</p>{% endif %}
-                        {% endblock page_title %}
-                    </div>
-                {% endblock page_title_wrapper %}
-                {% block pre_primary_content %}
-                {% endblock pre_primary_content %}
-                {% block primary_content %}
-                    {% if pages.object_list %}
-                        <div class="dwds-button-group"
-                             style="width: 100%;
-                                    display: flex;
-                                    justify-content: space-between">
-                            <p>Showing {{ pages.start_index }} to {{ pages.end_index }} of {{ pages.paginator.count }} profiles</p>
-                            <label>Sort by {{ discover_filters.form.sort_by }}</label>
-                            <script>
-                                const sort_by = document.getElementById("id_sort_by");
-                                sort_by.addEventListener("change", (evt) => {
-                                    evt.target.form.submit();
-                                });
-                            </script>
-                        </div>
-                        <div class="content-grid grid-cards-auto-fill">
-                            {% for person in pages.object_list %}
-                                <c-dwds-card>
-                                    <c-slot name="card_content">
-                                        {% url 'profile-view' person.slug as profile_url %}
-                                        {% if person.photo %}
-                                            {% include "dwds/components/profile_info.html" with show_profile_image=True profile_image_url=person.photo.url name=person.full_name title=person.roles_str location=person.uk_office_location.city profile_url=profile_url not_active=person.is_active|add:"-1" %}
-                                        {% else %}
-                                            {% include "dwds/components/profile_info.html" with show_profile_image=True name=person.full_name title=person.roles_str location=person.uk_office_location.city profile_url=profile_url not_active=person.is_active|add:"-1" %}
-                                        {% endif %}
-                                    </c-slot>
-                                </c-dwds-card>
-                            {% endfor %}
-                        </div>
+        <div class="content-stack">
+            {% block page_title_wrapper %}
+                <div class="page-title content-stack">
+                    {% block page_title %}
+                        <h1>{% firstof page_title page.title %}</h1>
+                        {% if page.description %}<p class="text-medium">{{ page.description }}</p>{% endif %}
+                    {% endblock page_title %}
+                </div>
+            {% endblock page_title_wrapper %}
+            <div class="content-sidebar">
+                <div class="secondary-content">
+                    {% block pre_secondary_content %}
+                    {% endblock pre_secondary_content %}
+                    {% block secondary_content %}
+                        {% include "peoplefinder/includes/discover_filters.html" %}
+                    {% endblock secondary_content %}
+                    {% block post_secondary_content %}
+                    {% endblock post_secondary_content %}
+                </div>
+                <div class="primary-content {% block primary_content_classes %}content-stack large{% endblock primary_content_classes %}">
+                    {% block pre_primary_content %}
+                    {% endblock pre_primary_content %}
+                    {% block primary_content %}
+                        {% if pages.object_list %}
+                            <div class="dwds-button-group results-summary">
+                                <p>Showing {{ pages.start_index }} to {{ pages.end_index }} of {{ pages.paginator.count }} profiles</p>
+                                <label>Sort by {{ discover_filters.form.sort_by }}</label>
+                            </div>
+                            <div class="content-grid grid-cards-auto-fill wider min-height">
+                                {% for person in pages.object_list %}
+                                    <c-dwds-card>
+                                        <c-slot name="card_content">
+                                            {% include "dwds/components/profile.html" with profile=person %}
+                                        </c-slot>
+                                    </c-dwds-card>
+                                {% endfor %}
+                            </div>
 
-                        {% include "dwds/components/pagination.html" %}
-                    {% else %}
-                        <p>No colleagues match your selected filters</p>
-                    {% endif %}
-                {% endblock primary_content %}
-                {% block post_primary_content %}
-                    {% include 'includes/tag_set.html' %}
-                {% endblock post_primary_content %}
+                            {% include "dwds/components/pagination.html" %}
+                        {% else %}
+                            <p>No colleagues match your selected filters</p>
+                        {% endif %}
+                    {% endblock primary_content %}
+                    {% block post_primary_content %}
+                        {% include 'includes/tag_set.html' %}
+                    {% endblock post_primary_content %}
+                </div>
             </div>
         </div>
     </form>
 {% endblock page_content %}
+
+{% block stylesheets %}
+    <style>
+    select {
+        color: var(--color-button-secondary-text);
+        background-color: var(--color-button-secondary);
+        border: var(--button-border-width) solid var(--color-button-secondary-border);
+        border-bottom: var(--button-border-width-bottom) solid var(--color-button-secondary-border);
+    }
+    a.dwds-button.applied-filters {
+        display: inline-flex;
+        border-radius: 3rem;
+    }
+    .filters {
+        h2, h3, h4 {
+            margin: 0;
+        }
+    }
+    .results-summary {
+        width: 100%;
+        display: flex;
+        justify-content: space-between
+    }
+    </style>
+{% endblock stylesheets %}
+
+{% block scripts %}
+    <script>
+        const sort_by = document.getElementById("id_sort_by");
+        sort_by.addEventListener("change", (evt) => {
+            evt.target.form.submit();
+        });
+    </script>
+{% endblock scripts %}

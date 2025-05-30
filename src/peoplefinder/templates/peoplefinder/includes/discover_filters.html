@@ -1,45 +1,57 @@
+{% load sidebar %}
 
-<div class="content-stack" style="width:250px;">
-    <h2>Filters</h2>
-    {% if discover_filters.applied_filters %}
-        <h3>Selected filters</h3>
-        {% for filter_obj in selected_filters.values %}
-            <h4>{{ filter_obj.label|capfirst }}</h4>
-            {% for value in filter_obj.values %}
-                <div>
-                    <a class="dwds-button dwds-button--secondary dwds-button--inline dwds-button--link content-with-icon small-gap"
-                       href="{{ value.url }}">
-                        {% include 'dwds/icons/cross.html' with small=True %}
-                    {{ value.label }}</a>
+<div class="content-stack large">
+    <c-dwds-card>
+        <c-slot name="card_content">
+            <div class="content-main content-stack filters">
+                <h2>Filters</h2>
+                {% if discover_filters.applied_filters %}
+                    <hr>
+                    <h3>Selected filters</h3>
+                    {% for filter_obj in selected_filters.values %}
+                        <h4>{{ filter_obj.label|capfirst }}</h4>
+                        {% for value in filter_obj.values %}
+                            <div>
+                                <a class="dwds-button applied-filters dwds-button--secondary dwds-button--inline dwds-button--link content-with-icon small-gap"
+                                   href="{{ value.url }}">
+                                    {% include 'dwds/icons/cross.html' with small=True %}
+                                {{ value.label }}</a>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+                <div class="dwds-button-group">
+                    <input class="dwds-button dwds-button--inline"
+                           type="submit"
+                           value="Apply filters" />
+                    <a href="?">Reset filters</a>
                 </div>
-            {% endfor %}
-        {% endfor %}
-    {% endif %}
-    <div class="dwds-button-group">
-        <input class="dwds-button dwds-button--secondary dwds-button--inline"
-               type="submit"
-               value="Apply filters" />
-        <a href="?">Reset filters</a>
-    </div>
-    <div class="content-stack">
-        <h4>Location</h4>
-        {% include "dwds/components/details.html" with summary_text=discover_filters.form.city.label|capfirst content=discover_filters.form.city %}
-        {% include "dwds/components/details.html" with summary_text=discover_filters.form.building_name.label|capfirst content=discover_filters.form.building_name %}
-    </div>
-    <div class="content-stack">
-        <h4>Profession and Job Roles</h4>
-        {% include "dwds/components/details.html" with summary_text=discover_filters.form.teams.label|capfirst content=discover_filters.form.teams %}
-        {% include "dwds/components/details.html" with summary_text=discover_filters.form.key_skills.label|capfirst content=discover_filters.form.key_skills %}
-        {% include "dwds/components/details.html" with summary_text=discover_filters.form.professions.label|capfirst content=discover_filters.form.professions %}
-        {% include "dwds/components/details.html" with summary_text=discover_filters.form.grade.label|capfirst content=discover_filters.form.grade %}
-        {% include "dwds/components/details.html" with summary_text=discover_filters.form.additional_roles.label|capfirst content=discover_filters.form.additional_roles %}
-    </div>
-    <div class="content-stack">
-        <h4>Refine</h4>
-        {% if can_see_inactive_users %}
-            {% include "dwds/components/details.html" with summary_text=discover_filters.form.is_active.label|capfirst content=discover_filters.form.is_active %}
-        {% endif %}
-        {% include "dwds/components/details.html" with summary_text=discover_filters.form.display_civil_servants.label|capfirst content=discover_filters.form.display_civil_servants %}
-        {% include "dwds/components/details.html" with summary_text=discover_filters.form.profile_completion.label|capfirst content=discover_filters.form.profile_completion %}
-    </div>
+                <hr>
+                <div class="content-stack">
+                    <h4>Location</h4>
+                    {% include "dwds/components/details.html" with summary_text=discover_filters.form.city.label|capfirst content=discover_filters.form.city %}
+                    {% include "dwds/components/details.html" with summary_text=discover_filters.form.building_name.label|capfirst content=discover_filters.form.building_name %}
+                </div>
+                <hr>
+                <div class="content-stack">
+                    <h4>Profession and Job Roles</h4>
+                    {% include "dwds/components/details.html" with summary_text=discover_filters.form.teams.label|capfirst content=discover_filters.form.teams %}
+                    {% include "dwds/components/details.html" with summary_text=discover_filters.form.key_skills.label|capfirst content=discover_filters.form.key_skills %}
+                    {% include "dwds/components/details.html" with summary_text=discover_filters.form.professions.label|capfirst content=discover_filters.form.professions %}
+                    {% include "dwds/components/details.html" with summary_text=discover_filters.form.grade.label|capfirst content=discover_filters.form.grade %}
+                    {% include "dwds/components/details.html" with summary_text=discover_filters.form.additional_roles.label|capfirst content=discover_filters.form.additional_roles %}
+                </div>
+                <hr>
+                <div class="content-stack">
+                    <h4>Refine</h4>
+                    {% if can_see_inactive_users %}
+                        {% include "dwds/components/details.html" with summary_text=discover_filters.form.is_active.label|capfirst content=discover_filters.form.is_active %}
+                    {% endif %}
+                    {% include "dwds/components/details.html" with summary_text=discover_filters.form.display_civil_servants.label|capfirst content=discover_filters.form.display_civil_servants %}
+                    {% include "dwds/components/details.html" with summary_text=discover_filters.form.profile_completion.label|capfirst content=discover_filters.form.profile_completion %}
+                </div>
+            </div>
+        </c-slot>
+    </c-dwds-card>
+    {% sidebar %}
 </div>

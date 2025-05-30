@@ -1,0 +1,20 @@
+.dwds-profile {
+    .content-main {
+        display: flex;
+        flex-direction: row;
+
+        .content-stack > :nth-last-child(2) {
+            margin-block-end: auto;
+        }
+
+        .content-stack > :last-child {
+            .content-icon {
+                font-size: var(--s2);
+            }
+        }
+    }
+
+    #photo-container {
+        width: 40%;
+    }
+}

@@ -7,6 +7,10 @@
     }
 }
 
+.content-grid.wider {
+    --card-min-width: 20rem;
+}
+
 .content-grid.min-height > .dwds-content-item-card {
     min-height: var(--min-card-height);
 }
@@ -17,7 +21,6 @@
 }
 
 @container content-item (width > 60ch) {
-
     .content-grid.image-left,
     .content-grid.image-right {
         grid-gap: 0;
@@ -45,10 +48,16 @@
 
 @supports (width: min(250px, 100%)) {
     .grid-cards-auto-fill {
-        grid-template-columns: repeat(auto-fill, minmax(min(var(--card-min-width), 100%), 1fr));
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(min(var(--card-min-width), 100%), 1fr)
+        );
     }
 
     .grid-cards {
-        grid-template-columns: repeat(auto-fit, minmax(min(var(--card-min-width), 100%), 1fr));
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(min(var(--card-min-width), 100%), 1fr)
+        );
     }
 }
