@@ -37,18 +37,9 @@
                     {% endblock pre_primary_content %}
                     {% block primary_content %}
                         {% if pages.object_list %}
-                            <div class="dwds-button-group"
-                                style="width: 100%;
-                                        display: flex;
-                                        justify-content: space-between">
+                            <div class="dwds-button-group results-summary">
                                 <p>Showing {{ pages.start_index }} to {{ pages.end_index }} of {{ pages.paginator.count }} profiles</p>
                                 <label>Sort by {{ discover_filters.form.sort_by }}</label>
-                                <script>
-                                    const sort_by = document.getElementById("id_sort_by");
-                                    sort_by.addEventListener("change", (evt) => {
-                                        evt.target.form.submit();
-                                    });
-                                </script>
                             </div>
                             <div class="content-grid grid-cards-auto-fill wider min-height">
                                 {% for person in pages.object_list %}
@@ -75,7 +66,7 @@
 {% endblock page_content %}
 
 {% block stylesheets %}
-<style>
+    <style>
     select {
         color: var(--color-button-secondary-text);
         background-color: var(--color-button-secondary);
@@ -91,5 +82,19 @@
             margin: 0;
         }
     }
-</style>
+    .results-summary {
+        width: 100%;
+        display: flex;
+        justify-content: space-between
+    }
+    </style>
 {% endblock stylesheets %}
+
+{% block scripts %}
+    <script>
+        const sort_by = document.getElementById("id_sort_by");
+        sort_by.addEventListener("change", (evt) => {
+            evt.target.form.submit();
+        });
+    </script>
+{% endblock scripts %}
