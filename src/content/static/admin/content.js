@@ -62,9 +62,9 @@ const showRoleSelector = (roleSelectorEl) => {
     parentContentPathEl.style.display = "block";
 };
 
-const setSelectOptions = (selectElement, personInput) => {
-    const selectedRole = selectElement.value;
-    fetch(`/content/get-user-roles/${personInput.value}/`)
+const setSelectOptions = (roleField, selectElement, personInput) => {
+    const selectedRole = roleField.value;
+    fetch(`/content/get-person-roles/${personInput.value}/`)
         .then((response) => response.json())
         .then((data) => {
             selectElement.innerHTML = "";
@@ -125,20 +125,32 @@ const initialiseRoleSelector = (
 
     const personChooserFieldName =
         fieldNameMapping[streamfieldType]["personChooser"];
-    const personRoleFieldName = fieldNameMapping[streamfieldType]["personRole"];
+    const personRoleFormFieldName = fieldNameMapping[streamfieldType]["personRole"];
 
     const personInput = document.querySelector(
         `input[name='${contentPath}-${containerChildIndex}-value-${personChooserFieldName}']`,
     );
 
-    const personRoleSelect = document.querySelector(
-        `select[name='${contentPath}-${containerChildIndex}-value-${personRoleFieldName}']`,
-    );
+    const personRoleFieldName = `${contentPath}-${containerChildIndex}-value-${personRoleFormFieldName}`
+
+    const personRoleField = document.querySelector(`input[name='${personRoleFieldName}']`);
+    personRoleField.style.display = "none";
+
+    const personRoleSelect = document.createElement('select');
+    personRoleSelect.name = `${personRoleFieldName}-select`;
+
+    personRoleField.parentElement.appendChild(personRoleSelect);
+
+    personRoleSelect.addEventListener('change', () => {
+        personRoleField.value = personRoleSelect.value;
+    });
+
 
     if (!personInput.value) {
         hideRoleSelector(personRoleSelect);
+        personRoleField.value = '';
     } else {
-        setSelectOptions(personRoleSelect, personInput);
+        setSelectOptions(personRoleField, personRoleSelect, personInput);
     }
 
     // When the value of the selected person changes, make a request to get roles using the currently selected person ID
@@ -151,9 +163,10 @@ const initialiseRoleSelector = (
                 switch (personInput.value) {
                     case "":
                         hideRoleSelector(personRoleSelect);
+                        personRoleField.value = '';
                         break;
                     default:
-                        setSelectOptions(personRoleSelect, personInput);
+                        setSelectOptions(personRoleField, personRoleSelect, personInput);
                         showRoleSelector(personRoleSelect);
                 }
             }
@@ -212,7 +225,6 @@ const initialiseStreamfields = () => {
             container.dataset.contentJavascriptInitialised = true;
             streamfieldContainerObserver.observe(container, {
                 childList: true,
-                // subtree: true,
             });
         }
     });

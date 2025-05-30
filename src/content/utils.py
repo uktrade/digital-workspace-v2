@@ -5,7 +5,6 @@ from wagtail import blocks
 from wagtail.blocks.struct_block import StructValue
 
 from content import blocks as content_blocks
-from peoplefinder.models import TeamMember
 
 
 def remove_orphan_keyword_and_phrases():
@@ -200,7 +199,3 @@ def get_search_content_for_block(
             search_content.append(strip_tags(str(block.value)))
 
     return search_headings, search_content
-
-
-def team_members() -> list[tuple[int, int]]:
-    return [(tm["pk"], tm["pk"]) for tm in TeamMember.objects.all().values("pk")]

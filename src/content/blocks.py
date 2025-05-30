@@ -5,9 +5,9 @@ from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtailmedia.blocks import AbstractMediaChooserBlock
 
-from content.utils import team_members
 from peoplefinder.blocks import PersonChooserBlock
 from peoplefinder.models import TeamMember
+from peoplefinder.services.person import get_roles
 
 
 RICH_TEXT_FEATURES = [
@@ -282,8 +282,9 @@ class PageUpdate(blocks.StructBlock):
 
 class PersonBanner(blocks.StructBlock):
     person = PersonChooserBlock(required=False)
-    person_role_id = blocks.ChoiceBlock(
-        choices=team_members,
+    # Note: We hide this field from the user in the admin, and present them with
+    # a select input using JS
+    person_role_id = blocks.CharBlock(
         required=False,
         label="Person role",
         help_text="Choose the person's job role. If you do not want to show a job role, choose 'Hide role'.",
@@ -334,6 +335,18 @@ class PersonBanner(blocks.StructBlock):
                 "Either choose a person or enter the details manually."
             )
 
+        if value["person_role_id"]:
+            if not value["person"]:
+                raise ValidationError(
+                    "You must select a person before you can select a role."
+                )
+            if int(value["person_role_id"]) not in get_roles(
+                value["person"]
+            ).values_list("pk", flat=True):
+                raise ValidationError(
+                    "You must select a role that belongs to the person."
+                )
+
         return super().clean(value)
 
     def get_context(self, value, parent_context=None):
@@ -375,8 +388,9 @@ class QuoteBlock(blocks.StructBlock):
         label="Quote source",
         help_text="If the quote source is a DBT person, use the 'Choose a person' option and leave all other fields blank (including the 'Source image' option). If they are external to DBT, enter the person's details manually. Add an image, if you have one.",
     )
-    source_role_id = blocks.ChoiceBlock(
-        choices=team_members,
+    # Note: We hide this field from the user in the admin, and present them with
+    # a select input using JS
+    source_role_id = blocks.CharBlock(
         required=False,
         label="Source role",
         help_text="Choose the person's job role. If you do not want to show a job role, choose 'Hide role'.",
@@ -417,6 +431,20 @@ class QuoteBlock(blocks.StructBlock):
             raise ValidationError(
                 "Either choose a quote source or enter the details manually."
             )
+
+        if value["source_role_id"]:
+            if not value["source"]:
+                raise ValidationError(
+                    "You must select a source before you can select a role."
+                )
+            if int(value["source_role_id"]) not in get_roles(
+                value["source"]
+            ).values_list("pk", flat=True):
+                print(list(get_roles(value["source"]).values_list("pk", flat=True)))
+                raise ValidationError(
+                    "You must select a role that belongs to the source."
+                )
+
         return super().clean(value)
 
     def get_context(self, value, parent_context=None):

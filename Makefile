@@ -133,6 +133,11 @@ superuser: # Create a superuser
 su-all: # Makes all users a superuser
 	$(wagtail) python manage.py shell --command="from django.contrib.auth import get_user_model; get_user_model().objects.all().update(is_superuser=True, is_staff=True)"
 
+cleanup-profiling:
+	rm -rf ./profiler_results
+	mkdir ./profiler_results
+	touch ./profiler_results/.gitkeep
+
 #
 # Django
 #
@@ -246,3 +251,23 @@ local-test-data: # Add all test data for local development
 
 serve-docs: # Serve mkdocs on port 8002
 	poetry run mkdocs serve -a localhost:8002
+
+
+# platform-helper
+
+# target specific variables (not global)
+codebase-build codebase-deploy copilot-ssh: profile = "intranet"
+codebase-build codebase-deploy copilot-ssh: app = "dbt-intranet"
+codebase-build codebase-deploy copilot-ssh: codebase = "digital-workspace"
+codebase-build codebase-deploy: commit := $(shell git rev-parse --short HEAD)
+codebase-deploy copilot-ssh: env = "dev"
+copilot-ssh: name = "web"
+
+codebase-build:
+	AWS_PROFILE=$(profile) platform-helper codebase build --app $(app) --codebase $(codebase) --commit $(commit)
+
+codebase-deploy:
+	AWS_PROFILE=$(profile) platform-helper codebase deploy --app $(app) --codebase $(codebase) --commit $(commit) --env $(env)
+
+copilot-ssh:
+	AWS_PROFILE=$(profile) copilot svc exec --app $(app) --env $(env) --name $(name) --command 'launcher bash'

@@ -70,6 +70,7 @@ django-csp = "^3.8"
 icalendar = "^6.0.1"
 granian = "^1.6.3"
 django-cotton = "^2.0.3"
+data-flow-s3-import = "^0.0.2"
 
 [tool.poetry.group.dev]
 optional = true
@@ -91,7 +92,7 @@ wagtail-factories = "^4.0.0"
 # Util
 bpython = "^0.24"
 django-extensions = "^3.2.1"
-django-silk = "^5.0.4"
+django-silk = "^5.3.2"
 django-debug-toolbar = "^4.4.6"
 werkzeug = "^3.0.6"
 blessings = "^1.7"
