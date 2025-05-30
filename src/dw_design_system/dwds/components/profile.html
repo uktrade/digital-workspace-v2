@@ -7,11 +7,16 @@ Only requires "profile" to be set
 <div class="dwds-profile content-item">
     <div class="content-main">
         <div id="photo-container">
+            {% url 'profile-view' profile.slug as profile_url %}
             {% if profile.has_photo %}
-                {% url 'profile-view' profile.slug as profile_url %}
                 {% include "dwds/elements/profile_image.html" with
                 small=True
                 profile_image_url=profile.photo.url
+                name=name
+                profile_url=profile_url %}
+            {% else %}
+                {% include "dwds/elements/profile_image.html" with
+                small=True
                 name=name
                 profile_url=profile_url %}
             {% endif %}
