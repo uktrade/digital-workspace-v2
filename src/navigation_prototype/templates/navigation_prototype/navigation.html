@@ -1,0 +1,72 @@
+<ul class="nav-proto-ul">
+    {% for l in primary_links %}
+        <li>
+            <a href="{{ l.get_url }}">{{ l.label }}</a>
+
+            {% if l.child_links.exists %}
+                <ul>
+                    {% for cl in l.child_links.all %}
+                        <li>
+                            <a href="{{ cl.get_url }}">{{ cl.label }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+
+<style type="text/css">
+    .nav-proto-ul {
+        display: flex;
+        padding: 0;
+    }
+
+    .nav-proto-ul li {
+        display: inline-block;
+        position: relative;
+        padding: 0;
+    }
+
+    .nav-proto-ul li a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        color: #333;
+    }
+    
+    .nav-proto-ul li a:hover {
+        background-color: #f0f0f0;
+    }
+
+    .nav-proto-ul li ul {
+        display: none;
+        padding: 0;
+        position: absolute;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ccc;
+        z-index: 1000;
+    }
+    
+    .nav-proto-ul li:hover ul {
+        display: block;
+    }
+
+    .nav-proto-ul li ul li {
+        display: block;
+        white-space: nowrap;
+    }
+    
+    .nav-proto-ul li ul li a {
+        display: block;
+        padding: 10px 20px;
+        text-decoration: none;
+        color: #333;
+    }
+    
+    .nav-proto-ul li ul li a:hover {
+        background-color: #f0f0f0;
+    }
+</style>
