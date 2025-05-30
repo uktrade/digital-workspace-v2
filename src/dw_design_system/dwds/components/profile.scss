@@ -1,24 +1,32 @@
 .dwds-profile {
-    text-align: center;
-
-    > .content-stack {
-        margin-block-start: 0;
+    .content-main {
+        display: flex;
+        flex-direction: row;
     }
 
-    h3 {
-        margin: 0;
+    #photo-container {
+        width: 40%;
     }
+    // text-align: center;
 
-    p {
-        margin-top: var(--s-5);
-    }
+    // > .content-stack {
+    //     margin-block-start: 0;
+    // }
 
-    .content-footer .with-icon {
-        padding: var(--s-5);
+    // h3 {
+    //     margin: 0;
+    // }
 
-        .content-icon {
-            font-size: var(--s4);
-            margin-inline-end: unset;
-        }
-    }
+    // p {
+    //     margin-top: var(--s-5);
+    // }
+
+    // .content-footer .with-icon {
+    //     padding: var(--s-5);
+
+    //     .content-icon {
+    //         font-size: var(--s4);
+    //         margin-inline-end: unset;
+    //     }
+    // }
 }

@@ -1,11 +1,12 @@
 {% load wagtailimages_tags static humanize %}
-
-<!-- Supersedes profile_info as being a zero-config standard -->
-<!-- Only requires "profile" to be set -->
+{% comment %}
+Supersedes profile_info as being a zero-config standard
+Only requires "profile" to be set
+ {% endcomment %}
 
 <div class="dwds-profile content-item">
-    <div class="content-main content-stack center">
-        <div>
+    <div class="content-main">
+        <div id="photo-container">
             {% if profile.has_photo %}
                 {% include "dwds/elements/profile_image.html" with
                     small=True
@@ -14,6 +15,7 @@
                     profile_url=profile.url %}
             {% endif %}
         </div>
+
         <div class="content-stack">
             <h3>
                 <a class="no-underline" href="{{ profile.url }}">{{ profile.full_name }}</a>
@@ -24,14 +26,10 @@
                     class="govuk-tag govuk-tag--orange"
                     >Inactive</strong>
             {% endif %}
-        </div>
-        {% if profile.get_location_summary_display %}
-        <div class="content-with-icon center align-center small-gap">
-            {% include "dwds/icons/marker.html" with small=True %} {{
-            profile.get_location_summary_display }}
-        </div>
-        {% endif %}
-        <div class="content-footer">
+            {% if profile.get_location_summary_display %}
+                {% include "dwds/icons/marker.html" with small=True %} {{
+                profile.get_location_summary_display }}
+            {% endif %}
             {% spaceless %}
                 <a class="content-with-icon" href="mailto:{{ profile.preferred_email }}">
                     {% include "dwds/icons/email.html" with small=True %}

@@ -39,6 +39,7 @@
 @forward "components/one_up";
 @forward "components/pagination";
 @forward "components/profile_info";
+@forward "components/profile";
 @forward "components/promo";
 @forward "components/spotlight";
 @forward "components/quote";
@@ -77,7 +78,6 @@
 @forward "icons/unhappy";
 @forward "icons/quote";
 
-
 // Layouts
 @forward "layouts/content_sidebar";
 @forward "layouts/content_grid";
@@ -88,7 +88,6 @@
 @forward "layouts/content_custom_sidebar";
 @forward "layouts/content_cluster";
 @forward "layouts/icon_card";
-
 
 // App specific stylesheets
 @forward "../../interactions/static/interactions/interactions.scss";
